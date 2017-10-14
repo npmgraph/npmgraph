@@ -26,6 +26,7 @@ class LoadWidget {
     this.el = document.createElement('div');
     this.el.className = 'loader';
     this.el.innerText = name;
+    this.el.appendChild(document.createElement('span'));
   }
 
   start() {
@@ -136,6 +137,17 @@ async function graph(name) {
   const svg = doc.querySelector('svg');
   document.body.appendChild(svg);
 }
+
+document.addEventListener('click', function(event) {
+  let el = event.srcElement;
+  while (el && el.nodeName != 'text') el = el.parentElement;
+  if (el) {
+    const module = _modules[el.innerHTML];
+    if (module) {
+      console.log(module);
+    }
+  }
+});
 
 window.onhashchange = window.onload = async function() {
   const target = (location.hash || 'request').replace(/.*#/, '');
