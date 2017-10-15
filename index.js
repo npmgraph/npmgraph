@@ -1,11 +1,25 @@
-async function fetch(path) {
+const $ = (...args) => document.querySelector(...args);
+const $$ = (...args) => document.querySelectorAll(...args);
+
+class Inspector {
+  static open() {
+      $('#inspector').classList.add('open');
+  }
+  static close() {
+      $('#inspector').classList.remove('open');
+  }
+  static showModule(module) {
+    const pkg = module.package || module;
+    $('#inspector #json').innerText = JSON.stringify(pkg, null, 2);
+  }
+};
+
+async function fetch(path, loader) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    const loader = new LoadWidget(path);
-    loader.start();
-    xhr.open('GET', `http://cors-proxy.htmldriven.com/?url=https://registry.npmjs.org/${path}`);
       xhr.onreadystatechange = function() {
-        if (xhr.readyState != 4) return;
+        if (xhr.readyState == 1) loader.start();
+        if (xhr.readyState < 4) return;
         loader.stop();
         if (xhr.status >= 200 && xhr.status < 300) {
           resolve(xhr.responseText);
@@ -13,6 +27,7 @@ async function fetch(path) {
           reject(xhr.status);
         }
       }
+      xhr.open('GET', `http://cors-proxy.htmldriven.com/?url=https://registry.npmjs.org/${path}`);
       xhr.send();
     });
 }
@@ -21,20 +36,23 @@ const _modules = {};
 
 const _fetch = {};
 
-class LoadWidget {
+class Loader {
   constructor(name) {
+    this.name = name;
     this.el = document.createElement('div');
     this.el.className = 'loader';
     this.el.innerText = name;
-    this.el.appendChild(document.createElement('span'));
+    this.el.insertBefore(document.createElement('span'), this.el.firstChild);
+    $('#load').appendChild(this.el);
   }
 
   start() {
-    document.body.appendChild(this.el);
+    this.el.classList.add('active');
   }
 
   stop() {
-    this.el.className = 'loader done';
+    this.el.classList.remove('active');
+    this.el.classList.add('done');
   }
 }
 
@@ -43,11 +61,12 @@ class Module {
     const key = this.key(name, version);
     let module = _modules[key];
     if (module) {
-      //console.log('Cached', module.key);
     } else {
       // Only fetch one version of a module at a time
       if (!_fetch[name]) _fetch[name] = Promise.resolve();
-      _fetch[name] = _fetch[name].then(() => fetch(`${name}/${version}`));
+      const path = `${name}/${version}`;
+      const loader = new Loader(path);
+      _fetch[name] = _fetch[name].then(() => fetch(path, loader));
 
       const json = await _fetch[name];
       const obj = JSON.parse(json);
@@ -83,6 +102,20 @@ class Module {
   }
 }
 
+function handleGraphClick(event) {
+  let el = event.srcElement;
+  while (el && el.nodeName != 'text') el = el.parentElement;
+  if (el) {
+    const module = _modules[el.innerHTML];
+    if (module) {
+      Inspector.showModule(module);
+      Inspector.open();
+      return;
+    }
+  }
+      Inspector.close();
+}
+
 async function graph(name) {
   const FONT='GillSans-Light';
 
@@ -111,49 +144,45 @@ async function graph(name) {
     }
   }
 
+  $('#load').style.display = 'block';
   const module = await Module.get(name);
   await render(module);
+  $('#load').style.display = 'none';
 
   const dotDoc = [
-    'digraph {',
-    'rankdir="LR"',
-    '// Default styles',
+    `digraph {`,
+    `rankdir="LR"`,
+    `labelloc="t"`,
+    `label="${module.package.name}"`,
+    `// Default styles`,
     `graph [fontname="${FONT}"]`,
     `node [shape=box fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
     `edge [fontsize=10, fontname="${FONT}" splines="polyline"]`,
-    '\n// Puts start node at top of graph',
-    ''
+    `\n// Puts start node at top of graph`,
+    ``
   ]
     .concat(nodes)
     .concat(edges)
     .concat('}')
     .join('\n');
 
-  // Words cannot do justice to how awesome https://github.com/mdaines/viz.js/
-  // is
+  // https://github.com/mdaines/viz.js/ is the most underappreciated JS
+  // library on the internet.
   const dot = Viz(dotDoc, {format: 'svg'});
-  const dp = new DOMParser();
-  const doc = dp.parseFromString(dot, 'text/html')
-  const svg = doc.querySelector('svg');
+
+  // We could just `document.body.innerHTML = dot` here, but we don't want to
+  // kill our other content So we parse the doc and pull out the SVG element we
+  // want, then add it to our body.
+  const svg = new DOMParser().parseFromString(dot, 'text/html').querySelector('svg');
+  svg.addEventListener('click', handleGraphClick);
   document.body.appendChild(svg);
 }
 
-document.addEventListener('click', function(event) {
-  let el = event.srcElement;
-  while (el && el.nodeName != 'text') el = el.parentElement;
-  if (el) {
-    const module = _modules[el.innerHTML];
-    if (module) {
-      console.log(module);
-    }
-  }
-});
-
 window.onhashchange = window.onload = async function() {
   const target = (location.hash || 'request').replace(/.*#/, '');
-  document.querySelectorAll('svg').forEach(el => el.remove());
-  console.time('graph');
+  $$('svg').forEach(el => el.remove());
+  console.time('Render');
   await graph(target);
-  document.querySelectorAll('.loader').forEach(el => el.remove());
-  console.timeEnd('graph');
+  $$('.loader').forEach(el => el.remove());
+  console.timeEnd('Render');
 };

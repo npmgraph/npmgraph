@@ -2,46 +2,64 @@
   <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'unsafe-eval' 'unsafe-inline' 'self' http://cors-proxy.htmldriven.com" />
     <style>
-      html {
+      html, body {
         font-family: "GillSans-Light";
-      }
-      .loader {
-        border: solid 1px gray;
-        border-radius: 4px;
-        padding: 4px;
-        margin: 4px;
-        display: inline-block;
-        min-width: 100px;
+          margin: 0;
+            padding: 0;
       }
       #inspector {
         position: fixed;
         top: 0;
+        right: -30em;
+        border-left: solid 1px black;
+        background-color: rgba(255,255,255,.6);
+        width: 30em;
+        height: 100%;
+        transition: right .3s ease-out;
+        overflow: auto;
+      }
+      #inspector.open {
         right: 0;
-        border: solid 2px gray;
-        background-color: rgba(1,1,1,.5);
-        min-width: 50%;
-        min-height: 4em;
       }
-      .loader.done {
-        color: gray;
+      #load {
       }
-      g .node * {
-        cursor: pointer;
+      .loader {
+        border: solid 1px gray;
+        border-radius: 4px;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: calc(11em - 20px);
+        padding: 4px;
+        margin: 4px;
       }
       .loader span {
-         border: 4px solid #f3f3f3;
-         border-top: 4px solid #3498db;
+         border: 4px solid #ccc;
          border-radius: 50%;
          width: 10px;
          height: 10px;
-         animation: spin 2s linear infinite;
          display: inline-block;
          float: left;
          margin-right: 4px;
       }
+      .loader.active span {
+         border-top-color: #090;
+         animation: spin 2s linear infinite;
+      }
       .loader.done span {
-        border-color: #f3f3f3;
-        animation: none;
+        border-color: #090;
+      }
+
+      svg {
+        fill: #666;
+        /*
+        width: calc(100% - 21em);
+        border: solid 1px red;
+        */
+      }
+      g .node * {
+        cursor: pointer;
       }
 
       @keyframes spin {
@@ -54,6 +72,16 @@
     <script src="viz-lite.js"></script>
   </head>
   <body>
-    <div id="inspector"></div>
+    <div id="load">
+      <h2>Loading module dependencies</h2>
+    </div>
+    <div id="inspector">
+      <div id="tabs">
+      <button>Module + Tree</button>
+      <button>Module Only</button>
+      <button>package.json</button>
+      </div>
+      <pre id="json"></pre>
+    </div>
   </body>
 </html>
