@@ -21,16 +21,46 @@
       #inspector.open {
         right: 0;
       }
-      #inspector .maintainer,
-      #inspector .license {
+      #inspector .tag {
+        cursor: pointer;
         display: inline-block;
         background-color: #ddd;
         padding: 2px;
         margin: 1px 4px;
       }
-      #inspector .maintainer:hover,
-      #inspector .license:hover {
+      #inspector .tag:hover {
         background-color: #ddf;
+      }
+      #inspector .module {
+        white-space: nowrap;
+      }
+      #inspector #tabs {
+        white-space: nowrap;
+        background-color: #888;
+        font-size: 0;
+      }
+      #inspector #tabs > * {
+        display: inline-block;
+        cursor: pointer;
+        font-size: 12pt;
+        font-weight: bold;
+        background-color: #ccc;
+        line-height: 24pt;
+        padding: 0 5pt;
+      }
+      #inspector #tabs .button {
+        display: inline-block;
+        text-align: center;
+        min-width: 25%;
+        border: none;
+        border-right: solid 1px #888;
+        background-color: #ccc;
+      }
+      #inspector #tabs .button.active {
+        background-color: white;
+      }
+      #inspector .pane > div {
+        margin: .5em 0;
       }
 
       .pane {
@@ -80,6 +110,9 @@
       g .node * {
         cursor: pointer;
       }
+      g .selected > polygon {
+        fill: #ddf;
+      }
 
       @keyframes spin {
          0% { transform: rotate(0deg); }
@@ -94,38 +127,6 @@
       <h2>Loading module dependencies</h2>
     </div>
     <div id="inspector">
-      <style>
-      #inspector #tabs {
-        background-color: #888;
-        font-size: 0;
-      }
-      #inspector #tabs > * {
-        display: inline-block;
-        cursor: pointer;
-        font-size: 12pt;
-        font-weight: bold;
-        background-color: #ccc;
-        line-height: 24pt;
-        padding: 0 5pt;
-      }
-      #inspector #tabs .button {
-        display: inline-block;
-        text-align: center;
-        min-width: 25%;
-        border: none;
-        border-right: solid 1px #888;
-        background-color: #ccc;
-      }
-      #inspector #tabs .button.active {
-        background-color: white;
-      }
-      #inspector .pane > div {
-        margin: .5em 0;
-      }
-      #inspector .dependencies {
-        font-family: monospace;
-      }
-      </style>
       <div id="tabs">
         <div onclick="Inspector.close()">&#9658</div>
         <div class="button" data-pane="pane-module">Module</div>
@@ -135,8 +136,8 @@
       <div class="pane" id="pane-graph">
         <h2>Module + Dependencies</h2>
         <div class="dependencies"></div>
-        <div>Maintainers: <span class="maintainers"></span></div>
-        <div>Licenses: <span class="licenses"></span></div>
+        <div><h2>Maintainers</h2><div class="maintainers"></div></div>
+        <div><h2>Licenses</h2><div class="licenses"></div></div>
       </div>
       <div class="pane" id="pane-module">
         <h2>Module</h2>

@@ -1,5 +1,65 @@
-const $ = (...args) => document.querySelector(...args);
-const $$ = (...args) => document.querySelectorAll(...args);
+const _modules = {};
+
+const $ = (...args) => {
+  return (args[0].querySelector ? args.shift() : document)
+    .querySelector(...args);
+}
+const $$ = (...args) => {
+  return (args[0].querySelectorAll ? args.shift() : document)
+    .querySelectorAll(...args);
+}
+$.up = (el, test) => {
+  while (el && !test(el)) el = el.parentElement;
+  return el;
+}
+
+function cacheModules() {
+  console.time('Cache');
+  const obj = {};
+  const expire = Date.now() - 3 * 24 * 60 * 60 * 1000;
+  for (const k in _modules) {
+    // Drop from cache?
+    if (_modules[k].package.fetchedAt < expire) continue;
+
+    if (k == _modules[k].key) {
+      obj[k] = _modules[k];
+    } else {
+      obj[k] = _modules[k].key;
+    }
+  }
+
+  try {
+    localStorage.setItem('modules', JSON.stringify(obj));
+  } catch(err) {
+    // If save fails, clear
+    console.error(err);
+    localStorage.removeItem('modules');
+  }
+  console.timeEnd('Cache');
+}
+
+function uncacheModules() {
+  console.time('Uncache');
+  let obj = localStorage.getItem('modules');
+  if (!obj) return;
+  try {
+    obj = JSON.parse(obj);
+  } catch (err) {
+    // If read fails, clear
+    console.error(err);
+    localStorage.removeItem('modules');
+    return;
+  }
+
+  for (const k in obj) {
+    if (typeof(obj[k]) == 'object') _modules[k] = new Module(obj[k]);
+  }
+  for (const k in obj) {
+    const v = obj[k]
+    if (typeof(v) == 'string') _modules[k] = _modules[v];
+  }
+  console.timeEnd('Uncache');
+}
 
 async function fetch(path, loader) {
   const url = `https://registry.npmjs.org/${encodeURIComponent(path)}`;
@@ -20,9 +80,9 @@ async function fetch(path, loader) {
     });
 }
 
-const _modules = {};
-
-const _fetch = {};
+// Map of module name -> fetch promise.  Used to avoid race conditions where
+// requests for different module semvers may resolve to the same module
+const _inFlight = {};
 
 class Loader {
   constructor(name) {
@@ -56,17 +116,18 @@ class Module {
     if (module) {
     } else {
       // Only fetch one version of a module at a time
-      if (!_fetch[name]) _fetch[name] = Promise.resolve();
+      if (!_inFlight[name]) _inFlight[name] = Promise.resolve();
       const path = `${name.replace(/\//g, '%2F')}/${version}`;
       const loader = new Loader(path);
-      _fetch[name] = _fetch[name]
+      _inFlight[name] = _inFlight[name]
         .then(() => fetch(path, loader))
 
       let obj, pkg;
       try {
-        const json = await _fetch[name];
+        const json = await _inFlight[name];
         obj = JSON.parse(json);
         pkg = JSON.parse(obj.body);
+        pkg.fetchedAt = Date.now();
       } catch (err) {
         debugger;
       }
@@ -99,12 +160,47 @@ class Module {
   toString() {
     return this.key;
   }
+
+  toJSON() {
+    return this.package;
+  }
 }
 
-const renderMaintainer = entry => `<span class="maintainer">${entry[0]}(${entry[1]})</span>`;
-const renderLicense = entry => `<span class="license">${entry[0]}(${entry[1]})</span>`;
+const toTag = (type, text) => {
+  // .type for license objects
+  // .name for maintainer objects
+  text = text.type || text.name || text;
+
+  return type + '-' + text.replace(/\W/g, '_').toLowerCase();
+};
+
+const renderTag = (type, text, count) => {
+  const tag = toTag(type, text);
+  text = count == null ? text : `${text}(${count})`;
+
+  return `<span class="tag ${type}" data-tag="${tag}">${text}</span>`;
+}
+const renderMaintainer = (maintainer, count) => renderTag('maintainer', maintainer, count);
+const renderLicense = (license, count) => renderTag('license', license, count);
+const renderModule = module => renderTag('module', module.key);
 
 class Inspector {
+  static init() {
+    const el = $('#inspector');
+    el.addEventListener('click', event => {
+      const el = $.up(event.srcElement, e => e.getAttribute('data-tag'));
+
+      if (el) {
+        const tag = el.getAttribute('data-tag');
+        console.log('Tag click', tag);
+        $$('svg .node').forEach(el => el.classList.remove('selected'));
+        $$(`svg .node.${tag}`).forEach((el, i) => {
+          el.classList.add('selected');
+          if (!i) document.body.scrollIntoView(el);
+        });
+      }
+    });
+  }
   static showPane(id) {
     $$('#inspector #tabs .button').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-pane') == id)
@@ -137,11 +233,11 @@ class Inspector {
     }
     walk(module);
     const depList = Object.entries(deps);
-    maintainers = Object.entries(maintainers).sort().map(renderMaintainer);
-    licenses = Object.entries(licenses).sort().map(renderLicense);
+    maintainers = Object.entries(maintainers).sort().map(e => renderMaintainer(...e));
+    licenses = Object.entries(licenses).sort().map(e => renderLicense(...e));
 
     $('#pane-graph h2').innerHTML = `${depList.length} Modules`;
-    $('#pane-graph .dependencies').innerText = depList.map(e => e[1]).sort().join(', ');
+    $('#pane-graph .dependencies').innerHTML = depList.map(e => renderModule(e[1])).sort().join('');
     $('#pane-graph .maintainers').innerHTML = maintainers.join('');
     $('#pane-graph .licenses').innerHTML = licenses.join('');
   }
@@ -159,8 +255,7 @@ class Inspector {
 };
 
 function handleGraphClick(event) {
-  let el = event.srcElement;
-  while (el && el.nodeName != 'text') el = el.parentElement;
+  const el = $.up(event.srcElement, e => e.nodeName == 'text');
   if (el) {
     const module = _modules[el.innerHTML];
     if (module) {
@@ -202,7 +297,7 @@ async function graph(name) {
   }
 
   $('#load').style.display = 'block';
-  const module = await Module.get(name);
+  const module = await Module.get(...name.split('@'));
   await render(module);
   $('#load').style.display = 'none';
 
@@ -233,6 +328,16 @@ async function graph(name) {
   svg.addEventListener('click', handleGraphClick);
   document.body.appendChild(svg);
 
+
+  $$('.loader').forEach(el => el.remove());
+  $$('g.node').forEach(el => {
+    const name = $(el,'title').innerHTML;
+    if (!name) return;
+    const pkg = _modules[name] && _modules[name].package;
+    (pkg.maintainers || []).forEach(m => el.classList.add(toTag('maintainer', m.name)));
+    if (pkg.license) el.classList.add(toTag('license', pkg.license));
+  });
+
   Inspector.showGraph(module);
   Inspector.showModule(module);
   Inspector.showPane('pane-graph');
@@ -243,13 +348,17 @@ window.onhashchange = async function() {
   const target = (location.hash || 'request').replace(/.*#/, '');
   $$('svg').forEach(el => el.remove());
   await graph(target);
-  $$('.loader').forEach(el => el.remove());
 };
 
 onload = function() {
+  uncacheModules();
+
   $$('#tabs .button').forEach((button, i) => {
     button.onclick = () => Inspector.showPane(button.getAttribute('data-pane'));
     if (!i) button.onclick();
   })
   window.onhashchange();
+  Inspector.init();
 }
+
+onunload = cacheModules;
