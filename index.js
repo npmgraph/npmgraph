@@ -1,20 +1,8 @@
 const $ = (...args) => document.querySelector(...args);
 const $$ = (...args) => document.querySelectorAll(...args);
 
-class Inspector {
-  static open() {
-      $('#inspector').classList.add('open');
-  }
-  static close() {
-      $('#inspector').classList.remove('open');
-  }
-  static showModule(module) {
-    const pkg = module.package || module;
-    $('#inspector #json').innerText = JSON.stringify(pkg, null, 2);
-  }
-};
-
 async function fetch(path, loader) {
+  const url = `https://registry.npmjs.org/${encodeURIComponent(path)}`;
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
       xhr.onreadystatechange = function() {
@@ -27,7 +15,7 @@ async function fetch(path, loader) {
           reject(xhr.status);
         }
       }
-      xhr.open('GET', `http://cors-proxy.htmldriven.com/?url=https://registry.npmjs.org/${path}`);
+      xhr.open('GET', `http://cors-proxy.htmldriven.com/?url=${url}`);
       xhr.send();
     });
 }
@@ -52,7 +40,12 @@ class Loader {
 
   stop() {
     this.el.classList.remove('active');
-    this.el.classList.add('done');
+    this.el.classList.add('success');
+  }
+
+  error() {
+    this.el.classList.remove('active');
+    this.el.classList.add('error');
   }
 }
 
@@ -64,13 +57,19 @@ class Module {
     } else {
       // Only fetch one version of a module at a time
       if (!_fetch[name]) _fetch[name] = Promise.resolve();
-      const path = `${name}/${version}`;
+      const path = `${name.replace(/\//g, '%2F')}/${version}`;
       const loader = new Loader(path);
-      _fetch[name] = _fetch[name].then(() => fetch(path, loader));
+      _fetch[name] = _fetch[name]
+        .then(() => fetch(path, loader))
 
-      const json = await _fetch[name];
-      const obj = JSON.parse(json);
-      const pkg = JSON.parse(obj.body);
+      let obj, pkg;
+      try {
+        const json = await _fetch[name];
+        obj = JSON.parse(json);
+        pkg = JSON.parse(obj.body);
+      } catch (err) {
+        debugger;
+      }
       const newModule = new Module(pkg);
 
       if (_modules[newModule.key]) {
@@ -102,6 +101,63 @@ class Module {
   }
 }
 
+const renderMaintainer = entry => `<span class="maintainer">${entry[0]}(${entry[1]})</span>`;
+const renderLicense = entry => `<span class="license">${entry[0]}(${entry[1]})</span>`;
+
+class Inspector {
+  static showPane(id) {
+    $$('#inspector #tabs .button').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-pane') == id)
+    });
+    $$('#inspector .pane').forEach(pane => {
+      pane.classList.toggle('open', pane.id == id);
+    })
+  }
+
+  static open() {
+      $('#inspector').classList.add('open');
+  }
+
+  static close() {
+      $('#inspector').classList.remove('open');
+  }
+
+  static showGraph(module) {
+    const deps = {};
+    let maintainers = {};
+    let licenses = {};
+    function walk(m) {
+      const pkg = m.package
+      const license = pkg.license || 'Unspecified';
+      if (!m || (pkg.name in deps)) return;
+      deps[pkg.name] = m;
+      (pkg.maintainers || []).forEach(u => maintainers[u.name] = (maintainers[u.name] || 0) + 1);
+      licenses[license] = (licenses[license] || 0) + 1;
+      Object.entries(pkg.dependencies || {}).map(e => _modules[Module.key(...e)]).forEach(walk);
+    }
+    walk(module);
+    const depList = Object.entries(deps);
+    maintainers = Object.entries(maintainers).sort().map(renderMaintainer);
+    licenses = Object.entries(licenses).sort().map(renderLicense);
+
+    $('#pane-graph h2').innerHTML = `${depList.length} Modules`;
+    $('#pane-graph .dependencies').innerText = depList.map(e => e[1]).sort().join(', ');
+    $('#pane-graph .maintainers').innerHTML = maintainers.join('');
+    $('#pane-graph .licenses').innerHTML = licenses.join('');
+  }
+
+  static showModule(module) {
+    const pkg = module.package || module;
+
+    $('#pane-module h2').innerHTML = `${module.key} Info`;
+    $('#pane-module .maintainers').innerHTML = pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n');
+    $('#pane-module .licenses').innerText = pkg.license || '<i>Unknown</i>';
+
+    $('#pane-package h2').innerText = `${module.key} package.json`;
+    $('#pane-package .json').innerText = JSON.stringify(pkg, null, 2);
+  }
+};
+
 function handleGraphClick(event) {
   let el = event.srcElement;
   while (el && el.nodeName != 'text') el = el.parentElement;
@@ -109,6 +165,7 @@ function handleGraphClick(event) {
     const module = _modules[el.innerHTML];
     if (module) {
       Inspector.showModule(module);
+      Inspector.showPane('pane-module');
       Inspector.open();
       return;
     }
@@ -158,7 +215,6 @@ async function graph(name) {
     `graph [fontname="${FONT}"]`,
     `node [shape=box fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
     `edge [fontsize=10, fontname="${FONT}" splines="polyline"]`,
-    `\n// Puts start node at top of graph`,
     ``
   ]
     .concat(nodes)
@@ -176,13 +232,24 @@ async function graph(name) {
   const svg = new DOMParser().parseFromString(dot, 'text/html').querySelector('svg');
   svg.addEventListener('click', handleGraphClick);
   document.body.appendChild(svg);
+
+  Inspector.showGraph(module);
+  Inspector.showModule(module);
+  Inspector.showPane('pane-graph');
+  Inspector.open();
 }
 
-window.onhashchange = window.onload = async function() {
+window.onhashchange = async function() {
   const target = (location.hash || 'request').replace(/.*#/, '');
   $$('svg').forEach(el => el.remove());
-  console.time('Render');
   await graph(target);
   $$('.loader').forEach(el => el.remove());
-  console.timeEnd('Render');
 };
+
+onload = function() {
+  $$('#tabs .button').forEach((button, i) => {
+    button.onclick = () => Inspector.showPane(button.getAttribute('data-pane'));
+    if (!i) button.onclick();
+  })
+  window.onhashchange();
+}

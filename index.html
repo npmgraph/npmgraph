@@ -12,7 +12,7 @@
         top: 0;
         right: -30em;
         border-left: solid 1px black;
-        background-color: rgba(255,255,255,.6);
+        background-color: rgba(255,255,255,.85);
         width: 30em;
         height: 100%;
         transition: right .3s ease-out;
@@ -21,6 +21,26 @@
       #inspector.open {
         right: 0;
       }
+      #inspector .maintainer,
+      #inspector .license {
+        display: inline-block;
+        background-color: #ddd;
+        padding: 2px;
+        margin: 1px 4px;
+      }
+      #inspector .maintainer:hover,
+      #inspector .license:hover {
+        background-color: #ddf;
+      }
+
+      .pane {
+        display: none;
+        padding: .3em .5em;
+      }
+      .pane.open {
+        display: block;
+      }
+
       #load {
       }
       .loader {
@@ -47,16 +67,15 @@
          border-top-color: #090;
          animation: spin 2s linear infinite;
       }
-      .loader.done span {
+      .loader.success span {
         border-color: #090;
+      }
+      .loader.error span {
+        border-color: #900;
       }
 
       svg {
         fill: #666;
-        /*
-        width: calc(100% - 21em);
-        border: solid 1px red;
-        */
       }
       g .node * {
         cursor: pointer;
@@ -66,7 +85,6 @@
          0% { transform: rotate(0deg); }
          100% { transform: rotate(360deg); }
       }
-
     </style>
     <script src="index.js"></script>
     <script src="viz-lite.js"></script>
@@ -76,12 +94,59 @@
       <h2>Loading module dependencies</h2>
     </div>
     <div id="inspector">
+      <style>
+      #inspector #tabs {
+        background-color: #888;
+        font-size: 0;
+      }
+      #inspector #tabs > * {
+        display: inline-block;
+        cursor: pointer;
+        font-size: 12pt;
+        font-weight: bold;
+        background-color: #ccc;
+        line-height: 24pt;
+        padding: 0 5pt;
+      }
+      #inspector #tabs .button {
+        display: inline-block;
+        text-align: center;
+        min-width: 25%;
+        border: none;
+        border-right: solid 1px #888;
+        background-color: #ccc;
+      }
+      #inspector #tabs .button.active {
+        background-color: white;
+      }
+      #inspector .pane > div {
+        margin: .5em 0;
+      }
+      #inspector .dependencies {
+        font-family: monospace;
+      }
+      </style>
       <div id="tabs">
-      <button>Module + Tree</button>
-      <button>Module Only</button>
-      <button>package.json</button>
+        <div onclick="Inspector.close()">&#9658</div>
+        <div class="button" data-pane="pane-module">Module</div>
+        <div class="button" data-pane="pane-package">package.json</div>
+        <div class="button" data-pane="pane-graph">Graph</div>
       </div>
-      <pre id="json"></pre>
+      <div class="pane" id="pane-graph">
+        <h2>Module + Dependencies</h2>
+        <div class="dependencies"></div>
+        <div>Maintainers: <span class="maintainers"></span></div>
+        <div>Licenses: <span class="licenses"></span></div>
+      </div>
+      <div class="pane" id="pane-module">
+        <h2>Module</h2>
+        <div>Maintainers: <span class="maintainers"></span></div>
+        <div>License: <span class="licenses"></span></div>
+      </div>
+      <div class="pane" id="pane-package">
+        <h2>package.json</h2>
+        <pre class="json"></pre>
+      </div>
     </div>
   </body>
 </html>
