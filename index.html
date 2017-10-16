@@ -7,6 +7,18 @@
           margin: 0;
             padding: 0;
       }
+      #graph {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        overflow: auto;
+        transition: right .3s ease-out;
+      }
+      body.open #graph {
+        right: 30em;
+      }
       #inspector {
         position: fixed;
         top: 0;
@@ -18,7 +30,7 @@
         transition: right .3s ease-out;
         overflow: auto;
       }
-      #inspector.open {
+      body.open #inspector {
         right: 0;
       }
       #inspector .tag {
@@ -30,6 +42,9 @@
       }
       #inspector .tag:hover {
         background-color: #ddf;
+      }
+      #inspector .description {
+        font-weight: bold;
       }
       #inspector .module {
         white-space: nowrap;
@@ -122,7 +137,8 @@
     <script src="index.js"></script>
     <script src="viz-lite.js"></script>
   </head>
-  <body>
+  <body class="open">
+    <div id="graph"></div>
     <div id="load">
       <h2>Loading module dependencies</h2>
     </div>
@@ -141,6 +157,7 @@
       </div>
       <div class="pane" id="pane-module">
         <h2>Module</h2>
+        <div class="description"></div>
         <div>Maintainers: <span class="maintainers"></span></div>
         <div>License: <span class="licenses"></span></div>
       </div>

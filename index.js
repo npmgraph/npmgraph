@@ -211,11 +211,11 @@ class Inspector {
   }
 
   static open() {
-      $('#inspector').classList.add('open');
+      $('body').classList.add('open');
   }
 
   static close() {
-      $('#inspector').classList.remove('open');
+      $('body').classList.remove('open');
   }
 
   static showGraph(module) {
@@ -246,6 +246,7 @@ class Inspector {
     const pkg = module.package || module;
 
     $('#pane-module h2').innerHTML = `${module.key} Info`;
+    $('#pane-module .description').innerHTML = `${module.package.description}`;
     $('#pane-module .maintainers').innerHTML = pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n');
     $('#pane-module .licenses').innerText = pkg.license || '<i>Unknown</i>';
 
@@ -326,7 +327,7 @@ async function graph(name) {
   // want, then add it to our body.
   const svg = new DOMParser().parseFromString(dot, 'text/html').querySelector('svg');
   svg.addEventListener('click', handleGraphClick);
-  document.body.appendChild(svg);
+  $('#graph').appendChild(svg);
 
 
   $$('.loader').forEach(el => el.remove());
