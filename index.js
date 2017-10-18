@@ -197,7 +197,8 @@ class Module {
         pkg = JSON.parse(obj.body);
         pkg.fetchedAt = Date.now();
       } catch (err) {
-        debugger;
+        console.error(err);
+        return;
       }
       const newModule = new Module(pkg);
 
@@ -268,6 +269,10 @@ class Inspector {
         });
       }
     });
+  }
+
+  static async handleSearch(term) {
+    await graph(term);
   }
 
   static showPane(id) {
