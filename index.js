@@ -13,6 +13,74 @@ $.up = (el, test) => {
   return el;
 }
 
+const EXPIRE = 24 * 60 * 60 * 1000;
+
+class Store {
+  static init() {
+    this._inflight = {};
+    this._cache = {};
+  }
+
+  static async get(name, version) {
+    const key = Module.key(name, version);
+
+    // In cache?
+    if (this._cache[key]) return this._cache[key];
+
+    // In storage?
+    let module = this.unstore(key);
+    if (module) return module;
+
+    return
+  }
+
+  static store(key, m) {
+    const payload = JSON.stringify(key != m.key ? m.key : m);
+    try {
+      localStorage.setItem(key, payload);
+    } catch (err) {
+      console.error('Error while storing. Purging cache', err);
+      this.purge();
+    }
+  }
+
+  static unstore(key) {
+    let pkg;
+    do {
+      pkg = localStorage.getItem(key);
+      if (pkg) pkg = JSON.parse(pkg);
+    } while (pkg && typeof(pkg) == 'string');
+
+    if (!pkg || pkg.fetchedAt < Date.now() - this.EXPIRE) return;
+
+
+    while(typeof(pkg) == 'string') pkg = this.uns
+    if (pkg && pkg.fetchedAt < Date.now() - EXPIRE) pkg = null;
+    if (!pkg) {
+
+    }
+    let module = null;
+  }
+
+  // Remove stalest half of store
+  static purge() {
+    const ls = localStorage;
+    const entries = new Array(ls.length)
+      .map((v,i) => [ls.key(i), JSON.parse(ls.getItem(ls.key(i)))])
+      .filter(entry => entry[1].fetchedAt > 0)
+      .sort((a, b) => {
+        a = a.fetchedAt;
+        b = b.fetchedAt;
+        return a < b ? -1 : a > b ? 1 : 0;
+      });
+    entries.slice(0, Math.max(1, entries.length >> 1)).forEach(e => ls.removeItem(e[0]));
+  }
+
+  static clear() {
+    for (const i = 0, l = ls.length; i < l; i++) ls.removeItem(ls.key(i));
+  }
+}
+
 function cacheModules() {
   console.time('Cache');
   const obj = {};
@@ -174,15 +242,15 @@ const toTag = (type, text) => {
   return type + '-' + text.replace(/\W/g, '_').toLowerCase();
 };
 
-const renderTag = (type, text, count) => {
+const renderTag = (type, text, count = 0) => {
   const tag = toTag(type, text);
-  text = count == null ? text : `${text}(${count})`;
+  text = count < 2 ? text : `${text}(${count})`;
 
   return `<span class="tag ${type}" data-tag="${tag}">${text}</span>`;
 }
 const renderMaintainer = (maintainer, count) => renderTag('maintainer', maintainer, count);
-const renderLicense = (license, count) => renderTag('license', license, count);
-const renderModule = module => renderTag('module', module.key);
+const renderLicense = (license, count) => renderTag('license', license || '(N/A)', count);
+const renderModule = (name, count) => renderTag('module', name, count);
 
 class Inspector {
   static init() {
@@ -201,6 +269,7 @@ class Inspector {
       }
     });
   }
+
   static showPane(id) {
     $$('#inspector #tabs .button').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-pane') == id)
@@ -219,14 +288,18 @@ class Inspector {
   }
 
   static showGraph(module) {
-    const deps = {};
+    const deps = {}, depCount = {};
     let maintainers = {};
     let licenses = {};
     function walk(m) {
       const pkg = m.package
-      const license = pkg.license || 'Unspecified';
-      if (!m || (pkg.name in deps)) return;
-      deps[pkg.name] = m;
+      const key = Module.key(pkg.name, pkg.version);
+      const license = pkg.license || '(N/A)';
+
+      if (!m || (key in deps)) return;
+
+      deps[key] = m;
+      depCount[pkg.name] = (depCount[pkg.name] || 0) + 1;
       (pkg.maintainers || []).forEach(u => maintainers[u.name] = (maintainers[u.name] || 0) + 1);
       licenses[license] = (licenses[license] || 0) + 1;
       Object.entries(pkg.dependencies || {}).map(e => _modules[Module.key(...e)]).forEach(walk);
@@ -237,9 +310,11 @@ class Inspector {
     licenses = Object.entries(licenses).sort().map(e => renderLicense(...e));
 
     $('#pane-graph h2').innerHTML = `${depList.length} Modules`;
-    $('#pane-graph .dependencies').innerHTML = depList.map(e => renderModule(e[1])).sort().join('');
+    $('#pane-graph .dependencies').innerHTML = Object.entries(depCount).map(e => renderModule(e[0], e[1])).sort().join('');
     $('#pane-graph .maintainers').innerHTML = maintainers.join('');
     $('#pane-graph .licenses').innerHTML = licenses.join('');
+
+    $('#inspector').scrollTo(0,0);
   }
 
   static showModule(module) {
@@ -248,10 +323,10 @@ class Inspector {
     $('#pane-module h2').innerHTML = `${module.key} Info`;
     $('#pane-module .description').innerHTML = `${module.package.description}`;
     $('#pane-module .maintainers').innerHTML = pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n');
-    $('#pane-module .licenses').innerText = pkg.license || '<i>Unknown</i>';
+    $('#pane-module .licenses').innerHTML = renderLicense(pkg.license);
+    $('#pane-module .json').innerText = JSON.stringify(pkg, null, 2);
 
-    $('#pane-package h2').innerText = `${module.key} package.json`;
-    $('#pane-package .json').innerText = JSON.stringify(pkg, null, 2);
+    $('#inspector').scrollTo(0,0);
   }
 };
 
@@ -270,25 +345,26 @@ function handleGraphClick(event) {
 }
 
 async function graph(name) {
+  console.log('Graphing', name);
   const FONT='GillSans-Light';
 
   // Build us a directed graph document in GraphViz notation
   const nodes = ['\n// Nodes & per-node styling'];
   const edges = ['\n// Edges & per-edge styling'];
 
-  const seen = new Set();
-  async function render(src) {
-    if (seen.has(src)) return;
-    seen.add(src);
+  const seen = {};
+  async function render(m) {
+    if (m.key in seen) return;
+    seen[m.key] = true;
 
-    let deps = src.package.dependencies;
+    let deps = m.package.dependencies;
 
     if (deps) {
       const renderP = [];
       for (dep in deps) {
         renderP.push(Module.get(dep, deps[dep])
           .then(dst => {
-            edges.push(`"${src}" -> "${dst}"`);
+            edges.push(`"${m}" -> "${dst}"`);
             return render(dst);
           })
         );
@@ -308,7 +384,7 @@ async function graph(name) {
     `labelloc="t"`,
     `label="${module.package.name}"`,
     `// Default styles`,
-    `graph [fontname="${FONT}"]`,
+    `graph [fontsize=16 fontname="${FONT}"]`,
     `node [shape=box fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
     `edge [fontsize=10, fontname="${FONT}" splines="polyline"]`,
     ``
@@ -326,15 +402,20 @@ async function graph(name) {
   // kill our other content So we parse the doc and pull out the SVG element we
   // want, then add it to our body.
   const svg = new DOMParser().parseFromString(dot, 'text/html').querySelector('svg');
+  svg.querySelectorAll('.node title').forEach(el => el.remove());
   svg.addEventListener('click', handleGraphClick);
-  $('#graph').appendChild(svg);
 
+  // Clear out graphs
+  $$('svg').forEach(el => el.remove());
+
+  $('#graph').appendChild(svg);
 
   $$('.loader').forEach(el => el.remove());
   $$('g.node').forEach(el => {
-    const name = $(el,'title').innerHTML;
-    if (!name) return;
-    const pkg = _modules[name] && _modules[name].package;
+    const key = $(el,'text').textContent;
+    if (!key) return;
+    const pkg = _modules[key] && _modules[key].package;
+    el.classList.add(toTag('module', key.replace(/@.*/, '')));
     (pkg.maintainers || []).forEach(m => el.classList.add(toTag('maintainer', m.name)));
     if (pkg.license) el.classList.add(toTag('license', pkg.license));
   });
@@ -347,7 +428,6 @@ async function graph(name) {
 
 window.onhashchange = async function() {
   const target = (location.hash || 'request').replace(/.*#/, '');
-  $$('svg').forEach(el => el.remove());
   await graph(target);
 };
 
@@ -358,6 +438,7 @@ onload = function() {
     button.onclick = () => Inspector.showPane(button.getAttribute('data-pane'));
     if (!i) button.onclick();
   })
+
   window.onhashchange();
   Inspector.init();
 }

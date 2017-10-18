@@ -50,9 +50,14 @@
         white-space: nowrap;
       }
       #inspector #tabs {
+        position: fixed;
+        width: 100%;
         white-space: nowrap;
         background-color: #888;
         font-size: 0;
+      }
+      #inspector #tabs input {
+        border: none;
       }
       #inspector #tabs > * {
         display: inline-block;
@@ -61,12 +66,11 @@
         font-weight: bold;
         background-color: #ccc;
         line-height: 24pt;
-        padding: 0 5pt;
+        padding: 0 10px;
       }
       #inspector #tabs .button {
         display: inline-block;
         text-align: center;
-        min-width: 25%;
         border: none;
         border-right: solid 1px #888;
         background-color: #ccc;
@@ -79,6 +83,7 @@
       }
 
       .pane {
+        margin-top: 24px;
         display: none;
         padding: .3em .5em;
       }
@@ -146,8 +151,9 @@
       <div id="tabs">
         <div onclick="Inspector.close()">&#9658</div>
         <div class="button" data-pane="pane-module">Module</div>
-        <div class="button" data-pane="pane-package">package.json</div>
         <div class="button" data-pane="pane-graph">Graph</div>
+        <div class="button" data-pane="pane-info">&#9432;</div>
+        <input type="text" placeholder="&#x1F50D;" onchange="graph(this.value)" />
       </div>
       <div class="pane" id="pane-graph">
         <h2>Module + Dependencies</h2>
@@ -160,10 +166,11 @@
         <div class="description"></div>
         <div>Maintainers: <span class="maintainers"></span></div>
         <div>License: <span class="licenses"></span></div>
-      </div>
-      <div class="pane" id="pane-package">
         <h2>package.json</h2>
         <pre class="json"></pre>
+      </div>
+      <div class="pane" id="pane-info">
+        <p>&copy; Robert Kieffer, 2017.  MIT License.<p>
       </div>
     </div>
   </body>
