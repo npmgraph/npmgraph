@@ -5,6 +5,7 @@
     "url": "http://github.com/broofa",
     "email": "robert@broofa.com"
   },
+  "license": "MIT",
   "dependencies": {},
   "description": "Visualize NPM dependency graphs (public and private!)",
   "keywords": [
