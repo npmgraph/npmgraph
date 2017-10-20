@@ -1,4 +1,7 @@
 {
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
   "root": true,
   "env": {
     "browser": true,

@@ -1,157 +1,143 @@
-const _modules = {};
+'use strict';
 
-const $ = (...args) => {
-  return (args[0].querySelector ? args.shift() : document)
-    .querySelector(...args);
-}
-const $$ = (...args) => {
-  return (args[0].querySelectorAll ? args.shift() : document)
-    .querySelectorAll(...args);
-}
+const $ = (...args) => (args[0].querySelector ? args.shift() : document)
+  .querySelector(...args);
+const $$ = (...args) => (args[0].querySelectorAll ? args.shift() : document)
+  .querySelectorAll(...args);
 $.up = (el, test) => {
   while (el && !test(el)) el = el.parentElement;
   return el;
-}
+};
 
 const EXPIRE = 24 * 60 * 60 * 1000;
 
+/**
+ * HTTP request api backed by localStorage cache
+ */
 class Store {
   static init() {
     this._inflight = {};
-    this._cache = {};
+    this._moduleCache = {};
   }
 
-  static async get(name, version) {
-    const key = Module.key(name, version);
+  // GET package info
+  static async getModule(name, version='latest') {
+    const path = `${name.replace(/\//g, '%2F')}/${version}`;
 
-    // In cache?
-    if (this._cache[key]) return this._cache[key];
+    if (!this._moduleCache[path]) {
+      let body;
+      try {
+        body = await this.get(path);
+      } catch(err) {
+        console.error('Failed to load', path);
+        body = {stub: true, name, version, maintainers: []};
+      }
+      const versionPath = `${body.name.replace(/\//g, '%2F')}/${body.version}`;
 
-    // In storage?
-    let module = this.unstore(key);
-    if (module) return module;
+      if (!body.stub && path != versionPath) {
+        this.store(path, versionPath);
+        this.store(versionPath, body);
+      }
 
-    return
+      this._moduleCache[versionPath] = this._moduleCache[path] = new Module(body);
+    };
+
+    return this._moduleCache[path];
   }
 
-  static store(key, m) {
-    const payload = JSON.stringify(key != m.key ? m.key : m);
+  // GET package stats
+  static async getStats(name) {
+    const path = `${name.replace(/\//g, '%2F')}/${version}`;
+    return await this.get(path);
+  }
+
+  // GET url, caching results in localStorage
+  static get(path) {
+    // In store?
+    const stored = this.unstore(path);
+
+    // In store?
+    if (stored) return stored;
+
+    return new Promise((resolve, reject) => {
+      const loader = new Loader(path);
+      $('#load').appendChild(loader.el);
+
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == 1) loader.start();
+        if (xhr.readyState < 4) return;
+        if (xhr.status >= 200 && xhr.status < 300) {
+          loader.stop();
+          const body = JSON.parse(JSON.parse(xhr.responseText).body);
+          this.store(path, body);
+          resolve(body);
+        } else {
+          loader.error();
+          reject(xhr.status);
+        }
+      };
+      const url = `https://registry.npmjs.org/${path}`;
+      xhr.open('GET', `http://cors-proxy.htmldriven.com/?url=${encodeURIComponent(url)}`);
+      xhr.send();
+    });
+  }
+
+  // Store a value in localStorage, purging if there's an error
+  static store(key, obj) {
     try {
-      localStorage.setItem(key, payload);
+      if (obj && typeof(obj) == 'object') obj._storedAt = Date.now();
+      localStorage.setItem(key, JSON.stringify(obj));
     } catch (err) {
       console.error('Error while storing. Purging cache', err);
       this.purge();
     }
   }
 
+  // Recover a value from localStorage
   static unstore(key) {
-    let pkg;
-    do {
-      pkg = localStorage.getItem(key);
-      if (pkg) pkg = JSON.parse(pkg);
-    } while (pkg && typeof(pkg) == 'string');
-
-    if (!pkg || pkg.fetchedAt < Date.now() - this.EXPIRE) return;
-
-
-    while(typeof(pkg) == 'string') pkg = this.uns
-    if (pkg && pkg.fetchedAt < Date.now() - EXPIRE) pkg = null;
-    if (!pkg) {
-
+    let obj;
+    for (let i = 0; i < 10; i++) {
+      obj = localStorage.getItem(key);
+      if (obj) obj = JSON.parse(obj);
+      if (!obj || typeof(obj) != 'string') break;
+      key = obj;
     }
-    let module = null;
+
+    return (obj && obj._storedAt > Date.now() - EXPIRE) ? obj : null;
   }
 
-  // Remove stalest half of store
+  // Remove oldest half of store
   static purge() {
     const ls = localStorage;
-    const entries = new Array(ls.length)
-      .map((v,i) => [ls.key(i), JSON.parse(ls.getItem(ls.key(i)))])
-      .filter(entry => entry[1].fetchedAt > 0)
+
+    // List of entries
+    const entries = new Array(ls.length).fill()
+      .map((v, i) => [ls.key(i), JSON.parse(ls.getItem(ls.key(i)))]);
+
+    // Get oldest 50% of entries
+    let prune = entries.filter(entry => entry[1]._storedAt > 0)
       .sort((a, b) => {
-        a = a.fetchedAt;
-        b = b.fetchedAt;
+        a = a._storedAt;
+        b = b._storedAt;
         return a < b ? -1 : a > b ? 1 : 0;
       });
-    entries.slice(0, Math.max(1, entries.length >> 1)).forEach(e => ls.removeItem(e[0]));
+    prune = prune.slice(0, Math.max(1, prune.length >> 1));
+
+    // Copile list of names to prune
+    const names = {};
+    prune.forEach(e => names[e[0]] = true);
+    entries.filter(e => names[e[0]] || names[e[1]]).forEach(e => ls.removeItem(e[0]));
   }
 
   static clear() {
-    for (const i = 0, l = ls.length; i < l; i++) ls.removeItem(ls.key(i));
+    localStorage.clear();
   }
 }
 
-function cacheModules() {
-  console.time('Cache');
-  const obj = {};
-  const expire = Date.now() - 3 * 24 * 60 * 60 * 1000;
-  for (const k in _modules) {
-    // Drop from cache?
-    if (_modules[k].package.fetchedAt < expire) continue;
-
-    if (k == _modules[k].key) {
-      obj[k] = _modules[k];
-    } else {
-      obj[k] = _modules[k].key;
-    }
-  }
-
-  try {
-    localStorage.setItem('modules', JSON.stringify(obj));
-  } catch(err) {
-    // If save fails, clear
-    console.error(err);
-    localStorage.removeItem('modules');
-  }
-  console.timeEnd('Cache');
-}
-
-function uncacheModules() {
-  console.time('Uncache');
-  let obj = localStorage.getItem('modules');
-  if (!obj) return;
-  try {
-    obj = JSON.parse(obj);
-  } catch (err) {
-    // If read fails, clear
-    console.error(err);
-    localStorage.removeItem('modules');
-    return;
-  }
-
-  for (const k in obj) {
-    if (typeof(obj[k]) == 'object') _modules[k] = new Module(obj[k]);
-  }
-  for (const k in obj) {
-    const v = obj[k]
-    if (typeof(v) == 'string') _modules[k] = _modules[v];
-  }
-  console.timeEnd('Uncache');
-}
-
-async function fetch(path, loader) {
-  const url = `https://registry.npmjs.org/${encodeURIComponent(path)}`;
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState == 1) loader.start();
-        if (xhr.readyState < 4) return;
-        loader.stop();
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve(xhr.responseText);
-        } else {
-          reject(xhr.status);
-        }
-      }
-      xhr.open('GET', `http://cors-proxy.htmldriven.com/?url=${url}`);
-      xhr.send();
-    });
-}
-
-// Map of module name -> fetch promise.  Used to avoid race conditions where
-// requests for different module semvers may resolve to the same module
-const _inFlight = {};
-
+/**
+ * UI widget for showing XHR load progress
+ */
 class Loader {
   constructor(name) {
     this.name = name;
@@ -178,44 +164,8 @@ class Loader {
 }
 
 class Module {
-  static async get(name, version = 'latest') {
-    const key = this.key(name, version);
-    let module = _modules[key];
-    if (module) {
-    } else {
-      // Only fetch one version of a module at a time
-      if (!_inFlight[name]) _inFlight[name] = Promise.resolve();
-      const path = `${name.replace(/\//g, '%2F')}/${version}`;
-      const loader = new Loader(path);
-      _inFlight[name] = _inFlight[name]
-        .then(() => fetch(path, loader))
-
-      let obj, pkg;
-      try {
-        const json = await _inFlight[name];
-        obj = JSON.parse(json);
-        pkg = JSON.parse(obj.body);
-        pkg.fetchedAt = Date.now();
-      } catch (err) {
-        console.error(err);
-        return;
-      }
-      const newModule = new Module(pkg);
-
-      if (_modules[newModule.key]) {
-        module = _modules[newModule.key];
-      } else {
-        module = newModule;
-      }
-
-      _modules[key] = _modules[module.key] = module;
-    }
-
-    return module;
-  }
-
   static key(name, version) {
-    return `${name}@${version}`
+    return `${name}@${version}`;
   }
 
   constructor(pkg) {
@@ -243,14 +193,19 @@ const toTag = (type, text) => {
   return type + '-' + text.replace(/\W/g, '_').toLowerCase();
 };
 
+const toLicense = pkg => {
+  const license = Array.isArray(pkg.licenses) ? pkg.licenses[0] : pkg.license;
+  return (license && license.type) || license || 'None'
+};
+
 const renderTag = (type, text, count = 0) => {
   const tag = toTag(type, text);
   text = count < 2 ? text : `${text}(${count})`;
 
   return `<span class="tag ${type}" data-tag="${tag}">${text}</span>`;
-}
+};
 const renderMaintainer = (maintainer, count) => renderTag('maintainer', maintainer, count);
-const renderLicense = (license, count) => renderTag('license', license || '(N/A)', count);
+const renderLicense = (license, count) => renderTag('license', license, count);
 const renderModule = (name, count) => renderTag('module', name, count);
 
 class Inspector {
@@ -271,45 +226,59 @@ class Inspector {
     });
   }
 
+  static async handleFile(files) {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const module = new Module(JSON.parse(fr.result));
+      graph(module);
+    }
+    fr.readAsText(files[0]);
+  }
+
   static async handleSearch(term) {
+    history.pushState({}, null, `${location.pathname}?q=${term}`);
     await graph(term);
   }
 
   static showPane(id) {
     $$('#inspector #tabs .button').forEach(b => {
-      b.classList.toggle('active', b.getAttribute('data-pane') == id)
+      b.classList.toggle('active', b.getAttribute('data-pane') == id);
     });
     $$('#inspector .pane').forEach(pane => {
       pane.classList.toggle('open', pane.id == id);
-    })
+    });
   }
 
   static open() {
-      $('body').classList.add('open');
+    $('body').classList.add('open');
   }
 
   static close() {
-      $('body').classList.remove('open');
+    $('body').classList.remove('open');
   }
 
-  static showGraph(module) {
-    const deps = {}, depCount = {};
+  static async setGraph(module) {
+    const deps = {};
+    const depCount = {};
     let maintainers = {};
     let licenses = {};
-    function walk(m) {
-      const pkg = m.package
-      const key = Module.key(pkg.name, pkg.version);
-      const license = pkg.license || '(N/A)';
 
-      if (!m || (key in deps)) return;
+    async function walk(m) {
+      const pkg = m.package;
+      const license = toLicense(pkg);
 
-      deps[key] = m;
+      if (!m || (m.key in deps)) return;
+
+      deps[m.key] = m;
       depCount[pkg.name] = (depCount[pkg.name] || 0) + 1;
       (pkg.maintainers || []).forEach(u => maintainers[u.name] = (maintainers[u.name] || 0) + 1);
       licenses[license] = (licenses[license] || 0) + 1;
-      Object.entries(pkg.dependencies || {}).map(e => _modules[Module.key(...e)]).forEach(walk);
+      return Promise.all(Object.entries(pkg.dependencies || {})
+        .map(async e => walk(await Store.getModule(...e))));
     }
-    walk(module);
+
+    await walk(module);
+
     const depList = Object.entries(deps);
     maintainers = Object.entries(maintainers).sort().map(e => renderMaintainer(...e));
     licenses = Object.entries(licenses).sort().map(e => renderLicense(...e));
@@ -319,38 +288,47 @@ class Inspector {
     $('#pane-graph .maintainers').innerHTML = maintainers.join('');
     $('#pane-graph .licenses').innerHTML = licenses.join('');
 
-    $('#inspector').scrollTo(0,0);
+    $('#inspector').scrollTo(0, 0);
   }
 
-  static showModule(module) {
+  static setModule(module) {
     const pkg = module.package || module;
 
     $('#pane-module h2').innerHTML = `${module.key} Info`;
     $('#pane-module .description').innerHTML = `${module.package.description}`;
-    $('#pane-module .maintainers').innerHTML = pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n');
-    $('#pane-module .licenses').innerHTML = renderLicense(pkg.license);
+    $('#pane-module .maintainers').innerHTML = (pkg.maintainers || []).map(u => `<span>${u.name}</span>`).join('\n');
+    $('#pane-module .licenses').innerHTML = renderLicense(toLicense(pkg));
     $('#pane-module .json').innerText = JSON.stringify(pkg, null, 2);
 
-    $('#inspector').scrollTo(0,0);
+    $('#inspector').scrollTo(0, 0);
   }
-};
+}
 
-function handleGraphClick(event) {
+function entryFromKey(key) {
+  const x = key.lastIndexOf('@');
+  return x >= 0 ? [key.substr(0,x), key.substr(x+1)] : [key];
+}
+
+async function handleGraphClick(event) {
   const el = $.up(event.srcElement, e => e.nodeName == 'text');
   if (el) {
-    const module = _modules[el.innerHTML];
+    const module = await Store.getModule(...entryFromKey(el.innerHTML));
     if (module) {
-      Inspector.showModule(module);
+      Inspector.setModule(module);
       Inspector.showPane('pane-module');
       Inspector.open();
       return;
     }
   }
-      Inspector.close();
+  Inspector.close();
 }
 
-async function graph(name) {
-  console.log('Graphing', name);
+async function graph(module) {
+  console.log('Graphing', module.key || module);
+
+  // Clear out graphs
+  $$('svg').forEach(el => el.remove());
+
   const FONT='GillSans-Light';
 
   // Build us a directed graph document in GraphViz notation
@@ -366,8 +344,8 @@ async function graph(name) {
 
     if (deps) {
       const renderP = [];
-      for (dep in deps) {
-        renderP.push(Module.get(dep, deps[dep])
+      for (let dep in deps) {
+        renderP.push(Store.getModule(dep, deps[dep])
           .then(dst => {
             edges.push(`"${m}" -> "${dst}"`);
             return render(dst);
@@ -379,20 +357,22 @@ async function graph(name) {
   }
 
   $('#load').style.display = 'block';
-  const module = await Module.get(...name.split('@'));
+  if (typeof(module) == 'string') {
+    module = await Store.getModule(...entryFromKey(module));
+  }
   await render(module);
   $('#load').style.display = 'none';
 
   const dotDoc = [
-    `digraph {`,
-    `rankdir="LR"`,
-    `labelloc="t"`,
+    'digraph {',
+    'rankdir="LR"',
+    'labelloc="t"',
     `label="${module.package.name}"`,
-    `// Default styles`,
+    '// Default styles',
     `graph [fontsize=16 fontname="${FONT}"]`,
     `node [shape=box fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
     `edge [fontsize=10, fontname="${FONT}" splines="polyline"]`,
-    ``
+    ''
   ]
     .concat(nodes)
     .concat(edges)
@@ -410,42 +390,45 @@ async function graph(name) {
   svg.querySelectorAll('.node title').forEach(el => el.remove());
   svg.addEventListener('click', handleGraphClick);
 
-  // Clear out graphs
-  $$('svg').forEach(el => el.remove());
-
   $('#graph').appendChild(svg);
 
   $$('.loader').forEach(el => el.remove());
-  $$('g.node').forEach(el => {
-    const key = $(el,'text').textContent;
+  $$('g.node').forEach(async el => {
+    const key = $(el, 'text').textContent;
     if (!key) return;
-    const pkg = _modules[key] && _modules[key].package;
+    const m = await Store.getModule(...entryFromKey(key));
+    const pkg = m && m.package;
     el.classList.add(toTag('module', key.replace(/@.*/, '')));
     (pkg.maintainers || []).forEach(m => el.classList.add(toTag('maintainer', m.name)));
-    if (pkg.license) el.classList.add(toTag('license', pkg.license));
+    el.classList.add(toTag('license', toLicense(pkg)));
+    if (pkg.stub) el.classList.add('stub');
   });
 
-  Inspector.showGraph(module);
-  Inspector.showModule(module);
+  Inspector.setGraph(module);
+  Inspector.setModule(module);
   Inspector.showPane('pane-graph');
   Inspector.open();
 }
 
-window.onhashchange = async function() {
-  const target = (location.hash || 'request').replace(/.*#/, '');
-  await graph(target);
+window.onpopstate = async function() {
+  const target = /q=([^&]+)/.test(location.search) && RegExp.$1;
+  graph(target || 'request');
 };
 
 onload = function() {
-  uncacheModules();
-
   $$('#tabs .button').forEach((button, i) => {
     button.onclick = () => Inspector.showPane(button.getAttribute('data-pane'));
     if (!i) button.onclick();
-  })
+  });
 
-  window.onhashchange();
+  Store.init();
   Inspector.init();
-}
 
-onunload = cacheModules;
+  window.onpopstate();
+
+  // Show storage
+  let chars = 0;
+  let ls = localStorage;
+  for (let i = 0; i < ls.length; i++) chars += ls.getItem(ls.key(i)).length;
+  $('#storage').innerText = `${chars} chars`;
+};

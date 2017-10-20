@@ -132,6 +132,12 @@
       }
       g .selected > polygon {
         fill: #ddf;
+        stroke-width: 3;
+        stroke: #33c;
+      }
+      g .stub > polygon {
+        stroke-dasharray: 4,4;
+        stroke: #666;
       }
 
       @keyframes spin {
@@ -170,7 +176,9 @@
         <pre class="json"></pre>
       </div>
       <div class="pane" id="pane-info">
+        <p>Upload a package.json: <input type="file" onchange="Inspector.handleFile(this.files)" /></p>
         <p>&copy; Robert Kieffer, 2017.  MIT License.<p>
+        <p>LocalStorage: <span id="storage"></span><button onclick="Store.clear()">Clear</button></p>
       </div>
     </div>
   </body>
