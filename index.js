@@ -324,8 +324,6 @@ async function handleGraphClick(event) {
 }
 
 async function graph(module) {
-  console.log('Graphing', module.key || module);
-
   // Clear out graphs
   $$('svg').forEach(el => el.remove());
 
@@ -408,6 +406,7 @@ async function graph(module) {
   Inspector.setModule(module);
   Inspector.showPane('pane-graph');
   Inspector.open();
+  $('title').innerText = `NPMGraph - ${module.key}`;
 }
 
 window.onpopstate = function() {
