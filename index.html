@@ -8,12 +8,14 @@
           margin: 0;
             padding: 0;
       }
+      h1 {font-size: 14pt;}
+      h2 {font-size: 12pt;}
       #graph {
         position: absolute;
         top: 0;
         left: 0;
         bottom: 0;
-        right: 0;
+        right: 2em;
         overflow: auto;
         transition: right .3s ease-out;
       }
@@ -23,16 +25,18 @@
       #inspector {
         position: fixed;
         top: 0;
-        right: -30em;
+        right: -28em;
+        bottom: 0;
         border-left: solid 1px black;
         background-color: rgba(255,255,255,.85);
         width: 30em;
-        height: 100%;
         transition: right .3s ease-out;
-        overflow: auto;
+        overflow: hidden;
       }
       body.open #inspector {
         right: 0;
+        bottom: 0;
+        overflow: auto;
       }
       #inspector .tag {
         cursor: pointer;
@@ -129,6 +133,9 @@
       g .node * {
         cursor: pointer;
       }
+      g .node polygon {
+        fill: white;
+      }
       g .selected > polygon {
         fill: #ddf;
         stroke-width: 3;
@@ -154,7 +161,7 @@
     </div>
     <div id="inspector">
       <div id="tabs">
-        <div onclick="Inspector.close()">&#9658</div>
+        <div class="arrow" onclick="Inspector.toggle()">&#x25c0</div>
         <div class="button" data-pane="pane-module">Module</div>
         <div class="button" data-pane="pane-graph">Graph</div>
         <div class="button" data-pane="pane-info">&#9432;</div>
@@ -175,10 +182,15 @@
         <pre class="json"></pre>
       </div>
       <div class="pane" id="pane-info">
+        <h2 style="float: right"><a target="_blank" href="https://github.com/broofa/npmgraph">Github</a></h2>
+        <h1>NPMGraph</h1>
+        <p> Visualize NPM module dependencies</p>
+        <h2>Usage</h2>
         <p>
-        NPM dependency visualizer.  Enter a module name here &Uarr; (e.g. "request"), or upload your project's package.json below.
-        </p><p>
-        Upload package.json: <input type="file" onchange="Inspector.handleFile(this.files)" />
+        Enter a module name in the search field above &Uarr; (e.g. "request")
+        </p>
+        <p>
+        ...or upload your own package.json: <input type="file" onchange="Inspector.handleFile(this.files)" />
         </p>
         <hr />
         <p style="font-size: 75%">

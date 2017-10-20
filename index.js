@@ -249,12 +249,11 @@ class Inspector {
     });
   }
 
-  static open() {
-    $('body').classList.add('open');
-  }
-
-  static close() {
-    $('body').classList.remove('open');
+  static toggle(open) {
+    const body = $('body');
+    if (open == null) open = !body.classList.contains('open');
+    $('#tabs .arrow').innerHTML = open ? '&#x25ba' : '&#x25c0';
+    $('body').classList.toggle('open', open);
   }
 
   static async setGraph(module) {
@@ -310,17 +309,18 @@ function entryFromKey(key) {
 }
 
 async function handleGraphClick(event) {
-  const el = $.up(event.srcElement, e => e.nodeName == 'text');
+  const el = $.up(event.srcElement, e => e.classList.contains('node'));
   if (el) {
-    const module = await Store.getModule(...entryFromKey(el.innerHTML));
+    const moduleKey = el.textContent.trim();
+    const module = await Store.getModule(...entryFromKey(moduleKey));
     if (module) {
       Inspector.setModule(module);
       Inspector.showPane('pane-module');
-      Inspector.open();
+      Inspector.toggle(true);
       return;
     }
   }
-  Inspector.close();
+  Inspector.close(false);
 }
 
 async function graph(module) {
@@ -379,7 +379,7 @@ async function graph(module) {
 
   // https://github.com/mdaines/viz.js/ is the most underappreciated JS
   // library on the internet.
-  const dot = Viz(dotDoc, {format: 'svg'});
+  const dot = Viz(dotDoc, {format: 'svg', scale: 1});
 
   // We could just `document.body.innerHTML = dot` here, but we don't want to
   // kill our other content So we parse the doc and pull out the SVG element we
@@ -405,7 +405,7 @@ async function graph(module) {
   Inspector.setGraph(module);
   Inspector.setModule(module);
   Inspector.showPane('pane-graph');
-  Inspector.open();
+  Inspector.toggle(true);
   $('title').innerText = `NPMGraph - ${module.key}`;
 }
 
