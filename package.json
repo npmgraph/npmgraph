@@ -1,0 +1,28 @@
+{
+  "name": "npmgraph",
+  "author": {
+    "name": "Robert Kieffer",
+    "url": "http://github.com/broofa",
+    "email": "robert@broofa.com"
+  },
+  "dependencies": {},
+  "description": "Visualize NPM dependency graphs (public and private!)",
+  "keywords": [
+    "npm",
+    "dependencies",
+    "dependency",
+    "graph",
+    "module"
+  ],
+  "repository": {
+    "url": "https://github.com/broofa/npmgraph",
+    "type": "git"
+  },
+  "version": "0.0.0",
+  "devDependencies": {
+    "runmd": "0.1.8"
+  },
+  "scripts": {
+    "deploy": "ssh broofa.com \"cd npm.broofa.com && git pull\""
+  }
+}
