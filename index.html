@@ -91,8 +91,6 @@
         display: block;
       }
 
-      #load {
-      }
       .loader {
         border: solid 1px gray;
         border-radius: 4px;
@@ -150,7 +148,7 @@
   </head>
   <body class="open">
     <div id="graph"></div>
-    <div id="load">
+    <div id="load" style="display:none">
       <h2>Loading module dependencies</h2>
     </div>
     <div id="inspector">
@@ -176,9 +174,17 @@
         <pre class="json"></pre>
       </div>
       <div class="pane" id="pane-info">
-        <p>Upload a package.json: <input type="file" onchange="Inspector.handleFile(this.files)" /></p>
-        <p>&copy; Robert Kieffer, 2017.  MIT License.<p>
-        <p>LocalStorage: <span id="storage"></span><button onclick="Store.clear()">Clear</button></p>
+        <p>
+        NPM dependency visualizer.  Enter a module name here &Uarr; (e.g. "request"), or upload your project's package.json below.
+        </p><p>
+        Upload package.json: <input type="file" onchange="Inspector.handleFile(this.files)" />
+        </p>
+        <hr />
+        <p style="font-size: 75%">
+        LocalStorage: <span id="storage"></span> <button onclick="Store.clear()">Clear</button>
+        <br />
+        &copy; Robert Kieffer, 2017.  MIT License.
+        <p>
       </div>
     </div>
   </body>

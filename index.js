@@ -410,9 +410,9 @@ async function graph(module) {
   Inspector.open();
 }
 
-window.onpopstate = async function() {
+window.onpopstate = function() {
   const target = /q=([^&]+)/.test(location.search) && RegExp.$1;
-  graph(target || 'request');
+  if (target) graph(target || 'request');
 };
 
 onload = function() {
@@ -423,12 +423,14 @@ onload = function() {
 
   Store.init();
   Inspector.init();
-
-  window.onpopstate();
+  Inspector.showPane('pane-info');
 
   // Show storage
   let chars = 0;
   let ls = localStorage;
   for (let i = 0; i < ls.length; i++) chars += ls.getItem(ls.key(i)).length;
   $('#storage').innerText = `${chars} chars`;
+  $('#tabs input').focus();
+
+  onpopstate();
 };
