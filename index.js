@@ -28,6 +28,7 @@ class Store {
       let body;
       try {
         body = await this.get(path);
+        if (!body) throw Error('No module info found');
       } catch(err) {
         console.error('Failed to load', path);
         body = {stub: true, name, version, maintainers: []};
@@ -69,16 +70,29 @@ class Store {
         if (xhr.readyState < 4) return;
         if (xhr.status >= 200 && xhr.status < 300) {
           loader.stop();
-          const body = JSON.parse(JSON.parse(xhr.responseText).body);
-          this.store(path, body);
+          let body = JSON.parse(xhr.responseText);
+          body = body && body.query;
+          body = body && body.results;
+          body = body && body.json;
+          if (body) this.store(path, body);
           resolve(body);
         } else {
           loader.error();
           reject(xhr.status);
         }
       };
+
+      // ^'s tend to cause issues for CORS proxies
+      path = path.replace(/[=^<> |]/g, encodeURIComponent);
       const url = `https://registry.npmjs.org/${path}`;
-      xhr.open('GET', `http://cors-proxy.htmldriven.com/?url=${encodeURIComponent(url)}`);
+      // Finding a robust cors proxy has been a little challenging.
+      // crossorigin.me and cors-proxy.htmldriven.com both seem a bit flaky,
+      // so we're rolling with Yahoo's YQL service for now
+      // const proxyUrl = `http://cors-proxy.htmldriven.com/?url=${encodeURIComponent(url)}`
+      const proxyUrl = 'https://query.yahooapis.com/v1/public/yql?' +
+          `q=${encodeURIComponent(`select * from json where url="${url}"`)}`
+        + `&format=json`;
+      xhr.open('GET', proxyUrl);
       xhr.send();
     });
   }
@@ -169,6 +183,11 @@ class Module {
   }
 
   constructor(pkg) {
+    if (!pkg.maintainers) {
+      pkg.maintainers = [];
+    } else if (!Array.isArray(pkg.maintainers)) {
+      pkg.maintainers = [pkg.maintainers];
+    }
     this.package = pkg;
   }
 
@@ -270,7 +289,7 @@ class Inspector {
 
       deps[m.key] = m;
       depCount[pkg.name] = (depCount[pkg.name] || 0) + 1;
-      (pkg.maintainers || []).forEach(u => maintainers[u.name] = (maintainers[u.name] || 0) + 1);
+      pkg.maintainers.forEach(u => maintainers[u.name] = (maintainers[u.name] || 0) + 1);
       licenses[license] = (licenses[license] || 0) + 1;
       return Promise.all(Object.entries(pkg.dependencies || {})
         .map(async e => walk(await Store.getModule(...e))));
@@ -295,7 +314,7 @@ class Inspector {
 
     $('#pane-module h2').innerHTML = `${module.key} Info`;
     $('#pane-module .description').innerHTML = `${module.package.description}`;
-    $('#pane-module .maintainers').innerHTML = (pkg.maintainers || []).map(u => `<span>${u.name}</span>`).join('\n');
+    $('#pane-module .maintainers').innerHTML = pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n');
     $('#pane-module .licenses').innerHTML = renderLicense(toLicense(pkg));
     $('#pane-module .json').innerText = JSON.stringify(pkg, null, 2);
 
@@ -327,7 +346,7 @@ async function graph(module) {
   // Clear out graphs
   $$('svg').forEach(el => el.remove());
 
-  const FONT='GillSans-Light';
+  const FONT='Roboto, sans-serif';
 
   // Build us a directed graph document in GraphViz notation
   const nodes = ['\n// Nodes & per-node styling'];
@@ -397,7 +416,7 @@ async function graph(module) {
     const m = await Store.getModule(...entryFromKey(key));
     const pkg = m && m.package;
     el.classList.add(toTag('module', key.replace(/@.*/, '')));
-    (pkg.maintainers || []).forEach(m => el.classList.add(toTag('maintainer', m.name)));
+    pkg.maintainers.forEach(m => el.classList.add(toTag('maintainer', m.name)));
     el.classList.add(toTag('license', toLicense(pkg)));
     if (pkg.stub) el.classList.add('stub');
   });
