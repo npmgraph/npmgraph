@@ -85,7 +85,6 @@ class Store {
       // ^'s tend to cause issues for CORS proxies
       // path = path.replace(/[=^<> |]/g, encodeURIComponent);
       xhr.open('GET', `https://registry.npmjs.cf/${path}`);
-      xhr.timeout = 2000;
       xhr.send();
     });
   }
