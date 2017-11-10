@@ -2,8 +2,10 @@
 
 const $ = (...args) => (args[0].querySelector ? args.shift() : document)
   .querySelector(...args);
+
 const $$ = (...args) => (args[0].querySelectorAll ? args.shift() : document)
   .querySelectorAll(...args);
+
 $.up = (el, test) => {
   while (el && !test(el)) el = el.parentElement;
   return el;
@@ -29,8 +31,9 @@ class Store {
       try {
         body = await this.get(path);
         if (!body) throw Error('No module info found');
+        if (typeof(body) != 'object') throw Error('Response was not an object');
       } catch(err) {
-        console.error('Failed to load', path);
+        console.error('Failed to load', path, err);
         body = {stub: true, name, version, maintainers: []};
       }
       const versionPath = `${body.name.replace(/\//g, '%2F')}/${body.version}`;
@@ -58,7 +61,7 @@ class Store {
     const stored = this.unstore(path);
 
     // In store?
-    if (stored) return stored;
+    if (false && stored) return stored;
 
     return new Promise((resolve, reject) => {
       const loader = new Loader(path);
@@ -70,10 +73,7 @@ class Store {
         if (xhr.readyState < 4) return;
         if (xhr.status >= 200 && xhr.status < 300) {
           loader.stop();
-          let body = JSON.parse(xhr.responseText);
-          body = body && body.query;
-          body = body && body.results;
-          body = body && body.json;
+          const body = JSON.parse(xhr.responseText);
           if (body) this.store(path, body);
           resolve(body);
         } else {
@@ -83,16 +83,9 @@ class Store {
       };
 
       // ^'s tend to cause issues for CORS proxies
-      path = path.replace(/[=^<> |]/g, encodeURIComponent);
-      const url = `https://registry.npmjs.org/${path}`;
-      // Finding a robust cors proxy has been a little challenging.
-      // crossorigin.me and cors-proxy.htmldriven.com both seem a bit flaky,
-      // so we're rolling with Yahoo's YQL service for now
-      // const proxyUrl = `http://cors-proxy.htmldriven.com/?url=${encodeURIComponent(url)}`
-      const proxyUrl = 'https://query.yahooapis.com/v1/public/yql?' +
-          `q=${encodeURIComponent(`select * from json where url="${url}"`)}`
-        + `&format=json`;
-      xhr.open('GET', proxyUrl);
+      // path = path.replace(/[=^<> |]/g, encodeURIComponent);
+      xhr.open('GET', `https://registry.npmjs.cf/${path}`);
+      xhr.timeout = 2000;
       xhr.send();
     });
   }
@@ -339,14 +332,14 @@ async function handleGraphClick(event) {
       return;
     }
   }
-  Inspector.close(false);
+  Inspector.toggle(false);
 }
 
 async function graph(module) {
   // Clear out graphs
   $$('svg').forEach(el => el.remove());
 
-  const FONT='Roboto, sans-serif';
+  const FONT='Roboto Condensed, sans-serif';
 
   // Build us a directed graph document in GraphViz notation
   const nodes = ['\n// Nodes & per-node styling'];
