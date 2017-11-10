@@ -61,7 +61,7 @@ class Store {
     const stored = this.unstore(path);
 
     // In store?
-    if (false && stored) return stored;
+    if (stored) return stored;
 
     return new Promise((resolve, reject) => {
       const loader = new Loader(path);
