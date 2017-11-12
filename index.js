@@ -13,6 +13,25 @@ $.up = (el, test) => {
 
 const EXPIRE = 24 * 60 * 60 * 1000;
 
+async function ajax(method, url, loader) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState < 4) return;
+      if (xhr.status >= 200 && xhr.status < 300) {
+        if (loader) loader.stop();
+        resolve(JSON.parse(xhr.responseText));
+      } else {
+        if (loader) loader.error();
+        reject(xhr.status);
+      }
+    };
+
+    xhr.open(method, url);
+    xhr.send();
+  });
+}
+
 /**
  * HTTP request api backed by localStorage cache
  */
@@ -63,30 +82,9 @@ class Store {
     // In store?
     if (stored) return stored;
 
-    return new Promise((resolve, reject) => {
-      const loader = new Loader(path);
-      $('#load').appendChild(loader.el);
-
-      const xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState == 1) loader.start();
-        if (xhr.readyState < 4) return;
-        if (xhr.status >= 200 && xhr.status < 300) {
-          loader.stop();
-          const body = JSON.parse(xhr.responseText);
-          if (body) this.store(path, body);
-          resolve(body);
-        } else {
-          loader.error();
-          reject(xhr.status);
-        }
-      };
-
-      // ^'s tend to cause issues for CORS proxies
-      // path = path.replace(/[=^<> |]/g, encodeURIComponent);
-      xhr.open('GET', `https://registry.npmjs.cf/${path}`);
-      xhr.send();
-    });
+    const loader = new Loader(path);
+    $('#load').appendChild(loader.el);
+    return ajax('GET', `https:/\/registry.npmjs.cf/${path}`, loader);
   }
 
   // Store a value in localStorage, purging if there's an error
@@ -227,14 +225,18 @@ class Inspector {
 
       if (el) {
         const tag = el.getAttribute('data-tag');
-        console.log('Tag click', tag);
-        $$('svg .node').forEach(el => el.classList.remove('selected'));
-        $$(`svg .node.${tag}`).forEach((el, i) => {
-          el.classList.add('selected');
-          if (!i) document.body.scrollIntoView(el);
-        });
+        Inspector.selectTag(tag);
       }
     });
+  }
+
+  static selectTag(tag) {
+    $$('svg .node').forEach(el => el.classList.remove('selected'));
+    if (typeof(tag) == 'string') {
+        $$(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
+    } else if (tag) {
+        tag.classList.add('selected');
+    }
   }
 
   static async handleFile(files) {
@@ -301,16 +303,33 @@ class Inspector {
     $('#inspector').scrollTo(0, 0);
   }
 
-  static setModule(module) {
+  static async setModule(module) {
     const pkg = module.package || module;
 
     $('#pane-module h2').innerHTML = `${module.key} Info`;
     $('#pane-module .description').innerHTML = `${module.package.description}`;
-    $('#pane-module .maintainers').innerHTML = pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n');
-    $('#pane-module .licenses').innerHTML = renderLicense(toLicense(pkg));
     $('#pane-module .json').innerText = JSON.stringify(pkg, null, 2);
 
     $('#inspector').scrollTo(0, 0);
+
+    $('#pane-module .stats').innerHTML = '(Getting info...)';
+
+    const [stats, search] = await Promise.all([
+      ajax('GET', `https:/\/api.npmjs.org/downloads/point/last-week/${module.package.name}`),
+      ajax('GET', `https:/\/registry.npmjs.org/-/v1/search?text=${module.package.name}&size=1`)
+    ]);
+
+    const scores = search.objects[0].score.detail;
+    $('#pane-module .stats').innerHTML = `
+        <table>
+        <tr><th>Maintainers</td><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
+        <tr><th>License</td><td>${renderLicense(toLicense(pkg))}</td></tr>
+        <tr><th>Downloads/week</td><td>${stats.downloads}</td></tr>
+        <tr><th>Quality</td><td>${(scores.quality*100).toFixed(0)}</td></tr>
+        <tr><th>Popularity</td><td>${(scores.popularity*100).toFixed(0)}</td></tr>
+        <tr><th>Maintenance</td><td>${(scores.maintenance*100).toFixed(0)}</td></tr>
+        </table>
+        `;
   }
 }
 
@@ -321,6 +340,7 @@ function entryFromKey(key) {
 
 async function handleGraphClick(event) {
   const el = $.up(event.srcElement, e => e.classList.contains('node'));
+  Inspector.selectTag(el);
   if (el) {
     const moduleKey = el.textContent.trim();
     const module = await Store.getModule(...entryFromKey(moduleKey));
@@ -349,8 +369,9 @@ async function graph(module) {
     if (m.key in seen) return;
     seen[m.key] = true;
 
-    let deps = m.package.dependencies;
+    nodes.push(`"${m}"`);
 
+    let deps = m.package.dependencies;
     if (deps) {
       const renderP = [];
       for (let dep in deps) {
@@ -388,13 +409,12 @@ async function graph(module) {
     .concat('}')
     .join('\n');
 
-  // https://github.com/mdaines/viz.js/ is the most underappreciated JS
+  // https://github.com/mdaines/viz.js/ is easily the most underappreciated JS
   // library on the internet.
   const dot = Viz(dotDoc, {format: 'svg', scale: 1});
 
-  // We could just `document.body.innerHTML = dot` here, but we don't want to
-  // kill our other content So we parse the doc and pull out the SVG element we
-  // want, then add it to our body.
+  // We could just `$('#graph').innerHTML = dot` here, but we want to finesse
+  // the svg DOM a bit, so we parse it into a DOMFragment and then add it.
   const svg = new DOMParser().parseFromString(dot, 'text/html').querySelector('svg');
   svg.querySelectorAll('.node title').forEach(el => el.remove());
   svg.addEventListener('click', handleGraphClick);

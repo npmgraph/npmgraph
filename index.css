@@ -1,0 +1,152 @@
+html, input {
+  font-family: 'Roboto', sans-serif;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+h1 {font-size: 14pt;}
+h2 {font-size: 12pt;}
+#graph {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 2em;
+  overflow: auto;
+  transition: right .3s ease-out;
+}
+body.open #graph {
+  right: 30em;
+}
+#inspector {
+  position: fixed;
+  top: 0;
+  right: -28em;
+  bottom: 0;
+  border-left: solid 1px black;
+  background-color: rgba(255,255,255,.85);
+  width: 30em;
+  transition: right .3s ease-out;
+  overflow: hidden;
+}
+body.open #inspector {
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+}
+#inspector .tag {
+  cursor: pointer;
+  display: inline-block;
+  background-color: #ddd;
+  padding: 2px;
+  margin: 1px 4px;
+}
+#inspector .tag:hover {
+  background-color: #ddf;
+}
+#inspector .description {
+  font-weight: bold;
+}
+#inspector .module {
+  white-space: nowrap;
+}
+#inspector #tabs {
+  position: fixed;
+  width: 100%;
+  white-space: nowrap;
+  background-color: #888;
+  font-size: 0;
+}
+#inspector #tabs input {
+  border: none;
+}
+#inspector #tabs > * {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 12pt;
+  font-weight: bold;
+  background-color: #ccc;
+  line-height: 24pt;
+  padding: 0 10px;
+}
+#inspector #tabs .button {
+  display: inline-block;
+  text-align: center;
+  border: none;
+  border-right: solid 1px #888;
+  background-color: #ccc;
+}
+#inspector #tabs .button.active {
+  background-color: white;
+}
+#inspector .pane > div {
+  margin: .5em 0;
+}
+
+.pane {
+  margin-top: 24px;
+  display: none;
+  padding: .3em .5em;
+}
+.pane.open {
+  display: block;
+}
+
+.stats th {text-align: left;}
+.stats td {text-align: left;}
+
+.loader {
+  border: solid 1px gray;
+  border-radius: 4px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: calc(11em - 20px);
+  padding: 4px;
+  margin: 4px;
+}
+.loader span {
+    border: 4px solid #ccc;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    float: left;
+    margin-right: 4px;
+}
+.loader.active span {
+    border-top-color: #090;
+    animation: spin 2s linear infinite;
+}
+.loader.success span {
+  border-color: #090;
+}
+.loader.error span {
+  border-color: #900;
+}
+
+svg {
+  fill: #666;
+}
+g .node * {
+  cursor: pointer;
+}
+g .node polygon {
+  fill: white;
+}
+g .selected > polygon {
+  fill: #ddf;
+  stroke-width: 3;
+  stroke: #33c;
+}
+g .stub > polygon {
+  stroke-dasharray: 4,4;
+  stroke: #666;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

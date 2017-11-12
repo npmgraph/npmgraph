@@ -1,170 +1,27 @@
 <html>
-      <head>
+  <head>
     <meta http-equiv="Content-Security-Policy" content="default-src
       'unsafe-eval' 'unsafe-inline' 'self'
+      https://registry.npmjs.org
       https://registry.npmjs.cf
+      https://api.npmjs.org
       https://fonts.gstatic.com https://fonts.googleapis.com" />
+
     <title>NPMGraph - Visualize NPM Module Dependencies</title>
+
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed" rel="stylesheet">
-    <style>
-      html, input {
-        font-family: 'Roboto', sans-serif;
-      }
-      html, body {
-        margin: 0;
-        padding: 0;
-      }
-      h1 {font-size: 14pt;}
-      h2 {font-size: 12pt;}
-      #graph {
-        position: absolute;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        right: 2em;
-        overflow: auto;
-        transition: right .3s ease-out;
-      }
-      body.open #graph {
-        right: 30em;
-      }
-      #inspector {
-        position: fixed;
-        top: 0;
-        right: -28em;
-        bottom: 0;
-        border-left: solid 1px black;
-        background-color: rgba(255,255,255,.85);
-        width: 30em;
-        transition: right .3s ease-out;
-        overflow: hidden;
-      }
-      body.open #inspector {
-        right: 0;
-        bottom: 0;
-        overflow: auto;
-      }
-      #inspector .tag {
-        cursor: pointer;
-        display: inline-block;
-        background-color: #ddd;
-        padding: 2px;
-        margin: 1px 4px;
-      }
-      #inspector .tag:hover {
-        background-color: #ddf;
-      }
-      #inspector .description {
-        font-weight: bold;
-      }
-      #inspector .module {
-        white-space: nowrap;
-      }
-      #inspector #tabs {
-        position: fixed;
-        width: 100%;
-        white-space: nowrap;
-        background-color: #888;
-        font-size: 0;
-      }
-      #inspector #tabs input {
-        border: none;
-      }
-      #inspector #tabs > * {
-        display: inline-block;
-        cursor: pointer;
-        font-size: 12pt;
-        font-weight: bold;
-        background-color: #ccc;
-        line-height: 24pt;
-        padding: 0 10px;
-      }
-      #inspector #tabs .button {
-        display: inline-block;
-        text-align: center;
-        border: none;
-        border-right: solid 1px #888;
-        background-color: #ccc;
-      }
-      #inspector #tabs .button.active {
-        background-color: white;
-      }
-      #inspector .pane > div {
-        margin: .5em 0;
-      }
+    <link href="./index.css" rel="stylesheet">
 
-      .pane {
-        margin-top: 24px;
-        display: none;
-        padding: .3em .5em;
-      }
-      .pane.open {
-        display: block;
-      }
-
-      .loader {
-        border: solid 1px gray;
-        border-radius: 4px;
-        display: inline-block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: calc(11em - 20px);
-        padding: 4px;
-        margin: 4px;
-      }
-      .loader span {
-         border: 4px solid #ccc;
-         border-radius: 50%;
-         width: 10px;
-         height: 10px;
-         display: inline-block;
-         float: left;
-         margin-right: 4px;
-      }
-      .loader.active span {
-         border-top-color: #090;
-         animation: spin 2s linear infinite;
-      }
-      .loader.success span {
-        border-color: #090;
-      }
-      .loader.error span {
-        border-color: #900;
-      }
-
-      svg {
-        fill: #666;
-      }
-      g .node * {
-        cursor: pointer;
-      }
-      g .node polygon {
-        fill: white;
-      }
-      g .selected > polygon {
-        fill: #ddf;
-        stroke-width: 3;
-        stroke: #33c;
-      }
-      g .stub > polygon {
-        stroke-dasharray: 4,4;
-        stroke: #666;
-      }
-
-      @keyframes spin {
-         0% { transform: rotate(0deg); }
-         100% { transform: rotate(360deg); }
-      }
-    </style>
     <script src="index.js"></script>
     <script src="viz-lite.js"></script>
   </head>
+
   <body class="open">
     <div id="graph"></div>
     <div id="load" style="display:none">
       <h2>Loading module dependencies</h2>
     </div>
+
     <div id="inspector">
       <div id="tabs">
         <div class="arrow" onclick="Inspector.toggle()">&#x25c0</div>
@@ -173,20 +30,22 @@
         <div class="button" data-pane="pane-info">&#9432;</div>
         <input type="text" placeholder="&#x1F50D;" onchange="Inspector.handleSearch(this.value)" />
       </div>
+
       <div class="pane" id="pane-graph">
         <h2>Module + Dependencies</h2>
         <div class="dependencies"></div>
         <div><h2>Maintainers</h2><div class="maintainers"></div></div>
         <div><h2>Licenses</h2><div class="licenses"></div></div>
       </div>
+
       <div class="pane" id="pane-module">
         <h2>Module</h2>
         <div class="description"></div>
-        <div>Maintainers: <span class="maintainers"></span></div>
-        <div>License: <span class="licenses"></span></div>
+        <div class="stats"></div>
         <h2>package.json</h2>
         <pre class="json"></pre>
       </div>
+
       <div class="pane" id="pane-info">
         <h2 style="float: right"><a target="_blank" href="https://github.com/broofa/npmgraph">Github</a></h2>
         <h1>NPMGraph</h1>
