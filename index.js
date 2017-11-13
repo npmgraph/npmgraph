@@ -325,9 +325,9 @@ class Inspector {
         <tr><th>Maintainers</td><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
         <tr><th>License</td><td>${renderLicense(toLicense(pkg))}</td></tr>
         <tr><th>Downloads/week</td><td>${stats.downloads}</td></tr>
-        <tr><th>Quality</td><td>${(scores.quality*100).toFixed(0)}</td></tr>
-        <tr><th>Popularity</td><td>${(scores.popularity*100).toFixed(0)}</td></tr>
-        <tr><th>Maintenance</td><td>${(scores.maintenance*100).toFixed(0)}</td></tr>
+        <tr><th>Quality</td><td>${(scores.quality*100).toFixed(0)}%</td></tr>
+        <tr><th>Popularity</td><td>${(scores.popularity*100).toFixed(0)}%</td></tr>
+        <tr><th>Maintenance</td><td>${(scores.maintenance*100).toFixed(0)}%</td></tr>
         </table>
         `;
   }
