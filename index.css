@@ -16,6 +16,27 @@ h2 {font-size: 12pt;}
   overflow: auto;
   transition: right .3s ease-out;
 }
+
+#graph-controls {
+  position: absolute;
+  bottom: 1em;
+  right: 4em;
+}
+#graph-controls button {
+  dispaly: inline-block;
+  font-size: 30px;
+  line-height: 30px;
+  height: 30px;
+  width: 1em;
+  margin: 0;
+  padding: 0;
+  background-color: #eee;
+  border-radius: .1em;
+}
+body.open #graph-controls {
+  right: 32em;
+}
+
 body.open #graph {
   right: 30em;
 }

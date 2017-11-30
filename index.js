@@ -354,6 +354,30 @@ async function handleGraphClick(event) {
   Inspector.toggle(false);
 }
 
+function zoom(op) {
+  const svg = $('svg');
+  if (!svg) return;
+
+  const vb = svg.getAttribute('viewBox').split(' ');
+
+  switch (op) {
+    case 0:
+      svg.setAttribute('width', vb[2]);
+      svg.setAttribute('height', vb[3]);
+      break;
+
+    case 1:
+      svg.setAttribute('width', '100%');
+      svg.removeAttribute('height');
+      break;
+
+    case 2:
+      svg.removeAttribute('width');
+      svg.setAttribute('height', '100%');
+      break;
+  }
+}
+
 async function graph(module) {
   // Clear out graphs
   $$('svg').forEach(el => el.remove());
@@ -419,7 +443,11 @@ async function graph(module) {
   svg.querySelectorAll('.node title').forEach(el => el.remove());
   svg.addEventListener('click', handleGraphClick);
 
+  // Round up viewbox
+  svg.setAttribute('viewBox', svg.getAttribute('viewBox').split(' ').map(Math.ceil).join(' '));
+
   $('#graph').appendChild(svg);
+  zoom(0);
 
   $$('.loader').forEach(el => el.remove());
   $$('g.node').forEach(async el => {
