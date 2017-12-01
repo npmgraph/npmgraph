@@ -38,7 +38,7 @@
         <div class="button" data-pane="pane-module">Module</div>
         <div class="button" data-pane="pane-graph">Graph</div>
         <div class="button" data-pane="pane-info">&#9432;</div>
-        <input type="text" placeholder="&#x1F50D; Enter module name" onchange="Inspector.handleSearch(this.value)" />
+        <input type="text" placeholder="&#x1F50D; &nbsp;Enter module name" onchange="Inspector.handleSearch(this.value)" />
       </div>
 
       <div class="pane" id="pane-graph">
@@ -56,22 +56,21 @@
         <pre class="json"></pre>
       </div>
 
-      <div class="pane" id="pane-info">
-        <h2 style="float: right"><a target="_blank" href="https://github.com/broofa/npmgraph">Fork me on Github!</a></h2>
-        <h1>NPMGraph</h1>
-        <p> Visualize NPM module dependencies</p>
-        <h2>Usage</h2>
+      <div class="pane" id="pane-info" style="position:relative">
+
         <p>
-        Enter a module name in the search field above &Uarr; (e.g. "request")
+        Enter an NPM module name here <i class="material-icons">arrow_upward</i> to see it's dependency graph
         </p>
-        <p>
-        ...or upload your own package.json: <input type="file" onchange="Inspector.handleFile(this.files)" />
+        <p style="position:relative">
+          ... Or upload your own <code>package.json</code> file:
+          <br />
+          <input type="file" onchange="Inspector.handleFile(this.files)" style="margin-top: 8px;" />
         </p>
-        <hr />
-        <p style="font-size: 75%">
-        LocalStorage: <span id="storage"></span> <button onclick="Store.clear()">Clear</button>
-        <br />
+        <p style="font-size: 75%; border-top: solid 1px black; padding-top: 8px; position: relative; overflow: hidden; height: 150px;">
         &copy; Robert Kieffer, 2017.  MIT License.
+        <br />
+        LocalStorage: <span id="storage"></span> <button onclick="Store.clear()">Clear</button>
+        <a id="fog" target="_blank" href="https://github.com/broofa/npmgraph">Fork on GitHub</a>
         </p>
       </div>
     </div>

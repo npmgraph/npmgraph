@@ -73,6 +73,7 @@ body.open #inspector {
   white-space: nowrap;
 }
 #inspector #tabs {
+  z-index: 1;
   position: fixed;
   width: 100%;
   white-space: nowrap;
@@ -106,9 +107,12 @@ body.open #inspector {
 }
 
 .pane {
-  margin-top: 24px;
+  position: absolute;
+  top: 24px;
   display: none;
   padding: .3em .5em;
+  padding-right: 0;
+  bottom: 0px;
 }
 .pane.open {
   display: block;
@@ -165,6 +169,29 @@ g .selected > polygon {
 g .stub > polygon {
   stroke-dasharray: 4,4;
   stroke: #666;
+}
+
+
+#fog {
+  position: absolute;
+  right: 0;
+  right: -45px;
+  top: 30px;
+  background:#084;
+  box-shadow:2px 2px 5px rgba(0,0,0,0.8);
+  color:#fff;
+  display:block;
+  font-size:1.2em;
+  font-weight:bold;
+  overflow:hidden;
+  padding:4px 40px;
+  text-align:center;
+  text-decoration:none;
+  transition:0.5s;
+  transform:rotate(45deg);
+}
+#fog:hover {
+  background: #066;
 }
 
 @keyframes spin {
