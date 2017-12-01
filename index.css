@@ -111,6 +111,7 @@ body.open #inspector {
   top: 24px;
   display: none;
   padding: .3em .5em;
+  padding-right: 0;
   bottom: 0px;
 }
 .pane.open {
