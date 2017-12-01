@@ -1,5 +1,6 @@
 html, input {
   font-family: 'Roboto', sans-serif;
+  font-size: 12pt;
 }
 html, body {
   margin: 0;
@@ -176,7 +177,7 @@ g .stub > polygon {
   position: absolute;
   right: 0;
   right: -45px;
-  top: 30px;
+  top: 45px;
   background:#084;
   box-shadow:2px 2px 5px rgba(0,0,0,0.8);
   color:#fff;
@@ -197,4 +198,22 @@ g .stub > polygon {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@media print {
+  #inspector {
+    display: none;
+  }
+
+  body #graph {
+    overflow: visible;
+  }
+
+  body.open #graph {
+    right: 0;
+  }
+
+  #graph-controls {
+    display: none;
+  }
 }
