@@ -242,6 +242,7 @@ class Inspector {
   static async handleFile(files) {
     const fr = new FileReader();
     fr.onload = () => {
+      history.pushState({}, null, `${location.pathname}`);
       const module = new Module(JSON.parse(fr.result));
       graph(module);
     }
@@ -379,6 +380,8 @@ function zoom(op) {
 }
 
 async function graph(module) {
+  Inspector.toggle(false);
+
   // Clear out graphs
   $$('svg').forEach(el => el.remove());
 
@@ -418,7 +421,7 @@ async function graph(module) {
   $('#load').style.display = 'none';
 
   const dotDoc = [
-    'digraph {',
+    'digraph \{',
     'rankdir="LR"',
     'labelloc="t"',
     `label="${module.package.name}"`,
@@ -430,7 +433,7 @@ async function graph(module) {
   ]
     .concat(nodes)
     .concat(edges)
-    .concat('}')
+    .concat('\}')
     .join('\n');
 
   // https://github.com/mdaines/viz.js/ is easily the most underappreciated JS
@@ -440,7 +443,7 @@ async function graph(module) {
   // We could just `$('#graph').innerHTML = dot` here, but we want to finesse
   // the svg DOM a bit, so we parse it into a DOMFragment and then add it.
   const svg = new DOMParser().parseFromString(dot, 'text/html').querySelector('svg');
-  svg.querySelectorAll('.node title').forEach(el => el.remove());
+  svg.querySelectorAll('g title').forEach(el => el.remove());
   svg.addEventListener('click', handleGraphClick);
 
   // Round up viewbox
