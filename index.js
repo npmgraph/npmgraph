@@ -42,8 +42,9 @@ class Store {
   }
 
   // GET package info
-  static async getModule(name, version='latest') {
-    const path = `${name.replace(/\//g, '%2F')}/${version}`;
+  static async getModule(name, version) {
+    let path = `${name.replace(/\//g, '%2F')}`;
+    if (version) path += `/${version}`;
 
     if (!this._moduleCache[path]) {
       let body;
@@ -55,6 +56,30 @@ class Store {
         console.error('Failed to load', path, err);
         body = {stub: true, name, version, maintainers: []};
       }
+
+      // If fetched a path with no version, NPM repo returns info about *all*
+      // versions, so pick the most appropriate one
+      if (body.versions) {
+        let vname;
+        if ('dist-tags' in body && 'latest' in body['dist-tags']) {
+          // Use version specified by 'latest' dist-tag
+          vname = body['dist-tags'].latest;
+        }
+        if (!vname) {
+          // Use most recent version
+          // TODO: use highest semver instead of most recently published version
+          const times = Object.keys(body.time);
+          times.sort((a,b) => {
+            a = Date.parse(a);
+            b = Date.parse(b);
+            return a < b ? -1 : a > b ? 1 : 0;
+          });
+          vname = times.pop();
+        }
+
+        body = body.versions[vname]
+      }
+
       const versionPath = `${body.name.replace(/\//g, '%2F')}/${body.version}`;
 
       if (!body.stub && path != versionPath) {
@@ -93,7 +118,7 @@ class Store {
       if (obj && typeof(obj) == 'object') obj._storedAt = Date.now();
       localStorage.setItem(key, JSON.stringify(obj));
     } catch (err) {
-      console.error('Error while storing. Purging cache', err);
+      console.warn('Error while storing. Purging cache', err);
       this.purge();
     }
   }
@@ -334,9 +359,12 @@ class Inspector {
   }
 }
 
+const MODULE_RE = /^(@?[^@]+)(?:@(.*))?$/;
+
 function entryFromKey(key) {
-  const x = key.lastIndexOf('@');
-  return x >= 0 ? [key.substr(0,x), key.substr(x+1)] : [key];
+  if (!MODULE_RE.test(key)) console.log('Invalid key', key);
+
+  return RegExp.$2 ? [RegExp.$1, RegExp.$2] : [RegExp.$1];
 }
 
 async function handleGraphClick(event) {
@@ -415,6 +443,7 @@ async function graph(module) {
 
   $('#load').style.display = 'block';
   if (typeof(module) == 'string') {
+    console.log('ENTRY', entryFromKey(module));
     module = await Store.getModule(...entryFromKey(module));
   }
   await render(module);
