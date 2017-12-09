@@ -25,13 +25,14 @@ $ open node_modules/npmgraph/index.html  # To open file in your browser
 
 ## How it works
 
-NPMGraph pulls dependency information from the NPM repository. For large graphs
-and/or slow networks, this may take a minute or two.
+NPMGraph does a recursive walk of a module's dependency graph, fetching
+dependencies using the NPM repository API.  This process is normally pretty
+fast, but may take some time if you're on a slow network or the graph is
+abnormally large.
 
-Note that this process may take a minute or more, depending on the graph
-complexity.  However this information module is cached in localStorage
-so subsequent requests should be more or less instantaneous fast(er).
+Dependency information is cached on a per-module basis in LocalStorage, so
+subsequent requests (especially for the same module) will benefit from this.
 
 ## Attributions
 
-The dependency graph is drawn with the insanely awesome [Viz.js](https://github.com/mdaines/viz.js/).
+The dependency graph is drawn with the [Viz.js](https://github.com/mdaines/viz.js/) which, if you're not familiar with it, is a really slick project.  It's a must-have module for anyone interested in drawing directed graphs in JS.
