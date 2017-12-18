@@ -443,7 +443,6 @@ async function graph(module) {
 
   $('#load').style.display = 'block';
   if (typeof(module) == 'string') {
-    console.log('ENTRY', entryFromKey(module));
     module = await Store.getModule(...entryFromKey(module));
   }
   await render(module);
