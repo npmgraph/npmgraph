@@ -103,7 +103,7 @@ body.open #inspector {
 #inspector #tabs .button.active {
   background-color: white;
 }
-#inspector .pane > div {
+.pane > div {
   margin: .5em 0;
 }
 
@@ -193,6 +193,17 @@ g .stub > polygon {
 }
 #fog:hover {
   background: #066;
+}
+
+#drop_target {
+  background-color: #ddd;
+  border: dashed 2px #888;
+  padding: 1em;
+  margin-right: .5em;
+}
+#drop_target.drag {
+	background-color: #ccf;
+	border-color: #68a;
 }
 
 @keyframes spin {
