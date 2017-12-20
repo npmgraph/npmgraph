@@ -264,16 +264,6 @@ class Inspector {
     }
   }
 
-  static async handleFile(files) {
-    const fr = new FileReader();
-    fr.onload = () => {
-      history.pushState({}, null, `${location.pathname}`);
-      const module = new Module(JSON.parse(fr.result));
-      graph(module);
-    }
-    fr.readAsText(files[0]);
-  }
-
   static async handleSearch(term) {
     history.pushState({}, null, `${location.pathname}?q=${term}`);
     await graph(term);
