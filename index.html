@@ -60,13 +60,11 @@
       <div class="pane" id="pane-info" style="position:relative">
 
         <p>
-        Enter an NPM module name here <i class="material-icons">arrow_upward</i> to see it's dependency graph
+        Enter an NPM module name here <i class="material-icons">arrow_upward</i> to see its dependency graph
         </p>
-        <p style="position:relative">
-          ... Or upload your own <code>package.json</code> file:
-          <br />
-          <input type="file" onchange="Inspector.handleFile(this.files)" style="margin-top: 8px;" />
-        </p>
+        <div id="drop_target" style="text-align: center">
+					Or drop a <code>package.json</code> file here
+				</div>
         <p style="font-size: 75%; border-top: solid 1px black; padding-top: 120px; position: relative; overflow: hidden">
         &copy; Robert Kieffer, 2017.  MIT License.
         <br />
