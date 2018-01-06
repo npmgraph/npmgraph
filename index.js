@@ -1,18 +1,37 @@
 'use strict';
 
+// Author's note: I know, I know, it's bad form to have all my JS source in one
+// file.  The intent is to break this out into ES6-compatible modules/files at
+// some point.
+
+// Max time (msecs) to rely on something in localstore cache
+const EXPIRE = 24 * 60 * 60 * 1000;
+
+/**
+ * Thin wrapper around querySelector()
+ */
 const $ = (...args) => (args[0].querySelector ? args.shift() : document)
   .querySelector(...args);
 
+/**
+ * Thin wrapper around querySelectorAll()
+ */
 const $$ = (...args) => (args[0].querySelectorAll ? args.shift() : document)
   .querySelectorAll(...args);
 
+/**
+ * Like Array#find(), but for DOMElement ancestors
+ */
 $.up = (el, test) => {
   while (el && !test(el)) el = el.parentElement;
   return el;
 };
 
-const EXPIRE = 24 * 60 * 60 * 1000;
-
+/**
+ * Simple ajax request support.  Supports different HTTP methods, but (for the
+ * moment) does not support sending a request body because we don't (yet) need
+ * that feature.
+ */
 async function ajax(method, url, loader) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -39,6 +58,7 @@ class Store {
   static init() {
     this._inflight = {};
     this._moduleCache = {};
+    this._noCache = /noCache/i.test(location.search);
   }
 
   // GET package info
@@ -105,7 +125,7 @@ class Store {
     const stored = this.unstore(path);
 
     // In store?
-    if (stored) return stored;
+    if (stored && !this._noCache) return stored;
 
     const loader = new Loader(path);
     $('#load').appendChild(loader.el);
