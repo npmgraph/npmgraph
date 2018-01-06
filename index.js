@@ -181,6 +181,7 @@ class Store {
 
   static clear() {
     localStorage.clear();
+    $('#storage').innerText = `0 chars`;
   }
 }
 
