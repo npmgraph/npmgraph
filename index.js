@@ -285,7 +285,8 @@ class Inspector {
   }
 
   static async handleSearch(term) {
-    history.pushState({}, null, `${location.pathname}?q=${term}`);
+    const noCache = /noCache/i.test(location.search);
+    history.pushState({}, null, `${location.pathname}?q=${term}${noCache ? '&noCache' : ''}`);
     await graph(term);
   }
 
