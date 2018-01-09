@@ -538,7 +538,7 @@ onload = function() {
       if (dt.items.length != 1) return alert('You must drop exactly one file');
 
       const item = dt.items[0];
-      if (item.type != 'application/json') return alert('File must have a ".json" extension');
+      if (item.type && item.type != 'application/json') return alert('File must have a ".json" extension');
 
       const file = item.getAsFile();
       if (!file) return alert('Please drop a file, not... well... whatever else it was you dropped');
