@@ -478,7 +478,11 @@ async function graph(module) {
 
   // https://github.com/mdaines/viz.js/ is easily the most underappreciated JS
   // library on the internet.
-  const dot = Viz(dotDoc, {format: 'svg', scale: 1});
+  const dot = Viz(dotDoc, {
+    format: 'svg',
+    scale: 1,
+    totalMemory: 32 * 1024 * 1024 // See https://github.com/mdaines/viz.js/issues/89
+  });
 
   // We could just `$('#graph').innerHTML = dot` here, but we want to finesse
   // the svg DOM a bit, so we parse it into a DOMFragment and then add it.
