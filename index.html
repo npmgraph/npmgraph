@@ -2,11 +2,13 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="Content-Security-Policy" content="default-src
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src
       'unsafe-eval' 'unsafe-inline' 'self'
       https://registry.npmjs.org
       https://registry.npmjs.cf
       https://api.npmjs.org
+      https://cdnjs.cloudflare.com
       https://fonts.gstatic.com https://fonts.googleapis.com" />
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
@@ -18,7 +20,8 @@
     <link href="./index.css" rel="stylesheet" />
 
     <script src="index.js"></script>
-    <script src="viz-lite.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
   </head>
 
   <body class="open">
