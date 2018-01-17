@@ -1,5 +1,6 @@
 import Inspector from './Inspector.js';
 import Store from './Store.js';
+import Module from './Module.js';
 import {$, $$, ajax, toTag, toLicense, renderMaintainer} from './util.js';
 
 // Max time (msecs) to rely on something in localstore cache
@@ -162,12 +163,8 @@ onload = function() {
 
   $('#clearButton').onclick=Store.clear;
   $('#toggleInspectorButton').onclick=Inspector.toggle;
-  $('#searchText').onchange = async function() {
-    const term = this.value;
-    const noCache = /noCache/i.test(location.search);
-    history.pushState({}, null, `${location.pathname}?q=${term}${noCache ? '&noCache' : ''}`);
-    await graph(term);
-  };
+  $('#searchText').onclick= function() {Inspector.handleSearch(this.value)};
+
 
   Store.init();
   Inspector.init();
