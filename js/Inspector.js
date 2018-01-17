@@ -69,20 +69,12 @@ export default class Inspector {
 
     const depList = Object.entries(deps);
     maintainers = Object.entries(maintainers).sort().map(e => renderMaintainer(...e));
-<<<<<<< HEAD
     const licenseTags = Object.entries(licenses).sort().map(e => renderLicense(...e));
-=======
-    //licenses = Object.entries(licenses).sort().map(e => renderLicense(...e));
->>>>>>> 5be6e3bed8434ace2e79305af9579c3acb517192
 
     $('#pane-graph h2').innerHTML = `${depList.length} Modules`;
     $('#pane-graph .dependencies').innerHTML = Object.entries(depCount).map(e => renderModule(e[0], e[1])).sort().join('');
     $('#pane-graph .maintainers').innerHTML = maintainers.join('');
-<<<<<<< HEAD
     $('#pane-graph .licenses').innerHTML = licenseTags.join('');
-=======
-    //$('#pane-graph .licenses').innerHTML = licenses.join('');
->>>>>>> 5be6e3bed8434ace2e79305af9579c3acb517192
 
     // Make a chart
     var config = {
