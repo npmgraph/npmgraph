@@ -160,6 +160,17 @@ onload = function() {
     if (!i) button.onclick();
   });
 
+  $('#clearButton').onclick=Store.clear;
+  $('#toggleInspectorButton').onclick=Inspector.toggle;
+  $('#searchText').onchange = async function() {
+    const term = this.value;
+    const noCache = /noCache/i.test(location.search);
+    history.pushState({}, null, `${location.pathname}?q=${term}${noCache ? '&noCache' : ''}`);
+    await graph(term);
+  };
+
+
+
   Store.init();
   Inspector.init();
   Inspector.showPane('pane-info');

@@ -23,12 +23,6 @@ export default class Inspector {
     }
   }
 
-  static async handleSearch(term) {
-    const noCache = /noCache/i.test(location.search);
-    history.pushState({}, null, `${location.pathname}?q=${term}${noCache ? '&noCache' : ''}`);
-    await graph(term);
-  }
-
   static showPane(id) {
     $$('#inspector #tabs .button').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-pane') == id);
@@ -69,12 +63,12 @@ export default class Inspector {
 
     const depList = Object.entries(deps);
     maintainers = Object.entries(maintainers).sort().map(e => renderMaintainer(...e));
-    //licenses = Object.entries(licenses).sort().map(e => renderLicense(...e));
+    const licenseTags = Object.entries(licenses).sort().map(e => renderLicense(...e));
 
     $('#pane-graph h2').innerHTML = `${depList.length} Modules`;
     $('#pane-graph .dependencies').innerHTML = Object.entries(depCount).map(e => renderModule(e[0], e[1])).sort().join('');
     $('#pane-graph .maintainers').innerHTML = maintainers.join('');
-    //$('#pane-graph .licenses').innerHTML = licenses.join('');
+    $('#pane-graph .licenses').innerHTML = licenseTags.join('');
 
     // Make a chart
     var config = {

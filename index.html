@@ -39,11 +39,11 @@
 
     <div id="inspector">
       <div id="tabs">
-        <div class="arrow" onclick="Inspector.toggle()">&#x25c0</div>
+        <div class="arrow" id="toggleInspectorButton">&#x25c0</div>
         <div class="button" data-pane="pane-module">Module</div>
         <div class="button" data-pane="pane-graph">Graph</div>
         <div class="button" data-pane="pane-info">&#9432;</div>
-        <input type="text" placeholder="&#x1F50D; &nbsp;Enter module name" onchange="Inspector.handleSearch(this.value)" />
+        <input type="text" id="searchText" placeholder="&#x1F50D; &nbsp;Enter module name" />
       </div>
 
       <div class="pane" id="pane-graph">
@@ -51,7 +51,7 @@
         <div class="dependencies"></div>
         <div><h2>Maintainers</h2><div class="maintainers"></div></div>
         <div><h2>Licenses</h2><div class="licenses"></div></div>
-        <div id="chart" />
+        <div id="chart"></div>
       </div>
 
       <div class="pane" id="pane-module">
@@ -72,7 +72,7 @@
         <p style="font-size: 75%; border-top: solid 1px black; padding-top: 120px; position: relative; overflow: hidden">
         &copy; Robert Kieffer, 2017.  MIT License.
         <br />
-        LocalStorage: <span id="storage"></span> <button onclick="Store.clear()">Clear</button>
+        LocalStorage: <span id="storage"></span> <button id="clearButton">Clear</button>
         <a id="fog" target="_blank" href="https://github.com/broofa/npmgraph">Fork me on GitHub</a>
         </p>
       </div>
