@@ -161,9 +161,18 @@ onload = function() {
     if (!i) button.onclick();
   });
 
-  $('#clearButton').onclick=Store.clear;
-  $('#toggleInspectorButton').onclick=Inspector.toggle;
-  $('#searchText').onclick= function() {Inspector.handleSearch(this.value)};
+  $('#clearButton').onclick = Store.clear;
+  $('#toggleInspectorButton').onclick = Inspector.toggle;
+  $('#searchText').onchange = async function() {
+    const noCache = /noCache/i.test(location.search);
+    history.pushState({}, null, `${location.pathname}?q=${this.value}${noCache ? '&noCache' : ''}`);
+    await graph(this.value);
+  }
+
+
+  $('#zoomWidthButton').onclick = () => zoom(1);
+  $('#zoomDefaultButton').onclick = () => zoom(0);
+  $('#zoomHeightButton').onclick = () => zoom(2);
 
 
   Store.init();
