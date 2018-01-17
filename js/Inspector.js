@@ -23,12 +23,6 @@ export default class Inspector {
     }
   }
 
-  static async handleSearch(term) {
-    const noCache = /noCache/i.test(location.search);
-    history.pushState({}, null, `${location.pathname}?q=${term}${noCache ? '&noCache' : ''}`);
-    await graph(term);
-  }
-
   static showPane(id) {
     $$('#inspector #tabs .button').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-pane') == id);
