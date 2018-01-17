@@ -15,13 +15,17 @@ Available online at http://npm.broofa.com
 
 ## Local install
 
-NPMGraph can be run directly from your local filesystem as follows:
+NOMGraph can be run from any web server capable of serving static files.  For
+example:
 
 ```shell
-$ npm install npmgraph
-
-$ open node_modules/npmgraph/index.html  # To open file in your browser
+$ git clone git@github.com:broofa/npmgraph.git
+$ cd npmgraph
+$ npm install static-server
+$ static-server
 ```
+
+... then open http://localhost:9080 in your browser of choice.
 
 ## How it works
 
