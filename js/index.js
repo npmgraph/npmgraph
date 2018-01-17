@@ -169,8 +169,6 @@ onload = function() {
     await graph(term);
   };
 
-
-
   Store.init();
   Inspector.init();
   Inspector.showPane('pane-info');
