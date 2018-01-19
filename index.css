@@ -172,27 +172,18 @@ g .stub > polygon {
   stroke: #666;
 }
 
+#unsupported {
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  right: 1em;
+  bottom: 1em;
+  padding: 1em;
+  opacity: 0.9;
 
-#fog {
-  position: absolute;
-  right: 0;
-  right: -45px;
-  top: 45px;
-  background:#084;
-  box-shadow:2px 2px 5px rgba(0,0,0,0.8);
-  color:#fff;
-  display:block;
-  font-size:1.2em;
-  font-weight:bold;
-  overflow:hidden;
-  padding:4px 40px;
-  text-align:center;
-  text-decoration:none;
-  transition:0.5s;
-  transform:rotate(45deg);
-}
-#fog:hover {
-  background: #066;
+  background-color: white;
+  border: solid 1px black;
+  border-radius: 1em;
 }
 
 #drop_target {
@@ -204,6 +195,40 @@ g .stub > polygon {
 #drop_target.drag {
 	background-color: #ccf;
 	border-color: #68a;
+}
+
+#info-footer {
+  position: absolute;
+  bottom: 0;
+  border-top: solid 1px black;
+  padding-top: 1em;
+  left: .5em;
+  right: .5em;
+}
+
+#github {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  height: 2em;
+  line-height: 2em;
+  background:#084;
+  color:#fff;
+  font-weight:bold;
+  text-align:center;
+  text-decoration:none;
+  transition:0.5s;
+  border-radius: 4px;
+  padding: .2em .4em;
+  margin-left: 1em;
+}
+#github:hover {
+  background: #066;
+}
+#dev-controls {
+  margin-top: 15px;
+  font-size: 80%;
+  opacity: 0.6;
 }
 
 @keyframes spin {

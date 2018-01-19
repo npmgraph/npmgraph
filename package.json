@@ -23,6 +23,7 @@
   "devDependencies": {
   },
   "scripts": {
-    "deploy": "ssh broofa.com \"cd npm.broofa.com && git pull\""
+    "deploy": "ssh broofa.com \"cd npm.broofa.com && git pull\"",
+    "open": "open -a \"Google Chrome\" http://localhost:9080"
   }
 }
