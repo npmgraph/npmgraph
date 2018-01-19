@@ -3,6 +3,10 @@ import Store from './Store.js';
 import Module from './Module.js';
 import {$, $$, ajax, toTag, toLicense, renderMaintainer} from './util.js';
 
+// Feature-detect that es6 modules are loading
+window.indexLoaded = true;
+console.log('LOAD');
+
 // Max time (msecs) to rely on something in localstore cache
 const EXPIRE = 24 * 60 * 60 * 1000;
 
