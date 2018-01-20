@@ -21,7 +21,6 @@ venv/
 
 # NPM cruft
 npm-debug.log
-package-lock.json
 
 # VIM temp files
 *.sw*
