@@ -24,7 +24,7 @@
     "static-server": "3.0.0"
   },
   "scripts": {
-    "deploy": "ssh broofa.com \"cd npm.broofa.com && git reset --hard master && git pull\"",
+    "deploy": "ssh broofa.com \"cd npm.broofa.com && ./deploy.sh\"",
     "open": "open -a \"Google Chrome\" http://localhost:9080"
   }
 }
