@@ -1,5 +1,5 @@
 {
-  "name": "npmgraph",
+  "name": "NPMGraph",
   "author": {
     "name": "Robert Kieffer",
     "url": "http://github.com/broofa",
@@ -19,11 +19,12 @@
     "url": "https://github.com/broofa/npmgraph",
     "type": "git"
   },
-  "version": "0.0.0",
+  "version": "1.0.0",
   "devDependencies": {
+    "static-server": "3.0.0"
   },
   "scripts": {
-    "deploy": "ssh broofa.com \"cd npm.broofa.com && git pull\"",
+    "deploy": "ssh broofa.com \"cd npm.broofa.com && git reset --hard master && git pull\"",
     "open": "open -a \"Google Chrome\" http://localhost:9080"
   }
 }

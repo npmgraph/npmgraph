@@ -5,7 +5,6 @@ import {$, $$, ajax, toTag, toLicense, renderMaintainer} from './util.js';
 
 // Feature-detect that es6 modules are loading
 window.indexLoaded = true;
-console.log('LOAD');
 
 // Max time (msecs) to rely on something in localstore cache
 const EXPIRE = 24 * 60 * 60 * 1000;
@@ -88,6 +87,7 @@ async function graph(module) {
           })
         );
       }
+
       return Promise.all(renderP);
     }
   }

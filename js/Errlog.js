@@ -1,5 +1,4 @@
 <html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml">
-  FDSA 1.0.0 FDSFA
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="Content-Language" content="en" />
@@ -10,9 +9,7 @@
       https://registry.npmjs.cf
       https://api.npmjs.org
       https://cdnjs.cloudflare.com
-      https://fonts.gstatic.com https://fonts.googleapis.com
-      http://notify.bugsnag.com/
-      d2wy8f7a9ursnm.cloudfront.net" />
+      https://fonts.gstatic.com https://fonts.googleapis.com" />
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
     <meta name="keywords" content="visualize, visualization, graph, npm, npm modules, npm graph, npm licenses" />
@@ -25,26 +22,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.18/c3.js"></script>
-    <script src="//d2wy8f7a9ursnm.cloudfront.net/v4/bugsnag.min.js"></script>
-
     <script type="module" src="js/index.js"></script>
     <script>
-    window.bugsnagClient = bugsnag('6a07b66124c696d0f685e1cf28312e41', {
-      appVersion: 'APP_VERSION'
-    })
-
-    // Basic UI for surfacing issues to the user.  We use ES5 code here so it'll
-    // work on unsupported platforms
+    // Very basic errlog window for surfacing issues to the user.  We're writing
+    // ES5 code here so it'll work on unsupported platforms
 
     var Errlog = {
-      _getElement: function() {
+      el: function() {
         return document.querySelector('#errlog');
       },
       open: function() {
-        return this._getElement().style.display = 'block';
+        return this.el().style.display = 'block';
       },
       close: function() {
-        return this._getElement().style.display = 'none';
+        return this.el().style.display = 'none';
       },
       append: function(o) {
         var el = document.createElement('div');
@@ -52,46 +43,37 @@
         el.classList.add('entry');
         if (o instanceof Error) {
           el.classList.add('error');
-          el.innerText = o.message + '\n' + o.stack;
+          el.innerText = JSON.stringify({
+            message: o.message,
+            stack: o.stack
+          }, null, 2);
         } else if (o instanceof Document) {
-          el.append.apply(el, o.querySelector('body').children);
+          el = o.documentElement;
+          el.remove();
         } else if (o instanceof Element || o instanceof DocumentFragment) {
-          el.append(o);
+          el = o;
         } else if (typeof(o) == 'string') {
           el.innerText = o;
         } else {
           el.innerText = JSON.stringify(o, null, 2);
         }
 
-        this._getElement().appendChild(el);
+        this.el().appendChild(el);
         this.open();
       }
     };
 
     // If ES6 modules are working, indexLoaded will be set in index.js above, otherwise display a warning
     window.addEventListener('load', function() {
-      if (window.indexLoaded) return;
-
-      var ua = navigator.userAgent;
-      var msg = 'Module failed to load';
-      if (/Edge/.test(ua)) {
-        msg += '.  Please enable <a target="_blank" href="https://blogs.windows.com/msedgedev/2016/05/17/es6-modules-and-beyond/">Experimental Javascript Features</a>';
-      } else if (/Firefox/.test(ua)) {
-        msg += '.  Please make sure you have <code>dom.moduleScripts.enabled = true</code> in <a href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox#w_opening-aboutconfig" target="_blank">the Advanced Settings</a>';
-      } else {
-        msg += '. Please make sure you\'re using the latest version of Edge, Safari, Chrome, or Firefox.';
+      if (!window.indexLoaded) {
+        throw Error('');
+        errlog.append('UserAgent: ' + navigator.userAgent);
       }
-
-      throw msg;
     });
 
     window.onerror = function(msg, source, line, col, err) {
-      if (err) err.message += ' (' + source + ':' + line + ':' + col + ')';
       Errlog.append(err);
     };
-    window.addEventListener('unhandledrejection', function(err) {
-      Errlog.append(err.reason);
-    });
     </script>
   </head>
 
@@ -158,7 +140,31 @@
         }
       </script>
       <button id="errlogClose" onclick="errlogClose()">X</button>
-      <h1><span style="font-size: 30px; vertical-align: middle">&#x1f616;</span> NPMGraph is not happy.</h1>
+      <h1>Sorry, NPMGraph is unable to run</h1>
+      <dl>
+      <dt>Firefox users</dt>
+      <dd>
+      Please make sure you have <code>dom.moduleScripts.enabled = true</code> in
+      <a
+                          href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox#w_opening-aboutconfig"
+                          target="_blank">the Advanced Settings</a>
+      </dd>
+
+      <dt>Edge users</dt>
+      <dd>
+      Please enable <a target="_blank"
+        href="https://blogs.windows.com/msedgedev/2016/05/17/es6-modules-and-beyond/">Experimental
+        Javascript Features</a>
+      </dd>
+
+      <dt>Everyone else</dt>
+      <dd>
+      Please make sure you're using the latest version of Edge, Safari, Chrome,
+      or Firefox.  If you already are, and you're still seeing this, please <a
+        target="_blank" href="https://github.com/broofa/NPMGraph/issues">open an
+        Issue</a>.  (Be sure to provide your browser and user agent string).
+      </dd>
+      </dl>
     </div>
   </body>
 </html>

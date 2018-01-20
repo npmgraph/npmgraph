@@ -8,6 +8,44 @@ html, body {
 }
 h1 {font-size: 14pt;}
 h2 {font-size: 12pt;}
+
+
+dt {
+  font-weight: bold;
+  margin-top: .5em;
+}
+dd {
+  margin: 0;
+}
+
+#errlog {
+  overflow: auto;
+  position: fixed;
+  top: 1em;
+  left: 1em;
+  right: 1em;
+  bottom: 1em;
+  padding: 1em;
+  opacity: 0.9;
+
+  background-color: white;
+  border: solid 1px black;
+  border-radius: 1em;
+}
+#errlog #errlogClose {
+  position: absolute;
+  font-size: 14pt;
+  top: 10px;
+  right: 10px;
+  border-radius: 10px;
+}
+#errlog .entry {
+  margin-top: 4px;
+  border-left: solid 3px #12a382;
+  padding-left: 5px;
+  border-radius: 4px 0 0 4px;
+}
+
 #graph {
   position: absolute;
   top: 0;
@@ -170,20 +208,6 @@ g .selected > polygon {
 g .stub > polygon {
   stroke-dasharray: 4,4;
   stroke: #666;
-}
-
-#unsupported {
-  position: fixed;
-  top: 1em;
-  left: 1em;
-  right: 1em;
-  bottom: 1em;
-  padding: 1em;
-  opacity: 0.9;
-
-  background-color: white;
-  border: solid 1px black;
-  border-radius: 1em;
 }
 
 #drop_target {
