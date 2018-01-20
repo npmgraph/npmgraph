@@ -1,13 +1,12 @@
+/* global Viz */
+
 import Inspector from './Inspector.js';
 import Store from './Store.js';
 import Module from './Module.js';
-import {$, $$, ajax, toTag, toLicense, renderMaintainer} from './util.js';
+import {$, $$, toTag, toLicense} from './util.js';
 
 // Feature-detect that es6 modules are loading
 window.indexLoaded = true;
-
-// Max time (msecs) to rely on something in localstore cache
-const EXPIRE = 24 * 60 * 60 * 1000;
 
 const MODULE_RE = /^(@?[^@]+)(?:@(.*))?$/;
 
@@ -70,16 +69,16 @@ async function graph(module) {
   const edges = ['\n// Edges & per-edge styling'];
 
   const seen = {};
-  async function render(m) {
+  function render(m) {
     if (m.key in seen) return;
     seen[m.key] = true;
 
     nodes.push(`"${m}"`);
 
-    let deps = m.package.dependencies;
+    const deps = m.package.dependencies;
     if (deps) {
       const renderP = [];
-      for (let dep in deps) {
+      for (const dep in deps) {
         renderP.push(Store.getModule(dep, deps[dep])
           .then(dst => {
             edges.push(`"${m}" -> "${dst}"`);
@@ -90,6 +89,8 @@ async function graph(module) {
 
       return Promise.all(renderP);
     }
+
+    return Promise.resolve();
   }
 
   $('#load').style.display = 'block';
@@ -100,7 +101,7 @@ async function graph(module) {
   $('#load').style.display = 'none';
 
   const dotDoc = [
-    'digraph \{',
+    'digraph {',
     'rankdir="LR"',
     'labelloc="t"',
     `label="${module.package.name}"`,
@@ -112,7 +113,7 @@ async function graph(module) {
   ]
     .concat(nodes)
     .concat(edges)
-    .concat('\}')
+    .concat('}')
     .join('\n');
 
   // https://github.com/mdaines/viz.js/ is easily the most underappreciated JS
@@ -171,7 +172,7 @@ onload = function() {
     const noCache = /noCache/i.test(location.search);
     history.pushState({}, null, `${location.pathname}?q=${this.value}${noCache ? '&noCache' : ''}`);
     await graph(this.value);
-  }
+  };
 
 
   $('#zoomWidthButton').onclick = () => zoom(1);
@@ -190,7 +191,7 @@ onload = function() {
       ev.preventDefault();
 
       // If dropped items aren't files, reject them
-      var dt = ev.dataTransfer;
+      const dt = ev.dataTransfer;
       if (!dt.items) return alert('Sorry, file dropping is not supported by this browser');
       if (dt.items.length != 1) return alert('You must drop exactly one file');
 
@@ -226,7 +227,7 @@ onload = function() {
 
   // Show storage
   let chars = 0;
-  let ls = localStorage;
+  const ls = localStorage;
   for (let i = 0; i < ls.length; i++) chars += ls.getItem(ls.key(i)).length;
   $('#storage').innerText = `${chars} chars`;
   $('#tabs input').focus();

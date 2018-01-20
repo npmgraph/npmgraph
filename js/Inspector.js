@@ -1,3 +1,5 @@
+/* global c3 */
+
 import {$, $$, ajax, toLicense, renderLicense, renderMaintainer, renderModule} from './util.js';
 import Store from './Store.js';
 
@@ -17,9 +19,9 @@ export default class Inspector {
   static selectTag(tag) {
     $$('svg .node').forEach(el => el.classList.remove('selected'));
     if (typeof(tag) == 'string') {
-        $$(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
+      $$(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
     } else if (tag) {
-        tag.classList.add('selected');
+      tag.classList.add('selected');
     }
   }
 
@@ -43,9 +45,9 @@ export default class Inspector {
     const deps = {};
     const depCount = {};
     let maintainers = {};
-    let licenses = {};
+    const licenses = {};
 
-    async function walk(m) {
+    function walk(m) {
       const pkg = m.package;
       const license = toLicense(pkg);
 
@@ -71,16 +73,16 @@ export default class Inspector {
     $('#pane-graph .licenses').innerHTML = licenseTags.join('');
 
     // Make a chart
-    var config = {
-			bindto: '#chart',
-			data: {
-				columns: [],
-				type : 'pie',
-			}
-		};
+    const config = {
+      bindto: '#chart',
+      data: {
+        columns: [],
+        type: 'pie',
+      }
+    };
     config.data.columns = Object.entries(licenses)
-			.sort((a,b) => a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0);
-		var chart = c3.generate(config);
+      .sort((a, b) => a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0);
+    c3.generate(config);
     $('#inspector').scrollTo(0, 0);
   }
 
@@ -96,8 +98,8 @@ export default class Inspector {
     $('#pane-module .stats').innerHTML = '(Getting info...)';
 
     const [stats, search] = await Promise.all([
-      ajax('GET', `https:/\/api.npmjs.org/downloads/point/last-week/${module.package.name}`),
-      ajax('GET', `https:/\/registry.npmjs.org/-/v1/search?text=${module.package.name}&size=1`)
+      ajax('GET', `https://api.npmjs.org/downloads/point/last-week/${module.package.name}`),
+      ajax('GET', `https://registry.npmjs.org/-/v1/search?text=${module.package.name}&size=1`)
     ]);
 
     const scores = search.objects[0].score.detail;

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Thin wrapper around querySelector()
  */
@@ -25,7 +23,7 @@ $.up = (el, test) => {
  * moment) does not support sending a request body because we don't (yet) need
  * that feature.
  */
-export async function ajax(method, url, loader) {
+export function ajax(method, url, loader) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
@@ -54,7 +52,7 @@ export const toTag = (type, text) => {
 
 export const toLicense = pkg => {
   const license = Array.isArray(pkg.licenses) ? pkg.licenses[0] : pkg.license;
-  return (license && license.type) || license || 'None'
+  return (license && license.type) || license || 'None';
 };
 
 export const renderTag = (type, text, count = 0) => {
@@ -66,4 +64,3 @@ export const renderTag = (type, text, count = 0) => {
 export const renderMaintainer = (maintainer, count) => renderTag('maintainer', maintainer, count);
 export const renderLicense = (license, count) => renderTag('license', license, count);
 export const renderModule = (name, count) => renderTag('module', name, count);
-

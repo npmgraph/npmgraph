@@ -1,4 +1,4 @@
-import {$, $$, ajax} from './util.js';
+import {$} from './util.js';
 
 /**
  * UI widget for showing XHR load progress

@@ -1,5 +1,5 @@
 {
-  "name": "NPMGraph",
+  "name": "npmgraph",
   "author": {
     "name": "Robert Kieffer",
     "url": "http://github.com/broofa",
@@ -21,6 +21,8 @@
   },
   "version": "1.0.0",
   "devDependencies": {
+    "babel-eslint": "8.2.1",
+    "eslint": "4.16.0",
     "static-server": "3.0.0"
   },
   "scripts": {

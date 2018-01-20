@@ -1,4 +1,4 @@
-import {$, $$, ajax} from './util.js';
+import {$, ajax} from './util.js';
 import Module from './Module.js';
 import Loader from './Loader.js';
 
@@ -26,7 +26,7 @@ export default class Store {
         body = await this.get(path);
         if (!body) throw Error('No module info found');
         if (typeof(body) != 'object') throw Error('Response was not an object');
-      } catch(err) {
+      } catch (err) {
         console.error('Failed to load', path, err);
         body = {stub: true, name, version, maintainers: []};
       }
@@ -43,7 +43,7 @@ export default class Store {
           // Use most recent version
           // TODO: use highest semver instead of most recently published version
           const times = Object.keys(body.time);
-          times.sort((a,b) => {
+          times.sort((a, b) => {
             a = Date.parse(a);
             b = Date.parse(b);
             return a < b ? -1 : a > b ? 1 : 0;
@@ -51,7 +51,7 @@ export default class Store {
           vname = times.pop();
         }
 
-        body = body.versions[vname]
+        body = body.versions[vname];
       }
 
       const versionPath = `${body.name.replace(/\//g, '%2F')}/${body.version}`;
@@ -62,15 +62,9 @@ export default class Store {
       }
 
       this._moduleCache[versionPath] = this._moduleCache[path] = new Module(body);
-    };
+    }
 
     return this._moduleCache[path];
-  }
-
-  // GET package stats
-  static async getStats(name) {
-    const path = `${name.replace(/\//g, '%2F')}/${version}`;
-    return await this.get(path);
   }
 
   // GET url, caching results in localStorage
@@ -83,7 +77,7 @@ export default class Store {
 
     const loader = new Loader(path);
     $('#load').appendChild(loader.el);
-    return ajax('GET', `https:/\/registry.npmjs.cf/${path}`, loader);
+    return ajax('GET', `https://registry.npmjs.cf/${path}`, loader);
   }
 
   // Store a value in localStorage, purging if there's an error
@@ -135,6 +129,6 @@ export default class Store {
 
   static clear() {
     localStorage.clear();
-    $('#storage').innerText = `0 chars`;
+    $('#storage').innerText = '0 chars';
   }
 }
