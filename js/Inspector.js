@@ -36,7 +36,7 @@ export default class Inspector {
 
   static toggle(open) {
     const body = $('body');
-    if (open == null) open = !body.classList.contains('open');
+    if (typeof(open) != 'boolean') open = !body.classList.contains('open');
     $('#tabs .arrow').innerHTML = open ? '&#x25ba' : '&#x25c0';
     $('body').classList.toggle('open', open);
   }
