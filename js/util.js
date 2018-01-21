@@ -1,3 +1,5 @@
+/* global bugsnagClient */
+
 /**
  * Thin wrapper around querySelector()
  */
@@ -46,7 +48,10 @@ export const toTag = (type, text) => {
   // .type for license objects
   // .name for maintainer objects
   text = text.type || text.name || text;
-
+  if (!text) {
+    bugsnagClient.notify(Error(`Undefined tag text (type=${type})`));
+    text='__undefined';
+  }
   return type + '-' + text.replace(/\W/g, '_').toLowerCase();
 };
 
