@@ -252,6 +252,7 @@ g .stub > polygon {
 #info-footer {
   position: absolute;
   bottom: 0;
+  width: 100%;
   border-top: solid 1px black;
   padding-top: 1em;
 }
