@@ -174,11 +174,13 @@ onload = function() {
     await graph(this.value);
   };
 
+  $$('section > h2').forEach(el => {
+    el.onclick = () => el.closest('section').classList.toggle('closed');
+  });
 
   $('#zoomWidthButton').onclick = () => zoom(1);
   $('#zoomDefaultButton').onclick = () => zoom(0);
   $('#zoomHeightButton').onclick = () => zoom(2);
-
 
   Store.init();
   Inspector.init();

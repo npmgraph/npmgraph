@@ -1,7 +1,8 @@
 /* global c3 */
 
-import {$, $$, ajax, toLicense, renderLicense, renderMaintainer, renderModule} from './util.js';
+import {$, $$, ajax, toLicense, createTag} from './util.js';
 import Store from './Store.js';
+import md5 from './md5.js';
 
 export default class Inspector {
   static init() {
@@ -42,47 +43,92 @@ export default class Inspector {
   }
 
   static async setGraph(module) {
-    const deps = {};
-    const depCount = {};
-    let maintainers = {};
+    const dependencies = {};
+    const dependencyCounts = {};
+    const maintainers = {};
+    let maintainerCounts = {};
     const licenses = {};
+    let nModules = 0, nMaintainers = 0;
 
+    // Walk module dependency tree to gather up the info we care about
     function walk(m) {
       const pkg = m.package;
       const license = toLicense(pkg);
 
-      if (!m || (m.key in deps)) return;
+      if (!m || (m.key in dependencies)) return;
 
-      deps[m.key] = m;
-      depCount[pkg.name] = (depCount[pkg.name] || 0) + 1;
-      pkg.maintainers.forEach(u => maintainers[u.name] = (maintainers[u.name] || 0) + 1);
+      dependencies[m.key] = m;
+      nModules++;
+
+      if (module.package != pkg) dependencyCounts[pkg.name] = (dependencyCounts[pkg.name] || 0) + 1;
+      pkg.maintainers.forEach(maintainer => {
+        if (maintainer.name in maintainers) {
+          maintainerCounts[maintainer.name]++;
+        } else {
+          nMaintainers++
+          maintainerCounts[maintainer.name] = 1;
+          maintainers[maintainer.name] = maintainer;
+        }
+      });
       licenses[license] = (licenses[license] || 0) + 1;
       return Promise.all(Object.entries(pkg.dependencies || {})
-        .map(async e => walk(await Store.getModule(...e))));
+        .map(async e => {
+          const module = await Store.getModule(...e)
+          return walk(module);
+        }));
     }
-
     await walk(module);
 
-    const depList = Object.entries(deps);
-    maintainers = Object.entries(maintainers).sort().map(e => renderMaintainer(...e));
-    const licenseTags = Object.entries(licenses).sort().map(e => renderLicense(...e));
+    $('.dependencies > h2:first-of-type').childNodes[0].textContent =
+      `${nModules - 1} ${nModules == 2 ? 'Dependency' : 'Dependencies'}`;
+    $('.maintainers > h2:first-of-type').childNodes[0].textContent =
+      `${nMaintainers} ${nMaintainers == 1 ? 'Maintainer' : 'Maintainers'}`;
 
-    $('#pane-graph h2').innerHTML = `${depList.length} Modules`;
-    $('#pane-graph .dependencies').innerHTML = Object.entries(depCount).map(e => renderModule(e[0], e[1])).sort().join('');
-    $('#pane-graph .maintainers').innerHTML = maintainers.join('');
-    $('#pane-graph .licenses').innerHTML = licenseTags.join('');
+    // sort comparators for Object.entries() lists
+    const sortByEntryKey = (a,b) => a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : 0);
+    const sortByEntryValue = (a,b) => a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0);
+
+    const depEl = $('#pane-graph .dependencies');
+    $$(depEl, '.tag').forEach(el => el.remove());
+    Object.entries(dependencyCounts)
+      .sort(sortByEntryKey)
+      .forEach(e => depEl.append(createTag('module', e[0], e[1])));
+
+    const maintEl = $('#pane-graph .maintainers');
+    $$(maintEl, '.tag').forEach(el => el.remove());
+    Object.entries(maintainers)
+      .sort(sortByEntryKey)
+      .forEach(e => {
+        const count = maintainerCounts[e[0]];
+        const tag = createTag('maintainer', e[0], count);
+        if (e[1].email) {
+          const hash = md5(e[1].email).map(v => (('0' + v.toString(16)).slice(-2))).join('');
+          tag.insertBefore($.parse(`<img src="https://www.gravatar.com/avatar/${hash}?s=32" />`), tag.firstChild);
+        }
+        maintEl.append(tag);
+      });
+
+    const licEl = $('#pane-graph .licenses');
+    $$(licEl, '.tag').forEach(el => el.remove());
+    Object.entries(licenses)
+      .sort(sortByEntryKey)
+      .forEach(e => licEl.append(createTag('license', e[0], e[1])));
 
     // Make a chart
-    const config = {
-      bindto: '#chart',
-      data: {
-        columns: [],
-        type: 'pie',
-      }
-    };
-    config.data.columns = Object.entries(licenses)
-      .sort((a, b) => a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0);
-    c3.generate(config);
+    if (nModules > 1) {
+      const config = {
+        bindto: '#chart',
+        data: {
+          columns: [],
+          type: 'pie',
+        }
+      };
+      config.data.columns = Object.entries(licenses)
+        .sort((a, b) => a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0);
+      c3.generate(config);
+    } else {
+      $('#chart').innerHTML = '';
+    }
     $('#inspector').scrollTo(0, 0);
   }
 
@@ -106,7 +152,7 @@ export default class Inspector {
     $('#pane-module .stats').innerHTML = `
         <table>
         <tr><th>Maintainers</td><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
-        <tr><th>License</td><td>${renderLicense(toLicense(pkg))}</td></tr>
+        <tr><th>License</td><td>${toLicense(pkg)}</td></tr>
         <tr><th>Downloads/week</td><td>${stats.downloads}</td></tr>
         <tr><th>Quality</td><td>${(scores.quality*100).toFixed(0)}%</td></tr>
         <tr><th>Popularity</td><td>${(scores.popularity*100).toFixed(0)}%</td></tr>

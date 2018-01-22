@@ -1,5 +1,7 @@
 /* global bugsnagClient */
 
+export const reportError = bugsnagClient.notify.bind(bugsnagClient);
+
 /**
  * Thin wrapper around querySelector()
  */
@@ -19,6 +21,22 @@ $.up = (el, test) => {
   while (el && !test(el)) el = el.parentElement;
   return el;
 };
+
+
+/**
+ * Parse the provided html markup into a document fragment
+ */
+const _worker = document.createElement('div');
+$.parse = markup => {
+  _worker.innerHTML = markup;
+  const fragment = document.createDocumentFragment();
+  [..._worker.childNodes].forEach(el => {
+    el.remove();
+    fragment.appendChild(el);
+  });
+
+  return fragment;
+}
 
 /**
  * Simple ajax request support.  Supports different HTTP methods, but (for the
@@ -49,7 +67,7 @@ export const toTag = (type, text) => {
   // .name for maintainer objects
   text = text.type || text.name || text;
   if (!text) {
-    bugsnagClient.notify(Error(`Undefined tag text (type=${type})`));
+    reportError(Error(`Undefined tag text (type=${type})`));
     text='__undefined';
   }
   return type + '-' + text.replace(/\W/g, '_').toLowerCase();
@@ -60,12 +78,12 @@ export const toLicense = pkg => {
   return (license && license.type) || license || 'None';
 };
 
-export const renderTag = (type, text, count = 0) => {
-  const tag = toTag(type, text);
-  text = count < 2 ? text : `${text}(${count})`;
+export const createTag = (type, text, count = 0) => {
+  const el = document.createElement('div');
 
-  return `<span class="tag ${type}" data-tag="${tag}">${text}</span>`;
+  el.classList.add('tag', type);
+  el.dataset.tag = toTag(type, text);
+  el.title = el.innerText = count < 2 ? text : `${text}(${count})`;
+
+  return el;
 };
-export const renderMaintainer = (maintainer, count) => renderTag('maintainer', maintainer, count);
-export const renderLicense = (license, count) => renderTag('license', license, count);
-export const renderModule = (name, count) => renderTag('module', name, count);

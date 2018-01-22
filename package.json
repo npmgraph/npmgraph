@@ -23,6 +23,7 @@
   "devDependencies": {
     "babel-eslint": "8.2.1",
     "eslint": "4.16.0",
+    "standard-version": "4.3.0",
     "static-server": "3.0.0"
   },
   "scripts": {

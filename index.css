@@ -98,12 +98,20 @@ body.open #inspector {
 #inspector .tag {
   cursor: pointer;
   display: inline-block;
+  width: 30%;
+  white-space: nowrap;
   background-color: #ddd;
   padding: 2px;
   margin: 1px 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #inspector .tag:hover {
   background-color: #ddf;
+}
+#inspector .tag img {
+  vertical-align: middle;
+  margin-right: 4px;
 }
 #inspector .description {
   font-weight: bold;
@@ -141,20 +149,41 @@ body.open #inspector {
 #inspector #tabs .button.active {
   background-color: white;
 }
-.pane > div {
-  margin: .5em 0;
-}
-
 .pane {
   position: absolute;
   top: 24px;
+  bottom: 0;
+  left: .5em;
+  right: .5em;
   display: none;
-  padding: .3em .5em;
+  padding: .3em 0;
   padding-right: 0;
-  bottom: 0px;
 }
+
 .pane.open {
   display: block;
+}
+
+#inspector .pane section > h2 {
+  cursor: pointer;
+  position: relative;
+  background-color: #5c6f69;
+  color: white;
+  padding: .2em;
+}
+#inspector .pane section.closed > :not(h2) {
+  display: none;
+}
+
+.pane section h2 span {
+  position: absolute;
+  right: .2em;
+}
+.pane section h2 span:before {
+  content: "expand_less"
+}
+.pane section.closed h2 span:before {
+  content: "expand_more"
 }
 
 .stats th {text-align: left;}
@@ -214,7 +243,6 @@ g .stub > polygon {
   background-color: #ddd;
   border: dashed 2px #888;
   padding: 1em;
-  margin-right: .5em;
 }
 #drop_target.drag {
 	background-color: #ccf;
@@ -226,8 +254,6 @@ g .stub > polygon {
   bottom: 0;
   border-top: solid 1px black;
   padding-top: 1em;
-  left: .5em;
-  right: .5em;
 }
 
 #github {

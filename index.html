@@ -11,6 +11,7 @@
       https://cdnjs.cloudflare.com
       https://fonts.gstatic.com https://fonts.googleapis.com
       http://notify.bugsnag.com/
+      https://www.gravatar.com/
       d2wy8f7a9ursnm.cloudfront.net" />
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
@@ -116,19 +117,32 @@
       </div>
 
       <div class="pane" id="pane-graph">
-        <h2>Module + Dependencies</h2>
-        <div class="dependencies"></div>
-        <div><h2>Maintainers</h2><div class="maintainers"></div></div>
-        <div><h2>Licenses</h2><div class="licenses"></div></div>
-        <div id="chart"></div>
+        <section class="dependencies">
+          <h2>Dependencies<span class="material-icons"></span></h2>
+        </section>
+        <section class="maintainers">
+          <h2>Maintainers<span class="material-icons"></span></h2>
+        </section>
+        <section>
+          <h2>Licenses<span class="material-icons"></span></h2>
+          <div class="licenses"></div>
+          <div id="chart">
+          </div>
+        </section>
       </div>
 
       <div class="pane" id="pane-module">
         <h2>Module</h2>
-        <div class="description"></div>
-        <div class="stats"></div>
-        <h2>package.json</h2>
-        <pre class="json"></pre>
+        <section class="description">
+          <h2>Description<span class="material-icons"></span></h2>
+        </section>
+        <section class="stats">
+          <h2>Stats<span class="material-icons"></span></h2>
+        </section>
+        <section>
+          <h2>package.json<span class="material-icons"></span></h2>
+          <pre class="json"></pre>
+        </section>
       </div>
 
       <div class="pane open" id="pane-info">
