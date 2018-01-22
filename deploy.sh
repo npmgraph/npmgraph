@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION=$(grep -oP '(?<=version": ")[^"]+' < package.json)
+VERSION=$(grep -oP '(?<="version": ")[^"]+' < package.json)
 HOST=`hostname`
 
 if [ $HOST == "francis-lewis" ]; then
