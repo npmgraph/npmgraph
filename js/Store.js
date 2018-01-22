@@ -1,4 +1,4 @@
-import {$, ajax} from './util.js';
+import {$, ajax, reportError} from './util.js';
 import Module from './Module.js';
 import Loader from './Loader.js';
 
@@ -27,7 +27,7 @@ export default class Store {
         if (!body) throw Error('No module info found');
         if (typeof(body) != 'object') throw Error('Response was not an object');
       } catch (err) {
-        console.error('Failed to load', path, err);
+        reportError(Error(`Failed to load module ${path} (${err.message})`));
         body = {stub: true, name, version, maintainers: []};
       }
 

@@ -143,10 +143,17 @@ export default class Inspector {
 
     $('#pane-module .stats').innerHTML = '(Getting info...)';
 
-    const [stats, search] = await Promise.all([
-      ajax('GET', `https://api.npmjs.org/downloads/point/last-week/${module.package.name}`),
-      ajax('GET', `https://registry.npmjs.org/-/v1/search?text=${module.package.name}&size=1`)
-    ]);
+    let requests;
+    try {
+      requests = await Promise.all([
+        ajax('GET', `https://api.npmjs.org/downloads/point/last-week/${module.package.name}`),
+        ajax('GET', `https://registry.npmjs.org/-/v1/search?text=${module.package.name}&size=1`)
+      ]);
+    } catch (err) {
+      $('#pane-module .stats').innerText = `Module info unavailable (${err.message})`;
+      return;
+    }
+    const [stats, search] = requests;
 
     const scores = search.objects[0].score.detail;
     $('#pane-module .stats').innerHTML = `

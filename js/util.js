@@ -53,7 +53,9 @@ export function ajax(method, url, loader) {
         resolve(JSON.parse(xhr.responseText));
       } else {
         if (loader) loader.error();
-        reject(xhr.status);
+        const err = new Error(`HTTP ${xhr.status}: ${method} ${url}`);
+        reportError(err);
+        reject(err);
       }
     };
 
