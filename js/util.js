@@ -36,7 +36,7 @@ $.parse = markup => {
   });
 
   return fragment;
-}
+};
 
 /**
  * Simple ajax request support.  Supports different HTTP methods, but (for the

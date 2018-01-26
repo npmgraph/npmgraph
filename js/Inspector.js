@@ -46,7 +46,7 @@ export default class Inspector {
     const dependencies = {};
     const dependencyCounts = {};
     const maintainers = {};
-    let maintainerCounts = {};
+    const maintainerCounts = {};
     const licenses = {};
     let nModules = 0, nMaintainers = 0;
 
@@ -65,7 +65,7 @@ export default class Inspector {
         if (maintainer.name in maintainers) {
           maintainerCounts[maintainer.name]++;
         } else {
-          nMaintainers++
+          nMaintainers++;
           maintainerCounts[maintainer.name] = 1;
           maintainers[maintainer.name] = maintainer;
         }
@@ -73,7 +73,7 @@ export default class Inspector {
       licenses[license] = (licenses[license] || 0) + 1;
       return Promise.all(Object.entries(pkg.dependencies || {})
         .map(async e => {
-          const module = await Store.getModule(...e)
+          const module = await Store.getModule(...e);
           return walk(module);
         }));
     }
@@ -85,8 +85,8 @@ export default class Inspector {
       `${nMaintainers} ${nMaintainers == 1 ? 'Maintainer' : 'Maintainers'}`;
 
     // sort comparators for Object.entries() lists
-    const sortByEntryKey = (a,b) => a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : 0);
-    const sortByEntryValue = (a,b) => a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0);
+    const sortByEntryKey = (a, b) => a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : 0);
+    const sortByEntryValue = (a, b) => a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0);
 
     const depEl = $('#pane-graph .dependencies');
     $$(depEl, '.tag').forEach(el => el.remove());
