@@ -76,8 +76,16 @@ export const toTag = (type, text) => {
 };
 
 export const toLicense = pkg => {
-  const license = Array.isArray(pkg.licenses) ? pkg.licenses[0] : pkg.license;
-  return (license && license.type) || license || 'None';
+  let license;
+  if (pkg.license) {
+    license = pkg.license.type || pkg.license;
+  } else if (pkg.licenses) {
+    license = pkg.licenses.map(l => l.type || l).join(', ')
+  } else {
+    license = '(none)';
+  }
+
+  return typeof(license) == 'string' ? license : '(unclear)';
 };
 
 export const createTag = (type, text, count = 0) => {

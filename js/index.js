@@ -70,6 +70,10 @@ async function graph(module) {
 
   const seen = {};
   function render(m) {
+    if (Array.isArray(m)) {
+      return Promise.all(m.map(render));
+    }
+
     if (m.key in seen) return;
     seen[m.key] = true;
 
@@ -94,17 +98,21 @@ async function graph(module) {
   }
 
   $('#load').style.display = 'block';
-  if (typeof(module) == 'string') {
-    module = await Store.getModule(...entryFromKey(module));
-  }
-  await render(module);
+  let modules = module;
+  if (typeof(module) == 'string') modules = module.split(/[, ]+/);
+
+  modules = await Promise.all(modules.map(moduleName =>
+    Store.getModule(...entryFromKey(moduleName))
+  ));
+  await render(modules);
   $('#load').style.display = 'none';
 
+  const title = modules.map(m => m.package.name).join();
   const dotDoc = [
     'digraph {',
     'rankdir="LR"',
     'labelloc="t"',
-    `label="${module.package.name}"`,
+    `label="${title}"`,
     '// Default styles',
     `graph [fontsize=16 fontname="${FONT}"]`,
     `node [shape=box fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
@@ -134,7 +142,7 @@ async function graph(module) {
   svg.setAttribute('viewBox', svg.getAttribute('viewBox').split(' ').map(Math.ceil).join(' '));
 
   $('#graph').appendChild(svg);
-  zoom(0);
+  zoom(1);
 
   $$('.loader').forEach(el => el.remove());
   $$('g.node').forEach(async el => {
@@ -144,9 +152,19 @@ async function graph(module) {
     const pkg = m && m.package;
     el.classList.add(toTag('module', key.replace(/@.*/, '')));
     pkg.maintainers.forEach(m => el.classList.add(toTag('maintainer', m.name)));
-    el.classList.add(toTag('license', toLicense(pkg)));
+
+    if (Array.isArray(pkg.licenses)) {
+      el.classList.add(toTag('license', toLicense(pkg)));
+    } else {
+      el.classList.add(toTag('license', toLicense(pkg)));
+    }
+
     if (pkg.stub) el.classList.add('stub');
   });
+
+  // TODO: 'Need to use modules[] below, rather than just picking the first one
+  // here.
+  module = modules[0];
 
   Inspector.setGraph(module);
   Inspector.setModule(module);
@@ -157,7 +175,7 @@ async function graph(module) {
 
 window.onpopstate = function() {
   const target = /q=([^&]+)/.test(location.search) && RegExp.$1;
-  if (target) graph(target || 'request');
+  if (target) graph(decodeURIComponent(target) || 'request');
 };
 
 onload = function() {

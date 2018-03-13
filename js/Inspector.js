@@ -137,7 +137,12 @@ export default class Inspector {
 
     $('#pane-module h2').innerHTML = `<a href="?q=${module.key}">${module.key}</a> Info`;
     $('#pane-module .description').innerHTML = `${module.package.description}`;
-    $('#pane-module .json').innerText = JSON.stringify(pkg, null, 2);
+
+    const pkgCopy = {...pkg};
+    for (let k in pkgCopy) {
+      if (/^_.*|gitHead|bugs|scripts|dist|directories/.test(k)) delete pkgCopy[k];
+    }
+    $('#pane-module .json').innerText = JSON.stringify(pkgCopy, null, 2);
 
     $('#inspector').scrollTo(0, 0);
 
