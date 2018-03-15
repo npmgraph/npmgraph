@@ -3,7 +3,7 @@
 import Inspector from './Inspector.js';
 import Store from './Store.js';
 import Module from './Module.js';
-import {$, $$, toTag, toLicense} from './util.js';
+import {$, $$, toTag, toLicense, ajax} from './util.js';
 
 // Feature-detect that es6 modules are loading
 window.indexLoaded = true;
@@ -100,6 +100,13 @@ async function graph(module) {
   $('#load').style.display = 'block';
   let modules = module;
   if (typeof(module) == 'string') modules = module.split(/[, ]+/);
+
+  // Because this is a single-page app that relies on other servers to do most
+  // of the heavy lifting (e.g. npmjs.cl, npmjs.org), my weblogs don't actually
+  // contain info about the modules people are graphing.  Because that
+  // information is kind of interesting, we make a tracking request here to
+  // capture that info.
+  ajax('GET', `/track.php?q=${modules.join()}`);
 
   modules = await Promise.all(modules.map(moduleName =>
     Store.getModule(...entryFromKey(moduleName))
