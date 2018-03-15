@@ -9,8 +9,8 @@ if [ $HOST != "francis-lewis" ]; then
   exit 0
 fi
 
-git checkout index.html
-git pull
+git fetch
+git reset --hard origin/master
 
 VERSION=$(grep -oP '(?<="version": ")[^"]+' < package.json)
 echo "Setting APP_VERSION=${VERSION}"
