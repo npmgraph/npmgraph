@@ -100,6 +100,7 @@ async function graph(module) {
   $('#load').style.display = 'block';
   let modules = module;
   if (typeof(module) == 'string') modules = module.split(/[, ]+/);
+  modules.sort();
 
   // Because this is a single-page app that relies on other servers to do most
   // of the heavy lifting (e.g. npmjs.cl, npmjs.org), my weblogs don't actually
