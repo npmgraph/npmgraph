@@ -99,19 +99,23 @@ async function graph(module) {
 
   $('#load').style.display = 'block';
   let modules = module;
-  if (typeof(module) == 'string') modules = module.split(/[, ]+/);
-  modules.sort();
+  if (typeof(module) == 'string') {
+    modules = module.split(/[, ]+/);
+    modules.sort();
 
-  // Because this is a single-page app that relies on other servers to do most
-  // of the heavy lifting (e.g. npmjs.cl, npmjs.org), my weblogs don't actually
-  // contain info about the modules people are graphing.  Because that
-  // information is kind of interesting, we make a tracking request here to
-  // capture that info.
-  ajax('GET', `/track.php?q=${modules.join()}`);
+    // Because this is a single-page app that relies on other servers to do most
+    // of the heavy lifting (e.g. npmjs.cl, npmjs.org), my weblogs don't actually
+    // contain info about the modules people are graphing.  Because that
+    // information is kind of interesting, we make a tracking request here to
+    // capture that info.
+    if (location.hostname == 'npm.broofa.com') ajax('GET', `/track.php?q=${modules.join()}`);
 
-  modules = await Promise.all(modules.map(moduleName =>
-    Store.getModule(...entryFromKey(moduleName))
-  ));
+    modules = await Promise.all(modules.map(moduleName =>
+      Store.getModule(...entryFromKey(moduleName))
+    ));
+  } else {
+    modules = [module];
+  }
   await render(modules);
   $('#load').style.display = 'none';
 
