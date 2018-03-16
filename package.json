@@ -19,7 +19,7 @@
     "url": "https://github.com/broofa/npmgraph",
     "type": "git"
   },
-  "version": "2.0.1",
+  "version": "2.0.2",
   "devDependencies": {
     "babel-eslint": "8.2.1",
     "eslint": "4.16.0",
