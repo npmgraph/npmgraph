@@ -12,6 +12,8 @@
       https://fonts.gstatic.com https://fonts.googleapis.com
       http://notify.bugsnag.com/
       https://www.gravatar.com/
+      https://www.googletagmanager.com/
+      https://www.google-analytics.com/
       d2wy8f7a9ursnm.cloudfront.net" />
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
@@ -21,6 +23,17 @@
 
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Material+Icons" rel="stylesheet" />
     <link href="./index.css" rel="stylesheet" />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    const GA_TRACKING_ID = 'UA-6434483-2';
+    gtag('js', new Date());
+    gtag('config', GA_TRACKING_ID);
+    </script>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>

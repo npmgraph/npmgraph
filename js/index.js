@@ -200,7 +200,9 @@ onload = function() {
   $('#toggleInspectorButton').onclick = Inspector.toggle;
   $('#searchText').onchange = async function() {
     const noCache = /noCache/i.test(location.search);
-    history.pushState({}, null, `${location.pathname}?q=${this.value}${noCache ? '&noCache' : ''}`);
+    const url = `${location.pathname}?q=${this.value}`;
+    history.pushState({}, null, `${url}${noCache ? '&noCache' : ''}`);
+    gtag('config', GA_TRACKING_ID, {'page_path': url});
     await graph(this.value);
   };
 
