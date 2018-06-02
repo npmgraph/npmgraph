@@ -160,15 +160,19 @@ export default class Inspector {
     }
     const [stats, search] = requests;
 
-    const scores = search.objects[0].score.detail;
+    const scores = search.objects[0] && search.objects[0].score.detail;
+    const quality = scores ? (scores.quality*100).toFixed(0) + '%' : 'n/a';
+    const popularity = scores ? (scores.popularity*100).toFixed(0) + '%' : 'n/a';
+    const maintenance = scores ? (scores.maintenance*100).toFixed(0) + '%' : 'n/a';
+
     $('#pane-module .stats').innerHTML = `
         <table>
         <tr><th>Maintainers</td><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
         <tr><th>License</td><td>${toLicense(pkg)}</td></tr>
         <tr><th>Downloads/week</td><td>${stats.downloads}</td></tr>
-        <tr><th>Quality</td><td>${(scores.quality*100).toFixed(0)}%</td></tr>
-        <tr><th>Popularity</td><td>${(scores.popularity*100).toFixed(0)}%</td></tr>
-        <tr><th>Maintenance</td><td>${(scores.maintenance*100).toFixed(0)}%</td></tr>
+        <tr><th>Quality</td><td>${quality}</td></tr>
+        <tr><th>Popularity</td><td>${popularity}</td></tr>
+        <tr><th>Maintenance</td><td>${maintenance}</td></tr>
         </table>
         `;
   }

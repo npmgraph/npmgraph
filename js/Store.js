@@ -3,7 +3,7 @@ import Module from './Module.js';
 import Loader from './Loader.js';
 
 // Max time (msecs) to rely on something in localstore cache
-const EXPIRE = 24 * 60 * 60 * 1000;
+const EXPIRE = 60 * 60 * 1000;
 
 /**
  * HTTP request api backed by localStorage cache
@@ -18,6 +18,18 @@ export default class Store {
   // GET package info
   static async getModule(name, version) {
     let path = `${name.replace(/\//g, '%2F')}`;
+
+    // Get bare version string (possible ignore semver qualifiers)
+    const parts = version && version.match(/(\d+)/g);
+    if (parts) {
+      const [major, minor, patch] = version.match(/(\d+)/g);
+      const sanitizedVersion = `${major || 0}.${minor || 0}.${patch || 0}`;
+      if (sanitizedVersion != version) {
+        console.log(`${name}, ${version} -> ${sanitizedVersion}`);
+        version = sanitizedVersion;
+      }
+    }
+
     if (version) path += `/${version}`;
 
     if (!this._moduleCache[path]) {
@@ -26,6 +38,7 @@ export default class Store {
         body = await this.get(path);
         if (!body) throw Error('No module info found');
         if (typeof(body) != 'object') throw Error('Response was not an object');
+        if (body.unpublished) throw Error('Module is unpublished');
       } catch (err) {
         reportError(Error(`Failed to load module ${path} (${err.message})`));
         body = {stub: true, name, version, maintainers: []};

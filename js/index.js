@@ -5,7 +5,7 @@ import Store from './Store.js';
 import Module from './Module.js';
 import {$, $$, toTag, toLicense, ajax} from './util.js';
 
-// Feature-detect that es6 modules are loading
+// Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;
 
 const MODULE_RE = /^(@?[^@]+)(?:@(.*))?$/;
