@@ -1,6 +1,8 @@
 /* global bugsnagClient */
 
-export const reportError = bugsnagClient.notify.bind(bugsnagClient);
+export const reportError = err => {
+  bugsnagClient.notify(err);
+};
 
 /**
  * Thin wrapper around querySelector()
@@ -54,6 +56,7 @@ export function ajax(method, url, loader) {
       } else {
         if (loader) loader.error();
         const err = new Error(`HTTP ${xhr.status}: ${method} ${url}`);
+        err.status = xhr.status;
         reportError(err);
         reject(err);
       }

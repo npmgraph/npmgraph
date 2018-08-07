@@ -40,7 +40,12 @@ export default class Store {
         if (typeof(body) != 'object') throw Error('Response was not an object');
         if (body.unpublished) throw Error('Module is unpublished');
       } catch (err) {
-        reportError(Error(`Failed to load module ${path} (${err.message})`));
+        if (err.status >= 500) {
+          reportError(Error(`Proxy error: ${err.status}`));
+        }  else {
+          reportError(Error(`Failed to load module ${path} (${err.message})`));
+        }
+
         body = {stub: true, name, version, maintainers: []};
       }
 

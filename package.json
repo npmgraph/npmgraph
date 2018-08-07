@@ -6,7 +6,9 @@
     "email": "robert@broofa.com"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "semver": "5.5.0"
+  },
   "description": "Visualize NPM dependency graphs (public and private!)",
   "keywords": [
     "npm",
