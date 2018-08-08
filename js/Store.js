@@ -1,6 +1,7 @@
 import {$, ajax, reportError} from './util.js';
 import Module from './Module.js';
 import Loader from './Loader.js';
+import Flash from './Flash.js';
 
 // Max time (msecs) to rely on something in localstore cache
 const EXPIRE = 60 * 60 * 1000;
@@ -25,7 +26,7 @@ export default class Store {
       const [major, minor, patch] = version.match(/(\d+)/g);
       const sanitizedVersion = `${major || 0}.${minor || 0}.${patch || 0}`;
       if (sanitizedVersion != version) {
-        console.log(`${name}, ${version} -> ${sanitizedVersion}`);
+        //console.log(`${name}, ${version} -> ${sanitizedVersion}`);
         version = sanitizedVersion;
       }
     }
@@ -41,12 +42,16 @@ export default class Store {
         if (body.unpublished) throw Error('Module is unpublished');
       } catch (err) {
         if (err.status >= 500) {
-          reportError(Error(`Proxy error: ${err.status}`));
-        }  else {
-          reportError(Error(`Failed to load module ${path} (${err.message})`));
+          Flash(`Uppity network error (${err.status}).  Try again later?`);
+        } else if (err.status > 0) {
+          Flash(`${err.status} error: ${path}`);
+        } else {
+          Flash(err);
         }
 
         body = {stub: true, name, version, maintainers: []};
+
+        reportError(err);
       }
 
       // If fetched a path with no version, NPM repo returns info about *all*

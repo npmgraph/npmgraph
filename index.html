@@ -1,3 +1,5 @@
+<!DOCTYPE html />
+
 <html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
@@ -47,41 +49,6 @@
       appVersion: 'APP_VERSION'
     });
 
-    // Basic UI for surfacing issues to the user.  We use ES5 code here so it'll
-    // work on unsupported platforms
-
-    var Errlog = {
-      _getElement: function() {
-        return document.querySelector('#errlog');
-      },
-      open: function() {
-        return this._getElement().style.display = 'block';
-      },
-      close: function() {
-        return this._getElement().style.display = 'none';
-      },
-      append: function(o) {
-        var el = document.createElement('div');
-
-        el.classList.add('entry');
-        if (o instanceof Error) {
-          el.classList.add('error');
-          el.innerText = o.message + '\n' + o.stack;
-        } else if (o instanceof Document) {
-          el.append.apply(el, o.querySelector('body').children);
-        } else if (o instanceof Element || o instanceof DocumentFragment) {
-          el.append(o);
-        } else if (typeof(o) == 'string') {
-          el.innerText = o;
-        } else {
-          el.innerText = JSON.stringify(o, null, 2);
-        }
-
-        this._getElement().appendChild(el);
-        this.open();
-      }
-    };
-
     // If ES6 modules are working, indexLoaded will be set in index.js above, otherwise display a warning
     window.addEventListener('load', function() {
       if (window.indexLoaded) return;
@@ -98,15 +65,7 @@
 
       throw msg;
     });
-
-    window.onerror = function(msg, source, line, col, err) {
-      if (err) err.message += ' (' + source + ':' + line + ':' + col + ')';
-      Errlog.append(err);
-    };
-    window.addEventListener('unhandledrejection', function(err) {
-      Errlog.append(err.reason);
-    });
-    </script>
+  </script>
   </head>
 
   <body class="open">
@@ -178,14 +137,6 @@
       </div>
     </div>
 
-    <div id="errlog" style="display:none">
-      <script>
-        function errlogClose() {
-          document.querySelector('#errlog').style.display = 'none';
-        }
-      </script>
-      <button id="errlogClose" onclick="errlogClose()">X</button>
-      <h1><span style="font-size: 30px; vertical-align: middle">&#x1f616;</span> NPMGraph is not happy.</h1>
-    </div>
+    <div id="errlog" />
   </body>
 </html>

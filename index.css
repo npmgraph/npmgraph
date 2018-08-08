@@ -18,32 +18,11 @@ dd {
   margin: 0;
 }
 
-#errlog {
-  overflow: auto;
+.flash {
   position: fixed;
-  top: 1em;
-  left: 1em;
-  right: 1em;
-  bottom: 1em;
-  padding: 1em;
-  opacity: 0.9;
-
-  background-color: white;
-  border: solid 1px black;
-  border-radius: 1em;
-}
-#errlog #errlogClose {
-  position: absolute;
-  font-size: 14pt;
-  top: 10px;
-  right: 10px;
-  border-radius: 10px;
-}
-#errlog .entry {
-  margin-top: 4px;
-  border-left: solid 3px #12a382;
-  padding-left: 5px;
-  border-radius: 4px 0 0 4px;
+  padding: 4px;
+  transition-property: left;
+  transition-duration: .7s;
 }
 
 #graph {
@@ -62,7 +41,7 @@ dd {
   right: 4em;
 }
 #graph-controls button {
-  dispaly: inline-block;
+  display: inline-block;
   font-size: 30px;
   line-height: 30px;
   height: 30px;
