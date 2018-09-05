@@ -167,6 +167,8 @@ body.open #inspector {
 
 .stats th {text-align: left;}
 .stats td {text-align: left;}
+.stats .rank {border: solid 1px #ccc; width: 200px}
+.stats .rank div {background-color: #ccc; text-align: right}
 
 .loader {
   border: solid 1px gray;

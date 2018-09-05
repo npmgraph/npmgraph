@@ -167,12 +167,12 @@ export default class Inspector {
 
     $('#pane-module .stats').innerHTML = `
         <table>
-        <tr><th>Maintainers</td><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
-        <tr><th>License</td><td>${toLicense(pkg)}</td></tr>
-        <tr><th>Downloads/week</td><td>${stats.downloads}</td></tr>
-        <tr><th>Quality</td><td>${quality}</td></tr>
-        <tr><th>Popularity</td><td>${popularity}</td></tr>
-        <tr><th>Maintenance</td><td>${maintenance}</td></tr>
+        <tr><th>Maintainers</th><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
+        <tr><th>License</th><td>${toLicense(pkg)}</td></tr>
+        <tr><th>Downloads/week</th><td>${stats.downloads}</td></tr>
+        <tr><th>Quality</th><td class="rank"><div style="width:${quality}">${quality}</td></tr>
+        <tr><th>Popularity</th><td class="rank"><div style="width:${popularity}">${popularity}</div></td></tr>
+        <tr><th>Maintenance</th><td class="rank"><div style="width:${maintenance}">${maintenance}</td></tr>
         </table>
         `;
   }
