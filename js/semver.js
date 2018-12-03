@@ -4,7 +4,7 @@
  */
 
 // The debug function is excluded entirely from the minified version.
-let debug = (typof(DEBUG) != 'undefined' && /\bsemver\b/.test(DEBUG) ?
+let debug = typeof(DEBUG) != 'undefined' && /\bsemver\b/.test(DEBUG) ?
   (...args) => console.log('SEMVER', ...args) :
   () => {};
 

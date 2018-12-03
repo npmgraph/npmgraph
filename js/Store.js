@@ -2,6 +2,9 @@ import {$, ajax, reportError} from './util.js';
 import Module from './Module.js';
 import Loader from './Loader.js';
 import Flash from './Flash.js';
+import * as semver from './semver.js';
+
+window.semver = semver;
 
 // Max time (msecs) to rely on something in localstore cache
 const EXPIRE = 60 * 60 * 1000;
@@ -18,25 +21,17 @@ export default class Store {
 
   // GET package info
   static async getModule(name, version) {
+    // url-escape "/"'s in the name
     let path = `${name.replace(/\//g, '%2F')}`;
 
-    // Get bare version string (possible ignore semver qualifiers)
-    const parts = version && version.match(/(\d+)/g);
-    if (parts) {
-      const [major, minor, patch] = version.match(/(\d+)/g);
-      const sanitizedVersion = `${major || 0}.${minor || 0}.${patch || 0}`;
-      if (sanitizedVersion != version) {
-        //console.log(`${name}, ${version} -> ${sanitizedVersion}`);
-        version = sanitizedVersion;
-      }
-    }
+    // If semver isn't valid (i.e. not a simple, canonical version - e.g.
+    // "1.2.3") fetch all versions (we'll figure out the specific version below)
+    const cachePath = semver.valid(version) ? `${path}/${version}` : path;
 
-    if (version) path += `/${version}`;
-
-    if (!this._moduleCache[path]) {
+    if (!this._moduleCache[cachePath]) {
       let body;
       try {
-        body = await this.get(path);
+        body = await this.get(semver.valid(version) ? cachePath : path);
         if (!body) throw Error('No module info found');
         if (typeof(body) != 'object') throw Error('Response was not an object');
         if (body.unpublished) throw Error('Module is unpublished');
@@ -44,47 +39,41 @@ export default class Store {
         if (err.status >= 500) {
           Flash(`Uppity network error (${err.status}).  Try again later?`);
         } else if (err.status > 0) {
-          Flash(`${err.status} error: ${path}`);
+          Flash(`${err.status} error: ${cachePath}`);
         } else {
           Flash(err);
         }
 
-        body = {stub: true, name, version, maintainers: []};
-
         reportError(err);
       }
 
-      // If fetched a path with no version, NPM repo returns info about *all*
-      // versions, so pick the most appropriate one
-      if (body.versions) {
-        let vname;
-        if ('dist-tags' in body && 'latest' in body['dist-tags']) {
-          // Use version specified by 'latest' dist-tag
-          vname = body['dist-tags'].latest;
-        }
-        if (!vname) {
-          // Use most recent version
-          // TODO: use highest semver instead of most recently published version
-          const times = Object.keys(body.time);
-          times.sort((a, b) => {
-            a = Date.parse(a);
-            b = Date.parse(b);
-            return a < b ? -1 : a > b ? 1 : 0;
-          });
-          vname = times.pop();
-        }
+      // If no explicit version was requested, find best semver match
+      if (body) {
+        if (body.versions) {
+          let resolvedVersion;
 
-        body = body.versions[vname];
+          if (!version) {
+            resolvedVersion = ('dist-tags' in body) && body['dist-tags'].latest;
+          }
+          if (!resolvedVersion) {
+            // Pick last version that satisfies semver
+            for (const v in body.versions) {
+              if (semver.satisfies(v, version || '*')) resolvedVersion = v;
+            }
+          }
+
+          body = body.versions[resolvedVersion];
+        }
+      } else {
+        body = {stub: true, name, version, maintainers: []};
       }
 
-      const versionPath = `${body.name.replace(/\//g, '%2F')}/${body.version}`;
-
-      if (!body.stub && path != versionPath) {
-        this.store(path, versionPath);
-        this.store(versionPath, body);
+      if (!body.stub && path != cachePath) {
+        this.store(path, cachePath);
+        this.store(cachePath, body);
       }
 
-      this._moduleCache[versionPath] = this._moduleCache[path] = new Module(body);
+      this._moduleCache[cachePath] = this._moduleCache[path] = new Module(body);
     }
 
     return this._moduleCache[path];
@@ -144,7 +133,7 @@ export default class Store {
       });
     prune = prune.slice(0, Math.max(1, prune.length >> 1));
 
-    // Copile list of names to prune
+    // Compile list of names to prune
     const names = {};
     prune.forEach(e => names[e[0]] = true);
     entries.filter(e => names[e[0]] || names[e[1]]).forEach(e => ls.removeItem(e[0]));
