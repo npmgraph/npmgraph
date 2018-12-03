@@ -67,9 +67,11 @@ export default class Store {
         if (!resolvedVersion) {
           // Pick last version that satisfies semver
           for (const v in versions) {
-            if (semver.satisfies(v, version || '*')) body = versions[v];
+            if (semver.satisfies(v, version || '*')) resolvedVersion = v;
           }
         }
+
+        body = versions[resolvedVersion];
       }
 
       // If we fail to find info, just create a stub entry
