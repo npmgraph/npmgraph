@@ -32,47 +32,51 @@ export default class Store {
 
     if (!this._moduleCache[cachePath]) {
       let body;
-      try {
-        // HACK: Don't try to fetch specific version for scoped module name
-        // See https://goo.gl/dSMitm
-        body = await this.get(!isScoped && semver.valid(version) ? cachePath : path);
-        if (!body) throw Error('No module info found');
-        if (typeof(body) != 'object') throw Error('Response was not an object');
-        if (body.unpublished) throw Error('Module is unpublished');
-      } catch (err) {
-        if (err.status >= 500) {
-          Flash(`Uppity network error (${err.status}).  Try again later?`);
-        } else if (err.status > 0) {
-          Flash(`${err.status} error: ${cachePath}`);
-        } else {
-          Flash(err);
-        }
 
-        reportError(err);
+      if (!(/github:|git\+/.test(version))) { // We don't support git-hosted modules
+        try {
+          // HACK: Don't try to fetch specific version for scoped module name
+          // See https://goo.gl/dSMitm
+          body = await this.get(!isScoped && semver.valid(version) ? cachePath : path);
+          if (!body) throw Error('No module info found');
+          if (typeof(body) != 'object') throw Error('Response was not an object');
+          if (body.unpublished) throw Error('Module is unpublished');
+        } catch (err) {
+          if (err.status >= 500) {
+            Flash(`Uppity network error (${err.status}).  Try again later?`);
+          } else if (err.status > 0) {
+            Flash(`${err.status} error: ${name}@${version}`);
+          } else {
+            Flash(err);
+          }
+
+          reportError(err);
+        }
       }
 
       // If no explicit version was requested, find best semver match
-      if (body) {
-        if (body.versions) {
-          let resolvedVersion;
+      const versions = body && body.versions;
+      if (versions) {
+        let resolvedVersion;
 
-          if (!version) {
-            resolvedVersion = ('dist-tags' in body) && body['dist-tags'].latest;
-          }
-          if (!resolvedVersion) {
-            // Pick last version that satisfies semver
-            for (const v in body.versions) {
-              if (semver.satisfies(v, version || '*')) resolvedVersion = v;
-            }
-          }
-
-          body = body.versions[resolvedVersion];
+        // Use latest dist tags, if available
+        if (!version && ('dist-tags' in body)) {
+          resolvedVersion =  body['dist-tags'].latest;
         }
-      } else {
-        body = {stub: true, name, version, maintainers: []};
+
+        if (!resolvedVersion) {
+          // Pick last version that satisfies semver
+          for (const v in versions) {
+            if (semver.satisfies(v, version || '*')) body = versions[v];
+          }
+        }
       }
 
-      if (!body.stub && path != cachePath) {
+      // If we fail to find info, just create a stub entry
+      if (!body) {
+        body = {stub: true, name, version, maintainers: []};
+      } else if (path != cachePath) {
+        // If this isn't from cache, store in localStorage
         this.store(path, cachePath);
         this.store(cachePath, body);
       }
