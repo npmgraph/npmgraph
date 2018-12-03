@@ -21,6 +21,8 @@ export default class Store {
 
   // GET package info
   static async getModule(name, version) {
+    const isScoped = name.startsWith('@');
+
     // url-escape "/"'s in the name
     let path = `${name.replace(/\//g, '%2F')}`;
 
@@ -31,7 +33,9 @@ export default class Store {
     if (!this._moduleCache[cachePath]) {
       let body;
       try {
-        body = await this.get(semver.valid(version) ? cachePath : path);
+        // HACK: Don't try to fetch specific version for scoped module name
+        // See https://goo.gl/dSMitm
+        body = await this.get(!isScoped && semver.valid(version) ? cachePath : path);
         if (!body) throw Error('No module info found');
         if (typeof(body) != 'object') throw Error('Response was not an object');
         if (body.unpublished) throw Error('Module is unpublished');
