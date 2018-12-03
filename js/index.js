@@ -144,6 +144,11 @@ async function graph(module) {
   ]
     .concat(nodes)
     .concat(edges)
+    .concat(
+      modules.length > 1 ?
+      `{rank=same; ${modules.map(s => `"${s}"`).join('; ')};}` :
+      ''
+    )
     .concat('}')
     .join('\n');
 
