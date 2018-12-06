@@ -207,10 +207,12 @@ svg {
 g .node * {
   cursor: pointer;
 }
+g .node path,
 g .node polygon {
   fill: white;
 }
-g .selected > polygon {
+g .selected > polygon,
+g .selected > path {
   fill: #ddf;
   stroke-width: 3;
   stroke: #33c;

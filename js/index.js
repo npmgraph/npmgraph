@@ -138,7 +138,7 @@ async function graph(module) {
     `label="${title}"`,
     '// Default styles',
     `graph [fontsize=16 fontname="${FONT}"]`,
-    `node [shape=box fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
+    `node [shape=box style=rounded fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
     `edge [fontsize=10, fontname="${FONT}" splines="polyline"]`,
     ''
   ]
