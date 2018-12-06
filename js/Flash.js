@@ -4,6 +4,7 @@ export default function(o, bg = '#f80') {
   const graph = document.querySelector('#graph');
   const prev = document.querySelector('.flash:last-of-type');
   const el = document.createElement('div');
+
   if (o instanceof Error) {
     el.classList.add('error');
     el.innerText = o.message + '\n' + o.stack;

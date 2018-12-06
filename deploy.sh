@@ -14,4 +14,4 @@ git reset --hard origin/master
 
 VERSION=$(grep -oP '(?<="version": ")[^"]+' < package.json)
 echo "Setting APP_VERSION=${VERSION}"
-sed --in-place -e "s/APP_VERSION/${VERSION}/" index.html
+sed --in-place -e "s/const ENV.*/{releaseStage: \"production\", appVersion: ${VERSION}}/" index.html

@@ -1,4 +1,4 @@
-/* global bugsnagClient */
+/* global bugsnag */
 
 export const reportError = err => {
   bugsnagClient.notify(err);
@@ -57,7 +57,6 @@ export function ajax(method, url, loader) {
         if (loader) loader.error();
         const err = new Error(`HTTP ${xhr.status}: ${method} ${url}`);
         err.status = xhr.status;
-        reportError(err);
         reject(err);
       }
     };
