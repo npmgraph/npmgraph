@@ -7,9 +7,7 @@
     "email": "robert@broofa.com"
   },
   "license": "MIT",
-  "dependencies": {
-    "semver": "5.5.0"
-  },
+  "dependencies": {},
   "description": "Visualize NPM dependency graphs (public and private!)",
   "keywords": [
     "npm",
@@ -23,10 +21,10 @@
     "type": "git"
   },
   "devDependencies": {
-    "babel-eslint": "8.2.1",
-    "eslint": "4.16.0",
-    "standard-version": "4.3.0",
-    "static-server": "3.0.0"
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.9.0",
+    "standard-version": "^4.4.0",
+    "static-server": "^2.2.1"
   },
   "scripts": {
     "deploy": "ssh broofa.com \"cd npm.broofa.com && ./deploy.sh\"",

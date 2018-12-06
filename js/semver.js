@@ -1,10 +1,12 @@
+/* global DEBUG */
+
 /**
  * ES6 port of https://github.com/npm/node-semver by Robert Kieffer
  * (robert@broofa.com)
  */
 
 // The debug function is excluded entirely from the minified version.
-let debug = typeof(DEBUG) != 'undefined' && /\bsemver\b/.test(DEBUG) ?
+const debug = typeof(DEBUG) != 'undefined' && /\bsemver\b/.test(DEBUG) ?
   (...args) => console.log('SEMVER', ...args) :
   () => {};
 

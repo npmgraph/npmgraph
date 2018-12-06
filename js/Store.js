@@ -24,7 +24,7 @@ export default class Store {
     const isScoped = name.startsWith('@');
 
     // url-escape "/"'s in the name
-    let path = `${name.replace(/\//g, '%2F')}`;
+    const path = `${name.replace(/\//g, '%2F')}`;
 
     // If semver isn't valid (i.e. not a simple, canonical version - e.g.
     // "1.2.3") fetch all versions (we'll figure out the specific version below)
@@ -61,7 +61,7 @@ export default class Store {
 
         // Use latest dist tags, if available
         if (!version && ('dist-tags' in body)) {
-          resolvedVersion =  body['dist-tags'].latest;
+          resolvedVersion = body['dist-tags'].latest;
         }
 
         if (!resolvedVersion) {

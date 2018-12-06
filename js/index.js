@@ -1,4 +1,4 @@
-/* global Viz */
+/* global Viz, gtag, GA_TRACKING_ID */
 
 import Flash from './Flash.js';
 import Inspector from './Inspector.js';
@@ -146,8 +146,8 @@ async function graph(module) {
     .concat(edges)
     .concat(
       modules.length > 1 ?
-      `{rank=same; ${modules.map(s => `"${s}"`).join('; ')};}` :
-      ''
+        `{rank=same; ${modules.map(s => `"${s}"`).join('; ')};}` :
+        ''
     )
     .concat('}')
     .join('\n');
@@ -218,7 +218,7 @@ onload = function() {
     const noCache = /noCache/i.test(location.search);
     const url = `${location.pathname}?q=${this.value}`;
     history.pushState({}, null, `${url}${noCache ? '&noCache' : ''}`);
-    gtag('config', GA_TRACKING_ID, {'page_path': url});
+    gtag('config', GA_TRACKING_ID, {page_path: url}); // eslint-disable-line camelcase
     await graph(this.value);
   };
 

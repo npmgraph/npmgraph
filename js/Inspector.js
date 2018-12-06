@@ -86,7 +86,7 @@ export default class Inspector {
 
     // sort comparators for Object.entries() lists
     const sortByEntryKey = (a, b) => a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : 0);
-    const sortByEntryValue = (a, b) => a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0);
+    // const sortByEntryValue = (a, b) => a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0);
 
     const depEl = $('#pane-graph .dependencies');
     $$(depEl, '.tag').forEach(el => el.remove());
@@ -139,7 +139,7 @@ export default class Inspector {
     $('#pane-module .description').innerHTML = `${module.package.description}`;
 
     const pkgCopy = {...pkg};
-    for (let k in pkgCopy) {
+    for (const k in pkgCopy) {
       if (/^_.*|gitHead|bugs|scripts|dist|directories/.test(k)) delete pkgCopy[k];
     }
     $('#pane-module .json').innerText = JSON.stringify(pkgCopy, null, 2);

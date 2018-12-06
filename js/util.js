@@ -1,4 +1,4 @@
-/* global bugsnag */
+/* global bugsnagClient */
 
 export const reportError = err => {
   bugsnagClient.notify(err);
@@ -82,7 +82,7 @@ export const toLicense = pkg => {
   if (pkg.license) {
     license = pkg.license.type || pkg.license;
   } else if (pkg.licenses) {
-    license = pkg.licenses.map(l => l.type || l).join(', ')
+    license = pkg.licenses.map(l => l.type || l).join(', ');
   } else {
     license = '(none)';
   }

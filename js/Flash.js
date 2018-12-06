@@ -32,7 +32,7 @@ export default function(o, bg = '#f80') {
     el.style.left = `${SPACE}px`;
 
     setTimeout(() => {
-      el.addEventListener('transitionend', () =>  el.remove());
+      el.addEventListener('transitionend', () => el.remove());
       el.style.left = `${-el.offsetWidth - SPACE}px`;
     }, 5e3);
   }, 0);
