@@ -108,8 +108,8 @@
 const ENV = {}; // Set in deploy
 window.bugsnagClient = bugsnag({
   apiKey: '6a07b66124c696d0f685e1cf28312e41',
-  appVersion: ENV.VERSION || undefined,
-  releaseStage: ENV.RELEASE || 'development',
+  appVersion: ENV.appVersion || undefined,
+  releaseStage: ENV.releaseStage || 'development',
   notifyReleaseStages: ['production']
 });
 </script>
