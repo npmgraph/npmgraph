@@ -55,8 +55,9 @@ export function ajax(method, url, loader) {
         resolve(JSON.parse(xhr.responseText));
       } else {
         if (loader) loader.error();
-        const err = new Error(`HTTP ${xhr.status}: ${method} ${url}`);
+        const err = new Error(`${xhr.status}: ${url}`);
         err.status = xhr.status;
+        err.url = url;
         reject(err);
       }
     };

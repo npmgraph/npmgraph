@@ -42,15 +42,11 @@ export default class Store {
           if (typeof(body) != 'object') throw Error('Response was not an object');
           if (body.unpublished) throw Error('Module is unpublished');
         } catch (err) {
-          if (err.status >= 500) {
-            Flash(`Uppity network error (${err.status}).  Try again later?`);
-          } else if (err.status > 0) {
-            Flash(`${err.status} error: ${name}@${version}`);
+          if ('status' in err) {
+            Flash(err.message);
           } else {
-            Flash(err);
+            reportError(err);
           }
-
-          reportError(err);
         }
       }
 

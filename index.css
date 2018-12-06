@@ -207,8 +207,8 @@ svg {
 g .node * {
   cursor: pointer;
 }
-g .node path,
-g .node polygon {
+g .node polygon,
+g .node path {
   fill: white;
 }
 g .selected > polygon,
@@ -217,7 +217,8 @@ g .selected > path {
   stroke-width: 3;
   stroke: #33c;
 }
-g .stub > polygon {
+g .stub > polygon,
+g .stub > path {
   stroke-dasharray: 4,4;
   stroke: #666;
 }
