@@ -118,9 +118,10 @@ window.bugsnagClient = bugsnag({
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
-const GA_TRACKING_ID = 'UA-6434483-2';
+// HACK: Using var instead of const here, because const
+window.GA_TRACKING_ID = 'UA-6434483-2';
 gtag('js', new Date());
-gtag('config', GA_TRACKING_ID);
+gtag('config', window.GA_TRACKING_ID);
 </script>
 
 <script async src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js"></script>

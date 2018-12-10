@@ -138,7 +138,7 @@ export default class Inspector {
     $('#pane-module h2').innerHTML = `<a href="?q=${module.key}">${module.key}</a> Info`;
     $('#pane-module .description').innerHTML = `${module.package.description}`;
 
-    const pkgCopy = {...pkg};
+    const pkgCopy = Object.assign({}, pkg);
     for (const k in pkgCopy) {
       if (/^_.*|gitHead|bugs|scripts|dist|directories/.test(k)) delete pkgCopy[k];
     }

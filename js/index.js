@@ -218,7 +218,7 @@ onload = function() {
     const noCache = /noCache/i.test(location.search);
     const url = `${location.pathname}?q=${this.value}`;
     history.pushState({}, null, `${url}${noCache ? '&noCache' : ''}`);
-    gtag('config', GA_TRACKING_ID, {page_path: url}); // eslint-disable-line camelcase
+    gtag('config', window.GA_TRACKING_ID, {page_path: url}); // eslint-disable-line camelcase
     await graph(this.value);
   };
 
