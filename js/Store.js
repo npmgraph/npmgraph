@@ -79,7 +79,14 @@ export default class Store {
         this.store(cachePath, body);
       }
 
-      this._moduleCache[cachePath] = this._moduleCache[path] = new Module(body);
+      const module = new Module(body);
+
+      /*
+      const issues = module.validate();
+      if (!issues.valid) console.log(module.key, issues);
+      */
+
+      this._moduleCache[cachePath] = this._moduleCache[path] = module;
     }
 
     return this._moduleCache[path];

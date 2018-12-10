@@ -79,12 +79,12 @@ export const toTag = (type, text) => {
 };
 
 export const toLicense = pkg => {
-  let license;
-  if (pkg.license) {
-    license = pkg.license.type || pkg.license;
-  } else if (pkg.licenses) {
-    license = pkg.licenses.map(l => l.type || l).join(', ');
-  } else {
+  let license = pkg.license || pkg.licenses;
+
+  if (Array.isArray(pkg.licenses)) {
+    // Convert array of licenses to SPDX
+    license = pkg.licenses.map(l => l.type || l).join(' OR ');
+  } else if (!license) {
     license = '(none)';
   }
 

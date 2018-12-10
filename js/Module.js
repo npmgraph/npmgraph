@@ -1,3 +1,5 @@
+import validate from './pjv.js';
+
 export default class Module {
   static key(name, version) {
     return `${name}@${version}`;
@@ -10,6 +12,10 @@ export default class Module {
       pkg.maintainers = [pkg.maintainers];
     }
     this.package = pkg;
+  }
+
+  validate() {
+    return validate(this.package,);
   }
 
   get key() {
