@@ -4,7 +4,7 @@ import Flash from './Flash.js';
 import Inspector from './Inspector.js';
 import Module from './Module.js';
 import Store from './Store.js';
-import {$, $$, toTag, toLicense, ajax} from './util.js';
+import {$, $$, toTag, ajax} from './util.js';
 
 // Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;
@@ -181,11 +181,7 @@ async function graph(module) {
     el.classList.add(toTag('module', key.replace(/@.*/, '')));
     pkg.maintainers.forEach(m => el.classList.add(toTag('maintainer', m.name)));
 
-    if (Array.isArray(pkg.licenses)) {
-      el.classList.add(toTag('license', toLicense(pkg)));
-    } else {
-      el.classList.add(toTag('license', toLicense(pkg)));
-    }
+    el.classList.add(toTag('license', m.licenseString || 'Unspecified'));
 
     if (pkg.stub) el.classList.add('stub');
   });

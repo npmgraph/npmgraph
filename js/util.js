@@ -78,19 +78,6 @@ export const toTag = (type, text) => {
   return type + '-' + text.replace(/\W/g, '_').toLowerCase();
 };
 
-export const toLicense = pkg => {
-  let license = pkg.license || pkg.licenses;
-
-  if (Array.isArray(pkg.licenses)) {
-    // Convert array of licenses to SPDX
-    license = pkg.licenses.map(l => l.type || l).join(' OR ');
-  } else if (!license) {
-    license = '(none)';
-  }
-
-  return typeof(license) == 'string' ? license : '(unclear)';
-};
-
 export const createTag = (type, text, count = 0) => {
   const el = document.createElement('div');
 

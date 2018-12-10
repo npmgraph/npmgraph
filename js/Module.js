@@ -22,6 +22,26 @@ export default class Module {
     return Module.key(this.package.name, this.package.version);
   }
 
+  get licenseString() {
+    // Legacy: 'licenses' field
+    let license = this.package.license || this.package.licenses;
+
+    // Legacy: array of licenses?
+    if (Array.isArray(license)) {
+      // Convert to SPDX form
+      // TODO: Is "OR" the correct operator for this?
+      return license.map(l => l.type || l).join(' OR ');
+    }
+
+    // Legacy: license object?
+    if (typeof(license) == 'object') license = license.type;
+
+    if (!license) return null;
+
+    // Strip outer ()'s (SPDX notation)
+    return String(license).replace(/^\(|\)$/g, '');
+  }
+
   toString() {
     return this.key;
   }

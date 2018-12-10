@@ -1,6 +1,6 @@
 /* global c3 */
 
-import {$, $$, ajax, toLicense, createTag} from './util.js';
+import {$, $$, ajax, createTag} from './util.js';
 import Store from './Store.js';
 import md5 from './md5.js';
 
@@ -47,13 +47,13 @@ export default class Inspector {
     const dependencyCounts = {};
     const maintainers = {};
     const maintainerCounts = {};
-    const licenses = {};
+    const licenses = new Map();
     let nModules = 0, nMaintainers = 0;
 
     // Walk module dependency tree to gather up the info we care about
     function walk(m) {
       const pkg = m.package;
-      const license = toLicense(pkg);
+      const license = m.licenseString;
 
       if (!m || (m.key in dependencies)) return;
 
@@ -70,7 +70,7 @@ export default class Inspector {
           maintainers[maintainer.name] = maintainer;
         }
       });
-      licenses[license] = (licenses[license] || 0) + 1;
+      licenses.set(license, (licenses.get(license) || 0) + 1);
       return Promise.all(Object.entries(pkg.dependencies || {})
         .map(async e => {
           const module = await Store.getModule(...e);
@@ -110,9 +110,13 @@ export default class Inspector {
 
     const licEl = $('#pane-graph .licenses');
     $$(licEl, '.tag').forEach(el => el.remove());
-    Object.entries(licenses)
+    Array.from(licenses)
       .sort(sortByEntryKey)
-      .forEach(e => licEl.append(createTag('license', e[0], e[1])));
+      .forEach(([license, count]) => {
+        const tag = createTag('license', license || 'Unspecified', count);
+        if (!license) tag.style.color = 'red';
+        licEl.append(tag)
+      });
 
     // Make a chart
     if (nModules > 1) {
@@ -164,11 +168,16 @@ export default class Inspector {
     const quality = scores ? (scores.quality*100).toFixed(0) + '%' : 'n/a';
     const popularity = scores ? (scores.popularity*100).toFixed(0) + '%' : 'n/a';
     const maintenance = scores ? (scores.maintenance*100).toFixed(0) + '%' : 'n/a';
+    const license = module.licenseString;
 
     $('#pane-module .stats').innerHTML = `
         <table>
         <tr><th>Maintainers</th><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
-        <tr><th>License</th><td>${toLicense(pkg)}</td></tr>
+        <tr><th>License</th>${
+          license ?
+          `<td>${license}</td></tr>` :
+          `<td style="font-weight: bold; color: red">Unspecified</td></tr>`
+        }
         <tr><th>Downloads/week</th><td>${stats.downloads}</td></tr>
         <tr><th>Quality</th><td class="rank"><div style="width:${quality}">${quality}</td></tr>
         <tr><th>Popularity</th><td class="rank"><div style="width:${popularity}">${popularity}</div></td></tr>
