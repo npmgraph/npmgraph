@@ -179,21 +179,20 @@ async function graph(module) {
     const m = await Store.getModule(...entryFromKey(key));
     const pkg = m && m.package;
     el.classList.add(toTag('module', key.replace(/@.*/, '')));
-    pkg.maintainers.forEach(m => el.classList.add(toTag('maintainer', m.name)));
-
-    el.classList.add(toTag('license', m.licenseString || 'Unspecified'));
-
-    if (pkg.stub) el.classList.add('stub');
+    if (pkg.stub) {
+      el.classList.add('stub');
+    } else {
+      pkg.maintainers.forEach(m => el.classList.add(toTag('maintainer', m.name)));
+      el.classList.add(toTag('license', m.licenseString || 'Unspecified'));
+    }
   });
 
-  // TODO: 'Need to use modules[] below, rather than just picking the first one
-  // here.
-  module = modules[0];
-
-  Inspector.setGraph(module);
-  Inspector.setModule(module);
+  Inspector.setGraph(modules);
+  Inspector.setModule(modules);
   Inspector.showPane('pane-graph');
   Inspector.toggle(true);
+
+  const names = modules.map(m => m.key).join(', ');
   $('title').innerText = `NPMGraph - ${module.key}`;
 }
 

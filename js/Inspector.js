@@ -1,6 +1,6 @@
 /* global c3 */
 
-import {$, $$, ajax, createTag} from './util.js';
+import {$, $$, ajax, createTag, reportError} from './util.js';
 import Store from './Store.js';
 import md5 from './md5.js';
 
@@ -52,6 +52,8 @@ export default class Inspector {
 
     // Walk module dependency tree to gather up the info we care about
     function walk(m) {
+      if (Array.isArray(m)) return Promise.all(m.map(walk));
+
       const pkg = m.package;
       const license = m.licenseString;
 
@@ -61,6 +63,7 @@ export default class Inspector {
       nModules++;
 
       if (module.package != pkg) dependencyCounts[pkg.name] = (dependencyCounts[pkg.name] || 0) + 1;
+
       pkg.maintainers.forEach(maintainer => {
         if (maintainer.name in maintainers) {
           maintainerCounts[maintainer.name]++;
@@ -70,7 +73,9 @@ export default class Inspector {
           maintainers[maintainer.name] = maintainer;
         }
       });
+
       licenses.set(license, (licenses.get(license) || 0) + 1);
+
       return Promise.all(Object.entries(pkg.dependencies || {})
         .map(async e => {
           const module = await Store.getModule(...e);
@@ -127,7 +132,7 @@ export default class Inspector {
           type: 'pie',
         }
       };
-      config.data.columns = Object.entries(licenses)
+      config.data.columns = Array.from(licenses)
         .sort((a, b) => a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0);
       c3.generate(config);
     } else {
@@ -137,10 +142,14 @@ export default class Inspector {
   }
 
   static async setModule(module) {
-    const pkg = module.package || module;
+    if (Array.isArray(module)) {
+      module = module.lengt == 1 ? module[0] : null;
+    }
 
-    $('#pane-module h2').innerHTML = `<a href="?q=${module.key}">${module.key}</a> Info`;
-    $('#pane-module .description').innerHTML = `${module.package.description}`;
+    const pkg = module && module.package;
+
+    $('#pane-module h2').innerHTML = module ? `<a href="?q=${module.key}">${module.key}</a> Info` : '';
+    $('#pane-module .description').innerHTML = pkg ? `${pkg.description}` : '';
 
     const pkgCopy = Object.assign({}, pkg);
     for (const k in pkgCopy) {
@@ -150,27 +159,29 @@ export default class Inspector {
 
     $('#inspector').scrollTo(0, 0);
 
-    $('#pane-module .stats').innerHTML = '(Getting info...)';
-
     let requests;
-    try {
-      requests = await Promise.all([
-        ajax('GET', `https://api.npmjs.org/downloads/point/last-week/${module.package.name}`),
-        ajax('GET', `https://registry.npmjs.org/-/v1/search?text=${module.package.name}&size=1`)
-      ]);
-    } catch (err) {
-      $('#pane-module .stats').innerText = `Module info unavailable (${err.message})`;
-      return;
+    if (pkg) {
+      $('#pane-module .stats').innerHTML = '(Getting info...)';
+      try {
+        requests = await Promise.all([
+          ajax('GET', `https://api.npmjs.org/downloads/point/last-week/${pkg.name}`),
+          ajax('GET', `https://registry.npmjs.org/-/v1/search?text=${pkg.name}&size=1`)
+        ]);
+      } catch (err) {
+        reportError(err);
+      }
     }
-    const [stats, search] = requests;
 
-    const scores = search.objects[0] && search.objects[0].score.detail;
-    const quality = scores ? (scores.quality*100).toFixed(0) + '%' : 'n/a';
-    const popularity = scores ? (scores.popularity*100).toFixed(0) + '%' : 'n/a';
-    const maintenance = scores ? (scores.maintenance*100).toFixed(0) + '%' : 'n/a';
-    const license = module.licenseString;
+    if (requests) {
+      const [stats, search] = requests;
 
-    $('#pane-module .stats').innerHTML = `
+      const scores = search.objects[0] && search.objects[0].score.detail;
+      const quality = scores ? (scores.quality*100).toFixed(0) + '%' : 'n/a';
+      const popularity = scores ? (scores.popularity*100).toFixed(0) + '%' : 'n/a';
+      const maintenance = scores ? (scores.maintenance*100).toFixed(0) + '%' : 'n/a';
+      const license = module.licenseString;
+
+      $('#pane-module .stats').innerHTML = `
         <table>
         <tr><th>Maintainers</th><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
         <tr><th>License</th>${
@@ -184,5 +195,8 @@ export default class Inspector {
         <tr><th>Maintenance</th><td class="rank"><div style="width:${maintenance}">${maintenance}</td></tr>
         </table>
         `;
+    } else {
+      $('#pane-module .stats').innerText = `Module info unavailable`;
+    }
   }
 }
