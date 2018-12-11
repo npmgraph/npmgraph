@@ -192,8 +192,8 @@ async function graph(module) {
   Inspector.showPane('pane-graph');
   Inspector.toggle(true);
 
-  const names = modules.map(m => m.key).join(', ');
-  $('title').innerText = `NPMGraph - ${module.key}`;
+  const names = modules.map(m => m.package.name).join(', ');
+  $('title').innerText = `NPMGraph - ${names}`;
 }
 
 window.onpopstate = function() {
