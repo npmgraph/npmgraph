@@ -50,12 +50,12 @@ export default class Module {
       }
 
       const score = search.objects[0] && search.objects[0].score;
-      this.package._scores = {
+      this.package._scores = score ? {
         final: score.final,
         quality: score.detail.quality,
         popularity: score.detail.popularity,
         maintenance: score.detail.maintenance
-      };
+      } : null;
     }
 
     return this.package._scores;
