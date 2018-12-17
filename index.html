@@ -7,16 +7,17 @@
     <meta http-equiv="Content-Security-Policy" content="
       default-src
       'unsafe-eval' 'unsafe-inline' 'self'
-      https://registry.npmjs.org
-      https://registry.npmjs.cf
+      http://notify.bugsnag.com/
+      https://api.github.com/
       https://api.npmjs.org
       https://cdnjs.cloudflare.com
       https://fonts.gstatic.com https://fonts.googleapis.com
+      https://registry.npmjs.cf
+      https://registry.npmjs.org
       https://sessions.bugsnag.com/
-      http://notify.bugsnag.com/
-      https://www.gravatar.com/
-      https://www.googletagmanager.com/
       https://www.google-analytics.com/
+      https://www.googletagmanager.com/
+      https://www.gravatar.com/
       d2wy8f7a9ursnm.cloudfront.net" />
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
@@ -50,6 +51,10 @@
       </div>
 
       <div class="pane" id="pane-graph">
+        <section>
+          <h2>Tools<span class="material-icons"></span></h2>
+        <label><input type="checkbox" id="colorize" />Colorize by <a href="https://github.com/npms-io/npms-analyzer" target="_blank">npms.io score</a></label>
+        </section>
         <section class="dependencies">
           <h2>Dependencies<span class="material-icons"></span></h2>
         </section>

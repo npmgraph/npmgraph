@@ -4,7 +4,7 @@ import Flash from './Flash.js';
 import Inspector from './Inspector.js';
 import Module from './Module.js';
 import Store from './Store.js';
-import {$, $$, toTag, ajax} from './util.js';
+import {$, $$, toTag, ajax, entryFromKey} from './util.js';
 
 // Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;
@@ -18,14 +18,6 @@ window.addEventListener('unhandledrejection', err => {
   console.error(err);
   Flash(err.reason);
 });
-
-const MODULE_RE = /^(@?[^@]+)(?:@(.*))?$/;
-
-function entryFromKey(key) {
-  if (!MODULE_RE.test(key)) console.log('Invalid key', key);
-
-  return RegExp.$2 ? [RegExp.$1, RegExp.$2] : [RegExp.$1];
-}
 
 async function handleGraphClick(event) {
   const el = $.up(event.srcElement, e => e.classList.contains('node'));

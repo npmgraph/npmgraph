@@ -87,3 +87,13 @@ export const createTag = (type, text, count = 0) => {
 
   return el;
 };
+
+
+export function entryFromKey(key) {
+  const MODULE_RE = /^(@?[^@]+)(?:@(.*))?$/;
+
+  if (!MODULE_RE.test(key)) console.log('Invalid key', key);
+
+  return RegExp.$2 ? [RegExp.$1, RegExp.$2] : [RegExp.$1];
+}
+

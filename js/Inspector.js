@@ -1,6 +1,6 @@
 /* global c3 */
 
-import {$, $$, ajax, createTag, reportError} from './util.js';
+import {$, $$, ajax, createTag, reportError, entryFromKey} from './util.js';
 import Store from './Store.js';
 import md5 from './md5.js';
 
@@ -139,6 +139,31 @@ export default class Inspector {
       $('#chart').innerHTML = '';
     }
     $('#inspector').scrollTo(0, 0);
+
+
+    // Colorize handler
+    $('#colorize').checked = false;
+    $('#colorize').onclick = function(event) {
+      const colorize = this.checked;
+
+      $$('svg .node path').forEach(async el => {
+        if (!colorize) {
+          el.style.fill = '';
+          el.style.fillOpacity = '';
+        } else {
+          const moduleKey = el.parentNode.textContent.trim();
+          const module = await Store.getModule(...entryFromKey(moduleKey));
+          if (module) {
+            const scores = await module.getScores();
+            if (scores && scores.final !== null) {
+              const MIN = 192;
+              el.style.fill = `red`;
+              el.style.fillOpacity = Math.max(0, 1 - scores.final);
+            }
+          }
+        }
+      });
+    };
   }
 
   static async setModule(module) {
@@ -162,34 +187,52 @@ export default class Inspector {
     let requests;
     if (pkg) {
       $('#pane-module .stats').innerHTML = '(Getting info...)';
+
       try {
         requests = await Promise.all([
           ajax('GET', `https://api.npmjs.org/downloads/point/last-week/${pkg.name}`),
-          ajax('GET', `https://registry.npmjs.org/-/v1/search?text=${pkg.name}&size=1`)
+          module.getScores(),
         ]);
       } catch (err) {
+        console.error(err);
         reportError(err);
       }
     }
 
     if (requests) {
-      const [stats, search] = requests;
+      const [stats, scores] = requests;
 
-      const scores = search.objects[0] && search.objects[0].score.detail;
+      const final = scores ? (scores.final * 100).toFixed(0) + '%' : 'n/a';
       const quality = scores ? (scores.quality*100).toFixed(0) + '%' : 'n/a';
       const popularity = scores ? (scores.popularity*100).toFixed(0) + '%' : 'n/a';
       const maintenance = scores ? (scores.maintenance*100).toFixed(0) + '%' : 'n/a';
-      const license = module.licenseString;
+      let license = module.licenseString;
+
+      // If no license, see if it's specified in the gh repo
+      let repoLicense;
+      let licenseWarning;
+      if (!license && module.githubPath) {
+        const gh = await ajax('GET', `https://api.github.com/repos/${module.githubPath}`);
+
+        repoLicense = gh && gh.license;
+        repoLicense = repoLicense && (repoLicense.spdx_id || repoLicense.name);
+        licenseWarning = '<p>package.json is missing "license".  Please report this <a href="`${https://www.github.com/${module.githubPath}/issues}`">issue</a></p>';
+      }
+
 
       $('#pane-module .stats').innerHTML = `
         <table>
         <tr><th>Maintainers</th><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
         <tr><th>License</th>${
           license ?
-          `<td>${license}</td></tr>` :
+          `<td>
+          ${license || repoLicense || 'Unspecified'}
+          ${licenseWarning || ''}
+          </td></tr>` :
           `<td style="font-weight: bold; color: red">Unspecified</td></tr>`
         }
         <tr><th>Downloads/week</th><td>${stats.downloads}</td></tr>
+        <tr><th>Score</th><td class="rank"><div style="width:${final}">${final}</td></tr>
         <tr><th>Quality</th><td class="rank"><div style="width:${quality}">${quality}</td></tr>
         <tr><th>Popularity</th><td class="rank"><div style="width:${popularity}">${popularity}</div></td></tr>
         <tr><th>Maintenance</th><td class="rank"><div style="width:${maintenance}">${maintenance}</td></tr>
