@@ -24,7 +24,8 @@ export default class Module {
   }
 
   get key() {
-    return Module.key(this.package.name, this.package.version);
+    let version = this.package.version
+    return Module.key(this.package.name, version && (version.version || version));
   }
 
   get githubPath() {
