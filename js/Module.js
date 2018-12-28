@@ -1,5 +1,5 @@
 import validate from './pjv.js';
-import {ajax, reportError} from './util.js';
+import {ajax} from './util.js';
 
 function parseGithubPath(s) {
   return /github.com\/([^/]+\/[^/?#.]+)/.test(s) && RegExp.$1;
@@ -20,11 +20,11 @@ export default class Module {
   }
 
   validate() {
-    return validate(this.package,);
+    return validate(this.package);
   }
 
   get key() {
-    let version = this.package.version
+    const version = this.package.version;
     return Module.key(this.package.name, version && (version.version || version));
   }
 

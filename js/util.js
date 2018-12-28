@@ -96,4 +96,3 @@ export function entryFromKey(key) {
 
   return RegExp.$2 ? [RegExp.$1, RegExp.$2] : [RegExp.$1];
 }
-

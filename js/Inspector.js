@@ -120,7 +120,7 @@ export default class Inspector {
       .forEach(([license, count]) => {
         const tag = createTag('license', license || 'Unspecified', count);
         if (!license) tag.style.color = 'red';
-        licEl.append(tag)
+        licEl.append(tag);
       });
 
     // Make a chart
@@ -156,9 +156,8 @@ export default class Inspector {
           if (module) {
             const scores = await module.getScores();
             if (scores && scores.final !== null) {
-              const MIN = 192;
-              el.style.fill = `red`;
-              el.style.fillOpacity = Math.max(0, 1 - scores.final);
+              el.style.fill = 'green';
+              el.style.fillOpacity = Math.max(0, scores.final);
             }
           }
         }
@@ -206,7 +205,7 @@ export default class Inspector {
       const quality = scores ? (scores.quality*100).toFixed(0) + '%' : 'n/a';
       const popularity = scores ? (scores.popularity*100).toFixed(0) + '%' : 'n/a';
       const maintenance = scores ? (scores.maintenance*100).toFixed(0) + '%' : 'n/a';
-      let license = module.licenseString;
+      const license = module.licenseString;
 
       // If no license, see if it's specified in the gh repo
       let repoLicense;
@@ -216,7 +215,7 @@ export default class Inspector {
 
         repoLicense = gh && gh.license;
         repoLicense = repoLicense && (repoLicense.spdx_id || repoLicense.name);
-        licenseWarning = '<p>package.json is missing "license".  Please report this <a href="`${https://www.github.com/${module.githubPath}/issues}`">issue</a></p>';
+        licenseWarning = '<p>package.json is missing "license".  Please report this <a href="`${https://www.github.com/${module.githubPath}/issues}`">issue</a></p>'; // eslint-disable-line max-len
       }
 
 
@@ -224,13 +223,13 @@ export default class Inspector {
         <table>
         <tr><th>Maintainers</th><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
         <tr><th>License</th>${
-          license ?
-          `<td>
+  license ?
+    `<td>
           ${license || repoLicense || 'Unspecified'}
           ${licenseWarning || ''}
           </td></tr>` :
-          `<td style="font-weight: bold; color: red">Unspecified</td></tr>`
-        }
+    '<td style="font-weight: bold; color: red">Unspecified</td></tr>'
+}
         <tr><th>Downloads/week</th><td>${stats.downloads}</td></tr>
         <tr><th>Score</th><td class="rank"><div style="width:${final}">${final}</td></tr>
         <tr><th>Quality</th><td class="rank"><div style="width:${quality}">${quality}</td></tr>
@@ -239,7 +238,7 @@ export default class Inspector {
         </table>
         `;
     } else {
-      $('#pane-module .stats').innerText = `Module info unavailable`;
+      $('#pane-module .stats').innerText = 'Module info unavailable';
     }
   }
 }
