@@ -1,7 +1,9 @@
 /* global bugsnagClient */
 
-export const reportError = err => {
-  bugsnagClient.notify(err);
+export const report = {
+  error: err => bugsnagClient.notify(err, {severity: 'error'}),
+  warn: err => bugsnagClient.notify(err, {severity: 'warn'}),
+  info: err => bugsnagClient.notify(err, {severity: 'info'}),
 };
 
 /**
@@ -72,7 +74,7 @@ export const toTag = (type, text) => {
   // .name for maintainer objects
   text = text.type || text.name || text;
   if (!text) {
-    reportError(Error(`Undefined tag text (type=${type})`));
+    report.warn(Error(`Undefined tag text (type=${type})`));
     text='__undefined';
   }
   return type + '-' + text.replace(/\W/g, '_').toLowerCase();

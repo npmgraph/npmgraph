@@ -1,4 +1,4 @@
-import {$, ajax, reportError} from './util.js';
+import {$, ajax, report} from './util.js';
 import Module from './Module.js';
 import Loader from './Loader.js';
 import Flash from './Flash.js';
@@ -45,7 +45,7 @@ export default class Store {
           if ('status' in err) {
             Flash(err.message);
           } else {
-            reportError(err);
+            report.error(err);
           }
         }
       }

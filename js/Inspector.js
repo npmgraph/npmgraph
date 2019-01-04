@@ -1,6 +1,6 @@
 /* global c3 */
 
-import {$, $$, ajax, createTag, reportError, entryFromKey} from './util.js';
+import {$, $$, ajax, createTag, report, entryFromKey} from './util.js';
 import Store from './Store.js';
 import md5 from './md5.js';
 
@@ -193,8 +193,7 @@ export default class Inspector {
           module.getScores(),
         ]);
       } catch (err) {
-        console.error(err);
-        reportError(err);
+        report.warn(err);
       }
     }
 
