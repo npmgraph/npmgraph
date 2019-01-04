@@ -4,7 +4,7 @@ import Flash from './Flash.js';
 import Inspector from './Inspector.js';
 import Module from './Module.js';
 import Store from './Store.js';
-import {$, $$, toTag, ajax, entryFromKey} from './util.js';
+import {$, $$, toTag, ajax, entryFromKey, reportError} from './util.js';
 
 // Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;
@@ -170,7 +170,7 @@ async function graph(module) {
     if (!key) return;
     const m = await Store.getModule(...entryFromKey(key));
     const pkg = m && m.package;
-    if (!key.replace(/@.*/, '')) throw Error('BAD REPLACE:' + key);
+    if (!key.replace(/@.*/, '')) reportError(Error(`Bad replace: ${key}`));
     el.classList.add(toTag('module', key.replace(/@.*/, '')));
     if (pkg.stub) {
       el.classList.add('stub');

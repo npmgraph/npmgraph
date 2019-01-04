@@ -50,7 +50,7 @@ export default class Module {
         return;
       }
 
-      const score = search.score
+      const score = search.score;
       this.package._scores = score ? {
         final: score.final,
         quality: score.detail.quality,
