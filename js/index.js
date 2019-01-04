@@ -170,6 +170,7 @@ async function graph(module) {
     if (!key) return;
     const m = await Store.getModule(...entryFromKey(key));
     const pkg = m && m.package;
+    if (!key.replace(/@.*/, '')) throw Error('BAD REPLACE:' + key);
     el.classList.add(toTag('module', key.replace(/@.*/, '')));
     if (pkg.stub) {
       el.classList.add('stub');

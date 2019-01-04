@@ -210,7 +210,7 @@ export default class Inspector {
       // If no license, see if it's specified in the gh repo
       let repoLicense;
       let licenseWarning;
-debugger;
+
       if (!license && module.githubPath) {
         const gh = await ajax('GET', `https://api.github.com/repos/${module.githubPath}`);
 

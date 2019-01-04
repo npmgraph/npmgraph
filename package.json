@@ -27,7 +27,8 @@
     "static-server": "^2.2.1"
   },
   "scripts": {
-    "deploy": "ssh broofa.com \"cd npm.broofa.com && ./deploy.sh\"",
-    "open": "open -a \"Google Chrome\" http://localhost:9080"
+    "deploy": "npm test && ssh broofa.com \"cd npm.broofa.com && ./deploy.sh\"",
+    "open": "open -a \"Google Chrome\" http://localhost:9080",
+    "test": "eslint ."
   }
 }

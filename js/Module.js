@@ -44,13 +44,13 @@ export default class Module {
       let search;
 
       try {
-        search = await ajax('GET', `https://registry.npmjs.org/-/v1/search?text=${this.package.name}&size=1`);
+        search = await ajax('GET', `https://api.npms.io/v2/package/${this.package.name}`);
       } catch (err) {
         console.error(err);
         return;
       }
 
-      const score = search.objects[0] && search.objects[0].score;
+      const score = search.score
       this.package._scores = score ? {
         final: score.final,
         quality: score.detail.quality,
