@@ -156,8 +156,8 @@ export default class Inspector {
           if (module) {
             const scores = await module.getScores();
             if (scores && scores.final !== null) {
-              el.style.fill = 'green';
-              el.style.fillOpacity = Math.max(0, scores.final);
+              el.style.fill = 'red';
+              el.style.fillOpacity = Math.max(0, 1 - scores.final);
             }
           }
         }
@@ -210,6 +210,7 @@ export default class Inspector {
       // If no license, see if it's specified in the gh repo
       let repoLicense;
       let licenseWarning;
+debugger;
       if (!license && module.githubPath) {
         const gh = await ajax('GET', `https://api.github.com/repos/${module.githubPath}`);
 
@@ -231,10 +232,10 @@ export default class Inspector {
     '<td style="font-weight: bold; color: red">Unspecified</td></tr>'
 }
         <tr><th>Downloads/week</th><td>${stats.downloads}</td></tr>
-        <tr><th>Score</th><td class="rank"><div style="width:${final}">${final}</td></tr>
-        <tr><th>Quality</th><td class="rank"><div style="width:${quality}">${quality}</td></tr>
-        <tr><th>Popularity</th><td class="rank"><div style="width:${popularity}">${popularity}</div></td></tr>
-        <tr><th>Maintenance</th><td class="rank"><div style="width:${maintenance}">${maintenance}</td></tr>
+        <tr><th>NPMS.io Score</th><td class="rank"><div style="width:${final}">${final}</td></tr>
+        <tr style="font-size: 8pt"><th>Quality</th><td class="rank"><div style="width:${quality}">${quality}</td></tr>
+        <tr style="font-size: 8pt"><th>Popularity</th><td class="rank"><div style="width:${popularity}">${popularity}</div></td></tr>
+        <tr style="font-size: 8pt"><th>Maintenance</th><td class="rank"><div style="width:${maintenance}">${maintenance}</td></tr>
         </table>
         `;
     } else {

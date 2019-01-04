@@ -256,8 +256,10 @@ onload = function() {
 
     ondragleave: ev => {
       // Going to child != leaving
-      if (ev.toElement.closest('#drop_target')) return;
-      ev.target.classList.remove('drag');
+      const el = ev.relatedTarget;
+      if (!el && el.closest('#drop_target')) return;
+
+      ev.currentTarget.classList.remove('drag');
       ev.preventDefault();
     }
   });
