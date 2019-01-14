@@ -2,7 +2,8 @@ import validate from './pjv.js';
 import {ajax} from './util.js';
 
 function parseGithubPath(s) {
-  return /github.com\/([^/]+\/[^/?#.]+)/.test(s) && RegExp.$1;
+  s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
+  return s && s.replace(/\.git$/, '');
 }
 
 export default class Module {
@@ -24,8 +25,12 @@ export default class Module {
   }
 
   get key() {
+    return Module.key(this.package.name, this.version);
+  }
+
+  get version() {
     const version = this.package.version;
-    return Module.key(this.package.name, version && (version.version || version));
+    return version && (version.version || version);
   }
 
   get githubPath() {

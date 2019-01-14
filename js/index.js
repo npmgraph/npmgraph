@@ -67,7 +67,7 @@ async function graph(module) {
 
   const FONT='Roboto Condensed, sans-serif';
 
-  // Build us a directed graph document in GraphViz notation
+  // Compose directed graph document (GraphViz notation)
   const nodes = ['\n// Nodes & per-node styling'];
   const edges = ['\n// Edges & per-edge styling'];
 
@@ -258,7 +258,7 @@ onload = function() {
     ondragleave: ev => {
       // Going to child != leaving
       const el = ev.relatedTarget;
-      if (!el && el.closest('#drop_target')) return;
+      if (!el || el.closest('#drop_target')) return;
 
       ev.currentTarget.classList.remove('drag');
       ev.preventDefault();

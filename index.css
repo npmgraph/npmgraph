@@ -18,6 +18,10 @@ dd {
   margin: 0;
 }
 
+.material-icons {
+  font-size: inherit;
+}
+
 .flash {
   position: fixed;
   padding: 4px;
@@ -165,8 +169,8 @@ body.open #inspector {
   content: "expand_more"
 }
 
-.stats th {text-align: left;}
-.stats td {text-align: left;}
+.stats th {text-align: left; vertical-align: top}
+.stats td {text-align: left; vertical-align: top}
 .stats .rank {border: solid 1px #ccc; width: 200px}
 .stats .rank div {background-color: #ccc; text-align: right}
 
