@@ -235,11 +235,11 @@ export default class Inspector {
         license = license && (license.spdx_id || license.name);
 
         const issue = license ? {
-          title: `Missing \`license\` in package.json`,
+          title: 'Missing `license` in package.json',
           body: `http://npm.github.com did not find a \`license\` in the package.json file for version ${module.version} of this project`, // eslint-disable-line max-len
         } : {
-          title: `License not found in package.json or on Github`,
-          body: `http://npm.github.com could not find license information for this project.  Please make sure a license is defined either in the NPM package.json file or in a LICENSE.md file`, // eslint-disable-line max-len
+          title: 'License not found in package.json or on Github',
+          body: 'http://npm.github.com could not find license information for this project.  Please make sure a license is defined either in the NPM package.json file or in a LICENSE.md file', // eslint-disable-line max-len
         };
 
         licenseEl = `<td>
