@@ -4,6 +4,18 @@ import {$, $$, ajax, createTag, report, entryFromKey} from './util.js';
 import Store from './Store.js';
 import md5 from './md5.js';
 
+function issueUrl(module, issue) {
+  let url = `https://www.github.com/${module.githubPath}/issues`;
+  if (issue) {
+    const body = issue.body + `
+
+(If this issue was filed in error, please [report here](https://github.com/broofa/npmgraph/issues/new?title=Invalid+license+issue+for+${module.key}))`; // eslint-disable-line max-len
+    url += `/new?title=${encodeURIComponent(issue.title)}&body=${encodeURIComponent(body)}`;
+  }
+
+  return url;
+}
+
 export default class Inspector {
   static init() {
     const el = $('#inspector');
@@ -18,6 +30,9 @@ export default class Inspector {
   }
 
   static selectTag(tag) {
+    // If tag (element) is already selected, do nothing
+    if (tag && tag.classList && tag.classList.contains('selected')) return;
+
     $$('svg .node').forEach(el => el.classList.remove('selected'));
     if (typeof(tag) == 'string') {
       $$(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
@@ -204,32 +219,43 @@ export default class Inspector {
       const quality = scores ? (scores.quality*100).toFixed(0) + '%' : 'n/a';
       const popularity = scores ? (scores.popularity*100).toFixed(0) + '%' : 'n/a';
       const maintenance = scores ? (scores.maintenance*100).toFixed(0) + '%' : 'n/a';
-      const license = module.licenseString;
+      let license = module.licenseString;
 
       // If no license, see if it's specified in the gh repo
-      let repoLicense;
-      let licenseWarning;
+      let licenseEl;
 
-      if (!license && module.githubPath) {
-        const gh = await ajax('GET', `https://api.github.com/repos/${module.githubPath}`);
+      if (license) {
+        licenseEl = `<td>${license}</td>`;
+      } else {
+        // Look for license in github
+        const gh = module.githubPath &&
+          await ajax('GET', `https://api.github.com/repos/${module.githubPath}`);
 
-        repoLicense = gh && gh.license;
-        repoLicense = repoLicense && (repoLicense.spdx_id || repoLicense.name);
-        licenseWarning = '<p>package.json is missing "license".  Please report this <a href="`${https://www.github.com/${module.githubPath}/issues}`">issue</a></p>'; // eslint-disable-line max-len
+        license = gh && gh.license;
+        license = license && (license.spdx_id || license.name);
+
+        const issue = license ? {
+          title: `Missing \`license\` in package.json`,
+          body: `http://npm.github.com did not find a \`license\` in the package.json file for version ${module.version} of this project`, // eslint-disable-line max-len
+        } : {
+          title: `License not found in package.json or on Github`,
+          body: `http://npm.github.com could not find license information for this project.  Please make sure a license is defined either in the NPM package.json file or in a LICENSE.md file`, // eslint-disable-line max-len
+        };
+
+        licenseEl = `<td>
+        <span style="${license ? '' : 'font-weight: bold; color: red'}">${license || 'Unspecified'}</span>
+          <div style="font-size: 70%; color: #c60;" >
+            <span class="material-icons" title="">warning</span>${issue.title}
+            ${'' /*<a target="_blank" href="${issueUrl(module, issue)}">report</a>*/}
+          </div>
+          </td>`;
       }
 
 
       $('#pane-module .stats').innerHTML = `
         <table>
         <tr><th>Maintainers</th><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
-        <tr><th>License</th>${
-  license ?
-    `<td>
-          ${license || repoLicense || 'Unspecified'}
-          ${licenseWarning || ''}
-          </td></tr>` :
-    '<td style="font-weight: bold; color: red">Unspecified</td></tr>'
-}
+        <tr><th>License</th>${licenseEl}</tr>
         <tr><th>Downloads/week</th><td>${stats.downloads}</td></tr>
         <tr><th>NPMS.io Score</th><td class="rank"><div style="width:${final}">${final}</td></tr>
         <tr style="font-size: 8pt"><th>Quality</th><td class="rank"><div style="width:${quality}">${quality}</td></tr>

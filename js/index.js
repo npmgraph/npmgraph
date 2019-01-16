@@ -168,10 +168,16 @@ async function graph(module) {
   $$('g.node').forEach(async el => {
     const key = $(el, 'text').textContent;
     if (!key) return;
+
+    const moduleName = key.replace(/@[\d.]+$/, '');
+    if (!moduleName) {
+      el.classList.add(toTag('module', moduleName));
+    } else {
+      report.warn(Error(`Bad replace: ${key}`));
+    }
+
     const m = await Store.getModule(...entryFromKey(key));
     const pkg = m && m.package;
-    if (!key.replace(/@.*/, '')) report.warn(Error(`Bad replace: ${key}`));
-    el.classList.add(toTag('module', key.replace(/@.*/, '')));
     if (pkg.stub) {
       el.classList.add('stub');
     } else {
