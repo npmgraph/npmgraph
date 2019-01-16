@@ -170,7 +170,7 @@ async function graph(module) {
     if (!key) return;
 
     const moduleName = key.replace(/@[\d.]+$/, '');
-    if (!moduleName) {
+    if (moduleName) {
       el.classList.add(toTag('module', moduleName));
     } else {
       report.warn(Error(`Bad replace: ${key}`));
