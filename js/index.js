@@ -6,6 +6,12 @@ import Module from './Module.js';
 import Store from './Store.js';
 import {$, $$, toTag, ajax, entryFromKey, report} from './util.js';
 
+// HACK: So we can call closest() on event targets without having to worry about
+// whether or not the user clicked on an Element v. Text Node
+Text.prototype.closest = function(...args) {
+  return this.parentNode.closest && this.parentNode.closest(...args);
+}
+
 // Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;
 
@@ -263,8 +269,7 @@ onload = function() {
 
     ondragleave: ev => {
       // Going to child != leaving
-      const el = ev.relatedTarget;
-      if (!el || el.closest('#drop_target')) return;
+      if (ev.relatedTarget.closest('#drop_target')) return;
 
       ev.currentTarget.classList.remove('drag');
       ev.preventDefault();
