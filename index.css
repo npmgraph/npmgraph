@@ -237,6 +237,8 @@ g .stub > path {
 	border-color: #68a;
 }
 
+#drop_target * {pointer-events: none;}
+
 #info-footer {
   position: absolute;
   bottom: 0;
