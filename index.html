@@ -115,11 +115,18 @@
 <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
 <script>
 const ENV = {}; // Set in deploy
+const pageStart = Date.now();
 window.bugsnagClient = bugsnag({
   apiKey: '6a07b66124c696d0f685e1cf28312e41',
   appVersion: ENV.appVersion || undefined,
   releaseStage: ENV.releaseStage || 'development',
-  notifyReleaseStages: ['production']
+  notifyReleaseStages: ['production'],
+  beforeSend: function(report) {
+    report.updateMetaData('page', {
+      location: String(location),
+      pageTime: Date.now() - pageStart
+    });
+  }
 });
 </script>
 
