@@ -71,7 +71,7 @@ export function ajax(method, url, loader) {
 
 export function tagify(type, tag) {
   return type + '-' + tag.replace(/\W/g, '_').toLowerCase();
-};
+}
 
 export function tagElement(el, type, ...tags) {
   tags = tags.filter(t => t).map(t => tagify(type, t));
@@ -86,7 +86,7 @@ export function createTag(type, text, count = 0) {
   el.title = el.innerText = count < 2 ? text : `${text}(${count})`;
 
   return el;
-};
+}
 
 
 export function entryFromKey(key) {
