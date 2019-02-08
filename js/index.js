@@ -4,7 +4,7 @@ import Flash from './Flash.js';
 import Inspector from './Inspector.js';
 import Module from './Module.js';
 import Store from './Store.js';
-import {$, $$, toTag, ajax, entryFromKey, report} from './util.js';
+import {$, $$, tagElement, ajax, entryFromKey, report} from './util.js';
 
 // HACK: So we can call closest() on event targets without having to worry about
 // whether or not the user clicked on an Element v. Text Node
@@ -177,7 +177,7 @@ async function graph(module) {
 
     const moduleName = key.replace(/@[\d.]+$/, '');
     if (moduleName) {
-      el.classList.add(toTag('module', moduleName));
+      tagElement(el, 'module', moduleName);
     } else {
       report.warn(Error(`Bad replace: ${key}`));
     }
@@ -187,8 +187,8 @@ async function graph(module) {
     if (pkg.stub) {
       el.classList.add('stub');
     } else {
-      pkg.maintainers.forEach(m => el.classList.add(toTag('maintainer', m.name)));
-      el.classList.add(toTag('license', m.licenseString || 'Unspecified'));
+      tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
+      tagElement(el, 'license', m.licenseString || 'Unspecified');
     }
   });
 
@@ -201,7 +201,12 @@ async function graph(module) {
   $('title').innerText = `NPMGraph - ${names}`;
 }
 
-window.onpopstate = function() {
+window.onpopstate = function(event) {
+  const state = event && event.state;
+  if (state && state.module) {
+    graph(state.module);
+    return;
+  }
   const target = /q=([^&]+)/.test(location.search) && RegExp.$1;
   if (target) graph(decodeURIComponent(target) || 'request');
 };
@@ -259,6 +264,7 @@ onload = function() {
       });
 
       const module = new Module(JSON.parse(content));
+      history.pushState({module}, null, `${location.pathname}?upload=${file.name}`);
       graph(module);
     },
 

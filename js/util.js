@@ -69,22 +69,20 @@ export function ajax(method, url, loader) {
   });
 }
 
-export const toTag = (type, text) => {
-  // .type for license objects
-  // .name for maintainer objects
-  text = text.type || text.name || text;
-  if (!text) {
-    report.warn(Error(`Undefined tag text (type=${type})`));
-    text='__undefined';
-  }
-  return type + '-' + text.replace(/\W/g, '_').toLowerCase();
+export function tagify(type, tag) {
+  return type + '-' + tag.replace(/\W/g, '_').toLowerCase();
 };
 
-export const createTag = (type, text, count = 0) => {
+export function tagElement(el, type, ...tags) {
+  tags = tags.filter(t => t).map(t => tagify(type, t));
+  el.classList.add(...tags);
+}
+
+export function createTag(type, text, count = 0) {
   const el = document.createElement('div');
 
   el.classList.add('tag', type);
-  el.dataset.tag = toTag(type, text);
+  el.dataset.tag = tagify(type, text);
   el.title = el.innerText = count < 2 ? text : `${text}(${count})`;
 
   return el;
