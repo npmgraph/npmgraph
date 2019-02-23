@@ -106,7 +106,7 @@ async function graph(module) {
     return Promise.resolve();
   }
 
-  $('#load').style.display = 'block';
+  $('#progress').style.display = 'block';
   let modules = module;
   if (typeof(module) == 'string') {
     modules = module.split(/[, ]+/);
@@ -126,7 +126,7 @@ async function graph(module) {
     modules = [module];
   }
   await render(modules);
-  $('#load').style.display = 'none';
+  $('#progress').style.display = 'none';
 
   const title = modules.map(m => m.package.name).join();
   const dotDoc = [
@@ -170,7 +170,7 @@ async function graph(module) {
   $('#graph').appendChild(svg);
   zoom(1);
 
-  $$('.loader').forEach(el => el.remove());
+  $$('.progress').forEach(el => el.remove());
   $$('g.node').forEach(async el => {
     const key = $(el, 'text').textContent;
     if (!key) return;

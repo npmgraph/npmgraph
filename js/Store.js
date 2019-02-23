@@ -1,6 +1,6 @@
 import {$, ajax, report} from './util.js';
 import Module from './Module.js';
-import Loader from './Loader.js';
+import Progress from './Progress.js';
 import Flash from './Flash.js';
 import * as semver from './semver.js';
 
@@ -100,9 +100,9 @@ export default class Store {
     // In store?
     if (stored && !this._noCache) return stored;
 
-    const loader = new Loader(path);
-    $('#load').appendChild(loader.el);
-    return ajax('GET', `https://registry.npmjs.cf/${path}`, loader);
+    const progress = new Progress(path);
+    $('#progress').appendChild(progress.el);
+    return ajax('GET', `https://registry.npmjs.cf/${path}`, progress);
   }
 
   // Store a value in localStorage, purging if there's an error

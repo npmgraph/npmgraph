@@ -47,16 +47,16 @@ $.parse = markup => {
  * moment) does not support sending a request body because we don't (yet) need
  * that feature.
  */
-export function ajax(method, url, loader) {
+export function ajax(method, url, progress) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
       if (xhr.readyState < 4) return;
       if (xhr.status >= 200 && xhr.status < 300) {
-        if (loader) loader.stop();
+        if (progress) progress.stop();
         resolve(JSON.parse(xhr.responseText));
       } else {
-        if (loader) loader.error();
+        if (progress) progress.error();
         const err = new Error(`${xhr.status}: ${url}`);
         err.status = xhr.status;
         err.url = url;
