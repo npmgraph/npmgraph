@@ -1,13 +1,21 @@
 {
   "name": "npmgraph",
   "version": "2.4.10",
+  "bin": {
+    "npmgraph": "./bin/npmgraph.js"
+  },
   "author": {
     "name": "Robert Kieffer",
     "url": "http://github.com/broofa",
     "email": "robert@broofa.com"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "ejs": "^2.6.2",
+    "express": "^4.17.1",
+    "minimist": "^1.2.0",
+    "open": "^6.4.0"
+  },
   "description": "Visualize NPM dependency graphs (public and private!)",
   "keywords": [
     "npm",

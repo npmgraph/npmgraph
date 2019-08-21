@@ -47,6 +47,9 @@ dump.rdb
 # Webstorm
 .idea/
 
+# VSCode
+.vscode/
+
 # Generated files
 **/public/bundle.js
 .ebignore

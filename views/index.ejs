@@ -1,0 +1,10 @@
+<% include ../index.html %>
+<script>
+    window.packageName = '<%=name %>';
+    if(window.packageName) {
+        const curHref = window.location.href;
+        if(window.location.href.indexOf('?q')==-1) {
+            window.location.href = `${curHref}?q=${window.packageName}`;
+        }
+    }
+</script>
