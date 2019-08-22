@@ -13,11 +13,11 @@ const getPackageName = (packlist = []) => {
 };
 
 function usage() {
-  console.log(`Usage: npmgraph [--port=portnum] package_name
+  console.log(`Usage: npmgraph [--port=portnum] package_name [-r]
   --port=portnum:  server port to listen on';
-  package_name: package to start dependency graph at`);
+  package_name: package to start dependency graph at;
+  -r: use remote mode to show graph`);
 }
-
 //handle cli params
 packageName = getPackageName(argv._);
 if (!packageName) {
