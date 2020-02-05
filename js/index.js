@@ -239,6 +239,38 @@ onload = function() {
   Inspector.init();
   Inspector.showPane('pane-info');
 
+  /** Loads a `File` object as a package.json. */
+  async function loadPackageJSON(file) {
+    if (file.type && file.type != 'application/json') return alert('File must have a ".json" extension');
+    if (!file) return alert('Please drop a file, not... well... whatever else it was you dropped');
+
+    const reader = new FileReader();
+
+    const content = await new Promise((resolve, reject) => {
+      reader.onload = () => resolve(reader.result);
+      reader.readAsText(file);
+    });
+
+    const module = new Module(JSON.parse(content));
+    history.pushState({module}, null, `${location.pathname}?upload=${file.name}`);
+    graph(module);
+  }
+
+  // Handle file chooser submit
+  const uploadFileRef = $('#upload_file');
+  Object.assign(uploadFileRef, {
+    onsubmit: async ev => {
+      ev.preventDefault();
+
+      // get file from upload `input`
+      const formData = new FormData(uploadFileRef);
+      const file = formData.get('file');
+      if (!file) return alert('No files found in file upload');
+
+      return loadPackageJSON(file);
+    }
+  });
+
   // Handle file drops
   Object.assign($('#drop_target'), {
     ondrop: async ev => {
@@ -251,21 +283,9 @@ onload = function() {
       if (dt.items.length != 1) return alert('You must drop exactly one file');
 
       const item = dt.items[0];
-      if (item.type && item.type != 'application/json') return alert('File must have a ".json" extension');
-
       const file = item.getAsFile();
-      if (!file) return alert('Please drop a file, not... well... whatever else it was you dropped');
 
-      const reader = new FileReader();
-
-      const content = await new Promise((resolve, reject) => {
-        reader.onload = () => resolve(reader.result);
-        reader.readAsText(file);
-      });
-
-      const module = new Module(JSON.parse(content));
-      history.pushState({module}, null, `${location.pathname}?upload=${file.name}`);
-      graph(module);
+      return loadPackageJSON(file);
     },
 
     ondragover: ev => {
