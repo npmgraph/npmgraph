@@ -256,8 +256,27 @@ onload = function() {
   Inspector.init();
   Inspector.showPane('pane-info');
 
+
+  // Handle file upload
+  $('#file_upload').onchange = async changeEv => {
+    changeEv.preventDefault();
+
+    const files = changeEv.target.files;
+    if (!files || files.length !== 1) {
+      return;
+    }
+
+    return graphPackageJSON(files[0]);
+  };
+
   // Handle file drops
   Object.assign($('#drop_target'), {
+    onclick: ev => {
+      ev.preventDefault();
+      // trigger file dialog using dummy element
+      $('#file_upload').click();
+    },
+
     ondrop: async ev => {
       ev.target.classList.remove('drag');
       ev.preventDefault();
@@ -281,26 +300,6 @@ onload = function() {
     ondragleave: ev => {
       ev.currentTarget.classList.remove('drag');
       ev.preventDefault();
-    },
-    onclick: ev => {
-      ev.preventDefault();
-
-      // trigger file dialog using dummy element
-      const inputElt = document.createElement('input');
-      inputElt.setAttribute('type', 'file');
-      inputElt.setAttribute('accept', 'application/json');
-
-      inputElt.onchange = async changeEv => {
-        changeEv.preventDefault();
-
-        const files = changeEv.target.files;
-        if (!files || files.length !== 1) {
-          return alert('Something went wrong');
-        }
-
-        return graphPackageJSON(files[0]);
-      };
-      inputElt.click();
     }
   });
 
