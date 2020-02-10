@@ -231,6 +231,7 @@ g .stub > path {
   background-color: #ddd;
   border: dashed 2px #888;
   padding: 1em;
+  cursor: pointer;
 }
 #drop_target.drag {
 	background-color: #ccf;

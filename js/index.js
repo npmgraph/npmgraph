@@ -65,6 +65,23 @@ function zoom(op) {
   }
 }
 
+/** Loads a `File` object as a package.json. */
+async function graphPackageJSON(file) {
+  if (!file) return alert('Please drop a file, not... well... whatever else it was you dropped');
+  if (file.type && file.type != 'application/json') return alert('File must have a ".json" extension');
+
+  const reader = new FileReader();
+
+  const content = await new Promise((resolve, reject) => {
+    reader.onload = () => resolve(reader.result);
+    reader.readAsText(file);
+  });
+
+  const module = new Module(JSON.parse(content));
+  history.pushState({module}, null, `${location.pathname}?upload=${file.name}`);
+  graph(module);
+}
+
 async function graph(module) {
   Inspector.toggle(false);
 
@@ -239,38 +256,6 @@ onload = function() {
   Inspector.init();
   Inspector.showPane('pane-info');
 
-  /** Loads a `File` object as a package.json. */
-  async function loadPackageJSON(file) {
-    if (file.type && file.type != 'application/json') return alert('File must have a ".json" extension');
-    if (!file) return alert('Please drop a file, not... well... whatever else it was you dropped');
-
-    const reader = new FileReader();
-
-    const content = await new Promise((resolve, reject) => {
-      reader.onload = () => resolve(reader.result);
-      reader.readAsText(file);
-    });
-
-    const module = new Module(JSON.parse(content));
-    history.pushState({module}, null, `${location.pathname}?upload=${file.name}`);
-    graph(module);
-  }
-
-  // Handle file chooser submit
-  const uploadFileRef = $('#upload_file');
-  Object.assign(uploadFileRef, {
-    onsubmit: async ev => {
-      ev.preventDefault();
-
-      // get file from upload `input`
-      const formData = new FormData(uploadFileRef);
-      const file = formData.get('file');
-      if (!file) return alert('No files found in file upload');
-
-      return loadPackageJSON(file);
-    }
-  });
-
   // Handle file drops
   Object.assign($('#drop_target'), {
     ondrop: async ev => {
@@ -285,7 +270,7 @@ onload = function() {
       const item = dt.items[0];
       const file = item.getAsFile();
 
-      return loadPackageJSON(file);
+      return graphPackageJSON(file);
     },
 
     ondragover: ev => {
@@ -296,6 +281,25 @@ onload = function() {
     ondragleave: ev => {
       ev.currentTarget.classList.remove('drag');
       ev.preventDefault();
+    },
+    onclick: ev => {
+      ev.preventDefault();
+
+      // trigger file dialog using dummy element
+      const inputElt = document.createElement('input');
+      inputElt.setAttribute('type', 'file');
+      inputElt.setAttribute('accept', 'application/json');
+
+      inputElt.onchange = async changeEv => {
+        changeEv.preventDefault();
+
+        const files = changeEv.target.files;
+        if (!files) return;
+        if (files.length !== 1) return;
+
+        return graphPackageJSON(files[0]);
+      };
+      inputElt.click();
     }
   });
 
