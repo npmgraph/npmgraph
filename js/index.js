@@ -294,8 +294,9 @@ onload = function() {
         changeEv.preventDefault();
 
         const files = changeEv.target.files;
-        if (!files) return;
-        if (files.length !== 1) return;
+        if (!files || files.length !== 1) {
+          return alert('Something went wrong');
+        }
 
         return graphPackageJSON(files[0]);
       };
