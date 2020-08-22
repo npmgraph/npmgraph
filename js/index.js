@@ -112,13 +112,6 @@ async function graph(module) {
     modules = module.split(/[, ]+/);
     modules.sort();
 
-    // Because this is a single-page app that relies on other servers to do most
-    // of the heavy lifting (e.g. npmjs.cl, npmjs.org), my weblogs don't actually
-    // contain info about the modules people are graphing.  Because that
-    // information is kind of interesting, we make a tracking request here to
-    // capture that info.
-    if (location.hostname == 'npm.broofa.com') ajax('GET', `/track.php?q=${modules.join()}`);
-
     modules = await Promise.all(modules.map(moduleName =>
       Store.getModule(...entryFromKey(moduleName))
     ));
