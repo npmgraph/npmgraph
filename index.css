@@ -6,9 +6,14 @@ html, body {
   margin: 0;
   padding: 0;
 }
-h1 {font-size: 16pt; border-radius: 3px;}
-h2 {font-size: 14pt; border-radius: 3px;}
-
+h1 {
+  font-size: 16pt;
+  border-radius: 3px;
+}
+h2 {
+  font-size: 14pt;
+  border-radius: 3px;
+}
 
 dt {
   font-weight: bold;
@@ -29,6 +34,7 @@ label {display: block;}
   padding: 4px;
   transition-property: left;
   transition-duration: .7s;
+  border-radius: 3px;
 }
 
 #progress {
@@ -255,6 +261,7 @@ g .stub > path {
   background-color: #ddd;
   border: dashed 2px #888;
   padding: 1em;
+  border-radius: 5px;
 }
 #drop_target.drag {
 	background-color: #ccf;

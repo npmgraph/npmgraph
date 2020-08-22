@@ -11,8 +11,8 @@ export default class Module {
     return `${name}@${version}`;
   }
 
-  constructor(pkg) {
-    if (!pkg.maintainers) {
+  constructor(pkg = {}) {
+    if (!pkg?.maintainers) {
       pkg.maintainers = [];
     } else if (!Array.isArray(pkg.maintainers)) {
       pkg.maintainers = [pkg.maintainers];
