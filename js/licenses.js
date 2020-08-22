@@ -87,7 +87,7 @@ const licenses = {};
 ].forEach(e => {
   const license = {
     name: e[0],
-    acronym: e[1],
+    acronym: e[1]
   };
   licenses[e[0].toLowercase()] = license;
   if (e[1]) {

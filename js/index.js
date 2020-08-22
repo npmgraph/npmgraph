@@ -4,7 +4,7 @@ import Flash from './Flash.js';
 import Inspector from './Inspector.js';
 import Module from './Module.js';
 import Store from './Store.js';
-import {$, $$, tagElement, ajax, entryFromKey, report} from './util.js';
+import { $, $$, tagElement, entryFromKey, report } from './util.js';
 
 // HACK: So we can call closest() on event targets without having to worry about
 // whether or not the user clicked on an Element v. Text Node
@@ -71,7 +71,7 @@ async function graph(module) {
   // Clear out graphs
   $$('svg').forEach(el => el.remove());
 
-  const FONT='Roboto Condensed, sans-serif';
+  const FONT = 'Roboto Condensed, sans-serif';
 
   // Compose directed graph document (GraphViz notation)
   const nodes = ['\n// Nodes & per-node styling'];
@@ -108,7 +108,7 @@ async function graph(module) {
 
   $('#progress').style.display = 'block';
   let modules = module;
-  if (typeof(module) == 'string') {
+  if (typeof (module) == 'string') {
     modules = module.split(/[, ]+/);
     modules.sort();
 
@@ -136,9 +136,9 @@ async function graph(module) {
     .concat(nodes)
     .concat(edges)
     .concat(
-      modules.length > 1 ?
-        `{rank=same; ${modules.map(s => `"${s}"`).join('; ')};}` :
-        ''
+      modules.length > 1
+        ? `{rank=same; ${modules.map(s => `"${s}"`).join('; ')};}`
+        : ''
     )
     .concat('}')
     .join('\n');
@@ -216,7 +216,7 @@ onload = function() {
     const noCache = /noCache/i.test(location.search);
     const url = `${location.pathname}?q=${this.value}`;
     history.pushState({}, null, `${url}${noCache ? '&noCache' : ''}`);
-    gtag('config', GA_TRACKING_ID, {page_path: url}); // eslint-disable-line camelcase
+    gtag('config', GA_TRACKING_ID, { page_path: url }); // eslint-disable-line camelcase
     await graph(this.value);
   };
 
@@ -257,7 +257,7 @@ onload = function() {
       });
 
       const module = new Module(JSON.parse(content));
-      history.pushState({module}, null, `${location.pathname}?upload=${file.name}`);
+      history.pushState({ module }, null, `${location.pathname}?upload=${file.name}`);
       graph(module);
     },
 

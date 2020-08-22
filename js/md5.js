@@ -20,7 +20,7 @@
  */
 
 export default function md5(bytes) {
-  if (typeof(bytes) == 'string') {
+  if (typeof (bytes) == 'string') {
     const msg = unescape(encodeURIComponent(bytes)); // UTF8 escape
     bytes = new Array(msg.length);
     for (let i = 0; i < msg.length; i++) bytes[i] = msg.charCodeAt(i);
@@ -32,7 +32,6 @@ export default function md5(bytes) {
       , bytes.length * 8)
   );
 }
-
 
 /*
 * Convert an array of little-endian words to an array of bytes

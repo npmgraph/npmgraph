@@ -1,5 +1,5 @@
 import validate from './pjv.js';
-import {ajax} from './util.js';
+import { ajax } from './util.js';
 
 function parseGithubPath(s) {
   s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
@@ -79,7 +79,7 @@ export default class Module {
     }
 
     // Legacy: license object?
-    if (typeof(license) == 'object') license = license.type;
+    if (typeof (license) == 'object') license = license.type;
 
     if (!license) return null;
 

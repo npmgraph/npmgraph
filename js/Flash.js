@@ -12,7 +12,7 @@ export default function(o, bg = '#f80') {
     el.append.apply(el, o.querySelector('body').children);
   } else if (o instanceof Element || o instanceof DocumentFragment) {
     el.append(o);
-  } else if (typeof(o) == 'string') {
+  } else if (typeof (o) == 'string') {
     el.innerText = o;
   } else {
     el.innerText = JSON.stringify(o, null, 2);
@@ -23,7 +23,7 @@ export default function(o, bg = '#f80') {
   const prevBottom = prev ? (prev.offsetTop + prev.offsetHeight) : 0;
 
   const top = prevBottom < window.innerHeight - el.offsetHeight ? prevBottom : 0;
-  el.style.top = `${top + SPACE/2}px`;
+  el.style.top = `${top + SPACE / 2}px`;
   el.style.left = `${-el.offsetWidth - SPACE}px`;
   el.style.maxWidth = `${graph.offsetWidth - SPACE}px`;
   el.style.backgroundColor = bg;

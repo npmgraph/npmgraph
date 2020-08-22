@@ -10,7 +10,7 @@ function validateType(name, field, value) {
   const validFieldTypes = field.types || [field.type];
   const valueType = value instanceof Array ? 'array' : typeof value;
   if (validFieldTypes.indexOf(valueType) == -1) {
-    errors.push(`Type for field ${name}, was expected to be ${validFieldTypes.join(' or ')}, not ${typeof(value)}`);
+    errors.push(`Type for field ${name}, was expected to be ${validFieldTypes.join(' or ')}, not ${typeof (value)}`);
   }
   return errors;
 }
@@ -20,7 +20,7 @@ function validateType(name, field, value) {
 function validateDependencies(name, deps) {
   const errors = [];
   for (const pkg in deps) {
-    if (! PACKAGE_FORMAT.test(pkg)) {
+    if (!PACKAGE_FORMAT.test(pkg)) {
       errors.push('Invalid dependency package name: ' + pkg);
     }
 
@@ -82,7 +82,7 @@ function validatePeople(name, obj, errors) {
   if (typeof obj == 'string') {
     const authorRegex = /^([^<(\s]+[^<(]*)?(\s*<(.*?)>)?(\s*\((.*?)\))?/;
     const [, name,, email,, url] = authorRegex.exec(obj);
-    validatePeople({name, email, url}, errors);
+    validatePeople({ name, email, url }, errors);
   } else if (typeof obj == 'object') {
     if (!obj.name) {
       errors.push(name + ' field should have name');
@@ -102,7 +102,6 @@ function validatePeople(name, obj, errors) {
 
   return errors;
 }
-
 
 function validateUrlTypes(name, obj, errors) {
   errors = errors || [];
@@ -128,41 +127,41 @@ function validateUrlTypes(name, obj, errors) {
 
 // https://npmjs.org/doc/json.html
 const SPEC = {
-  name:         {type: 'string', required: true, format: PACKAGE_FORMAT},
-  version:      {type: 'string', required: true, format: VERSION_FORMAT},
-  description:  {type: 'string', warning: true},
-  keywords:     {type: 'array', warning: true},
-  homepage:     {type: 'string', recommended: true, format: URL_FORMAT},
-  bugs:         {warning: true, validate: validateUrlOrMailto},
-  licenses:     {type: 'array', warning: true, validate: validateUrlTypes, or: 'license'},
-  license:      {type: 'string'},
-  author:       {warning: true, validate: validatePeople},
-  contributors: {warning: true, validate: validatePeople},
-  files:        {type: 'array'},
-  main:         {type: 'string'},
-  bin:          {types: ['string', 'object']},
-  man:          {types: ['string', 'array']},
-  directories:  {type: 'object'},
-  repository:   {types: ['string', 'object'], warning: true, validate: validateUrlTypes, or: 'repositories'},
-  scripts:      {type: 'object'},
-  config:       {type: 'object'},
-  dependencies: {type: 'object', recommended: true, validate: validateDependencies},
-  devDependencies: {type: 'object', validate: validateDependencies},
-  bundledDependencies: {type: 'array'},
-  bundleDependencies: {type: 'array'},
-  optionalDependencies: {type: 'object', validate: validateDependencies},
-  engines:      {type: 'object', recommended: true},
-  engineStrict: {type: 'boolean'},
-  os:           {type: 'array'},
-  cpu:          {type: 'array'},
-  preferGlobal: {type: 'boolean'},
-  private:      {type: 'boolean'},
-  publishConfig: {type: 'object'},
+  name: { type: 'string', required: true, format: PACKAGE_FORMAT },
+  version: { type: 'string', required: true, format: VERSION_FORMAT },
+  description: { type: 'string', warning: true },
+  keywords: { type: 'array', warning: true },
+  homepage: { type: 'string', recommended: true, format: URL_FORMAT },
+  bugs: { warning: true, validate: validateUrlOrMailto },
+  licenses: { type: 'array', warning: true, validate: validateUrlTypes, or: 'license' },
+  license: { type: 'string' },
+  author: { warning: true, validate: validatePeople },
+  contributors: { warning: true, validate: validatePeople },
+  files: { type: 'array' },
+  main: { type: 'string' },
+  bin: { types: ['string', 'object'] },
+  man: { types: ['string', 'array'] },
+  directories: { type: 'object' },
+  repository: { types: ['string', 'object'], warning: true, validate: validateUrlTypes, or: 'repositories' },
+  scripts: { type: 'object' },
+  config: { type: 'object' },
+  dependencies: { type: 'object', recommended: true, validate: validateDependencies },
+  devDependencies: { type: 'object', validate: validateDependencies },
+  bundledDependencies: { type: 'array' },
+  bundleDependencies: { type: 'array' },
+  optionalDependencies: { type: 'object', validate: validateDependencies },
+  engines: { type: 'object', recommended: true },
+  engineStrict: { type: 'boolean' },
+  os: { type: 'array' },
+  cpu: { type: 'array' },
+  preferGlobal: { type: 'boolean' },
+  private: { type: 'boolean' },
+  publishConfig: { type: 'object' }
 };
 
 export default function validate(data, options) {
   options = options || {};
-  const out = {valid: false};
+  const out = { valid: false };
 
   let errors = [];
   const warnings = [];
@@ -206,7 +205,7 @@ export default function validate(data, options) {
     }
   }
 
-  out.valid = errors.length > 0 ? false : true;
+  out.valid = !(errors.length > 0);
   if (errors.length > 0) {
     out.errors = errors;
   }

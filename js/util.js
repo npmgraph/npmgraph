@@ -1,9 +1,9 @@
 /* global bugsnagClient */
 
 export const report = {
-  error: err => bugsnagClient.notify(err, {severity: 'error'}),
-  warn: err => bugsnagClient.notify(err, {severity: 'warn'}),
-  info: err => bugsnagClient.notify(err, {severity: 'info'}),
+  error: err => bugsnagClient.notify(err, { severity: 'error' }),
+  warn: err => bugsnagClient.notify(err, { severity: 'warn' }),
+  info: err => bugsnagClient.notify(err, { severity: 'info' })
 };
 
 /**
@@ -25,7 +25,6 @@ $.up = (el, test) => {
   while (el && !test(el)) el = el.parentElement;
   return el;
 };
-
 
 /**
  * Parse the provided html markup into a document fragment
@@ -87,7 +86,6 @@ export function createTag(type, text, count = 0) {
 
   return el;
 }
-
 
 export function entryFromKey(key) {
   const MODULE_RE = /^(@?[^@]+)(?:@(.*))?$/;

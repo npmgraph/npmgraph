@@ -1,4 +1,4 @@
-import {$, ajax, report} from './util.js';
+import { $, ajax, report } from './util.js';
 import Module from './Module.js';
 import Progress from './Progress.js';
 import Flash from './Flash.js';
@@ -39,7 +39,7 @@ export default class Store {
           // See https://goo.gl/dSMitm
           body = await this.get(!isScoped && semver.valid(version) ? cachePath : path);
           if (!body) throw Error('No module info found');
-          if (typeof(body) != 'object') throw Error('Response was not an object');
+          if (typeof (body) != 'object') throw Error('Response was not an object');
           if (body.unpublished) throw Error('Module is unpublished');
         } catch (err) {
           if ('status' in err) {
@@ -72,7 +72,7 @@ export default class Store {
 
       // If we fail to find info, just create a stub entry
       if (!body) {
-        body = {stub: true, name, version, maintainers: []};
+        body = { stub: true, name, version, maintainers: [] };
       } else if (path != cachePath) {
         // If this isn't from cache, store in localStorage
         this.store(path, cachePath);
@@ -108,7 +108,7 @@ export default class Store {
   // Store a value in localStorage, purging if there's an error
   static store(key, obj) {
     try {
-      if (obj && typeof(obj) == 'object') obj._storedAt = Date.now();
+      if (obj && typeof (obj) == 'object') obj._storedAt = Date.now();
       localStorage.setItem(key, JSON.stringify(obj));
     } catch (err) {
       console.warn('Error while storing. Purging cache', err);
@@ -122,7 +122,7 @@ export default class Store {
     for (let i = 0; i < 10; i++) {
       obj = localStorage.getItem(key);
       if (obj) obj = JSON.parse(obj);
-      if (!obj || typeof(obj) != 'string') break;
+      if (!obj || typeof (obj) != 'string') break;
       key = obj;
     }
 

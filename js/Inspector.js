@@ -1,9 +1,10 @@
 /* global c3 */
 
-import {$, $$, ajax, createTag, report, entryFromKey} from './util.js';
+import { $, $$, ajax, createTag, report, entryFromKey } from './util.js';
 import Store from './Store.js';
 import md5 from './md5.js';
 
+/*
 function issueUrl(module, issue) {
   let url = `https://www.github.com/${module.githubPath}/issues`;
   if (issue) {
@@ -15,6 +16,7 @@ function issueUrl(module, issue) {
 
   return url;
 }
+*/
 
 export default class Inspector {
   static init() {
@@ -34,7 +36,7 @@ export default class Inspector {
     if (tag && tag.classList && tag.classList.contains('selected')) return;
 
     $$('svg .node').forEach(el => el.classList.remove('selected'));
-    if (typeof(tag) == 'string') {
+    if (typeof (tag) == 'string') {
       $$(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
     } else if (tag) {
       tag.classList.add('selected');
@@ -52,7 +54,7 @@ export default class Inspector {
 
   static toggle(open) {
     const body = $('body');
-    if (typeof(open) != 'boolean') open = !body.classList.contains('open');
+    if (typeof (open) != 'boolean') open = !body.classList.contains('open');
     $('#tabs .arrow').innerHTML = open ? '&#x25ba' : '&#x25c0';
     $('body').classList.toggle('open', open);
   }
@@ -144,7 +146,7 @@ export default class Inspector {
         bindto: '#chart',
         data: {
           columns: [],
-          type: 'pie',
+          type: 'pie'
         }
       };
       config.data.columns = Array.from(licenses)
@@ -154,7 +156,6 @@ export default class Inspector {
       $('#chart').innerHTML = '';
     }
     $('#inspector').scrollTo(0, 0);
-
 
     // Colorize handler
     $('#colorize').checked = false;
@@ -205,7 +206,7 @@ export default class Inspector {
       try {
         requests = await Promise.all([
           ajax('GET', `https://api.npmjs.org/downloads/point/last-week/${pkg.name}`),
-          module.getScores(),
+          module.getScores()
         ]);
       } catch (err) {
         report.warn(err);
@@ -216,9 +217,9 @@ export default class Inspector {
       const [stats, scores] = requests;
 
       const final = scores ? (scores.final * 100).toFixed(0) + '%' : 'n/a';
-      const quality = scores ? (scores.quality*100).toFixed(0) + '%' : 'n/a';
-      const popularity = scores ? (scores.popularity*100).toFixed(0) + '%' : 'n/a';
-      const maintenance = scores ? (scores.maintenance*100).toFixed(0) + '%' : 'n/a';
+      const quality = scores ? (scores.quality * 100).toFixed(0) + '%' : 'n/a';
+      const popularity = scores ? (scores.popularity * 100).toFixed(0) + '%' : 'n/a';
+      const maintenance = scores ? (scores.maintenance * 100).toFixed(0) + '%' : 'n/a';
       let license = module.licenseString;
 
       // If no license, see if it's specified in the gh repo
@@ -236,21 +237,19 @@ export default class Inspector {
 
         const issue = license ? {
           title: 'Missing `license` in package.json',
-          body: `http://npm.github.com did not find a \`license\` in the package.json file for version ${module.version} of this project`, // eslint-disable-line max-len
+          body: `http://npm.github.com did not find a \`license\` in the package.json file for version ${module.version} of this project` // eslint-disable-line max-len
         } : {
           title: 'License not found in package.json or on Github',
-          body: 'http://npm.github.com could not find license information for this project.  Please make sure a license is defined either in the NPM package.json file or in a LICENSE.md file', // eslint-disable-line max-len
+          body: 'http://npm.github.com could not find license information for this project.  Please make sure a license is defined either in the NPM package.json file or in a LICENSE.md file' // eslint-disable-line max-len
         };
 
         licenseEl = `<td>
         <span style="${license ? '' : 'font-weight: bold; color: red'}">${license || 'Unspecified'}</span>
           <div style="font-size: 70%; color: #c60;" >
             <span class="material-icons" title="">warning</span>${issue.title}
-            ${'' /*<a target="_blank" href="${issueUrl(module, issue)}">report</a>*/}
           </div>
           </td>`;
       }
-
 
       $('#pane-module .stats').innerHTML = `
         <table>
