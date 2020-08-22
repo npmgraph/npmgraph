@@ -266,12 +266,6 @@ g .stub > path {
 #github:hover {
   background: #066;
 }
-#dev-controls {
-  margin-top: 15px;
-  font-size: 80%;
-  opacity: 0.6;
-}
-
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

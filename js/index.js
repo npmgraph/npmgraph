@@ -78,7 +78,7 @@ async function graph(module) {
   const edges = ['\n// Edges & per-edge styling'];
 
   const seen = {};
-  function render(m) {
+  function render(m, _levels = [], _level = 0) {
     if (Array.isArray(m)) {
       return Promise.all(m.map(render));
     }
@@ -92,12 +92,12 @@ async function graph(module) {
     if (deps) {
       const renderP = [];
       for (const dep in deps) {
-        renderP.push(Store.getModule(dep, deps[dep])
+        const p = Store.getModule(dep, deps[dep])
           .then(dst => {
             edges.push(`"${m}" -> "${dst}"`);
-            return render(dst);
-          })
-        );
+            return render(dst, _levels, _level + 1);
+          });
+        renderP.push(p);
       }
 
       return Promise.all(renderP);
@@ -210,7 +210,6 @@ onload = function() {
     if (!i) button.onclick();
   });
 
-  $('#clearButton').onclick = Store.clear;
   $('#toggleInspectorButton').onclick = Inspector.toggle;
   $('#searchText').onchange = async function() {
     const noCache = /noCache/i.test(location.search);
@@ -272,11 +271,6 @@ onload = function() {
     }
   });
 
-  // Show storage
-  let chars = 0;
-  const ls = localStorage;
-  for (let i = 0; i < ls.length; i++) chars += ls.getItem(ls.key(i)).length;
-  $('#storage').innerText = `${chars} chars`;
   $('#tabs input').focus();
 
   onpopstate();
