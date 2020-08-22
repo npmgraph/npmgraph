@@ -87,28 +87,29 @@ function downloadPng() {
   const ctx = canvas.getContext('2d');
   const DOMURL = window.URL || window.webkitURL || window;
   const img = new Image();
-  const svgBlob = new Blob([data], {type: 'image/svg+xml'});
+  const svgBlob = new Blob([data], { type: 'image/svg+xml' });
   const url = DOMURL.createObjectURL(svgBlob);
   img.onload = function() {
     ctx.drawImage(img, 0, 0);
     DOMURL.revokeObjectURL(url);
     const pngImg = canvas.toDataURL('image/png');
-    generateLinkToDownload('download.png', pngImg);
+    generateLinkToDownload('png', pngImg);
   };
   img.src = url;
 }
 
 function downloadSvg() {
   const svgData = $('svg').outerHTML;
-  const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const svgUrl = URL.createObjectURL(svgBlob);
-  generateLinkToDownload('download.svg', svgUrl);
+  generateLinkToDownload('svg', svgUrl);
 }
 
-function generateLinkToDownload(name, link) {
+function generateLinkToDownload(extension, link) {
+  const name = $('title').innerText.replace(/.*- /, '').replace(/\W+/g, '_');
   const downloadLink = document.createElement('a');
   downloadLink.href = link;
-  downloadLink.download = name;
+  downloadLink.download = `${name}_dependencies.${extension}`;
   document.body.appendChild(downloadLink);
   downloadLink.click();
   document.body.removeChild(downloadLink);
