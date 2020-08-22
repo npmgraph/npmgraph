@@ -27,7 +27,7 @@ function fetchModule(name, version) {
     // Also, we can't fetch scoped modules at specific versions.  See https://goo.gl/dSMitm
     const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
-    const progress = new Progress(pathAndVersion);
+    const progress = new Progress(reqPath);
     $('#progress').appendChild(progress.el);
     req = _getCache[reqPath] = ajax('GET', `https://registry.npmjs.cf/${reqPath}`, progress);
   }
