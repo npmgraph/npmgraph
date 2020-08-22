@@ -26,17 +26,18 @@
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
     <meta name="keywords" content="visualize, visualization, graph, npm, npm modules, npm graph, npm licenses" />
-
+    
     <title>NPMGraph - Visualize NPM Module Dependencies</title>
 
     <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Condensed|Material+Icons" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap" rel="stylesheet">
     <link href="./index.css" rel="stylesheet" />
   </head>
 
   <body class="open">
     <div id="graph"></div>
     <div id="progress" style="display:none">
-      <h2>Loading module dependencies</h2>
+      <div id="progress_inner"></div>
     </div>
 
     <div id="graph-controls" style="cursor: default">
@@ -58,6 +59,7 @@
         <section>
           <h2>Tools<span class="material-icons"></span></h2>
           <label><input type="checkbox" id="colorize" />Colorize by <a href="https://github.com/npms-io/npms-analyzer" target="_blank">npms.io score</a></label>
+          <label><input type="checkbox" id="bus-risk" />Show modules with 0-1 maintainer</label>
         </section>
         <section class="dependencies">
           <h2>Dependencies<span class="material-icons"></span></h2>
@@ -96,7 +98,7 @@
 				</div>
         <div id="info-footer">
           <div id="copyright">
-            &copy; Robert Kieffer, 2017  MIT License
+            &copy; Robert Kieffer, 2020  MIT License
             <a id="github" target="_blank" href="https://github.com/broofa/npmgraph">GitHub</a>
           </div>
         </div>

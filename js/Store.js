@@ -1,13 +1,12 @@
-import { $, ajax, report } from './util.js';
+import { ajax, report } from './util.js';
 import Module from './Module.js';
-import Progress from './Progress.js';
 import Flash from './Flash.js';
 import * as semver from './semver.js';
 
 window.semver = semver;
 
 const _getCache = {};
-
+const stats = { active: 0, complete: 0 };
 // fetch module url, caching results (in memory for the time being)
 function fetchModule(name, version) {
   const isScoped = name.startsWith('@');
@@ -27,9 +26,16 @@ function fetchModule(name, version) {
     // Also, we can't fetch scoped modules at specific versions.  See https://goo.gl/dSMitm
     const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
-    const progress = new Progress(reqPath);
-    $('#progress').appendChild(progress.el);
-    req = _getCache[reqPath] = ajax('GET', `https://registry.npmjs.cf/${reqPath}`, progress);
+    req = _getCache[reqPath] = ajax('GET', `https://registry.npmjs.cf/${reqPath}`);
+
+    req.finally(() => {
+      stats.active--;
+      stats.complete++;
+      Store.onRequest(stats);
+    });
+
+    stats.active++;
+    Store.onRequest(stats);
   }
 
   return req.then(body => {

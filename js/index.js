@@ -78,7 +78,7 @@ async function graph(module) {
   const edges = ['\n// Edges & per-edge styling'];
 
   const seen = {};
-  function render(m, _levels = [], _level = 0) {
+  function render(m) {
     if (Array.isArray(m)) {
       return Promise.all(m.map(render));
     }
@@ -88,22 +88,27 @@ async function graph(module) {
 
     nodes.push(`"${m}"`);
 
-    const deps = m.package.dependencies;
-    if (deps) {
-      const renderP = [];
+    const depList = [
+      m.package.dependencies
+      // m.package.devDependencies,
+      // m.package.peerDependencies,
+      // m.package.optionalDependencies,
+      // m.package.optionalDevDependencies
+    ];
+
+    const renderP = [];
+    for (const deps of depList) {
+      if (!deps) continue;
       for (const dep in deps) {
         const p = Store.getModule(dep, deps[dep])
           .then(dst => {
             edges.push(`"${m}" -> "${dst}"`);
-            return render(dst, _levels, _level + 1);
+            return render(dst);
           });
         renderP.push(p);
       }
-
-      return Promise.all(renderP);
     }
-
-    return Promise.resolve();
+    return Promise.all(renderP);
   }
 
   $('#progress').style.display = 'block';
@@ -163,7 +168,7 @@ async function graph(module) {
   $('#graph').appendChild(svg);
   zoom(1);
 
-  $$('.progress').forEach(el => el.remove());
+  $$('.progress').innerHTML = '';
   $$('g.node').forEach(async el => {
     const key = $(el, 'text').textContent;
     if (!key) return;
@@ -176,7 +181,11 @@ async function graph(module) {
     }
 
     const m = await Store.getModule(...entryFromKey(key));
-    const pkg = m && m.package;
+    const pkg = m.package;
+    if (pkg.maintainers.length < 2) {
+      el.classList.add('bus'); // Module maintainer might get hit by bus :-o
+    }
+
     if (pkg.stub) {
       el.classList.add('stub');
     } else {
@@ -205,6 +214,13 @@ window.onpopstate = function(event) {
 };
 
 onload = function() {
+  Store.onRequest = function(stats) {
+    const n = stats.active + stats.complete;
+    const el = $('#progress_inner');
+    el.style.width = `${stats.complete / n * 100}%`;
+    el.innerHTML = `Loading ${stats.complete} of ${n} modules`;
+  };
+
   $$('#tabs .button').forEach((button, i) => {
     button.onclick = () => Inspector.showPane(button.getAttribute('data-pane'));
     if (!i) button.onclick();

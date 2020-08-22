@@ -1,13 +1,13 @@
 html, input {
-  font-family: 'Roboto', sans-serif;
-  font-size: 12pt;
+  font-family: 'Inter', sans-serif;
+  font-size: 10pt;
 }
 html, body {
   margin: 0;
   padding: 0;
 }
-h1 {font-size: 16pt;}
-h2 {font-size: 14pt;}
+h1 {font-size: 16pt; border-radius: 3px;}
+h2 {font-size: 14pt; border-radius: 3px;}
 
 
 dt {
@@ -18,6 +18,8 @@ dd {
   margin: 0;
 }
 
+label {display: block;}
+
 .material-icons {
   font-size: inherit;
 }
@@ -27,6 +29,26 @@ dd {
   padding: 4px;
   transition-property: left;
   transition-duration: .7s;
+}
+
+#progress {
+  position:fixed;
+  top: 35%;
+  left: 2em;
+  right: 4em;
+  height: 1.5em;
+  line-height: 1.5em;
+  border: solid 1px grey;
+}
+body.open #progress {right: 34em;}
+#progress_inner {
+  position:absolute;
+  white-space: nowrap;
+  overflow: hidden;
+  top: 0;
+  height:100%;
+  background-color: rgb(200, 130, 30);
+  left: 0;
 }
 
 #graph {
@@ -88,6 +110,7 @@ body.open #inspector {
   margin: 1px 4px;
   overflow: hidden;
   text-overflow: ellipsis;
+  border-radius: 3px;
 }
 #inspector .tag:hover {
   background-color: #ddf;
@@ -95,6 +118,7 @@ body.open #inspector {
 #inspector .tag img {
   vertical-align: middle;
   margin-right: 4px;
+  border-radius: 3px;
 }
 #inspector .description {
   font-weight: bold;
@@ -241,18 +265,13 @@ g .stub > path {
 
 #info-footer {
   position: absolute;
-  bottom: 0;
+  bottom: 1em;
   width: 100%;
   border-top: solid 1px black;
   padding-top: 1em;
 }
 
 #github {
-  position: absolute;
-  right: 1em;
-  top: 1em;
-  height: 2em;
-  line-height: 2em;
   background:#084;
   color:#fff;
   font-weight:bold;

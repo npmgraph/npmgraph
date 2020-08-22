@@ -157,9 +157,14 @@ export default class Inspector {
     }
     $('#inspector').scrollTo(0, 0);
 
+    // Bus handler
+    $('#bus-risk').onclick = function(e) {
+      Inspector.selectTag(this.checked ? 'bus' : null);
+    };
+
     // Colorize handler
     $('#colorize').checked = false;
-    $('#colorize').onclick = function(event) {
+    $('#colorize').onclick = function(e) {
       const colorize = this.checked;
 
       $$('svg .node path').forEach(async el => {
