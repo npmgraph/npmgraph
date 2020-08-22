@@ -65,6 +65,56 @@ function zoom(op) {
   }
 }
 
+function download(type) {
+  switch (type) {
+    case 'svg':
+      downloadSvg();
+      break;
+    case 'png':
+      downloadPng();
+      break;
+  }
+}
+
+function downloadPng() {
+  const svg = $('svg');
+  const data = $('svg').outerHTML;
+  const vb = svg.getAttribute('viewBox').split(' ');
+
+  const canvas = document.createElement('canvas');
+  canvas.width = vb[2];
+  canvas.height = vb[3];
+  const ctx = canvas.getContext('2d');
+  const DOMURL = window.URL || window.webkitURL || window;
+  const img = new Image();
+  const svgBlob = new Blob([data], { type: 'image/svg+xml' });
+  const url = DOMURL.createObjectURL(svgBlob);
+  img.onload = function() {
+    ctx.drawImage(img, 0, 0);
+    DOMURL.revokeObjectURL(url);
+    const pngImg = canvas.toDataURL('image/png');
+    generateLinkToDownload('png', pngImg);
+  };
+  img.src = url;
+}
+
+function downloadSvg() {
+  const svgData = $('svg').outerHTML;
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  const svgUrl = URL.createObjectURL(svgBlob);
+  generateLinkToDownload('svg', svgUrl);
+}
+
+function generateLinkToDownload(extension, link) {
+  const name = $('title').innerText.replace(/.*- /, '').replace(/\W+/g, '_');
+  const downloadLink = document.createElement('a');
+  downloadLink.href = link;
+  downloadLink.download = `${name}_dependencies.${extension}`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+}
+
 async function graph(module) {
   Inspector.toggle(false);
 
@@ -242,6 +292,7 @@ onload = function() {
   $('#zoomWidthButton').onclick = () => zoom(1);
   $('#zoomDefaultButton').onclick = () => zoom(0);
   $('#zoomHeightButton').onclick = () => zoom(2);
+  $('#downloadButton').onclick = () => download('svg');
 
   Store.init();
   Inspector.init();

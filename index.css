@@ -69,22 +69,20 @@ body.open #progress {right: 34em;}
 
 #graph-controls {
   position: absolute;
-  bottom: 1em;
-  right: 4em;
+  bottom: .5em;
+  right: 3em;
 }
 #graph-controls button {
   display: inline-block;
-  font-size: 30px;
-  line-height: 30px;
-  height: 30px;
-  width: 1em;
-  margin: 0;
+  font-size: 1.8em;
+  line-height: 1em;
+  width: 1.3em;
   padding: 0;
-  background-color: #eee;
-  border-radius: .1em;
+  border: solid 1px black;
+  border-radius: 3px;
 }
 body.open #graph-controls {
-  right: 32em;
+  right: 31em;
 }
 
 body.open #graph {

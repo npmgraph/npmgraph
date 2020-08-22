@@ -22,6 +22,7 @@
       www.google-analytics.com
       www.googletagmanager.com
       www.gravatar.com
+      blob:
       " />
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
@@ -41,9 +42,10 @@
     </div>
 
     <div id="graph-controls" style="cursor: default">
-      <button id="zoomWidthButton" title="fit width" class="material-icons">swap_horiz</button>
-      <button id="zoomDefaultButton" title="1x" class="material-icons">search</button>
-      <button id="zoomHeightButton" title="fit height" class="material-icons">swap_vert</button>
+      <button id="zoomWidthButton" title="zoom (fit width)" class="material-icons">swap_horiz</button>
+      <button id="zoomDefaultButton" title="zoom (1:1)" class="material-icons">search</button>
+      <button id="zoomHeightButton" title="zoom (fit height)" class="material-icons">swap_vert</button>
+      <button id="downloadButton" title="download as SVG" class="material-icons">cloud_download</button>
     </div>
 
     <div id="inspector">
