@@ -21,9 +21,9 @@
     "type": "git"
   },
   "devDependencies": {
-    "babel-eslint": "*",
-    "eslint": "*",
-    "standard-version": "*",
+    "babel-eslint": "10.1.0",
+    "eslint": "7.7.0",
+    "standard-version": "9.0.0",
     "static-server": "*"
   },
   "scripts": {
