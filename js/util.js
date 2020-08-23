@@ -92,3 +92,44 @@ export function entryFromKey(key) {
 
   return RegExp.$2 ? [RegExp.$1, RegExp.$2] : [RegExp.$1];
 }
+
+export function getDependencyEntries(pkg, level = 0) {
+  pkg = pkg.package || pkg;
+
+  const deps = [];
+
+  for (const el of $$('.depInclude input')) {
+    const { type } = el.dataset;
+    if (!pkg[type]) continue;
+    if (!el.checked) continue;
+    if (level > 0 && type != 'dependencies') continue;
+
+    // Get entries, adding type to each entry
+    const d = Object.entries(pkg[type]);
+    d.forEach(o => o.push(type));
+    deps.push(...d);
+  }
+
+  return deps;
+}
+
+export function simplur(strings, ...exps) {
+  const result = [];
+  let n = exps[0];
+  let label = n;
+  if (Array.isArray(n) && n.length == 2) [n, label] = n;
+  for (const s of strings) {
+    if (typeof (n) == 'number') {
+      result.push(s.replace(/\[([^|]*)\|([^\]]*)\]/g, n == 1 ? '$1' : '$2'));
+    } else {
+      result.push(s);
+    }
+
+    if (!exps.length) break;
+    n = label = exps.shift();
+    if (Array.isArray(n) && n.length == 2) [n, label] = n;
+    result.push(label);
+  }
+
+  return result.join('');
+}

@@ -1,6 +1,6 @@
 /* global c3 */
 
-import { $, $$, ajax, createTag, report, entryFromKey } from './util.js';
+import { $, $$, ajax, createTag, report, entryFromKey, getDependencyEntries, simplur } from './util.js';
 import Store from './Store.js';
 import md5 from './md5.js';
 
@@ -59,13 +59,21 @@ export default class Inspector {
     $('body').classList.toggle('open', open);
   }
 
-  static async setGraph(module) {
-    const dependencies = {};
+  static async setGraph(modules) {
+    const visited = {};
     const dependencyCounts = {};
     const maintainers = {};
     const maintainerCounts = {};
     const licenses = new Map();
     let nModules = 0, nMaintainers = 0;
+
+    // Coerce to array
+    if (!Array.isArray(modules)) modules = [modules];
+
+    // Set dependency checkbox states
+    for (const el of $$('.depInclude input')) {
+      el.disabled = !modules.some(m => m.package[el.dataset.type]);
+    }
 
     // Walk module dependency tree to gather up the info we care about
     function walk(m, level = 0) {
@@ -74,12 +82,12 @@ export default class Inspector {
       const pkg = m.package;
       const license = m.licenseString;
 
-      if (!m || (m.key in dependencies)) return;
-
-      dependencies[m.key] = m;
+      if (!m || (m.key in visited)) return;
+      visited[m.key] = m;
+      console.log('visiting', m.key);
       nModules++;
 
-      if (module.package != pkg) dependencyCounts[pkg.name] = (dependencyCounts[pkg.name] || 0) + 1;
+      if (level > 0) dependencyCounts[pkg.name] = (dependencyCounts[pkg.name] || 0) + 1;
 
       pkg.maintainers.forEach(maintainer => {
         if (maintainer.name in maintainers) {
@@ -93,24 +101,20 @@ export default class Inspector {
 
       licenses.set(license, (licenses.get(license) || 0) + 1);
 
-      const dependencyEntries = Object.entries(pkg.dependencies || {});
-      if (level == 0 && $('#includeDevDependencies').checked && pkg.devDependencies) {
-        dependencyEntries.push(...Object.entries(pkg.devDependencies));
-      }
-
       return Promise.all(
-        dependencyEntries.map(async e => {
-          const module = await Store.getModule(...e);
-          return walk(module, level + 1);
-        })
+        getDependencyEntries(pkg, level)
+          .map(async([name, version]) => {
+            const module = await Store.getModule(name, version);
+            return walk(module, level + 1);
+          })
       );
     }
-    await walk(module);
+    await walk(modules);
 
     $('.dependencies > h2:first-of-type').childNodes[0].textContent =
-      `${nModules - 1} ${nModules == 2 ? 'Dependency' : 'Dependencies'}`;
+      simplur`${nModules - 1} Dependenc[y|ies]`;
     $('.maintainers > h2:first-of-type').childNodes[0].textContent =
-      `${nMaintainers} ${nMaintainers == 1 ? 'Maintainer' : 'Maintainers'}`;
+      simplur`${nMaintainers} Maintainer[|s]`;
 
     // sort comparators for Object.entries() lists
     const sortByEntryKey = (a, b) => a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : 0);
@@ -168,10 +172,9 @@ export default class Inspector {
       Inspector.selectTag(this.checked ? 'bus' : null);
     };
 
-    $('#includeDevDependencies').onclick = function(e) {
-      // Just rerender
-      window.onpopstate();
-    };
+    for (const el of $$('.depInclude')) {
+      el.onclick = window.onpopstate;
+    }
 
     // Colorize handler
     $('#colorize').checked = false;

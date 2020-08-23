@@ -24,6 +24,7 @@ dd {
 }
 
 label {display: block;}
+section > label {margin-top: 1em;}
 
 .material-icons {
   font-size: inherit;

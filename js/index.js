@@ -4,7 +4,7 @@ import Flash from './Flash.js';
 import Inspector from './Inspector.js';
 import Module from './Module.js';
 import Store from './Store.js';
-import { $, $$, tagElement, entryFromKey, report } from './util.js';
+import { $, $$, tagElement, entryFromKey, report, getDependencyEntries } from './util.js';
 
 // HACK: So we can call closest() on event targets without having to worry about
 // whether or not the user clicked on an Element v. Text Node
@@ -140,26 +140,21 @@ async function graph(module) {
 
     nodes.push(`"${m}"`);
 
-    const includeDevDependencies = $('#includeDevDependencies').checked;
-    const depList = [
-      m.package.dependencies,
-      includeDevDependencies && level === 0 ? m.package.devDependencies : null
-      // m.package.peerDependencies,
-      // m.package.optionalDependencies,
-      // m.package.optionalDevDependencies
-    ];
-
     const renderP = [];
-    for (const deps of depList) {
-      if (!deps) continue;
-      for (const dep in deps) {
-        const p = Store.getModule(dep, deps[dep])
-          .then(dst => {
-            edges.push(`"${m}" -> "${dst}"`);
-            return render(dst, level + 1);
-          });
-        renderP.push(p);
-      }
+    const EDGE_ATTRIBUTES = {
+      dependencies: '[color=black]',
+      devDependencies: '[color=red]',
+      peerDependencies: '[color=green]',
+      optionalDependencies: '[color=black style=dashed]',
+      optionalDevDependencies: '[color=red style=dashed]'
+    };
+    for (const [dName, dVersion, dType] of getDependencyEntries(m, level)) {
+      const p = Store.getModule(dName, dVersion)
+        .then(dst => {
+          edges.push(`"${m}" -> "${dst}" ${EDGE_ATTRIBUTES[dType]}`);
+          return render(dst, level + 1);
+        });
+      renderP.push(p);
     }
     return Promise.all(renderP);
   }

@@ -59,9 +59,24 @@
       <div class="pane" id="pane-graph">
         <section>
           <h2>Tools<span class="material-icons"></span></h2>
-          <label><input type="checkbox" id="colorize" />Colorize by <a href="https://github.com/npms-io/npms-analyzer" target="_blank">npms.io score</a></label>
-          <label><input type="checkbox" id="includeDevDependencies" />Include <code></code>devDependencies</code>. (<span style="color:#800">May be slow!</span>)</label>
-          <label><input type="checkbox" id="busFactor" />Show modules with 0-1 maintainer</label>
+          <div>
+            Include:
+            <style>
+              .depInclude  {
+                padding-left: 1em;
+                font-family: monospace;
+              }
+            </style>
+            <label class="depInclude"><input type="checkbox" data-type="dependencies" checked /><code>dependencies</code></label>
+            <label class="depInclude"><input type="checkbox" data-type="devDependencies" /><code>devDependencies</code> (<span style="color: red">&xrarr;</span>)</label>
+            <label class="depInclude"><input type="checkbox" data-type="peerDependencies" /><code>peerDependencies</code> (<span style="color: green">&xrarr;</span>)</label>
+            <!-- It looks like NPM omits these, even if provided by module authors? 
+              <label class="depInclude"><input type="checkbox" data-type="optionalDependencies" /><code>optionalDependencies</code> (<span>- - &rarr;</span>)</label>
+              <label class="depInclude"><input type="checkbox" data-type="optionalDevDependencies" /><code>optionalDevDependencies</code>(<span style="color: red">- - &rarr;</span>)</label>
+            -->
+          </div>
+          <label style="display:block"><input type="checkbox" id="colorize" />Colorize by <a href="https://github.com/npms-io/npms-analyzer" target="_blank">npms.io score</a></label>
+          <label style="display:block"><input type="checkbox" id="busFactor" />Show modules with 0-1 maintainer</label>
         </section>
         <section class="dependencies">
           <h2>Dependencies<span class="material-icons"></span></h2>
