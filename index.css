@@ -68,9 +68,11 @@ body.open #progress {right: 34em;}
 }
 
 #graph-controls {
+  display: flex;
   position: absolute;
   bottom: .5em;
   right: 4em;
+  cursor: default;
 }
 #graph-controls button {
   display: inline-block;

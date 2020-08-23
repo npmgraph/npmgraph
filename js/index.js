@@ -99,6 +99,8 @@ function downloadPng() {
 }
 
 function downloadSvg() {
+  alert('Note: Make sure you have the "Roboto Condensed" font installed, available at https://fonts.google.com/specimen/Roboto+Condensed.');
+
   const svgData = $('svg').outerHTML;
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const svgUrl = URL.createObjectURL(svgBlob);
