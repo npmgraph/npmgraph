@@ -130,7 +130,7 @@ async function graph(module) {
   const edges = ['\n// Edges & per-edge styling'];
 
   const seen = {};
-  function render(m) {
+  function render(m, level = 0) {
     if (Array.isArray(m)) {
       return Promise.all(m.map(render));
     }
@@ -140,9 +140,10 @@ async function graph(module) {
 
     nodes.push(`"${m}"`);
 
+    const includeDevDependencies = $('#includeDevDependencies').checked;
     const depList = [
-      m.package.dependencies
-      // m.package.devDependencies,
+      m.package.dependencies,
+      includeDevDependencies && level === 0 ? m.package.devDependencies : null
       // m.package.peerDependencies,
       // m.package.optionalDependencies,
       // m.package.optionalDevDependencies
@@ -155,7 +156,7 @@ async function graph(module) {
         const p = Store.getModule(dep, deps[dep])
           .then(dst => {
             edges.push(`"${m}" -> "${dst}"`);
-            return render(dst);
+            return render(dst, level + 1);
           });
         renderP.push(p);
       }

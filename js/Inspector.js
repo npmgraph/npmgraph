@@ -68,7 +68,7 @@ export default class Inspector {
     let nModules = 0, nMaintainers = 0;
 
     // Walk module dependency tree to gather up the info we care about
-    function walk(m) {
+    function walk(m, level = 0) {
       if (Array.isArray(m)) return Promise.all(m.map(walk));
 
       const pkg = m.package;
@@ -93,11 +93,17 @@ export default class Inspector {
 
       licenses.set(license, (licenses.get(license) || 0) + 1);
 
-      return Promise.all(Object.entries(pkg.dependencies || {})
-        .map(async e => {
+      const dependencyEntries = Object.entries(pkg.dependencies || {});
+      if (level == 0 && $('#includeDevDependencies').checked && pkg.devDependencies) {
+        dependencyEntries.push(...Object.entries(pkg.devDependencies));
+      }
+
+      return Promise.all(
+        dependencyEntries.map(async e => {
           const module = await Store.getModule(...e);
-          return walk(module);
-        }));
+          return walk(module, level + 1);
+        })
+      );
     }
     await walk(module);
 
@@ -158,8 +164,13 @@ export default class Inspector {
     $('#inspector').scrollTo(0, 0);
 
     // Bus handler
-    $('#bus-risk').onclick = function(e) {
+    $('#busFactor').onclick = function(e) {
       Inspector.selectTag(this.checked ? 'bus' : null);
+    };
+
+    $('#includeDevDependencies').onclick = function(e) {
+      // Just rerender
+      window.onpopstate();
     };
 
     // Colorize handler
