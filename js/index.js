@@ -118,7 +118,7 @@ function generateLinkToDownload(extension, link) {
 }
 
 async function graph(module) {
-  Inspector.toggle(false);
+  // Inspector.toggle(false);
 
   // Clear out graphs
   $$('svg').forEach(el => el.remove());
@@ -186,8 +186,8 @@ async function graph(module) {
     `edge [fontsize=10, fontname="${FONT}" splines="polyline"]`,
     ''
   ]
-    .concat(nodes)
-    .concat(edges)
+    .concat(nodes.sort())
+    .concat(edges.sort())
     .concat(
       modules.length > 1
         ? `{rank=same; ${modules.map(s => `"${s}"`).join('; ')};}`
