@@ -186,8 +186,8 @@ async function graph(module) {
     `edge [fontsize=10, fontname="${FONT}" splines="polyline"]`,
     ''
   ]
-    .concat(nodes.sort())
-    .concat(edges.sort())
+    .concat(nodes)
+    .concat(edges)
     .concat(
       modules.length > 1
         ? `{rank=same; ${modules.map(s => `"${s}"`).join('; ')};}`
