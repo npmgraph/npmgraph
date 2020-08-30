@@ -102,7 +102,20 @@
         </section>
         <section>
           <h2>package.json<span class="material-icons"></span></h2>
-          <pre class="json"></pre>
+          <style>
+            .json {font-family: monospace}
+            .json-object, .json-array {
+              list-style: none outside;
+              margin: 0;
+              padding: 0 0 0 1em;
+            }
+            .json-key {color: green;}
+            .json-string {color: blue}
+            .json-boolean {color: purple}
+            .json-number {color:orange}
+            .json-null {color: gray}
+          </style>
+          <div class="json"></div>
         </section>
       </div>
 

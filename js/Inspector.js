@@ -1,8 +1,8 @@
 /* global c3 */
 
-import { $, $$, ajax, createTag, report, entryFromKey, getDependencyEntries, simplur } from './util.js';
+import { $, ajax, createTag, report, entryFromKey, getDependencyEntries, simplur, prettyStringify } from './util.js';
 import Store from './Store.js';
-import md5 from './md5.js';
+import md5 from '/vendor/md5.js';
 
 /*
 function issueUrl(module, issue) {
@@ -35,19 +35,19 @@ export default class Inspector {
     // If tag (element) is already selected, do nothing
     if (tag && tag.classList && tag.classList.contains('selected')) return;
 
-    $$('svg .node').forEach(el => el.classList.remove('selected'));
+    $.all('svg .node').forEach(el => el.classList.remove('selected'));
     if (typeof (tag) == 'string') {
-      $$(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
+      $.all(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
     } else if (tag) {
       tag.classList.add('selected');
     }
   }
 
   static showPane(id) {
-    $$('#inspector #tabs .button').forEach(b => {
+    $.all('#inspector #tabs .button').forEach(b => {
       b.classList.toggle('active', b.getAttribute('data-pane') == id);
     });
-    $$('#inspector .pane').forEach(pane => {
+    $.all('#inspector .pane').forEach(pane => {
       pane.classList.toggle('open', pane.id == id);
     });
   }
@@ -71,7 +71,7 @@ export default class Inspector {
     if (!Array.isArray(modules)) modules = [modules];
 
     // Set dependency checkbox states
-    for (const el of $$('.depInclude input')) {
+    for (const el of $.all('.depInclude input')) {
       el.disabled = !modules.some(m => m.package[el.dataset.type]);
     }
 
@@ -121,13 +121,13 @@ export default class Inspector {
     // const sortByEntryValue = (a, b) => a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0);
 
     const depEl = $('#pane-graph .dependencies');
-    $$(depEl, '.tag').forEach(el => el.remove());
+    $.all(depEl, '.tag').forEach(el => el.remove());
     Object.entries(dependencyCounts)
       .sort(sortByEntryKey)
       .forEach(e => depEl.append(createTag('module', e[0], e[1])));
 
     const maintEl = $('#pane-graph .maintainers');
-    $$(maintEl, '.tag').forEach(el => el.remove());
+    $.all(maintEl, '.tag').forEach(el => el.remove());
     Object.entries(maintainers)
       .sort(sortByEntryKey)
       .forEach(e => {
@@ -141,7 +141,7 @@ export default class Inspector {
       });
 
     const licEl = $('#pane-graph .licenses');
-    $$(licEl, '.tag').forEach(el => el.remove());
+    $.all(licEl, '.tag').forEach(el => el.remove());
     Array.from(licenses)
       .sort(sortByEntryKey)
       .forEach(([license, count]) => {
@@ -172,7 +172,7 @@ export default class Inspector {
       Inspector.selectTag(this.checked ? 'bus' : null);
     };
 
-    for (const el of $$('.depInclude')) {
+    for (const el of $.all('.depInclude')) {
       el.onclick = window.onpopstate;
     }
 
@@ -181,7 +181,7 @@ export default class Inspector {
     $('#colorize').onclick = function(e) {
       const colorize = this.checked;
 
-      $$('svg .node path').forEach(async el => {
+      $.all('svg .node path').forEach(async el => {
         if (!colorize) {
           el.style.fill = '';
           el.style.fillOpacity = '';
@@ -207,6 +207,12 @@ export default class Inspector {
 
     const pkg = module && module.package;
 
+    if (!pkg) {
+      $('#pane-module h2').innerHTML = 'No module selected';
+      $('#pane-module .description').innerHTML = '';
+      return;
+    }
+
     $('#pane-module h2').innerHTML = module ? `<a href="?q=${module.key}">${module.key}</a> Info` : '';
     $('#pane-module .description').innerHTML = pkg ? `${pkg.description}` : '';
 
@@ -214,7 +220,9 @@ export default class Inspector {
     for (const k in pkgCopy) {
       if (/^_.*|gitHead|bugs|scripts|dist|directories/.test(k)) delete pkgCopy[k];
     }
-    $('#pane-module .json').innerText = JSON.stringify(pkgCopy, null, 2);
+
+    $.clear('#pane-module .json');
+    $.append('#pane-module .json', prettyStringify(pkgCopy));
 
     $('#inspector').scrollTo(0, 0);
 
@@ -282,7 +290,7 @@ export default class Inspector {
         </table>
         `;
     } else {
-      $('#pane-module .stats').innerText = 'Module info unavailable';
+      $('#pane-module .stats').innerText = 'No module';
     }
   }
 }

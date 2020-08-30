@@ -1,5 +1,5 @@
-import validate from './pjv.js';
 import { ajax } from './util.js';
+import validate from '/vendor/pjv.js';
 
 function parseGithubPath(s) {
   s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;

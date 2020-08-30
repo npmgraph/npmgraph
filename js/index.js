@@ -4,7 +4,7 @@ import Flash from './Flash.js';
 import Inspector from './Inspector.js';
 import Module from './Module.js';
 import Store from './Store.js';
-import { $, $$, tagElement, entryFromKey, report, getDependencyEntries } from './util.js';
+import { $, tagElement, entryFromKey, report, getDependencyEntries } from './util.js';
 
 // HACK: So we can call closest() on event targets without having to worry about
 // whether or not the user clicked on an Element v. Text Node
@@ -81,7 +81,7 @@ function downloadPng() {
   const data = $('svg').outerHTML;
   const vb = svg.getAttribute('viewBox').split(' ');
 
-  const canvas = document.createElement('canvas');
+  const canvas = $.create('canvas');
   canvas.width = vb[2];
   canvas.height = vb[3];
   const ctx = canvas.getContext('2d');
@@ -109,7 +109,7 @@ function downloadSvg() {
 
 function generateLinkToDownload(extension, link) {
   const name = $('title').innerText.replace(/.*- /, '').replace(/\W+/g, '_');
-  const downloadLink = document.createElement('a');
+  const downloadLink = $.create('a');
   downloadLink.href = link;
   downloadLink.download = `${name}_dependencies.${extension}`;
   document.body.appendChild(downloadLink);
@@ -121,7 +121,7 @@ async function graph(module) {
   // Inspector.toggle(false);
 
   // Clear out graphs
-  $$('svg').forEach(el => el.remove());
+  $.all('svg').forEach(el => el.remove());
 
   const FONT = 'Roboto Condensed, sans-serif';
 
@@ -138,7 +138,11 @@ async function graph(module) {
     if (m.key in seen) return;
     seen[m.key] = true;
 
-    nodes.push(`"${m}"`);
+    if (module.package.name == m.package.name) {
+      nodes.push(`"${m}" [root=true]`);
+    } else {
+      nodes.push(`"${m}"`);
+    }
 
     const renderP = [];
     const EDGE_ATTRIBUTES = {
@@ -207,7 +211,7 @@ async function graph(module) {
   // We could just `$('#graph').innerHTML = dot` here, but we want to finesse
   // the svg DOM a bit, so we parse it into a DOMFragment and then add it.
   const svg = new DOMParser().parseFromString(dot, 'text/html').querySelector('svg');
-  svg.querySelectorAll('g title').forEach(el => el.remove());
+  $.all('g title').forEach(el => el.remove());
   svg.addEventListener('click', handleGraphClick);
 
   // Round up viewbox
@@ -216,8 +220,8 @@ async function graph(module) {
   $('#graph').appendChild(svg);
   zoom(1);
 
-  $$('.progress').innerHTML = '';
-  $$('g.node').forEach(async el => {
+  $.all('.progress').innerHTML = '';
+  $.all('g.node').forEach(async el => {
     const key = $(el, 'text').textContent;
     if (!key) return;
 
@@ -269,7 +273,7 @@ onload = function() {
     el.innerHTML = `Loading ${stats.complete} of ${n} modules`;
   };
 
-  $$('#tabs .button').forEach((button, i) => {
+  $.all('#tabs .button').forEach((button, i) => {
     button.onclick = () => Inspector.showPane(button.getAttribute('data-pane'));
     if (!i) button.onclick();
   });
@@ -283,7 +287,7 @@ onload = function() {
     await graph(this.value);
   };
 
-  $$('section > h2').forEach(el => {
+  $.all('section > h2').forEach(el => {
     el.onclick = () => el.closest('section').classList.toggle('closed');
   });
 

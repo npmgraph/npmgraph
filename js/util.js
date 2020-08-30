@@ -7,33 +7,79 @@ export const report = {
 };
 
 /**
- * Thin wrapper around querySelector()
+ * DOM maniulation methods
  */
-export const $ = (...args) => (args[0].querySelector ? args.shift() : document)
-  .querySelector(...args);
+export function $(...args) {
+  const target = args.length == 2 ? args.shift() : document;
+  return new ElementSet(target.querySelectorAll(...args));
+}
 
-/**
- * Thin wrapper around querySelectorAll()
- */
-export const $$ = (...args) => (args[0].querySelectorAll ? args.shift() : document)
-  .querySelectorAll(...args);
+class ElementSet {
+  constructor(elements) {
+    this.elements = Array.isArray(elements) ? elements : [...elements];
+  }
 
-/**
- * Like Array#find(), but for DOMElement ancestors
- */
-$.up = (el, test) => {
+  _do(cb) {
+    for (const el of this.elements) cb(el);
+    return this;
+  }
+
+  pop() {
+    return this.elements.pop();
+  }
+
+  clear() {
+    return this._do(el => (el.innerText = ''));
+  }
+
+  text(str) {
+    return this._do(el => el.innerText = str);
+  }
+
+  html(str) {
+    return this._do(el => el.innerHTML = str);
+  }
+
+  append(el, ...children) {
+    return this._do(el => {
+      for (const c of children) {
+        if (!c) continue;
+        el.appendChild(typeof (c) == 'string' ? $.text(c) : c);
+      }
+    });
+  }
+}
+
+// Create a new DOM element
+$.create = function(name, atts) {
+  const el = document.createElement(name);
+  if (atts) {
+    for (const k in Object.getOwnPropertyNames(atts)) {
+      el[k] = atts[k];
+    }
+  }
+  return el;
+};
+
+// Find parent (using optional test function)
+$.up = function(el, test) {
   while (el && !test(el)) el = el.parentElement;
   return el;
 };
 
-/**
- * Parse the provided html markup into a document fragment
- */
-const _worker = document.createElement('div');
-$.parse = markup => {
-  _worker.innerHTML = markup;
+// Find all elements matching selector
+$.all = function(...args) {
+  return (args[0].querySelectorAll ? args.shift() : document)
+    .querySelectorAll(...args);
+};
+
+// Parse HTML into document fragment
+$.parse = function(markup) {
+  if (!this._worker) this._worker = document.createElement('div');
+
+  this._worker.innerHTML = markup;
   const fragment = document.createDocumentFragment();
-  [..._worker.childNodes].forEach(el => {
+  [...this._worker.childNodes].forEach(el => {
     el.remove();
     fragment.appendChild(el);
   });
@@ -76,7 +122,7 @@ export function tagElement(el, type, ...tags) {
 }
 
 export function createTag(type, text, count = 0) {
-  const el = document.createElement('div');
+  const el = $.create('div');
 
   el.classList.add('tag', type);
   el.dataset.tag = tagify(type, text);
@@ -98,7 +144,7 @@ export function getDependencyEntries(pkg, level = 0) {
 
   const deps = [];
 
-  for (const el of $$('.depInclude input')) {
+  for (const el of $.all('.depInclude input')) {
     const { type } = el.dataset;
     if (!pkg[type]) continue;
     if (!el.checked) continue;
@@ -132,4 +178,61 @@ export function simplur(strings, ...exps) {
   }
 
   return result.join('');
+}
+
+export function prettyStringify(val, _tagName = 'span') {
+  let type = typeof (val);
+  if (val === null) type = 'null';
+  if (Array.isArray(val)) type = 'array';
+  switch (type) {
+    case 'undefined':
+      return;
+
+    case 'array': {
+      const doc = document.createDocumentFragment();
+
+      const ol = $.create('ol', { class: 'json-array' });
+      val.forEach((v, i, arr) => {
+        const el = prettyStringify(v);
+        if (!el) return;
+        const li = $.create('li');
+        $.append(li, el, i != arr.length - 1 ? ',' : '');
+        ol.append(li);
+      });
+
+      $.append(doc, '[', ol, ']');
+
+      return doc;
+    }
+
+    case 'object': {
+      const doc = document.createDocumentFragment();
+
+      const ul = $.create('ul', { class: 'json-object' });
+      Object.entries(val).forEach(([k, val], i, arr) => {
+        const el = prettyStringify(val);
+        if (!el) return;
+
+        const li = $.create('li');
+        $.append(li,
+          $.create('span', { className: 'json-key', innerText: k }),
+          ':',
+          el,
+          i != arr.length ? ',' : ''
+        );
+        if (i != arr.length - 1) $.append(li, ',');
+        ul.append(li);
+      });
+
+      $.append(doc, '{', ul, '}');
+
+      return doc;
+    }
+
+    default:
+      return $.create(_tagName, {
+        className: `json-${type}`,
+        innerText: JSON.stringify(val)
+      });
+  }
 }
