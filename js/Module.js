@@ -1,9 +1,9 @@
 import { ajax } from './util.js';
-import validate from '/vendor/pjv.js';
+import validate from '../vendor/pjv.js';
 
 function parseGithubPath(s) {
   s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
-  return s && s.replace(/\.git$/, '');
+  return s?.replace?.(/\.git$/, '');
 }
 
 export default class Module {
@@ -37,7 +37,7 @@ export default class Module {
     const pkg = this.package;
 
     for (const k of ['repository', 'homepage', 'bugs']) {
-      const path = parseGithubPath(pkg[k] && pkg[k].url);
+      const path = parseGithubPath(pkg[k]?.url);
       if (path) return path;
     }
 

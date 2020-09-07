@@ -1,296 +1,184 @@
-/* global c3 */
+import { html, useState, useContext } from '../vendor/preact.js';
+import { AppContext } from './App.js';
 
-import { $, ajax, createTag, report, entryFromKey, getDependencyEntries, simplur, prettyStringify } from './util.js';
-import Store from './Store.js';
-import md5 from '/vendor/md5.js';
+function Section({ title, children, ...props }) {
+  const [isOpen, setOpen] = useState(true);
 
-/*
-function issueUrl(module, issue) {
-  let url = `https://www.github.com/${module.githubPath}/issues`;
-  if (issue) {
-    const body = issue.body + `
-
-(If this issue was filed in error, please [report here](https://github.com/broofa/npmgraph/issues/new?title=Invalid+license+issue+for+${module.key}))`; // eslint-disable-line max-len
-    url += `/new?title=${encodeURIComponent(issue.title)}&body=${encodeURIComponent(body)}`;
-  }
-
-  return url;
+  return html`
+    <section class=${title ? title.toLowerCase() : ''}>
+      ${
+        title ? html`
+        <h2 onClick=${() => setOpen(!isOpen)}>
+        ${title}
+        <span class="material-icons">${isOpen ? 'expand_more' : 'expand_less'}</span>
+        </h2>` : null
+      }
+      ${isOpen ? children : null}
+    </section>`;
 }
-*/
 
-export default class Inspector {
-  static init() {
-    const el = $('#inspector');
-    el.addEventListener('click', event => {
-      const el = $.up(event.srcElement, e => e.getAttribute('data-tag'));
+function Tab({ active, children, ...props }) {
+  return html`<div className="tab ${active ? 'active' : ''}" ...${props}>${children}</div>`;
+}
 
-      if (el) {
-        const tag = el.getAttribute('data-tag');
-        Inspector.selectTag(tag);
-      }
-    });
+function Pane({ children, ...props }) {
+  return html`<div className="pane">${children}</div>`;
+}
+
+function DepInclude({ type, ...props }) {
+  const [depIncludes, setDepIncludes] = useContext(AppContext).depIncludes;
+
+  let arrow = null;
+  switch (type) {
+    case 'devDependencies': arrow = html`(<span style="color: red">${'\u{27f6}'}</span>)`; break;
+    case 'peerDependencies': arrow = html`(<span style="color: green">${'\u{27f6}'}</span>)`; break;
   }
 
-  static selectTag(tag) {
-    // If tag (element) is already selected, do nothing
-    if (tag && tag.classList && tag.classList.contains('selected')) return;
-
-    $.all('svg .node').forEach(el => el.classList.remove('selected'));
-    if (typeof (tag) == 'string') {
-      $.all(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
-    } else if (tag) {
-      tag.classList.add('selected');
-    }
+  function toggle(e) {
+    setDepIncludes(e.currentTarget.checked ? [type, ...depIncludes] : depIncludes.filter(t => type != t));
   }
 
-  static showPane(id) {
-    $.all('#inspector #tabs .button').forEach(b => {
-      b.classList.toggle('active', b.getAttribute('data-pane') == id);
-    });
-    $.all('#inspector .pane').forEach(pane => {
-      pane.classList.toggle('open', pane.id == id);
-    });
+  return html`
+    <label class="depInclude">
+      <input type="checkbox" checked=${depIncludes.includes(type)} onClick=${toggle}/>
+      <code>${type}</code> ${arrow}
+    </label>
+  `;
+}
+
+function GraphPane() {
+  const [inspectGraph] = useContext(AppContext).inspectGraph;
+
+  return html`
+    <${Pane}>
+      <${Section}>
+        Include:
+        <${DepInclude} type="dependencies" />
+        <${DepInclude} type="devDependencies" />
+        <${DepInclude} type="peerDependencies" />
+
+        <label style="display:block"><input type="checkbox" id="colorize" />Colorize by <a href="https://github.com/npms-io/npms-analyzer" target="_blank">npms.io score</a></label>
+        <label style="display:block"><input type="checkbox" id="busFactor" />Show modules with 0-1 maintainer</label>
+      <//>
+      <${Section} title="Dependencies" />
+      <${Section} title="Maintainers" />
+      <${Section} title="Licenses">
+        <div class="licenses" />
+        <div id="chart" />
+      <//>
+    </${Pane}>`;
+}
+
+function ModulePane() {
+  const [inspectModule] = useContext(AppContext).inspectModule;
+
+  return html`
+    <${Pane}>
+      <${Section} title="Description" />
+      <${Section} title="Stats" />
+      <${Section} title="package.json">
+        <div class="json" />
+      <//>
+    </${Pane}>`;
+}
+
+function InfoPane() {
+  // // Handle file drops
+  // Object.assign($('#drop_target'), {
+  //   ondrop: async ev => {
+  //     ev.target.classList.remove('drag');
+  //     ev.preventDefault();
+
+  //     // If dropped items aren't files, reject them
+  //     const dt = ev.dataTransfer;
+  //     if (!dt.items) return alert('Sorry, file dropping is not supported by this browser');
+  //     if (dt.items.length != 1) return alert('You must drop exactly one file');
+
+  //     const item = dt.items[0];
+  //     if (item.type && item.type != 'application/json') return alert('File must have a ".json" extension');
+
+  //     const file = item.getAsFile();
+  //     if (!file) return alert('Please drop a file, not... well... whatever else it was you dropped');
+
+  //     const reader = new FileReader();
+
+  //     const content = await new Promise((resolve, reject) => {
+  //       reader.onload = () => resolve(reader.result);
+  //       reader.readAsText(file);
+  //     });
+
+  //     const module = new Module(JSON.parse(content));
+  //     history.pushState({ module }, null, `${location.pathname}?upload=${file.name}`);
+  //     graph(module);
+  //   },
+
+  //   ondragover: ev => {
+  //     ev.target.classList.add('drag');
+  //     ev.preventDefault();
+  //   },
+
+  //   ondragleave: ev => {
+  //     ev.currentTarget.classList.remove('drag');
+  //     ev.preventDefault();
+  //   }
+  // });
+
+  return html`
+    <${Pane} style=${{ display: 'flex', flexDirection: 'column' }}>
+      <p>
+      Enter NPM module name here <i class="material-icons">arrow_upward</i> to see the dependency graph.  Separate multiple module names with commas (e.g. <a href="?q=mocha, chalk, rimraf">"mocha, chalk, rimraf"</a>).
+      </p>
+      <div id="drop_target" style="text-align: center">
+        ... or drop a <code>package.json</code> file here
+      </div>
+    </${Pane}>`;
+}
+
+export default function Inspector(props) {
+  const context = useContext(AppContext);
+  const {
+    query: [query, setQuery],
+    pane: [pane, setPane]
+  } = context;
+
+  let paneClass;
+  switch (pane) {
+    case 'module': paneClass = ModulePane; break;
+    case 'graph': paneClass = GraphPane; break;
+    case 'info': paneClass = InfoPane; break;
   }
 
-  static toggle(open) {
-    const body = $('body');
-    if (typeof (open) != 'boolean') open = !body.classList.contains('open');
-    $('#tabs .arrow').innerHTML = open ? '&#x25ba' : '&#x25c0';
-    $('body').classList.toggle('open', open);
-  }
+  return html`
+    <div id="inspector" ...${props} >
+      <div id="tabs">
+        <${Tab} active=${pane == 'module'} onClick=${() => setPane('module')}>Module<//>
+        <${Tab} active=${pane == 'graph'} onClick=${() => setPane('graph')}>Graph<//>
+        <${Tab} active=${pane == 'info'} onClick=${() => setPane('info')}>${'\u{24d8}'}<//>
+        <input
+          type="text" 
+          value=${query.join(',')}
+          onChange=${e => {
+            // Convert input text to unique list of names
+            const names = [...new Set(e.currentTarget.value.split(/,\s*/).filter(x => x))];
 
-  static async setGraph(modules) {
-    const visited = {};
-    const dependencyCounts = {};
-    const maintainers = {};
-    const maintainerCounts = {};
-    const licenses = new Map();
-    let nModules = 0, nMaintainers = 0;
+            // Update location
+            const url = new URL(location);
+            url.search = `?q=${names.join(',')}`;
+            url.hash = '';
+            history.replaceState(null, window.title, url);
 
-    // Coerce to array
-    if (!Array.isArray(modules)) modules = [modules];
+            setQuery(names);
+          }} 
+          placeholder=${'\u{1F50D} \xa0Enter module name'}
+          autofocus
+        />
+      </div>
 
-    // Set dependency checkbox states
-    for (const el of $.all('.depInclude input')) {
-      el.disabled = !modules.some(m => m.package[el.dataset.type]);
-    }
+      <${paneClass} />
 
-    // Walk module dependency tree to gather up the info we care about
-    function walk(m, level = 0) {
-      if (Array.isArray(m)) return Promise.all(m.map(walk));
-
-      const pkg = m.package;
-      const license = m.licenseString;
-
-      if (!m || (m.key in visited)) return;
-      visited[m.key] = m;
-      console.log('visiting', m.key);
-      nModules++;
-
-      if (level > 0) dependencyCounts[pkg.name] = (dependencyCounts[pkg.name] || 0) + 1;
-
-      pkg.maintainers.forEach(maintainer => {
-        if (maintainer.name in maintainers) {
-          maintainerCounts[maintainer.name]++;
-        } else {
-          nMaintainers++;
-          maintainerCounts[maintainer.name] = 1;
-          maintainers[maintainer.name] = maintainer;
-        }
-      });
-
-      licenses.set(license, (licenses.get(license) || 0) + 1);
-
-      return Promise.all(
-        getDependencyEntries(pkg, level)
-          .map(async([name, version]) => {
-            const module = await Store.getModule(name, version);
-            return walk(module, level + 1);
-          })
-      );
-    }
-    await walk(modules);
-
-    $('.dependencies > h2:first-of-type').childNodes[0].textContent =
-      simplur`${nModules - 1} Dependenc[y|ies]`;
-    $('.maintainers > h2:first-of-type').childNodes[0].textContent =
-      simplur`${nMaintainers} Maintainer[|s]`;
-
-    // sort comparators for Object.entries() lists
-    const sortByEntryKey = (a, b) => a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : 0);
-    // const sortByEntryValue = (a, b) => a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0);
-
-    const depEl = $('#pane-graph .dependencies');
-    $.all(depEl, '.tag').forEach(el => el.remove());
-    Object.entries(dependencyCounts)
-      .sort(sortByEntryKey)
-      .forEach(e => depEl.append(createTag('module', e[0], e[1])));
-
-    const maintEl = $('#pane-graph .maintainers');
-    $.all(maintEl, '.tag').forEach(el => el.remove());
-    Object.entries(maintainers)
-      .sort(sortByEntryKey)
-      .forEach(e => {
-        const count = maintainerCounts[e[0]];
-        const tag = createTag('maintainer', e[0], count);
-        if (e[1].email) {
-          const hash = md5(e[1].email).map(v => (('0' + v.toString(16)).slice(-2))).join('');
-          tag.insertBefore($.parse(`<img src="https://www.gravatar.com/avatar/${hash}?s=32" />`), tag.firstChild);
-        }
-        maintEl.append(tag);
-      });
-
-    const licEl = $('#pane-graph .licenses');
-    $.all(licEl, '.tag').forEach(el => el.remove());
-    Array.from(licenses)
-      .sort(sortByEntryKey)
-      .forEach(([license, count]) => {
-        const tag = createTag('license', license || 'Unspecified', count);
-        if (!license) tag.style.color = 'red';
-        licEl.append(tag);
-      });
-
-    // Make a chart
-    if (nModules > 1) {
-      const config = {
-        bindto: '#chart',
-        data: {
-          columns: [],
-          type: 'pie'
-        }
-      };
-      config.data.columns = Array.from(licenses)
-        .sort((a, b) => a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0);
-      c3.generate(config);
-    } else {
-      $('#chart').innerHTML = '';
-    }
-    $('#inspector').scrollTo(0, 0);
-
-    // Bus handler
-    $('#busFactor').onclick = function(e) {
-      Inspector.selectTag(this.checked ? 'bus' : null);
-    };
-
-    for (const el of $.all('.depInclude')) {
-      el.onclick = window.onpopstate;
-    }
-
-    // Colorize handler
-    $('#colorize').checked = false;
-    $('#colorize').onclick = function(e) {
-      const colorize = this.checked;
-
-      $.all('svg .node path').forEach(async el => {
-        if (!colorize) {
-          el.style.fill = '';
-          el.style.fillOpacity = '';
-        } else {
-          const moduleKey = el.parentNode.textContent.trim();
-          const module = await Store.getModule(...entryFromKey(moduleKey));
-          if (module) {
-            const scores = await module.getScores();
-            if (scores && scores.final !== null) {
-              el.style.fill = 'red';
-              el.style.fillOpacity = Math.max(0, 1 - scores.final);
-            }
-          }
-        }
-      });
-    };
-  }
-
-  static async setModule(module) {
-    if (Array.isArray(module)) {
-      module = module.lengt == 1 ? module[0] : null;
-    }
-
-    const pkg = module && module.package;
-
-    if (!pkg) {
-      $('#pane-module h2').innerHTML = 'No module selected';
-      $('#pane-module .description').innerHTML = '';
-      return;
-    }
-
-    $('#pane-module h2').innerHTML = module ? `<a href="?q=${module.key}">${module.key}</a> Info` : '';
-    $('#pane-module .description').innerHTML = pkg ? `${pkg.description}` : '';
-
-    const pkgCopy = Object.assign({}, pkg);
-    for (const k in pkgCopy) {
-      if (/^_.*|gitHead|bugs|scripts|dist|directories/.test(k)) delete pkgCopy[k];
-    }
-
-    $.clear('#pane-module .json');
-    $.append('#pane-module .json', prettyStringify(pkgCopy));
-
-    $('#inspector').scrollTo(0, 0);
-
-    let requests;
-    if (pkg) {
-      $('#pane-module .stats').innerHTML = '(Getting info...)';
-
-      try {
-        requests = await Promise.all([
-          ajax('GET', `https://api.npmjs.org/downloads/point/last-week/${pkg.name}`),
-          module.getScores()
-        ]);
-      } catch (err) {
-        report.warn(err);
-      }
-    }
-
-    if (requests) {
-      const [stats, scores] = requests;
-
-      const final = scores ? (scores.final * 100).toFixed(0) + '%' : 'n/a';
-      const quality = scores ? (scores.quality * 100).toFixed(0) + '%' : 'n/a';
-      const popularity = scores ? (scores.popularity * 100).toFixed(0) + '%' : 'n/a';
-      const maintenance = scores ? (scores.maintenance * 100).toFixed(0) + '%' : 'n/a';
-      let license = module.licenseString;
-
-      // If no license, see if it's specified in the gh repo
-      let licenseEl;
-
-      if (license) {
-        licenseEl = `<td>${license}</td>`;
-      } else {
-        // Look for license in github
-        const gh = module.githubPath &&
-          await ajax('GET', `https://api.github.com/repos/${module.githubPath}`);
-
-        license = gh && gh.license;
-        license = license && (license.spdx_id || license.name);
-
-        const issue = license ? {
-          title: 'Missing `license` in package.json',
-          body: `http://npm.github.com did not find a \`license\` in the package.json file for version ${module.version} of this project` // eslint-disable-line max-len
-        } : {
-          title: 'License not found in package.json or on Github',
-          body: 'http://npm.github.com could not find license information for this project.  Please make sure a license is defined either in the NPM package.json file or in a LICENSE.md file' // eslint-disable-line max-len
-        };
-
-        licenseEl = `<td>
-        <span style="${license ? '' : 'font-weight: bold; color: red'}">${license || 'Unspecified'}</span>
-          <div style="font-size: 70%; color: #c60;" >
-            <span class="material-icons" title="">warning</span>${issue.title}
-          </div>
-          </td>`;
-      }
-
-      $('#pane-module .stats').innerHTML = `
-        <table>
-        <tr><th>Maintainers</th><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
-        <tr><th>License</th>${licenseEl}</tr>
-        <tr><th>Downloads/week</th><td>${stats.downloads}</td></tr>
-        <tr><th>NPMS.io Score</th><td class="rank"><div style="width:${final}">${final}</td></tr>
-        <tr style="font-size: 8pt"><th>Quality</th><td class="rank"><div style="width:${quality}">${quality}</td></tr>
-        <tr style="font-size: 8pt"><th>Popularity</th><td class="rank"><div style="width:${popularity}">${popularity}</div></td></tr>
-        <tr style="font-size: 8pt"><th>Maintenance</th><td class="rank"><div style="width:${maintenance}">${maintenance}</td></tr>
-        </table>
-        `;
-    } else {
-      $('#pane-module .stats').innerText = 'No module';
-    }
-  }
+      <footer>
+          ${'\xa9'} Robert Kieffer, 2020  MIT License
+          <a id="github" target="_blank" href="https://github.com/broofa/npmgraph">GitHub</a>
+      </footer>
+    </div>`;
 }

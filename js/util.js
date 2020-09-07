@@ -11,41 +11,65 @@ export const report = {
  */
 export function $(...args) {
   const target = args.length == 2 ? args.shift() : document;
-  return new ElementSet(target.querySelectorAll(...args));
+  return ElementSet.from(target.querySelectorAll(...args));
 }
 
-class ElementSet {
-  constructor(elements) {
-    this.elements = Array.isArray(elements) ? elements : [...elements];
+class ElementSet extends Array {
+  get first() {
+    return this[0];
   }
 
-  _do(cb) {
-    for (const el of this.elements) cb(el);
+  get last() {
+    return this[this.length - 1];
+  }
+
+  forEach(...args) {
+    super.forEach(...args);
     return this;
   }
 
-  pop() {
-    return this.elements.pop();
+  on(...args) {
+    const els = [...this];
+
+    for (const el of els) {
+      el.addEventListener(...args);
+    }
+
+    return function() {
+      for (const el of els) {
+        el.removeEventListener(...args);
+      }
+    };
   }
 
   clear() {
-    return this._do(el => (el.innerText = ''));
+    return this.forEach(el => (el.innerText = ''));
   }
 
-  text(str) {
-    return this._do(el => el.innerText = str);
+  remove() {
+    return this.forEach(el => el.remove());
   }
 
-  html(str) {
-    return this._do(el => el.innerHTML = str);
+  get innerText() {
+    return this.first.innerText;
   }
 
-  append(el, ...children) {
-    return this._do(el => {
-      for (const c of children) {
-        if (!c) continue;
-        el.appendChild(typeof (c) == 'string' ? $.text(c) : c);
-      }
+  set innerText(str) {
+    return this.forEach(el => el.innerText = str);
+  }
+
+  get innerHTML() {
+    return this.first.innerHTML;
+  }
+
+  set innerHTML(str) {
+    return this.forEach(el => el.innerHTML = str);
+  }
+
+  appendChild(nel) {
+    if (typeof (nel) == 'string') nel = document.createTextNode(nel);
+    return this.forEach((el, i) => {
+      el.appendChild(i > 0 ? nel : nel.cloneNode(true));
     });
   }
 }
@@ -139,15 +163,15 @@ export function entryFromKey(key) {
   return RegExp.$2 ? [RegExp.$1, RegExp.$2] : [RegExp.$1];
 }
 
-export function getDependencyEntries(pkg, level = 0) {
+export function getDependencyEntries(pkg, depIncludes, level = 0) {
   pkg = pkg.package || pkg;
 
   const deps = [];
 
-  for (const el of $.all('.depInclude input')) {
-    const { type } = el.dataset;
+  for (const type of depIncludes) {
     if (!pkg[type]) continue;
-    if (!el.checked) continue;
+
+    // Only do one level for non-"dependencies"
     if (level > 0 && type != 'dependencies') continue;
 
     // Get entries, adding type to each entry

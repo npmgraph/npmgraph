@@ -6,21 +6,43 @@ html, body {
   margin: 0;
   padding: 0;
 }
-h1 {
-  font-size: 16pt;
-  border-radius: 3px;
-}
 h2 {
   font-size: 14pt;
   border-radius: 3px;
 }
 
-dt {
-  font-weight: bold;
-  margin-top: .5em;
+body {
+  display: flex;
 }
-dd {
-  margin: 0;
+
+#graph {
+  flex-grow: 1;
+  border-right: solid 1px black;
+}
+
+#splitter {
+  flex-basis: 1em;
+  background-color: #ccc;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+#inspector {
+  flex-basis: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  border-left: solid 1px black;
+  background-color: rgba(255,255,255,.85);
+  overflow: hidden;
+  transition: flex-basis .5s;
+}
+
+#inspector.open {
+  flex-basis: 32em;
 }
 
 label {display: block;}
@@ -38,44 +60,28 @@ section > label {margin-top: 1em;}
   border-radius: 3px;
 }
 
-#progress {
-  position:fixed;
-  top: 35%;
-  left: 2em;
-  right: 4em;
-  height: 1.5em;
-  line-height: 1.5em;
-  border: solid 1px grey;
+.loader {
+  border-bottom: solid 1px grey;
 }
-body.open #progress {right: 34em;}
-#progress_inner {
-  position:absolute;
-  white-space: nowrap;
-  overflow: hidden;
-  top: 0;
-  height:100%;
+.loader > .inner {
+  height:4px;
   background-color: rgb(200, 130, 30);
-  left: 0;
 }
 
 #graph {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 2em;
+  height: 100%;
   overflow: auto;
-  transition: right .3s ease-out;
+  position: relative;
 }
 
-#graph-controls {
+.graph-controls {
   display: flex;
   position: absolute;
   bottom: .5em;
-  right: 4em;
+  right: 1em;
   cursor: default;
 }
-#graph-controls button {
+.graph-controls button {
   display: inline-block;
   font-size: 1.8em;
   line-height: 1em;
@@ -84,29 +90,24 @@ body.open #progress {right: 34em;}
   border: solid 1px black;
   border-radius: 3px;
 }
-body.open #graph-controls {
-  right: 31em;
+
+.json {font-family: monospace}
+.json-object, .json-array {
+  list-style: none outside;
+  margin: 0;
+  padding: 0 0 0 1em;
+}
+.json-key {color: green;}
+.json-string {color: blue}
+.json-boolean {color: purple}
+.json-number {color:orange}
+.json-null {color: gray}
+
+.depInclude  {
+  padding-left: 1em;
+  font-family: monospace;
 }
 
-body.open #graph {
-  right: 30em;
-}
-#inspector {
-  position: fixed;
-  top: 0;
-  right: -28em;
-  bottom: 0;
-  border-left: solid 1px black;
-  background-color: rgba(255,255,255,.85);
-  width: 30em;
-  transition: right .3s ease-out;
-  overflow: hidden;
-}
-body.open #inspector {
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-}
 #inspector .tag {
   cursor: pointer;
   display: inline-block;
@@ -133,108 +134,57 @@ body.open #inspector {
 #inspector .module {
   white-space: nowrap;
 }
-#inspector #tabs {
-  z-index: 1;
-  position: fixed;
-  width: 100%;
-  white-space: nowrap;
-  background-color: #888;
-  font-size: 0;
+
+#tabs {
+  flex-basis: auto;
+  display: flex;
 }
-#inspector #tabs input {
-  border: none;
-}
-#inspector #tabs > * {
-  display: inline-block;
+#tabs > * {
   cursor: pointer;
-  font-size: 12pt;
-  font-weight: bold;
   background-color: #ccc;
   line-height: 24pt;
   padding: 0 10px;
 }
-#inspector #tabs .button {
-  display: inline-block;
-  text-align: center;
+#tabs input {
+  flex-grow: 1;
   border: none;
-  border-right: solid 1px #888;
-  background-color: #ccc;
 }
-#inspector #tabs .button.active {
+#tabs .tab {
+  border-right: solid 1px #888;
+  font-size: 12pt;
+  font-weight: bold;
+}
+#tabs .tab.active {
   background-color: white;
 }
+
+.pane, footer {
+  box-sizing: border-box;
+  width: 32em;
+}
 .pane {
-  position: absolute;
-  top: 24px;
-  bottom: 0;
-  left: .5em;
-  right: .5em;
-  display: none;
-  padding: .3em 0;
-  padding-right: 0;
-}
+  flex-grow: 1;
+  padding: .5em 1em;
+  overflow-y: auto;
+  overflow-x: hidden;}
 
-.pane.open {
-  display: block;
-}
-
-#inspector .pane section > h2 {
+.pane section > h2 {
   cursor: pointer;
   position: relative;
   background-color: #5c6f69;
   color: white;
   padding: .2em;
 }
-#inspector .pane section.closed > :not(h2) {
-  display: none;
-}
 
 .pane section h2 span {
   position: absolute;
   right: .2em;
-}
-.pane section h2 span:before {
-  content: "expand_less"
-}
-.pane section.closed h2 span:before {
-  content: "expand_more"
 }
 
 .stats th {text-align: left; vertical-align: top}
 .stats td {text-align: left; vertical-align: top}
 .stats .rank {border: solid 1px #ccc; width: 200px}
 .stats .rank div {background-color: #ccc; text-align: right}
-
-.loader {
-  border: solid 1px gray;
-  border-radius: 4px;
-  display: inline-block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: calc(11em - 20px);
-  padding: 4px;
-  margin: 4px;
-}
-.loader span {
-    border: 4px solid #ccc;
-    border-radius: 50%;
-    width: 10px;
-    height: 10px;
-    display: inline-block;
-    float: left;
-    margin-right: 4px;
-}
-.loader.active span {
-    border-top-color: #090;
-    animation: spin 2s linear infinite;
-}
-.loader.success span {
-  border-color: #090;
-}
-.loader.error span {
-  border-color: #900;
-}
 
 svg {
   fill: #666;
@@ -271,23 +221,18 @@ g .stub > path {
 
 #drop_target * {pointer-events: none;}
 
-#info-footer {
-  position: absolute;
-  bottom: 1em;
-  width: 100%;
+footer {
   border-top: solid 1px black;
-  padding-top: 1em;
+  padding: 0.5em;
 }
 
 #github {
   background:#084;
   color:#fff;
-  font-weight:bold;
-  text-align:center;
   text-decoration:none;
-  transition:0.5s;
+  transition:0.3s;
   border-radius: 4px;
-  padding: .2em .4em;
+  padding: .2em 1em;
   margin-left: 1em;
 }
 #github:hover {
@@ -303,15 +248,11 @@ g .stub > path {
     display: none;
   }
 
-  body #graph {
-    overflow: visible;
+  #splitter {
+    display: none;
   }
 
-  body.open #graph {
-    right: 0;
-  }
-
-  #graph-controls {
+  .graph-controls {
     display: none;
   }
 }
