@@ -1,6 +1,6 @@
 /* global c3 */
 
-import { $, $$, ajax, createTag, report, entryFromKey, getDependencyEntries, simplur } from './util.js';
+import { $, $$, ajax, createTag, report, entryFromKey, getDependencyEntries, simplur, formatBytes } from './util.js';
 import Store from './Store.js';
 import md5 from './md5.js';
 
@@ -240,6 +240,7 @@ export default class Inspector {
       const popularity = scores ? (scores.popularity * 100).toFixed(0) + '%' : 'n/a';
       const maintenance = scores ? (scores.maintenance * 100).toFixed(0) + '%' : 'n/a';
       let license = module.licenseString;
+      const unpackedSize = pkg.dist.unpackedSize ? formatBytes(parseInt(pkg.dist.unpackedSize)) : 0;
 
       // If no license, see if it's specified in the gh repo
       let licenseEl;
@@ -273,6 +274,7 @@ export default class Inspector {
       $('#pane-module .stats').innerHTML = `
         <table>
         <tr><th>Maintainers</th><td>${pkg.maintainers.map(u => `<span>${u.name}</span>`).join('\n')}</td></tr>
+        <tr><th>UnpackedSize</th><td>${unpackedSize}</td></tr>
         <tr><th>License</th>${licenseEl}</tr>
         <tr><th>Downloads/week</th><td>${stats.downloads}</td></tr>
         <tr><th>NPMS.io Score</th><td class="rank"><div style="width:${final}">${final}</td></tr>
