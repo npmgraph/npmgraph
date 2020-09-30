@@ -240,7 +240,7 @@ export default class Inspector {
       const popularity = scores ? (scores.popularity * 100).toFixed(0) + '%' : 'n/a';
       const maintenance = scores ? (scores.maintenance * 100).toFixed(0) + '%' : 'n/a';
       let license = module.licenseString;
-      const unpackedSize = pkg.dist.unpackedSize ? formatBytes(parseInt(pkg.dist.unpackedSize)) : 0;
+      const unpackedSize = pkg.dist.unpackedSize ? formatBytes(parseInt(pkg.dist.unpackedSize)) : '';
 
       // If no license, see if it's specified in the gh repo
       let licenseEl;
