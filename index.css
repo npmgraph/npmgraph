@@ -1,4 +1,24 @@
-html, input {
+:root {
+  --rad_sm: 5px;
+  --rad_lg: 10px;
+}
+.theme-lite {
+  /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
+  --text: #020303;
+  --bg0: #f1f4f4;
+  --bg1: #c8d3a7;
+  --highlight: #e65c00;
+}
+
+.theme-dark {
+  /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
+  --text: #f1f4f4;
+  --bg0: #606c38;
+  --bg1: #283618;
+  --highlight: #ff761a;
+}
+
+html {
   font-family: 'Inter', sans-serif;
   font-size: 10pt;
 }
@@ -8,22 +28,33 @@ html, body {
 }
 h2 {
   font-size: 14pt;
-  border-radius: 3px;
+  border-radius: var(--rad_sm);
 }
 
 body {
   display: flex;
 }
 
+.bright-hover {
+  transition:.5s;
+}
+.bright-hover:hover {
+  filter: brightness(125%);
+  transition:.15s;
+}
+
 #graph {
   flex-grow: 1;
-  border-right: solid 1px black;
 }
 
 #splitter {
-  flex-basis: 1em;
-  background-color: #ccc;
   display: flex;
+  flex-basis: 1em;
+  color: var(--text);
+  background-color: var(--bg0);
+  border-top-left-radius: var(--rad_lg);
+  border-bottom-left-radius: var(--rad_lg);
+  padding: 0 3px;
   align-items: center;
   cursor: pointer;
 }
@@ -35,18 +66,30 @@ body {
   flex-direction: column;
 
   height: 100%;
-  border-left: solid 1px black;
-  background-color: rgba(255,255,255,.85);
+  color: var(--text);
+  background-color: var(--bg0);
   overflow: hidden;
   transition: flex-basis .5s;
 }
 
 #inspector.open {
-  flex-basis: 32em;
+  flex: 0 0 32em;
 }
 
 label {display: block;}
-section > label {margin-top: 1em;}
+
+summary {
+  position: -webkit-sticky;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: .7em 0 .5em;
+  border-top: solid 3px var(--bg1);
+  padding: .2em;
+  outline: none;
+  cursor: pointer;
+}
+
+details > label {margin-top: 1em;}
 
 .material-icons {
   font-size: inherit;
@@ -57,28 +100,29 @@ section > label {margin-top: 1em;}
   padding: 4px;
   transition-property: left;
   transition-duration: .7s;
-  border-radius: 3px;
+  border-radius: var(--rad_sm);
 }
 
 .loader {
-  border-bottom: solid 1px grey;
+  background-color: var(--bg0);
 }
 .loader > .inner {
   height:4px;
-  background-color: rgb(200, 130, 30);
+  background-color: var(--text);
 }
 
 #graph {
   height: 100%;
   overflow: auto;
   position: relative;
+  user-select: none;
 }
 
 .graph-controls {
   display: flex;
-  position: absolute;
-  bottom: .5em;
-  right: 1em;
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
   cursor: default;
 }
 .graph-controls button {
@@ -88,7 +132,7 @@ section > label {margin-top: 1em;}
   width: 1.3em;
   padding: 0;
   border: solid 1px black;
-  border-radius: 3px;
+  border-radius: var(--rad_sm);
 }
 
 .json {font-family: monospace}
@@ -110,23 +154,21 @@ section > label {margin-top: 1em;}
 
 #inspector .tag {
   cursor: pointer;
-  display: inline-block;
-  width: 30%;
-  white-space: nowrap;
-  background-color: #ddd;
-  padding: 2px;
-  margin: 1px 4px;
+  background-color: var(--bg1);
+  color: var(--text);
+  border-radius: var(--rad_lg);
+  padding: 2px 8px;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  border-radius: 3px;
 }
-#inspector .tag:hover {
-  background-color: #ddf;
+#inspector .tag.maintainer {
+  padding: 0;
+  height: 32px;
 }
-#inspector .tag img {
+#inspector .tag.maintainer img {
   vertical-align: middle;
   margin-right: 4px;
-  border-radius: 3px;
 }
 #inspector .description {
   font-weight: bold;
@@ -137,29 +179,31 @@ section > label {margin-top: 1em;}
 
 #tabs {
   flex-basis: auto;
+  margin-left: var(--rad_lg);
   display: flex;
+  user-select: none;
 }
 #tabs > * {
-  cursor: pointer;
-  background-color: #ccc;
   line-height: 24pt;
-  padding: 0 10px;
-}
-#tabs input {
-  flex-grow: 1;
-  border: none;
 }
 #tabs .tab {
+  padding: 0 10px;
+  cursor: pointer;
+  background-color: var(--bg0);
   border-right: solid 1px #888;
+  border-bottom: solid 5px transparent;
   font-size: 12pt;
   font-weight: bold;
 }
 #tabs .tab.active {
-  background-color: white;
+  border-bottom-color: var(--highlight);
 }
 
-.pane, footer {
+.pane {
+  color: var(--text);
+  background-color: var(--bg0);
   box-sizing: border-box;
+  border-radius: var(--rad_lg);
   width: 32em;
 }
 .pane {
@@ -168,26 +212,16 @@ section > label {margin-top: 1em;}
   overflow-y: auto;
   overflow-x: hidden;}
 
-.pane section > h2 {
-  cursor: pointer;
-  position: relative;
-  background-color: #5c6f69;
-  color: white;
-  padding: .2em;
-}
-
-.pane section h2 span {
-  position: absolute;
-  right: .2em;
-}
-
 .stats th {text-align: left; vertical-align: top}
 .stats td {text-align: left; vertical-align: top}
 .stats .rank {border: solid 1px #ccc; width: 200px}
-.stats .rank div {background-color: #ccc; text-align: right}
+.stats .rank div {background-color: var(--bg0); text-align: right}
 
 svg {
   fill: #666;
+}
+g .node {
+  user-select: text;
 }
 g .node * {
   cursor: pointer;
@@ -212,7 +246,7 @@ g .stub > path {
   background-color: #ddd;
   border: dashed 2px #888;
   padding: 1em;
-  border-radius: 5px;
+  border-radius: var(--rad_sm);
 }
 #drop_target.drag {
 	background-color: #ccf;
@@ -222,25 +256,18 @@ g .stub > path {
 #drop_target * {pointer-events: none;}
 
 footer {
-  border-top: solid 1px black;
   padding: 0.5em;
+  box-sizing: border-box;
+  width: 32em;
 }
 
 #github {
-  background:#084;
-  color:#fff;
-  text-decoration:none;
-  transition:0.3s;
-  border-radius: 4px;
   padding: .2em 1em;
   margin-left: 1em;
-}
-#github:hover {
-  background: #066;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  background: var(--bg1);
+  color: #fff;
+  text-decoration: none;
+  border-radius: var(--rad_sm);
 }
 
 @media print {

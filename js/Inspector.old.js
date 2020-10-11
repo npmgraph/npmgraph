@@ -117,19 +117,18 @@ export default class Inspector {
       simplur`${nMaintainers} Maintainer[|s]`;
 
     // sort comparators for Object.entries() lists
-    const sortByEntryKey = (a, b) => a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : 0);
-    // const sortByEntryValue = (a, b) => a[1] < b[1] ? -1 : (a[1] > b[1] ? 1 : 0);
+    const compareEntryKey = ([a], [b]) => a < b ? -1 : a > b ? 1 : 0;
 
     const depEl = $('#pane-graph .dependencies');
     $.all(depEl, '.tag').forEach(el => el.remove());
     Object.entries(dependencyCounts)
-      .sort(sortByEntryKey)
+      .sort(compareEntryKey)
       .forEach(e => depEl.append(createTag('module', e[0], e[1])));
 
     const maintEl = $('#pane-graph .maintainers');
     $.all(maintEl, '.tag').forEach(el => el.remove());
     Object.entries(maintainers)
-      .sort(sortByEntryKey)
+      .sort(compareEntryKey)
       .forEach(e => {
         const count = maintainerCounts[e[0]];
         const tag = createTag('maintainer', e[0], count);
@@ -143,7 +142,7 @@ export default class Inspector {
     const licEl = $('#pane-graph .licenses');
     $.all(licEl, '.tag').forEach(el => el.remove());
     Array.from(licenses)
-      .sort(sortByEntryKey)
+      .sort(compareEntryKey)
       .forEach(([license, count]) => {
         const tag = createTag('license', license || 'Unspecified', count);
         if (!license) tag.style.color = 'red';
@@ -202,7 +201,7 @@ export default class Inspector {
 
   static async setModule(module) {
     if (Array.isArray(module)) {
-      module = module.lengt == 1 ? module[0] : null;
+      module = module.length == 1 ? module[0] : null;
     }
 
     const pkg = module?.package;

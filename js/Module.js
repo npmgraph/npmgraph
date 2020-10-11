@@ -1,4 +1,3 @@
-import { ajax } from './util.js';
 import validate from '../vendor/pjv.js';
 
 function parseGithubPath(s) {
@@ -33,6 +32,19 @@ export default class Module {
     return version && (version.version || version);
   }
 
+  get npmLink() {
+    return `https://www.npmjs.com/package/${this.package.name}/v/${this.version}`;
+  }
+
+  get repoLink() {
+    const gh = this.githubPath;
+    return gh && `https://www.github.com/${gh}`;
+  }
+
+  get apiLink() {
+    return `https://registry.npmjs.cf/${this.package.name}/${this.version}`;
+  }
+
   get githubPath() {
     const pkg = this.package;
 
@@ -42,29 +54,6 @@ export default class Module {
     }
 
     return null;
-  }
-
-  async getScores() {
-    if (!this.package._scores) {
-      let search;
-
-      try {
-        search = await ajax('GET', `https://api.npms.io/v2/package/${this.package.name}`);
-      } catch (err) {
-        console.error(err);
-        return;
-      }
-
-      const score = search.score;
-      this.package._scores = score ? {
-        final: score.final,
-        quality: score.detail.quality,
-        popularity: score.detail.popularity,
-        maintenance: score.detail.maintenance
-      } : null;
-    }
-
-    return this.package._scores;
   }
 
   get licenseString() {

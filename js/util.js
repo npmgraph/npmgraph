@@ -15,12 +15,8 @@ export function $(...args) {
 }
 
 class ElementSet extends Array {
-  get first() {
+  get element() {
     return this[0];
-  }
-
-  get last() {
-    return this[this.length - 1];
   }
 
   forEach(...args) {
@@ -51,7 +47,7 @@ class ElementSet extends Array {
   }
 
   get innerText() {
-    return this.first.innerText;
+    return this.element.innerText;
   }
 
   set innerText(str) {
@@ -59,7 +55,7 @@ class ElementSet extends Array {
   }
 
   get innerHTML() {
-    return this.first.innerHTML;
+    return this.element.innerHTML;
   }
 
   set innerHTML(str) {

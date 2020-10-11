@@ -14,7 +14,7 @@ function Splitter({ onClick }) {
   }
 
   return html`
-    <div id="splitter" onClick=${handleClick}>${isOpen ? '\u{25b6}' : '\u{25c0}'}</div>
+    <div id="splitter" className="theme-dark bright-hover" onClick=${handleClick}>${isOpen ? '\u{25b6}' : '\u{25c0}'}</div>
   `;
 }
 
@@ -28,8 +28,8 @@ export default function App() {
   const context = {
     pane: useState('info'),
     query: useState(query),
-    inspectModule: useState([]),
-    inspectGraph: useState([]),
+    module: useState([]),
+    graph: useState([]),
     depIncludes: useState(['dependencies'])
   };
 
