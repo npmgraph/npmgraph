@@ -7,7 +7,9 @@
     "email": "robert@broofa.com"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "preact": "10.4.8"
+  },
   "description": "Visualize NPM dependency graphs (public and private!)",
   "keywords": [
     "npm",

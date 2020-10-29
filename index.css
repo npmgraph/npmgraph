@@ -1,4 +1,24 @@
-html, input {
+:root {
+  --rad_sm: 5px;
+  --rad_lg: 10px;
+}
+.theme-lite {
+  /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
+  --text: #020303;
+  --bg0: #f1f4f4;
+  --bg1: #c8d3a7;
+  --highlight: #e65c00;
+}
+
+.theme-dark {
+  /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
+  --text: #f1f4f4;
+  --bg0: #606c38;
+  --bg1: #283618;
+  --highlight: #ff761a;
+}
+
+html {
   font-family: 'Inter', sans-serif;
   font-size: 10pt;
 }
@@ -6,25 +26,76 @@ html, body {
   margin: 0;
   padding: 0;
 }
-h1 {
-  font-size: 16pt;
-  border-radius: 3px;
+
+p {
+  line-height: 1.5em;
 }
+
 h2 {
   font-size: 14pt;
-  border-radius: 3px;
+  border-radius: var(--rad_sm);
 }
 
-dt {
+body {
+  display: flex;
+}
+
+.bright-hover {
+  transition:.5s;
+}
+.bright-hover:hover {
+  filter: brightness(125%);
+  transition:.15s;
+}
+
+#graph {
+  flex-grow: 1;
+}
+
+#splitter {
+  display: flex;
+  flex-basis: 1em;
+  color: var(--text);
+  background-color: var(--bg0);
+  border-top-left-radius: var(--rad_lg);
+  border-bottom-left-radius: var(--rad_lg);
+  padding: 0 3px;
+  align-items: center;
+  cursor: pointer;
+}
+
+#inspector {
+  flex-basis: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  color: var(--text);
+  background-color: var(--bg0);
+  overflow: hidden;
+  transition: flex-basis .5s;
+}
+
+#inspector.open {
+  flex: 0 0 32em;
+}
+
+label {
+  display: block;
+  margin: .3em 0;
+}
+
+summary {
+  position: -webkit-sticky;
+  font-size: 1.2em;
   font-weight: bold;
-  margin-top: .5em;
+  margin: .7em 0 .5em;
+  border-top: solid 3px var(--bg1);
+  padding: .2em;
+  outline: none;
+  cursor: pointer;
 }
-dd {
-  margin: 0;
-}
-
-label {display: block;}
-section > label {margin-top: 1em;}
 
 .material-icons {
   font-size: inherit;
@@ -35,44 +106,29 @@ section > label {margin-top: 1em;}
   padding: 4px;
   transition-property: left;
   transition-duration: .7s;
-  border-radius: 3px;
+  border-radius: var(--rad_sm);
 }
 
-#progress {
-  position:fixed;
-  top: 35%;
-  left: 2em;
-  right: 4em;
-  height: 1.5em;
-  line-height: 1.5em;
-  border: solid 1px grey;
+.loader {
+  background-color: var(--bg0);
 }
-body.open #progress {right: 34em;}
-#progress_inner {
-  position:absolute;
-  white-space: nowrap;
-  overflow: hidden;
-  top: 0;
-  height:100%;
-  background-color: rgb(200, 130, 30);
-  left: 0;
+.loader > .inner {
+  height:4px;
+  background-color: red;
 }
 
 #graph {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 2em;
+  height: 100%;
   overflow: auto;
-  transition: right .3s ease-out;
+  position: relative;
+  user-select: none;
 }
 
 #graph-controls {
   display: flex;
-  position: absolute;
-  bottom: .5em;
-  right: 4em;
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
   cursor: default;
 }
 #graph-controls button {
@@ -82,50 +138,42 @@ body.open #progress {right: 34em;}
   width: 1.3em;
   padding: 0;
   border: solid 1px black;
-  border-radius: 3px;
-}
-body.open #graph-controls {
-  right: 31em;
+  border-radius: var(--rad_sm);
 }
 
-body.open #graph {
-  right: 30em;
+.json {font-family: monospace}
+.json-object, .json-array {
+  list-style: none outside;
+  margin: 0;
+  padding: 0 0 0 1em;
 }
-#inspector {
-  position: fixed;
-  top: 0;
-  right: -28em;
-  bottom: 0;
-  border-left: solid 1px black;
-  background-color: rgba(255,255,255,.85);
-  width: 30em;
-  transition: right .3s ease-out;
-  overflow: hidden;
+.json-key {color: green;}
+.json-string {color: blue}
+.json-boolean {color: purple}
+.json-number {color:orange}
+.json-null {color: gray}
+
+.depInclude  {
+  padding-left: 1em;
 }
-body.open #inspector {
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-}
+
 #inspector .tag {
   cursor: pointer;
-  display: inline-block;
-  width: 30%;
-  white-space: nowrap;
-  background-color: #ddd;
-  padding: 2px;
-  margin: 1px 4px;
+  background-color: var(--bg1);
+  color: var(--text);
+  border-radius: var(--rad_lg);
+  padding: 2px 8px;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
-  border-radius: 3px;
 }
-#inspector .tag:hover {
-  background-color: #ddf;
+#inspector .tag.maintainer {
+  padding: 0;
+  height: 32px;
 }
-#inspector .tag img {
+#inspector .tag.maintainer img {
   vertical-align: middle;
   margin-right: 4px;
-  border-radius: 3px;
 }
 #inspector .description {
   font-weight: bold;
@@ -133,111 +181,63 @@ body.open #inspector {
 #inspector .module {
   white-space: nowrap;
 }
-#inspector #tabs {
-  z-index: 1;
-  position: fixed;
-  width: 100%;
-  white-space: nowrap;
-  background-color: #888;
-  font-size: 0;
+
+#tabs {
+  flex-basis: auto;
+  margin-left: var(--rad_lg);
+  display: flex;
+  user-select: none;
 }
-#inspector #tabs input {
-  border: none;
+#tabs > * {
+  line-height: 24pt;
 }
-#inspector #tabs > * {
-  display: inline-block;
+#tabs .tab {
+  padding: 0 10px;
   cursor: pointer;
+  background-color: var(--bg0);
+  border-right: solid 1px #888;
+  border-bottom: solid 5px transparent;
   font-size: 12pt;
   font-weight: bold;
-  background-color: #ccc;
-  line-height: 24pt;
-  padding: 0 10px;
 }
-#inspector #tabs .button {
-  display: inline-block;
-  text-align: center;
-  border: none;
-  border-right: solid 1px #888;
-  background-color: #ccc;
+#tabs .tab.active {
+  border-bottom-color: var(--highlight);
 }
-#inspector #tabs .button.active {
-  background-color: white;
-}
+
 .pane {
+  flex-grow: 1;
+  width: 32em;
+  padding: .5em 1em;
+  color: var(--text);
+  background-color: var(--bg0);
+  box-sizing: border-box;
+  border-radius: var(--rad_lg) 0 0 var(--rad_lg);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.bundle-item {
   position: absolute;
-  top: 24px;
-  bottom: 0;
-  left: .5em;
-  right: .5em;
-  display: none;
-  padding: .3em 0;
-  padding-right: 0;
-}
-
-.pane.open {
-  display: block;
-}
-
-#inspector .pane section > h2 {
-  cursor: pointer;
-  position: relative;
-  background-color: #5c6f69;
-  color: white;
-  padding: .2em;
-}
-#inspector .pane section.closed > :not(h2) {
-  display: none;
-}
-
-.pane section h2 span {
-  position: absolute;
-  right: .2em;
-}
-.pane section h2 span:before {
-  content: "expand_less"
-}
-.pane section.closed h2 span:before {
-  content: "expand_more"
-}
-
-.stats th {text-align: left; vertical-align: top}
-.stats td {text-align: left; vertical-align: top}
-.stats .rank {border: solid 1px #ccc; width: 200px}
-.stats .rank div {background-color: #ccc; text-align: right}
-
-.loader {
-  border: solid 1px gray;
-  border-radius: 4px;
-  display: inline-block;
-  white-space: nowrap;
+  display: grid;
+  align-content: center;
+  box-sizing: border-box;
+  cursor: default;
+  text-align: center;
+  border-radius: var(--rad_sm);
+  background-color: var(--bg1);
   overflow: hidden;
-  text-overflow: ellipsis;
-  width: calc(11em - 20px);
-  padding: 4px;
-  margin: 4px;
 }
-.loader span {
-    border: 4px solid #ccc;
-    border-radius: 50%;
-    width: 10px;
-    height: 10px;
-    display: inline-block;
-    float: left;
-    margin-right: 4px;
-}
-.loader.active span {
-    border-top-color: #090;
-    animation: spin 2s linear infinite;
-}
-.loader.success span {
-  border-color: #090;
-}
-.loader.error span {
-  border-color: #900;
+.bundle-item > span {
+  font-weight: bold;
+  font-size: 115%;
+  color: rgba(0, 0, 0, .5)
 }
 
 svg {
   fill: #666;
+}
+g .node {
+  user-select: text;
 }
 g .node * {
   cursor: pointer;
@@ -262,7 +262,7 @@ g .stub > path {
   background-color: #ddd;
   border: dashed 2px #888;
   padding: 1em;
-  border-radius: 5px;
+  border-radius: var(--rad_sm);
 }
 #drop_target.drag {
 	background-color: #ccf;
@@ -271,31 +271,19 @@ g .stub > path {
 
 #drop_target * {pointer-events: none;}
 
-#info-footer {
-  position: absolute;
-  bottom: 1em;
-  width: 100%;
-  border-top: solid 1px black;
-  padding-top: 1em;
+footer {
+  padding: 0.5em;
+  box-sizing: border-box;
+  width: 32em;
 }
 
 #github {
-  background:#084;
-  color:#fff;
-  font-weight:bold;
-  text-align:center;
-  text-decoration:none;
-  transition:0.5s;
-  border-radius: 4px;
-  padding: .2em .4em;
+  padding: .2em 1em;
   margin-left: 1em;
-}
-#github:hover {
-  background: #066;
-}
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  background: var(--bg1);
+  color: #fff;
+  text-decoration: none;
+  border-radius: var(--rad_sm);
 }
 
 @media print {
@@ -303,12 +291,8 @@ g .stub > path {
     display: none;
   }
 
-  body #graph {
-    overflow: visible;
-  }
-
-  body.open #graph {
-    right: 0;
+  #splitter {
+    display: none;
   }
 
   #graph-controls {

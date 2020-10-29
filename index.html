@@ -9,16 +9,19 @@
       'unsafe-eval' 'unsafe-inline' 'self'
       d2wy8f7a9ursnm.cloudfront.net
       *.doubleclick.net
-      notify.bugsnag.com
+      *.giphy.com
       api.github.com
       api.npmjs.org
       api.npms.io
+      bundlephobia.com
       cdnjs.cloudflare.com
       fonts.googleapis.com
       fonts.gstatic.com
+      notify.bugsnag.com
       registry.npmjs.cf
       registry.npmjs.org
       sessions.bugsnag.com
+      unpkg.com
       www.google-analytics.com
       www.googletagmanager.com
       www.gravatar.com
@@ -27,103 +30,15 @@
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
     <meta name="keywords" content="visualize, visualization, graph, npm, npm modules, npm graph, npm licenses" />
-    
-    <title>NPMGraph - Visualize NPM Module Dependencies</title>
 
+    <link rel="icon" type="image/png" href="./favicon.png">
     <link href="https://fonts.googleapis.com/css?family=Inter|Roboto+Condensed|Material+Icons" rel="stylesheet" />
     <link href="./index.css" rel="stylesheet" />
+    
+    <title>NPMGraph - Visualize NPM Module Dependencies</title>
   </head>
 
-  <body class="open">
-    <div id="graph"></div>
-    <div id="progress" style="display:none">
-      <div id="progress_inner"></div>
-    </div>
-
-    <div id="graph-controls" >
-      <button id="zoomWidthButton" title="zoom (fit width)" class="material-icons" style="border-radius: 3px 0 0 3px">swap_horiz</button>
-      <button id="zoomDefaultButton" title="zoom (1:1)" class="material-icons" style="border-width: 1px 0px; border-radius: 0">search</button>
-      <button id="zoomHeightButton" title="zoom (fit height)" class="material-icons" style="border-radius: 0 3px 3px 0">swap_vert</button>
-      <button id="downloadButton" title="download as SVG" class="material-icons" style="margin-left: 0.5em">cloud_download</button>
-    </div>
-
-    <div id="inspector">
-      <div id="tabs">
-        <div class="arrow" id="toggleInspectorButton">&#x25c0</div>
-        <div class="button" data-pane="pane-module">Module</div>
-        <div class="button" data-pane="pane-graph">Graph</div>
-        <div class="button active" data-pane="pane-info">&#9432;</div>
-        <input type="text" id="searchText" placeholder="&#x1F50D; &nbsp;Enter module name" />
-      </div>
-
-      <div class="pane" id="pane-graph">
-        <section>
-          <h2>Tools<span class="material-icons"></span></h2>
-          <div>
-            Include:
-            <style>
-              .depInclude  {
-                padding-left: 1em;
-                font-family: monospace;
-              }
-            </style>
-            <label class="depInclude"><input type="checkbox" data-type="dependencies" checked /><code>dependencies</code></label>
-            <label class="depInclude"><input type="checkbox" data-type="devDependencies" /><code>devDependencies</code> (<span style="color: red">&xrarr;</span>)</label>
-            <label class="depInclude"><input type="checkbox" data-type="peerDependencies" /><code>peerDependencies</code> (<span style="color: green">&xrarr;</span>)</label>
-            <!-- It looks like NPM omits these, even if provided by module authors? 
-              <label class="depInclude"><input type="checkbox" data-type="optionalDependencies" /><code>optionalDependencies</code> (<span>- - &rarr;</span>)</label>
-              <label class="depInclude"><input type="checkbox" data-type="optionalDevDependencies" /><code>optionalDevDependencies</code>(<span style="color: red">- - &rarr;</span>)</label>
-            -->
-          </div>
-          <label style="display:block"><input type="checkbox" id="colorize" />Colorize by <a href="https://github.com/npms-io/npms-analyzer" target="_blank">npms.io score</a></label>
-          <label style="display:block"><input type="checkbox" id="busFactor" />Show modules with 0-1 maintainer</label>
-        </section>
-        <section class="dependencies">
-          <h2>Dependencies<span class="material-icons"></span></h2>
-        </section>
-        <section class="maintainers">
-          <h2>Maintainers<span class="material-icons"></span></h2>
-        </section>
-        <section>
-          <h2>Licenses<span class="material-icons"></span></h2>
-          <div class="licenses"></div>
-          <div id="chart">
-          </div>
-        </section>
-      </div>
-
-      <div class="pane" id="pane-module">
-        <h2>Module</h2>
-        <section class="description">
-          <h2>Description<span class="material-icons"></span></h2>
-        </section>
-        <section class="stats">
-          <h2>Stats<span class="material-icons"></span></h2>
-        </section>
-        <section>
-          <h2>package.json<span class="material-icons"></span></h2>
-          <pre class="json"></pre>
-        </section>
-      </div>
-
-      <div class="pane open" id="pane-info">
-        <p>
-        Enter NPM module name here <i class="material-icons">arrow_upward</i> to see the dependency graph.  To graph multiple modules separate names with commas (e.g. <a href="?q=mocha, chalk, rimraf">"mocha, chalk, rimraf"</a>).
-        </p>
-        <div id="drop_target" style="text-align: center">
-					... or drop a <code>package.json</code> file here
-				</div>
-        <div id="info-footer">
-          <div id="copyright">
-            &copy; Robert Kieffer, 2020  MIT License
-            <a id="github" target="_blank" href="https://github.com/broofa/npmgraph">GitHub</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="errlog" />
-  </body>
+  <body class="theme-lite"></body>
 </html>
 
 
@@ -156,33 +71,33 @@ gtag('js', new Date());
 gtag('config', window.GA_TRACKING_ID);
 </script>
 
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/viz.js/1.8.0/viz-lite.js"></script>
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.18/c3.js"></script>
+<script src="/vendor/d3.min.js"></script>
+<script src="/vendor/d3-hierarchy.v1.min.js"></script>
+<script async src="/vendor/viz-lite.js"></script>
+<script async src="/vendor/c3.js"></script>
 
 <script type="module" src="js/index.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
-  // Detect ES6 module loading failures.  `indexLoaded` should get set by
-  // index.js, otherwise we assume the client doesn't support ES6 imports and
-  // show an appropriate message
-  if (!window.indexLoaded) {
-    const ua = navigator.userAgent;
-    let msg = 'This app requires ES6 module support';
-    if (/Edge/.test(ua)) {
-      msg += '.  Please enable <a target="_blank" href="https://blogs.windows.com/msedgedev/2016/05/17/es6-modules-and-beyond/">Experimental Javascript Features</a>';
-    } else if (/Firefox/.test(ua)) {
-      msg += '.  Please make sure you have <code>dom.moduleScripts.enabled = true</code> in <a href="https://support.mozilla.org/en-US/kb/about-config-editor-firefox#w_opening-aboutconfig" target="_blank">the Advanced Settings</a>';
-    } else {
-      msg += '. Please make sure you\'re using the latest version of Edge, Safari, Chrome, or Firefox.';
-    }
+  // Detect load failure.  `indexLoaded` gets set by index.js if it loads properly,
+  // otherwise there must have been an error.
+  if (window.indexLoaded) return;
 
-    bugsnagClient.notify(Error('ES6 imports failed'));
+  const body = document.body;
+  Object.assign(body.style, {
+    // Image from https://www.redbubble.com/people/JonThomson/shop
+    background: 'bottom right no-repeat url(/images/fail_giraffe.png)',
+    backgroundSize: '15em auto',
+    display: 'inherit',
+  });
 
-    const body = document.body;
-    body.innerHTML = msg;
-    body.style.margin = '1em';
-    body.style.textAlign = 'center';
-  }
+  body.innerHTML = `<div style="margin: 4em 20em 0 4em; text-shadow: 0 0 5px white">
+    <h1>Well this is awkward</h1>
+    <p>
+    Something's not working right.  It's probably an issue with this site but  make sure you're using a recent version of Chrome, Firefox, Safari, or Edge, just in case.
+    </p><p>
+    Otherwise... well... this error has been reported and will hopefully be fixed soon, so please try again later.
+    </p>
+  `.replace(/\n\s*\n/g, '<br style="line-height: 150%" />');
 });
 </script>
