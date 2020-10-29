@@ -2,9 +2,10 @@ import { html, useState, useContext, useEffect } from '../vendor/preact.js';
 import { AppContext } from './App.js';
 import { Pane, Section, Fix, Tags, Tag } from './Inspector.js';
 import { $, simplur } from './util.js';
+import Toggle from './Toggle.js';
 
 function DepInclude({ type, ...props }) {
-  const [depIncludes, setDepIncludes] = useContext(AppContext).depIncludes;
+  const { depIncludes: [depIncludes, setDepIncludes] } = useContext(AppContext);
 
   let arrow = null;
   switch (type) {
@@ -12,14 +13,14 @@ function DepInclude({ type, ...props }) {
     case 'peerDependencies': arrow = html`(<span style="color: green">${'\u{27f6}'}</span>)`; break;
   }
 
-  function toggle(e) {
-    setDepIncludes(e.currentTarget.checked ? [type, ...depIncludes] : depIncludes.filter(t => type != t));
+  function toggle(checked) {
+    setDepIncludes(checked ? [type, ...depIncludes] : depIncludes.filter(t => type != t));
   }
 
   return html`
     <label class="depInclude">
-      <input type="checkbox" checked=${depIncludes.includes(type)} onClick=${toggle}/>
-      <code>${type}</code> ${arrow}
+      <${Toggle} style=${{ marginRight: '1em' }} checked=${depIncludes.includes(type)} onChange=${toggle} />
+      <code>${type} ${arrow}</code>
     </label>
   `;
 }
@@ -27,6 +28,7 @@ function DepInclude({ type, ...props }) {
 export default function GraphPane({ graph }) {
   const compareEntryKey = ([a], [b]) => a < b ? -1 : a > b ? 1 : 0;
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
+  const { colorize: [colorize, setColorize] } = useContext(AppContext);
 
   const dependencies = {};
   const maintainers = {};
@@ -70,21 +72,24 @@ export default function GraphPane({ graph }) {
 
   const x = html`
     <${Pane}>
-      <${Section}>
         Include:
         <${DepInclude} type="dependencies" />
         <${DepInclude} type="devDependencies" />
         <${DepInclude} type="peerDependencies" />
 
-        <label style="display:block"><input type="checkbox" id="colorize" /><${Fix} /> Colorize by <a href="https://github.com/npms-io/npms-analyzer" target="_blank">npms.io score</a></label>
-        <label style="display:block"><input type="checkbox" id="busFactor" /><${Fix} /> Show modules with 0-1 maintainer</label>
-      <//>
+        <label style="display:block; margin: 1em 0">
+          <${Toggle} style=${{ marginRight: '1em' }} checked=${colorize} onChange=${(v) => setColorize(v)} />
+          Colorize by npms.io score
+        </label>
+    
+        <${Tag} title='Modules with <= 1 maintainer' name='bus' />
 
       <${Section} title=${simplur`${graph.size} Module[|s]`}>
         <${Tags}>
           ${
             Object.entries(dependencies)
-              .map(([name, count]) => html`<${Tag} text=${name} type='module' count=${count} />`)
+              .sort(compareEntryKey)
+              .map(([name, count]) => html`<${Tag} name=${name} type='module' count=${count} />`)
           }
         <//>
       <//>
@@ -94,7 +99,7 @@ export default function GraphPane({ graph }) {
           ${
             Object.entries(maintainers)
             .sort(compareEntryKey)
-            .map(([, { name, email, count }]) => html`<${Tag} text=${name} type='maintainer' count=${count} gravatar=${email} />`)
+            .map(([, { name, email, count }]) => html`<${Tag} name=${name} type='maintainer' count=${count} gravatar=${email} />`)
           }
         <//>
       <//>
@@ -105,7 +110,7 @@ export default function GraphPane({ graph }) {
             Object.entries(licenses)
             .sort(compareEntryValue)
             .reverse()
-            .map(([name, count]) => html`<${Tag} text=${name} type='license' count=${count} />`)
+            .map(([name, count]) => html`<${Tag} name=${name} type='license' count=${count} />`)
           }
         <//>
         <div id="chart" />

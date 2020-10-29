@@ -1,10 +1,46 @@
 /* global bugsnagClient */
 
 export const report = {
-  error: err => bugsnagClient.notify(err, { severity: 'error' }),
-  warn: err => bugsnagClient.notify(err, { severity: 'warn' }),
-  info: err => bugsnagClient.notify(err, { severity: 'info' })
+  error(err) {
+    bugsnagClient.notify(err, { severity: 'error' });
+  },
+  warn(err) {
+    bugsnagClient.notify(err, { severity: 'warn' });
+  },
+  info(err) {
+    bugsnagClient.notify(err, { severity: 'info' });
+  }
 };
+
+const UNITS = [
+  [18, 'E'],
+  [15, 'P'],
+  [12, 'T'],
+  [9, 'G'],
+  [6, 'M'],
+  [3, 'k'],
+  [0, ''],
+  [-3, 'm'],
+  [-6, '\xb5'],
+  [-9, 'n'],
+  [-12, 'p'],
+  [-15, 'f'],
+  [-18, 'a']
+];
+
+export function human(v, suffix = '', sig = 0) {
+  const { pow, log10, floor, round } = Math;
+  let exp = floor(log10(v));
+  const unit = UNITS.find(([n]) => n <= exp);
+
+  if (!unit) return `0${suffix}`;
+
+  v /= pow(10, unit[0]);
+  exp = floor(log10(v)) + 1;
+  v = exp < sig ? round(v * pow(10, sig - exp)) / pow(10, sig - exp) : round(v);
+
+  return `${v}${unit[1]}${suffix}`;
+}
 
 /**
  * DOM maniulation methods
@@ -17,11 +53,6 @@ export function $(...args) {
 class ElementSet extends Array {
   get element() {
     return this[0];
-  }
-
-  forEach(...args) {
-    super.forEach(...args);
-    return this;
   }
 
   on(...args) {
@@ -46,6 +77,10 @@ class ElementSet extends Array {
     return this.forEach(el => el.remove());
   }
 
+  contains(el) {
+    return this.find(n => n.contains(el));
+  }
+
   get innerText() {
     return this.element.innerText;
   }
@@ -65,6 +100,7 @@ class ElementSet extends Array {
   appendChild(nel) {
     if (typeof (nel) == 'string') nel = document.createTextNode(nel);
     return this.forEach((el, i) => {
+      if (i > 0) console.log('CLINGINSL');
       el.appendChild(i > 0 ? nel : nel.cloneNode(true));
     });
   }
@@ -112,7 +148,7 @@ $.parse = function(markup) {
  * moment) does not support sending a request body because we don't (yet) need
  * that feature.
  */
-export function ajax(method, url) {
+export function ajax(method, url, body) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
@@ -128,15 +164,25 @@ export function ajax(method, url) {
     };
 
     xhr.open(method, url);
-    xhr.send();
+
+    if (body && typeof (body) != 'string') {
+      xhr.setRequestHeader('Accept', 'application/json');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify(body));
+    } else if (body) {
+      xhr.send(body);
+    } else {
+      xhr.send();
+    }
   });
 }
 
-export function tagify(type, tag) {
+export function tagify(type = 'tag', tag) {
   return type + '-' + tag.replace(/\W/g, '_').toLowerCase();
 }
 
 export function tagElement(el, type, ...tags) {
+  tags = tags.map(String); // Stringify all tags
   tags = tags.filter(t => t).map(t => tagify(type, t));
   el.classList.add(...tags);
 }
@@ -198,61 +244,4 @@ export function simplur(strings, ...exps) {
   }
 
   return result.join('');
-}
-
-export function prettyStringify(val, _tagName = 'span') {
-  let type = typeof (val);
-  if (val === null) type = 'null';
-  if (Array.isArray(val)) type = 'array';
-  switch (type) {
-    case 'undefined':
-      return;
-
-    case 'array': {
-      const doc = document.createDocumentFragment();
-
-      const ol = $.create('ol', { class: 'json-array' });
-      val.forEach((v, i, arr) => {
-        const el = prettyStringify(v);
-        if (!el) return;
-        const li = $.create('li');
-        $.append(li, el, i != arr.length - 1 ? ',' : '');
-        ol.append(li);
-      });
-
-      $.append(doc, '[', ol, ']');
-
-      return doc;
-    }
-
-    case 'object': {
-      const doc = document.createDocumentFragment();
-
-      const ul = $.create('ul', { class: 'json-object' });
-      Object.entries(val).forEach(([k, val], i, arr) => {
-        const el = prettyStringify(val);
-        if (!el) return;
-
-        const li = $.create('li');
-        $.append(li,
-          $.create('span', { className: 'json-key', innerText: k }),
-          ':',
-          el,
-          i != arr.length ? ',' : ''
-        );
-        if (i != arr.length - 1) $.append(li, ',');
-        ul.append(li);
-      });
-
-      $.append(doc, '{', ul, '}');
-
-      return doc;
-    }
-
-    default:
-      return $.create(_tagName, {
-        className: `json-${type}`,
-        innerText: JSON.stringify(val)
-      });
-  }
 }

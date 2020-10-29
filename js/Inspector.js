@@ -5,6 +5,7 @@ import md5 from '../vendor/md5.js';
 import ModulePane from './ModulePane.js';
 import GraphPane from './GraphPane.js';
 import InfoPane from './InfoPane.js';
+import { selectTag } from './Graph.js';
 
 export function Fix() {
   return html`<span style=${{ fontWeight: 'bold', color: 'red' }}>FIX!</span>`;
@@ -35,8 +36,9 @@ export function Tags({ children, style, ...props }) {
   </div>`;
 }
 
-export function Tag({ type, text, count = 0, gravatar, ...props }) {
-  const title = count < 2 ? text : `${text}(${count})`;
+export function Tag({ type, name, title = name, count = 0, gravatar, ...props }) {
+  if (count > 1) title += ` (${count})`;
+
   let img = null;
   if (gravatar) {
     const hash = md5(gravatar)
@@ -45,7 +47,8 @@ export function Tag({ type, text, count = 0, gravatar, ...props }) {
     img = html`<img src="https://www.gravatar.com/avatar/${hash}?s=32" />`;
   }
 
-  return html`<div className="tag ${type} bright-hover" data-tag=${tagify(type, title)}>${img}${title}</div>`;
+  return html`<div className="tag ${type} bright-hover" title=${title}
+    onClick=${() => selectTag(tagify(type, name))}>${img}${title}</div>`;
 }
 
 function Tab({ active, children, ...props }) {
@@ -53,13 +56,12 @@ function Tab({ active, children, ...props }) {
 }
 
 export default function Inspector({ className, ...props }) {
-  const context = useContext(AppContext);
   const {
     query: [query, setQuery],
     pane: [pane, setPane],
     module: [module],
     graph: [graph]
-  } = context;
+  } = useContext(AppContext);
 
   let paneComponent;
   switch (pane) {

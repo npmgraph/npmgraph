@@ -6,6 +6,14 @@ import * as semver from '../vendor/semver.js';
 const _requestCache = {};
 const stats = { active: 0, complete: 0 };
 
+// Inject a module directly into the request cache (used for module file uploads)
+export function cacheModule(module) {
+  const path = `${module.name.replace(/\//g, '%2F')}`;
+  _requestCache[path] = Promise.resolve(module);
+
+  return path;
+}
+
 // fetch module url, caching results (in memory for the time being)
 function fetchModule(name, version) {
   const isScoped = name.startsWith('@');
@@ -68,7 +76,14 @@ function fetchModule(name, version) {
     }
 
     return body;
-  });
+  })
+    .catch(err => ({
+      stub: true,
+      name,
+      version,
+      maintainers: [],
+      error: err
+    }));
 }
 
 const _moduleCache = {};

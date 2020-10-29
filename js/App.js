@@ -30,6 +30,7 @@ export default function App() {
     query: useState(query),
     module: useState([]),
     graph: useState([]),
+    colorize: useState(false),
     depIncludes: useState(['dependencies'])
   };
 

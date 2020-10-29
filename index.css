@@ -26,6 +26,11 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+p {
+  line-height: 1.5em;
+}
+
 h2 {
   font-size: 14pt;
   border-radius: var(--rad_sm);
@@ -76,7 +81,10 @@ body {
   flex: 0 0 32em;
 }
 
-label {display: block;}
+label {
+  display: block;
+  margin: .3em 0;
+}
 
 summary {
   position: -webkit-sticky;
@@ -88,8 +96,6 @@ summary {
   outline: none;
   cursor: pointer;
 }
-
-details > label {margin-top: 1em;}
 
 .material-icons {
   font-size: inherit;
@@ -108,7 +114,7 @@ details > label {margin-top: 1em;}
 }
 .loader > .inner {
   height:4px;
-  background-color: var(--text);
+  background-color: red;
 }
 
 #graph {
@@ -118,14 +124,14 @@ details > label {margin-top: 1em;}
   user-select: none;
 }
 
-.graph-controls {
+#graph-controls {
   display: flex;
   position: fixed;
   bottom: 1em;
   left: 1em;
   cursor: default;
 }
-.graph-controls button {
+#graph-controls button {
   display: inline-block;
   font-size: 1.8em;
   line-height: 1em;
@@ -149,7 +155,6 @@ details > label {margin-top: 1em;}
 
 .depInclude  {
   padding-left: 1em;
-  font-family: monospace;
 }
 
 #inspector .tag {
@@ -200,22 +205,33 @@ details > label {margin-top: 1em;}
 }
 
 .pane {
+  flex-grow: 1;
+  width: 32em;
+  padding: .5em 1em;
   color: var(--text);
   background-color: var(--bg0);
   box-sizing: border-box;
-  border-radius: var(--rad_lg);
-  width: 32em;
-}
-.pane {
-  flex-grow: 1;
-  padding: .5em 1em;
+  border-radius: var(--rad_lg) 0 0 var(--rad_lg);
   overflow-y: auto;
-  overflow-x: hidden;}
+  overflow-x: hidden;
+}
 
-.stats th {text-align: left; vertical-align: top}
-.stats td {text-align: left; vertical-align: top}
-.stats .rank {border: solid 1px #ccc; width: 200px}
-.stats .rank div {background-color: var(--bg0); text-align: right}
+.bundle-item {
+  position: absolute;
+  display: grid;
+  align-content: center;
+  box-sizing: border-box;
+  cursor: default;
+  text-align: center;
+  border-radius: var(--rad_sm);
+  background-color: var(--bg1);
+  overflow: hidden;
+}
+.bundle-item > span {
+  font-weight: bold;
+  font-size: 115%;
+  color: rgba(0, 0, 0, .5)
+}
 
 svg {
   fill: #666;
@@ -279,7 +295,7 @@ footer {
     display: none;
   }
 
-  .graph-controls {
+  #graph-controls {
     display: none;
   }
 }

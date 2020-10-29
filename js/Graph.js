@@ -1,6 +1,6 @@
 import { html, useState, useEffect, useContext } from '../vendor/preact.js';
 import { AppContext } from './App.js';
-import { $, tagElement, entryFromKey, report, getDependencyEntries } from './util.js';
+import { $, tagElement, entryFromKey, report, getDependencyEntries, ajax } from './util.js';
 import Store from './Store.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
@@ -23,7 +23,7 @@ async function modulesForQuery(query, depIncludes) {
   const graph = new Map();
 
   function _walk(module, level = 0) {
-    if (!module) return Promise.reject();
+    if (!module) return Promise.resolve(Error('Undefined module'));
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
@@ -31,7 +31,7 @@ async function modulesForQuery(query, depIncludes) {
     }
 
     // Skip modules we've already seen
-    if (graph.has(module.key)) return Promise.resolve();
+    if (module && graph.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
     const depEntries = getDependencyEntries(module, depIncludes, level);
@@ -41,19 +41,23 @@ async function modulesForQuery(query, depIncludes) {
     graph.set(module.key, info);
 
     return Promise.all(
-      depEntries.map(([name, version, type]) =>
-        Store.getModule(name, version)
-          .then(module =>
-            _walk(module, level + 1)
-              .then(() => ({ module, type }))
-          )
-      )
+      depEntries.map(([name, version, type]) => {
+        return Store.getModule(name, version)
+          .then(module => {
+            // console.log('Walked ', name, version);
+            return _walk(module, level + 1)
+              .then(() => ({ module, type }));
+          });
+      })
     )
       .then(dependencies => info.dependencies = dependencies);
   }
 
   // Walk dependencies of each module in the query
-  return Promise.all(query.map(async(name) => _walk(await Store.getModule(name))))
+  return Promise.all(query.map(async(name) => {
+    const m = await Store.getModule(name);
+    return m && _walk(m);
+  }))
     .then(() => graph);
 }
 
@@ -148,8 +152,8 @@ function download(type) {
 }
 
 function downloadPng() {
-  const svg = $('svg');
-  const data = $('svg').outerHTML;
+  const svg = $('#graph svg')[0];
+  const data = svg.outerHTML;
   const vb = svg.getAttribute('viewBox').split(' ');
 
   const canvas = $.create('canvas');
@@ -170,9 +174,9 @@ function downloadPng() {
 }
 
 function downloadSvg() {
-  alert('Note: Make sure you have the "Roboto Condensed" font installed, available at https://fonts.google.com/specimen/Roboto+Condensed.');
+  alert('Note: SVG downloads use the "Roboto Condensed" font, available at https://fonts.google.com/specimen/Roboto+Condensed.');
 
-  const svgData = $('svg').outerHTML;
+  const svgData = $('#graph svg')[0].outerHTML;
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const svgUrl = URL.createObjectURL(svgBlob);
   generateLinkToDownload('svg', svgUrl);
@@ -188,14 +192,22 @@ function generateLinkToDownload(extension, link) {
   document.body.removeChild(downloadLink);
 }
 
-function selectTag(tag) {
+export function selectTag(tag) {
   // If tag (element) is already selected, do nothing
   if (tag && tag.classList && tag.classList.contains('selected')) return;
 
+  // Unselect everything
   $('svg .node').forEach(el => el.classList.remove('selected'));
+
+  if (!tag) return;
+
+  // Select applicable elements
   if (typeof (tag) == 'string') {
-    $(`svg .node.${tag}`).forEach((el, i) => el.classList.add('selected'));
-  } else if (tag) {
+    $(`svg .node.${tag}`).forEach((el, i) => {
+      el.classList.add('selected');
+      if (i == 0) el.scrollIntoView();
+    });
+  } else {
     tag.classList.add('selected');
   }
 }
@@ -211,7 +223,7 @@ function Loader({ complete, total, ...props }) {
 
 function GraphControls() {
   return html`
-    <div className="graph-controls" >
+    <div id="graph-controls" >
       <button onClick=${() => zoom(1)} title="zoom (fit width)" class="material-icons" style="border-radius: 3px 0 0 3px">swap_horiz</button>
       <button onClick=${() => zoom(0)} title="zoom (1:1)" class="material-icons" style="border-width: 1px 0px; border-radius: 0">search</button>
       <button onClick=${() => zoom(2)} title="zoom (fit height)" class="material-icons" style="border-radius: 0 3px 3px 0">swap_vert</button>
@@ -223,6 +235,7 @@ function GraphControls() {
 export default function Graph() {
   const {
     query: [query],
+    colorize: [colorize],
     depIncludes: [depIncludes],
     pane: [, setPane],
     module: [, setModule],
@@ -230,9 +243,10 @@ export default function Graph() {
   } = useContext(AppContext);
 
   const [loadStats, setLoadStats] = useState(null);
-  const [zoom, setZoom] = useState(1);
 
   async function handleGraphClick(event) {
+    if ($('#graph-controls').contains(event.srcElement)) return;
+
     const el = $.up(event.srcElement, e => e.classList.contains('node'));
 
     selectTag(el);
@@ -241,8 +255,6 @@ export default function Graph() {
 
     setModule(module);
     setPane(module ? 'module' : 'graph');
-
-    // Inspector.toggle(false);
   }
 
   useEffect(async() => {
@@ -260,53 +272,73 @@ export default function Graph() {
     const markup = renderGraph(graph);
 
     // Compose SVG markup
-    const svg = new DOMParser().parseFromString(markup, 'text/html').querySelector('svg');
+    let svg = new DOMParser().parseFromString(markup, 'text/html').querySelector('svg');
     $(svg, 'g title').remove();
 
     // Round up viewbox
     svg.setAttribute('viewBox', svg.getAttribute('viewBox').split(' ').map(Math.ceil).join(' '));
 
-    $(svg, 'g.node').forEach(async el => {
-      const key = $(el, 'text').element.textContent;
-      if (!key) return;
+    await Promise.all(
+      $(svg, 'g.node').map(async el => {
+        const key = $(el, 'text').element.textContent;
+        if (!key) return;
 
-      const moduleName = key.replace(/@[\d.]+$/, '');
-      if (moduleName) {
-        tagElement(el, 'module', moduleName);
-      } else {
-        report.warn(Error(`Bad replace: ${key}`));
-      }
+        const moduleName = key.replace(/@[\d.]+$/, '');
+        if (moduleName) {
+          tagElement(el, 'module', moduleName);
+        } else {
+          report.warn(Error(`Bad replace: ${key}`));
+        }
 
-      const m = await Store.getModule(...entryFromKey(key));
-      const pkg = m.package;
-      if (pkg.maintainers.length < 2) {
-        el.classList.add('bus'); // Module maintainer might get hit by bus :-o
-      }
+        const m = await Store.getModule(...entryFromKey(key));
+        const pkg = m.package;
+        if (pkg.maintainers.length < 2) {
+          // Tag modules that are at risk of being orphaned if something happens to
+          // the maintainer (e.g. gets run over by a bus)
+          el.classList.add('tag-bus');
+        }
 
-      if (pkg.stub) {
-        el.classList.add('stub');
-      } else {
-        tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
-        tagElement(el, 'license', m.licenseString || 'Unspecified');
-      }
-    });
+        if (pkg.stub) {
+          el.classList.add('stub');
+        } else {
+          tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
+          tagElement(el, 'license', m.licenseString);
+        }
+      })
+    );
 
     $('#graph').appendChild(svg);
+    svg = $('svg').element;
+
+    if (!colorize) {
+      for (const el of $(svg, 'g.node path')) {
+        el.style.fill = '';
+      }
+    } else {
+      const packageNames = [...graph.values()].map(v => v.module.package.name);
+      ajax('POST', 'https://api.npms.io/v2/package/mget', packageNames)
+        .then(res => {
+          // TODO: 'Need hang module names on svg nodes with data-module attributes
+          for (const el of $(svg, 'g.node')) {
+            const key = $(el, 'text').element.textContent;
+            if (!key) return;
+
+            const moduleName = key.replace(/@[\d.]+$/, '');
+            const score = res[moduleName]?.score?.final;
+
+            $(el, 'path').element.style.fill =
+              score ? `hsl(${Math.max(0, -20 + 160 * score).toFixed(0)}, 85%, 75%)` : '';
+          }
+        });
+    }
 
     setGraph(graph);
-    setPane('graph');
-
-    // zoom(1);
-
-    // Inspector.setGraph(modules);
-    // Inspector.setModule(modules);
-    // Inspector.showPane('pane-graph');
-    // Inspector.toggle(true);
+    setPane(graph.size ? 'graph' : 'info');
 
     return () => {
       delete Store.onRequest;
     };
-  }, [query, depIncludes]);
+  }, [query, depIncludes, colorize]);
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 

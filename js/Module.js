@@ -5,11 +5,12 @@ function parseGithubPath(s) {
   return s?.replace?.(/\.git$/, '');
 }
 
-export default class Module {
-  static key(name, version) {
-    return `${name}@${version}`;
-  }
+function key(name, version) {
+  version = /(\d+\.\d+\.\d+)/.test(version) && RegExp.$1;
+  return `${name}@${version}`;
+}
 
+export default class Module {
   constructor(pkg = {}) {
     if (!pkg?.maintainers) {
       pkg.maintainers = [];
@@ -24,7 +25,7 @@ export default class Module {
   }
 
   get key() {
-    return Module.key(this.package.name, this.version);
+    return key(this.package.name, this.version);
   }
 
   get version() {
@@ -70,7 +71,7 @@ export default class Module {
     // Legacy: license object?
     if (typeof (license) == 'object') license = license.type;
 
-    if (!license) return null;
+    if (!license) return undefined;
 
     // Strip outer ()'s (SPDX notation)
     return String(license).replace(/^\(|\)$/g, '');
