@@ -1,16 +1,16 @@
-import validate from './pjv.js';
-import { ajax } from './util.js';
+import validate from '../vendor/pjv.js';
 
 function parseGithubPath(s) {
   s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
-  return s && s.replace(/\.git$/, '');
+  return s?.replace?.(/\.git$/, '');
+}
+
+function key(name, version) {
+  version = /(\d+\.\d+\.\d+)/.test(version) && RegExp.$1;
+  return `${name}@${version}`;
 }
 
 export default class Module {
-  static key(name, version) {
-    return `${name}@${version}`;
-  }
-
   constructor(pkg = {}) {
     if (!pkg?.maintainers) {
       pkg.maintainers = [];
@@ -25,7 +25,7 @@ export default class Module {
   }
 
   get key() {
-    return Module.key(this.package.name, this.version);
+    return key(this.package.name, this.version);
   }
 
   get version() {
@@ -33,38 +33,28 @@ export default class Module {
     return version && (version.version || version);
   }
 
+  get npmLink() {
+    return `https://www.npmjs.com/package/${this.package.name}/v/${this.version}`;
+  }
+
+  get repoLink() {
+    const gh = this.githubPath;
+    return gh && `https://www.github.com/${gh}`;
+  }
+
+  get apiLink() {
+    return `https://registry.npmjs.cf/${this.package.name}/${this.version}`;
+  }
+
   get githubPath() {
     const pkg = this.package;
 
     for (const k of ['repository', 'homepage', 'bugs']) {
-      const path = parseGithubPath(pkg[k] && pkg[k].url);
+      const path = parseGithubPath(pkg[k]?.url);
       if (path) return path;
     }
 
     return null;
-  }
-
-  async getScores() {
-    if (!this.package._scores) {
-      let search;
-
-      try {
-        search = await ajax('GET', `https://api.npms.io/v2/package/${this.package.name}`);
-      } catch (err) {
-        console.error(err);
-        return;
-      }
-
-      const score = search.score;
-      this.package._scores = score ? {
-        final: score.final,
-        quality: score.detail.quality,
-        popularity: score.detail.popularity,
-        maintenance: score.detail.maintenance
-      } : null;
-    }
-
-    return this.package._scores;
   }
 
   get licenseString() {
@@ -81,7 +71,7 @@ export default class Module {
     // Legacy: license object?
     if (typeof (license) == 'object') license = license.type;
 
-    if (!license) return null;
+    if (!license) return undefined;
 
     // Strip outer ()'s (SPDX notation)
     return String(license).replace(/^\(|\)$/g, '');
