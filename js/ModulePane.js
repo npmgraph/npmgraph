@@ -3,10 +3,8 @@ import { Pane, Section, Tags, Tag, ExternalLink } from './Inspector.js';
 import { human, ajax, simplur, $ } from './util.js';
 
 function ScoreBar({ title, score, style }) {
-  const perc = score ? (score * 100).toFixed(0) + '%' : 'n/a';
-  const inner = !score ? html`<span style=${style}>Loading...</span>`
-    : score instanceof Error ? html`<span style=${style}>Unavailable</span>`
-      : html`<div style=${{
+  const perc = (score * 100).toFixed(0) + '%';
+  const inner = html`<div style=${{
         width: perc,
         textAlign: 'right',
         backgroundColor: `hsl(${(score * 120)}, 75%, 70%)`,
@@ -102,6 +100,9 @@ export default function ModulePane({ module, ...props }) {
 
   const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
 
+  const scores = npmsInfo?.detail || {};
+  if (npmsInfo) scores.final = npmsInfo.final;
+
   return html`
     <${Pane} ...${props}>
       <h2>${module?.key}</h2>
@@ -124,12 +125,18 @@ export default function ModulePane({ module, ...props }) {
       </${Section}>
 
       <${Section} title="NPMS.io Score">
-        <div style=${{ display: 'grid', gridTemplateColumns: 'auto 1fr', marginTop: '1em', rowGap: '1px' }}>
-          <${ScoreBar} style=${{ fontWeight: 'bold' }} title="Overall" score=${npmsInfo?.final || npmsInfo} />
-          <${ScoreBar} style=${{ fontSize: '.85em' }} title="Quality" score=${npmsInfo?.detail?.quality || npmsInfo} />
-          <${ScoreBar} style=${{ fontSize: '.85em' }} title="Popularity" score=${npmsInfo?.detail?.popularity || npmsInfo} />
-          <${ScoreBar} style=${{ fontSize: '.85em' }} title="Maintenance" score=${npmsInfo?.detail?.maintenance || npmsInfo} />
-        </div>
+        ${
+          !npmsInfo ? 'Loading'
+          : (npmsInfo instanceof Error) ? 'Unavailable'
+            : html`
+            <div style=${{ display: 'grid', gridTemplateColumns: 'auto 1fr', marginTop: '1em', rowGap: '1px' }}>
+              <${ScoreBar} style=${{ fontWeight: 'bold' }} title="Overall" score=${scores.final} />
+              <${ScoreBar} style=${{ fontSize: '.85em' }} title="Quality" score=${scores.quality} />
+              <${ScoreBar} style=${{ fontSize: '.85em' }} title="Popularity" score=${scores.popularity} />
+              <${ScoreBar} style=${{ fontSize: '.85em' }} title="Maintenance" score=${scores.maintenance} />
+            </div>
+            `
+        }
       </${Section}>
 
       <${Section} title=${simplur`${Object.entries(pkg?.maintainers).length} Maintainer[|s]`}>

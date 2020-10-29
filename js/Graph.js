@@ -332,6 +332,8 @@ export default function Graph() {
         });
     }
 
+    $('#graph svg .node')[0].scrollIntoView();
+
     setGraph(graph);
     setPane(graph.size ? 'graph' : 'info');
 

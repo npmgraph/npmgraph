@@ -248,9 +248,9 @@ g .node path {
 }
 g .selected > polygon,
 g .selected > path {
-  fill: #ddf;
+  fill: var(--bg1);
   stroke-width: 3;
-  stroke: #33c;
+  stroke: var(--highlight);
 }
 g .stub > polygon,
 g .stub > path {
