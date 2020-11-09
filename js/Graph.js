@@ -109,7 +109,7 @@ function renderGraph(graph) {
     .concat('}')
     .join('\n');
 
-  return Viz(dotDoc, {
+  return Viz(dotDoc, { // eslint-disable-line no-undef
     format: 'svg',
     scale: 1,
     totalMemory: 32 * 1024 * 1024 // See https://github.com/mdaines/viz.js/issues/89

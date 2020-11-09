@@ -24,6 +24,7 @@ function TreeMap({ data, style, ...props }) {
   useEffect(() => {
     const { clientWidth: w, clientHeight: h } = $('#treemap')[0], m = 1;
 
+    // eslint-disable-next-line no-undef
     const root = d3.hierarchy(data, ({ dependencySizes: nodes }) => {
       if (!nodes) return;
 
@@ -47,6 +48,7 @@ function TreeMap({ data, style, ...props }) {
       .sum(v => v.approximateSize)
       .sort((a, b) => b.value - a.value);
 
+    // eslint-disable-next-line no-undef
     d3.treemap()
       .size([w, h])
       .padding(0)(root);

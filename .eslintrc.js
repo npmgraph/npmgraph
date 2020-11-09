@@ -1,4 +1,5 @@
 module.exports = {
+  ignorePatterns: ['node_modules', 'vendor'],
   root: true,
   parser: 'babel-eslint',
   env: {

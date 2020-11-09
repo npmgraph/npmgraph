@@ -1,6 +1,6 @@
-import { html, useState, useContext, useEffect } from '../vendor/preact.js';
+import { html, useContext } from '../vendor/preact.js';
 import { AppContext } from './App.js';
-import { $, simplur, tagify } from './util.js';
+import { tagify } from './util.js';
 import md5 from '../vendor/md5.js';
 import ModulePane from './ModulePane.js';
 import GraphPane from './GraphPane.js';

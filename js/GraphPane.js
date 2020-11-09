@@ -1,6 +1,6 @@
-import { html, useState, useContext, useEffect } from '../vendor/preact.js';
+import { html, useContext, useEffect } from '../vendor/preact.js';
 import { AppContext } from './App.js';
-import { Pane, Section, Fix, Tags, Tag } from './Inspector.js';
+import { Pane, Section, Tags, Tag } from './Inspector.js';
 import { $, simplur } from './util.js';
 import Toggle from './Toggle.js';
 
