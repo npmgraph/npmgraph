@@ -82,7 +82,7 @@ class ElementSet extends Array {
   }
 
   get innerText() {
-    return this.element.innerText;
+    return this[0]?.innerText;
   }
 
   set innerText(str) {
@@ -90,7 +90,7 @@ class ElementSet extends Array {
   }
 
   get innerHTML() {
-    return this.element.innerHTML;
+    return this[0]?.innerHTML;
   }
 
   set innerHTML(str) {

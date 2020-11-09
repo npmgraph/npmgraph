@@ -117,7 +117,7 @@ function renderGraph(graph) {
 }
 
 function zoom(op) {
-  const svg = $('#graph svg').element;
+  const svg = $('#graph svg')[0];
   if (!svg) return;
 
   const vb = svg.getAttribute('viewBox').split(' ');
@@ -272,7 +272,7 @@ export default function Graph() {
     const markup = renderGraph(graph);
 
     // Compose SVG markup
-    let svg = new DOMParser().parseFromString(markup, 'text/html').querySelector('svg');
+    const svg = new DOMParser().parseFromString(markup, 'text/html').querySelector('svg');
     $(svg, 'g title').remove();
 
     // Round up viewbox
@@ -280,7 +280,7 @@ export default function Graph() {
 
     await Promise.all(
       $(svg, 'g.node').map(async el => {
-        const key = $(el, 'text').element.textContent;
+        const key = $(el, 'text')[0].textContent;
         if (!key) return;
 
         const moduleName = key.replace(/@[\d.]+$/, '');
@@ -308,31 +308,49 @@ export default function Graph() {
     );
 
     $('#graph').appendChild(svg);
-    svg = $('svg').element;
 
     if (!colorize) {
       for (const el of $(svg, 'g.node path')) {
         el.style.fill = '';
       }
     } else {
+      // Fetch npms data in batches < 250
       const packageNames = [...graph.values()].map(v => v.module.package.name);
-      ajax('POST', 'https://api.npms.io/v2/package/mget', packageNames)
-        .then(res => {
+      const reqs = [];
+
+      while (packageNames.length) {
+        const BATCH_SIZE = 200;
+        const batch = packageNames.slice(0, BATCH_SIZE);
+        packageNames.splice(0, BATCH_SIZE);
+        reqs.push(
+          ajax('POST', 'https://api.npms.io/v2/package/mget', batch)
+            .catch(console.error)
+        );
+      }
+
+      // Coallesce npms data.  Using .then() here because we don't want to block
+      Promise.all(reqs)
+        .then(resps => {
+          const res = resps.reduce((a, b) => {
+            if (b instanceof Error) return a;
+            return Object.assign(a, b);
+          }, {});
+
           // TODO: 'Need hang module names on svg nodes with data-module attributes
-          for (const el of $(svg, 'g.node')) {
-            const key = $(el, 'text').element.textContent;
+          for (const el of $('#graph svg g.node')) {
+            const key = $(el, 'text')[0].textContent;
             if (!key) return;
 
             const moduleName = key.replace(/@[\d.]+$/, '');
             const score = res[moduleName]?.score?.final;
 
-            $(el, 'path').element.style.fill =
+            $(el, 'path')[0].style.fill =
               score ? `hsl(${Math.max(0, -20 + 160 * score).toFixed(0)}, 85%, 75%)` : '';
           }
         });
     }
 
-    $('#graph svg .node')[0].scrollIntoView();
+    $('#graph svg .node')[0]?.scrollIntoView();
 
     setGraph(graph);
     setPane(graph.size ? 'graph' : 'info');
