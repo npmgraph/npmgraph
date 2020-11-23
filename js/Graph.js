@@ -117,7 +117,7 @@ function renderGraph(graph) {
 }
 
 function zoom(op) {
-  const svg = $('#graph svg').element;
+  const svg = $('#graph svg')[0];
   if (!svg) return;
 
   const vb = svg.getAttribute('viewBox').split(' ');
@@ -221,7 +221,7 @@ function Loader({ complete, total, ...props }) {
   `;
 }
 
-function GraphControls() {
+export function GraphControls() {
   return html`
     <div id="graph-controls" >
       <button onClick=${() => zoom(1)} title="zoom (fit width)" class="material-icons" style="border-radius: 3px 0 0 3px">swap_horiz</button>
@@ -232,7 +232,7 @@ function GraphControls() {
   `;
 }
 
-export default function Graph() {
+export default function Graph(props) {
   const {
     query: [query],
     colorize: [colorize],
@@ -280,7 +280,7 @@ export default function Graph() {
 
     await Promise.all(
       $(svg, 'g.node').map(async el => {
-        const key = $(el, 'text').element.textContent;
+        const key = $(el, 'text')[0].textContent;
         if (!key) return;
 
         const moduleName = key.replace(/@[\d.]+$/, '');
@@ -308,7 +308,7 @@ export default function Graph() {
     );
 
     $('#graph').appendChild(svg);
-    svg = $('svg').element;
+    svg = $('svg')[0];
 
     if (!colorize) {
       for (const el of $(svg, 'g.node path')) {
@@ -320,13 +320,13 @@ export default function Graph() {
         .then(res => {
           // TODO: 'Need hang module names on svg nodes with data-module attributes
           for (const el of $(svg, 'g.node')) {
-            const key = $(el, 'text').element.textContent;
+            const key = $(el, 'text')[0].textContent;
             if (!key) return;
 
             const moduleName = key.replace(/@[\d.]+$/, '');
             const score = res[moduleName]?.score?.final;
 
-            $(el, 'path').element.style.fill =
+            $(el, 'path')[0].style.fill =
               score ? `hsl(${Math.max(0, -20 + 160 * score).toFixed(0)}, 85%, 75%)` : '';
           }
         });

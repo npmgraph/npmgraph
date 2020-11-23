@@ -82,7 +82,7 @@ class ElementSet extends Array {
   }
 
   get innerText() {
-    return this.element.innerText;
+    return this[0]?.innerText;
   }
 
   set innerText(str) {
@@ -90,7 +90,7 @@ class ElementSet extends Array {
   }
 
   get innerHTML() {
-    return this.element.innerHTML;
+    return this[0]?.innerHTML;
   }
 
   set innerHTML(str) {
@@ -143,14 +143,17 @@ $.parse = function(markup) {
   return fragment;
 };
 
+export class AbortError extends Error {}
+
 /**
  * Simple ajax request support.  Supports different HTTP methods, but (for the
  * moment) does not support sending a request body because we don't (yet) need
  * that feature.
  */
 export function ajax(method, url, body) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
+  let xhr;
+  const p = new Promise((resolve, reject) => {
+    xhr = new XMLHttpRequest();
     xhr.onreadystatechange = () => {
       if (xhr.readyState < 4) return;
       if (xhr.status >= 200 && xhr.status < 300) {
@@ -162,6 +165,8 @@ export function ajax(method, url, body) {
         reject(err);
       }
     };
+
+    xhr.onabort = () => reject(new AbortError('XHR aborted'));
 
     xhr.open(method, url);
 
@@ -175,6 +180,10 @@ export function ajax(method, url, body) {
       xhr.send();
     }
   });
+
+  p.xhr = xhr;
+
+  return p;
 }
 
 export function tagify(type = 'tag', tag) {
