@@ -1,4 +1,4 @@
-import { html, useState, createContext } from '../vendor/preact.js';
+import { html, useState, createContext } from '/vendor/preact.js';
 
 import Inspector from './Inspector.js';
 import Graph from './Graph.js';

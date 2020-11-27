@@ -21,6 +21,7 @@ module.exports = {
     'one-var': 'off',
     'space-before-function-paren': ['error', 'never'],
     'no-mixed-operators': 'off',
-    eqeqeq: 'off'
+    eqeqeq: 'off',
+    'import/no-absolute-path': 'off'
   }
 };

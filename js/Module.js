@@ -1,4 +1,4 @@
-import validate from '../vendor/pjv.js';
+import validate from '/vendor/pjv.js';
 
 function parseGithubPath(s) {
   s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;

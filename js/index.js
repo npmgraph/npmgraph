@@ -1,6 +1,6 @@
 import Flash from './Flash.js';
 import App from './App.js';
-import { html, render } from '../vendor/preact.js';
+import { html, render } from '/vendor/preact.js';
 
 // Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;

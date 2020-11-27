@@ -1,4 +1,4 @@
-import { html, useState, useEffect } from '../vendor/preact.js';
+import { html, useState, useEffect } from '/vendor/preact.js';
 import { Pane, Section, Tags, Tag, ExternalLink } from './Inspector.js';
 import { human, ajax, simplur, $ } from './util.js';
 

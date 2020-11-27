@@ -1,7 +1,7 @@
 import { ajax, report } from './util.js';
 import Module from './Module.js';
 import Flash from './Flash.js';
-import * as semver from '../vendor/semver.js';
+import * as semver from '/vendor/semver.js';
 
 const _requestCache = {};
 const stats = { active: 0, complete: 0 };

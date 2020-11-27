@@ -1,4 +1,4 @@
-import { html } from '../vendor/preact.js';
+import { html } from '/vendor/preact.js';
 
 export default function({ checked = false, onChange, style, ...props }) {
   return html`<div style=${{

@@ -1,4 +1,5 @@
-import { html, useState, useContext, useEffect } from '../vendor/preact.js';
+import { c3 } from '/vendor/shims.js';
+import { html, useState, useContext, useEffect } from '/vendor/preact.js';
 import { AppContext } from './App.js';
 import { Pane, Section, Fix, Tags, Tag } from './Inspector.js';
 import { $, simplur } from './util.js';
@@ -64,7 +65,7 @@ export default function GraphPane({ graph }) {
       };
       config.data.columns = Object.entries(licenses)
         .sort(compareEntryValue);
-      c3.generate(config); // eslint-disable-line no-undef
+      c3.generate(config);
     } else {
       $('#chart').innerHTML = '';
     }
