@@ -1,4 +1,4 @@
-import { d3, Viz } from '/vendor/shims.js';
+import { d3 } from '/vendor/shims.js';
 import { html, useState, useEffect, useContext } from '/vendor/preact.js';
 import { AppContext } from './App.js';
 import { $, tagElement, entryFromKey, report, getDependencyEntries, ajax } from './util.js';
@@ -212,7 +212,6 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
   // Select edges
   if (selectEdges) {
     $('.edge title').forEach(title => {
-      const t = title.textContent;
       for (const el of els) {
         const key = el.dataset.moduleKey;
         if (title.textContent.indexOf(key) >= 0) {

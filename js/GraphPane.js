@@ -2,7 +2,7 @@ import { d3 } from '/vendor/shims.js';
 import { html, useContext, useEffect, useRef } from '/vendor/preact.js';
 import { AppContext } from './App.js';
 import { Pane, Section, Tags, Tag } from './Inspector.js';
-import { $, simplur } from './util.js';
+import { simplur } from './util.js';
 import Toggle from './Toggle.js';
 
 function DepInclude({ type, ...props }) {
