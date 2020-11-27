@@ -236,27 +236,43 @@ summary {
 svg {
   fill: #666;
 }
-g .node {
+g.node {
   user-select: text;
 }
-g .node * {
+g.node * {
   cursor: pointer;
 }
-g .node polygon,
-g .node path {
+g.node text {
+  fill: #444;
+}
+g.node path {
+  stroke: #444;
+}
+g.node path {
   fill: white;
 }
-g .selected > polygon,
-g .selected > path {
-  fill: var(--bg1);
+g.node.selected > path {
   stroke-width: 3;
   stroke: var(--highlight);
 }
-g .stub > polygon,
+g.node.selected > text {
+  fill: black;
+  font-weight: bold;
+}
 g .stub > path {
   stroke-dasharray: 4,4;
   stroke: #666;
 }
+
+g.edge.selected > path {
+  stroke-width: 2;
+  stroke: var(--highlight);
+}
+g.edge.selected > polygon {
+  stroke: var(--highlight);
+  fill: var(--highlight);
+}
+
 
 #drop_target {
   background-color: #ddd;

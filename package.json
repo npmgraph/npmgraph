@@ -8,7 +8,10 @@
   },
   "license": "MIT",
   "dependencies": {
-    "preact": "10.4.8"
+    "@hpcc-js/wasm": "0.3.14",
+    "install": "0.13.0",
+    "npm": "6.14.9",
+    "preact": "10.5.7"
   },
   "description": "Visualize NPM dependency graphs (public and private!)",
   "keywords": [

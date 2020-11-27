@@ -12,7 +12,7 @@ function key(name, version) {
 
 export default class Module {
   constructor(pkg = {}) {
-    if (!pkg?.maintainers) {
+    if (!pkg.maintainers) {
       pkg.maintainers = [];
     } else if (!Array.isArray(pkg.maintainers)) {
       pkg.maintainers = [pkg.maintainers];
@@ -25,7 +25,11 @@ export default class Module {
   }
 
   get key() {
-    return key(this.package.name, this.version);
+    return key(this.name, this.version);
+  }
+
+  get name() {
+    return this.package.name;
   }
 
   get version() {
@@ -34,7 +38,7 @@ export default class Module {
   }
 
   get npmLink() {
-    return `https://www.npmjs.com/package/${this.package.name}/v/${this.version}`;
+    return `https://www.npmjs.com/package/${this.name}/v/${this.version}`;
   }
 
   get repoLink() {
@@ -43,7 +47,7 @@ export default class Module {
   }
 
   get apiLink() {
-    return `https://registry.npmjs.cf/${this.package.name}/${this.version}`;
+    return `https://registry.npmjs.cf/${this.name}/${this.version}`;
   }
 
   get githubPath() {

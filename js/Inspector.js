@@ -48,7 +48,7 @@ export function Tag({ type, name, title = name, count = 0, gravatar, ...props })
   }
 
   return html`<div className="tag ${type} bright-hover" title=${title}
-    onClick=${() => selectTag(tagify(type, name))}>${img}${title}</div>`;
+    onClick=${() => selectTag(tagify(type, name), true, true)}>${img}${title}</div>`;
 }
 
 function Tab({ active, children, ...props }) {

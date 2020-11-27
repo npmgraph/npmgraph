@@ -1,6 +1,8 @@
-import { html, useState, useEffect, useContext } from '../vendor/preact.js';
+import { d3, Viz } from '/vendor/shims.js';
+import { html, useState, useEffect, useContext } from '/vendor/preact.js';
 import { AppContext } from './App.js';
 import { $, tagElement, entryFromKey, report, getDependencyEntries, ajax } from './util.js';
+
 import Store from './Store.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
@@ -41,13 +43,10 @@ async function modulesForQuery(query, depIncludes) {
     graph.set(module.key, info);
 
     return Promise.all(
-      depEntries.map(([name, version, type]) => {
-        return Store.getModule(name, version)
-          .then(module => {
-            // console.log('Walked ', name, version);
-            return _walk(module, level + 1)
-              .then(() => ({ module, type }));
-          });
+      depEntries.map(async([name, version, type]) => {
+        const module = await Store.getModule(name, version);
+        await _walk(module, level + 1);
+        return { module, type };
       })
     )
       .then(dependencies => info.dependencies = dependencies);
@@ -62,7 +61,7 @@ async function modulesForQuery(query, depIncludes) {
 }
 
 // Compose directed graph document (GraphViz notation)
-function renderGraph(graph) {
+function composeDOT(graph) {
   // Sort modules by [level, key]
   const entries = [...graph.entries()];
   entries.sort(([aKey, a], [bKey, b]) => {
@@ -87,8 +86,8 @@ function renderGraph(graph) {
     }
   }
 
-  const title = entries.filter(([, level]) => level == 0).map(m => m.package.name).join();
-  const dotDoc = [
+  const title = entries.filter(([, level]) => level == 0).map(m => m.name).join();
+  return [
     'digraph {',
     'rankdir="LR"',
     'labelloc="t"',
@@ -108,12 +107,6 @@ function renderGraph(graph) {
     )
     .concat('}')
     .join('\n');
-
-  return Viz(dotDoc, {
-    format: 'svg',
-    scale: 1,
-    totalMemory: 32 * 1024 * 1024 // See https://github.com/mdaines/viz.js/issues/89
-  });
 }
 
 function zoom(op) {
@@ -192,23 +185,45 @@ function generateLinkToDownload(extension, link) {
   document.body.removeChild(downloadLink);
 }
 
-export function selectTag(tag) {
+export function selectTag(tag, selectEdges = false, scroll = false) {
   // If tag (element) is already selected, do nothing
   if (tag && tag.classList && tag.classList.contains('selected')) return;
 
-  // Unselect everything
+  // Unselect nodes and edges
   $('svg .node').forEach(el => el.classList.remove('selected'));
+  $('svg .edge').forEach(el => el.classList.remove('selected'));
 
   if (!tag) return;
 
-  // Select applicable elements
+  let els;
+
   if (typeof (tag) == 'string') {
-    $(`svg .node.${tag}`).forEach((el, i) => {
-      el.classList.add('selected');
-      if (i == 0) el.scrollIntoView();
-    });
+    els = $(`svg .node.${tag}`);
   } else {
-    tag.classList.add('selected');
+    els = [tag];
+  }
+
+  // Select nodes
+  els.forEach((el, i) => {
+    el.classList.add('selected');
+    if (i == 0 && scroll) el.scrollIntoView();
+  });
+
+  // Select edges
+  if (selectEdges) {
+    $('.edge title').forEach(title => {
+      const t = title.textContent;
+      for (const el of els) {
+        const key = el.dataset.moduleKey;
+        if (title.textContent.indexOf(key) >= 0) {
+          const edge = $.up(title, '.edge');
+          edge?.classList.add('selected');
+
+          // Move edge to end of child list so it's painted last
+          edge.parentElement.appendChild(edge.remove() || edge);
+        }
+      }
+    });
   }
 }
 
@@ -225,7 +240,7 @@ export function GraphControls() {
   return html`
     <div id="graph-controls" >
       <button onClick=${() => zoom(1)} title="zoom (fit width)" class="material-icons" style="border-radius: 3px 0 0 3px">swap_horiz</button>
-      <button onClick=${() => zoom(0)} title="zoom (1:1)" class="material-icons" style="border-width: 1px 0px; border-radius: 0">search</button>
+      <button onClick=${() => zoom(0)} title="zoom (1:1)" style="font-size: 1em; padding: 0 .5em; width: fit-content; border-width: 1px 0px; border-radius: 0">1:1</button>
       <button onClick=${() => zoom(2)} title="zoom (fit height)" class="material-icons" style="border-radius: 0 3px 3px 0">swap_vert</button>
       <button onClick=${() => download('svg')} title="download as SVG" class="material-icons" style="margin-left: 0.5em">cloud_download</button>
     </div>
@@ -238,86 +253,104 @@ export default function Graph(props) {
     colorize: [colorize],
     depIncludes: [depIncludes],
     pane: [, setPane],
+    inspectorOpen: [, setInspectorOpen],
     module: [, setModule],
     graph: [, setGraph]
   } = useContext(AppContext);
 
   const [loadStats, setLoadStats] = useState(null);
+  const [svg, setSvg] = useState();
 
   async function handleGraphClick(event) {
     if ($('#graph-controls').contains(event.srcElement)) return;
 
-    const el = $.up(event.srcElement, e => e.classList.contains('node'));
+    const el = $.up(event.srcElement, '.node');
 
-    selectTag(el);
+    selectTag(el, true);
 
-    const module = el && await Store.getModule(...entryFromKey(el.textContent.trim()));
+    const moduleName = $(el, 'title')?.textContent?.trim();
+    const module = moduleName && await Store.getModule(...entryFromKey(moduleName));
 
+    if (el) setInspectorOpen(true);
     setModule(module);
     setPane(module ? 'module' : 'graph');
   }
 
+  // Effect: Render graph
   useEffect(async() => {
-    $('#graph svg').remove();
+    let cancelled = false;
 
     setGraph([]);
     setModule([]);
 
     Store.onRequest = stats => {
+      if (cancelled) return;
       setLoadStats({ ...stats });
     };
 
     const graph = await modulesForQuery(query, depIncludes);
-    // TODO: Replace Viz with Dagre
-    const markup = renderGraph(graph);
 
-    // Compose SVG markup
-    let svg = new DOMParser().parseFromString(markup, 'text/html').querySelector('svg');
-    $(svg, 'g title').remove();
+    const graphviz = d3.select('#graph')
+      .graphviz({ zoom: false })
+      .renderDot(composeDOT(graph));
 
-    // Round up viewbox
-    svg.setAttribute('viewBox', svg.getAttribute('viewBox').split(' ').map(Math.ceil).join(' '));
+    graphviz.on('end', async() => {
+      if (cancelled) return;
 
-    await Promise.all(
-      $(svg, 'g.node').map(async el => {
-        const key = $(el, 'text')[0].textContent;
-        if (!key) return;
+      await Promise.all(
+        $('#graph g.node').map(async el => {
+          // Find module this node represents
+          const key = $(el, 'text')[0].textContent;
+          if (!key) return;
+          const m = await Store.getModule(...entryFromKey(key));
 
-        const moduleName = key.replace(/@[\d.]+$/, '');
-        if (moduleName) {
-          tagElement(el, 'module', moduleName);
-        } else {
-          report.warn(Error(`Bad replace: ${key}`));
-        }
+          if (m.name) {
+            tagElement(el, 'module', m.name);
+            el.dataset.moduleKey = m.key;
+            el.dataset.moduleName = m.name;
+            el.dataset.moduleVersion = m.version;
+          } else {
+            report.warn(Error(`Bad replace: ${key}`));
+          }
 
-        const m = await Store.getModule(...entryFromKey(key));
-        const pkg = m.package;
-        if (pkg.maintainers.length < 2) {
-          // Tag modules that are at risk of being orphaned if something happens to
-          // the maintainer (e.g. gets run over by a bus)
-          el.classList.add('tag-bus');
-        }
+          const pkg = m.package;
+          if (pkg.maintainers.length < 2) {
+            // Tag modules that are at risk of being orphaned if something happens to
+            // the maintainer (e.g. gets run over by a bus)
+            el.classList.add('tag-bus');
+          }
 
-        if (pkg.stub) {
-          el.classList.add('stub');
-        } else {
-          tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
-          tagElement(el, 'license', m.licenseString);
-        }
-      })
-    );
+          if (pkg.stub) {
+            el.classList.add('stub');
+          } else {
+            tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
+            tagElement(el, 'license', m.licenseString);
+          }
+        })
+      );
 
-    $('#graph').appendChild(svg);
-    svg = $('svg')[0];
+      setSvg($('#graph svg')[0]);
+    });
 
+    d3.select('#graph svg .node').node()?.scrollIntoView();
+
+    setGraph(graph);
+    setPane(graph.size ? 'graph' : 'info');
+
+    return () => cancelled = true;
+  }, [query, depIncludes]);
+
+  // Effect: Colorize nodes
+  useEffect(async() => {
+    let cancelled = false;
     if (!colorize) {
-      for (const el of $(svg, 'g.node path')) {
-        el.style.fill = '';
-      }
+      $(svg, 'g.node path').attr('style', null);
     } else {
-      const packageNames = [...graph.values()].map(v => v.module.package.name);
+      const packageNames = $('#graph g.node').map(el => el.dataset.moduleName);
       ajax('POST', 'https://api.npms.io/v2/package/mget', packageNames)
         .then(res => {
+          if (cancelled) return;
+
           // TODO: 'Need hang module names on svg nodes with data-module attributes
           for (const el of $(svg, 'g.node')) {
             const key = $(el, 'text')[0].textContent;
@@ -332,15 +365,8 @@ export default function Graph(props) {
         });
     }
 
-    $('#graph svg .node')[0].scrollIntoView();
-
-    setGraph(graph);
-    setPane(graph.size ? 'graph' : 'info');
-
-    return () => {
-      delete Store.onRequest;
-    };
-  }, [query, depIncludes, colorize]);
+    return () => cancelled = true;
+  }, [svg, colorize]);
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 

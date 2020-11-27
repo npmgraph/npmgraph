@@ -65,15 +65,14 @@ window.bugsnagClient = bugsnag({
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
-// HACK: Using var instead of const here, because const
 window.GA_TRACKING_ID = 'UA-6434483-2';
 gtag('js', new Date());
 gtag('config', window.GA_TRACKING_ID);
 </script>
 
-<script src="/vendor/d3.v6.js"></script>
-<script src="/vendor/d3-hierarchy.v1.min.js"></script>
-<script async src="/vendor/viz-lite.js"></script>
+<script src="/vendor/d3.v5.js"></script>
+<script src="/vendor/hpcc-js-wasm.js"></script>
+<script src="/vendor/d3-graphviz.js"></script>
 <script async src="/vendor/c3.js"></script>
 
 <script type="module" src="js/index.js"></script>

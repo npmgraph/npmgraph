@@ -47,14 +47,10 @@ export function human(v, suffix = '', sig = 0) {
  */
 export function $(...args) {
   const target = args.length == 2 ? args.shift() : document;
-  return ElementSet.from(target.querySelectorAll(...args));
+  return target ? ElementSet.from(target.querySelectorAll(...args)) : new ElementSet();
 }
 
 class ElementSet extends Array {
-  get element() {
-    return this[0];
-  }
-
   on(...args) {
     const els = [...this];
 
@@ -79,6 +75,24 @@ class ElementSet extends Array {
 
   contains(el) {
     return this.find(n => n.contains(el));
+  }
+
+  attr(k, v) {
+    if (arguments.length == 1) {
+      return this[0]?.getAttribute(k);
+    } else if (v === null) {
+      this.forEach(el => el.removeAttribute(k));
+    } else {
+      this.forEach(el => el.setAttribute(k, v));
+    }
+  }
+
+  get textContent() {
+    return this[0]?.textContent;
+  }
+
+  set textContent(str) {
+    return this.forEach(el => el.textContent = str);
   }
 
   get innerText() {
@@ -117,30 +131,14 @@ $.create = function(name, atts) {
   return el;
 };
 
-// Find parent (using optional test function)
-$.up = function(el, test) {
-  while (el && !test(el)) el = el.parentElement;
+// Find parent or self matching selector (or test function)
+$.up = function(el, sel) {
+  if (typeof (sel) === 'string') {
+    while (el && !el.matches(sel)) el = el.parentElement;
+  } else if (typeof (sel) === 'function') {
+    while (el && !sel(el)) el = el.parentElement;
+  }
   return el;
-};
-
-// Find all elements matching selector
-$.all = function(...args) {
-  return (args[0].querySelectorAll ? args.shift() : document)
-    .querySelectorAll(...args);
-};
-
-// Parse HTML into document fragment
-$.parse = function(markup) {
-  if (!this._worker) this._worker = document.createElement('div');
-
-  this._worker.innerHTML = markup;
-  const fragment = document.createDocumentFragment();
-  [...this._worker.childNodes].forEach(el => {
-    el.remove();
-    fragment.appendChild(el);
-  });
-
-  return fragment;
 };
 
 export class AbortError extends Error {}
