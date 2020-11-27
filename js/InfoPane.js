@@ -1,5 +1,4 @@
 import { html, useContext } from '../vendor/preact.js';
-import Module from './Module.js';
 import { Pane } from './Inspector.js';
 import { cacheModule } from './Store.js';
 import { AppContext } from './App.js';
