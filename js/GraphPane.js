@@ -4,6 +4,7 @@ import { AppContext } from './App.js';
 import { Pane, Section, Tags, Tag } from './Inspector.js';
 import { simplur } from './util.js';
 import Toggle from './Toggle.js';
+import { hslFor } from './Graph.js';
 
 function DepInclude({ type, ...props }) {
   const { depIncludes: [depIncludes, setDepIncludes] } = useContext(AppContext);
@@ -19,10 +20,9 @@ function DepInclude({ type, ...props }) {
   }
 
   return html`
-    <label class="depInclude">
-      <${Toggle} style=${{ marginRight: '1em' }} checked=${depIncludes.includes(type)} onChange=${toggle} />
+      <${Toggle}  class="depInclude" checked=${depIncludes.includes(type)} onChange=${toggle}>
       <code>${type} ${arrow}</code>
-    </label>
+      </Toggle>
   `;
 }
 
@@ -127,12 +127,32 @@ export default function GraphPane({ graph }) {
         <${DepInclude} type="devDependencies" />
         <${DepInclude} type="peerDependencies" />
 
-        <label style="display:block; margin: 1em 0">
-          <${Toggle} style=${{ marginRight: '1em' }} checked=${colorize} onChange=${(v) => setColorize(v)} />
-          Colorize by npms.io score
+        <label>
+          Colorize by:
+          <select onChange=${e => setColorize(e.target.value)}>
+            <option selected=${!colorize} value="">Nothing (uncolored)</option>
+
+            <option selected=${colorize == 'overall'} value="overall"> NPMS.io overall score</option>
+            <option selected=${colorize == 'quality'} value="quality"> NPMS.io quality score</option>
+            <option selected=${colorize == 'popularity'} value="popularity"> NPMS.io popularity score</option>
+            <option selected=${colorize == 'maintenance'} value="maintenance">NPMS.io maintenance score</option>
+
+            <option selected=${colorize == 'bus'} value="bus"># of maintainers</option>
+          </select>
         </label>
-    
-        <${Tag} title='Modules with <= 1 maintainer' name='bus' />
+        ${
+          colorize == 'bus' ? html`<div>
+          <span style=${{ color: hslFor(0) }}>${'\u2B24'}</span> = 1 maintainer,
+          <span style=${{ color: hslFor(1 / 3) }}>${'\u2B24'}</span> = 2,
+          <span style=${{ color: hslFor(2 / 3) }}>${'\u2B24'}</span> = 3, 
+          <span style=${{ color: hslFor(3 / 3) }}>${'\u2B24'}</span> = 4+ 
+          </div>`
+          : colorize ? html`<div>
+          <span style=${{ color: hslFor(0) }}>${'\u2B24'}</span> = 0%,
+          <span style=${{ color: hslFor(1 / 2) }}>${'\u2B24'}</span> = 50%,
+          <span style=${{ color: hslFor(2 / 2) }}>${'\u2B24'}</span> = 100% 
+          </div>` : null
+        }
 
       <${Section} title=${simplur`${graph.size} Module[|s]`}>
         <${Tags}>

@@ -7,7 +7,7 @@ export default function(o, bg = '#f80') {
 
   if (o instanceof Error) {
     el.classList.add('error');
-    el.innerText = o.message + '\n' + o.stack;
+    el.innerText = o.message;
   } else if (o instanceof Document) {
     el.append.apply(el, o.querySelector('body').children);
   } else if (o instanceof Element || o instanceof DocumentFragment) {

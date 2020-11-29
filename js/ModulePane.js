@@ -30,22 +30,23 @@ function TreeMap({ data, style, ...props }) {
 
       // Combine dependencies that are < 1% of bundle size
       const sum = nodes.reduce((sum, n) => sum + n.approximateSize, 0);
-      const misc = nodes.filter(n => n.approximateSize / sum < 0.01);
-      nodes = nodes.filter(n => n.approximateSize / sum >= 0.01);
+      nodes.forEach(n => n.percent = n.approximateSize / sum * 100);
+      const misc = nodes.filter(n => n.percent < 1);
+      nodes = nodes.filter(n => n.percent >= 1);
       if (misc.length == 1) {
         nodes.push(misc[0]);
       } else if (misc.length > 1) {
         nodes.push({
-          name: simplur`${misc.length} small modules`,
-          approximateSize: misc.reduce((sum, n) => sum + n.approximateSize, 0)
+          name: `${misc.length} small modules`,
+          percent: misc.reduce((sum, n) => sum + n.percent, 0)
         });
       }
 
-      nodes.sort((a, b) => b.approximateSize - a.approximateSize);
+      nodes.sort((a, b) => b.percent - a.percent);
 
       return nodes;
     })
-      .sum(v => v.approximateSize)
+      .sum(v => v.percent)
       .sort((a, b) => b.value - a.value);
 
     // eslint-disable-next-line no-undef
@@ -55,16 +56,16 @@ function TreeMap({ data, style, ...props }) {
 
     setLeaves(
       root.leaves().map((d, i, a) => {
-        const size = human(d.value, 'B');
+        const size = Math.round(d.value);
         const frac = (d.x1 - d.x0) * (d.y1 - d.y0) / (w * h);
-        return html`<div title=${`${d.data.name} (${size})`} className='bundle-item' style=${{
+        return html`<div title=${`${d.data.name} (${size}%)`} className='bundle-item' style=${{
           left: `${d.x0 + m / 2}px`,
           top: `${d.y0 + m / 2}px`,
           width: `${d.x1 - d.x0 - m}px`,
           height: `${d.y1 - d.y0 - m}px`,
           fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
           backgroundColor: `hsl(${(75 + (i / a.length) * 360) % 360}, 50%, 70%)`
-        }}>${d.data.name} <span>${size}</span></div>`;
+        }}>${d.data.name} <span>${size}%</span></div>`;
       })
     );
   }, [data]);
@@ -105,6 +106,15 @@ export default function ModulePane({ module, ...props }) {
   const scores = npmsInfo?.detail || {};
   if (npmsInfo) scores.final = npmsInfo.final;
 
+  function BundleStats({ bundleInfo, ...props }) {
+    return html`
+      <div style=${{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '.3em 1em' }}>
+      <span>Minified:</span><strong>${human(bundleInfo.size, 'B')}</strong>
+      <span>Gzipped:</span><strong>${human(bundleInfo.gzip, 'B')}</strong>
+      </div>
+    `;
+  }
+
   return html`
     <${Pane} ...${props}>
       <h2>${module?.key}</h2>
@@ -116,13 +126,14 @@ export default function ModulePane({ module, ...props }) {
       <${ExternalLink} href=${module.apiLink}>package.json</${ExternalLink}>
 
       <${Section} title="Bundle Size">
+        ${bundleInfo ? html`<${BundleStats} bundleInfo=${bundleInfo} />` : null}
         ${
           (!bundleInfo) ? html`<span>Loading ...</span>`
           : (bundleInfo instanceof Error) ? html`<span>Unavailable</span>`
-          : html`<${TreeMap} style=${{ height: '150px' }} data=${bundleInfo} />`
+          : html`<${TreeMap} style=${{ height: '150px', margin: '1em' }} data=${bundleInfo} />`
         }
         ${
-          (bundleInfo && !(bundleInfo instanceof Error)) ? html`<${ExternalLink} href=${bpUrl}>BundlePhobia</${ExternalLink}>` : null
+          (bundleInfo && !(bundleInfo instanceof Error)) ? html`Data source: <${ExternalLink} href=${bpUrl}>BundlePhobia</${ExternalLink}>` : null
         }
       </${Section}>
 

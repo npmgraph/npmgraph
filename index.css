@@ -6,15 +6,15 @@
   /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
   --text: #020303;
   --bg0: #f1f4f4;
-  --bg1: #c8d3a7;
+  --bg1: #d6d6d6;
   --highlight: #e65c00;
 }
 
 .theme-dark {
   /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
-  --text: #f1f4f4;
-  --bg0: #606c38;
-  --bg1: #283618;
+  --text: #f3f3f3;
+  --bg0: #7e7e7d;
+  --bg1: #383838;
   --highlight: #ff761a;
 }
 

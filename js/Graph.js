@@ -1,7 +1,7 @@
 import { d3 } from '/vendor/shims.js';
 import { html, useState, useEffect, useContext } from '/vendor/preact.js';
 import { AppContext } from './App.js';
-import { $, tagElement, entryFromKey, report, getDependencyEntries, ajax } from './util.js';
+import { $, tagElement, report, getDependencyEntries, ajax } from './util.js';
 
 import Store from './Store.js';
 
@@ -14,6 +14,10 @@ const EDGE_ATTRIBUTES = {
   // optionalDependencies: '[color=black style=dashed]',
   // optionalDevDependencies: '[color=red style=dashed]'
 };
+
+export function hslFor(perc) {
+  return `hsl(${(Math.max(0, Math.min(1, perc)) * 120).toFixed(0)}, 100%, 75%)`;
+}
 
 /**
  * Fetch the module dependency tree for a given query
@@ -213,8 +217,8 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
   if (selectEdges) {
     $('.edge title').forEach(title => {
       for (const el of els) {
-        const key = el.dataset.moduleKey;
-        if (title.textContent.indexOf(key) >= 0) {
+        const module = Store.cachedEntry(el.dataset.module);
+        if (title.textContent.indexOf(module?.key) >= 0) {
           const edge = $.up(title, '.edge');
           edge?.classList.add('selected');
 
@@ -267,8 +271,8 @@ export default function Graph(props) {
 
     selectTag(el, true);
 
-    const moduleName = $(el, 'title')?.textContent?.trim();
-    const module = moduleName && await Store.getModule(...entryFromKey(moduleName));
+    const key = $(el, 'title')?.textContent?.trim();
+    const module = key && Store.cachedEntry(key);
 
     if (el) setInspectorOpen(true);
     setModule(module);
@@ -297,28 +301,20 @@ export default function Graph(props) {
       if (cancelled) return;
 
       await Promise.all(
-        $('#graph g.node').map(async el => {
+        $('#graph g.node').map(el => {
           // Find module this node represents
           const key = $(el, 'text')[0].textContent;
           if (!key) return;
-          const m = await Store.getModule(...entryFromKey(key));
+          const m = Store.cachedEntry(key);
 
-          if (m.name) {
+          if (m?.name) {
             tagElement(el, 'module', m.name);
-            el.dataset.moduleKey = m.key;
-            el.dataset.moduleName = m.name;
-            el.dataset.moduleVersion = m.version;
+            el.dataset.module = m.key;
           } else {
             report.warn(Error(`Bad replace: ${key}`));
           }
 
           const pkg = m.package;
-          if (pkg.maintainers.length < 2) {
-            // Tag modules that are at risk of being orphaned if something happens to
-            // the maintainer (e.g. gets run over by a bus)
-            el.classList.add('tag-bus');
-          }
-
           if (pkg.stub) {
             el.classList.add('stub');
           } else {
@@ -344,8 +340,13 @@ export default function Graph(props) {
     let cancelled = false;
     if (!colorize) {
       $(svg, 'g.node path').attr('style', null);
+    } else if (colorize == 'bus') {
+      for (const el of $(svg, 'g.node')) {
+        const m = Store.cachedEntry(el.dataset.module);
+        $(el, 'path')[0].style.fill = hslFor((m?.package.maintainers.length - 1) / 3);
+      }
     } else {
-      const packageNames = $('#graph g.node').map(el => el.dataset.moduleName);
+      const packageNames = $('#graph g.node').map(el => Store.cachedEntry(el.dataset.module).name);
       ajax('POST', 'https://api.npms.io/v2/package/mget', packageNames)
         .then(res => {
           if (cancelled) return;
@@ -356,16 +357,21 @@ export default function Graph(props) {
             if (!key) return;
 
             const moduleName = key.replace(/@[\d.]+$/, '');
-            const score = res[moduleName]?.score?.final;
+            let score = res[moduleName]?.score;
+            switch (score && colorize) {
+              case 'overall': score = score.final; break;
+              case 'quality': score = score.detail.quality; break;
+              case 'popularity': score = score.detail.popularity; break;
+              case 'maintenance': score = score.detail.maintenance; break;
+            }
 
-            $(el, 'path')[0].style.fill =
-              score ? `hsl(${Math.max(0, -20 + 160 * score).toFixed(0)}, 85%, 75%)` : '';
+            $(el, 'path')[0].style.fill = score ? hslFor(score) : '';
           }
         });
     }
 
     return () => cancelled = true;
-  }, [svg, colorize]);
+  });
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 

@@ -6,6 +6,14 @@ import * as semver from '/vendor/semver.js';
 const _requestCache = {};
 const stats = { active: 0, complete: 0 };
 
+function moduleEntryFromKey(key) {
+  const MODULE_RE = /^(@?[^@]+)(?:@(.*))?$/;
+
+  if (!MODULE_RE.test(key)) console.log('Invalid key', key);
+
+  return RegExp.$2 ? [RegExp.$1, RegExp.$2] : [RegExp.$1];
+}
+
 // Inject a module directly into the request cache (used for module file uploads)
 export function cacheModule(module) {
   const path = `${module.name.replace(/\//g, '%2F')}`;
@@ -88,13 +96,29 @@ function fetchModule(name, version) {
 
 const _moduleCache = {};
 const Store = {
+  cachedEntry(key) {
+    if (!_moduleCache[key]) throw Error(`${key} is not cached`);
+    return _moduleCache[key];
+  },
+
+  getModuleForKey(key) {
+    return this.getModule(...moduleEntryFromKey(key));
+  },
+
   async getModule(name, version) {
     const cacheKey = `${name}@${version}`;
 
     if (!_moduleCache[cacheKey]) {
       _moduleCache[cacheKey] = fetchModule(name, version)
         .then(moduleInfo => {
-          return new Module(moduleInfo);
+          const module = new Module(moduleInfo);
+
+          // Cache based on arguments (memoize), but also cache based on name
+          // and version as declared in module info
+          _moduleCache[cacheKey] = module;
+          _moduleCache[`${module.name}@${module.version}`] = module;
+
+          return _moduleCache[cacheKey] = module;
         })
         .catch(err => {
           if ('status' in err) {
