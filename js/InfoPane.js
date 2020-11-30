@@ -30,6 +30,7 @@ export default function InfoPane() {
     });
 
     const module = JSON.parse(content);
+    if (!module?.name) module.name = '(Uploaded package)';
     const modulePath = cacheModule(module);
     setQuery([modulePath]);
     history.pushState({ module }, null, `${location.pathname}?q=${modulePath}`);

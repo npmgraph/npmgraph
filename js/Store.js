@@ -1,5 +1,5 @@
 import { fetchJSON, report } from './util.js';
-import Module from './Module.js';
+import Module, { moduleKey } from './Module.js';
 import Flash from './Flash.js';
 import * as semver from '/vendor/semver.js';
 
@@ -100,7 +100,7 @@ const Store = {
   },
 
   getModule(name, version) {
-    const cacheKey = `${name}@${version}`;
+    const cacheKey = moduleKey(name, version);
 
     if (!_moduleCache[cacheKey]) {
       _moduleCache[cacheKey] = fetchModule(name, version)

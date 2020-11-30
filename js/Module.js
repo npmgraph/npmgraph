@@ -5,6 +5,10 @@ function parseGithubPath(s) {
   return s?.replace?.(/\.git$/, '');
 }
 
+export function moduleKey(name, version) {
+  return version ? `${name}@${version}` : name;
+}
+
 export default class Module {
   static stub({ name, version, error }) {
     return {
@@ -30,7 +34,7 @@ export default class Module {
   }
 
   get key() {
-    return `${this.name}@${this.version}`;
+    return moduleKey(this.name, this.version);
   }
 
   get name() {
