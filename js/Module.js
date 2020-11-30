@@ -5,12 +5,17 @@ function parseGithubPath(s) {
   return s?.replace?.(/\.git$/, '');
 }
 
-function key(name, version) {
-  version = /(\d+\.\d+\.\d+)/.test(version) && RegExp.$1;
-  return `${name}@${version}`;
-}
-
 export default class Module {
+  static stub({ name, version, error }) {
+    return {
+      stub: true,
+      name,
+      version,
+      error,
+      maintainers: []
+    };
+  }
+
   constructor(pkg = {}) {
     if (!pkg.maintainers) {
       pkg.maintainers = [];
@@ -25,7 +30,7 @@ export default class Module {
   }
 
   get key() {
-    return key(this.name, this.version);
+    return `${this.name}@${this.version}`;
   }
 
   get name() {

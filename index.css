@@ -259,9 +259,12 @@ g.node.selected > text {
   fill: black;
   font-weight: bold;
 }
+g .stub {
+  opacity: 0.6;
+}
 g .stub > path {
   stroke-dasharray: 4,4;
-  stroke: #666;
+  stroke: #a00;
 }
 
 g.edge.selected > path {

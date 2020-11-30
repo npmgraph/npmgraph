@@ -1,6 +1,6 @@
 import { html, useState, useEffect } from '/vendor/preact.js';
 import { Pane, Section, Tags, Tag, ExternalLink } from './Inspector.js';
-import { human, ajax, simplur, $ } from './util.js';
+import { human, fetchJSON, simplur, $ } from './util.js';
 
 function ScoreBar({ title, score, style }) {
   const perc = (score * 100).toFixed(0) + '%';
@@ -83,6 +83,16 @@ export default function ModulePane({ module, ...props }) {
   const [bundleInfo, setBundleInfo] = useState(null);
   const [npmsInfo, setNpmsInfo] = useState(null);
 
+  if (pkg.stub) {
+    return html`
+      <${Pane}>
+        <h2>${module.name}</h2>
+        <p>Information and dependencies for this module cannot be displayed due to the following error:</p>
+        <p style=${{ color: 'red', fontWeight: 'bold' }}>${pkg.error?.message}</p>
+      </${Pane}>
+      `;
+  }
+
   const pn = pkg ? encodeURIComponent(`${pkg.name}@${pkg.version}`) : null;
 
   useEffect(async() => {
@@ -92,11 +102,11 @@ export default function ModulePane({ module, ...props }) {
 
     if (!pkg) return;
 
-    ajax('GET', `https://bundlephobia.com/api/size?package=${pn}`)
+    fetchJSON(`https://bundlephobia.com/api/size?package=${pn}`)
       .then(setBundleInfo)
       .catch(setBundleInfo);
 
-    ajax('GET', `https://api.npms.io/v2/package/${pkg.name}`)
+    fetchJSON(`https://api.npms.io/v2/package/${pkg.name}`)
       .then(search => setNpmsInfo(search.score))
       .catch(setNpmsInfo);
   }, [pkg]);
@@ -117,12 +127,12 @@ export default function ModulePane({ module, ...props }) {
 
   return html`
     <${Pane} ...${props}>
-      <h2>${module?.key}</h2>
+      <h2>${module.key}</h2>
 
       <p>${pkg?.description}</p>
 
       <${ExternalLink} href=${module.npmLink}>NPM</${ExternalLink}>
-      <${ExternalLink} href=${module.repoLink}>GitHub</${ExternalLink}>
+      ${module.repoLink ? html`<${ExternalLink} href=${module.repoLink}>GitHub</${ExternalLink}>` : null}
       <${ExternalLink} href=${module.apiLink}>package.json</${ExternalLink}>
 
       <${Section} title="Bundle Size">

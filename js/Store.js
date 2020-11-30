@@ -1,4 +1,4 @@
-import { ajax, report } from './util.js';
+import { fetchJSON, report } from './util.js';
 import Module from './Module.js';
 import Flash from './Flash.js';
 import * as semver from '/vendor/semver.js';
@@ -23,7 +23,7 @@ export function cacheModule(module) {
 }
 
 // fetch module url, caching results (in memory for the time being)
-function fetchModule(name, version) {
+async function fetchModule(name, version) {
   const isScoped = name.startsWith('@');
   const versionIsValid = semver.valid(version);
 
@@ -41,7 +41,9 @@ function fetchModule(name, version) {
     // Also, we can't fetch scoped modules at specific versions.  See https://goo.gl/dSMitm
     const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
-    req = _requestCache[reqPath] = ajax('GET', `https://registry.npmjs.cf/${reqPath}`);
+    req = _requestCache[reqPath] = fetchJSON(`https://registry.npmjs.cf/${reqPath}`)
+      // Errors get turned into stub modules, below
+      .catch(err => err);
 
     req.finally(() => {
       stats.active--;
@@ -53,45 +55,37 @@ function fetchModule(name, version) {
     Store.onRequest?.(stats);
   }
 
-  return req.then(body => {
-    if (!body) throw Error('No module info found');
-    if (typeof (body) != 'object') throw Error('Response was not an object');
-    if (body.unpublished) throw Error('Module is unpublished');
+  let body;
+  try {
+    body = await req;
+  } catch (err) {
+    body = err;
+  }
 
+  if (!body) {
+    body = Error('No info provided by NPM repo');
+  } else if (typeof (body) != 'object') {
+    body = Error('Data provided by NPM repo is not in the expected format');
+  } else if (body.unpublished) {
+    body = Error('Module is unpublished');
+  } else if (body.versions) {
     // If no explicit version was requested, find best semver match
     const versions = body?.versions;
-    if (versions) {
-      let resolvedVersion;
 
-      // Use latest dist tags, if available
-      if (!version && ('dist-tags' in body)) {
-        resolvedVersion = body['dist-tags'].latest;
-      }
+    // Use latest dist tags, if available, otherwise find most recent matching version
+    const resolvedVersion = body['dist-tags']?.latest ||
+      [...versions].reverse() // Order by most-recent first
+        .find(v => semver.satisfies(v, version || '*'));
 
-      if (!resolvedVersion) {
-        // Pick last version that satisfies semver
-        for (const v in versions) {
-          if (semver.satisfies(v, version || '*')) resolvedVersion = v;
-        }
-      }
+    body = versions[resolvedVersion] || Error(`No version matching "${version}" found`);
+  }
 
-      body = versions[resolvedVersion];
-    }
+  // Error = stub module containing the error
+  if (body instanceof Error) {
+    return Module.stub({ name, version, error: body });
+  }
 
-    // If we fail to find info, just create a stub entry
-    if (!body) {
-      body = { stub: true, name, version, maintainers: [] };
-    }
-
-    return body;
-  })
-    .catch(err => ({
-      stub: true,
-      name,
-      version,
-      maintainers: [],
-      error: err
-    }));
+  return body;
 }
 
 const _moduleCache = {};
@@ -105,7 +99,7 @@ const Store = {
     return this.getModule(...moduleEntryFromKey(key));
   },
 
-  async getModule(name, version) {
+  getModule(name, version) {
     const cacheKey = `${name}@${version}`;
 
     if (!_moduleCache[cacheKey]) {

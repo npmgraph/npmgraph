@@ -9,6 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "@hpcc-js/wasm": "0.3.14",
+    "http-errors": "1.8.0",
     "install": "0.13.0",
     "npm": "6.14.9",
     "preact": "10.5.7"

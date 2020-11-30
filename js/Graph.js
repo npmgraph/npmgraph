@@ -1,7 +1,7 @@
 import { d3 } from '/vendor/shims.js';
 import { html, useState, useEffect, useContext } from '/vendor/preact.js';
 import { AppContext } from './App.js';
-import { $, tagElement, report, getDependencyEntries, ajax } from './util.js';
+import { $, tagElement, report, getDependencyEntries, fetchJSON } from './util.js';
 
 import Store from './Store.js';
 
@@ -347,7 +347,13 @@ export default function Graph(props) {
       }
     } else {
       const packageNames = $('#graph g.node').map(el => Store.cachedEntry(el.dataset.module).name);
-      ajax('POST', 'https://api.npms.io/v2/package/mget', packageNames)
+
+      // Would love to be able to use fetch() api for this, but npms.io requires a POST for this :-/
+      fetchJSON('https://api.npms.io/v2/package/mget', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(packageNames)
+      })
         .then(res => {
           if (cancelled) return;
 

@@ -141,47 +141,24 @@ $.up = function(el, sel) {
   return el;
 };
 
+export class HttpError extends Error {
+  constructor(code) {
+    super();
+    this.code = code;
+  }
+}
 export class AbortError extends Error {}
 
 /**
- * Simple ajax request support.  Supports different HTTP methods, but (for the
- * moment) does not support sending a request body because we don't (yet) need
- * that feature.
+ * Wrapper for fetch() that returns JSON response object
+ * @param  {...any} args
  */
-export function ajax(method, url, body) {
-  let xhr;
-  const p = new Promise((resolve, reject) => {
-    xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState < 4) return;
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(JSON.parse(xhr.responseText));
-      } else {
-        const err = new Error(`${xhr.status}: ${url}`);
-        err.status = xhr.status;
-        err.url = url;
-        reject(err);
-      }
-    };
-
-    xhr.onabort = () => reject(new AbortError('XHR aborted'));
-
-    xhr.open(method, url);
-
-    if (body && typeof (body) != 'string') {
-      xhr.setRequestHeader('Accept', 'application/json');
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.send(JSON.stringify(body));
-    } else if (body) {
-      xhr.send(body);
-    } else {
-      xhr.send();
-    }
-  });
-
-  p.xhr = xhr;
-
-  return p;
+export function fetchJSON(...args) {
+  return window.fetch(...args)
+    .then(res => {
+      if (!res.ok) throw Error(`Fetch failed ${res.status}`);
+      return res.json();
+    });
 }
 
 export function tagify(type = 'tag', tag) {
