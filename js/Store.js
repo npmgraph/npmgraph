@@ -114,13 +114,7 @@ const Store = {
 
           return _moduleCache[cacheKey] = module;
         })
-        .catch(err => {
-          if ('status' in err) {
-            Flash(err.message);
-          } else {
-            report.error(err);
-          }
-        });
+        .catch(err => report.error(err));
     }
 
     return _moduleCache[cacheKey];

@@ -2,13 +2,13 @@
 
 export const report = {
   error(err) {
-    bugsnagClient.notify(err, { severity: 'error' });
+    bugsnagClient?.notify(err, { severity: 'error' });
   },
   warn(err) {
-    bugsnagClient.notify(err, { severity: 'warn' });
+    bugsnagClient?.notify(err, { severity: 'warn' });
   },
   info(err) {
-    bugsnagClient.notify(err, { severity: 'info' });
+    bugsnagClient?.notify(err, { severity: 'info' });
   }
 };
 

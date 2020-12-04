@@ -3,6 +3,7 @@
 <html lang="en" xml:lang="en" xmlns= "http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="Content-Language" content="en" />
     <meta http-equiv="Content-Security-Policy" content="
       default-src
@@ -46,19 +47,21 @@
 <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
 <script>
 const ENV = {}; // Set in deploy
-const pageStart = Date.now();
-window.bugsnagClient = bugsnag({
-  apiKey: '6a07b66124c696d0f685e1cf28312e41',
-  appVersion: ENV.appVersion || undefined,
-  releaseStage: ENV.releaseStage || 'development',
-  notifyReleaseStages: ['production'],
-  beforeSend: function(report) {
-    report.updateMetaData('page', {
-      location: String(location),
-      pageTime: Date.now() - pageStart
-    });
-  }
-});
+if (ENV.bugsnagKey){
+  const pageStart = Date.now();
+  window.bugsnagClient = bugsnag({
+    apiKey: ENV.bugsnagKey,
+    appVersion: ENV.appVersion || undefined,
+    releaseStage: ENV.releaseStage || 'development',
+    notifyReleaseStages: ['production'],
+    beforeSend: function(report) {
+      report.updateMetaData('page', {
+        location: String(location),
+        pageTime: Date.now() - pageStart
+      });
+    }
+  });
+}
 </script>
 
 <script src="https://www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script>
@@ -77,25 +80,43 @@ gtag('config', window.GA_TRACKING_ID);
 <script type="module" src="js/index.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
-  // Detect load failure.  `indexLoaded` gets set by index.js if it loads properly,
-  // otherwise there must have been an error.
+  // Detect load failure.  `indexLoaded` gets set by index.js if it loads properly
+  // If it's not set here, then a script failed to load (probably due to a parse
+  // error from some unsupported language feature).
   if (window.indexLoaded) return;
 
   const body = document.body;
   Object.assign(body.style, {
     // Image from https://www.redbubble.com/people/JonThomson/shop
-    background: 'bottom right no-repeat url(/images/fail_giraffe.png)',
-    backgroundSize: '15em auto',
+    background: 'url("/images/fail_giraffe.png") right 50% no-repeat',
+    backgroundColor: 'var(--bg1)',
+    backgroundSize: '30%',
     display: 'inherit',
   });
 
-  body.innerHTML = `<div style="margin: 4em 20em 0 4em; text-shadow: 0 0 5px white">
-    <h1>Well this is awkward</h1>
-    <p>
-    Something's not working right.  It's probably an issue with this site but make sure you're using a recent version of Chrome, Firefox, Safari, or Edge, just in case.
-    </p><p>
-    Otherwise... well... this error has been reported and will hopefully be fixed soon, so please try again later.
-    </p>
-  `.replace(/\n\s*\n/g, '<br style="line-height: 150%" />');
+  body.innerHTML = `<div style="    position: absolute;
+    background-color: var(--bg0);
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 35%;
+    border-radius: 2rem 2rem;
+    color: var(--text);
+    padding: 1em;
+    margin: 1em;">
+    <h1>Well this is awkward...</h1>
+    <p>Something's not working right.  Please make sure you're running the latest version of Chrome, Firefox, Safari, or Edge.</p>
+    <p>If that's not the problem, don't sweat it.  This error has been reported and will be fixed soon.</p>
+
+    <!-- text bubble arrow -->
+    <div style="position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 1.5rem solid var(--bg0);
+    border-top: 1rem solid transparent;
+    border-bottom: 1rem solid transparent;
+    bottom: 50%;
+    right: -1.5rem;"></div>
+  `;
 });
 </script>
