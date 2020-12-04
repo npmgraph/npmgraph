@@ -1,6 +1,5 @@
 import { fetchJSON, report } from './util.js';
 import Module, { moduleKey } from './Module.js';
-import Flash from './Flash.js';
 import * as semver from '/vendor/semver.js';
 
 const _requestCache = {};
