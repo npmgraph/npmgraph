@@ -9,7 +9,7 @@
     "configurations": [
       {
         "type": "node",
-        "runtimeExecutable": "/Users/kieffer/.nvm/versions/node/v14.8.0/bin/node",
+        "runtimeVersion": "14.15.3",
         "request": "launch",
         "name": "Launch Program",
         "program": "node_modules/.bin/static-server",

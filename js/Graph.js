@@ -346,17 +346,26 @@ export default function Graph(props) {
         $(el, 'path')[0].style.fill = hslFor((m?.package.maintainers.length - 1) / 3);
       }
     } else {
-      const packageNames = $('#graph g.node').map(el => Store.cachedEntry(el.dataset.module).name);
+      let packageNames = $('#graph g.node').map(el => Store.cachedEntry(el.dataset.module).name);
 
-      // Would love to be able to use fetch() api for this, but npms.io requires a POST for this :-/
-      fetchJSON('https://api.npms.io/v2/package/mget', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(packageNames)
-      })
+      // NPMS.io limits to 250 packages
+      const reqs = [];
+      const MAX_PACKAGES = 250;
+      while (packageNames.length) {
+        reqs.push(
+          fetchJSON('https://api.npms.io/v2/package/mget', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(packageNames.slice(0, MAX_PACKAGES))
+          })
+        );
+        packageNames = packageNames.slice(MAX_PACKAGES);
+      }
+
+      Promise.all(reqs)
+        .then(arrs => arrs.reduce((a, b) => ({ ...a, ...b })))
         .then(res => {
           if (cancelled) return;
-
           // TODO: 'Need hang module names on svg nodes with data-module attributes
           for (const el of $(svg, 'g.node')) {
             const key = $(el, 'text')[0].textContent;
