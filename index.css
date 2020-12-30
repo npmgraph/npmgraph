@@ -157,6 +157,15 @@ summary {
   padding-left: 1em;
 }
 
+.warning {
+  background: repeating-linear-gradient(-45deg,
+    rgba(128,128,0,.1),
+    rgba(128,128,0,.1) 10px,
+    rgba(0, 0, 0, .1) 10px,
+    rgba(0, 0, 0, .1) 20px
+  );
+}
+
 #inspector .tag {
   cursor: pointer;
   background-color: var(--bg1);
@@ -254,6 +263,9 @@ g.node path {
 g.node.selected > path {
   stroke-width: 3;
   stroke: var(--highlight);
+}
+g.node.warning > path {
+  fill: url(#warning); 
 }
 g.node.selected > text {
   fill: black;

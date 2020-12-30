@@ -61,6 +61,12 @@ if (ENV.bugsnagKey){
       });
     }
   });
+} else {
+  window.bugsnagClient = {
+    notify(err, {severity}) {
+      console[severity](err);
+    }
+  }
 }
 </script>
 

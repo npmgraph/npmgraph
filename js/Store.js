@@ -68,15 +68,16 @@ async function fetchModule(name, version) {
   } else if (body.unpublished) {
     body = Error('Module is unpublished');
   } else if (body.versions) {
-    // If no explicit version was requested, find best semver match
-    const versions = body?.versions;
+    // Available versions (most recent first)
+    const versions = Object.values(body.versions).reverse();
 
-    // Use latest dist tags, if available, otherwise find most recent matching version
-    const resolvedVersion = body['dist-tags']?.latest ||
-      [...versions].reverse() // Order by most-recent first
-        .find(v => semver.satisfies(v, version || '*'));
+    // Version we're looking for
+    version = version || body['dist-tags']?.latest || '*';
 
-    body = versions[resolvedVersion] || Error(`No version matching "${version}" found`);
+    // Resolve to specific version (use version specifier if provided, otherwise latest dist version, otherwise latest)
+    const resolvedVersion = versions.find(v => semver.satisfies(v.version, version));
+
+    body = resolvedVersion || Error(`No version matching "${version}" found`);
   }
 
   // Error = stub module containing the error
@@ -99,6 +100,12 @@ const Store = {
   },
 
   getModule(name, version) {
+    // Parse versioned-names (e.g. "less@1.2.3")
+    if (!version && /(.+)@(.*)/.test(name)) {
+      name = RegExp.$1;
+      version = RegExp.$2;
+    }
+
     const cacheKey = moduleKey(name, version);
 
     if (!_moduleCache[cacheKey]) {

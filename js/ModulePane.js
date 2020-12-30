@@ -129,6 +129,14 @@ export default function ModulePane({ module, ...props }) {
     <${Pane} ...${props}>
       <h2>${module.key}</h2>
 
+      ${
+        pkg.deprecated ? html`<div className="warning" style=${{ padding: '.5em', borderRadius: '.5em' }}>
+        <h2 style=${{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
+        ${pkg.deprecated}
+        </div>`
+        : null
+      }
+
       <p>${pkg?.description}</p>
 
       <${ExternalLink} href=${module.npmLink}>NPM</${ExternalLink}>
