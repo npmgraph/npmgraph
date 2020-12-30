@@ -297,8 +297,21 @@ export default function Graph(props) {
       .graphviz({ zoom: false })
       .renderDot(composeDOT(graph));
 
+    // Post-process rendered DOM
     graphviz.on('end', async() => {
       if (cancelled) return;
+
+      d3.select('#graph svg')
+        .insert('defs', ':first-child')
+        .html(`
+        <pattern id="warning"
+          width="12" height="12"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(45 50 50)">
+          <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
+          <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
+        </pattern>
+     `);
 
       await Promise.all(
         $('#graph g.node').map(el => {
@@ -306,6 +319,10 @@ export default function Graph(props) {
           const key = $(el, 'text')[0].textContent;
           if (!key) return;
           const m = Store.cachedEntry(key);
+
+          if (m?.package?.deprecated) {
+            el.classList.add('warning');
+          }
 
           if (m?.name) {
             tagElement(el, 'module', m.name);
