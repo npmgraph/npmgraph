@@ -24,29 +24,36 @@ function TreeMap({ data, style, ...props }) {
   useEffect(() => {
     const { clientWidth: w, clientHeight: h } = $('#treemap')[0], m = 1;
 
+    const { size } = data;
+
     // eslint-disable-next-line no-undef
     const root = d3.hierarchy(data, ({ dependencySizes: nodes }) => {
       if (!nodes) return;
 
+      const sum = nodes?.reduce((sum, n) => sum + n.approximateSize, 0);
+
+      // Normalize sizes to match total package size
+      // See https://github.com/pastelsky/bundlephobia/issues/417
+      nodes.forEach(node => node.approximateSize *= size / sum);
+
       // Combine dependencies that are < 1% of bundle size
-      const sum = nodes.reduce((sum, n) => sum + n.approximateSize, 0);
-      nodes.forEach(n => n.percent = n.approximateSize / sum * 100);
-      const misc = nodes.filter(n => n.percent < 1);
-      nodes = nodes.filter(n => n.percent >= 1);
+      const MIN_SIZE = sum * 0.01;
+      const misc = nodes.filter(n => n.approximateSize < MIN_SIZE);
+      nodes = nodes.filter(n => n.approximateSize >= MIN_SIZE);
       if (misc.length == 1) {
         nodes.push(misc[0]);
       } else if (misc.length > 1) {
         nodes.push({
           name: `${misc.length} small modules`,
-          percent: misc.reduce((sum, n) => sum + n.percent, 0)
+          approximateSize: misc.reduce((sum, n) => sum + n.approximateSize, 0)
         });
       }
 
-      nodes.sort((a, b) => b.percent - a.percent);
+      nodes.sort((a, b) => b.approximateSize - a.approximateSize);
 
       return nodes;
     })
-      .sum(v => v.percent)
+      .sum(v => v.approximateSize)
       .sort((a, b) => b.value - a.value);
 
     // eslint-disable-next-line no-undef
@@ -65,7 +72,7 @@ function TreeMap({ data, style, ...props }) {
           height: `${d.y1 - d.y0 - m}px`,
           fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
           backgroundColor: `hsl(${(75 + (i / a.length) * 360) % 360}, 50%, 70%)`
-        }}>${d.data.name} <span>${size}%</span></div>`;
+        }}>${d.data.name} <span>${human(size, 'B')}</span></div>`;
       })
     );
   }, [data]);
