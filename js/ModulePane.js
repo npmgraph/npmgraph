@@ -63,16 +63,16 @@ function TreeMap({ data, style, ...props }) {
 
     setLeaves(
       root.leaves().map((d, i, a) => {
-        const size = Math.round(d.value);
+        const size = human(d.value, 'B');
         const frac = (d.x1 - d.x0) * (d.y1 - d.y0) / (w * h);
-        return html`<div title=${`${d.data.name} (${size}%)`} className='bundle-item' style=${{
+        return html`<div title=${`${d.data.name} (${size})`} className='bundle-item' style=${{
           left: `${d.x0 + m / 2}px`,
           top: `${d.y0 + m / 2}px`,
           width: `${d.x1 - d.x0 - m}px`,
           height: `${d.y1 - d.y0 - m}px`,
           fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
           backgroundColor: `hsl(${(75 + (i / a.length) * 360) % 360}, 50%, 70%)`
-        }}>${d.data.name} <span>${human(size, 'B')}</span></div>`;
+        }}>${d.data.name} <span>${size}</span></div>`;
       })
     );
   }, [data]);
