@@ -42,34 +42,33 @@
   <body class="theme-lite"></body>
 </html>
 
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
 <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
 <script>
-const ENV = {}; // Set in deploy
-if (ENV.bugsnagKey){
-  const pageStart = Date.now();
-  window.bugsnagClient = bugsnag({
-    apiKey: ENV.bugsnagKey,
-    appVersion: ENV.appVersion || undefined,
-    releaseStage: ENV.releaseStage || 'development',
-    notifyReleaseStages: ['production'],
-    beforeSend: function(report) {
-      report.updateMetaData('page', {
-        location: String(location),
-        pageTime: Date.now() - pageStart
-      });
-    }
-  });
-} else {
-  window.bugsnagClient = {
-    notify(err, {severity}) {
-      console[severity](err);
+  const ENV = {}; // Values injected by deploy script
+  if (ENV.bugsnagKey){
+    const pageStart = Date.now();
+    window.bugsnagClient = bugsnag({
+      apiKey: ENV.bugsnagKey,
+      appVersion: ENV.appVersion || undefined,
+      releaseStage: ENV.releaseStage || 'development',
+      notifyReleaseStages: ['production'],
+      beforeSend: function(report) {
+        report.updateMetaData('page', {
+          location: String(location),
+          pageTime: Date.now() - pageStart
+        });
+      }
+    });
+  } else {
+    window.bugsnagClient = {
+      notify(err, {severity}) {
+        console[severity](err);
+      }
     }
   }
-}
 </script>
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
 <script src="https://www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script>
 <script>
 window.dataLayer = window.dataLayer || [];

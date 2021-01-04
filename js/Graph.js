@@ -375,12 +375,16 @@ export default function Graph(props) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(packageNames.slice(0, MAX_PACKAGES))
           })
+            .catch(err => {
+              console.error(err);
+              return null;
+            })
         );
         packageNames = packageNames.slice(MAX_PACKAGES);
       }
 
       Promise.all(reqs)
-        .then(arrs => arrs.reduce((a, b) => ({ ...a, ...b })))
+        .then(arrs => arrs.filter(a => a).reduce((a, b) => ({ ...a, ...b })))
         .then(res => {
           if (cancelled) return;
           // TODO: 'Need hang module names on svg nodes with data-module attributes
