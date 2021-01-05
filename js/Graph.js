@@ -313,33 +313,32 @@ export default function Graph(props) {
         </pattern>
      `);
 
-      await Promise.all(
-        $('#graph g.node').map(el => {
-          // Find module this node represents
-          const key = $(el, 'text')[0].textContent;
-          if (!key) return;
-          const m = Store.cachedEntry(key);
+      for (const el of $('#graph g.node')) {
+        // Find module this node represents
+        const key = $(el, 'text')[0].textContent;
+        if (!key) continue;
 
-          if (m?.package?.deprecated) {
-            el.classList.add('warning');
-          }
+        const m = Store.cachedEntry(key);
 
-          if (m?.name) {
-            tagElement(el, 'module', m.name);
-            el.dataset.module = m.key;
-          } else {
-            report.warn(Error(`Bad replace: ${key}`));
-          }
+        if (m?.package?.deprecated) {
+          el.classList.add('warning');
+        }
 
-          const pkg = m.package;
-          if (pkg.stub) {
-            el.classList.add('stub');
-          } else {
-            tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
-            tagElement(el, 'license', m.licenseString);
-          }
-        })
-      );
+        if (m?.name) {
+          tagElement(el, 'module', m.name);
+          el.dataset.module = m.key;
+        } else {
+          report.warn(Error(`Bad replace: ${key}`));
+        }
+
+        const pkg = m.package;
+        if (pkg.stub) {
+          el.classList.add('stub');
+        } else {
+          tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
+          tagElement(el, 'license', m.licenseString);
+        }
+      }
 
       setSvg($('#graph svg')[0]);
     });

@@ -20,6 +20,7 @@ module.exports = {
     'eol-last': ['error', 'never'],
     'no-var': ['error'],
     'one-var': 'off',
+    'multiline-ternary': 'off',
     'space-before-function-paren': ['error', 'never'],
     'no-mixed-operators': 'off',
     eqeqeq: 'off',
