@@ -18,6 +18,16 @@ export function ExternalLink({ href, children, target = 'npmgraph', className, s
   </a>`;
 }
 
+export function QueryLink({ query }) {
+  const { query: [, setQuery] } = useContext(AppContext);
+  if (!Array.isArray(query)) query = [query];
+  return html`<a href="#" onClick=${e => {
+    e.preventDefault();
+    setQuery(query);
+    history.pushState(null, null, `${location.pathname}?q=${query.join(',')}`);
+  }}>${query.join(',')}</a>`;
+}
+
 export function Section({ title, children, open = true, style, ...props }) {
   return html`
     <details open=${open}>
