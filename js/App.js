@@ -22,7 +22,7 @@ export default function App() {
   const context = {
     pane: useState('info'),
     inspectorOpen: useState(true),
-    query: useState(queryFromLocation),
+    query: useState(queryFromLocation()),
     module: useState([]),
     graph: useState([]),
     colorize: useState(false),

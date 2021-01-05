@@ -5,17 +5,27 @@ import * as semver from '/vendor/semver.js';
 const _requestCache = {};
 const stats = { active: 0, complete: 0 };
 
-function moduleEntryFromKey(key) {
-  const MODULE_RE = /^(@?[^@]+)(?:@(.*))?$/;
+export function init() {
+  // Reconstitute [uploaded] modules from sessionStorage
+  const { sessionStorage } = window;
+  for (let i = 0; i < sessionStorage.length; i++) {
+    try {
+      const module = JSON.parse(sessionStorage.getItem(sessionStorage.key(i)));
+      if (!module?.name) continue;
 
-  if (!MODULE_RE.test(key)) console.log('Invalid key', key);
-
-  return RegExp.$2 ? [RegExp.$1, RegExp.$2] : [RegExp.$1];
+      console.log('Restoring', module.name, module.version);
+      cacheModule(module);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }
 
 // Inject a module directly into the request cache (used for module file uploads)
 export function cacheModule(module) {
-  const path = `${module.name.replace(/\//g, '%2F')}`;
+  let { name, version } = module;
+  name = name.replace(/\//g, '%2F');
+  const path = version ? `${name}/${version}` : name;
   _requestCache[path] = Promise.resolve(module);
 
   return path;
@@ -95,16 +105,15 @@ const Store = {
     return _moduleCache[key];
   },
 
-  getModuleForKey(key) {
-    return this.getModule(...moduleEntryFromKey(key));
-  },
-
   getModule(name, version) {
     // Parse versioned-names (e.g. "less@1.2.3")
     if (!version && /(.+)@(.*)/.test(name)) {
       name = RegExp.$1;
       version = RegExp.$2;
     }
+
+    // Remove "git...#" repo URIs from version strings
+    if (version) version = version.replace(/git.*#/, '');
 
     const cacheKey = moduleKey(name, version);
 

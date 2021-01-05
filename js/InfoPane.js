@@ -1,10 +1,18 @@
-import { html, useContext } from '../vendor/preact.js';
-import { Pane } from './Inspector.js';
+import { html, useContext, useState } from '../vendor/preact.js';
+import { Pane, QueryLink } from './Inspector.js';
 import { cacheModule } from './Store.js';
 import { AppContext } from './App.js';
 
+// Get names of uploaded modules in session storage
+function getFileEntries() {
+  return Object.keys(window.sessionStorage)
+    .map(k => k.replace('/', '@').replace(/%2f/ig, '/'));
+}
+
 export default function InfoPane() {
   const { query: [, setQuery] } = useContext(AppContext);
+
+  const [recents, setRecents] = useState(getFileEntries());
 
   // Handle file drops
   const onDrop = async ev => {
@@ -30,10 +38,21 @@ export default function InfoPane() {
     });
 
     const module = JSON.parse(content);
-    if (!module?.name) module.name = '(Uploaded package)';
-    const modulePath = cacheModule(module);
-    setQuery([modulePath]);
-    history.pushState({ module }, null, `${location.pathname}?q=${modulePath}`);
+
+    if (!module?.name) module.name = '(upload)';
+    if (!module?.version) {
+      const d = new Date();
+      // Make semver string of form YYYY.MM.DD-HH:MM:SS.ddd
+      module.version = d.toISOString().replace(/-/g, '.').replace('T', '-');
+    }
+
+    // Stash upload in
+    const cacheKey = cacheModule(module);
+    window.sessionStorage.setItem(cacheKey, JSON.stringify(module));
+    const key = cacheKey.replace(/\//, '@');
+    setQuery([key]);
+    setRecents(getFileEntries());
+    history.pushState(null, null, `${location.pathname}?q=${key}`);
   };
 
   const onDragOver = ev => {
@@ -57,6 +76,18 @@ export default function InfoPane() {
         onDragLeave=${onDragLeave}
       >
         ... or drop a <code>package.json</code> file here
-      </div>
+        </div>
+        ${
+          recents.length ? html`<div  style=${{ textAlign: 'start' }}>
+            <p style=${{ marginTop: '1em' }}>Recently files:</p>
+            <ul>
+              ${recents.map(name => html`<li><${QueryLink} query=${name} /></li>`)}
+            </ul>
+          </div>
+          <div style=${{ fontSize: '85%', color: 'gray' }}>
+            (Dropped files do not leave your computer and are cleared when browser closes.)
+          </div>
+          ` : null
+        }
     </${Pane}>`;
 }
