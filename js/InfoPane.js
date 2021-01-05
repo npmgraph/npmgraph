@@ -79,7 +79,7 @@ export default function InfoPane() {
         </div>
         ${
           recents.length ? html`<div  style=${{ textAlign: 'start' }}>
-            <p style=${{ marginTop: '1em' }}>Recently files:</p>
+            <p style=${{ marginTop: '1em' }}>Recent files:</p>
             <ul>
               ${recents.map(name => html`<li><${QueryLink} query=${name} /></li>`)}
             </ul>
