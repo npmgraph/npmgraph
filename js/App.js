@@ -2,6 +2,7 @@ import { html, useState, createContext } from '/vendor/preact.js';
 
 import Inspector from './Inspector.js';
 import Graph from './Graph.js';
+import { useEffect } from '../vendor/preact.js';
 
 export const AppContext = createContext(null);
 
@@ -11,20 +12,35 @@ function Splitter({ onClick, isOpen }) {
   `;
 }
 
-export default function App() {
-  // Parse url query param, "q"
+// Parse url query param from browser location, "q"
+function queryFromLocation() {
   const q = /q=([^&]+)/.test(location.search) && RegExp.$1;
-  const query = q ? decodeURIComponent(q).split(/\s*,\s*/) : [];
+  return q ? decodeURIComponent(q).split(/\s*,\s*/) : [];
+}
 
+export default function App() {
   const context = {
     pane: useState('info'),
     inspectorOpen: useState(true),
-    query: useState(query),
+    query: useState(queryFromLocation),
     module: useState([]),
     graph: useState([]),
     colorize: useState(false),
     depIncludes: useState(['dependencies'])
   };
+
+  useEffect(() => {
+    function handlePopState() {
+      const { query: [, setQuery] } = context;
+      setQuery(queryFromLocation());
+    }
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   const [inspectorOpen, setInspectorOpen] = context.inspectorOpen;
   return html`

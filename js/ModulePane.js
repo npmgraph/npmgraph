@@ -1,6 +1,7 @@
-import { html, useState, useEffect } from '/vendor/preact.js';
+import { html, useState, useEffect, useContext } from '/vendor/preact.js';
 import { Pane, Section, Tags, Tag, ExternalLink } from './Inspector.js';
 import { human, fetchJSON, simplur, $ } from './util.js';
+import { AppContext } from './App.js';
 
 function ScoreBar({ title, score, style }) {
   const perc = (score * 100).toFixed(0) + '%';
@@ -87,6 +88,7 @@ export default function ModulePane({ module, ...props }) {
 
   if (!pkg) return html`<${Pane}>No module selected.  Click a module in the graph to see details.</${Pane}>`;
 
+  const { query: [, setQuery] } = useContext(AppContext);
   const [bundleInfo, setBundleInfo] = useState(null);
   const [npmsInfo, setNpmsInfo] = useState(null);
 
@@ -134,7 +136,15 @@ export default function ModulePane({ module, ...props }) {
 
   return html`
     <${Pane} ...${props}>
-      <h2>${module.key}</h2>
+      <h2>
+      <a href="#" style=${{ textDecoration: 'underline' }}  onClick=${e => {
+        e.preventDefault();
+        setQuery([module.key]);
+        history.pushState({ module }, null, `${location.pathname}?q=${module.key}`);
+      }}>
+      ${module.key}
+      </a>
+      </h2>
 
       ${
         pkg.deprecated ? html`<div className="warning" style=${{ padding: '.5em', borderRadius: '.5em' }}>
