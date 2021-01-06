@@ -193,6 +193,7 @@ summary {
 
 #tabs {
   flex-basis: auto;
+  flex-shrink: 0;
   margin-left: var(--rad_lg);
   display: flex;
   user-select: none;
