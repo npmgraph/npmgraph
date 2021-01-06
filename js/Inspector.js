@@ -11,7 +11,7 @@ export function Fix() {
   return html`<span style=${{ fontWeight: 'bold', color: 'red' }}>FIX!</span>`;
 }
 
-export function ExternalLink({ href, children, target = 'npmgraph', className, style, ...props }) {
+export function ExternalLink({ href, children, target = '_blank', className, style, ...props }) {
   return html`<a href=${href} className="bright-hover ${className}"  target=${target} style=${{ marginRight: '8px', ...style }} ...${props}>
   ${children}
   <span style=${{ marginLeft: '0px' }} class="material-icons">open_in_new</span>
