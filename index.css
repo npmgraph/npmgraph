@@ -50,11 +50,16 @@ body {
 
 #graph {
   flex-grow: 1;
+  height: 100vh;
+  overflow: auto;
+  position: relative;
+  user-select: none;
 }
 
 #splitter {
   display: flex;
   flex-basis: 1em;
+  height: 100vh;
   color: var(--text);
   background-color: var(--bg0);
   border-top-left-radius: var(--rad_lg);
@@ -70,7 +75,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  height: 100%;
+  height: 100vh;
   color: var(--text);
   background-color: var(--bg0);
   overflow: hidden;
@@ -115,13 +120,6 @@ summary {
 .loader > .inner {
   height:4px;
   background-color: red;
-}
-
-#graph {
-  height: 100%;
-  overflow: auto;
-  position: relative;
-  user-select: none;
 }
 
 #graph-controls {
