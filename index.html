@@ -44,7 +44,7 @@
 
 <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
 <script>
-  const ENV = {}; // Values injected by deploy script
+  const ENV = {appVersion: '0.0.0'}; // Values injected by deploy script
   if (ENV.bugsnagKey){
     const pageStart = Date.now();
     window.bugsnagClient = bugsnag({

@@ -112,13 +112,14 @@ export default function Inspector({ className, ...props }) {
       ${paneComponent}
 
       <footer>
-          ${'\xa9'} Robert Kieffer, 2020  MIT License
-          <${ExternalLink}
-            id="github"
-            className="bright-hover"
-            href="https://github.com/broofa/npmgraph">
-            GitHub
-          </${ExternalLink}>
+        <span style=${{ fontSize: '85%', opacity: '.5', marginRight: '1em' }}>v${ENV.appVersion}</span>
+        ${'\xa9'} Robert Kieffer, 2020  MIT License
+        <${ExternalLink}
+          id="github"
+          className="bright-hover"
+          href="https://github.com/broofa/npmgraph">
+          GitHub
+        </${ExternalLink}>
       </footer>
     </div>`;
 }
