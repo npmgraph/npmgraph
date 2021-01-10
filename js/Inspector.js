@@ -1,3 +1,5 @@
+/* global ENV */
+
 import { html, useContext } from '/vendor/preact.js';
 import { AppContext } from './App.js';
 import { tagify } from './util.js';
@@ -88,7 +90,7 @@ export default function Inspector({ className, ...props }) {
         <${Tab} active=${pane == 'info'} onClick=${() => setPane('info')}>${'\u{24d8}'}<//>
         <div style=${{ display: 'flex', alignItems: 'center' }}>
           <input
-            type="text" 
+            type="text"
             style=${{ marginLeft: '1em', padding: '4px 8px', border: 'none', borderRadius: '15px' }}
             value=${query.join(',')}
             onChange=${e => {
@@ -102,7 +104,7 @@ export default function Inspector({ className, ...props }) {
               history.replaceState(null, window.title, url);
 
               setQuery(names);
-            }} 
+            }}
             placeholder=${'\u{1F50D} \xa0Enter module name'}
             autofocus
           />

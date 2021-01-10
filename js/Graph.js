@@ -383,7 +383,7 @@ export default function Graph(props) {
       }
 
       Promise.all(reqs)
-        .then(arrs => arrs.filter(a => a).reduce((a, b) => ({ ...a, ...b })))
+        .then(arrs => arrs.filter(a => a).reduce((a, b) => ({ ...a, ...b }), {}))
         .then(res => {
           if (cancelled) return;
           // TODO: 'Need hang module names on svg nodes with data-module attributes
