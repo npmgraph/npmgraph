@@ -1,15 +1,23 @@
 /* global bugsnagClient */
 
-export const report = {
-  error(err) {
-    bugsnagClient?.notify(err, { severity: 'error' });
-  },
-  warn(err) {
-    bugsnagClient?.notify(err, { severity: 'warn' });
-  },
-  info(err) {
-    bugsnagClient?.notify(err, { severity: 'info' });
+export class HttpError extends Error {
+  constructor(code, message = `HTTP Error ${code}`) {
+    super(message);
+    this.code = code;
   }
+}
+
+function _report(severity, err) {
+  // HTTP errors are expected (e.g. if 3rd party service is down)
+  if (err instanceof HttpError) return;
+
+  bugsnagClient?.notify(err, { severity });
+}
+
+export const report = {
+  error: _report.bind(null, 'error'),
+  warn: _report.bind(null, 'warn'),
+  info: _report.bind(null, 'info')
 };
 
 const UNITS = [
@@ -115,7 +123,6 @@ class ElementSet extends Array {
   appendChild(nel) {
     if (typeof (nel) == 'string') nel = document.createTextNode(nel);
     return this.forEach((el, i) => {
-      if (i > 0) console.log('CLINGINSL');
       el.appendChild(i > 0 ? nel : nel.cloneNode(true));
     });
   }
@@ -125,9 +132,7 @@ class ElementSet extends Array {
 $.create = function(name, atts) {
   const el = document.createElement(name);
   if (atts) {
-    for (const k in Object.getOwnPropertyNames(atts)) {
-      el[k] = atts[k];
-    }
+    for (const k in atts) el[k] = atts[k];
   }
   return el;
 };
@@ -142,24 +147,52 @@ $.up = function(el, sel) {
   return el;
 };
 
-export class HttpError extends Error {
-  constructor(code) {
-    super();
-    this.code = code;
+/**
+ * Lite class for tracking async activity
+ */
+export class LoadActivity {
+  total = 0;
+  active = 0;
+
+  onChange = null;
+
+  get percent() {
+    return `${(1 - this.active / this.total) * 100}%`;
+  }
+
+  /**
+   * Start a loading task
+   * @param {String} title of task
+   * @returns {Function} function to call when task is complete
+   */
+  start(title) {
+    if (title) this.title = title;
+    this.total++;
+    this.active++;
+    this.onChange?.(this);
+    return () => {
+      this.active--;
+      if (!this.active) {
+        this.total = 0;
+        this.title = null;
+      }
+      this.onChange?.(this);
+    };
   }
 }
-export class AbortError extends Error {}
 
 /**
  * Wrapper for fetch() that returns JSON response object
  * @param  {...any} args
  */
 export function fetchJSON(...args) {
-  return window.fetch(...args)
+  const p = window.fetch(...args)
     .then(res => {
-      if (!res.ok) throw Error(`Fetch failed ${res.status}`);
+      if (!res.ok) throw new HttpError(res.status);
       return res.json();
     });
+
+  return p;
 }
 
 export function tagify(type = 'tag', tag) {
@@ -180,26 +213,6 @@ export function createTag(type, text, count = 0) {
   el.title = el.innerText = count < 2 ? text : `${text}(${count})`;
 
   return el;
-}
-
-export function getDependencyEntries(pkg, depIncludes, level = 0) {
-  pkg = pkg.package || pkg;
-
-  const deps = [];
-
-  for (const type of depIncludes) {
-    if (!pkg[type]) continue;
-
-    // Only do one level for non-"dependencies"
-    if (level > 0 && type != 'dependencies') continue;
-
-    // Get entries, adding type to each entry
-    const d = Object.entries(pkg[type]);
-    d.forEach(o => o.push(type));
-    deps.push(...d);
-  }
-
-  return deps;
 }
 
 export function simplur(strings, ...exps) {

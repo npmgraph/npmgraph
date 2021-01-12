@@ -1,4 +1,38 @@
-export default function(o, bg = '#f80') {
+import { html } from '/vendor/preact.js';
+
+export function Loader({ activity, ...props }) {
+  return html`
+    <div class="loader">
+      <div className="bg" />
+      ${activity.title} ...
+    </div>`;
+}
+
+export function Toggle({ checked = false, value = true, onChange, style, children, ...props }) {
+  return html`
+    <label style=${style} ...${props}>
+      <div onClick=${() => onChange(checked ? false : value)} style=${{
+          display: 'inline-block',
+          width: '4em',
+          backgroundColor: '#ccc',
+          borderRadius: '.5em',
+          marginRight: '.5em'
+        }}>
+        <div style=${{
+          width: '3em',
+          borderRadius: '.5em',
+          textAlign: 'center',
+          transition: '.15s',
+          marginLeft: checked ? '0' : '1em',
+          backgroundColor: checked ? '#090' : '#aaa',
+          color: '#fff'
+        }}>${checked ? 'On' : 'Off'}</div>
+      </div>
+      ${children}
+    </label> `;
+}
+
+export function Flash(o, bg = '#f80') {
   const SPACE = 10;
 
   const graph = document.querySelector('#graph');

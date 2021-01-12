@@ -114,12 +114,44 @@ summary {
   border-radius: var(--rad_sm);
 }
 
-.loader {
-  background-color: var(--bg0);
+@keyframes MOVE-BG {
+	from {transform: translateX(-56.57px);} /* sqrt(2) * gradient_width */
+	to {transform: translateX(0);}
 }
-.loader > .inner {
-  height:4px;
-  background-color: red;
+
+.loader {
+  position: absolute;
+  top: 33%;
+  left: 33%;
+  width: 33%;
+  z-index: 99;
+  overflow: hidden;
+  line-height: 2em;
+  font-weight: bold;
+  text-align: center;
+  color: var(--text);
+  background-color: var(--bg0);
+  border: solid 3px var(--highlight);
+  border-radius: 1em;
+}
+
+.loader .bg {
+  position: absolute;
+  z-index: -1;
+  width: calc(100% + 57px);
+  height: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0px,
+    transparent 20px,
+    var(--highlight) 20px,
+    var(--highlight) 40px 
+  );
+	
+  animation-name: MOVE-BG;
+	animation-duration: 1.6s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
 }
 
 #graph-controls {

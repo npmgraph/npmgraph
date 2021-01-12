@@ -1,9 +1,7 @@
 import { d3 } from '/vendor/shims.js';
 import { html, useState, useEffect, useContext } from '/vendor/preact.js';
-import { AppContext } from './App.js';
-import { $, tagElement, report, getDependencyEntries, fetchJSON } from './util.js';
-
-import Store from './Store.js';
+import { AppContext, store, activity } from './App.js';
+import { $, tagElement, report, fetchJSON } from './util.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -14,6 +12,26 @@ const EDGE_ATTRIBUTES = {
   // optionalDependencies: '[color=black style=dashed]',
   // optionalDevDependencies: '[color=red style=dashed]'
 };
+
+function getDependencyEntries(pkg, depIncludes, level = 0) {
+  pkg = pkg.package || pkg;
+
+  const deps = [];
+
+  for (const type of depIncludes) {
+    if (!pkg[type]) continue;
+
+    // Only do one level for non-"dependencies"
+    if (level > 0 && type != 'dependencies') continue;
+
+    // Get entries, adding type to each entry
+    const d = Object.entries(pkg[type]);
+    d.forEach(o => o.push(type));
+    deps.push(...d);
+  }
+
+  return deps;
+}
 
 export function hslFor(perc) {
   return `hsl(${(Math.max(0, Math.min(1, perc)) * 120).toFixed(0)}, 100%, 75%)`;
@@ -48,7 +66,7 @@ async function modulesForQuery(query, depIncludes) {
 
     return Promise.all(
       depEntries.map(async([name, version, type]) => {
-        const module = await Store.getModule(name, version);
+        const module = await store.getModule(name, version);
         await _walk(module, level + 1);
         return { module, type };
       })
@@ -58,7 +76,7 @@ async function modulesForQuery(query, depIncludes) {
 
   // Walk dependencies of each module in the query
   return Promise.all(query.map(async(name) => {
-    const m = await Store.getModule(name);
+    const m = await store.getModule(name);
     return m && _walk(m);
   }))
     .then(() => graph);
@@ -217,7 +235,7 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
   if (selectEdges) {
     $('.edge title').forEach(title => {
       for (const el of els) {
-        const module = Store.cachedEntry(el.dataset.module);
+        const module = store.cachedEntry(el.dataset.module);
         if (title.textContent.indexOf(module?.key) >= 0) {
           const edge = $.up(title, '.edge');
           edge?.classList.add('selected');
@@ -228,15 +246,6 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
       }
     });
   }
-}
-
-function Loader({ complete, total, ...props }) {
-  const perc = complete / total * 100;
-  return html`
-    <div className="loader" ...${props}>
-      <div className="inner" style=${{ width: `${perc}%` }} />
-    </div>
-  `;
 }
 
 export function GraphControls() {
@@ -261,7 +270,6 @@ export default function Graph(props) {
     graph: [, setGraph]
   } = useContext(AppContext);
 
-  const [loadStats, setLoadStats] = useState(null);
   const [svg, setSvg] = useState();
 
   async function handleGraphClick(event) {
@@ -272,7 +280,7 @@ export default function Graph(props) {
     selectTag(el, true);
 
     const key = $(el, 'title')?.textContent?.trim();
-    const module = key && Store.cachedEntry(key);
+    const module = key && store.cachedEntry(key);
 
     if (el) setInspectorOpen(true);
     setModule(module);
@@ -286,12 +294,9 @@ export default function Graph(props) {
     setGraph([]);
     setModule([]);
 
-    Store.onRequest = stats => {
-      if (cancelled) return;
-      setLoadStats({ ...stats });
-    };
-
     const graph = await modulesForQuery(query, depIncludes);
+
+    const onFinish = activity.start('Rendering');
 
     const graphviz = d3.select('#graph')
       .graphviz({ zoom: false })
@@ -318,7 +323,7 @@ export default function Graph(props) {
         const key = $(el, 'text')[0].textContent;
         if (!key) continue;
 
-        const m = Store.cachedEntry(key);
+        const m = store.cachedEntry(key);
 
         if (m?.package?.deprecated) {
           el.classList.add('warning');
@@ -341,9 +346,11 @@ export default function Graph(props) {
       }
 
       setSvg($('#graph svg')[0]);
-    });
 
-    d3.select('#graph svg .node').node()?.scrollIntoView();
+      d3.select('#graph svg .node').node()?.scrollIntoView();
+
+      onFinish();
+    });
 
     setGraph(graph);
     setPane(graph.size ? 'graph' : 'info');
@@ -358,11 +365,11 @@ export default function Graph(props) {
       $(svg, 'g.node path').attr('style', null);
     } else if (colorize == 'bus') {
       for (const el of $(svg, 'g.node')) {
-        const m = Store.cachedEntry(el.dataset.module);
+        const m = store.cachedEntry(el.dataset.module);
         $(el, 'path')[0].style.fill = hslFor((m?.package.maintainers.length - 1) / 3);
       }
     } else {
-      let packageNames = $('#graph g.node').map(el => Store.cachedEntry(el.dataset.module).name);
+      let packageNames = $('#graph g.node').map(el => store.cachedEntry(el.dataset.module).name);
 
       // NPMS.io limits to 250 packages
       const reqs = [];
@@ -412,7 +419,6 @@ export default function Graph(props) {
 
   return html`
     <div id="graph" onClick=${handleGraphClick} >
-      ${loadStats?.active ? html`<${Loader} complete=${loadStats.complete} total=${loadStats.active + loadStats.complete} />` : null}
       <${GraphControls} />
     </div>
   `;

@@ -2,7 +2,10 @@ import { html, useState, createContext } from '/vendor/preact.js';
 
 import Inspector from './Inspector.js';
 import Graph from './Graph.js';
+import { LoadActivity } from './util.js';
 import { useEffect } from '../vendor/preact.js';
+import Store from './Store.js';
+import { Loader } from './Components.js';
 
 export const AppContext = createContext(null);
 
@@ -18,6 +21,14 @@ function queryFromLocation() {
   return q ? decodeURIComponent(q).split(/\s*,\s*/) : [];
 }
 
+export const activity = new LoadActivity();
+export const store = new Store(activity);
+export function useActivity() {
+  const [bool, setBool] = useState(true);
+  activity.onChange = () => setBool(!bool);
+  return activity;
+}
+
 export default function App() {
   const context = {
     pane: useState('info'),
@@ -28,6 +39,8 @@ export default function App() {
     colorize: useState(false),
     depIncludes: useState(['dependencies'])
   };
+
+  const activity = useActivity();
 
   useEffect(() => {
     function handlePopState() {
@@ -43,9 +56,11 @@ export default function App() {
   }, []);
 
   const [inspectorOpen, setInspectorOpen] = context.inspectorOpen;
+
   return html`
     <${AppContext.Provider} value=${context}>
-      <${Graph} />      
+      ${activity.total > 0 ? html`<${Loader} activity=${activity} />` : null}
+      <${Graph} />
       <${Splitter} isOpen=${inspectorOpen} onClick=${() => setInspectorOpen(!inspectorOpen)} />
       <${Inspector} className=${inspectorOpen ? 'open' : ''} />
     </${AppContext.Provider}>`;

@@ -3,7 +3,7 @@ import { html, useContext, useEffect, useRef } from '/vendor/preact.js';
 import { AppContext } from './App.js';
 import { Pane, Section, Tags, Tag } from './Inspector.js';
 import { simplur } from './util.js';
-import Toggle from './Toggle.js';
+import { Toggle } from './Components.js';
 import { hslFor } from './Graph.js';
 
 function DepInclude({ type, ...props }) {

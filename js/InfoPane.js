@@ -1,7 +1,6 @@
 import { html, useContext, useState } from '../vendor/preact.js';
 import { Pane, QueryLink } from './Inspector.js';
-import { cacheModule } from './Store.js';
-import { AppContext } from './App.js';
+import { AppContext, store } from './App.js';
 
 // Get names of uploaded modules in session storage
 function getFileEntries() {
@@ -47,7 +46,7 @@ export default function InfoPane() {
     }
 
     // Stash upload in
-    const cacheKey = cacheModule(module);
+    const cacheKey = store.cacheModule(module);
     window.sessionStorage.setItem(cacheKey, JSON.stringify(module));
     const key = cacheKey.replace(/\//, '@');
     setQuery([key]);
