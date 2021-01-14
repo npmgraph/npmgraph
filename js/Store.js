@@ -40,7 +40,8 @@ class Store {
     }
 
     // Remove "git...#" repo URIs from version strings
-    if (version) version = version.replace(/git.*#/, '');
+    // TODO: Validate version is String on ingest
+    version = version?.replace?.(/git.*#/, '');
 
     const cacheKey = moduleKey(name, version);
 
