@@ -36,18 +36,21 @@ export default function InfoPane() {
       reader.readAsText(file);
     });
 
-    const module = JSON.parse(content);
+    const pkg = JSON.parse(content);
 
-    if (!module?.name) module.name = '(upload)';
-    if (!module?.version) {
+    if (!pkg?.name) pkg.name = '(upload)';
+    if (!pkg?.version) {
       const d = new Date();
       // Make semver string of form YYYY.MM.DD-HH:MM:SS.ddd
-      module.version = d.toISOString().replace(/-/g, '.').replace('T', '-');
+      pkg.version = d.toISOString().replace(/-/g, '.').replace('T', '-');
     }
 
+    // Mark package as having been supplied by the user
+    pkg._dropped = true;
+
     // Stash upload in
-    const cacheKey = store.cacheModule(module);
-    window.sessionStorage.setItem(cacheKey, JSON.stringify(module));
+    const cacheKey = store.cachePackage(pkg);
+    window.sessionStorage.setItem(cacheKey, JSON.stringify(pkg));
     const key = cacheKey.replace(/\//, '@');
     setQuery([key]);
     setRecents(getFileEntries());
