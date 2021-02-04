@@ -23,10 +23,11 @@ export function ExternalLink({ href, children, target = '_blank', className, sty
 export function QueryLink({ query }) {
   const { query: [, setQuery] } = useContext(AppContext);
   if (!Array.isArray(query)) query = [query];
-  return html`<a href="#" onClick=${e => {
+  const url = location.pathname}?q=${query.join(',');
+  return html`<a href=${url} onClick=${e => {
     e.preventDefault();
     setQuery(query);
-    history.pushState(null, null, `${location.pathname}?q=${query.join(',')}`);
+    history.pushState(null, null, `${url}`);
   }}>${query.join(',')}</a>`;
 }
 
