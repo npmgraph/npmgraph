@@ -1,6 +1,7 @@
 :root {
   --rad_sm: 5px;
   --rad_lg: 10px;
+  --splitter-size: 27px;
 }
 .theme-lite {
   /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
@@ -15,11 +16,16 @@
   --text: #f3f3f3;
   --bg0: #7e7e7d;
   --bg1: #383838;
+  --bg2: linear-gradient(
+    to bottom,
+    #919191,
+    #7e7e7d
+  );
   --highlight: #ff761a;
 }
 
 html {
-  font-family: 'Inter', sans-serif;
+  font-family: system-ui, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
   font-size: 10pt;
 }
 html, body {
@@ -41,11 +47,11 @@ body {
 }
 
 .bright-hover {
-  transition:.5s;
+  transition: filter .5s;
 }
 .bright-hover:hover {
   filter: brightness(125%);
-  transition:.15s;
+  transition-duration: .15s;
 }
 
 #graph {
@@ -54,17 +60,22 @@ body {
   overflow: auto;
   position: relative;
   user-select: none;
+  padding-right: var(--splitter-size);
 }
 
 #splitter {
   display: flex;
-  flex-basis: 1em;
-  height: 100vh;
+  box-sizing: border-box;
+  height: 24pt;
   color: var(--text);
-  background-color: var(--bg0);
+  background: var(--bg2);
   border-top-left-radius: var(--rad_lg);
   border-bottom-left-radius: var(--rad_lg);
-  padding: 0 3px;
+  padding-left: 10px;
+  flex-basis: var(--splitter-size);
+  flex-shrink: 0;
+  margin-left: calc(-1 * var(--splitter-size));
+  z-index: 1;
   align-items: center;
   cursor: pointer;
 }
@@ -77,8 +88,6 @@ body {
 
   height: 100vh;
   color: var(--text);
-  background-color: var(--bg0);
-  overflow: hidden;
   transition: flex-basis .5s;
 }
 
@@ -94,7 +103,7 @@ label {
 summary {
   position: -webkit-sticky;
   font-size: 1.2em;
-  font-weight: bold;
+  font-weight: 600;
   margin: .7em 0 .5em;
   border-top: solid 3px var(--bg1);
   padding: .2em;
@@ -127,7 +136,7 @@ summary {
   z-index: 99;
   overflow: hidden;
   line-height: 2em;
-  font-weight: bold;
+  font-weight: 600;
   text-align: center;
   color: var(--text);
   background-color: var(--bg0);
@@ -145,9 +154,9 @@ summary {
     transparent 0px,
     transparent 20px,
     var(--highlight) 20px,
-    var(--highlight) 40px 
+    var(--highlight) 40px
   );
-	
+
   animation-name: MOVE-BG;
 	animation-duration: 1.6s;
 	animation-timing-function: linear;
@@ -167,7 +176,10 @@ summary {
   line-height: 1em;
   width: 1.3em;
   padding: 0;
-  border: solid 1px black;
+  margin: 0;
+  color: #333;
+  border: solid 1px var(--bg1);
+  background: var(--bg0);
   border-radius: var(--rad_sm);
 }
 
@@ -215,7 +227,7 @@ summary {
   margin-right: 4px;
 }
 #inspector .description {
-  font-weight: bold;
+  font-weight: 600;
 }
 #inspector .module {
   white-space: nowrap;
@@ -224,8 +236,9 @@ summary {
 #tabs {
   flex-basis: auto;
   flex-shrink: 0;
-  margin-left: var(--rad_lg);
   display: flex;
+  background: var(--bg2);
+  color: var(--text);
   user-select: none;
 }
 #tabs > * {
@@ -234,14 +247,26 @@ summary {
 #tabs .tab {
   padding: 0 10px;
   cursor: pointer;
-  background-color: var(--bg0);
-  border-right: solid 1px #888;
-  border-bottom: solid 5px transparent;
+  background: var(--bg2);
+  border-left: solid 1px #888;
   font-size: 12pt;
-  font-weight: bold;
+  font-weight: 600;
 }
 #tabs .tab.active {
-  border-bottom-color: var(--highlight);
+  border-color: transparent;
+  background: var(--highlight);
+}
+#search-field {
+  font: inherit;
+  line-height: 1em;
+  padding: 0.3em 0.7em;
+  margin-left: 1em;
+  border: solid 1px white;
+  border-radius: 15px;
+  outline: none;
+}
+#search-field:focus {
+  border-color: var(--highlight);
 }
 
 .pane {
@@ -251,9 +276,11 @@ summary {
   color: var(--text);
   background-color: var(--bg0);
   box-sizing: border-box;
-  border-radius: var(--rad_lg) 0 0 var(--rad_lg);
   overflow-y: auto;
   overflow-x: hidden;
+  border-left: solid 4px var(--bg2);
+  border-bottom-left-radius: var(--rad_lg);
+  box-shadow: inset 1px -1px 6px #d6d6d677;
 }
 
 .bundle-item {
@@ -268,7 +295,7 @@ summary {
   overflow: hidden;
 }
 .bundle-item > span {
-  font-weight: bold;
+  font-weight: 600;
   font-size: 115%;
   color: rgba(0, 0, 0, .5)
 }
@@ -296,11 +323,11 @@ g.node.selected > path {
   stroke: var(--highlight);
 }
 g.node.warning > path {
-  fill: url(#warning); 
+  fill: url(#warning);
 }
 g.node.selected > text {
   fill: black;
-  font-weight: bold;
+  font-weight: 600;
 }
 g .stub {
   opacity: 0.6;
@@ -323,7 +350,7 @@ g.edge.selected > polygon {
 #drop_target {
   background-color: #ddd;
   border: dashed 2px #888;
-  padding: 1em;
+  padding: 4em 1em;
   border-radius: var(--rad_sm);
 }
 #drop_target.drag {
@@ -337,15 +364,12 @@ footer {
   padding: 0.5em;
   box-sizing: border-box;
   width: 32em;
+  color: var(--bg0)
 }
 
 #github {
-  padding: .2em 1em;
-  margin-left: 1em;
-  background: var(--bg1);
-  color: #fff;
+  color: inherit;
   text-decoration: none;
-  border-radius: var(--rad_sm);
 }
 
 @media print {
