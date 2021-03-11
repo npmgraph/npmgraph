@@ -366,7 +366,8 @@ footer {
   padding: 0.5em;
   box-sizing: border-box;
   width: 32em;
-  color: var(--bg0)
+  color: var(--bg0);
+  text-align: center;
 }
 
 #github {

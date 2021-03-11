@@ -114,7 +114,7 @@ export default function Inspector({ className, ...props }) {
       ${paneComponent}
 
       <footer className="theme-dark">
-        v${ENV.appVersion} ${'\xa9'} Robert Kieffer, 2020  MIT License – <${ExternalLink}
+        NPMGraph v${ENV.appVersion} ${'\xa9'} Robert Kieffer, 2020  MIT License – <${ExternalLink}
           id="github"
           href="https://github.com/broofa/npmgraph">
           GitHub
