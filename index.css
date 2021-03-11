@@ -1,7 +1,14 @@
 :root {
   --rad_sm: 5px;
   --rad_lg: 10px;
-  --splitter-size: 27px;
+  --splitter-size: 2em;
+  --inspector-size: 32em;
+  --tabs-height: 24pt;
+  --bg-dark-gradient: linear-gradient(
+    to bottom,
+    #919191,
+    #7e7e7d
+  );
 }
 .theme-lite {
   /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
@@ -16,11 +23,6 @@
   --text: #f3f3f3;
   --bg0: #7e7e7d;
   --bg1: #383838;
-  --bg2: linear-gradient(
-    to bottom,
-    #919191,
-    #7e7e7d
-  );
   --highlight: #ff761a;
 }
 
@@ -68,7 +70,7 @@ body {
   box-sizing: border-box;
   height: 24pt;
   color: var(--text);
-  background: var(--bg2);
+  background: var(--bg-dark-gradient);
   border-top-left-radius: var(--rad_lg);
   border-bottom-left-radius: var(--rad_lg);
   padding-left: 10px;
@@ -94,7 +96,7 @@ body {
 }
 
 #inspector.open {
-  flex: 0 0 32em;
+  flex: 0 0 var(--inspector-size);
 }
 
 label {
@@ -132,29 +134,29 @@ summary {
 
 .loader {
   position: absolute;
-  top: 33%;
-  left: 33%;
-  width: 33%;
+  right: 0;
+  width: calc(var(--inspector-size) + var(--splitter-size));
   z-index: 99;
+  line-height: var(--tabs-height);
   overflow: hidden;
-  line-height: 2em;
   font-weight: 600;
   text-align: center;
-  color: var(--text);
-  background-color: var(--bg0);
-  border: solid 3px var(--highlight);
-  border-radius: 1em;
+  color: white;
+  background: var(--bg-dark-gradient);
+  border-top-left-radius: var(--rad_lg);
+  border-bottom-left-radius: var(--rad_lg);
 }
 
 .loader .bg {
   position: absolute;
   z-index: -1;
   width: calc(100% + 57px);
-  height: 100%;
+  bottom: 0;
+  height: 2pt;
   background: repeating-linear-gradient(
     -45deg,
-    transparent 0px,
-    transparent 20px,
+    white 0px,
+    white 20px,
     var(--highlight) 20px,
     var(--highlight) 40px
   );
@@ -239,17 +241,17 @@ summary {
   flex-basis: auto;
   flex-shrink: 0;
   display: flex;
-  background: var(--bg2);
+  background: var(--bg-dark-gradient);
   color: var(--text);
   user-select: none;
 }
 #tabs > * {
-  line-height: 24pt;
+  line-height: var(--tabs-height);
 }
 #tabs .tab {
   padding: 0 10px;
   cursor: pointer;
-  background: var(--bg2);
+  background: var(--bg-dark-gradient);
   border-left: solid 1px #888;
   font-size: 12pt;
   font-weight: 600;
@@ -280,7 +282,7 @@ summary {
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;
-  border-left: solid 4px var(--bg2);
+  border-left: solid 4px var(--bg-dark-gradient);
   border-bottom-left-radius: var(--rad_lg);
   box-shadow: inset 1px -1px 6px #d6d6d677;
 }
