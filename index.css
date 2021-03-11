@@ -78,6 +78,7 @@ body {
   z-index: 1;
   align-items: center;
   cursor: pointer;
+  user-select: none;
 }
 
 #inspector {
@@ -88,6 +89,7 @@ body {
 
   height: 100vh;
   color: var(--text);
+  overflow: hidden;
   transition: flex-basis .5s;
 }
 
