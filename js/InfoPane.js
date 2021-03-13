@@ -82,7 +82,7 @@ export default function InfoPane() {
       <p>
       Enter NPM module name here <i class="material-icons">arrow_upward</i> to see the dependency graph.  Separate multiple module names with commas (e.g. <a href="?q=mocha, chalk, rimraf">"mocha, chalk, rimraf"</a>).
       </p>
-      <label for="package-input" id="drop_target" style="text-align: center"
+      <label for="package-input" id="drop_target" style="text-align: center; cursor: pointer"
         onDrop=${onDrop}
         onDragOver=${onDragOver}
         onDragLeave=${onDragLeave}
