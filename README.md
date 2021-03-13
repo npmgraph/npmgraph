@@ -17,8 +17,8 @@ example:
 ```shell
 $ git clone git@github.com:broofa/npmgraph.git
 $ cd npmgraph
-$ npm install -g static-server
-$ static-server
+$ npm install
+$ npm start
 ```
 
 ... then open http://localhost:9080 in your browser of choice.
