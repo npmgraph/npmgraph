@@ -38,7 +38,7 @@ export default function InfoPane() {
     if (!file) return alert('Please drop a file, not... well... whatever else it was you dropped');
 
     readFile(file);
-  }
+  };
 
   const readFile = async file => {
     const reader = new FileReader();
