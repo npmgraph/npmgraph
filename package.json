@@ -38,6 +38,7 @@
   },
   "scripts": {
     "deploy": "npm test && ssh broofa.com \"cd npm.broofa.com && ./deploy.sh\"",
+    "start": "static-server",
     "open": "open -a \"Google Chrome\" http://localhost:9080",
     "test": "eslint ."
   }
