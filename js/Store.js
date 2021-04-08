@@ -92,7 +92,7 @@ class Store {
       // Also, we can't fetch scoped modules at specific versions.  See https://goo.gl/dSMitm
       const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
-      const finish = this.activity.start(`Fetching ${reqPath}`);
+      const finish = this.activity.start(`Fetching ${decodeURIComponent(reqPath)}`);
       req = this.requestCache[reqPath] = fetchJSON(`https://registry.npmjs.cf/${reqPath}`)
         // Errors get turned into stub modules, below
         .catch(err => err)
