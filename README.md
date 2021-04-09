@@ -14,7 +14,7 @@ NPMGraph can be run from any web server capable of serving static files.  For
 example:
 
 ```shell
-$ git clone https://github.com/npmgraph/npmgraph.js.org.git
+$ git clone https://github.com/npmgraph/npmgraph.git
 $ cd npmgraph
 $ npm install
 $ npm start
