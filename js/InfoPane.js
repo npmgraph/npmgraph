@@ -13,8 +13,16 @@ export default function InfoPane() {
 
   const [recents, setRecents] = useState(getFileEntries());
 
+  // Handle file selection via input
+  const onSelect = (ev) => {
+    readFile(ev.target.files.item(0));
+
+    // Reset field
+    ev.target.value = '';
+  };
+
   // Handle file drops
-  const onDrop = async ev => {
+  const onDrop = ev => {
     ev.target.classList.remove('drag');
     ev.preventDefault();
 
@@ -29,6 +37,10 @@ export default function InfoPane() {
     const file = item.getAsFile();
     if (!file) return alert('Please drop a file, not... well... whatever else it was you dropped');
 
+    readFile(file);
+  };
+
+  const readFile = async file => {
     const reader = new FileReader();
 
     const content = await new Promise((resolve, reject) => {
@@ -69,16 +81,17 @@ export default function InfoPane() {
 
   return html`
     <${Pane} style=${{ display: 'flex', flexDirection: 'column' }}>
+      <input id="package-input" type="file" hidden onChange=${onSelect} accept=".json"/>
       <p>
       Enter NPM module name here <i class="material-icons">arrow_upward</i> to see the dependency graph.  Separate multiple module names with commas (e.g. <a href="?q=mocha, chalk, rimraf">"mocha, chalk, rimraf"</a>).
       </p>
-      <div id="drop_target" style="text-align: center"
+      <label for="package-input" id="drop_target" style="text-align: center; cursor: pointer"
         onDrop=${onDrop}
         onDragOver=${onDragOver}
         onDragLeave=${onDragLeave}
       >
-        ... or drop a <code>package.json</code> file here
-        </div>
+        Alternatively, <button type="button">select</button> or drop a <code>package.json</code> file here
+      </label>
         ${
           recents.length ? html`<div  style=${{ textAlign: 'start' }}>
             <p style=${{ marginTop: '1em' }}>Recent files:</p>
