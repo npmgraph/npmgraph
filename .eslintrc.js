@@ -17,7 +17,6 @@ module.exports = {
   rules: {
     'brace-style': ['error', '1tbs'],
     'no-return-assign': 'off',
-    'eol-last': ['error', 'never'],
     'no-var': ['error'],
     'one-var': 'off',
     'multiline-ternary': 'off',

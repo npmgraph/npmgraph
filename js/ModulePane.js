@@ -134,9 +134,7 @@ export default function ModulePane({ module, ...props }) {
 
   return html`
     <${Pane} ...${props}>
-      <h2>
-      <${QueryLink} query=${module.key} />
-      </h2>
+      <h2><${QueryLink} query=${module.key} /></h2>
 
       ${
         pkg.deprecated ? html`<div className="warning" style=${{ padding: '.5em', borderRadius: '.5em' }}>
@@ -150,7 +148,12 @@ export default function ModulePane({ module, ...props }) {
 
       <${ExternalLink} href=${module.npmLink}>NPM</${ExternalLink}>
       ${module.repoLink ? html`<${ExternalLink} href=${module.repoLink}>GitHub</${ExternalLink}>` : null}
-      <${ExternalLink} href=${module.apiLink}>package.json</${ExternalLink}>
+      ${
+        // Displaying dropped package contents is a bit problematic, but we give it a shot here
+        module.package?._dropped
+        ? html`<${ExternalLink} href=${`data:text/json;base64,${btoa(JSON.stringify(module.package))}`}>package.json</${ExternalLink}>`
+        : html`<${ExternalLink} href=${module.apiLink}>package.json</${ExternalLink}>`
+      }
 
       <${Section} title="Bundle Size">
         ${bundleInfo ? html`<${BundleStats} bundleInfo=${bundleInfo} />` : null}

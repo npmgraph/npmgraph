@@ -20,7 +20,7 @@ class Store {
         const module = JSON.parse(sessionStorage.getItem(sessionStorage.key(i)));
         if (!module?.name) continue;
 
-        this.cacheModule(module);
+        this.cachePackage(module);
       } catch (err) {
         console.error(err);
       }
@@ -46,9 +46,9 @@ class Store {
     const cacheKey = moduleKey(name, version);
 
     if (!this.moduleCache[cacheKey]) {
-      this.moduleCache[cacheKey] = this.fetchModule(name, version)
-        .then(moduleInfo => {
-          const module = new Module(moduleInfo);
+      this.moduleCache[cacheKey] = this.fetchPackage(name, version)
+        .then(pkg => {
+          const module = new Module(pkg);
 
           // Cache based on arguments (memoize), but also cache based on name
           // and version as declared in module info
@@ -64,17 +64,17 @@ class Store {
   }
 
   // Inject a module directly into the request cache (used for module file uploads)
-  cacheModule(module) {
-    let { name, version } = module;
+  cachePackage(pkg) {
+    let { name, version } = pkg;
     name = name.replace(/\//g, '%2F');
     const path = version ? `${name}/${version}` : name;
-    this.requestCache[path] = Promise.resolve(module);
+    this.requestCache[path] = Promise.resolve(pkg);
 
     return path;
   }
 
   // fetch module url, caching results (in memory for the time being)
-  async fetchModule(name, version) {
+  async fetchPackage(name, version) {
     const isScoped = name.startsWith('@');
     const versionIsValid = semver.valid(version);
 
@@ -92,7 +92,7 @@ class Store {
       // Also, we can't fetch scoped modules at specific versions.  See https://goo.gl/dSMitm
       const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
-      const finish = this.activity.start(`Fetching ${reqPath}`);
+      const finish = this.activity.start(`Fetching ${decodeURIComponent(reqPath)}`);
       req = this.requestCache[reqPath] = fetchJSON(`https://registry.npmjs.cf/${reqPath}`)
         // Errors get turned into stub modules, below
         .catch(err => err)
