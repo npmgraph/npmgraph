@@ -21,7 +21,7 @@
     "module"
   ],
   "repository": {
-    "url": "https://github.com/broofa/npmgraph",
+    "url": "https://github.com/npmgraph/npmgraph.github.io",
     "type": "git"
   },
   "devDependencies": {
