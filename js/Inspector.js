@@ -14,7 +14,7 @@ export function Fix() {
 }
 
 export function ExternalLink({ href, children, target = '_blank', className, style, ...props }) {
-  return html`<a href=${href} className="bright-hover ${className}"  target=${target} style=${{ marginRight: '8px', ...style }} ...${props}>
+  return html`<a href=${href} className="bright-hover ${className || ''}"  target=${target} style=${{ marginRight: '8px', ...style }} ...${props}>
   ${children}
   <span style=${{ marginLeft: '0px' }} class="material-icons">open_in_new</span>
   </a>`;
@@ -83,15 +83,15 @@ export default function Inspector({ className, ...props }) {
   }
 
   return html`
-    <div id="inspector" className="theme-dark ${className}" ...${props} >
-      <div id="tabs">
+    <div id="inspector" className="theme-lite ${className}" ...${props} >
+      <div id="tabs" className="theme-dark">
         <${Tab} active=${pane == 'module'} onClick=${() => setPane('module')}>Module<//>
         <${Tab} active=${pane == 'graph'} onClick=${() => setPane('graph')}>Graph<//>
         <${Tab} active=${pane == 'info'} onClick=${() => setPane('info')}>${'\u{24d8}'}<//>
         <div style=${{ display: 'flex', alignItems: 'center' }}>
           <input
             type="text"
-            style=${{ marginLeft: '1em', padding: '4px 8px', border: 'none', borderRadius: '15px' }}
+            id="search-field"
             value=${query.join(',')}
             onChange=${e => {
               // Convert input text to unique list of names
@@ -113,12 +113,9 @@ export default function Inspector({ className, ...props }) {
 
       ${paneComponent}
 
-      <footer>
-        <span style=${{ fontSize: '85%', opacity: '.5', marginRight: '1em' }}>v${ENV.appVersion}</span>
-        ${'\xa9'} Robert Kieffer, 2020  MIT License
-        <${ExternalLink}
+      <footer className="theme-dark">
+        NPMGraph v${ENV.appVersion} ${'\xa9'} Robert Kieffer, 2020  MIT License – <${ExternalLink}
           id="github"
-          className="bright-hover"
           href="https://github.com/npmgraph/npmgraph">
           GitHub
         </${ExternalLink}>
