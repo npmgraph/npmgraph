@@ -119,7 +119,7 @@ export default function Inspector({ className, ...props }) {
         <${ExternalLink}
           id="github"
           className="bright-hover"
-          href="https://github.com/broofa/npmgraph">
+          href="https://github.com/npmgraph/npmgraph">
           GitHub
         </${ExternalLink}>
       </footer>
