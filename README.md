@@ -1,6 +1,5 @@
 # NPMGraph
 
-
 A tool for exploring NPM modules and dependencies.  Available online at http://npm.broofa.com/.
 
 ![image](https://user-images.githubusercontent.com/164050/31836231-6ab6faca-b589-11e7-9bb9-00ee0b8d90b4.png)
@@ -17,8 +16,8 @@ example:
 ```shell
 $ git clone git@github.com:broofa/npmgraph.git
 $ cd npmgraph
-$ npm install -g static-server
-$ static-server
+$ npm install
+$ npm start
 ```
 
 ... then open http://localhost:9080 in your browser of choice.

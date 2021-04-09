@@ -149,7 +149,7 @@ export default function ModulePane({ module, ...props }) {
       <${ExternalLink} href=${module.npmLink}>NPM</${ExternalLink}>
       ${module.repoLink ? html`<${ExternalLink} href=${module.repoLink}>GitHub</${ExternalLink}>` : null}
       ${
-        // Displaying dropped package contents is a bit problematic, but we give it a shot here. 
+        // Displaying dropped package contents is a bit problematic, but we give it a shot here
         module.package?._dropped
         ? html`<${ExternalLink} href=${`data:text/json;base64,${btoa(JSON.stringify(module.package))}`}>package.json</${ExternalLink}>`
         : html`<${ExternalLink} href=${module.apiLink}>package.json</${ExternalLink}>`
