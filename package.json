@@ -21,7 +21,7 @@
     "module"
   ],
   "repository": {
-    "url": "https://github.com/npmgraph/npmgraph.js.org.git",
+    "url": "https://github.com/npmgraph/npmgraph.git",
     "type": "git"
   },
   "devDependencies": {
