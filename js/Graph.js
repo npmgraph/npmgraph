@@ -1,5 +1,9 @@
-import { d3 } from '/vendor/shims.js';
-import { html, useState, useEffect, useContext } from '/vendor/preact.js';
+import React, { useState, useEffect, useContext } from 'react';
+
+import * as d3 from 'd3';
+// import { graphviz } from '@hpcc-js/wasm';
+import 'd3-graphviz';
+
 import { AppContext, store, activity } from './App.js';
 import { $, tagElement, report, fetchJSON } from './util.js';
 
@@ -249,17 +253,16 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
 }
 
 export function GraphControls() {
-  return html`
-    <div id="graph-controls" >
-      <button onClick=${() => zoom(1)} title="zoom (fit width)" class="material-icons" style="border-radius: 3px 0 0 3px">swap_horiz</button>
-      <button onClick=${() => zoom(0)} title="zoom (1:1)" style="font-size: 1em; padding: 0 .5em; width: fit-content; border-width: 1px 0px; border-radius: 0">1:1</button>
-      <button onClick=${() => zoom(2)} title="zoom (fit height)" class="material-icons" style="border-radius: 0 3px 3px 0">swap_vert</button>
-      <button onClick=${() => download('svg')} title="download as SVG" class="material-icons" style="margin-left: 0.5em">cloud_download</button>
-    </div>
-  `;
+  return <div id="graph-controls">
+    <button onClick={() => zoom(1)} title="zoom (fit width)" className="material-icons" style={{ borderRadius: '3px 0 0 3px' }}>swap_horiz</button>
+    <button onClick={() => zoom(0)} title="zoom (1:1)" style={{ fontSize: '1em', padding: '0 .5em', width: 'fit-content', borderWidth: '1px 0px', borderRadius: 0 }}>1:1</button>
+    <button onClick={() => zoom(2)} title="zoom (fit height)" className="material-icons" style={{ borderRadius: '0 3px 3px 0' }}>swap_vert</button>
+    <button onClick={() => download('svg')} title="download as SVG" className="material-icons" style={{ marginLeft: '0.5em' }}>cloud_download</button>
+  </div>;
 }
 
 export default function Graph(props) {
+  // if (!window.fdsafd) return <h1 id="graph" >Hellow World</h1>;
   const {
     query: [query],
     colorize: [colorize],
@@ -298,25 +301,26 @@ export default function Graph(props) {
 
     const onFinish = activity.start('Rendering');
 
-    const graphviz = d3.select('#graph')
-      .graphviz({ zoom: false })
-      .renderDot(composeDOT(graph));
+    // TODO: Render using hpcc/wasm directly per https://raw.githack.com/hpcc-systems/hpcc-js-wasm/trunk/index.html
+    // const graphviz = d3.select('#graph')
+    //   .graphviz({ zoom: false, useWorker: false })
+    //   .renderDot(composeDOT(graph));
 
     // Post-process rendered DOM
-    graphviz.on('end', async() => {
+    window.FDSAJFKLDSAFJKSLFJS && graphviz?.on('end', async() => {
       if (cancelled) return;
+
+      const PATTERN = `<pattern id="warning"
+        width="12" height="12"
+        patternUnits="userSpaceOnUse"
+        patternTransform="rotate(45 50 50)">
+        <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
+        <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
+      </pattern>`;
 
       d3.select('#graph svg')
         .insert('defs', ':first-child')
-        .html(`
-        <pattern id="warning"
-          width="12" height="12"
-          patternUnits="userSpaceOnUse"
-          patternTransform="rotate(45 50 50)">
-          <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
-          <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
-        </pattern>
-     `);
+        .html(PATTERN);
 
       for (const el of $('#graph g.node')) {
         // Find module this node represents
@@ -417,9 +421,7 @@ export default function Graph(props) {
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 
-  return html`
-    <div id="graph" onClick=${handleGraphClick} >
-      <${GraphControls} />
-    </div>
-  `;
+  return <div id="graph" onClick={handleGraphClick} >
+    <GraphControls />
+  </div>;
 }

@@ -1,18 +1,14 @@
-import { html, useState, createContext } from '/vendor/preact.js';
-
+import React, { useState, useEffect, createContext } from 'react';
 import Inspector from './Inspector.js';
 import Graph from './Graph.js';
 import { LoadActivity } from './util.js';
-import { useEffect } from '../vendor/preact.js';
 import Store from './Store.js';
 import { Loader } from './Components.js';
 
 export const AppContext = createContext(null);
 
 function Splitter({ onClick, isOpen }) {
-  return html`
-    <div id="splitter" className="theme-dark bright-hover" onClick=${onClick}>${isOpen ? '\u{25b6}' : '\u{25c0}'}</div>
-  `;
+  return <div id='splitter' className='theme-dark bright-hover' onClick={onClick}>{isOpen ? '\u{25b6}' : '\u{25c0}'}</div>;
 }
 
 // Parse url query param from browser location, "q"
@@ -57,11 +53,10 @@ export default function App() {
 
   const [inspectorOpen, setInspectorOpen] = context.inspectorOpen;
 
-  return html`
-    <${AppContext.Provider} value=${context}>
-      ${activity.total > 0 ? html`<${Loader} activity=${activity} />` : null}
-      <${Graph} />
-      <${Splitter} isOpen=${inspectorOpen} onClick=${() => setInspectorOpen(!inspectorOpen)} />
-      <${Inspector} className=${inspectorOpen ? 'open' : ''} />
-    </${AppContext.Provider}>`;
+  return <AppContext.Provider value={context}>
+      {activity.total > 0 ? <Loader activity={activity} /> : null}
+      <Graph />
+      <Splitter isOpen={inspectorOpen} onClick={() => setInspectorOpen(!inspectorOpen)} />
+      <Inspector className={inspectorOpen ? 'open' : ''} />
+    </AppContext.Provider>;
 }

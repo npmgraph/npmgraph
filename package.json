@@ -1,16 +1,23 @@
 {
   "name": "npmgraph",
   "version": "2.7.1",
+  "type": "module",
   "author": {
     "name": "Robert Kieffer",
     "url": "http://github.com/broofa",
     "email": "robert@broofa.com"
   },
   "license": "MIT",
+  "browserslist": [
+    "since 2017-06"
+  ],
   "dependencies": {
-    "@hpcc-js/wasm": "0.3.14",
+    "@hpcc-js/wasm": "1.4.1",
+    "d3": "6.6.2",
+    "d3-graphviz": "4.0.0",
     "http-errors": "1.8.0",
-    "preact": "10.5.7"
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
   },
   "description": "Visualize NPM dependency graphs (public and private!)",
   "keywords": [
@@ -25,6 +32,8 @@
     "type": "git"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "7.13.0",
+    "@parcel/babel-plugin-transform-runtime": "2.0.0-nightly.1823",
     "babel-eslint": "10.1.0",
     "eslint": "7.17.0",
     "eslint-config-semistandard": "15.0.1",
@@ -32,14 +41,13 @@
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-react": "7.23.2",
     "eslint-plugin-standard": "5.0.0",
-    "standard-version": "9.1.0",
-    "static-server": "*"
+    "parcel": "2.0.0-nightly.636",
+    "standard-version": "9.1.0"
   },
   "scripts": {
-    "deploy": "npm test && ssh broofa.com \"cd npm.broofa.com && ./deploy.sh\"",
-    "start": "static-server",
-    "open": "open -a \"Google Chrome\" http://localhost:9080",
+    "start": "parcel index.html",
     "test": "eslint ."
   }
 }

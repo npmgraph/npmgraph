@@ -35,6 +35,15 @@ html, body {
   padding: 0;
 }
 
+#app {
+  position:fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
 p {
   line-height: 1.5em;
 }
@@ -42,10 +51,6 @@ p {
 h2 {
   font-size: 14pt;
   border-radius: var(--rad_sm);
-}
-
-body {
-  display: flex;
 }
 
 .bright-hover {

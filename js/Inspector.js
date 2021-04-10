@@ -1,6 +1,6 @@
 /* global ENV */
 
-import { html, useContext } from '/vendor/preact.js';
+import React, { useContext } from 'React';
 import { AppContext } from './App.js';
 import { tagify } from './util.js';
 import md5 from '/vendor/md5.js';
@@ -10,42 +10,41 @@ import InfoPane from './InfoPane.js';
 import { selectTag } from './Graph.js';
 
 export function Fix() {
-  return html`<span style=${{ fontWeight: 'bold', color: 'red' }}>FIX!</span>`;
+  return <span style={{ fontWeight: 'bold', color: 'red' }}>FIX!</span>;
 }
 
 export function ExternalLink({ href, children, target = '_blank', className, style, ...props }) {
-  return html`<a href=${href} className="bright-hover ${className || ''}"  target=${target} style=${{ marginRight: '8px', ...style }} ...${props}>
-  ${children}
-  <span style=${{ marginLeft: '0px' }} class="material-icons">open_in_new</span>
-  </a>`;
+  return <a href={href} className={`bright-hover ${className}`} target={target} style={{ marginRight: '8px', ...style }} {...props}>
+  {children}
+  <span style={{ marginLeft: 0 }} className='material-icons'>open_in_new</span>
+  </a>;
 }
 
 export function QueryLink({ query }) {
   const { query: [, setQuery] } = useContext(AppContext);
   if (!Array.isArray(query)) query = [query];
-  return html`<a href="#" onClick=${e => {
+  return <a href='#' onClick={e => {
     e.preventDefault();
     setQuery(query);
     history.pushState(null, null, `${location.pathname}?q=${query.join(',')}`);
-  }}>${query.join(',')}</a>`;
+  }}>{query.join(',')}</a>;
 }
 
 export function Section({ title, children, open = true, style, ...props }) {
-  return html`
-    <details open=${open}>
-      <summary>${title || 'Untitled'}</summary>
-      ${children}
-    </details>`;
+  return <details open={open}>
+    <summary>{title || 'Untitled'}</summary>
+    {children}
+  </details>;
 }
 
 export function Pane({ children, ...props }) {
-  return html`<div className="pane theme-lite">${children}</div>`;
+  return <div className='pane theme-lite'>{children}</div>;
 }
 
 export function Tags({ children, style, ...props }) {
-  return html`<div style=${{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', ...style }} ...${props}>
-    ${children}
-  </div>`;
+  return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', ...style }} {...props}>
+    {children}
+  </div>;
 }
 
 export function Tag({ type, name, title = name, count = 0, gravatar, ...props }) {
@@ -56,15 +55,15 @@ export function Tag({ type, name, title = name, count = 0, gravatar, ...props })
     const hash = md5(gravatar)
       .map(v => v.toString(16).padStart(2, '0'))
       .join('');
-    img = html`<img src="https://www.gravatar.com/avatar/${hash}?s=32" />`;
+    img = <img src={`https://www.gravatar.com/avatar/${hash}?s=32`} />;
   }
 
-  return html`<div className="tag ${type} bright-hover" title=${title}
-    onClick=${() => selectTag(tagify(type, name), true, true)}>${img}${title}</div>`;
+  return <div className='tag {type} bright-hover' title={title}
+    onClick={() => selectTag(tagify(type, name), true, true)}>{img}{title}</div>;
 }
 
 function Tab({ active, children, ...props }) {
-  return html`<div className="tab bright-hover ${active ? 'active' : ''}" ...${props}>${children}</div>`;
+  return <div className={`tab bright-hover ${active ? 'active' : ''}`} {...props}>{children}</div>;
 }
 
 export default function Inspector({ className, ...props }) {
@@ -77,23 +76,22 @@ export default function Inspector({ className, ...props }) {
 
   let paneComponent;
   switch (pane) {
-    case 'module': paneComponent = html`<${ModulePane} module=${module} />`; break;
-    case 'graph': paneComponent = html`<${GraphPane} graph=${graph} />`; break;
-    case 'info': paneComponent = html`<${InfoPane} />`; break;
+    case 'module': paneComponent = <ModulePane module={module} />; break;
+    case 'graph': paneComponent = <GraphPane graph={graph} />; break;
+    case 'info': paneComponent = <InfoPane />; break;
   }
 
-  return html`
-    <div id="inspector" className="theme-lite ${className}" ...${props} >
-      <div id="tabs" className="theme-dark">
-        <${Tab} active=${pane == 'module'} onClick=${() => setPane('module')}>Module<//>
-        <${Tab} active=${pane == 'graph'} onClick=${() => setPane('graph')}>Graph<//>
-        <${Tab} active=${pane == 'info'} onClick=${() => setPane('info')}>${'\u{24d8}'}<//>
-        <div style=${{ display: 'flex', alignItems: 'center' }}>
+  return <div id='inspector' className={`theme-light ${className}`} {...props} >
+      <div id='tabs' className='theme-dark'>
+        <Tab active={pane == 'module'} onClick={() => setPane('module')}>Module</Tab>
+        <Tab active={pane == 'graph'} onClick={() => setPane('graph')}>Graph</Tab>
+        <Tab active={pane == 'info'} onClick={() => setPane('info')}>{'\u{24d8}'}</Tab>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <input
-            type="text"
-            id="search-field"
-            value=${query.join(',')}
-            onChange=${e => {
+            type='text'
+            id='search-field'
+            value={query.join(',')}
+            onChange={e => {
               // Convert input text to unique list of names
               const names = [...new Set(e.currentTarget.value.split(/,\s*/).filter(x => x))];
 
@@ -105,20 +103,20 @@ export default function Inspector({ className, ...props }) {
 
               setQuery(names);
             }}
-            placeholder=${'\u{1F50D} \xa0Enter module name'}
-            autofocus
+            placeholder={'\u{1F50D} \xa0Enter module name'}
+            autoFocus
           />
         </div>
       </div>
 
-      ${paneComponent}
+      {paneComponent}
 
-      <footer className="theme-dark">
-        NPMGraph v${ENV.appVersion} ${'\xa9'} Robert Kieffer, 2020  MIT License – <${ExternalLink}
-          id="github"
-          href="https://github.com/npmgraph/npmgraph">
+      <footer className='theme-dark'>
+        NPMGraph v${ENV.appVersion} ${'\xa9'} Robert Kieffer, 2020  MIT License – <ExternalLink
+            id='github'
+            href='https://github.com/npmgraph/npmgraph'>
           GitHub
-        </${ExternalLink}>
+        </ExternalLink>
       </footer>
-    </div>`;
+    </div>;
 }

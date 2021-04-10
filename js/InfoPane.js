@@ -1,4 +1,4 @@
-import { html, useContext, useState } from '../vendor/preact.js';
+import React, { useContext, useState } from 'react';
 import { Pane, QueryLink } from './Inspector.js';
 import { AppContext, store } from './App.js';
 
@@ -79,30 +79,32 @@ export default function InfoPane() {
     ev.preventDefault();
   };
 
-  return html`
-    <${Pane} style=${{ display: 'flex', flexDirection: 'column' }}>
-      <input id="package-input" type="file" hidden onChange=${onSelect} accept=".json"/>
+  return <Pane style={{ display: 'flex', flexDirection: 'column' }}>
+      <input id='package-input' type='file' hidden onChange={onSelect} accept='.json'/>
       <p>
-      Enter NPM module name here <i class="material-icons">arrow_upward</i> to see the dependency graph.  Separate multiple module names with commas (e.g. <a href="?q=mocha, chalk, rimraf">"mocha, chalk, rimraf"</a>).
+      Enter NPM module name here <i className='material-icons'>arrow_upward</i> to see the dependency graph.
+      Separate multiple module names with commas (e.g. <a href='?q=mocha, chalk, rimraf'>&quot;mocha, chalk, rimraf&quot;</a>).
       </p>
-      <label for="package-input" id="drop_target" style="text-align: center; cursor: pointer"
-        onDrop=${onDrop}
-        onDragOver=${onDragOver}
-        onDragLeave=${onDragLeave}
+      <label htmlFor='package-input' id='drop_target' style={{ textAlign: 'center', cursor: 'pointer' }}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
       >
-        Alternatively, <button type="button">select</button> or drop a <code>package.json</code> file here
+        Alternatively, <button type='button'>select</button> or drop a <code>package.json</code> file here
       </label>
-        ${
-          recents.length ? html`<div  style=${{ textAlign: 'start' }}>
-            <p style=${{ marginTop: '1em' }}>Recent files:</p>
-            <ul>
-              ${recents.map(name => html`<li><${QueryLink} query=${name} /></li>`)}
-            </ul>
-          </div>
-          <div style=${{ fontSize: '85%', color: 'gray' }}>
-            (Dropped files do not leave your computer and are cleared when browser closes.)
-          </div>
-          ` : null
+        {
+          recents.length ? <>
+            <div style={{ textAlign: 'start' }}>
+              <p style={{ marginTop: '1em' }}>Recent files:</p>
+              <ul>
+                {recents.map(name => <li key={name}><QueryLink query={name} /></li>)}
+              </ul>
+            </div>
+            <div style={{ fontSize: '85%', color: 'gray' }}>
+              (Dropped files do not leave your computer and are cleared when browser closes.)
+            </div>
+          </>
+            : null
         }
-    </${Pane}>`;
+    </Pane>;
 }

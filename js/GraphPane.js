@@ -1,5 +1,5 @@
-import { d3 } from '/vendor/shims.js';
-import { html, useContext, useEffect, useRef } from '/vendor/preact.js';
+import * as d3 from 'd3';
+import React, { useContext, useEffect, useRef } from 'react';
 import { AppContext } from './App.js';
 import { Pane, Section, Tags, Tag } from './Inspector.js';
 import { simplur } from './util.js';
@@ -11,19 +11,18 @@ function DepInclude({ type, ...props }) {
 
   let arrow = null;
   switch (type) {
-    case 'devDependencies': arrow = html`(<span style="color: red">${'\u{27f6}'}</span>)`; break;
-    case 'peerDependencies': arrow = html`(<span style="color: green">${'\u{27f6}'}</span>)`; break;
+    case 'devDependencies': arrow = <>(<span style={{ color: 'red' }}>{'\u{27f6}'}</span>)</>; break;
+    case 'peerDependencies': arrow = <>(<span style={{ color: 'green' }}>{'\u{27f6}'}</span>)</>; break;
   }
 
   function toggle(checked) {
     setDepIncludes(checked ? [type, ...depIncludes] : depIncludes.filter(t => type != t));
   }
 
-  return html`
-      <${Toggle}  class="depInclude" checked=${depIncludes.includes(type)} onChange=${toggle}>
-      <code>${type} ${arrow}</code>
+  return <Toggle className='depInclude' checked={depIncludes.includes(type)} onChange={toggle}>
+      <code>{type} {arrow}</code>
       </Toggle>
-  `;
+  ;
 }
 
 function PieGraph({ entries, ...props }) {
@@ -86,7 +85,7 @@ function PieGraph({ entries, ...props }) {
         .text(d => d.data[1].toLocaleString()));
   });
 
-  return html`<svg ref=${svgEl} ...${props}/>`;
+  return <svg ref={svgEl} {...props}/>;
 }
 
 export default function GraphPane({ graph }) {
@@ -120,71 +119,70 @@ export default function GraphPane({ graph }) {
     .sort(compareEntryValue)
     .reverse();
 
-  const x = html`
-    <${Pane}>
+  const x = <Pane>
         Include:
-        <${DepInclude} type="dependencies" />
-        <${DepInclude} type="devDependencies" />
-        <${DepInclude} type="peerDependencies" />
+        <DepInclude type='dependencies' />
+        <DepInclude type='devDependencies' />
+        <DepInclude type='peerDependencies' />
 
         <label>
           Colorize by:
-          <select onChange=${e => setColorize(e.target.value)}>
-            <option selected=${!colorize} value="">Nothing (uncolored)</option>
+          <select value={colorize ?? ''} onChange={e => setColorize(e.target.value)}>
+            <option value=''>Nothing (uncolored)</option>
 
-            <option selected=${colorize == 'overall'} value="overall"> NPMS.io overall score</option>
-            <option selected=${colorize == 'quality'} value="quality"> NPMS.io quality score</option>
-            <option selected=${colorize == 'popularity'} value="popularity"> NPMS.io popularity score</option>
-            <option selected=${colorize == 'maintenance'} value="maintenance">NPMS.io maintenance score</option>
+            <option value='overall'> NPMS.io overall score</option>
+            <option value='quality'> NPMS.io quality score</option>
+            <option value='popularity'> NPMS.io popularity score</option>
+            <option value='maintenance'>NPMS.io maintenance score</option>
 
-            <option selected=${colorize == 'bus'} value="bus"># of maintainers</option>
+            <option value='bus'># of maintainers</option>
           </select>
         </label>
-        ${
-          colorize == 'bus' ? html`<div>
-          <span style=${{ color: hslFor(0) }}>${'\u2B24'}</span> = 1 maintainer,
-          <span style=${{ color: hslFor(1 / 3) }}>${'\u2B24'}</span> = 2,
-          <span style=${{ color: hslFor(2 / 3) }}>${'\u2B24'}</span> = 3, 
-          <span style=${{ color: hslFor(3 / 3) }}>${'\u2B24'}</span> = 4+ 
-          </div>`
-          : colorize ? html`<div>
-          <span style=${{ color: hslFor(0) }}>${'\u2B24'}</span> = 0%,
-          <span style=${{ color: hslFor(1 / 2) }}>${'\u2B24'}</span> = 50%,
-          <span style=${{ color: hslFor(2 / 2) }}>${'\u2B24'}</span> = 100% 
-          </div>` : null
+        {
+          colorize == 'bus' ? <div>
+          <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 1 maintainer,
+          <span style={{ color: hslFor(1 / 3) }}>{'\u2B24'}</span> = 2,
+          <span style={{ color: hslFor(2 / 3) }}>{'\u2B24'}</span> = 3,
+          <span style={{ color: hslFor(3 / 3) }}>{'\u2B24'}</span> = 4+
+          </div>
+            : colorize ? <div>
+          <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 0%,
+          <span style={{ color: hslFor(1 / 2) }}>{'\u2B24'}</span> = 50%,
+          <span style={{ color: hslFor(2 / 2) }}>{'\u2B24'}</span> = 100%
+          </div> : null
         }
 
-      <${Section} title=${simplur`${graph.size} Module[|s]`}>
-        <${Tags}>
-          ${
+      <Section title={simplur`${graph.size} Module[|s]`}>
+        <Tags>
+          {
             Object.entries(dependencies)
               .sort(compareEntryKey)
-              .map(([name, count]) => html`<${Tag} name=${name} type='module' count=${count} />`)
+              .map(([name, count]) => <Tag key={name + count} name={name} type='module' count={count} />)
           }
-        <//>
-      <//>
+        </Tags>
+      </Section>
 
-      <${Section} title=${simplur`${Object.entries(maintainers).length} Maintainer[|s]`}>
-        <${Tags}>
-          ${
+      <Section title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}>
+        <Tags>
+          {
             Object.entries(maintainers)
-            .sort(compareEntryKey)
-            .map(([, { name, email, count }]) => html`<${Tag} name=${name} type='maintainer' count=${count} gravatar=${email} />`)
+              .sort(compareEntryKey)
+              .map(([, { name, email, count }]) => <Tag key={name + count} name={name} type='maintainer' count={count} gravatar={email} />)
           }
-        <//>
-      <//>
+        </Tags>
+      </Section>
 
-      <${Section} title=${simplur`${licenses.length} License[|s]`}>
-        <${Tags}>
-          ${
-            licenses.map(([name, count]) => html`<${Tag} name=${name} type='license' count=${count} />`)
+      <Section title={simplur`${licenses.length} License[|s]`}>
+        <Tags>
+          {
+            licenses.map(([name, count]) => <Tag key={name + count} name={name} type='license' count={count} />)
           }
-        <//>
-        
-        ${licenses.length > 1 ? html`<${PieGraph} style=${{ width: '100%', height: '200px', padding: '1em 0' }} entries=${licenses} />` : null}
-      <//>
+        </Tags>
 
-    </${Pane}>`;
+        {licenses.length > 1 ? <PieGraph style={{ width: '100%', height: '200px', padding: '1em 0' }} entries={licenses} /> : null}
+      </Section>
+
+    </Pane>;
 
   return x;
 }
