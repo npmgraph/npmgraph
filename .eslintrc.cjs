@@ -1,6 +1,6 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   env: {
     browser: true
     // es2020: true,
@@ -16,14 +16,9 @@ module.exports = {
       version: 'detect'
     }
   },
-  parserOptions: {
-    ecmaVersion: 11,
-    sourceType: 'module'
-  },
   rules: {
     'brace-style': ['error', '1tbs'],
     'no-return-assign': 'off',
-    'eol-last': ['error', 'never'],
     'no-var': ['error'],
     'one-var': 'off',
     'jsx-quotes': ['error', 'prefer-single'],

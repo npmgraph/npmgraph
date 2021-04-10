@@ -253,11 +253,11 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
 }
 
 export function GraphControls() {
-  return <div id="graph-controls">
-    <button onClick={() => zoom(1)} title="zoom (fit width)" className="material-icons" style={{ borderRadius: '3px 0 0 3px' }}>swap_horiz</button>
-    <button onClick={() => zoom(0)} title="zoom (1:1)" style={{ fontSize: '1em', padding: '0 .5em', width: 'fit-content', borderWidth: '1px 0px', borderRadius: 0 }}>1:1</button>
-    <button onClick={() => zoom(2)} title="zoom (fit height)" className="material-icons" style={{ borderRadius: '0 3px 3px 0' }}>swap_vert</button>
-    <button onClick={() => download('svg')} title="download as SVG" className="material-icons" style={{ marginLeft: '0.5em' }}>cloud_download</button>
+  return <div id='graph-controls'>
+    <button onClick={() => zoom(1)} title='zoom (fit width)' className='material-icons' style={{ borderRadius: '3px 0 0 3px' }}>swap_horiz</button>
+    <button onClick={() => zoom(0)} title='zoom (1:1)' style={{ fontSize: '1em', padding: '0 .5em', width: 'fit-content', borderWidth: '1px 0px', borderRadius: 0 }}>1:1</button>
+    <button onClick={() => zoom(2)} title='zoom (fit height)' className='material-icons' style={{ borderRadius: '0 3px 3px 0' }}>swap_vert</button>
+    <button onClick={() => download('svg')} title='download as SVG' className='material-icons' style={{ marginLeft: '0.5em' }}>cloud_download</button>
   </div>;
 }
 
@@ -301,13 +301,17 @@ export default function Graph(props) {
 
     const onFinish = activity.start('Rendering');
 
+    composeDOT(graph);
     // TODO: Render using hpcc/wasm directly per https://raw.githack.com/hpcc-systems/hpcc-js-wasm/trunk/index.html
     // const graphviz = d3.select('#graph')
     //   .graphviz({ zoom: false, useWorker: false })
     //   .renderDot(composeDOT(graph));
 
+    // HACK: Until I get the above issue figured out...
+    const graphviz = { on: () => {} };
+
     // Post-process rendered DOM
-    window.FDSAJFKLDSAFJKSLFJS && graphviz?.on('end', async() => {
+    graphviz?.on('end', async() => {
       if (cancelled) return;
 
       const PATTERN = `<pattern id="warning"
@@ -421,7 +425,7 @@ export default function Graph(props) {
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 
-  return <div id="graph" onClick={handleGraphClick} >
+  return <div id='graph' onClick={handleGraphClick} >
     <GraphControls />
   </div>;
 }

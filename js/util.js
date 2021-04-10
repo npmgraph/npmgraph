@@ -101,7 +101,7 @@ class ElementSet extends Array {
   }
 
   set textContent(str) {
-    return this.forEach(el => el.textContent = str);
+    this.forEach(el => el.textContent = str);
   }
 
   get innerText() {
@@ -109,7 +109,7 @@ class ElementSet extends Array {
   }
 
   set innerText(str) {
-    return this.forEach(el => el.innerText = str);
+    this.forEach(el => el.innerText = str);
   }
 
   get innerHTML() {
@@ -117,7 +117,7 @@ class ElementSet extends Array {
   }
 
   set innerHTML(str) {
-    return this.forEach(el => el.innerHTML = str);
+    this.forEach(el => el.innerHTML = str);
   }
 
   appendChild(nel) {
