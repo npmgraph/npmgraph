@@ -22,6 +22,6 @@ export function handleModifiedClicks() {
     // Perform the click on a new link (sans-event handlers)
     const el = document.createElement('a');
     el.href = e.target.href;
-    el.dispatchEvent(new MouseEvent("click", e));
+    el.dispatchEvent(new MouseEvent('click', e));
   }, true);
 }
