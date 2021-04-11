@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
-
 import * as d3 from 'd3';
-// import { graphviz } from '@hpcc-js/wasm';
 import 'd3-graphviz';
 
 import { AppContext, store, activity } from './App.js';
 import { $, tagElement, report, fetchJSON } from './util.js';
+import { graphviz } from '@hpcc-js/wasm';
+import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
+
+// Fetch WASM binary for graphviz rendering
+const wasmBinaryPromise = fetch(wasmUrl, { credentials: 'same-origin' })
+  .then(res => {
+    if (!res.ok) throw Error(`Failed to load '${wasmUrl}'`);
+    return res.arrayBuffer();
+  });
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -298,66 +305,67 @@ export default function Graph(props) {
 
     const graph = await modulesForQuery(query, depIncludes);
 
+    console.log('RENDERING');
     const onFinish = activity.start('Rendering');
 
-    composeDOT(graph);
-    // TODO: Render using hpcc/wasm directly per https://raw.githack.com/hpcc-systems/hpcc-js-wasm/trunk/index.html
-    // const graphviz = d3.select('#graph')
-    //   .graphviz({ zoom: false, useWorker: false })
-    //   .renderDot(composeDOT(graph));
+    const wasmBinary = await wasmBinaryPromise; // Avoid race if wasmBinary fetch hasn't completed
+    const svg = await graphviz.layout(composeDOT(graph), 'svg', 'dot', { wasmBinary });
 
-    // HACK: Until I get the above issue figured out...
-    const graphviz = { on: () => {} };
+    let svgDom = (new DOMParser()).parseFromString(svg, 'image/svg+xml');
+    svgDom = svgDom.children[0];
+    svgDom.remove();
+
+    const el = $('#graph');
+    d3.select('#graph svg').remove();
+    el.appendChild(svgDom);
 
     // Post-process rendered DOM
-    graphviz?.on('end', async() => {
-      if (cancelled) return;
+    if (cancelled) return;
 
-      const PATTERN = `<pattern id="warning"
-        width="12" height="12"
-        patternUnits="userSpaceOnUse"
-        patternTransform="rotate(45 50 50)">
-        <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
-        <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
-      </pattern>`;
+    const PATTERN = `<pattern id="warning"
+      width="12" height="12"
+      patternUnits="userSpaceOnUse"
+      patternTransform="rotate(45 50 50)">
+      <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
+      <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
+    </pattern>`;
 
-      d3.select('#graph svg')
-        .insert('defs', ':first-child')
-        .html(PATTERN);
+    d3.select('#graph svg')
+      .insert('defs', ':first-child')
+      .html(PATTERN);
 
-      for (const el of $('#graph g.node')) {
-        // Find module this node represents
-        const key = $(el, 'text')[0].textContent;
-        if (!key) continue;
+    for (const el of $('#graph g.node')) {
+      // Find module this node represents
+      const key = $(el, 'text')[0].textContent;
+      if (!key) continue;
 
-        const m = store.cachedEntry(key);
+      const m = store.cachedEntry(key);
 
-        if (m?.package?.deprecated) {
-          el.classList.add('warning');
-        }
-
-        if (m?.name) {
-          tagElement(el, 'module', m.name);
-          el.dataset.module = m.key;
-        } else {
-          report.warn(Error(`Bad replace: ${key}`));
-        }
-
-        const pkg = m.package;
-        if (pkg.stub) {
-          el.classList.add('stub');
-        } else {
-          tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
-          tagElement(el, 'license', m.licenseString);
-        }
+      if (m?.package?.deprecated) {
+        el.classList.add('warning');
       }
 
-      setSvg($('#graph svg')[0]);
+      if (m?.name) {
+        tagElement(el, 'module', m.name);
+        el.dataset.module = m.key;
+      } else {
+        report.warn(Error(`Bad replace: ${key}`));
+      }
 
-      d3.select('#graph svg .node').node()?.scrollIntoView();
+      const pkg = m.package;
+      if (pkg.stub) {
+        el.classList.add('stub');
+      } else {
+        tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
+        tagElement(el, 'license', m.licenseString);
+      }
+    }
 
-      onFinish();
-    });
+    setSvg($('#graph svg')[0]);
+
+    d3.select('#graph svg .node').node()?.scrollIntoView();
+
+    onFinish();
 
     setGraph(graph);
     setPane(graph.size ? 'graph' : 'info');
