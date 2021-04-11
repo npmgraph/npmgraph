@@ -282,9 +282,9 @@ export default function Graph(props) {
   const [svg, setSvg] = useState();
 
   async function handleGraphClick(event) {
-    if ($('#graph-controls').contains(event.srcElement)) return;
+    if ($('#graph-controls').contains(event.target)) return;
 
-    const el = $.up(event.srcElement, '.node');
+    const el = $.up(event.target, '.node');
 
     selectTag(el, true);
 
