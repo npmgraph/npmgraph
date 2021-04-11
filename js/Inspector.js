@@ -14,20 +14,22 @@ export function Fix() {
 }
 
 export function ExternalLink({ href, children, target = '_blank', className, style, ...props }) {
-  return <a href={href} className={`bright-hover ${className}`} target={target} style={{ marginRight: '8px', ...style }} {...props}>
+  return <a href={href} className={`bright-hover ${className}`} target={target} {...props}>
   {children}
-  <span style={{ marginLeft: 0 }} className='material-icons'>open_in_new</span>
+  <span className='material-icons'>open_in_new</span>
   </a>;
 }
 
 export function QueryLink({ query }) {
   const { query: [, setQuery] } = useContext(AppContext);
   if (!Array.isArray(query)) query = [query];
-  return <a href='#' onClick={e => {
+  const url = `${location.pathname}?q=${query.join(',')}`;
+  function onClick(e) {
     e.preventDefault();
     setQuery(query);
-    history.pushState(null, null, `${location.pathname}?q=${query.join(',')}`);
-  }}>{query.join(',')}</a>;
+    history.pushState(null, null, e.target.href);
+  }
+  return <a href={url} onClick={onClick}>{query.join(',')}</a>;
 }
 
 export function Section({ title, children, open = true, style, ...props }) {
@@ -112,11 +114,10 @@ export default function Inspector({ className, ...props }) {
       {paneComponent}
 
       <footer className='theme-dark'>
-        NPMGraph v${ENV.appVersion} ${'\xa9'} Robert Kieffer, 2020  MIT License – <ExternalLink
-            id='github'
-            href='https://github.com/npmgraph/npmgraph'>
-          GitHub
-        </ExternalLink>
+        NPMGraph v{ENV.appVersion} {'\xa9'}, MIT License
+        (See <ExternalLink id='github' href='//github.com/npmgraph/npmgraph'>
+        GitHub
+        </ExternalLink> for details)
       </footer>
     </div>;
 }

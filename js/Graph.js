@@ -262,7 +262,6 @@ export function GraphControls() {
 }
 
 export default function Graph(props) {
-  // if (!window.fdsafd) return <h1 id="graph" >Hellow World</h1>;
   const {
     query: [query],
     colorize: [colorize],

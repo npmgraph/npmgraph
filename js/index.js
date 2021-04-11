@@ -1,8 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
 import App from './App';
+import { handleModifiedClicks } from './modifiedEvents';
+import { Flash } from './Components';
 
-import { Flash } from './Components.js';
+handleModifiedClicks();
 
 // Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;
