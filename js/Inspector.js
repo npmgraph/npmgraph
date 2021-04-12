@@ -1,6 +1,6 @@
 /* global ENV */
 
-import React from 'React';
+import React from 'react';
 import { tagify } from './util';
 import md5 from 'md5';
 import ModulePane from './ModulePane';
