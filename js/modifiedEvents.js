@@ -13,7 +13,7 @@ export function eventIsModified(e) {
 export function handleModifiedClicks() {
   document.addEventListener('click', e => {
     // Ignore events that aren't modified link clicks
-    if (e.target.nodeName != 'A' || !eventIsModified(e)) return;
+    if (!e.target.closest('A') || !eventIsModified(e)) return;
 
     // Stop processing this event
     e.preventDefault();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { QueryLink, Pane, Section, Tags, Tag, ExternalLink } from './Inspector.js';
 import { human, fetchJSON, simplur, $ } from './util.js';
+import * as d3 from 'd3';
 
 function ScoreBar({ title, score, style }) {
   const perc = (score * 100).toFixed(0) + '%';
@@ -71,7 +72,7 @@ function TreeMap({ data, style, ...props }) {
           width: `${d.x1 - d.x0 - m}px`,
           height: `${d.y1 - d.y0 - m}px`,
           fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
-          backgroundColor: 'hsl({(75 + (i / a.length) * 360) % 360}, 50%, 70%)'
+          backgroundColor: `hsl(${(75 + (i / a.length) * 360) % 360}, 50%, 70%)`
         }}>{d.data.name} <span>{size}</span></div>;
       })
     );
@@ -142,8 +143,8 @@ export default function ModulePane({ module, ...props }) {
 
       <p>{pkg?.description}</p>
 
-      <ExternalLink href={module.npmLink}>NPM</ExternalLink>
-      {module.repoLink ? <ExternalLink href={module.repoLink}>GitHub</ExternalLink> : null}
+      <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>NPM</ExternalLink>
+      {module.repoLink ? <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>GitHub</ExternalLink> : null}
       {
         // Displaying dropped package contents is a bit problematic, but we give it a shot here.
         module.package?._dropped

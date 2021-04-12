@@ -13,10 +13,10 @@ export function Fix() {
   return <span style={{ fontWeight: 'bold', color: 'red' }}>FIX!</span>;
 }
 
-export function ExternalLink({ href, children, target = '_blank', className, style, ...props }) {
+export function ExternalLink({ href, children, target = '_blank', className, ...props }) {
   return <a href={href} className={`bright-hover ${className}`} target={target} {...props}>
   {children}
-  <span className='material-icons'>open_in_new</span>
+    <span className='material-icons'>open_in_new</span>
   </a>;
 }
 
@@ -60,7 +60,7 @@ export function Tag({ type, name, title = name, count = 0, gravatar, ...props })
     img = <img src={`https://www.gravatar.com/avatar/${hash}?s=32`} />;
   }
 
-  return <div className='tag {type} bright-hover' title={title}
+  return <div className={`tag ${type} bright-hover`} title={title}
     onClick={() => selectTag(tagify(type, name), true, true)}>{img}{title}</div>;
 }
 
@@ -113,11 +113,12 @@ export default function Inspector({ className, ...props }) {
 
       {paneComponent}
 
-      <footer className='theme-dark'>
-        NPMGraph v{ENV.appVersion} {'\xa9'}, MIT License
-        (See <ExternalLink id='github' href='//github.com/npmgraph/npmgraph'>
-        GitHub
-        </ExternalLink> for details)
+      <footer>
+        {'\xa9'} NPMGraph Contributors
+        {' '}&mdash;{' '}
+        <ExternalLink id='github' href='//github.com/npmgraph/npmgraph'>GitHub</ExternalLink>
+        {' '}&mdash;{' '}
+        v{ENV.appVersion}
       </footer>
     </div>;
 }
