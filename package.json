@@ -9,7 +9,7 @@
   },
   "license": "MIT",
   "browserslist": [
-    "since 2017-06"
+    "since 2019-01"
   ],
   "dependencies": {
     "@hpcc-js/wasm": "1.4.1",
