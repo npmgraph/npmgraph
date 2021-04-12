@@ -50,7 +50,8 @@
     "standard-version": "9.1.0"
   },
   "scripts": {
-    "start": "parcel index.html",
+    "start": "parcel index.html --dist-dir docs",
+    "build": "parcel build index.html --dist-dir docs",
     "test": "eslint ."
   }
 }

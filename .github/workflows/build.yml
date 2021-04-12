@@ -2,10 +2,12 @@ name: CI
 on:
   - push
   - pull_request
+
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: npm install
       - run: npm test
+      - run: npm run build
