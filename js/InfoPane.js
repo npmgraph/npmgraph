@@ -9,7 +9,7 @@ function getFileEntries() {
 }
 
 export default function InfoPane() {
-  const [setQuery] = sharedState.use('query');
+  const [, setQuery] = sharedState.use('query');
 
   const [recents, setRecents] = useState(getFileEntries());
 
