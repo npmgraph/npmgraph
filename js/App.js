@@ -36,10 +36,10 @@ export function useActivity() {
 
 export default function App() {
   const activity = useActivity();
+  const [, setQuery] = sharedState.use('query');
 
   useEffect(() => {
     function handlePopState() {
-      const [, setQuery] = sharedState.use('query');
       setQuery(queryFromLocation());
     }
 

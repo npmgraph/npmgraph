@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import * as d3 from 'd3';
-import 'd3-graphviz';
 
 import { sharedState, store, activity } from './App';
 import { $, tagElement, report, fetchJSON } from './util';
