@@ -1,5 +1,3 @@
-import validate from '/vendor/pjv';
-
 function parseGithubPath(s) {
   s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
   return s?.replace?.(/\.git$/, '');
@@ -27,10 +25,6 @@ export default class Module {
       pkg.maintainers = [pkg.maintainers];
     }
     this.package = pkg;
-  }
-
-  validate() {
-    return validate(this.package);
   }
 
   get key() {
