@@ -2,7 +2,7 @@
 
 import React from 'React';
 import { tagify } from './util';
-import md5 from '/vendor/md5';
+import md5 from 'md5';
 import ModulePane from './ModulePane';
 import GraphPane from './GraphPane';
 import InfoPane from './InfoPane';
@@ -54,9 +54,7 @@ export function Tag({ type, name, title = name, count = 0, gravatar, ...props })
 
   let img = null;
   if (gravatar) {
-    const hash = md5(gravatar)
-      .map(v => v.toString(16).padStart(2, '0'))
-      .join('');
+    const hash = md5(gravatar);
     img = <img src={`https://www.gravatar.com/avatar/${hash}?s=32`} />;
   }
 
