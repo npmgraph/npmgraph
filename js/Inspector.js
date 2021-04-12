@@ -83,6 +83,19 @@ export default function Inspector({ className, ...props }) {
     case 'info': paneComponent = <InfoPane />; break;
   }
 
+  function doSearch(e) {
+    // Convert input text to unique list of names
+    const names = [...new Set(e.currentTarget.value.split(/,\s*/).filter(x => x))];
+
+    // Update location
+    const url = new URL(location);
+    url.search = `?q=${names.join(',')}`;
+    url.hash = '';
+    history.replaceState(null, window.title, url);
+
+    setQuery(names);
+  }
+
   return <div id='inspector' className={`theme-light ${className}`} {...props} >
       <div id='tabs' className='theme-dark'>
         <Tab active={pane == 'module'} onClick={() => setPane('module')}>Module</Tab>
@@ -92,19 +105,11 @@ export default function Inspector({ className, ...props }) {
           <input
             type='text'
             id='search-field'
-            value={query.join(',')}
-            onChange={e => {
-              // Convert input text to unique list of names
-              const names = [...new Set(e.currentTarget.value.split(/,\s*/).filter(x => x))];
-
-              // Update location
-              const url = new URL(location);
-              url.search = `?q=${names.join(',')}`;
-              url.hash = '';
-              history.replaceState(null, window.title, url);
-
-              setQuery(names);
+            defaultValue={query}
+            onKeyDown={e => {
+              if (e.key == 'Enter') doSearch(e);
             }}
+            onBlur={doSearch}
             placeholder={'\u{1F50D} \xa0Enter module name'}
             autoFocus
           />
