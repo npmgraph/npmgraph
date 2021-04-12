@@ -1,15 +1,24 @@
-import React, { useState, useEffect, createContext } from 'react';
-import Inspector from './Inspector.js';
-import Graph from './Graph.js';
-import { LoadActivity } from './util.js';
-import Store from './Store.js';
-import { Loader } from './Components.js';
-
-export const AppContext = createContext(null);
+import React, { useState, useEffect } from 'react';
+import Inspector from './Inspector';
+import Graph from './Graph';
+import { LoadActivity } from './util';
+import Store from './Store';
+import { Loader } from './Components';
+import createSharedState from './createSharedState';
 
 function Splitter({ onClick, isOpen }) {
   return <div id='splitter' className='theme-dark bright-hover' onClick={onClick}>{isOpen ? '\u{25b6}' : '\u{25c0}'}</div>;
 }
+
+export const sharedState = createSharedState({
+  pane: 'info',
+  inspectorOpen: true,
+  query: queryFromLocation(),
+  module: [],
+  graph: [],
+  colorize: false,
+  depIncludes: ['dependencies']
+});
 
 // Parse url query param from browser location, "q"
 function queryFromLocation() {
@@ -26,21 +35,11 @@ export function useActivity() {
 }
 
 export default function App() {
-  const context = {
-    pane: useState('info'),
-    inspectorOpen: useState(true),
-    query: useState(queryFromLocation()),
-    module: useState([]),
-    graph: useState([]),
-    colorize: useState(false),
-    depIncludes: useState(['dependencies'])
-  };
-
   const activity = useActivity();
 
   useEffect(() => {
     function handlePopState() {
-      const { query: [, setQuery] } = context;
+      const [, setQuery] = sharedState.use('query');
       setQuery(queryFromLocation());
     }
 
@@ -51,12 +50,12 @@ export default function App() {
     };
   }, []);
 
-  const [inspectorOpen, setInspectorOpen] = context.inspectorOpen;
+  const [inspectorOpen, setInspectorOpen] = sharedState.use('inspectorOpen');
 
-  return <AppContext.Provider value={context}>
+  return <>
       {activity.total > 0 ? <Loader activity={activity} /> : null}
       <Graph />
       <Splitter isOpen={inspectorOpen} onClick={() => setInspectorOpen(!inspectorOpen)} />
       <Inspector className={inspectorOpen ? 'open' : ''} />
-    </AppContext.Provider>;
+    </>;
 }

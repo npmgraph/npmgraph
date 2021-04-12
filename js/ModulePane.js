@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { QueryLink, Pane, Section, Tags, Tag, ExternalLink } from './Inspector.js';
-import { human, fetchJSON, simplur, $ } from './util.js';
+import { QueryLink, Pane, Section, Tags, Tag, ExternalLink } from './Inspector';
+import { human, fetchJSON, simplur, $ } from './util';
 import * as d3 from 'd3';
 
 function ScoreBar({ title, score, style }) {

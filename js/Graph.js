@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as d3 from 'd3';
 import 'd3-graphviz';
 
-import { AppContext, store, activity } from './App.js';
-import { $, tagElement, report, fetchJSON } from './util.js';
+import { sharedState, store, activity } from './App';
+import { $, tagElement, report, fetchJSON } from './util';
 import { graphviz } from '@hpcc-js/wasm';
 import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
 
@@ -269,15 +269,13 @@ export function GraphControls() {
 }
 
 export default function Graph(props) {
-  const {
-    query: [query],
-    colorize: [colorize],
-    depIncludes: [depIncludes],
-    pane: [, setPane],
-    inspectorOpen: [, setInspectorOpen],
-    module: [, setModule],
-    graph: [, setGraph]
-  } = useContext(AppContext);
+  const [query] = sharedState.use('query');
+  const [depIncludes] = sharedState.use('depIncludes');
+  const [, setPane] = sharedState.use('pane');
+  const [, setInspectorOpen] = sharedState.use('inspectorOpen');
+  const [, setModule] = sharedState.use('module');
+  const [, setGraph] = sharedState.use('graph');
+  const [colorize] = sharedState.use('colorize');
 
   const [svg, setSvg] = useState();
 
@@ -428,7 +426,7 @@ export default function Graph(props) {
     }
 
     return () => cancelled = true;
-  });
+  }, [colorize]);
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 

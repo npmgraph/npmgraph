@@ -1,6 +1,6 @@
-import { fetchJSON, report } from './util.js';
-import Module, { moduleKey } from './Module.js';
-import * as semver from '/vendor/semver.js';
+import { fetchJSON, report } from './util';
+import Module, { moduleKey } from './Module';
+import * as semver from '/vendor/semver';
 
 class Store {
   moduleCache = {};

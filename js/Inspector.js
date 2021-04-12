@@ -1,13 +1,13 @@
 /* global ENV */
 
-import React, { useContext } from 'React';
-import { AppContext } from './App.js';
-import { tagify } from './util.js';
-import md5 from '/vendor/md5.js';
-import ModulePane from './ModulePane.js';
-import GraphPane from './GraphPane.js';
-import InfoPane from './InfoPane.js';
-import { selectTag } from './Graph.js';
+import React from 'React';
+import { tagify } from './util';
+import md5 from '/vendor/md5';
+import ModulePane from './ModulePane';
+import GraphPane from './GraphPane';
+import InfoPane from './InfoPane';
+import { selectTag } from './Graph';
+import { sharedState } from './App';
 
 export function Fix() {
   return <span style={{ fontWeight: 'bold', color: 'red' }}>FIX!</span>;
@@ -21,7 +21,7 @@ export function ExternalLink({ href, children, target = '_blank', className, ...
 }
 
 export function QueryLink({ query }) {
-  const { query: [, setQuery] } = useContext(AppContext);
+  const [, setQuery] = sharedState.use('query');
   if (!Array.isArray(query)) query = [query];
   const url = `${location.pathname}?q=${query.join(',')}`;
   function onClick(e) {
@@ -69,12 +69,10 @@ function Tab({ active, children, ...props }) {
 }
 
 export default function Inspector({ className, ...props }) {
-  const {
-    query: [query, setQuery],
-    pane: [pane, setPane],
-    module: [module],
-    graph: [graph]
-  } = useContext(AppContext);
+  const [query, setQuery] = sharedState.use('query');
+  const [pane, setPane] = sharedState.use('pane');
+  const [module] = sharedState.use('module');
+  const [graph] = sharedState.use('graph');
 
   let paneComponent;
   switch (pane) {
