@@ -4,12 +4,15 @@
   --splitter-size: 2em;
   --inspector-size: 32em;
   --tabs-height: 24pt;
+  
+  /* TODO: Any vars dealing with color should should have a theme-neutral name (e.g. this should just be "--bg-gradient"), and should be defined in both themes, below */
   --bg-dark-gradient: linear-gradient(
     to bottom,
     #919191,
     #7e7e7d
   );
 }
+
 .theme-lite {
   /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
   --text: #020303;
@@ -373,7 +376,8 @@ footer {
   padding: 0.5em;
   box-sizing: border-box;
   width: 32em;
-  color: var(--bg0);
+  color: var(--text);
+  background-color: var(--bg0);
   text-align: center;
 }
 
