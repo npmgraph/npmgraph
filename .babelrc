@@ -1,7 +1,6 @@
 {
   "presets": [
       "@parcel/babel-preset-env",
-      "@babel/preset-env",
       "@babel/preset-react"
   ],
   "plugins": [
