@@ -130,58 +130,58 @@ export default function ModulePane({ module, ...props }) {
   }
 
   return <Pane {...props}>
-      <h2><QueryLink query={module.key} /></h2>
+    <h2><QueryLink query={module.key} /></h2>
 
+    {
+      pkg.deprecated
+        ? <div className='warning' style={{ padding: '.5em', borderRadius: '.5em' }}>
+            <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
+            {pkg.deprecated}
+          </div>
+        : null
+    }
+
+    <p>{pkg?.description}</p>
+
+    <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>NPM</ExternalLink>
+    {module.repoLink ? <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>GitHub</ExternalLink> : null}
+    {
+      // Displaying dropped package contents is a bit problematic, but we give it a shot here.
+      module.package?._dropped
+        ? <ExternalLink href={`data:text/json;base64,${btoa(JSON.stringify(module.package))}`}>package.json</ExternalLink>
+        : <ExternalLink href={module.apiLink}>package.json</ExternalLink>
+    }
+
+    <Section title='Bundle Size'>
+      {bundleInfo ? <BundleStats bundleInfo={bundleInfo} /> : null}
       {
-        pkg.deprecated
-          ? <div className='warning' style={{ padding: '.5em', borderRadius: '.5em' }}>
-              <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
-              {pkg.deprecated}
-            </div>
-          : null
+        (!bundleInfo) ? <span>Loading ...</span>
+          : (bundleInfo instanceof Error) ? <span>Unavailable</span>
+              : <TreeMap style={{ height: '150px', margin: '1em' }} data={bundleInfo} />
       }
-
-      <p>{pkg?.description}</p>
-
-      <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>NPM</ExternalLink>
-      {module.repoLink ? <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>GitHub</ExternalLink> : null}
       {
-        // Displaying dropped package contents is a bit problematic, but we give it a shot here.
-        module.package?._dropped
-          ? <ExternalLink href={`data:text/json;base64,${btoa(JSON.stringify(module.package))}`}>package.json</ExternalLink>
-          : <ExternalLink href={module.apiLink}>package.json</ExternalLink>
+        (bundleInfo && !(bundleInfo instanceof Error)) ? <>Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink></> : null
       }
+    </Section>
 
-      <Section title='Bundle Size'>
-        {bundleInfo ? <BundleStats bundleInfo={bundleInfo} /> : null}
-        {
-          (!bundleInfo) ? <span>Loading ...</span>
-            : (bundleInfo instanceof Error) ? <span>Unavailable</span>
-                : <TreeMap style={{ height: '150px', margin: '1em' }} data={bundleInfo} />
-        }
-        {
-          (bundleInfo && !(bundleInfo instanceof Error)) ? <>Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink></> : null
-        }
-      </Section>
+    <Section title='NPMS.io Score'>
+      {
+        !npmsInfo ? 'Loading'
+          : (npmsInfo instanceof Error)
+              ? 'Unavailable'
+              : <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', marginTop: '1em', rowGap: '1px' }}>
+            <ScoreBar style={{ fontWeight: 'bold' }} title='Overall' score={scores.final} />
+            <ScoreBar style={{ fontSize: '.85em' }} title='Quality' score={scores.quality} />
+            <ScoreBar style={{ fontSize: '.85em' }} title='Popularity' score={scores.popularity} />
+            <ScoreBar style={{ fontSize: '.85em' }} title='Maintenance' score={scores.maintenance} />
+          </div>
+      }
+    </Section>
 
-      <Section title='NPMS.io Score'>
-        {
-          !npmsInfo ? 'Loading'
-            : (npmsInfo instanceof Error)
-                ? 'Unavailable'
-                : <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', marginTop: '1em', rowGap: '1px' }}>
-              <ScoreBar style={{ fontWeight: 'bold' }} title='Overall' score={scores.final} />
-              <ScoreBar style={{ fontSize: '.85em' }} title='Quality' score={scores.quality} />
-              <ScoreBar style={{ fontSize: '.85em' }} title='Popularity' score={scores.popularity} />
-              <ScoreBar style={{ fontSize: '.85em' }} title='Maintenance' score={scores.maintenance} />
-            </div>
-        }
-      </Section>
-
-      <Section title={simplur`${Object.entries(pkg?.maintainers).length} Maintainer[|s]`}>
-        <Tags>
-          {pkg.maintainers.map(({ name, email }) => <Tag key={name + email} name={name} type='maintainer' gravatar={email} />)}
-        </Tags>
-      </Section>
-   </Pane>;
+    <Section title={simplur`${Object.entries(pkg?.maintainers).length} Maintainer[|s]`}>
+      <Tags>
+        {pkg.maintainers.map(({ name, email }) => <Tag key={name + email} name={name} type='maintainer' gravatar={email} />)}
+      </Tags>
+    </Section>
+  </Pane>;
 }

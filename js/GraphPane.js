@@ -93,14 +93,12 @@ export default function GraphPane({ graph }) {
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
   const [colorize, setColorize] = sharedState.use('colorize');
 
-  const dependencies = {};
+  const occurances = {};
   const maintainers = {};
   let licenses = {};
-  for (const [, { module: { package: pkg, licenseString: license }, level }] of graph) {
-    // Tally dependencies
-    if (level > 0) {
-      dependencies[pkg.name] = (dependencies[pkg.name] || 0) + 1;
-    }
+  for (const [, { module: { package: pkg, licenseString: license } }] of graph) {
+    // Tally module occurances
+    occurances[pkg.name] = (occurances[pkg.name] || 0) + 1;
 
     // Tally maintainers
     for (const { name, email } of pkg.maintainers) {
@@ -119,70 +117,69 @@ export default function GraphPane({ graph }) {
     .sort(compareEntryValue)
     .reverse();
 
-  const x = <Pane>
-        Include:
-        <DepInclude type='dependencies' />
-        <DepInclude type='devDependencies' />
-        <DepInclude type='peerDependencies' />
+  return <Pane>
+    Include:
+    <DepInclude type='dependencies' />
+    <DepInclude type='devDependencies' />
+    <DepInclude type='peerDependencies' />
 
-        <label>
-          Colorize by:
-          <select value={colorize ?? ''} onChange={e => setColorize(e.target.value)}>
-            <option value=''>Nothing (uncolored)</option>
+    <label>
+      Colorize by:
+      <select value={colorize ?? ''} onChange={e => setColorize(e.target.value)}>
+        <option value=''>Nothing (uncolored)</option>
 
-            <option value='overall'> NPMS.io overall score</option>
-            <option value='quality'> NPMS.io quality score</option>
-            <option value='popularity'> NPMS.io popularity score</option>
-            <option value='maintenance'>NPMS.io maintenance score</option>
+        <option value='overall'> NPMS.io overall score</option>
+        <option value='quality'> NPMS.io quality score</option>
+        <option value='popularity'> NPMS.io popularity score</option>
+        <option value='maintenance'>NPMS.io maintenance score</option>
 
-            <option value='bus'># of maintainers</option>
-          </select>
-        </label>
+        <option value='bus'># of maintainers</option>
+      </select>
+    </label>
+
+    {
+      colorize == 'bus' ? <div>
+      <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 1 maintainer,
+      <span style={{ color: hslFor(1 / 3) }}>{'\u2B24'}</span> = 2,
+      <span style={{ color: hslFor(2 / 3) }}>{'\u2B24'}</span> = 3,
+      <span style={{ color: hslFor(3 / 3) }}>{'\u2B24'}</span> = 4+
+      </div>
+        : colorize ? <div>
+      <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 0%,
+      <span style={{ color: hslFor(1 / 2) }}>{'\u2B24'}</span> = 50%,
+      <span style={{ color: hslFor(2 / 2) }}>{'\u2B24'}</span> = 100%
+      </div> : null
+    }
+
+    <Section title={simplur`${graph.size} Module[|s]`}>
+      <Tags>
         {
-          colorize == 'bus' ? <div>
-          <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 1 maintainer,
-          <span style={{ color: hslFor(1 / 3) }}>{'\u2B24'}</span> = 2,
-          <span style={{ color: hslFor(2 / 3) }}>{'\u2B24'}</span> = 3,
-          <span style={{ color: hslFor(3 / 3) }}>{'\u2B24'}</span> = 4+
-          </div>
-            : colorize ? <div>
-          <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 0%,
-          <span style={{ color: hslFor(1 / 2) }}>{'\u2B24'}</span> = 50%,
-          <span style={{ color: hslFor(2 / 2) }}>{'\u2B24'}</span> = 100%
-          </div> : null
+          Object.entries(occurances)
+            .sort(compareEntryKey)
+            .map(([name, count]) => <Tag key={name + count} name={name} type='module' count={count} />)
         }
+      </Tags>
+    </Section>
 
-      <Section title={simplur`${graph.size} Module[|s]`}>
-        <Tags>
-          {
-            Object.entries(dependencies)
-              .sort(compareEntryKey)
-              .map(([name, count]) => <Tag key={name + count} name={name} type='module' count={count} />)
-          }
-        </Tags>
-      </Section>
+    <Section title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}>
+      <Tags>
+        {
+          Object.entries(maintainers)
+            .sort(compareEntryKey)
+            .map(([, { name, email, count }]) => <Tag key={name + count} name={name} type='maintainer' count={count} gravatar={email} />)
+        }
+      </Tags>
+    </Section>
 
-      <Section title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}>
-        <Tags>
-          {
-            Object.entries(maintainers)
-              .sort(compareEntryKey)
-              .map(([, { name, email, count }]) => <Tag key={name + count} name={name} type='maintainer' count={count} gravatar={email} />)
-          }
-        </Tags>
-      </Section>
+    <Section title={simplur`${licenses.length} License[|s]`}>
+      <Tags>
+        {
+          licenses.map(([name, count]) => <Tag key={name + count} name={name} type='license' count={count} />)
+        }
+      </Tags>
 
-      <Section title={simplur`${licenses.length} License[|s]`}>
-        <Tags>
-          {
-            licenses.map(([name, count]) => <Tag key={name + count} name={name} type='license' count={count} />)
-          }
-        </Tags>
+      {licenses.length > 1 ? <PieGraph style={{ width: '100%', height: '200px', padding: '1em 0' }} entries={licenses} /> : null}
+    </Section>
 
-        {licenses.length > 1 ? <PieGraph style={{ width: '100%', height: '200px', padding: '1em 0' }} entries={licenses} /> : null}
-      </Section>
-
-    </Pane>;
-
-  return x;
+  </Pane>;
 }
