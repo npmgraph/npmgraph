@@ -18,15 +18,15 @@ const pageStart = Date.now();
 
 export const client = config.apiKey
   ? bugsnag({
-      ...config,
-      notifyReleaseStages: ['production'],
-      beforeSend: function(report) {
-        report.updateMetaData('page', {
-          location: String(location),
-          pageTime: Date.now() - pageStart
-        });
-      }
-    })
+    ...config,
+    notifyReleaseStages: ['production'],
+    beforeSend: function(report) {
+      report.updateMetaData('page', {
+        location: String(location),
+        pageTime: Date.now() - pageStart
+      });
+    }
+  })
   : {
       notify(err, { severity }) {
         console[severity](err);
