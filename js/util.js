@@ -1,4 +1,4 @@
-/* global bugsnagClient */
+import { client } from './bugsnag';
 
 export class HttpError extends Error {
   constructor(code, message = `HTTP Error ${code}`) {
@@ -11,7 +11,7 @@ function _report(severity, err) {
   // HTTP errors are expected (e.g. if 3rd party service is down)
   if (err instanceof HttpError) return;
 
-  bugsnagClient?.notify(err, { severity });
+  client?.notify(err, { severity });
 }
 
 export const report = {

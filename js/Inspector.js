@@ -1,5 +1,3 @@
-/* global ENV */
-
 import React from 'react';
 import { tagify } from './util';
 import md5 from 'md5';
@@ -8,6 +6,7 @@ import GraphPane from './GraphPane';
 import InfoPane from './InfoPane';
 import { selectTag } from './Graph';
 import { sharedState } from './App';
+import { version as VERSION } from '../package.json';
 
 export function Fix() {
   return <span style={{ fontWeight: 'bold', color: 'red' }}>FIX!</span>;
@@ -119,7 +118,7 @@ export default function Inspector({ className, ...props }) {
         {' '}&mdash;{' '}
         <ExternalLink id='github' href='//github.com/npmgraph/npmgraph'>GitHub</ExternalLink>
         {' '}&mdash;{' '}
-        v{ENV.appVersion}
+        v{VERSION}
       </footer>
     </div>;
 }

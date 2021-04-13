@@ -44,33 +44,7 @@
   </body>
 </html>
 
-<!-- <script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script> -->
-<script>
-  // TODO: Inject app version as part of deploy
-  const ENV = window.ENV = {appVersion: '0.0.0'}; // Values injected by deploy script
-
-  // if (ENV.bugsnagKey){
-  //   const pageStart = Date.now();
-  //   window.bugsnagClient = bugsnag({
-  //     apiKey: ENV.bugsnagKey,
-  //     appVersion: ENV.appVersion || undefined,
-  //     releaseStage: ENV.releaseStage || 'development',
-  //     notifyReleaseStages: ['production'],
-  //     beforeSend: function(report) {
-  //       report.updateMetaData('page', {
-  //         location: String(location),
-  //         pageTime: Date.now() - pageStart
-  //       });
-  //     }
-  //   });
-  // } else {
-  //   window.bugsnagClient = {
-  //     notify(err, {severity}) {
-  //       console[severity](err);
-  //     }
-  //   }
-  // }
-</script>
+<script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <!-- <script src="//www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script> -->
