@@ -51,6 +51,7 @@
   "scripts": {
     "start": "rm -fr .parcel-cache && parcel index.html --dist-dir docs",
     "build": "parcel build index.html --dist-dir docs",
+    "release": "standard-version",
     "test": "eslint ."
   }
 }
