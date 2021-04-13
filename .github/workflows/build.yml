@@ -15,7 +15,7 @@ jobs:
       - run: npm run build
 
       - name: Push /docs to gh-pages
-        if: ${{ github.ref == 'refs/pull/61/merge' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           git config user.name "$GITHUB_ACTOR" &&
           git config user.email "${GITHUB_ACTOR}@bots.github.com" &&
