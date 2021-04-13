@@ -37,16 +37,16 @@
     "@babel/eslint-parser": "7.13.14",
     "@babel/plugin-proposal-class-properties": "7.13.0",
     "@parcel/babel-plugin-transform-runtime": "2.0.0-nightly.1823",
-    "eslint": "7.17.0",
+    "eslint": "7.24.0",
     "eslint-config-semistandard": "15.0.1",
     "eslint-config-standard": "16.0.2",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-promise": "5.1.0",
     "eslint-plugin-react": "7.23.2",
     "eslint-plugin-standard": "5.0.0",
     "parcel": "2.0.0-nightly.636",
-    "standard-version": "9.1.0"
+    "standard-version": "9.2.0"
   },
   "scripts": {
     "start": "rm -fr .parcel-cache && parcel index.html --dist-dir docs",
