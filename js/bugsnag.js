@@ -12,11 +12,17 @@ const config = {
   releaseStage: /npmgraph/.test(window.location.hostname) ? 'production' : 'development'
 };
 
-console.log('BugSnag config:', config);
+const bugsnagLoaded = typeof (bugsnag) == 'undefined';
+
+if (bugsnagLoaded) {
+  console.log('BugSnag config:', config);
+} else {
+  console.warn('Bugsnag failed to load.');
+}
 
 const pageStart = Date.now();
 
-export const client = config.apiKey
+export const client = bugsnagLoaded && config.apiKey
   ? bugsnag({
     ...config,
     notifyReleaseStages: ['production'],
