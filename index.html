@@ -44,7 +44,7 @@
   </body>
 </html>
 
-<script src="https://d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
+<!-- <script src="https://d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script> -->
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script src="https://www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script>
@@ -65,15 +65,10 @@ window.addEventListener('DOMContentLoaded', function() {
   if (window.indexLoaded) return;
 
   const body = document.body;
-  Object.assign(body.style, {
-    // Image from https://www.redbubble.com/people/JonThomson/shop
-    background: 'url("/images/fail_giraffe.png") right 50% no-repeat',
-    backgroundColor: 'var(--bg1)',
-    backgroundSize: '30%',
-    display: 'inherit',
-  });
+  body.className = 'fail';
 
-  body.innerHTML = `<div style="    position: absolute;
+  body.innerHTML = `<div style="
+    position: absolute;
     background-color: var(--bg0);
     left: 0;
     top: 0;
@@ -84,8 +79,14 @@ window.addEventListener('DOMContentLoaded', function() {
     padding: 1em;
     margin: 1em;">
     <h1>Well this is awkward...</h1>
-    <p>Something's not working right.  Please make sure you're running the latest version of Chrome, Firefox, Safari, or Edge.</p>
-    <p>If that's not the problem, don't sweat it.  This error has been reported and will be fixed soon.</p>
+    <p>Something's not working right.  Please check the following:</p>
+
+    <ul>
+    <li>Make sure your browser is up-to-date (Chrome, Firefox, Safari, or Edge should work.)</li>
+    <li style="margin-top: 1em">Make sure your ad-blocker is disabled for this site. <span style="color: #00000088; font-style: italic">(We don't serve ads, but ad blockers may interfere with our bug reporting and analytics scripts.)</span></li>
+    </ul>
+
+    <p>If the problem persists, don't sweat it.  It's been reported and we should have it fixed soon.  It it lasts more than a few days, go ahead and <a href="https://www.github.com/npmgraph/npmgraph">create an issue</a>).</p>
 
     <!-- text bubble arrow -->
     <div style="position: absolute;

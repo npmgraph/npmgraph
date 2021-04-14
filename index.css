@@ -48,6 +48,13 @@ html, body {
   padding: 0;
 }
 
+body.fail {
+  /* Image from https://www.redbubble.com/people/JonThomson/shop */
+  background: url("/images/fail_giraffe.png") right 50% no-repeat;
+  background-color: var(--bg1);
+  background-size: 30%;
+}
+
 #app {
   position:fixed;
   display: flex;

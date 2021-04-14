@@ -50,7 +50,7 @@
   },
   "scripts": {
     "start": "parcel index.html --dist-dir docs",
-    "build": "rm -fr ./docs && parcel build index.html --dist-dir docs",
+    "build": "rm -fr ./docs && parcel build index.html --dist-dir docs && cp CNAME docs/CNAME",
     "build:diff": "npm run build && git diff --quiet docs",
     "release": "standard-version",
     "test": "eslint ."

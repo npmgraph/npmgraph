@@ -12,18 +12,27 @@ const config = {
   releaseStage: /npmgraph/.test(window.location.hostname) ? 'production' : 'development'
 };
 
-const bugsnagLoaded = typeof (bugsnag) == 'undefined';
+const bugsnagLoaded = typeof (bugsnag) != 'undefined';
 
 if (bugsnagLoaded) {
   console.log('BugSnag config:', config);
 } else {
-  console.warn('Bugsnag failed to load.');
+  // Complain loudly-ish
+  setTimeout(() => {
+    throw Error('Bugsnag failed to load.  Maybe disable your ad blocker for this site?');
+  });
 }
 
 const pageStart = Date.now();
 
-export const client = bugsnagLoaded && config.apiKey
-  ? bugsnag({
+let client = {
+  notify(err, { severity }) {
+    console[severity](err);
+  }
+};
+
+if (bugsnagLoaded && config.apiKey) {
+  client = bugsnag({
     ...config,
     notifyReleaseStages: ['production'],
     beforeSend: function(report) {
@@ -32,9 +41,7 @@ export const client = bugsnagLoaded && config.apiKey
         pageTime: Date.now() - pageStart
       });
     }
-  })
-  : {
-      notify(err, { severity }) {
-        console[severity](err);
-      }
-    };
+  });
+}
+
+export { client };
