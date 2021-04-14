@@ -1,7 +1,17 @@
-import { d3 } from '/vendor/shims.js';
-import { html, useState, useEffect, useContext } from '/vendor/preact.js';
-import { AppContext, store, activity } from './App.js';
-import { $, tagElement, report, fetchJSON } from './util.js';
+import React, { useState, useEffect } from 'react';
+import * as d3 from 'd3';
+
+import { sharedState, store, activity } from './App';
+import { $, tagElement, report, fetchJSON } from './util';
+import { graphviz } from '@hpcc-js/wasm';
+import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
+
+// Fetch WASM binary for graphviz rendering
+const wasmBinaryPromise = fetch(wasmUrl, { credentials: 'same-origin' })
+  .then(res => {
+    if (!res.ok) throw Error(`Failed to load '${wasmUrl}'`);
+    return res.arrayBuffer();
+  });
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -249,33 +259,29 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
 }
 
 export function GraphControls() {
-  return html`
-    <div id="graph-controls" >
-      <button onClick=${() => zoom(1)} title="zoom (fit width)" class="material-icons" style="border-radius: 3px 0 0 3px">swap_horiz</button>
-      <button onClick=${() => zoom(0)} title="zoom (1:1)" style="font-size: 1em; padding: 0 .5em; width: fit-content; border-width: 1px 0px; border-radius: 0">1:1</button>
-      <button onClick=${() => zoom(2)} title="zoom (fit height)" class="material-icons" style="border-radius: 0 3px 3px 0">swap_vert</button>
-      <button onClick=${() => download('svg')} title="download as SVG" class="material-icons" style="margin-left: 0.5em">cloud_download</button>
-    </div>
-  `;
+  return <div id='graph-controls'>
+    <button onClick={() => zoom(1)} title='zoom (fit width)' className='material-icons' style={{ borderRadius: '3px 0 0 3px' }}>swap_horiz</button>
+    <button onClick={() => zoom(0)} title='zoom (1:1)' style={{ fontSize: '1em', padding: '0 .5em', width: 'fit-content', borderWidth: '1px 0px', borderRadius: 0 }}>1:1</button>
+    <button onClick={() => zoom(2)} title='zoom (fit height)' className='material-icons' style={{ borderRadius: '0 3px 3px 0' }}>swap_vert</button>
+    <button onClick={() => download('svg')} title='download as SVG' className='material-icons' style={{ marginLeft: '0.5em' }}>cloud_download</button>
+  </div>;
 }
 
 export default function Graph(props) {
-  const {
-    query: [query],
-    colorize: [colorize],
-    depIncludes: [depIncludes],
-    pane: [, setPane],
-    inspectorOpen: [, setInspectorOpen],
-    module: [, setModule],
-    graph: [, setGraph]
-  } = useContext(AppContext);
+  const [query] = sharedState.use('query');
+  const [depIncludes] = sharedState.use('depIncludes');
+  const [, setPane] = sharedState.use('pane');
+  const [, setInspectorOpen] = sharedState.use('inspectorOpen');
+  const [, setModule] = sharedState.use('module');
+  const [, setGraph] = sharedState.use('graph');
+  const [colorize] = sharedState.use('colorize');
 
   const [svg, setSvg] = useState();
 
   async function handleGraphClick(event) {
-    if ($('#graph-controls').contains(event.srcElement)) return;
+    if ($('#graph-controls').contains(event.target)) return;
 
-    const el = $.up(event.srcElement, '.node');
+    const el = $.up(event.target, '.node');
 
     selectTag(el, true);
 
@@ -296,61 +302,67 @@ export default function Graph(props) {
 
     const graph = await modulesForQuery(query, depIncludes);
 
+    console.log('Render graph');
     const onFinish = activity.start('Rendering');
 
-    const graphviz = d3.select('#graph')
-      .graphviz({ zoom: false })
-      .renderDot(composeDOT(graph));
+    const wasmBinary = await wasmBinaryPromise; // Avoid race if wasmBinary fetch hasn't completed
+    const svg = await graphviz.layout(composeDOT(graph), 'svg', 'dot', { wasmBinary });
+
+    let svgDom = (new DOMParser()).parseFromString(svg, 'image/svg+xml');
+    svgDom = svgDom.children[0];
+    svgDom.remove();
+
+    const el = $('#graph');
+    d3.select('#graph svg').remove();
+    el.appendChild(svgDom);
 
     // Post-process rendered DOM
-    graphviz.on('end', async() => {
-      if (cancelled) return;
+    if (cancelled) return;
 
-      d3.select('#graph svg')
-        .insert('defs', ':first-child')
-        .html(`
-        <pattern id="warning"
-          width="12" height="12"
-          patternUnits="userSpaceOnUse"
-          patternTransform="rotate(45 50 50)">
-          <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
-          <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
-        </pattern>
-     `);
+    const PATTERN = `<pattern id="warning"
+      width="12" height="12"
+      patternUnits="userSpaceOnUse"
+      patternTransform="rotate(45 50 50)">
+      <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
+      <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
+    </pattern>`;
 
-      for (const el of $('#graph g.node')) {
-        // Find module this node represents
-        const key = $(el, 'text')[0].textContent;
-        if (!key) continue;
+    d3.select('#graph svg')
+      .insert('defs', ':first-child')
+      .html(PATTERN);
 
-        const m = store.cachedEntry(key);
+    for (const el of $('#graph g.node')) {
+      // Find module this node represents
+      const key = $(el, 'text')[0].textContent;
+      if (!key) continue;
 
-        if (m?.package?.deprecated) {
-          el.classList.add('warning');
-        }
+      const m = store.cachedEntry(key);
 
-        if (m?.name) {
-          tagElement(el, 'module', m.name);
-          el.dataset.module = m.key;
-        } else {
-          report.warn(Error(`Bad replace: ${key}`));
-        }
-
-        const pkg = m.package;
-        if (pkg.stub) {
-          el.classList.add('stub');
-        } else {
-          tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
-          tagElement(el, 'license', m.licenseString);
-        }
+      if (m?.package?.deprecated) {
+        el.classList.add('warning');
       }
 
-      setSvg($('#graph svg')[0]);
+      if (m?.name) {
+        tagElement(el, 'module', m.name);
+        el.dataset.module = m.key;
+      } else {
+        report.warn(Error(`Bad replace: ${key}`));
+      }
 
-      d3.select('#graph svg .node').node()?.scrollIntoView();
+      const pkg = m.package;
+      if (pkg.stub) {
+        el.classList.add('stub');
+      } else {
+        tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
+        tagElement(el, 'license', m.licenseString);
+      }
+    }
 
-      onFinish();
-    });
+    setSvg($('#graph svg')[0]);
+
+    d3.select('#graph svg .node').node()?.scrollIntoView();
+
+    onFinish();
 
     setGraph(graph);
     setPane(graph.size ? 'graph' : 'info');
@@ -413,13 +425,11 @@ export default function Graph(props) {
     }
 
     return () => cancelled = true;
-  });
+  }, [colorize]);
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 
-  return html`
-    <div id="graph" onClick=${handleGraphClick} >
-      <${GraphControls} />
-    </div>
-  `;
+  return <div id='graph' onClick={handleGraphClick} >
+    <GraphControls />
+  </div>;
 }

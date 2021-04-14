@@ -1,4 +1,4 @@
-/* global bugsnagClient */
+import { client } from './bugsnag';
 
 export class HttpError extends Error {
   constructor(code, message = `HTTP Error ${code}`) {
@@ -11,7 +11,7 @@ function _report(severity, err) {
   // HTTP errors are expected (e.g. if 3rd party service is down)
   if (err instanceof HttpError) return;
 
-  bugsnagClient?.notify(err, { severity });
+  client?.notify(err, { severity });
 }
 
 export const report = {
@@ -101,7 +101,7 @@ class ElementSet extends Array {
   }
 
   set textContent(str) {
-    return this.forEach(el => el.textContent = str);
+    this.forEach(el => el.textContent = str);
   }
 
   get innerText() {
@@ -109,7 +109,7 @@ class ElementSet extends Array {
   }
 
   set innerText(str) {
-    return this.forEach(el => el.innerText = str);
+    this.forEach(el => el.innerText = str);
   }
 
   get innerHTML() {
@@ -117,7 +117,7 @@ class ElementSet extends Array {
   }
 
   set innerHTML(str) {
-    return this.forEach(el => el.innerHTML = str);
+    this.forEach(el => el.innerHTML = str);
   }
 
   appendChild(nel) {

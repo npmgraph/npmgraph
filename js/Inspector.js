@@ -1,51 +1,52 @@
-/* global ENV */
-
-import { html, useContext } from '/vendor/preact.js';
-import { AppContext } from './App.js';
-import { tagify } from './util.js';
-import md5 from '/vendor/md5.js';
-import ModulePane from './ModulePane.js';
-import GraphPane from './GraphPane.js';
-import InfoPane from './InfoPane.js';
-import { selectTag } from './Graph.js';
+import React from 'react';
+import { tagify } from './util';
+import md5 from 'md5';
+import ModulePane from './ModulePane';
+import GraphPane from './GraphPane';
+import InfoPane from './InfoPane';
+import filterAlteredClicks from 'filter-altered-clicks';
+import { selectTag } from './Graph';
+import { sharedState } from './App';
+import { version as VERSION } from '../package.json';
 
 export function Fix() {
-  return html`<span style=${{ fontWeight: 'bold', color: 'red' }}>FIX!</span>`;
+  return <span style={{ fontWeight: 'bold', color: 'red' }}>FIX!</span>;
 }
 
-export function ExternalLink({ href, children, target = '_blank', className, style, ...props }) {
-  return html`<a href=${href} className="bright-hover ${className || ''}"  target=${target} style=${{ marginRight: '8px', ...style }} ...${props}>
-  ${children}
-  <span style=${{ marginLeft: '0px' }} class="material-icons">open_in_new</span>
-  </a>`;
+export function ExternalLink({ href, children, target = '_blank', className, ...props }) {
+  return <a href={href} className={`bright-hover ${className}`} target={target} {...props}>
+  {children}
+    <span className='material-icons'>open_in_new</span>
+  </a>;
 }
 
 export function QueryLink({ query }) {
-  const { query: [, setQuery] } = useContext(AppContext);
+  const [, setQuery] = sharedState.use('query');
   if (!Array.isArray(query)) query = [query];
-  return html`<a href="#" onClick=${e => {
+  const url = `${location.pathname}?q=${query.join(',')}`;
+  function onClick(e) {
     e.preventDefault();
     setQuery(query);
-    history.pushState(null, null, `${location.pathname}?q=${query.join(',')}`);
-  }}>${query.join(',')}</a>`;
+    history.pushState(null, null, e.target.href);
+  }
+  return <a href={url} onClick={filterAlteredClicks(onClick)}>{query.join(',')}</a>;
 }
 
 export function Section({ title, children, open = true, style, ...props }) {
-  return html`
-    <details open=${open}>
-      <summary>${title || 'Untitled'}</summary>
-      ${children}
-    </details>`;
+  return <details open={open}>
+    <summary>{title || 'Untitled'}</summary>
+    {children}
+  </details>;
 }
 
 export function Pane({ children, ...props }) {
-  return html`<div className="pane theme-lite">${children}</div>`;
+  return <div className='pane theme-lite'>{children}</div>;
 }
 
 export function Tags({ children, style, ...props }) {
-  return html`<div style=${{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', ...style }} ...${props}>
-    ${children}
-  </div>`;
+  return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', ...style }} {...props}>
+    {children}
+  </div>;
 }
 
 export function Tag({ type, name, title = name, count = 0, gravatar, ...props }) {
@@ -53,72 +54,72 @@ export function Tag({ type, name, title = name, count = 0, gravatar, ...props })
 
   let img = null;
   if (gravatar) {
-    const hash = md5(gravatar)
-      .map(v => v.toString(16).padStart(2, '0'))
-      .join('');
-    img = html`<img src="https://www.gravatar.com/avatar/${hash}?s=32" />`;
+    const hash = md5(gravatar);
+    img = <img src={`https://www.gravatar.com/avatar/${hash}?s=32`} />;
   }
 
-  return html`<div className="tag ${type} bright-hover" title=${title}
-    onClick=${() => selectTag(tagify(type, name), true, true)}>${img}${title}</div>`;
+  return <div className={`tag ${type} bright-hover`} title={title}
+    onClick={() => selectTag(tagify(type, name), true, true)}>{img}{title}</div>;
 }
 
 function Tab({ active, children, ...props }) {
-  return html`<div className="tab bright-hover ${active ? 'active' : ''}" ...${props}>${children}</div>`;
+  return <div className={`tab bright-hover ${active ? 'active' : ''}`} {...props}>{children}</div>;
 }
 
 export default function Inspector({ className, ...props }) {
-  const {
-    query: [query, setQuery],
-    pane: [pane, setPane],
-    module: [module],
-    graph: [graph]
-  } = useContext(AppContext);
+  const [query, setQuery] = sharedState.use('query');
+  const [pane, setPane] = sharedState.use('pane');
+  const [module] = sharedState.use('module');
+  const [graph] = sharedState.use('graph');
 
   let paneComponent;
   switch (pane) {
-    case 'module': paneComponent = html`<${ModulePane} module=${module} />`; break;
-    case 'graph': paneComponent = html`<${GraphPane} graph=${graph} />`; break;
-    case 'info': paneComponent = html`<${InfoPane} />`; break;
+    case 'module': paneComponent = <ModulePane module={module} />; break;
+    case 'graph': paneComponent = <GraphPane graph={graph} />; break;
+    case 'info': paneComponent = <InfoPane />; break;
   }
 
-  return html`
-    <div id="inspector" className="theme-lite ${className}" ...${props} >
-      <div id="tabs" className="theme-dark">
-        <${Tab} active=${pane == 'module'} onClick=${() => setPane('module')}>Module<//>
-        <${Tab} active=${pane == 'graph'} onClick=${() => setPane('graph')}>Graph<//>
-        <${Tab} active=${pane == 'info'} onClick=${() => setPane('info')}>${'\u{24d8}'}<//>
-        <div style=${{ display: 'flex', alignItems: 'center' }}>
+  function doSearch(e) {
+    // Convert input text to unique list of names
+    const names = [...new Set(e.currentTarget.value.split(/,\s*/).filter(x => x))];
+
+    // Update location
+    const url = new URL(location);
+    url.search = `?q=${names.join(',')}`;
+    url.hash = '';
+    history.replaceState(null, window.title, url);
+
+    setQuery(names);
+  }
+
+  return <div id='inspector' className={`theme-lite ${className}`} {...props} >
+      <div id='tabs' className='theme-dark'>
+        <Tab active={pane == 'module'} onClick={() => setPane('module')}>Module</Tab>
+        <Tab active={pane == 'graph'} onClick={() => setPane('graph')}>Graph</Tab>
+        <Tab active={pane == 'info'} onClick={() => setPane('info')}>{'\u{24d8}'}</Tab>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <input
-            type="text"
-            id="search-field"
-            value=${query.join(',')}
-            onChange=${e => {
-              // Convert input text to unique list of names
-              const names = [...new Set(e.currentTarget.value.split(/,\s*/).filter(x => x))];
-
-              // Update location
-              const url = new URL(location);
-              url.search = `?q=${names.join(',')}`;
-              url.hash = '';
-              history.replaceState(null, window.title, url);
-
-              setQuery(names);
+            type='text'
+            id='search-field'
+            defaultValue={query}
+            onKeyDown={e => {
+              if (e.key == 'Enter') doSearch(e);
             }}
-            placeholder=${'\u{1F50D} \xa0Enter module name'}
-            autofocus
+            onBlur={doSearch}
+            placeholder={'\u{1F50D} \xa0Enter module name'}
+            autoFocus
           />
         </div>
       </div>
 
-      ${paneComponent}
+      {paneComponent}
 
-      <footer className="theme-dark">
-        NPMGraph v${ENV.appVersion} ${'\xa9'} Robert Kieffer, 2020  MIT License – <${ExternalLink}
-          id="github"
-          href="https://github.com/npmgraph/npmgraph">
-          GitHub
-        </${ExternalLink}>
+      <footer>
+        {'\xa9'} NPMGraph Contributors
+        {' '}&mdash;{' '}
+        <ExternalLink id='github' href='https://github.com/npmgraph/npmgraph'>GitHub</ExternalLink>
+        {' '}&mdash;{' '}
+        v{VERSION}
       </footer>
-    </div>`;
+    </div>;
 }

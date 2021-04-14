@@ -39,34 +39,12 @@
     <title>NPMGraph - Visualize NPM Module Dependencies</title>
   </head>
 
-  <body class="theme-lite"></body>
+  <body>
+    <div id='app' class='theme-lite'></div>
+  </body>
 </html>
 
-<script src="//d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
-<script>
-  const ENV = {appVersion: '0.0.0'}; // Values injected by deploy script
-  if (ENV.bugsnagKey){
-    const pageStart = Date.now();
-    window.bugsnagClient = bugsnag({
-      apiKey: ENV.bugsnagKey,
-      appVersion: ENV.appVersion || undefined,
-      releaseStage: ENV.releaseStage || 'development',
-      notifyReleaseStages: ['production'],
-      beforeSend: function(report) {
-        report.updateMetaData('page', {
-          location: String(location),
-          pageTime: Date.now() - pageStart
-        });
-      }
-    });
-  } else {
-    window.bugsnagClient = {
-      notify(err, {severity}) {
-        console[severity](err);
-      }
-    }
-  }
-</script>
+<script src="https://d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script src="https://www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script>
@@ -78,11 +56,7 @@ gtag('js', new Date());
 gtag('config', window.GA_TRACKING_ID);
 </script>
 
-<script src="/vendor/d3.v5.js"></script>
-<script src="/vendor/hpcc-js-wasm.js" type="javascript/worker"></script>
-<script src="/vendor/d3-graphviz.js"></script>
-
-<script type="module" src="js/index.js"></script>
+<script type="module" src="/js/index.js"></script>
 <script>
 window.addEventListener('DOMContentLoaded', function() {
   // Detect load failure.  `indexLoaded` gets set by index.js if it loads properly

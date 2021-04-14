@@ -1,6 +1,9 @@
-import { Flash } from './Components.js';
-import App from './App.js';
-import { html, render } from '/vendor/preact.js';
+import './bugsnag'; // Initialize ASAP!
+
+import React from 'react';
+import { render } from 'react-dom';
+import App from './App';
+import { Flash } from './Components';
 
 // Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;
@@ -16,5 +19,5 @@ window.addEventListener('unhandledrejection', err => {
 });
 
 window.onload = function() {
-  render(html`<${App} />`, document.body);
+  render(<App />, document.querySelector('#app'));
 };

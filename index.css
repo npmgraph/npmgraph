@@ -4,15 +4,18 @@
   --splitter-size: 2em;
   --inspector-size: 32em;
   --tabs-height: 24pt;
-  --bg-dark-gradient: linear-gradient(
+  --bg-gradient: linear-gradient(
     to bottom,
-    #919191,
-    #7e7e7d
+    rgba(255, 255, 255, 0.20),
+    transparent 100%
   );
+
 }
+
 .theme-lite {
   /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
   --text: #020303;
+  --text-dim: #999;
   --bg0: #f1f4f4;
   --bg1: #d6d6d6;
   --highlight: #e65c00;
@@ -21,9 +24,19 @@
 .theme-dark {
   /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
   --text: #f3f3f3;
+  --text-dim: #666;
   --bg0: #7e7e7d;
   --bg1: #383838;
   --highlight: #ff761a;
+}
+
+.theme-lite, .theme-dark {
+  /* TODO: Any vars dealing with color should should have a theme-neutral name (e.g. this should just be "--bg-gradient"), and should be defined in both themes, below */
+  --side-gradient: linear-gradient(
+    to right,
+    var(--bg1) -1em,
+    transparent .5em
+  );
 }
 
 html {
@@ -35,6 +48,15 @@ html, body {
   padding: 0;
 }
 
+#app {
+  position:fixed;
+  display: flex;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
 p {
   line-height: 1.5em;
 }
@@ -42,10 +64,6 @@ p {
 h2 {
   font-size: 14pt;
   border-radius: var(--rad_sm);
-}
-
-body {
-  display: flex;
 }
 
 .bright-hover {
@@ -70,7 +88,7 @@ body {
   box-sizing: border-box;
   height: 24pt;
   color: var(--text);
-  background: var(--bg-dark-gradient);
+  background: var(--bg0) var(--bg-gradient);
   border-top-left-radius: var(--rad_lg);
   border-bottom-left-radius: var(--rad_lg);
   padding-left: 10px;
@@ -142,7 +160,7 @@ summary {
   font-weight: 600;
   text-align: center;
   color: white;
-  background: var(--bg-dark-gradient);
+  background: var(--bg0) var(--bg-gradient);
   border-top-left-radius: var(--rad_lg);
   border-bottom-left-radius: var(--rad_lg);
 }
@@ -241,7 +259,7 @@ summary {
   flex-basis: auto;
   flex-shrink: 0;
   display: flex;
-  background: var(--bg-dark-gradient);
+  background: var(--bg0) var(--bg-gradient);
   color: var(--text);
   user-select: none;
 }
@@ -251,7 +269,7 @@ summary {
 #tabs .tab {
   padding: 0 10px;
   cursor: pointer;
-  background: var(--bg-dark-gradient);
+  background: var(--bg0) var(--bg-gradient);
   border-left: solid 1px #888;
   font-size: 12pt;
   font-weight: 600;
@@ -282,7 +300,6 @@ summary {
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;
-  border-left: solid 4px var(--bg-dark-gradient);
   border-bottom-left-radius: var(--rad_lg);
   box-shadow: inset 1px -1px 6px #d6d6d677;
 }
@@ -365,11 +382,11 @@ g.edge.selected > polygon {
 #drop_target * {pointer-events: none;}
 
 footer {
+  color: var(--text-dim);
+  text-align: center;
   padding: 0.5em;
   box-sizing: border-box;
   width: 32em;
-  color: var(--bg0);
-  text-align: center;
 }
 
 #github {
