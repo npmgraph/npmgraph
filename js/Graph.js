@@ -302,7 +302,7 @@ export default function Graph(props) {
 
     const graph = await modulesForQuery(query, depIncludes);
 
-    console.log('RENDERING');
+    console.log('Render graph');
     const onFinish = activity.start('Rendering');
 
     const wasmBinary = await wasmBinaryPromise; // Avoid race if wasmBinary fetch hasn't completed

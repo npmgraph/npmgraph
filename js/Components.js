@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function Loader({ activity, ...props }) {
-  return <div className='loader'>
+  return <div className='loader theme-dark'>
     <div className='bg' />
     {activity.title} ...
   </div>;

@@ -4,6 +4,7 @@ import md5 from 'md5';
 import ModulePane from './ModulePane';
 import GraphPane from './GraphPane';
 import InfoPane from './InfoPane';
+import filterAlteredClicks from 'filter-altered-clicks';
 import { selectTag } from './Graph';
 import { sharedState } from './App';
 import { version as VERSION } from '../package.json';
@@ -28,7 +29,7 @@ export function QueryLink({ query }) {
     setQuery(query);
     history.pushState(null, null, e.target.href);
   }
-  return <a href={url} onClick={onClick}>{query.join(',')}</a>;
+  return <a href={url} onClick={filterAlteredClicks(onClick)}>{query.join(',')}</a>;
 }
 
 export function Section({ title, children, open = true, style, ...props }) {
@@ -91,7 +92,7 @@ export default function Inspector({ className, ...props }) {
     setQuery(names);
   }
 
-  return <div id='inspector' className={`theme-light ${className}`} {...props} >
+  return <div id='inspector' className={`theme-lite ${className}`} {...props} >
       <div id='tabs' className='theme-dark'>
         <Tab active={pane == 'module'} onClick={() => setPane('module')}>Module</Tab>
         <Tab active={pane == 'graph'} onClick={() => setPane('graph')}>Graph</Tab>
@@ -116,7 +117,7 @@ export default function Inspector({ className, ...props }) {
       <footer>
         {'\xa9'} NPMGraph Contributors
         {' '}&mdash;{' '}
-        <ExternalLink id='github' href='//github.com/npmgraph/npmgraph'>GitHub</ExternalLink>
+        <ExternalLink id='github' href='https://github.com/npmgraph/npmgraph'>GitHub</ExternalLink>
         {' '}&mdash;{' '}
         v{VERSION}
       </footer>

@@ -3,10 +3,7 @@ import './bugsnag'; // Initialize ASAP!
 import React from 'react';
 import { render } from 'react-dom';
 import App from './App';
-import { handleModifiedClicks } from './modifiedEvents';
 import { Flash } from './Components';
-
-handleModifiedClicks();
 
 // Used to feature-detect that es6 modules are loading
 window.indexLoaded = true;
