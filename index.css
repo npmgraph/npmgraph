@@ -90,6 +90,10 @@ h2 {
   padding-right: var(--splitter-size);
 }
 
+#graph * {
+  user-select: none;
+}
+
 #splitter {
   display: flex;
   box-sizing: border-box;
@@ -210,6 +214,10 @@ summary {
   border: solid 1px var(--bg1);
   background: var(--bg0);
   border-radius: var(--rad_sm);
+  outline: 0;
+}
+#graph-controls button.selected {
+  background-color: var(--highlight);
 }
 
 .json {font-family: monospace}
@@ -226,6 +234,27 @@ summary {
 
 .depInclude  {
   padding-left: 1em;
+}
+
+.collapsed {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  cursor: pointer;
+  padding: .2em .5em;
+  background-color: firebrick;
+  color: var(--bg0);
+  border-radius: var(--rad_lg)   
+}
+.collapsed:before {
+  color: transparent;
+  content: '\2715';
+  display: inline-block;
+  margin-right: .5em;
+}
+.collapsed:hover::before {
+  color: var(--bg0)
 }
 
 .warning {
@@ -346,16 +375,19 @@ g.node path {
 g.node path {
   fill: white;
 }
+g.node.collapsed {
+  opacity: .5
+}
 g.node.selected > path {
   stroke-width: 3;
   stroke: var(--highlight);
 }
-g.node.warning > path {
-  fill: url(#warning);
-}
 g.node.selected > text {
   fill: black;
   font-weight: 600;
+}
+g.node.warning > path {
+  fill: url(#warning);
 }
 g .stub {
   opacity: 0.6;
