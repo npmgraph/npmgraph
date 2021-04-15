@@ -30,7 +30,7 @@ $ npm start
 $ npm run build
 # etc...
 
-$ npx static-server dist
+$ npx static-server docs
 # (... then open http://localhost:9080 in your browser of choice)
 ```
 
