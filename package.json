@@ -45,13 +45,15 @@
     "eslint-plugin-react": "7.23.2",
     "eslint-plugin-standard": "5.0.0",
     "parcel": "2.0.0-nightly.636",
-    "standard-version": "9.2.0"
+    "standard-version": "9.2.0",
+    "stylelint": "13.12.0",
+    "stylelint-config-standard": "21.0.0"
   },
   "scripts": {
     "start": "parcel serve index.html",
     "build": "parcel build index.html",
     "release": "standard-version",
     "start": "npm run clean && parcel index.html --dist-dir docs",
-    "test": "eslint ."
+    "test": "npm run lint"
   }
 }

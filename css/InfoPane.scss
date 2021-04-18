@@ -4,9 +4,10 @@
   padding: 4em 1em;
   border-radius: var(--rad_sm);
 }
+
 #drop_target.drag {
-	background-color: #ccf;
-	border-color: #68a;
+  background-color: #ccf;
+  border-color: #68a;
 }
 
-#drop_target * {pointer-events: none;}
+#drop_target * { pointer-events: none; }
