@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Pane, QueryLink } from './Inspector';
-import { store, sharedState } from './App';
+import { store, useQuery } from './App';
 
 // Get names of uploaded modules in session storage
 function getFileEntries() {
@@ -9,7 +9,7 @@ function getFileEntries() {
 }
 
 export default function InfoPane() {
-  const [, setQuery] = sharedState.use('query');
+  const [, setQuery] = useQuery();
 
   const [recents, setRecents] = useState(getFileEntries());
 

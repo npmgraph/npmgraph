@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import * as d3 from 'd3';
 
-import { sharedState, store, activity } from './App';
+import { store, activity, useQuery, useDepIncludes, usePane, useInspectorOpen, useModule, useGraph, useColorize } from './App';
 import { $, tagElement, report, fetchJSON } from './util';
 import { graphviz } from '@hpcc-js/wasm';
 import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
@@ -268,13 +268,13 @@ export function GraphControls() {
 }
 
 export default function Graph(props) {
-  const [query] = sharedState.use('query');
-  const [depIncludes] = sharedState.use('depIncludes');
-  const [, setPane] = sharedState.use('pane');
-  const [, setInspectorOpen] = sharedState.use('inspectorOpen');
-  const [, setModule] = sharedState.use('module');
-  const [, setGraph] = sharedState.use('graph');
-  const [colorize] = sharedState.use('colorize');
+  const [query] = useQuery();
+  const [depIncludes] = useDepIncludes();
+  const [, setPane] = usePane();
+  const [, setInspectorOpen] = useInspectorOpen();
+  const [, setModule] = useModule();
+  const [, setGraph] = useGraph();
+  const [colorize] = useColorize();
 
   const [svg, setSvg] = useState();
 

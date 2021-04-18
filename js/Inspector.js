@@ -6,7 +6,7 @@ import GraphPane from './GraphPane';
 import InfoPane from './InfoPane';
 import filterAlteredClicks from 'filter-altered-clicks';
 import { selectTag } from './Graph';
-import { sharedState } from './App';
+import { useQuery, usePane, useModule, useGraph } from './App';
 import { version as VERSION } from '../package.json';
 
 export function Fix() {
@@ -21,7 +21,7 @@ export function ExternalLink({ href, children, target = '_blank', className, ...
 }
 
 export function QueryLink({ query }) {
-  const [, setQuery] = sharedState.use('query');
+  const [, setQuery] = useQuery();
   if (!Array.isArray(query)) query = [query];
   const url = `${location.pathname}?q=${query.join(',')}`;
   function onClick(e) {
@@ -67,10 +67,10 @@ function Tab({ active, children, ...props }) {
 }
 
 export default function Inspector({ className, ...props }) {
-  const [query, setQuery] = sharedState.use('query');
-  const [pane, setPane] = sharedState.use('pane');
-  const [module] = sharedState.use('module');
-  const [graph] = sharedState.use('graph');
+  const [query, setQuery] = useQuery();
+  const [pane, setPane] = usePane();
+  const [module] = useModule();
+  const [graph] = useGraph();
 
   let paneComponent;
   switch (pane) {
