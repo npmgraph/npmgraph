@@ -1,26 +1,24 @@
 #inspector {
   flex-basis: 0;
-  
   display: flex;
   flex-direction: column;
-  
   height: 100vh;
   color: var(--text);
   overflow: hidden;
-  transition: flex-basis .5s;
-  
+  transition: flex-basis 0.5s;
+
   &.open {
     flex: 0 0 var(--inspector-size);
   }
-  
+
   .description {
     font-weight: 600;
   }
-  
+
   .module {
     white-space: nowrap;
   }
-  
+
   .tag {
     cursor: pointer;
     background-color: var(--bg1);
@@ -30,11 +28,11 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    
+
     &.maintainer {
       padding: 0;
       height: 32px;
-      
+
       img {
         vertical-align: middle;
         margin-right: 4px;
@@ -58,16 +56,16 @@
 
 label {
   display: block;
-  margin: .3em 0;
+  margin: 0.3em 0;
 }
 
 summary {
   position: -webkit-sticky;
   font-size: 1.2em;
   font-weight: 600;
-  margin: .7em 0 .5em;
+  margin: 0.7em 0 0.5em;
   border-top: solid 3px var(--bg1);
-  padding: .2em;
+  padding: 0.2em;
   outline: none;
   cursor: pointer;
 }
@@ -79,11 +77,11 @@ summary {
   background: var(--bg0) var(--bg-gradient);
   color: var(--text);
   user-select: none;
-  
+
   > * {
     line-height: var(--tabs-height);
   }
-  
+
   .tab {
     padding: 0 10px;
     cursor: pointer;
@@ -91,13 +89,13 @@ summary {
     border-left: solid 1px #888;
     font-size: 12pt;
     font-weight: 600;
-    
+
     &.active {
       border-color: transparent;
       background: var(--highlight);
     }
   }
-  
+
   #search-field {
     font: inherit;
     line-height: 1em;
@@ -106,17 +104,17 @@ summary {
     border: solid 1px white;
     border-radius: 15px;
     outline: none;
-    
+
     &:focus {
       border-color: var(--highlight);
     }
   }
 }
-  
+
 .pane {
   flex-grow: 1;
   width: 32em;
-  padding: .5em 1em;
+  padding: 0.5em 1em;
   color: var(--text);
   background-color: var(--bg0);
   box-sizing: border-box;

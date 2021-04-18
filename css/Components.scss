@@ -2,7 +2,7 @@
   position: fixed;
   padding: 4px;
   transition-property: left;
-  transition-duration: .7s;
+  transition-duration: 0.7s;
   border-radius: var(--rad_sm);
 }
 
@@ -21,28 +21,27 @@
   border-bottom-left-radius: var(--rad_lg);
 
   @keyframes MOVE-BG {
-    from {transform: translateX(-56.57px);}  // sqrt(2) * gradient_width
-    to {transform: translateX(0);}
+    from { transform: translateX(-56.57px); }  // sqrt(2) * gradient_width
+    to { transform: translateX(0); }
   }
-    
+
   .bg {
     position: absolute;
     z-index: -1;
     width: calc(100% + 57px);
     bottom: 0;
     height: 2pt;
-    background: repeating-linear-gradient(
-      -45deg,
-      white 0px,
-      white 20px,
-      var(--highlight) 20px,
-      var(--highlight) 40px
-    );
-  
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        white 0,
+        white 20px,
+        var(--highlight) 20px,
+        var(--highlight) 40px
+      );
     animation-name: MOVE-BG;
     animation-duration: 1.6s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
-  }  
+  }
 }
-

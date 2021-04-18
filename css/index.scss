@@ -4,12 +4,12 @@
   --splitter-size: 2em;
   --inspector-size: 32em;
   --tabs-height: 24pt;
-  --bg-gradient: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.20),
-    transparent 100%
-  );
-
+  --bg-gradient:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.2),
+      transparent 100%
+    );
 }
 
 .theme-lite {
@@ -30,20 +30,24 @@
   --highlight: #ff761a;
 }
 
-.theme-lite, .theme-dark {
+.theme-lite,
+.theme-dark {
   /* TODO: Any vars dealing with color should should have a theme-neutral name (e.g. this should just be "--bg-gradient"), and should be defined in both themes, below */
-  --side-gradient: linear-gradient(
-    to right,
-    var(--bg1) -1em,
-    transparent .5em
-  );
+  --side-gradient:
+    linear-gradient(
+      to right,
+      var(--bg1) -1em,
+      transparent 0.5em
+    );
 }
 
 html {
   font-family: system-ui, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
   font-size: 10pt;
 }
-html, body {
+
+html,
+body {
   margin: 0;
   padding: 0;
 }
@@ -56,7 +60,7 @@ body.fail {
 }
 
 #app {
-  position:fixed;
+  position: fixed;
   display: flex;
   top: 0;
   left: 0;
