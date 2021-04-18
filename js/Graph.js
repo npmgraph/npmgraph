@@ -6,6 +6,8 @@ import { $, tagElement, report, fetchJSON } from './util';
 import { graphviz } from '@hpcc-js/wasm';
 import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
 
+import '/css/Graph.scss';
+
 // Fetch WASM binary for graphviz rendering
 const wasmBinaryPromise = fetch(wasmUrl, { credentials: 'same-origin' })
   .then(res => {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { QueryLink, Pane, Section, Tags, Tag, ExternalLink } from './Inspector';
 import { human, fetchJSON, simplur, $ } from './util';
 import * as d3 from 'd3';
+import '/css/ModulePane.scss';
 
 function ScoreBar({ title, score, style }) {
   const perc = (score * 100).toFixed(0) + '%';

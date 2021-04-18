@@ -5,6 +5,7 @@ import { Pane, Section, Tags, Tag } from './Inspector';
 import { simplur } from './util';
 import { Toggle } from './Components';
 import { hslFor } from './Graph';
+import '/css/GraphPane.scss';
 
 function DepInclude({ type, ...props }) {
   const [depIncludes, setDepIncludes] = useDepIncludes();
@@ -88,7 +89,7 @@ function PieGraph({ entries, ...props }) {
   return <svg ref={svgEl} {...props}/>;
 }
 
-export default function GraphPane({ graph }) {
+export default function GraphPane({ graph, ...props }) {
   const compareEntryKey = ([a], [b]) => a < b ? -1 : a > b ? 1 : 0;
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
   const [colorize, setColorize] = useColorize();
@@ -122,7 +123,7 @@ export default function GraphPane({ graph }) {
     setExcludes(excludes.filter(n => n != name));
   }
 
-  return <Pane>
+  return <Pane {...props}>
     Include:
     <DepInclude type='dependencies' />
     <DepInclude type='devDependencies' />
