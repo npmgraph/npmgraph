@@ -7,14 +7,16 @@ import InfoPane from './InfoPane';
 import filterAlteredClicks from 'filter-altered-clicks';
 import { selectTag } from './Graph';
 import { useQuery, usePane, useModule, useGraph } from './App';
-import { version as VERSION } from '../package.json';
+import { version as VERSION } from '/package.json';
+
+import '/css/Inspector.scss';
 
 export function Fix() {
   return <span style={{ fontWeight: 'bold', color: 'red' }}>FIX!</span>;
 }
 
 export function ExternalLink({ href, children, target = '_blank', className, ...props }) {
-  return <a href={href} className={`bright-hover ${className}`} target={target} {...props}>
+  return <a href={href} className={`bright-hover ${className ?? ''}`} target={target} {...props}>
   {children}
     <span className='material-icons'>open_in_new</span>
   </a>;
@@ -40,7 +42,7 @@ export function Section({ title, children, open = true, style, ...props }) {
 }
 
 export function Pane({ children, ...props }) {
-  return <div className='pane theme-lite'>{children}</div>;
+  return <div className='pane theme-lite' {...props}>{children}</div>;
 }
 
 export function Tags({ children, style, ...props }) {
@@ -74,9 +76,9 @@ export default function Inspector({ className, ...props }) {
 
   let paneComponent;
   switch (pane) {
-    case 'module': paneComponent = <ModulePane module={module} />; break;
-    case 'graph': paneComponent = <GraphPane graph={graph} />; break;
-    case 'info': paneComponent = <InfoPane />; break;
+    case 'module': paneComponent = <ModulePane id='pane-module' module={module} />; break;
+    case 'graph': paneComponent = <GraphPane id='pane-graph' graph={graph} />; break;
+    case 'info': paneComponent = <InfoPane id='pane-info' />; break;
   }
 
   function doSearch(e) {

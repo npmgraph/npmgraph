@@ -37,6 +37,7 @@
     "@babel/core": "7.13.15",
     "@babel/eslint-parser": "7.13.14",
     "@parcel/babel-plugin-transform-runtime": "2.0.0-nightly.1823",
+    "@parcel/transformer-sass": "2.0.0-nightly.638",
     "eslint": "7.24.0",
     "eslint-config-semistandard": "15.0.1",
     "eslint-config-standard": "16.0.2",
@@ -49,10 +50,11 @@
     "standard-version": "9.2.0"
   },
   "scripts": {
-    "start": "rm -fr .parcel-cache && parcel index.html --dist-dir docs",
-    "build": "rm -fr .parcel-cache ./docs && parcel build index.html --dist-dir docs && cp CNAME docs/CNAME",
+    "build": "npm run clean && parcel build index.html --dist-dir docs && cp CNAME docs/CNAME",
     "build:diff": "npm run build && git diff --quiet docs",
+    "clean": "rm -fr .parcel-cache ./docs",
     "release": "standard-version",
+    "start": "npm run clean && parcel index.html --dist-dir docs",
     "test": "eslint ."
   }
 }

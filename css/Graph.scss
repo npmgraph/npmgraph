@@ -1,0 +1,102 @@
+#graph {
+  flex-grow: 1;
+  height: 100vh;
+  overflow: auto;
+  position: relative;
+  user-select: none;
+  padding-right: var(--splitter-size);
+}
+
+#graph * {
+  user-select: none;
+}
+
+#graph-controls {
+  display: flex;
+  position: fixed;
+  bottom: 1em;
+  left: 1em;
+  cursor: default;
+  
+  button {
+    display: inline-block;
+    font-size: 1.8em;
+    line-height: 1em;
+    width: 1.3em;
+    padding: 0;
+    margin: 0;
+    color: #333;
+    border: solid 1px var(--bg1);
+    background: var(--bg0);
+    border-radius: var(--rad_sm);
+    outline: 0;
+    
+    &.selected {
+      background-color: var(--highlight);
+    }
+  }
+}
+  
+svg {
+  fill: #666;
+}
+
+g.node {
+  user-select: text;
+  
+  &.collapsed {
+    opacity: .5
+  }
+  &.selected > path {
+    stroke-width: 3;
+    stroke: var(--highlight);
+  }
+  &.selected > text {
+    fill: black;
+    font-weight: 600;
+  }
+  &.warning > path {
+    fill: url(#warning);
+  }
+  * {
+    cursor: pointer;
+  }
+  
+  text {
+    fill: #444;
+  }
+  
+  path {
+    stroke: #444;
+  }
+  
+   path {
+    fill: white;
+  }
+}
+
+g .stub {
+  opacity: 0.6;
+  
+  > path {
+    stroke-dasharray: 4,4;
+    stroke: #a00;
+  }
+}
+
+g.edge.selected {
+  > path {
+    stroke-width: 2;
+    stroke: var(--highlight);
+  }
+  > polygon {
+    stroke: var(--highlight);
+    fill: var(--highlight);
+  }
+}
+  
+@media print {
+  #graph-controls {
+    display: none;
+  }
+}
