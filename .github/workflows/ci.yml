@@ -11,4 +11,3 @@ jobs:
       - run: echo ${{github.ref}}
       - run: npm install
       - run: npm test
-      - run: npm run build:diff
