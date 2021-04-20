@@ -23,7 +23,7 @@ function Splitter({ onClick, isOpen }) {
 // Parse url query param from browser location, "q"
 function queryFromLocation() {
   const q = /q=([^&]+)/.test(location.search) && RegExp.$1;
-  return q ? decodeURIComponent(q).split(/\s*,\s*/) : [];
+  return q?.length ? decodeURIComponent(q).split(/\s*,\s*/) : [];
 }
 
 export const activity = new LoadActivity();

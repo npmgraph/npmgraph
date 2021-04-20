@@ -65,9 +65,12 @@ export default function InfoPane(props) {
     const cacheKey = store.cachePackage(pkg);
     window.sessionStorage.setItem(cacheKey, JSON.stringify(pkg));
     const key = cacheKey.replace(/\//, '@');
-    setQuery([key]);
+    setQuery(key?.length ? [key] : []);
     setRecents(getFileEntries());
-    history.pushState(null, null, `${location.pathname}?q=${key}`);
+
+    const url = new URL(location);
+    url.search = key?.length ? `q=${key}` : '';
+    history.pushState(null, null, url);
   };
 
   const onDragOver = ev => {

@@ -25,12 +25,16 @@ export function ExternalLink({ href, children, target = '_blank', className, ...
 export function QueryLink({ query }) {
   const [, setQuery] = useQuery();
   if (!Array.isArray(query)) query = [query];
-  const url = `${location.pathname}?q=${query.join(',')}`;
+
   function onClick(e) {
     e.preventDefault();
     setQuery(query);
     history.pushState(null, null, e.target.href);
   }
+
+  const url = new URL(location);
+  url.search = query.length ? `q=${query.join(',')}` : '';
+
   return <a href={url} onClick={filterAlteredClicks(onClick)}>{query.join(',')}</a>;
 }
 
@@ -87,7 +91,7 @@ export default function Inspector({ className, ...props }) {
 
     // Update location
     const url = new URL(location);
-    url.search = `?q=${names.join(',')}`;
+    url.search = names.length ? `q=${names.join(',')}` : '';
     url.hash = '';
     history.replaceState(null, window.title, url);
 
