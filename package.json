@@ -50,10 +50,9 @@
     "stylelint-config-standard": "21.0.0"
   },
   "scripts": {
-    "start": "parcel serve index.html",
     "build": "parcel build index.html",
     "release": "standard-version",
-    "start": "npm run clean && parcel index.html --dist-dir docs",
-    "test": "npm run lint"
+    "start": "parcel serve index.html",
+    "test": "eslint . && stylelint css"
   }
 }
