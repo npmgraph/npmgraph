@@ -1,24 +1,5 @@
 #pane-graph {
   .collapsed {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: inline-block;
-    cursor: pointer;
-    padding: 0.2em 0.5em;
-    background-color: firebrick;
-    color: var(--bg0);
-    border-radius: var(--rad_lg);
-
-    &::before {
-      color: transparent;
-      content: '\2715';
-      display: inline-block;
-      margin-right: 0.5em;
-    }
-
-    &:hover::before {
-      color: var(--bg0);
-    }
+    opacity: 50%;
   }
 }

@@ -51,7 +51,7 @@ export function Tags({ children, style, ...props }) {
   </div>;
 }
 
-export function Tag({ type, name, title = name, count = 0, gravatar, ...props }) {
+export function Tag({ type, name, title = name, count = 0, gravatar, className, ...props }) {
   if (count > 1) title += ` (${count})`;
 
   let img = null;
@@ -60,7 +60,7 @@ export function Tag({ type, name, title = name, count = 0, gravatar, ...props })
     img = <img src={`https://www.gravatar.com/avatar/${hash}?s=32`} />;
   }
 
-  return <div className={`tag ${type} bright-hover`} title={title}
+  return <div className={`tag ${type} bright-hover ${className ?? ''}`} title={title}
     onClick={() => selectTag(tagify(type, name), true, true)}>{img}{title}</div>;
 }
 

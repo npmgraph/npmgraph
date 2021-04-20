@@ -93,7 +93,7 @@ export default function GraphPane({ graph, ...props }) {
   const compareEntryKey = ([a], [b]) => a < b ? -1 : a > b ? 1 : 0;
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
   const [colorize, setColorize] = useColorize();
-  const [excludes, setExcludes] = useExcludes();
+  const [excludes] = useExcludes();
 
   const occurances = {};
   const maintainers = {};
@@ -118,10 +118,6 @@ export default function GraphPane({ graph, ...props }) {
   licenses = Object.entries(licenses)
     .sort(compareEntryValue)
     .reverse();
-
-  function unexclude(name) {
-    setExcludes(excludes.filter(n => n != name));
-  }
 
   return <Pane {...props}>
     Include:
@@ -157,22 +153,20 @@ export default function GraphPane({ graph, ...props }) {
       </div> : null
     }
 
-    <strong>Collapsed modules</strong>:
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: '.5em' }}>
-    {
-      excludes.map(name => <span key={name} className='collapsed bright-hover' onClick={() => unexclude(name)}>{name}</span>)
-    }
-    </div>
-    <div style={{ fontSize: '90%', color: 'var(--text-dim)' }}>(shift-click modules in graph to toggle)</div>
-
     <Section title={simplur`${graph.size} Module[|s]`}>
       <Tags>
         {
           Object.entries(occurances)
             .sort(compareEntryKey)
-            .map(([name, count]) => <Tag key={name + count} name={name} type='module' count={count} />)
+            .map(([name, count]) => <Tag key={name + count} name={name} type='module' count={count}
+          className={excludes.includes(name) ? 'collapsed' : null}
+          />)
         }
       </Tags>
+
+      <div style={{ fontSize: '90%', color: 'var(--text-dim)', marginTop: '1em' }}>
+        (Shift-click modules in graph to expand/collapse)
+      </div>
     </Section>
 
     <Section title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}>
