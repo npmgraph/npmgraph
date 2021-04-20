@@ -1,13 +1,13 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef } from 'react';
-import { sharedState } from './App';
+import { useColorize, useDepIncludes } from './App';
 import { Pane, Section, Tags, Tag } from './Inspector';
 import { simplur } from './util';
 import { Toggle } from './Components';
 import { hslFor } from './Graph';
 
 function DepInclude({ type, ...props }) {
-  const [depIncludes, setDepIncludes] = sharedState.use('depIncludes');
+  const [depIncludes, setDepIncludes] = useDepIncludes();
 
   let arrow = null;
   switch (type) {
@@ -91,7 +91,7 @@ function PieGraph({ entries, ...props }) {
 export default function GraphPane({ graph }) {
   const compareEntryKey = ([a], [b]) => a < b ? -1 : a > b ? 1 : 0;
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
-  const [colorize, setColorize] = sharedState.use('colorize');
+  const [colorize, setColorize] = useColorize();
 
   const occurances = {};
   const maintainers = {};

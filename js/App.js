@@ -4,21 +4,20 @@ import Graph from './Graph';
 import { LoadActivity } from './util';
 import Store from './Store';
 import { Loader } from './Components';
-import createSharedState from './createSharedState';
+import sharedStateHook from './sharedStateHook';
+
+export const usePane = sharedStateHook('info', 'pane');
+export const useInspectorOpen = sharedStateHook(true, 'inspectorOpen');
+export const useQuery = sharedStateHook(queryFromLocation(), 'query');
+export const useModule = sharedStateHook([], 'module');
+export const useGraph = sharedStateHook([], 'graph');
+export const useColorize = sharedStateHook(false, 'colorize');
+export const useDepIncludes = sharedStateHook(['dependencies'], 'depIncludes');
+export const useExcludes = sharedStateHook([], 'excludes');
 
 function Splitter({ onClick, isOpen }) {
   return <div id='splitter' className='theme-dark bright-hover' onClick={onClick}>{isOpen ? '\u{25b6}' : '\u{25c0}'}</div>;
 }
-
-export const sharedState = createSharedState({
-  pane: 'info',
-  inspectorOpen: true,
-  query: queryFromLocation(),
-  module: [],
-  graph: [],
-  colorize: false,
-  depIncludes: ['dependencies']
-});
 
 // Parse url query param from browser location, "q"
 function queryFromLocation() {
@@ -36,7 +35,7 @@ export function useActivity() {
 
 export default function App() {
   const activity = useActivity();
-  const [, setQuery] = sharedState.use('query');
+  const [, setQuery] = useQuery();
 
   useEffect(() => {
     function handlePopState() {
@@ -50,12 +49,12 @@ export default function App() {
     };
   }, []);
 
-  const [inspectorOpen, setInspectorOpen] = sharedState.use('inspectorOpen');
+  const [inspectorOpen, setInspectorOpen] = useInspectorOpen();
 
   return <>
-      {activity.total > 0 ? <Loader activity={activity} /> : null}
-      <Graph />
-      <Splitter isOpen={inspectorOpen} onClick={() => setInspectorOpen(!inspectorOpen)} />
-      <Inspector className={inspectorOpen ? 'open' : ''} />
-    </>;
+    {activity.total > 0 ? <Loader activity={activity} /> : null}
+    <Graph />
+    <Splitter isOpen={inspectorOpen} onClick={() => setInspectorOpen(!inspectorOpen)} />
+    <Inspector className={inspectorOpen ? 'open' : ''} />
+  </>;
 }
