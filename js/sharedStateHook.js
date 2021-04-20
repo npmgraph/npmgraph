@@ -50,7 +50,6 @@ export default function(value, name /* for debugging */) {
     }, [val]);
 
     return [val, v => {
-      // console.log(name, '->', v);
       value = v;
       for (const setter of setters) setter(value);
     }];

@@ -46,7 +46,7 @@ export function Pane({ children, ...props }) {
 }
 
 export function Tags({ children, style, ...props }) {
-  return <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', ...style }} {...props}>
+  return <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', ...style }} {...props}>
     {children}
   </div>;
 }
@@ -105,8 +105,9 @@ export default function Inspector({ className, ...props }) {
             id='search-field'
             defaultValue={query}
             onKeyDown={e => {
-              if (/^(?:Enter|Tab)$/.test(e.key)) doSearch(e);
+              if (e.key == 'Enter') doSearch(e);
             }}
+            onBlur={doSearch}
             placeholder={'\u{1F50D} \xa0Enter module name'}
             autoFocus
           />

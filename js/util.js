@@ -170,10 +170,7 @@ export class LoadActivity {
     this.total++;
     this.active++;
     this.onChange?.(this);
-
-    const finished = false;
     return () => {
-      if (finished) return;
       this.active--;
       if (!this.active) {
         this.total = 0;

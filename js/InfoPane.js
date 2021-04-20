@@ -9,7 +9,7 @@ function getFileEntries() {
     .map(k => k.replace('/', '@').replace(/%2f/ig, '/'));
 }
 
-export default function InfoPane(...props) {
+export default function InfoPane(props) {
   const [, setQuery] = useQuery();
 
   const [recents, setRecents] = useState(getFileEntries());
