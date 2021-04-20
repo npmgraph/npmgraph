@@ -1,4 +1,4 @@
 node_modules
 .parcel-cache
-.code-workspace
+*.code-workspace
 dist
