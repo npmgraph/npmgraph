@@ -6,7 +6,7 @@ const config = {
   appVersion,
   apiKey: process.env.BUGSNAG_KEY,
   // Note: `parcel build` always sets NODE_ENV='production'.  This isn't really correct
-  // the static files are served locally, however (e.g. `npx static-server docs`).
+  // the static files are served locally, however.
   // To avoid generating bugsnag reports in dev environments, we set the stage based
   // on hostname-sniffing.
   releaseStage: /npmgraph/.test(window.location.hostname) ? 'production' : 'development'
