@@ -14,23 +14,20 @@ $ cd npmgraph
 $ npm install
 ```
 
-Once installed, you may either run it using Parcel's dev server, or you can
-build the static version and host on a web server of your choosing.
+### Build
 
-### Run with Parcel dev server
+This builds the source with Parcel:
 
-```
-$ npm start
-# (... then open http://localhost:1234 in your browser of choice)
-```
-
-### Run with webserver (static-server in this case) serving bundled files
-
-```
+```shell
 $ npm run build
-# etc...
-
-$ npx static-server docs
-# (... then open http://localhost:9080 in your browser of choice)
 ```
 
+Once built, you can use any dev server to serve the `dist` folder.
+
+### Build and watch
+
+This builds the source and starts an auto-reloading Parcel server:
+
+```shell
+$ npm start
+```
