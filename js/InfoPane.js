@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Pane, QueryLink } from './Inspector';
 import { store, useQuery } from './App';
+import '/css/InfoPane.scss';
 
 // Get names of uploaded modules in session storage
 function getFileEntries() {
@@ -8,7 +9,7 @@ function getFileEntries() {
     .map(k => k.replace('/', '@').replace(/%2f/ig, '/'));
 }
 
-export default function InfoPane() {
+export default function InfoPane(...props) {
   const [, setQuery] = useQuery();
 
   const [recents, setRecents] = useState(getFileEntries());
@@ -79,7 +80,7 @@ export default function InfoPane() {
     ev.preventDefault();
   };
 
-  return <Pane style={{ display: 'flex', flexDirection: 'column' }}>
+  return <Pane style={{ display: 'flex', flexDirection: 'column' }} {...props}>
     <input id='package-input' type='file' hidden onChange={onSelect} accept='.json'/>
 
     <p>

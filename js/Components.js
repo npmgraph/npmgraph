@@ -1,5 +1,7 @@
 import React from 'react';
 
+import '/css/Components.scss';
+
 export function Loader({ activity, ...props }) {
   return <div className='loader theme-dark'>
     <div className='bg' />

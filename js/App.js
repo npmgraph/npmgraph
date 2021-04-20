@@ -6,6 +6,8 @@ import Store from './Store';
 import { Loader } from './Components';
 import sharedStateHook from './sharedStateHook';
 
+import '/css/App.scss';
+
 export const usePane = sharedStateHook('info', 'pane');
 export const useInspectorOpen = sharedStateHook(true, 'inspectorOpen');
 export const useQuery = sharedStateHook(queryFromLocation(), 'query');

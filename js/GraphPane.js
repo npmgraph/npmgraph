@@ -1,10 +1,11 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef } from 'react';
-import { useColorize, useDepIncludes } from './App';
+import { useColorize, useDepIncludes, useExcludes } from './App';
 import { Pane, Section, Tags, Tag } from './Inspector';
 import { simplur } from './util';
 import { Toggle } from './Components';
 import { hslFor } from './Graph';
+import '/css/GraphPane.scss';
 
 function DepInclude({ type, ...props }) {
   const [depIncludes, setDepIncludes] = useDepIncludes();
@@ -88,10 +89,11 @@ function PieGraph({ entries, ...props }) {
   return <svg ref={svgEl} {...props}/>;
 }
 
-export default function GraphPane({ graph }) {
+export default function GraphPane({ graph, ...props }) {
   const compareEntryKey = ([a], [b]) => a < b ? -1 : a > b ? 1 : 0;
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
   const [colorize, setColorize] = useColorize();
+  const [excludes, setExcludes] = useExcludes();
 
   const occurances = {};
   const maintainers = {};
@@ -117,7 +119,11 @@ export default function GraphPane({ graph }) {
     .sort(compareEntryValue)
     .reverse();
 
-  return <Pane>
+  function unexclude(name) {
+    setExcludes(excludes.filter(n => n != name));
+  }
+
+  return <Pane {...props}>
     Include:
     <DepInclude type='dependencies' />
     <DepInclude type='devDependencies' />
@@ -150,6 +156,14 @@ export default function GraphPane({ graph }) {
       <span style={{ color: hslFor(2 / 2) }}>{'\u2B24'}</span> = 100%
       </div> : null
     }
+
+    <strong>Collapsed modules</strong>:
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridGap: '.5em' }}>
+    {
+      excludes.map(name => <span key={name} className='collapsed bright-hover' onClick={() => unexclude(name)}>{name}</span>)
+    }
+    </div>
+    <div style={{ fontSize: '90%', color: 'var(--text-dim)' }}>(shift-click modules in graph to toggle)</div>
 
     <Section title={simplur`${graph.size} Module[|s]`}>
       <Tags>

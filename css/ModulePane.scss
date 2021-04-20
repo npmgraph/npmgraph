@@ -1,0 +1,17 @@
+.bundle-item {
+  position: absolute;
+  display: grid;
+  align-content: center;
+  box-sizing: border-box;
+  cursor: default;
+  text-align: center;
+  border-radius: var(--rad_sm);
+  background-color: var(--bg1);
+  overflow: hidden;
+}
+
+.bundle-item > span {
+  font-weight: 600;
+  font-size: 115%;
+  color: rgba(0, 0, 0, 0.5);
+}
