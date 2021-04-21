@@ -69,7 +69,7 @@ export default function InfoPane(props) {
     setRecents(getFileEntries());
 
     const url = new URL(location);
-    url.search = key?.length ? `q=${key}` : '';
+    url.searchParams.set('q', key);
     history.pushState(null, null, url);
   };
 

@@ -86,16 +86,22 @@ export default function Inspector({ className, ...props }) {
   }
 
   function doSearch(e) {
-    // Convert input text to unique list of names
-    const names = [...new Set(e.currentTarget.value.split(/,\s*/).filter(x => x))];
+    const names = e.currentTarget.value
+      .split(',')
+      .map(v => v.trim())
+      .filter(v => v);
+    const query = [...new Set(names)]; // De-dupe
 
     // Update location
     const url = new URL(location);
-    url.search = names.length ? `q=${names.join(',')}` : '';
     url.hash = '';
+    query.length
+      ? url.searchParams.set('q', query.join(','))
+      : url.searchParams.delete('q');
+
     history.replaceState(null, window.title, url);
 
-    setQuery(names);
+    setQuery(query);
   }
 
   return <div id='inspector' className={`theme-lite ${className}`} {...props} >

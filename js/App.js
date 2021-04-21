@@ -20,10 +20,13 @@ function Splitter({ onClick, isOpen }) {
   return <div id='splitter' className='theme-dark bright-hover' onClick={onClick}>{isOpen ? '\u{25b6}' : '\u{25c0}'}</div>;
 }
 
-// Parse url query param from browser location, "q"
+// Parse `q` query param from browser location
 function queryFromLocation() {
-  const q = /q=([^&]+)/.test(location.search) && RegExp.$1;
-  return q?.length ? decodeURIComponent(q).split(/\s*,\s*/) : [];
+  const q = new URL(location).searchParams.get('q');
+  return decodeURIComponent(q ?? '')
+    .split(',')
+    .map(v => v.trim())
+    .filter(v => v);
 }
 
 export const activity = new LoadActivity();
