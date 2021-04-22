@@ -89,7 +89,7 @@ export default function Inspector({ className, ...props }) {
     const names = e.currentTarget.value
       .split(',')
       .map(v => v.trim())
-      .filter(v => v);
+      .filter(Boolean);
     const query = [...new Set(names)]; // De-dupe
 
     // Update location

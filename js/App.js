@@ -26,7 +26,7 @@ function queryFromLocation() {
   return decodeURIComponent(q ?? '')
     .split(',')
     .map(v => v.trim())
-    .filter(v => v);
+    .filter(Boolean);
 }
 
 export const activity = new LoadActivity();
