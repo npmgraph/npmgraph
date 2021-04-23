@@ -51,8 +51,8 @@ export default function InfoPane(props) {
 
     const pkg = JSON.parse(content);
 
-    if (!pkg?.name) pkg.name = '(upload)';
-    if (!pkg?.version) {
+    if (!pkg.name) pkg.name = '(upload)';
+    if (!pkg.version) {
       const d = new Date();
       // Make semver string of form YYYY.MM.DD-HH:MM:SS.ddd
       pkg.version = d.toISOString().replace(/-/g, '.').replace('T', '-');
@@ -65,7 +65,7 @@ export default function InfoPane(props) {
     const cacheKey = store.cachePackage(pkg);
     window.sessionStorage.setItem(cacheKey, JSON.stringify(pkg));
     const key = cacheKey.replace(/\//, '@');
-    setQuery(key?.length ? [key] : []);
+    setQuery(key ? [key] : []);
     setRecents(getFileEntries());
 
     const url = new URL(location);
