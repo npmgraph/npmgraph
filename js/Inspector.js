@@ -25,12 +25,16 @@ export function ExternalLink({ href, children, target = '_blank', className, ...
 export function QueryLink({ query }) {
   const [, setQuery] = useQuery();
   if (!Array.isArray(query)) query = [query];
-  const url = `${location.pathname}?q=${query.join(',')}`;
+
   function onClick(e) {
     e.preventDefault();
     setQuery(query);
     history.pushState(null, null, e.target.href);
   }
+
+  const url = new URL(location);
+  url.search = query.length ? `q=${query.join(',')}` : '';
+
   return <a href={url} onClick={filterAlteredClicks(onClick)}>{query.join(',')}</a>;
 }
 
@@ -82,16 +86,22 @@ export default function Inspector({ className, ...props }) {
   }
 
   function doSearch(e) {
-    // Convert input text to unique list of names
-    const names = [...new Set(e.currentTarget.value.split(/,\s*/).filter(x => x))];
+    const names = e.currentTarget.value
+      .split(',')
+      .map(v => v.trim())
+      .filter(Boolean);
+    const query = [...new Set(names)]; // De-dupe
 
     // Update location
     const url = new URL(location);
-    url.search = `?q=${names.join(',')}`;
     url.hash = '';
+    query.length
+      ? url.searchParams.set('q', query.join(','))
+      : url.searchParams.delete('q');
+
     history.replaceState(null, window.title, url);
 
-    setQuery(names);
+    setQuery(query);
   }
 
   return <div id='inspector' className={`theme-lite ${className}`} {...props} >
