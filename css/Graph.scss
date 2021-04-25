@@ -4,6 +4,7 @@
   overflow: auto;
   position: relative;
   user-select: none;
+  -webkit-user-select: none;
   padding-right: var(--splitter-size);
 }
 
@@ -47,8 +48,6 @@ g .stub {
 }
 
 g.node {
-  user-select: text;
-
   text {
     fill: #444;
   }
@@ -97,8 +96,4 @@ g.edge.selected {
   #graph-controls {
     display: none;
   }
-}
-
-#graph * {
-  user-select: none;
 }
