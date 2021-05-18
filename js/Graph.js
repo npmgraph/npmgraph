@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import * as d3 from 'd3';
-import { store, activity, useQuery, useDepIncludes, usePane, useInspectorOpen, useModule, useGraph, useColorize } from './App';
-import { $, tagElement, report, fetchJSON } from './util';
 import { graphviz } from '@hpcc-js/wasm';
+import * as d3 from 'd3';
+import React, { useEffect, useState } from 'react';
 import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
-
+import { activity, store, useColorize, useDepIncludes, useExcludes, useGraph, useInspectorOpen, useModule, usePane, useQuery } from './App';
+import { $, fetchJSON, report, tagElement } from './util';
 import '/css/Graph.scss';
 
 // Promise<ArrayBuffer> contents of graphviz WASM file
-const wasmData = fetch(wasmUrl, { credentials: 'same-origin' })
+const wasmBinaryPromise = fetch(wasmUrl, { credentials: 'same-origin' })
   .then(res => {
     if (!res.ok) throw Error(`Failed to load '${wasmUrl}'`);
     return res.arrayBuffer();
@@ -52,9 +51,10 @@ export function hslFor(perc) {
  * Fetch the module dependency tree for a given query
  * @param {[String]} query names of module entry points
  * @param {[String]} depIncludes dependencies to include
+ * @param {Function} moduleFilter applied to module dependency list(s)
  * @returns {Promise<Map>} Map of key -> {module, level, dependencies}
  */
-async function modulesForQuery(query, depIncludes) {
+async function modulesForQuery(query, depIncludes, moduleFilter) {
   const graph = new Map();
 
   function _walk(module, level = 0) {
@@ -69,7 +69,7 @@ async function modulesForQuery(query, depIncludes) {
     if (module && graph.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
-    const depEntries = getDependencyEntries(module, depIncludes, level);
+    const depEntries = moduleFilter(module) ? getDependencyEntries(module, depIncludes, level) : [];
 
     // Create object that captures info about how this module fits in the dependency graph
     const info = { module, level };
@@ -140,30 +140,6 @@ function composeDOT(graph) {
     )
     .concat('}')
     .join('\n');
-}
-
-function zoom(op) {
-  const svg = $('#graph svg')[0];
-  if (!svg) return;
-
-  const vb = svg.getAttribute('viewBox').split(' ');
-
-  switch (op) {
-    case 0:
-      svg.setAttribute('width', vb[2]);
-      svg.setAttribute('height', vb[3]);
-      break;
-
-    case 1:
-      svg.setAttribute('width', '100%');
-      svg.removeAttribute('height');
-      break;
-
-    case 2:
-      svg.removeAttribute('width');
-      svg.setAttribute('height', '100%');
-      break;
-  }
 }
 
 function download(type) {
@@ -259,13 +235,78 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
   }
 }
 
-export function GraphControls() {
+function GraphControls({ zoom, setZoom, ...props }) {
   return <div id='graph-controls'>
-    <button onClick={() => zoom(1)} title='zoom (fit width)' className='material-icons' style={{ borderRadius: '3px 0 0 3px' }}>swap_horiz</button>
-    <button onClick={() => zoom(0)} title='zoom (1:1)' style={{ fontSize: '1em', padding: '0 0.5em', width: 'fit-content', borderWidth: '1px 0px', borderRadius: 0 }}>1:1</button>
-    <button onClick={() => zoom(2)} title='zoom (fit height)' className='material-icons' style={{ borderRadius: '0 3px 3px 0' }}>swap_vert</button>
+    <button className={`material-icons ${zoom == 1 ? 'selected' : ''}`} onClick={() => setZoom(1)} title='zoom (fit width)' style={{ borderRadius: '3px 0 0 3px' }}>swap_horiz</button>
+    <button className={zoom == 0 ? 'selected' : null} onClick={() => setZoom(0)} title='zoom (1:1)' style={{ fontSize: '1em', padding: '0 .5em', width: 'fit-content', borderWidth: '1px 0px', borderRadius: 0 }}>1:1</button>
+    <button className={`material-icons ${zoom == 2 ? 'selected' : ''}`} onClick={() => setZoom(2)} title='zoom (fit height)' style={{ borderRadius: '0 3px 3px 0' }}>swap_vert</button>
     <button onClick={() => download('svg')} title='download as SVG' className='material-icons' style={{ marginLeft: '0.5em' }}>cloud_download</button>
   </div>;
+}
+
+function colorizeGraph(svg, colorize) {
+  if (!colorize) {
+    $(svg, 'g.node path').attr('style', null);
+  } else if (colorize == 'bus') {
+    for (const el of $(svg, 'g.node')) {
+      const m = store.cachedEntry(el.dataset.module);
+      $(el, 'path')[0].style.fill = hslFor((m?.package.maintainers.length - 1) / 3);
+    }
+  } else {
+    let packageNames = $('#graph g.node').map(el => store.cachedEntry(el.dataset.module).name);
+
+    // NPMS.io limits to 250 packages
+    const reqs = [];
+    const MAX_PACKAGES = 250;
+    while (packageNames.length) {
+      reqs.push(
+        fetchJSON('https://api.npms.io/v2/package/mget', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(packageNames.slice(0, MAX_PACKAGES))
+        })
+          .catch(err => {
+            console.error(err);
+            return null;
+          })
+      );
+      packageNames = packageNames.slice(MAX_PACKAGES);
+    }
+
+    Promise.all(reqs)
+      .then(arrs => arrs.filter(a => a).reduce((a, b) => ({ ...a, ...b }), {}))
+      .then(res => {
+        // TODO: 'Need hang module names on svg nodes with data-module attributes
+        for (const el of $(svg, 'g.node')) {
+          const key = $(el, 'text')[0].textContent;
+          if (!key) return;
+
+          const moduleName = key.replace(/@[\d.]+$/, '');
+          let score = res[moduleName]?.score;
+          switch (score && colorize) {
+            case 'overall': score = score.final; break;
+            case 'quality': score = score.detail.quality; break;
+            case 'popularity': score = score.detail.popularity; break;
+            case 'maintenance': score = score.detail.maintenance; break;
+          }
+
+          $(el, 'path')[0].style.fill = score ? hslFor(score) : '';
+        }
+      });
+  }
+}
+
+// :facepalm: https://github.com/whatwg/dom/issues/981
+function createAbortable() {
+  const signal = { aborted: false };
+
+  return {
+    signal,
+    abort: () => {
+      console.log('ABORTING');
+      signal.aborted = true;
+    }
+  };
 }
 
 export default function Graph(props) {
@@ -275,71 +316,131 @@ export default function Graph(props) {
   const [, setInspectorOpen] = useInspectorOpen();
   const [, setModule] = useModule();
   const [, setGraph] = useGraph();
+  const [excludes, setExcludes] = useExcludes();
   const [colorize] = useColorize();
 
-  const [svg, setSvg] = useState();
+  const [graphModules, setGraphModules] = useState();
+  const [zoom, setZoom] = useState(0);
+
+  // Signal for when Graph DOM changes
+  const [domSignal, setDomSignal] = useState(0);
 
   async function handleGraphClick(event) {
     if ($('#graph-controls').contains(event.target)) return;
 
     const el = $.up(event.target, '.node');
 
-    selectTag(el, true);
-
     const key = $(el, 'title')?.textContent?.trim();
     const module = key && store.cachedEntry(key);
+
+    if (event.shiftKey) {
+      if (module) {
+        const isIncluded = excludes.includes(module.name);
+        if (isIncluded) {
+          setExcludes(excludes.filter(n => n !== module.name));
+        } else {
+          setExcludes([...excludes, module.name]);
+        }
+      }
+
+      return;
+    }
+
+    selectTag(el, true);
 
     if (el) setInspectorOpen(true);
     setModule(module);
     setPane(module ? 'module' : 'graph');
   }
 
-  // Effect: Render graph
+  function applyZoom(svg = $('#graph svg')[0]) {
+    const vb = svg?.getAttribute('viewBox')?.split(' ');
+
+    if (!vb) return;
+
+    switch (zoom) {
+      case 0:
+        svg.setAttribute('width', vb[2]);
+        svg.setAttribute('height', vb[3]);
+        break;
+
+      case 1:
+        svg.setAttribute('width', '100%');
+        svg.removeAttribute('height');
+        break;
+
+      case 2:
+        svg.removeAttribute('width');
+        svg.setAttribute('height', '100%');
+        break;
+    }
+  }
+
+  // Filter for which modules should be shown / collapsed in the graph
+  function moduleFilter({ name }) {
+    return !excludes?.includes(name);
+  }
+
+  // NOTE: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
+  // Thus, it's broken up into different useEffect() actions, below.
+
+  // Effect: Fetch modules
   useEffect(async() => {
-    let cancelled = false;
+    const { signal, abort } = createAbortable();
 
     setGraph([]);
     setModule([]);
 
-    const graph = await modulesForQuery(query, depIncludes);
+    const modules = await modulesForQuery(query, depIncludes, moduleFilter);
+    if (signal.aborted) return; // Check after async
 
-    setGraph(graph);
-    setPane(graph.size ? 'graph' : 'info');
+    setGraphModules(modules);
+    setGraph(modules);
+    setPane(modules.size ? 'graph' : 'info');
 
-    console.log('Render graph');
-    const onFinish = activity.start('Rendering');
+    return abort;
+  }, [query, depIncludes, excludes]);
 
-    const svgMarkup = graph.size ? await graphviz.layout(
-      composeDOT(graph),
-      'svg',
-      'dot',
-      { wasmBinary: await wasmData }
-    )
-      : '<svg />';
+  // Effect: Parse SVG markup into DOM
+  useEffect(async() => {
+    const { signal, abort } = createAbortable();
 
+    // Post-process rendered DOM
+    const finish = activity.start('Rendering');
+
+    // Compose SVG markup
+    const wasmBinary = await wasmBinaryPromise; // Avoid race if wasmBinary fetch hasn't completed
+    if (signal.aborted) return; // Check after all async stuff
+
+    const svgMarkup = graphModules?.size ? await graphviz.layout(composeDOT(graphModules), 'svg', 'dot', { wasmBinary }) : '<svg />';
+    if (signal.aborted) return; // Check after all async stuff
+
+    // Parse markup
     let svgDom = (new DOMParser()).parseFromString(svgMarkup, 'image/svg+xml');
     svgDom = svgDom.children[0];
     svgDom.remove();
 
+    applyZoom(svgDom);
+
+    // Inject into DOM
     const el = $('#graph');
     d3.select('#graph svg').remove();
     el.appendChild(svgDom);
 
-    // Post-process rendered DOM
-    if (cancelled) return;
-
+    // Inject bg pattern for deprecated modules
     const PATTERN = `<pattern id="warning"
-      width="12" height="12"
-      patternUnits="userSpaceOnUse"
-      patternTransform="rotate(45 50 50)">
-      <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
-      <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
+    width="12" height="12"
+    patternUnits="userSpaceOnUse"
+    patternTransform="rotate(45 50 50)">
+    <line stroke="rgba(192,192,0,.15)" stroke-width="6px" x1="3" x2="3" y2="12"/>
+    <line stroke="rgba(0,0,0,.15)" stroke-width="6px" x1="9" x2="9" y2="12"/>
     </pattern>`;
 
     d3.select('#graph svg')
       .insert('defs', ':first-child')
       .html(PATTERN);
 
+    // Decorate DOM nodes with appropriate classname
     for (const el of $('#graph g.node')) {
       // Find module this node represents
       const key = $(el, 'text')[0].textContent;
@@ -358,6 +459,10 @@ export default function Graph(props) {
         report.warn(Error(`Bad replace: ${key}`));
       }
 
+      if (!moduleFilter(m)) {
+        el.classList.add('collapsed');
+      }
+
       const pkg = m.package;
       if (pkg.stub) {
         el.classList.add('stub');
@@ -367,75 +472,33 @@ export default function Graph(props) {
       }
     }
 
-    setSvg($('#graph svg')[0]);
-
     d3.select('#graph svg .node').node()?.scrollIntoView();
 
-    onFinish();
+    setGraph(graphModules);
+    setPane(graphModules?.size ? 'graph' : 'info');
 
-    return () => cancelled = true;
-  }, [query, depIncludes]);
+    // Signal other hooks that graph DOM has changed
+    setDomSignal(domSignal + 1);
+
+    finish?.();
+
+    return () => {
+      finish();
+      abort();
+    };
+  }, [graphModules]);
 
   // Effect: Colorize nodes
-  useEffect(async() => {
-    let cancelled = false;
-    if (!colorize) {
-      $(svg, 'g.node path').attr('style', null);
-    } else if (colorize == 'bus') {
-      for (const el of $(svg, 'g.node')) {
-        const m = store.cachedEntry(el.dataset.module);
-        $(el, 'path')[0].style.fill = hslFor((m?.package.maintainers.length - 1) / 3);
-      }
-    } else {
-      let packageNames = $('#graph g.node').map(el => store.cachedEntry(el.dataset.module).name);
+  useEffect(() => {
+    colorizeGraph($('#graph svg')[0], colorize);
+  }, [colorize, domSignal]);
 
-      // NPMS.io limits to 250 packages
-      const reqs = [];
-      const MAX_PACKAGES = 250;
-      while (packageNames.length) {
-        reqs.push(
-          fetchJSON('https://api.npms.io/v2/package/mget', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(packageNames.slice(0, MAX_PACKAGES))
-          })
-            .catch(err => {
-              console.error(err);
-              return null;
-            })
-        );
-        packageNames = packageNames.slice(MAX_PACKAGES);
-      }
-
-      Promise.all(reqs)
-        .then(arrs => arrs.filter(a => a).reduce((a, b) => ({ ...a, ...b }), {}))
-        .then(res => {
-          if (cancelled) return;
-          // TODO: 'Need hang module names on svg nodes with data-module attributes
-          for (const el of $(svg, 'g.node')) {
-            const key = $(el, 'text')[0].textContent;
-            if (!key) return;
-
-            const moduleName = key.replace(/@[\d.]+$/, '');
-            let score = res[moduleName]?.score;
-            switch (score && colorize) {
-              case 'overall': score = score.final; break;
-              case 'quality': score = score.detail.quality; break;
-              case 'popularity': score = score.detail.popularity; break;
-              case 'maintenance': score = score.detail.maintenance; break;
-            }
-
-            $(el, 'path')[0].style.fill = score ? hslFor(score) : '';
-          }
-        });
-    }
-
-    return () => cancelled = true;
-  }, [colorize]);
+  // (Re)apply zoom if/when it changes
+  useEffect(applyZoom, [zoom]);
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 
   return <div id='graph' onClick={handleGraphClick} >
-    <GraphControls />
+    <GraphControls zoom={zoom} setZoom={setZoom} />
   </div>;
 }

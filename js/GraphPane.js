@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef } from 'react';
-import { useColorize, useDepIncludes } from './App';
+import { useColorize, useDepIncludes, useExcludes } from './App';
 import { Pane, Section, Tags, Tag } from './Inspector';
 import { simplur } from './util';
 import { Toggle } from './Components';
@@ -93,6 +93,7 @@ export default function GraphPane({ graph, ...props }) {
   const compareEntryKey = ([a], [b]) => a < b ? -1 : a > b ? 1 : 0;
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
   const [colorize, setColorize] = useColorize();
+  const [excludes] = useExcludes();
 
   const occurances = {};
   const maintainers = {};
@@ -157,9 +158,15 @@ export default function GraphPane({ graph, ...props }) {
         {
           Object.entries(occurances)
             .sort(compareEntryKey)
-            .map(([name, count]) => <Tag key={name + count} name={name} type='module' count={count} />)
+            .map(([name, count]) => <Tag key={name + count} name={name} type='module' count={count}
+          className={excludes.includes(name) ? 'collapsed' : null}
+          />)
         }
       </Tags>
+
+      <div style={{ fontSize: '90%', color: 'var(--text-dim)', marginTop: '1em' }}>
+        (Shift-click modules in graph to expand/collapse)
+      </div>
     </Section>
 
     <Section title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}>
