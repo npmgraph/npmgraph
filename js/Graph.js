@@ -296,6 +296,19 @@ function colorizeGraph(svg, colorize) {
   }
 }
 
+// :facepalm: https://github.com/whatwg/dom/issues/981
+function createAbortable() {
+  const signal = { aborted: false };
+
+  return {
+    signal,
+    abort: () => {
+      console.log('ABORTING');
+      signal.aborted = true;
+    }
+  };
+}
+
 export default function Graph(props) {
   const [query] = useQuery();
   const [depIncludes] = useDepIncludes();
@@ -363,17 +376,6 @@ export default function Graph(props) {
     }
   }
 
-  // Just kill me now, please. https://github.com/whatwg/dom/issues/981
-  function actuallyUsableWHATWGAbortAPI() {
-    const ac = new AbortController();
-    return {
-      signal: ac.signal,
-      abort: ac.abort.bind(ac)
-    };
-  }
-
-  const { signal, abort } = actuallyUsableWHATWGAbortAPI();
-
   // Filter for which modules should be shown / collapsed in the graph
   function moduleFilter({ name }) {
     return !excludes?.includes(name);
@@ -384,6 +386,8 @@ export default function Graph(props) {
 
   // Effect: Fetch modules
   useEffect(async() => {
+    const { signal, abort } = createAbortable();
+
     setGraph([]);
     setModule([]);
 
@@ -399,11 +403,10 @@ export default function Graph(props) {
 
   // Effect: Parse SVG markup into DOM
   useEffect(async() => {
-    if (signal.aborted) return; // Check after all async stuff
+    const { signal, abort } = createAbortable();
 
     // Post-process rendered DOM
     const finish = activity.start('Rendering');
-    finish.ts = Date.now();
 
     // Compose SVG markup
     const wasmBinary = await wasmBinaryPromise; // Avoid race if wasmBinary fetch hasn't completed
@@ -487,11 +490,7 @@ export default function Graph(props) {
 
   // Effect: Colorize nodes
   useEffect(() => {
-    if (signal.aborted) return; // Check after all async stuff
-
     colorizeGraph($('#graph svg')[0], colorize);
-
-    return abort;
   }, [colorize, domSignal]);
 
   // (Re)apply zoom if/when it changes
