@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import * as d3 from 'd3';
-
-import { store, activity, useQuery, useDepIncludes, usePane, useInspectorOpen, useModule, useGraph, useColorize, useExcludes } from './App';
-import { $, tagElement, report, fetchJSON } from './util';
 import { graphviz } from '@hpcc-js/wasm';
+import * as d3 from 'd3';
+import React, { useEffect, useState } from 'react';
 import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
-
+import { activity, store, useColorize, useDepIncludes, useExcludes, useGraph, useInspectorOpen, useModule, usePane, useQuery } from './App';
+import { $, fetchJSON, report, tagElement } from './util';
 import '/css/Graph.scss';
 
-// Fetch WASM binary for graphviz rendering
+// Promise<ArrayBuffer> contents of graphviz WASM file
 const wasmBinaryPromise = fetch(wasmUrl, { credentials: 'same-origin' })
   .then(res => {
     if (!res.ok) throw Error(`Failed to load '${wasmUrl}'`);
@@ -343,9 +341,9 @@ export default function Graph(props) {
   }
 
   function applyZoom(svg = $('#graph svg')[0]) {
-    if (!svg) return;
+    const vb = svg?.getAttribute('viewBox')?.split(' ');
 
-    const vb = svg.getAttribute('viewBox').split(' ');
+    if (!vb) return;
 
     switch (zoom) {
       case 0:
@@ -365,12 +363,16 @@ export default function Graph(props) {
     }
   }
 
-  // Flag for when rendering may have been interrupted (e.g. component is unmounted
-  // by React)
-  let cancelled = false;
-  function cancel() {
-    cancelled = true;
+  // Just kill me now, please. https://github.com/whatwg/dom/issues/981
+  function actuallyUsableWHATWGAbortAPI() {
+    const ac = new AbortController();
+    return {
+      signal: ac.signal,
+      abort: ac.abort.bind(ac)
+    };
   }
+
+  const { signal, abort } = actuallyUsableWHATWGAbortAPI();
 
   // Filter for which modules should be shown / collapsed in the graph
   function moduleFilter({ name }) {
@@ -386,31 +388,32 @@ export default function Graph(props) {
     setModule([]);
 
     const modules = await modulesForQuery(query, depIncludes, moduleFilter);
-    if (cancelled) return; // Check after async
+    if (signal.aborted) return; // Check after async
 
     setGraphModules(modules);
+    setGraph(modules);
+    setPane(modules.size ? 'graph' : 'info');
 
-    return cancel;
+    return abort;
   }, [query, depIncludes, excludes]);
 
   // Effect: Parse SVG markup into DOM
   useEffect(async() => {
-    if (cancelled || !graphModules?.size) return; // Check after all async stuff
+    if (signal.aborted) return; // Check after all async stuff
 
     // Post-process rendered DOM
     const finish = activity.start('Rendering');
     finish.ts = Date.now();
-    console.log('RENDER', finish.ts);
 
     // Compose SVG markup
     const wasmBinary = await wasmBinaryPromise; // Avoid race if wasmBinary fetch hasn't completed
-    if (cancelled) return; // Check after all async stuff
+    if (signal.aborted) return; // Check after all async stuff
 
-    const markup = await graphviz.layout(composeDOT(graphModules), 'svg', 'dot', { wasmBinary });
-    if (cancelled) return; // Check after all async stuff
+    const svgMarkup = graphModules?.size ? await graphviz.layout(composeDOT(graphModules), 'svg', 'dot', { wasmBinary }) : '<svg />';
+    if (signal.aborted) return; // Check after all async stuff
 
     // Parse markup
-    let svgDom = (new DOMParser()).parseFromString(markup, 'image/svg+xml');
+    let svgDom = (new DOMParser()).parseFromString(svgMarkup, 'image/svg+xml');
     svgDom = svgDom.children[0];
     svgDom.remove();
 
@@ -469,28 +472,26 @@ export default function Graph(props) {
     d3.select('#graph svg .node').node()?.scrollIntoView();
 
     setGraph(graphModules);
-    setPane(graphModules.size ? 'graph' : 'info');
+    setPane(graphModules?.size ? 'graph' : 'info');
 
     // Signal other hooks that graph DOM has changed
     setDomSignal(domSignal + 1);
 
-    console.log('FINISH', finish?.ts);
     finish?.();
 
     return () => {
-      console.log('FINISH', finish?.ts);
       finish();
-      cancel();
+      abort();
     };
   }, [graphModules]);
 
   // Effect: Colorize nodes
   useEffect(() => {
-    if (cancelled) return; // Check after all async stuff
+    if (signal.aborted) return; // Check after all async stuff
 
     colorizeGraph($('#graph svg')[0], colorize);
 
-    return cancel;
+    return abort;
   }, [colorize, domSignal]);
 
   // (Re)apply zoom if/when it changes
