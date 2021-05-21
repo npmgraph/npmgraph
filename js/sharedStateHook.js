@@ -38,8 +38,9 @@ import { useState, useEffect } from 'react';
  * @returns {Function} React hook function
  */
 
-export default function(value, name /* for debugging */) {
+export default function(value, name, isPersist = false) {
   const setters = new Set();
+  isPersist && (value = localStorage.getItem(name) ?? value);
 
   return function useSharedState() {
     const [val, setVal] = useState(value);
@@ -52,6 +53,7 @@ export default function(value, name /* for debugging */) {
     return [val, v => {
       value = v;
       for (const setter of setters) setter(value);
+      isPersist && localStorage.setItem(name, value);
     }];
   };
 }

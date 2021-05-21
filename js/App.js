@@ -13,7 +13,7 @@ export const useInspectorOpen = sharedStateHook(true, 'inspectorOpen');
 export const useQuery = sharedStateHook(queryFromLocation(), 'query');
 export const useModule = sharedStateHook([], 'module');
 export const useGraph = sharedStateHook([], 'graph');
-export const useColorize = sharedStateHook(false, 'colorize');
+export const useColorize = sharedStateHook(false, 'colorize', true);
 export const useDepIncludes = sharedStateHook(['dependencies'], 'depIncludes');
 export const useExcludes = sharedStateHook([], 'excludes');
 
