@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef } from 'react';
-import { useSessionStorage } from 'storagehooks';
+import { useLocalStorage } from 'storagehooks';
 import { useDepIncludes, useExcludes } from './App';
 import { Toggle } from './Components';
 import { hslFor } from './Graph';
@@ -93,7 +93,7 @@ function PieGraph({ entries, ...props }) {
 export default function GraphPane({ graph, ...props }) {
   const compareEntryKey = ([a], [b]) => a < b ? -1 : a > b ? 1 : 0;
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
-  const [colorize, setColorize] = useSessionStorage('colorize', false);
+  const [colorize, setColorize] = useLocalStorage('colorize', false);
 
   const [excludes] = useExcludes();
 
