@@ -17,10 +17,7 @@ const bugsnagLoaded = typeof (bugsnag) != 'undefined';
 if (bugsnagLoaded) {
   console.log('BugSnag config:', config);
 } else {
-  // Complain loudly-ish
-  setTimeout(() => {
-    throw Error('Bugsnag failed to load.  Maybe disable your ad blocker for this site?');
-  });
+  console.error('Bugsnag failed to load.  Maybe disable your ad blocker for this site?');
 }
 
 const pageStart = Date.now();
