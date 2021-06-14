@@ -3,7 +3,7 @@
   --bg: #eee;
   --fg-dim: #444;
   --bg-dim: #bbb;
-  --bg-gradient-color : #fff;
+  --bg-gradient-color: #fff;
   --bg0: #f1f4f4;
   --bg1: #d6d6d6;
   --highlight: #e65c00;
@@ -16,14 +16,14 @@
     --bg: #111;
     --fg-dim: #bbb;
     --bg-dim: #444;
-    --bg-gradient-color : #000;
+    --bg-gradient-color: #000;
     --bg0: #7e7e7d;
     --bg1: #383838;
     --highlight: #ff761a;
   }
 }
 
-:root {
+:root { /* stylelint-disable-line no-duplicate-selectors */
   --rad_sm: 5px;
   --rad_lg: 10px;
   --splitter-size: 2em;
@@ -42,7 +42,9 @@ html {
   font-size: 10pt;
 }
 
-body, select, input {
+body,
+select,
+input {
   background-color: var(--bg);
   color: var(--fg);
 }

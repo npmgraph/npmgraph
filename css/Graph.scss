@@ -76,7 +76,7 @@ g.node {
 }
 
 g.edge {
-  > path {
+  > path { /* stylelint-disable-line no-descending-specificity */
     stroke: var(--fg);
   }
 
@@ -85,19 +85,18 @@ g.edge {
     fill: var(--fg);
   }
 
-
   &.selected {
     > path {
       stroke-width: 2;
       stroke: var(--highlight);
     }
-  
+
     > polygon {
       stroke: var(--highlight);
       fill: var(--highlight);
     }
   }
-  }
+}
 
 @media print {
   #graph-controls {
