@@ -6,8 +6,8 @@
 }
 
 #drop_target.drag {
-  background-color: #ccf;
-  border-color: #68a;
+  background-color: var(--fg-dim);
+  border-color: var(--bg);
 }
 
 #drop_target * { pointer-events: none; }
