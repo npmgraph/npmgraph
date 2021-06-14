@@ -74,8 +74,8 @@ summary {
   flex-basis: auto;
   flex-shrink: 0;
   display: flex;
-  background: var(--bg-dim) var(--bg-gradient);
-  color: var(--fg);
+  background: var(--fg-dim) var(--bg-gradient);
+  color: var(--bg);
   user-select: none;
 
   > * {
@@ -85,10 +85,12 @@ summary {
   .tab {
     padding: 0 10px;
     cursor: pointer;
-    background: var(--bg-dim) var(--bg-gradient);
-    border-left: solid 1px #888;
     font-size: 12pt;
     font-weight: 600;
+
+    &:not(:first-child) {
+      border-left: solid 1px #888;
+    }
 
     &.active {
       border-color: transparent;
@@ -121,5 +123,5 @@ summary {
   overflow-y: auto;
   overflow-x: hidden;
   border-bottom-left-radius: var(--rad_lg);
-  box-shadow: inset 1px -1px 6px #d6d6d677;
+  box-shadow: inset 1px -1px 6px var(--bg-dim);
 }

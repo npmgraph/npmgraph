@@ -3,7 +3,7 @@
   --bg: #eee;
   --fg-dim: #444;
   --bg-dim: #bbb;
-  --bg-gradient-color: #fff;
+  --bg-gradient-color: rgba(255, 255, 255, .25);
   --bg0: #f1f4f4;
   --bg1: #d6d6d6;
   --highlight: #e65c00;
@@ -16,7 +16,7 @@
     --bg: #111;
     --fg-dim: #bbb;
     --bg-dim: #444;
-    --bg-gradient-color: #000;
+    --bg-gradient-color: rgba(0, 0, 0, .25);
     --bg0: #7e7e7d;
     --bg1: #383838;
     --highlight: #ff761a;
@@ -40,6 +40,7 @@
 html {
   font-family: system-ui, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
   font-size: 10pt;
+  min-height: 100%; // https://stackoverflow.com/a/17874759/109538
 }
 
 body,
@@ -49,17 +50,45 @@ input {
   color: var(--fg);
 }
 
-html,
 body {
   margin: 0;
   padding: 0;
+
+  > #fail-bubble {
+    display: none;
+  }
 }
 
 body.fail {
   /* Image from https://www.redbubble.com/people/JonThomson/shop */
-  background: url("/images/fail_giraffe.png") right 50% no-repeat;
-  background-color: var(--bg1);
-  background-size: 30%;
+  background-image: url("/images/fail_giraffe.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-color: var(--bg);
+  
+  > #fail-bubble {
+    display: inherit;
+    background-color: var(--bg-dim);
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 200px;
+    border-radius: 2rem 2rem;
+    color: var(--fg);
+    padding: 1em;
+    margin: 1em;
+
+    > #fail-bubble-arrow {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 1.5rem solid var(--bg-dim);
+      border-top: 1rem solid transparent;
+      border-bottom: 1rem solid transparent;
+      top: 80px;
+      right: -1.5rem;
+    }
+  }
 }
 
 #app {
