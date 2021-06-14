@@ -1,10 +1,10 @@
 import * as d3 from 'd3';
 import React, { useEffect, useRef } from 'react';
 import { useColorize, useDepIncludes, useExcludes } from './App';
-import { Pane, Section, Tags, Tag } from './Inspector';
-import { simplur } from './util';
 import { Toggle } from './Components';
 import { hslFor } from './Graph';
+import { Pane, Section, Tag, Tags } from './Inspector';
+import { simplur } from './util';
 import '/css/GraphPane.scss';
 
 function DepInclude({ type, ...props }) {
@@ -164,7 +164,7 @@ export default function GraphPane({ graph, ...props }) {
         }
       </Tags>
 
-      <div style={{ fontSize: '90%', color: 'var(--text-dim)', marginTop: '1em' }}>
+      <div style={{ fontSize: '90%', color: 'var(fg-dim)', marginTop: '1em' }}>
         (Shift-click modules in graph to expand/collapse)
       </div>
     </Section>
