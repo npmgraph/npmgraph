@@ -10,7 +10,7 @@
 }
 
 // Override for dark mode (screen only, print always uses light)
-@media only screen and (prefers-color-scheme: light) {
+@media only screen and (prefers-color-scheme: dark) {
   :root { // Dark theme (https://coolors.co/f1f4f4-606c38-283618-ff761a)
     --fg: #eee;
     --bg: #111;
