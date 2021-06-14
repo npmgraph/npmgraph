@@ -3,7 +3,7 @@
   --bg: #fff;
   --fg-dim: #444;
   --bg-dim: #bbb;
-  --bg-gradient-color: rgba(255, 255, 255, .25);
+  --bg-gradient-color: rgba(255, 255, 255, 0.25);
   --bg0: #f1f4f4;
   --bg1: #d6d6d6;
   --highlight: #e65c00;
@@ -16,7 +16,7 @@
     --bg: #111;
     --fg-dim: #bbb;
     --bg-dim: #444;
-    --bg-gradient-color: rgba(0, 0, 0, .25);
+    --bg-gradient-color: rgba(0, 0, 0, 0.25);
     --bg0: #7e7e7d;
     --bg1: #383838;
     --highlight: #ff761a;
@@ -65,7 +65,7 @@ body.fail {
   background-repeat: no-repeat;
   background-position: top right;
   background-color: var(--bg);
-  
+
   > #fail-bubble {
     display: inherit;
     background-color: var(--bg-dim);
