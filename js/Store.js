@@ -1,6 +1,7 @@
 import { fetchJSON, report } from './util';
 import Module, { moduleKey } from './Module';
-import semver from 'semver';
+import isSemverValid from 'semver/functions/valid';
+import doesSatisfySemver from 'semver/functions/satisfies';
 
 class Store {
   moduleCache = {};
@@ -76,7 +77,7 @@ class Store {
   // fetch module url, caching results (in memory for the time being)
   async fetchPackage(name, version) {
     const isScoped = name.startsWith('@');
-    const versionIsValid = semver.valid(version);
+    const versionIsValid = isSemverValid(version);
 
     // url-escape "/"'s in the name
     const path = `${name.replace(/\//g, '%2F')}`;
@@ -120,7 +121,7 @@ class Store {
       version = version || body['dist-tags']?.latest || '*';
 
       // Resolve to specific version (use version specifier if provided, otherwise latest dist version, otherwise latest)
-      const resolvedVersion = versions.find(v => semver.satisfies(v.version, version));
+      const resolvedVersion = versions.find(v => doesSatisfySemver(v.version, version));
 
       body = resolvedVersion || Error(`No version matching "${version}" found`);
     }
