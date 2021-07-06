@@ -1,6 +1,6 @@
 #drop_target {
-  background-color: #ddd;
-  border: dashed 2px #888;
+  background-color: var(--bg2);
+  border: dashed 2px var(--text-dim);
   padding: 4em 1em;
   border-radius: var(--rad_sm);
 }
