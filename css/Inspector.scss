@@ -122,4 +122,7 @@ summary {
   overflow-x: hidden;
   border-bottom-left-radius: var(--rad_lg);
   box-shadow: inset 1px -1px 6px var(--inset-shadow-color, #d6d6d677);
+  a {
+    color: var(--highlight);
+  }
 }
