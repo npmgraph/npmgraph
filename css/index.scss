@@ -33,8 +33,10 @@
 @media (prefers-color-scheme: dark) {
   html {
     background: #111;
+
     --inset-shadow-color: black;
   }
+
   .theme-lite {
     /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
     --text: #f3f3f3;
@@ -44,9 +46,11 @@
     --highlight: #ff761a;
     --bg2: #333;
   }
+
   [fill="white"] {
     fill: none;
   }
+
   [stroke="black"] {
     stroke: #999;
   }
@@ -67,7 +71,6 @@ html {
   font-family: system-ui, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
   font-size: 10pt;
 }
-
 
 html,
 body {
