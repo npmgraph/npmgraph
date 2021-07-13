@@ -18,6 +18,7 @@
   --text-dim: #999;
   --bg0: #f1f4f4;
   --bg1: #d6d6d6;
+  --bg2: #ddd;
   --highlight: #e65c00;
 }
 
@@ -27,7 +28,32 @@
   --text-dim: #666;
   --bg0: #7e7e7d;
   --bg1: #383838;
-  --highlight: #ff761a;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    background: #111;
+
+    --inset-shadow-color: black;
+  }
+
+  .theme-lite {
+    /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
+    --text: #f3f3f3;
+    --text-dim: #766;
+    --bg0: #262222;
+    --bg1: #696666;
+    --highlight: #ff761a;
+    --bg2: #333;
+  }
+
+  [fill="white"] {
+    fill: none;
+  }
+
+  [stroke="black"] {
+    stroke: #999;
+  }
 }
 
 .theme-lite,

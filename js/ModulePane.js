@@ -15,7 +15,7 @@ function ScoreBar({ title, score, style }) {
 
   return <>
     <span style={{ marginRight: '1em', ...style }}>{title}</span>
-    <div style={{ border: 'solid 1px #ccc', width: '200px' }} >{inner}</div>
+    <div className='score-bar' style={{ border: 'solid 1px #ccc', width: '200px' }} >{inner}</div>
   </>;
 }
 
