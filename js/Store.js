@@ -93,7 +93,8 @@ class Store {
       const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
       const finish = this.activity.start(`Fetching ${reqPath}`);
-      req = this.requestCache[reqPath] = fetchJSON(`https://registry.npmjs.cf/${reqPath}`)
+      req = this.requestCache[reqPath] = fetchJSON(`http://localhost:4873/${reqPath}`)
+      // req = this.requestCache[reqPath] = fetchJSON(`https://registry.npmjs.cf/${reqPath}`)
         // Errors get turned into stub modules, below
         .catch(err => err)
         .finally(finish);

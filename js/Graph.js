@@ -4,6 +4,7 @@ import { AppContext, store, activity } from './App.js';
 import { $, tagElement, report, fetchJSON } from './util.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
+const MAX_LEVEL = 4;
 
 const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
@@ -18,11 +19,16 @@ function getDependencyEntries(pkg, depIncludes, level = 0) {
 
   const deps = [];
 
+  // protection: limit depth
+  if (level >= MAX_LEVEL) {
+    return deps;
+  }
+
   for (const type of depIncludes) {
     if (!pkg[type]) continue;
 
     // Only do one level for non-"dependencies"
-    if (level > 0 && type != 'dependencies') continue;
+    // if (level > 0 && type != 'dependencies') continue;
 
     // Get entries, adding type to each entry
     const d = Object.entries(pkg[type]);
@@ -45,6 +51,8 @@ export function hslFor(perc) {
  */
 async function modulesForQuery(query, depIncludes) {
   const graph = new Map();
+  const packages = {};
+  let i = 0;
 
   function _walk(module, level = 0) {
     if (!module) return Promise.resolve(Error('Undefined module'));
@@ -57,12 +65,23 @@ async function modulesForQuery(query, depIncludes) {
     // Skip modules we've already seen
     if (module && graph.has(module.key)) return Promise.resolve();
 
+    if (i % 500 == 0) { // every 500 new dependencies, log this:
+      console.log(`_walk(module=${module}, level=${level}, total-deps=${graph.size}, total packages: ${countProperties(packages)})`);
+    }
+    i++;
+
     // Get dependency [name, version, dependency type] entries
     const depEntries = getDependencyEntries(module, depIncludes, level);
 
     // Create object that captures info about how this module fits in the dependency graph
     const info = { module, level };
     graph.set(module.key, info);
+
+    // keep track of unique packages
+    if (/(.+)@(.*)/.test(module.key)) {
+      const pkg = RegExp.$1;
+      packages[pkg] = pkg;
+    }
 
     return Promise.all(
       depEntries.map(async([name, version, type]) => {
@@ -79,7 +98,11 @@ async function modulesForQuery(query, depIncludes) {
     const m = await store.getModule(name);
     return m && _walk(m);
   }))
-    .then(() => graph);
+    // .then(() => graph);
+    .then(() => {
+      console.log(`Final results: total-deps=${graph.size}, total packages: ${countProperties(packages)})`);
+      return graph;
+    });
 }
 
 // Compose directed graph document (GraphViz notation)
@@ -205,6 +228,12 @@ function generateLinkToDownload(extension, link) {
   document.body.appendChild(downloadLink);
   downloadLink.click();
   document.body.removeChild(downloadLink);
+}
+
+// code copied from the accepted answer:
+// https://stackoverflow.com/questions/956719/number-of-elements-in-a-javascript-object
+function countProperties(obj) {
+  return Object.keys(obj).length;
 }
 
 export function selectTag(tag, selectEdges = false, scroll = false) {
