@@ -27,10 +27,10 @@ const EDGE_ATTRIBUTES = {
 function getDependencyEntries(pkg, includeDev, level = 0) {
   const dependencyTypes = [
     'dependencies',
-     'peerDependencies',
-      includeDev && level <= 0 ? 'devDependencies' : null
-    ];
-  
+    'peerDependencies',
+    includeDev && level <= 0 ? 'devDependencies' : null
+  ];
+
   pkg = pkg.package || pkg;
 
   const deps = [];
