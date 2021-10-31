@@ -2,7 +2,7 @@ import { graphviz } from '@hpcc-js/wasm';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
 import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
-import { activity, store, useColorize, useDepIncludes, useExcludes, useGraph, useInspectorOpen, useModule, usePane, useQuery } from './App';
+import { activity, store, useColorize, useIncludeDev, useExcludes, useGraph, useInspectorOpen, useModule, usePane, useQuery } from './App';
 import { $, fetchJSON, report, tagElement } from './util';
 import '/css/Graph.scss';
 
@@ -18,17 +18,23 @@ const FONT = 'Roboto Condensed, sans-serif';
 const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=red]',
-  peerDependencies: '[color=green]'
+  peerDependencies:
+    '[label=peer fontcolor="#bbbbbb" color="#bbbbbb" style=dashed]'
   // optionalDependencies: '[color=black style=dashed]',
   // optionalDevDependencies: '[color=red style=dashed]'
 };
 
-function getDependencyEntries(pkg, depIncludes, level = 0) {
+function getDependencyEntries(pkg, includeDev, level = 0) {
+  const dependencyTypes = [
+    'dependencies',
+     'peerDependencies',
+      includeDev && level <= 0 ? 'devDependencies' : null
+    ];
+  
   pkg = pkg.package || pkg;
 
   const deps = [];
-
-  for (const type of depIncludes) {
+  for (const type of dependencyTypes) {
     if (!pkg[type]) continue;
 
     // Only do one level for non-"dependencies"
@@ -50,11 +56,11 @@ export function hslFor(perc) {
 /**
  * Fetch the module dependency tree for a given query
  * @param {[String]} query names of module entry points
- * @param {[String]} depIncludes dependencies to include
+ * @param {[String]} includeDev dependencies to include
  * @param {Function} moduleFilter applied to module dependency list(s)
  * @returns {Promise<Map>} Map of key -> {module, level, dependencies}
  */
-async function modulesForQuery(query, depIncludes, moduleFilter) {
+async function modulesForQuery(query, includeDev, moduleFilter) {
   const graph = new Map();
 
   function _walk(module, level = 0) {
@@ -69,7 +75,7 @@ async function modulesForQuery(query, depIncludes, moduleFilter) {
     if (module && graph.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
-    const depEntries = moduleFilter(module) ? getDependencyEntries(module, depIncludes, level) : [];
+    const depEntries = moduleFilter(module) ? getDependencyEntries(module, includeDev, level) : [];
 
     // Create object that captures info about how this module fits in the dependency graph
     const info = { module, level };
@@ -78,7 +84,9 @@ async function modulesForQuery(query, depIncludes, moduleFilter) {
     return Promise.all(
       depEntries.map(async([name, version, type]) => {
         const module = await store.getModule(name, version);
-        await _walk(module, level + 1);
+        if (type !== 'peerDependencies') {
+          await _walk(module, level + 1);
+        }
         return { module, type };
       })
     )
@@ -311,7 +319,7 @@ function createAbortable() {
 
 export default function Graph(props) {
   const [query] = useQuery();
-  const [depIncludes] = useDepIncludes();
+  const [includeDev] = useIncludeDev();
   const [, setPane] = usePane();
   const [, setInspectorOpen] = useInspectorOpen();
   const [, setModule] = useModule();
@@ -391,7 +399,7 @@ export default function Graph(props) {
     setGraph([]);
     setModule([]);
 
-    const modules = await modulesForQuery(query, depIncludes, moduleFilter);
+    const modules = await modulesForQuery(query, includeDev, moduleFilter);
     if (signal.aborted) return; // Check after async
 
     setGraphModules(modules);
@@ -399,7 +407,7 @@ export default function Graph(props) {
     setPane(modules.size ? 'graph' : 'info');
 
     return abort;
-  }, [query, depIncludes, excludes]);
+  }, [query, includeDev, excludes]);
 
   // Effect: Parse SVG markup into DOM
   useEffect(async() => {
