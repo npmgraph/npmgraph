@@ -2,7 +2,7 @@ import { graphviz } from '@hpcc-js/wasm';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
 import wasmUrl from 'url:@hpcc-js/wasm/dist/graphvizlib.wasm';
-import { activity, store, useColorize, useIncludeDev, useExcludes, useGraph, useInspectorOpen, useModule, usePane, useQuery } from './App';
+import { activity, store, useColorize, useExcludes, useGraph, useIncludeDev, useInspectorOpen, useModule, usePane, useQuery } from './App';
 import { $, fetchJSON, report, tagElement } from './util';
 import '/css/Graph.scss';
 
@@ -56,7 +56,7 @@ export function hslFor(perc) {
 /**
  * Fetch the module dependency tree for a given query
  * @param {[String]} query names of module entry points
- * @param {[String]} includeDev dependencies to include
+ * @param {Boolean} includeDev flag for including devDependencies
  * @param {Function} moduleFilter applied to module dependency list(s)
  * @returns {Promise<Map>} Map of key -> {module, level, dependencies}
  */
