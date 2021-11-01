@@ -14,7 +14,7 @@ export const useQuery = sharedStateHook(queryFromLocation(), 'query');
 export const useModule = sharedStateHook([], 'module');
 export const useGraph = sharedStateHook([], 'graph');
 export const useColorize = sharedStateHook(false, 'colorize');
-export const useDepIncludes = sharedStateHook(['dependencies'], 'depIncludes');
+export const useIncludeDev = sharedStateHook(false, 'includeDev');
 export const useExcludes = sharedStateHook([], 'excludes');
 
 function Splitter({ onClick, isOpen }) {

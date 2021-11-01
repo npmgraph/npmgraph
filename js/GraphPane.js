@@ -4,31 +4,12 @@ import { interpolateSpectral } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
 import { arc, pie } from 'd3-shape';
 import React, { useEffect, useRef } from 'react';
-import { useColorize, useDepIncludes, useExcludes } from './App';
-import { Pane, Section, Tags, Tag } from './Inspector';
-import { simplur } from './util';
+import { useColorize, useExcludes, useIncludeDev } from './App';
 import { Toggle } from './Components';
 import { hslFor } from './Graph';
+import { Pane, Section, Tag, Tags } from './Inspector';
+import { simplur } from './util';
 import '/css/GraphPane.scss';
-
-function DepInclude({ type, ...props }) {
-  const [depIncludes, setDepIncludes] = useDepIncludes();
-
-  let arrow = null;
-  switch (type) {
-    case 'devDependencies': arrow = <>(<span style={{ color: 'red' }}>{'\u{27f6}'}</span>)</>; break;
-    case 'peerDependencies': arrow = <>(<span style={{ color: 'green' }}>{'\u{27f6}'}</span>)</>; break;
-  }
-
-  function toggle(checked) {
-    setDepIncludes(checked ? [type, ...depIncludes] : depIncludes.filter(t => type != t));
-  }
-
-  return <Toggle className='depInclude' checked={depIncludes.includes(type)} onChange={toggle}>
-      <code>{type} {arrow}</code>
-      </Toggle>
-  ;
-}
 
 function PieGraph({ entries, ...props }) {
   const svgEl = useRef();
@@ -98,6 +79,7 @@ export default function GraphPane({ graph, ...props }) {
   const compareEntryValue = ([, a], [, b]) => a < b ? -1 : a > b ? 1 : 0;
   const [colorize, setColorize] = useColorize();
   const [excludes] = useExcludes();
+  const [includeDev, setIncludeDev] = useIncludeDev();
 
   const occurances = {};
   const maintainers = {};
@@ -124,10 +106,9 @@ export default function GraphPane({ graph, ...props }) {
     .reverse();
 
   return <Pane {...props}>
-    Include:
-    <DepInclude type='dependencies' />
-    <DepInclude type='devDependencies' />
-    <DepInclude type='peerDependencies' />
+    <Toggle checked={includeDev} onChange={() => setIncludeDev(!includeDev)}>
+      Include <code>devDependencies</code> (<span style={{ color: 'red' }}>{'\u{27f6}'}</span>)
+    </Toggle>
 
     <label>
       Colorize by:
