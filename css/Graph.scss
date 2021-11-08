@@ -9,13 +9,13 @@
 
   --warning0: #f6f6e0;
   --warning1: #d9d9d9;
-  --stub: #ff0000;
+  --stub: #f00;
 }
 
 @media (prefers-color-scheme: dark) {
   #graph {
     --warning0: #101010;
-    --warning1: #666600;
+    --warning1: #660;
   }
 }
 
@@ -48,9 +48,9 @@ svg {
 }
 
 pattern#warning {
-  .line0 {stroke: var(--warning0);}
-  .line1 {stroke: var(--warning1);}
-} 
+  .line0 { stroke: var(--warning0); }
+  .line1 { stroke: var(--warning1); }
+}
 
 g .stub {
   opacity: 0.6;
