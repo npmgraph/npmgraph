@@ -3,7 +3,7 @@ import React from 'react';
 import '/css/Components.scss';
 
 export function Loader({ activity, ...props }) {
-  return <div className='loader theme-dark'>
+  return <div className='loader'>
     <div className='bg' />
     {activity.title} ...
   </div>;
