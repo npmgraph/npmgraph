@@ -440,8 +440,8 @@ export default function Graph(props) {
     width="12" height="12"
     patternUnits="userSpaceOnUse"
     patternTransform="rotate(45 50 50)">
-    <line stroke="#f6f6e0" stroke-width="6px" x1="3" x2="3" y2="12"/>
-    <line stroke="#d9d9d9" stroke-width="6px" x1="9" x2="9" y2="12"/>
+    <line class="line0" stroke-width="6px" x1="3" x2="3" y2="12"/>
+    <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12"/>
     </pattern>`;
 
     select('#graph svg')
