@@ -10,34 +10,19 @@
       rgba(255, 255, 255, 0.2),
       transparent 100%
     );
-}
 
-.theme-lite {
   /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
   --text: #020303;
   --text-dim: #999;
   --bg0: #f1f4f4;
   --bg1: #d6d6d6;
   --bg2: #ddd;
+  --bg-tabs:#7e7e7d;
   --highlight: #e65c00;
 }
 
-.theme-dark {
-  /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
-  --text: #f3f3f3;
-  --text-dim: #666;
-  --bg0: #7e7e7d;
-  --bg1: #383838;
-}
-
 @media (prefers-color-scheme: dark) {
-  html {
-    background: #111;
-
-    --inset-shadow-color: black;
-  }
-
-  .theme-lite {
+  :root {
     /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
     --text: #f3f3f3;
     --text-dim: #766;
@@ -45,6 +30,11 @@
     --bg1: #696666;
     --highlight: #ff761a;
     --bg2: #333;
+    --inset-shadow-color: black;
+  }
+
+  html {
+    background: #111;
   }
 
   [fill="white"] {
@@ -54,17 +44,6 @@
   [stroke="black"] {
     stroke: #999;
   }
-}
-
-.theme-lite,
-.theme-dark {
-  /* TODO: Any vars dealing with color should should have a theme-neutral name (e.g. this should just be "--bg-gradient"), and should be defined in both themes, below */
-  --side-gradient:
-    linear-gradient(
-      to right,
-      var(--bg1) -1em,
-      transparent 0.5em
-    );
 }
 
 html {
