@@ -6,6 +6,17 @@
   user-select: none;
   -webkit-user-select: none;
   padding-right: var(--splitter-size);
+
+  --warning0: #f6f6e0;
+  --warning1: #d9d9d9;
+  --stub: #ff0000;
+}
+
+@media (prefers-color-scheme: dark) {
+  #graph {
+    --warning0: #101010;
+    --warning1: #666600;
+  }
 }
 
 #graph-controls {
@@ -36,23 +47,28 @@ svg {
   fill: #666;
 }
 
+pattern#warning {
+  .line0 {stroke: var(--warning0);}
+  .line1 {stroke: var(--warning1);}
+} 
+
 g .stub {
   opacity: 0.6;
 
   > path {
     stroke-dasharray: 4, 4;
-    stroke: #a00;
+    stroke: var(--stub);
   }
 }
 
 g.node {
   text {
-    fill: #444;
+    fill: var(--text);
   }
 
   path {
-    stroke: #444;
-    fill: white;
+    stroke: var(--text);
+    fill: var(--bg0);
   }
 
   &.collapsed {
@@ -62,10 +78,6 @@ g.node {
   &.selected > path {
     stroke-width: 3;
     stroke: var(--highlight);
-  }
-
-  &.selected > text {
-    fill: black;
   }
 
   &.warning > path {
