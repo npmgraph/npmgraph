@@ -428,6 +428,9 @@ export default function Graph(props) {
     svgDom = svgDom.children[0];
     svgDom.remove();
 
+    // Remove background element so page background shows thru
+    $(svgDom, '.graph > polygon').remove();
+
     applyZoom(svgDom);
 
     // Inject into DOM
