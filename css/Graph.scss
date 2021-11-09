@@ -89,13 +89,22 @@ g.node {
   }
 }
 
-g.edge.selected {
-  > path {
-    stroke-width: 2;
-    stroke: var(--highlight);
+g.edge {
+  > path { // stylelint-disable-line no-descending-specificity
+    stroke: var(--text);
   }
 
   > polygon {
+    stroke: var(--text);
+    fill: var(--text);
+  }
+
+  &.selected > path {
+    stroke-width: 3;
+    stroke: var(--highlight);
+  }
+
+  &.selected > polygon {
     stroke: var(--highlight);
     fill: var(--highlight);
   }

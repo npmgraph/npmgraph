@@ -26,6 +26,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    background-color: #111;
+
     /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
     --text: #f3f3f3;
     --text-dim: #766;
@@ -34,18 +36,6 @@
     --bg2: #333;
     --highlight: #ff761a;
     --inset-shadow-color: black;
-  }
-
-  html {
-    background: #111;
-  }
-
-  [fill="white"] {
-    fill: none;
-  }
-
-  [stroke="black"] {
-    stroke: #999;
   }
 }
 
