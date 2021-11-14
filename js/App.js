@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import Inspector from './Inspector';
-import Graph from './Graph';
-import { LoadActivity } from './util';
-import Store from './Store';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Components';
+import Graph from './Graph';
+import Inspector from './Inspector';
 import sharedStateHook from './sharedStateHook';
-
+import Store from './Store';
+import { LoadActivity } from './util';
 import '/css/App.scss';
 
 export const usePane = sharedStateHook('info', 'pane');
 export const useInspectorOpen = sharedStateHook(true, 'inspectorOpen');
 export const useQuery = sharedStateHook(queryFromLocation(), 'query');
 export const useModule = sharedStateHook([], 'module');
-export const useGraph = sharedStateHook([], 'graph');
+export const useGraph = sharedStateHook(null, 'graph');
 export const useColorize = sharedStateHook(false, 'colorize');
 export const useIncludeDev = sharedStateHook(false, 'includeDev');
 export const useExcludes = sharedStateHook([], 'excludes');

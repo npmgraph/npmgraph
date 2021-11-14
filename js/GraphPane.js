@@ -81,10 +81,12 @@ export default function GraphPane({ graph, ...props }) {
   const [excludes] = useExcludes();
   const [includeDev, setIncludeDev] = useIncludeDev();
 
+  if (!graph?.modules) return <div>Loading</div>;
+
   const occurances = {};
   const maintainers = {};
   let licenses = {};
-  for (const [, { module: { package: pkg, licenseString: license } }] of graph) {
+  for (const [, { module: { package: pkg, licenseString: license } }] of graph.modules) {
     // Tally module occurances
     occurances[pkg.name] = (occurances[pkg.name] || 0) + 1;
 
@@ -138,7 +140,7 @@ export default function GraphPane({ graph, ...props }) {
       </div> : null
     }
 
-    <Section title={simplur`${graph.size} Module[|s]`}>
+    <Section title={simplur`${graph.modules.size} Module[|s]`}>
       <Tags>
         {
           Object.entries(occurances)

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Pane, QueryLink } from './Inspector';
 import { store, useQuery } from './App';
+import { Pane, QueryLink } from './Inspector';
 import '/css/InfoPane.scss';
 
 // Get names of uploaded modules in session storage
@@ -15,7 +15,7 @@ export default function InfoPane(props) {
   const [recents, setRecents] = useState(getFileEntries());
 
   // Handle file selection via input
-  const onSelect = (ev) => {
+  const onSelect = ev => {
     readFile(ev.target.files.item(0));
 
     // Reset field

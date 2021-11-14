@@ -17,16 +17,17 @@ module.exports = {
     }
   },
   rules: {
+    'arrow-parens': ['error', 'as-needed'],
     'brace-style': ['error', '1tbs'],
+    eqeqeq: 'off',
+    'import/no-absolute-path': 'off',
+    'jsx-quotes': ['error', 'prefer-single'],
+    'multiline-ternary': 'off',
+    'no-mixed-operators': 'off',
     'no-return-assign': 'off',
     'no-var': ['error'],
     'one-var': 'off',
-    'jsx-quotes': ['error', 'prefer-single'],
-    'multiline-ternary': 'off',
+    'react/prop-types': 'off', // TODO: Enable this
     'space-before-function-paren': ['error', 'never'],
-    'no-mixed-operators': 'off',
-    eqeqeq: 'off',
-    'import/no-absolute-path': 'off',
-    'react/prop-types': 'off' // TODO: Enable this
   }
 };

@@ -71,8 +71,10 @@ g.node {
     fill: var(--bg0);
   }
 
-  &.collapsed {
-    opacity: 0.5;
+  &.collapsed,
+  &.peer
+   {
+    opacity: 0.5
   }
 
   &.selected > path {

@@ -61,7 +61,10 @@ export function hslFor(perc) {
  * @returns {Promise<Map>} Map of key -> {module, level, dependencies}
  */
 async function modulesForQuery(query, includeDev, moduleFilter) {
-  const graph = new Map();
+  const modules = new Map();
+
+  // Upstream dependency types for each module
+  const referenceTypes = new Map();
 
   function _walk(module, level = 0) {
     if (!module) return Promise.resolve(Error('Undefined module'));
@@ -72,18 +75,24 @@ async function modulesForQuery(query, includeDev, moduleFilter) {
     }
 
     // Skip modules we've already seen
-    if (module && graph.has(module.key)) return Promise.resolve();
+    if (module && modules.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
     const depEntries = moduleFilter(module) ? getDependencyEntries(module, includeDev, level) : [];
 
     // Create object that captures info about how this module fits in the dependency graph
     const info = { module, level };
-    graph.set(module.key, info);
+    modules.set(module.key, info);
 
     return Promise.all(
       depEntries.map(async([name, version, type]) => {
         const module = await store.getModule(name, version);
+
+        if (!referenceTypes.has(module.key)) {
+          referenceTypes.set(module.key, new Set());
+        }
+        referenceTypes.get(module.key).add(type);
+
         if (type !== 'peerDependencies') {
           await _walk(module, level + 1);
         }
@@ -94,11 +103,11 @@ async function modulesForQuery(query, includeDev, moduleFilter) {
   }
 
   // Walk dependencies of each module in the query
-  return Promise.all(query.map(async(name) => {
+  return Promise.all(query.map(async name => {
     const m = await store.getModule(name);
     return m && _walk(m);
   }))
-    .then(() => graph);
+    .then(() => ({ modules, referenceTypes }));
 }
 
 // Compose directed graph document (GraphViz notation)
@@ -323,11 +332,10 @@ export default function Graph(props) {
   const [, setPane] = usePane();
   const [, setInspectorOpen] = useInspectorOpen();
   const [, setModule] = useModule();
-  const [, setGraph] = useGraph();
+  const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
   const [colorize] = useColorize();
 
-  const [graphModules, setGraphModules] = useState();
   const [zoom, setZoom] = useState(0);
 
   // Signal for when Graph DOM changes
@@ -395,16 +403,13 @@ export default function Graph(props) {
   // Effect: Fetch modules
   useEffect(async() => {
     const { signal, abort } = createAbortable();
-
-    setGraph([]);
+    setGraph(null);
     setModule([]);
 
-    const modules = await modulesForQuery(query, includeDev, moduleFilter);
+    const newGraph = await modulesForQuery(query, includeDev, moduleFilter);
     if (signal.aborted) return; // Check after async
 
-    setGraphModules(modules);
-    setGraph(modules);
-    setPane(modules.size ? 'graph' : 'info');
+    setGraph(newGraph);
 
     return abort;
   }, [query, includeDev, excludes]);
@@ -420,7 +425,7 @@ export default function Graph(props) {
     const wasmBinary = await wasmBinaryPromise; // Avoid race if wasmBinary fetch hasn't completed
     if (signal.aborted) return; // Check after all async stuff
 
-    const svgMarkup = graphModules?.size ? await graphviz.layout(composeDOT(graphModules), 'svg', 'dot', { wasmBinary }) : '<svg />';
+    const svgMarkup = graph?.modules.size ? await graphviz.layout(composeDOT(graph.modules), 'svg', 'dot', { wasmBinary }) : '<svg />';
     if (signal.aborted) return; // Check after all async stuff
 
     // Parse markup
@@ -459,6 +464,13 @@ export default function Graph(props) {
 
       const m = store.cachedEntry(key);
 
+      const refTypes = graph?.referenceTypes.get(key);
+
+      // Style peer dependencies
+      if (refTypes?.has('peerDependencies') && refTypes.size === 1) {
+        el.classList.add('peer');
+      }
+
       if (m?.package?.deprecated) {
         el.classList.add('warning');
       }
@@ -485,8 +497,7 @@ export default function Graph(props) {
 
     select('#graph svg .node').node()?.scrollIntoView();
 
-    setGraph(graphModules);
-    setPane(graphModules?.size ? 'graph' : 'info');
+    setPane(graph?.modules.size ? 'graph' : 'info');
 
     // Signal other hooks that graph DOM has changed
     setDomSignal(domSignal + 1);
@@ -497,7 +508,7 @@ export default function Graph(props) {
       finish();
       abort();
     };
-  }, [graphModules]);
+  }, [graph]);
 
   // Effect: Colorize nodes
   useEffect(() => {
