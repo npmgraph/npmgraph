@@ -72,9 +72,8 @@ g.node {
   }
 
   &.collapsed,
-  &.peer
-   {
-    opacity: 0.5
+  &.peer {
+    opacity: 0.5;
   }
 
   &.selected > path {
