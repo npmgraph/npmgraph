@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import Inspector from './Inspector';
-import Graph from './Graph';
-import { LoadActivity } from './util';
-import Store from './Store';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Components';
+import Graph from './Graph';
+import Inspector from './Inspector';
 import sharedStateHook from './sharedStateHook';
-
+import Store from './Store';
+import { LoadActivity } from './util';
 import '/css/App.scss';
 
 export const usePane = sharedStateHook('info', 'pane');

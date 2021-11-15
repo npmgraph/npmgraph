@@ -402,7 +402,7 @@ export default function Graph(props) {
   const [excludes, setExcludes] = useExcludes();
   const [colorize] = useColorize();
 
-  const [graphModules, setGraphModules] = useState<Map<string, ModuleInfo>>();
+  const [graphModules, setGraphModules] = useState();
   const [zoom, setZoom] = useState(0);
 
   // Signal for when Graph DOM changes
@@ -565,7 +565,7 @@ export default function Graph(props) {
         }
       }
 
-      select<SVGGElement, {}>('#graph svg .node').node()?.scrollIntoView();
+      select('#graph svg .node').node()?.scrollIntoView();
 
       setGraph(graphModules);
       setPane(graphModules?.size ? 'graph' : 'info');
