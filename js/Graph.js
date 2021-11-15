@@ -75,7 +75,7 @@ async function modulesForQuery(query, includeDev, moduleFilter) {
     }
 
     // Skip modules we've already seen
-    if (module?.has(module.key)) return Promise.resolve();
+    if (modules.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
     const depEntries = moduleFilter(module) ? getDependencyEntries(module, includeDev, level) : [];
