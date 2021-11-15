@@ -8,7 +8,7 @@ module.exports = {
   extends: [
     'eslint:recommended',
     'prettier:recommended',
-    'prettier:recat',
+    'prettier:react',
     'plugin:react/recommended',
   ],
   settings: {

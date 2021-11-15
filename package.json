@@ -59,7 +59,7 @@
     "build": "parcel build index.html",
     "release": "standard-version",
     "start": "parcel serve index.html",
-    "test": "eslint . && stylelint css",
-    "fix": "eslint . --fix && stylelint css --fix"
+    "test": "prettier -c .",
+    "fix": "prettier -w ."
   }
 }
