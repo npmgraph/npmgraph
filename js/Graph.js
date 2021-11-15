@@ -75,7 +75,7 @@ async function modulesForQuery(query, includeDev, moduleFilter) {
     }
 
     // Skip modules we've already seen
-    if (module && modules.has(module.key)) return Promise.resolve();
+    if (module?.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
     const depEntries = moduleFilter(module) ? getDependencyEntries(module, includeDev, level) : [];
@@ -88,6 +88,7 @@ async function modulesForQuery(query, includeDev, moduleFilter) {
       depEntries.map(async([name, version, type]) => {
         const module = await store.getModule(name, version);
 
+        // Record the types of dependency references to this module
         if (!referenceTypes.has(module.key)) {
           referenceTypes.set(module.key, new Set());
         }
