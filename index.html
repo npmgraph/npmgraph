@@ -3,7 +3,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy" content="
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
       default-src
       'unsafe-eval' 'unsafe-inline' 'self'
       d2wy8f7a9ursnm.cloudfront.net
@@ -26,45 +28,54 @@
       www.googletagmanager.com
       www.gravatar.com
       blob:
-      " />
+      "
+    />
 
     <meta name="description" content="Graph / visualize of npm dependencies" />
-    <meta name="keywords" content="visualize, visualization, graph, npm, npm modules, npm graph, npm licenses" />
+    <meta
+      name="keywords"
+      content="visualize, visualization, graph, npm, npm modules, npm graph, npm licenses"
+    />
 
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Material+Icons" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Material+Icons"
+      rel="stylesheet"
+    />
     <link href="/css/index.scss" rel="stylesheet" />
 
     <title>NPMGraph - Visualize NPM Module Dependencies</title>
   </head>
 
   <body>
-    <div id='app' />
+    <div id="app" />
 
-<script src="https://d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
+    <script src="https://d2wy8f7a9ursnm.cloudfront.net/v5/bugsnag.min.js"></script>
 
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script src="https://www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-window.GA_TRACKING_ID = 'UA-6434483-2';
-gtag('js', new Date());
-gtag('config', window.GA_TRACKING_ID);
-</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="https://www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      window.GA_TRACKING_ID = 'UA-6434483-2';
+      gtag('js', new Date());
+      gtag('config', window.GA_TRACKING_ID);
+    </script>
 
-<script type="module" src="/js/index.tsx"></script>
-<script>
-window.addEventListener('DOMContentLoaded', function() {
-  // Detect load failure.  `indexLoaded` gets set by index.js if it loads properly
-  // If it's not set here, then a script failed to load (probably due to a parse
-  // error from some unsupported language feature).
-  if (window.indexLoaded) return;
+    <script type="module" src="/js/index.tsx"></script>
+    <script>
+      window.addEventListener('DOMContentLoaded', function () {
+        // Detect load failure.  `indexLoaded` gets set by index.js if it loads properly
+        // If it's not set here, then a script failed to load (probably due to a parse
+        // error from some unsupported language feature).
+        if (window.indexLoaded) return;
 
-  const body = document.body;
-  body.className = 'fail';
+        const body = document.body;
+        body.className = 'fail';
 
-  body.innerHTML = `<div style="
+        body.innerHTML = `<div style="
     position: absolute;
     background-color: var(--bg0);
     left: 0;
@@ -95,8 +106,7 @@ window.addEventListener('DOMContentLoaded', function() {
     bottom: 50%;
     right: -1.5rem;"></div>
   `;
-});
-</script>
-
+      });
+    </script>
   </body>
 </html>

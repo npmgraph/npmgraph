@@ -9,15 +9,19 @@ const config = {
   // the static files are served locally, however.
   // To avoid generating bugsnag reports in dev environments, we set the stage based
   // on hostname-sniffing.
-  releaseStage: /npmgraph/.test(window.location.hostname) ? 'production' : 'development'
+  releaseStage: /npmgraph/.test(window.location.hostname)
+    ? 'production'
+    : 'development',
 };
 
-const bugsnagLoaded = typeof (bugsnag) != 'undefined';
+const bugsnagLoaded = typeof bugsnag != 'undefined';
 
 if (bugsnagLoaded) {
   console.log('BugSnag config:', config);
 } else {
-  console.error('Bugsnag failed to load.  Maybe disable your ad blocker for this site?');
+  console.error(
+    'Bugsnag failed to load.  Maybe disable your ad blocker for this site?'
+  );
 }
 
 const pageStart = Date.now();
@@ -25,19 +29,19 @@ const pageStart = Date.now();
 let client = {
   notify(err, { severity }) {
     console[severity](err);
-  }
+  },
 };
 
 if (bugsnagLoaded && config.apiKey) {
   client = bugsnag({
     ...config,
     notifyReleaseStages: ['production'],
-    beforeSend: function(report) {
+    beforeSend: function (report) {
       report.updateMetaData('page', {
         location: String(location),
-        pageTime: Date.now() - pageStart
+        pageTime: Date.now() - pageStart,
       });
-    }
+    },
   });
 }
 

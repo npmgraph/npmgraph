@@ -2,19 +2,19 @@ module.exports = {
   root: true,
   parser: '@babel/eslint-parser',
   env: {
-    browser: true
+    browser: true,
     // es2020: true,
   },
   extends: [
     'eslint:recommended',
     'prettier:recommended',
     'prettier:recat',
-    'plugin:react/recommended'
+    'plugin:react/recommended',
   ],
   settings: {
     react: {
-      version: 'detect'
-    }
+      version: 'detect',
+    },
   },
   rules: {
     /*
@@ -30,5 +30,5 @@ module.exports = {
     'import/no-absolute-path': 'off',
     'react/prop-types': 'off' // TODO: Enable this
     */
-  }
+  },
 };

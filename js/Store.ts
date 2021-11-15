@@ -5,12 +5,12 @@ import { ModuleInfo } from './types';
 import { fetchJSON, LoadActivity, report } from './util';
 
 class Store {
-  activity : LoadActivity;
-  
-  moduleCache = {};
-  requestCache : { [key: string]: Promise<ModuleInfo> } = {};
+  activity: LoadActivity;
 
-  constructor(activity : LoadActivity) {
+  moduleCache = {};
+  requestCache: { [key: string]: Promise<ModuleInfo> } = {};
+
+  constructor(activity: LoadActivity) {
     this.activity = activity;
     this.init();
   }
@@ -21,7 +21,9 @@ class Store {
 
     for (let i = 0; i < sessionStorage.length; i++) {
       try {
-        const module = JSON.parse(sessionStorage.getItem(sessionStorage.key(i)));
+        const module = JSON.parse(
+          sessionStorage.getItem(sessionStorage.key(i))
+        );
         if (!module?.name) continue;
 
         this.cachePackage(module);
@@ -36,7 +38,7 @@ class Store {
     return this.moduleCache[key];
   }
 
-  getModule(name, version ?: string) {
+  getModule(name, version?: string) {
     // Parse versioned-names (e.g. "less@1.2.3")
     if (!version && /(.+)@(.*)/.test(name)) {
       name = RegExp.$1;
@@ -59,7 +61,7 @@ class Store {
           this.moduleCache[cacheKey] = module;
           this.moduleCache[`${module.name}@${module.version}`] = module;
 
-          return this.moduleCache[cacheKey] = module;
+          return (this.moduleCache[cacheKey] = module);
         })
         .catch(err => report.error(err));
     }
@@ -78,7 +80,7 @@ class Store {
   }
 
   // fetch module url, caching results (in memory for the time being)
-  async fetchPackage(name : string, version : string) {
+  async fetchPackage(name: string, version: string) {
     const isScoped = name.startsWith('@');
     const versionIsValid = isSemverValid(version);
 
@@ -96,15 +98,19 @@ class Store {
       // Also, we can't fetch scoped modules at specific versions.  See https://goo.gl/dSMitm
       const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
-      const finish = this.activity.start(`Fetching ${decodeURIComponent(reqPath)}`);
-      req = this.requestCache[reqPath] = fetchJSON<ModuleInfo>(`https://registry.npmjs.cf/${reqPath}`)
+      const finish = this.activity.start(
+        `Fetching ${decodeURIComponent(reqPath)}`
+      );
+      req = this.requestCache[reqPath] = fetchJSON<ModuleInfo>(
+        `https://registry.npmjs.cf/${reqPath}`
+      )
         // Errors get turned into stub modules, below
         .catch(err => err)
         .finally(finish);
     }
 
-    let body : ModuleInfo;
-    let failure : Error;
+    let body: ModuleInfo;
+    let failure: Error;
     try {
       body = await req;
     } catch (err) {
@@ -113,8 +119,10 @@ class Store {
 
     if (!body) {
       failure = Error('No info provided by NPM repo');
-    } else if (typeof (body) != 'object') {
-      failure = Error('Data provided by NPM repo is not in the expected format');
+    } else if (typeof body != 'object') {
+      failure = Error(
+        'Data provided by NPM repo is not in the expected format'
+      );
     } else if (body.unpublished) {
       failure = Error('Module is unpublished');
     } else if (body.versions) {
@@ -125,12 +133,14 @@ class Store {
       version = version || body['dist-tags']?.latest || '*';
 
       // Resolve to specific version (use version specifier if provided, otherwise latest dist version, otherwise latest)
-      const resolvedVersion = versions.find(v => doesSatisfySemver(v.version, version));
+      const resolvedVersion = versions.find(v =>
+        doesSatisfySemver(v.version, version)
+      );
       if (resolvedVersion) {
         body = resolvedVersion as ModuleInfo;
       } else {
         failure = Error(`No version matching "${version}" found`);
-      } 
+      }
     }
 
     // Error = stub module containing the error

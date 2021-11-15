@@ -6,17 +6,30 @@ import '/css/ModulePane.scss';
 
 function ScoreBar({ title, score, style }) {
   const perc = (score * 100).toFixed(0) + '%';
-  const inner = <div style={{
-    width: perc,
-    textAlign: 'right',
-    backgroundColor: `hsl(${(score * 120)}, 75%, 70%)`,
-    ...style
-  }}>{perc}</div>;
+  const inner = (
+    <div
+      style={{
+        width: perc,
+        textAlign: 'right',
+        backgroundColor: `hsl(${score * 120}, 75%, 70%)`,
+        ...style,
+      }}
+    >
+      {perc}
+    </div>
+  );
 
-  return <>
-    <span style={{ marginRight: '1em', ...style }}>{title}</span>
-    <div className='score-bar' style={{ border: 'solid 1px #ccc', width: '200px' }} >{inner}</div>
-  </>;
+  return (
+    <>
+      <span style={{ marginRight: '1em', ...style }}>{title}</span>
+      <div
+        className="score-bar"
+        style={{ border: 'solid 1px #ccc', width: '200px' }}
+      >
+        {inner}
+      </div>
+    </>
+  );
 }
 
 function TreeMap({ data, style, ...props }) {
@@ -24,7 +37,8 @@ function TreeMap({ data, style, ...props }) {
 
   // Render contents as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {
-    const { clientWidth: w, clientHeight: h } = $('#treemap')[0], m = 1;
+    const { clientWidth: w, clientHeight: h } = $('#treemap')[0],
+      m = 1;
 
     const { size } = data;
 
@@ -36,7 +50,7 @@ function TreeMap({ data, style, ...props }) {
 
       // Normalize sizes to match total package size
       // See https://github.com/pastelsky/bundlephobia/issues/417
-      nodes.forEach(node => node.approximateSize *= size / sum);
+      nodes.forEach(node => (node.approximateSize *= size / sum));
 
       // Combine dependencies that are < 1% of bundle size
       const MIN_SIZE = sum * 0.01;
@@ -47,7 +61,7 @@ function TreeMap({ data, style, ...props }) {
       } else if (misc.length > 1) {
         nodes.push({
           name: `${misc.length} small modules`,
-          approximateSize: misc.reduce((sum, n) => sum + n.approximateSize, 0)
+          approximateSize: misc.reduce((sum, n) => sum + n.approximateSize, 0),
         });
       }
 
@@ -59,50 +73,71 @@ function TreeMap({ data, style, ...props }) {
       .sort((a, b) => b.value - a.value);
 
     // eslint-disable-next-line no-undef
-    treemap()
-      .size([w, h])
-      .padding(0)(root);
+    treemap().size([w, h]).padding(0)(root);
 
     setLeaves(
       root.leaves().map((d, i, a) => {
         const size = human(d.value, 'B');
-        const frac = (d.x1 - d.x0) * (d.y1 - d.y0) / (w * h);
-        return <div key={i} title={`${d.data.name} (${size})`} className='bundle-item' style={{
-          left: `${d.x0 + m / 2}px`,
-          top: `${d.y0 + m / 2}px`,
-          width: `${d.x1 - d.x0 - m}px`,
-          height: `${d.y1 - d.y0 - m}px`,
-          fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
-          backgroundColor: `hsl(${(75 + (i / a.length) * 360) % 360}, 50%, 70%)`
-        }}>{d.data.name} <span>{size}</span></div>;
+        const frac = ((d.x1 - d.x0) * (d.y1 - d.y0)) / (w * h);
+        return (
+          <div
+            key={i}
+            title={`${d.data.name} (${size})`}
+            className="bundle-item"
+            style={{
+              left: `${d.x0 + m / 2}px`,
+              top: `${d.y0 + m / 2}px`,
+              width: `${d.x1 - d.x0 - m}px`,
+              height: `${d.y1 - d.y0 - m}px`,
+              fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
+              backgroundColor: `hsl(${
+                (75 + (i / a.length) * 360) % 360
+              }, 50%, 70%)`,
+            }}
+          >
+            {d.data.name} <span>{size}</span>
+          </div>
+        );
       })
     );
   }, [data]);
 
-  return <div id='treemap' style={{ position: 'relative', ...style }} {...props}>
-    {leaves}
-  </div>;
+  return (
+    <div id="treemap" style={{ position: 'relative', ...style }} {...props}>
+      {leaves}
+    </div>
+  );
 }
 
 export default function ModulePane({ module, ...props }) {
   const pkg = module?.package;
 
-  if (!pkg) return <Pane>No module selected.  Click a module in the graph to see details.</Pane>;
+  if (!pkg)
+    return (
+      <Pane>
+        No module selected. Click a module in the graph to see details.
+      </Pane>
+    );
 
   const [bundleInfo, setBundleInfo] = useState(null);
   const [npmsInfo, setNpmsInfo] = useState(null);
 
   if (pkg.stub) {
-    return <Pane>
+    return (
+      <Pane>
         <h2>{module.name}</h2>
-        <p>Information and dependencies for this module cannot be displayed due to the following error:</p>
+        <p>
+          Information and dependencies for this module cannot be displayed due
+          to the following error:
+        </p>
         <p style={{ color: 'red', fontWeight: 'bold' }}>{pkg.error?.message}</p>
-      </Pane>;
+      </Pane>
+    );
   }
 
   const pn = pkg ? encodeURIComponent(`${pkg.name}@${pkg.version}`) : null;
 
-  useEffect(async() => {
+  useEffect(async () => {
     setBundleInfo(pkg ? null : Error('No package selected'));
     setNpmsInfo(pkg ? null : Error('No package selected'));
     setNpmsInfo(null);
@@ -124,65 +159,136 @@ export default function ModulePane({ module, ...props }) {
   if (npmsInfo) scores.final = npmsInfo.final;
 
   function BundleStats({ bundleInfo, ...props }) {
-    return <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '.3em 1em' }}>
-      <span>Minified:</span><strong>{human(bundleInfo.size, 'B')}</strong>
-      <span>Gzipped:</span><strong>{human(bundleInfo.gzip, 'B')}</strong>
-      </div>;
+    return (
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'auto 1fr',
+          gap: '.3em 1em',
+        }}
+      >
+        <span>Minified:</span>
+        <strong>{human(bundleInfo.size, 'B')}</strong>
+        <span>Gzipped:</span>
+        <strong>{human(bundleInfo.gzip, 'B')}</strong>
+      </div>
+    );
   }
 
-  return <Pane {...props}>
-    <h2><QueryLink query={module.key} /></h2>
+  return (
+    <Pane {...props}>
+      <h2>
+        <QueryLink query={module.key} />
+      </h2>
 
-    {
-      pkg.deprecated
-        ? <div className='warning' style={{ padding: '.5em', borderRadius: '.5em' }}>
-            <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
-            {pkg.deprecated}
+      {pkg.deprecated ? (
+        <div
+          className="warning"
+          style={{ padding: '.5em', borderRadius: '.5em' }}
+        >
+          <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
+          {pkg.deprecated}
+        </div>
+      ) : null}
+
+      <p>{pkg?.description}</p>
+
+      <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
+        NPM
+      </ExternalLink>
+      {module.repoLink ? (
+        <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>
+          GitHub
+        </ExternalLink>
+      ) : null}
+      {
+        // Displaying dropped package contents is a bit problematic, but we give it a shot here.
+        module.package?._dropped ? (
+          <ExternalLink
+            href={`data:text/json;base64,${btoa(
+              JSON.stringify(module.package)
+            )}`}
+          >
+            package.json
+          </ExternalLink>
+        ) : (
+          <ExternalLink href={module.apiLink}>package.json</ExternalLink>
+        )
+      }
+
+      <Section title="Bundle Size">
+        {bundleInfo ? <BundleStats bundleInfo={bundleInfo} /> : null}
+        {!bundleInfo ? (
+          <span>Loading ...</span>
+        ) : bundleInfo instanceof Error ? (
+          <span>Unavailable</span>
+        ) : (
+          <TreeMap
+            style={{ height: '150px', margin: '1em' }}
+            data={bundleInfo}
+          />
+        )}
+        {bundleInfo && !(bundleInfo instanceof Error) ? (
+          <>
+            Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
+          </>
+        ) : null}
+      </Section>
+
+      <Section title="NPMS.io Score">
+        {!npmsInfo ? (
+          'Loading'
+        ) : npmsInfo instanceof Error ? (
+          'Unavailable'
+        ) : (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'auto 1fr',
+              marginTop: '1em',
+              rowGap: '1px',
+            }}
+          >
+            <ScoreBar
+              style={{ fontWeight: 'bold' }}
+              title="Overall"
+              score={scores.final}
+            />
+            <ScoreBar
+              style={{ fontSize: '.85em' }}
+              title="Quality"
+              score={scores.quality}
+            />
+            <ScoreBar
+              style={{ fontSize: '.85em' }}
+              title="Popularity"
+              score={scores.popularity}
+            />
+            <ScoreBar
+              style={{ fontSize: '.85em' }}
+              title="Maintenance"
+              score={scores.maintenance}
+            />
           </div>
-        : null
-    }
+        )}
+      </Section>
 
-    <p>{pkg?.description}</p>
-
-    <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>NPM</ExternalLink>
-    {module.repoLink ? <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>GitHub</ExternalLink> : null}
-    {
-      // Displaying dropped package contents is a bit problematic, but we give it a shot here.
-      module.package?._dropped
-        ? <ExternalLink href={`data:text/json;base64,${btoa(JSON.stringify(module.package))}`}>package.json</ExternalLink>
-        : <ExternalLink href={module.apiLink}>package.json</ExternalLink>
-    }
-
-    <Section title='Bundle Size'>
-      {bundleInfo ? <BundleStats bundleInfo={bundleInfo} /> : null}
-      {
-        (!bundleInfo) ? <span>Loading ...</span>
-          : (bundleInfo instanceof Error) ? <span>Unavailable</span>
-              : <TreeMap style={{ height: '150px', margin: '1em' }} data={bundleInfo} />
-      }
-      {
-        (bundleInfo && !(bundleInfo instanceof Error)) ? <>Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink></> : null
-      }
-    </Section>
-
-    <Section title='NPMS.io Score'>
-      {
-        !npmsInfo ? 'Loading'
-          : (npmsInfo instanceof Error)
-              ? 'Unavailable'
-              : <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', marginTop: '1em', rowGap: '1px' }}>
-            <ScoreBar style={{ fontWeight: 'bold' }} title='Overall' score={scores.final} />
-            <ScoreBar style={{ fontSize: '.85em' }} title='Quality' score={scores.quality} />
-            <ScoreBar style={{ fontSize: '.85em' }} title='Popularity' score={scores.popularity} />
-            <ScoreBar style={{ fontSize: '.85em' }} title='Maintenance' score={scores.maintenance} />
-          </div>
-      }
-    </Section>
-
-    <Section title={simplur`${Object.entries(pkg?.maintainers).length} Maintainer[|s]`}>
-      <Tags>
-        {pkg.maintainers.map(({ name, email }) => <Tag key={name + email} name={name} type='maintainer' gravatar={email} />)}
-      </Tags>
-    </Section>
-  </Pane>;
+      <Section
+        title={simplur`${
+          Object.entries(pkg?.maintainers).length
+        } Maintainer[|s]`}
+      >
+        <Tags>
+          {pkg.maintainers.map(({ name, email }) => (
+            <Tag
+              key={name + email}
+              name={name}
+              type="maintainer"
+              gravatar={email}
+            />
+          ))}
+        </Tags>
+      </Section>
+    </Pane>
+  );
 }

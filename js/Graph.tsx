@@ -262,7 +262,6 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
           edge?.classList.add('selected');
 
           // Move edge to end of child list so it's painted last
-          edge.remove();
           edge.parentElement.appendChild(edge);
         }
       }

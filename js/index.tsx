@@ -18,6 +18,6 @@ window.addEventListener('unhandledrejection', err => {
   Flash(err.reason);
 });
 
-window.onload = function() {
+window.onload = function () {
   render(<App />, document.querySelector('#app'));
 };

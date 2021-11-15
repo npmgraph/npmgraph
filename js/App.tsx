@@ -18,13 +18,20 @@ export const useIncludeDev = sharedStateHook(false, 'includeDev');
 export const useExcludes = sharedStateHook([], 'excludes');
 
 function Splitter({ onClick, isOpen }) {
-  return <div id='splitter' className='bright-hover' onClick={onClick}>{isOpen ? '\u{25b6}' : '\u{25c0}'}</div>;
+  return (
+    <div id="splitter" className="bright-hover" onClick={onClick}>
+      {isOpen ? '\u{25b6}' : '\u{25c0}'}
+    </div>
+  );
 }
 
 // Parse `q` query param from browser location
 function queryFromLocation() {
   const q = new URL(location.href).searchParams.get('q');
-  return (q ?? '').split(',').map(v => v.trim()).filter(Boolean);
+  return (q ?? '')
+    .split(',')
+    .map(v => v.trim())
+    .filter(Boolean);
 }
 
 export const activity = new LoadActivity();
@@ -53,10 +60,15 @@ export default function App() {
 
   const [inspectorOpen, setInspectorOpen] = useInspectorOpen();
 
-  return <>
-    {activity.total > 0 ? <Loader activity={activity} /> : null}
-    <Graph />
-    <Splitter isOpen={inspectorOpen} onClick={() => setInspectorOpen(!inspectorOpen)} />
-    <Inspector className={inspectorOpen ? 'open' : ''} />
-  </>;
+  return (
+    <>
+      {activity.total > 0 ? <Loader activity={activity} /> : null}
+      <Graph />
+      <Splitter
+        isOpen={inspectorOpen}
+        onClick={() => setInspectorOpen(!inspectorOpen)}
+      />
+      <Inspector className={inspectorOpen ? 'open' : ''} />
+    </>
+  );
 }

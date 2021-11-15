@@ -6,12 +6,11 @@
   --splitter-size: 2em;
   --inspector-size: 32em;
   --tabs-height: 24pt;
-  --bg-gradient:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.2),
-      transparent 100%
-    );
+  --bg-gradient: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.2),
+    transparent 100%
+  );
 
   /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
   --text: #020303;
@@ -40,7 +39,8 @@
 }
 
 html {
-  font-family: system-ui, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-family: system-ui, Segoe UI, Helvetica, Arial, sans-serif,
+    Apple Color Emoji, Segoe UI Emoji;
   font-size: 10pt;
 }
 
@@ -52,7 +52,7 @@ body {
 
 body.fail {
   /* Image from https://www.redbubble.com/people/JonThomson/shop */
-  background: url("/images/fail_giraffe.png") right 50% no-repeat;
+  background: url('/images/fail_giraffe.png') right 50% no-repeat;
   background-color: var(--bg1);
   background-size: 30%;
 }

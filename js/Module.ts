@@ -1,4 +1,4 @@
-import { ModuleInfo, OldLicense } from "./types";
+import { ModuleInfo, OldLicense } from './types';
 
 function parseGithubPath(s) {
   s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
@@ -10,7 +10,7 @@ export function moduleKey(name, version) {
 }
 
 export default class Module {
-  package : ModuleInfo;
+  package: ModuleInfo;
 
   static stub({ name, version, error }) {
     return {
@@ -18,11 +18,11 @@ export default class Module {
       name,
       version,
       error,
-      maintainers: []
+      maintainers: [],
     };
   }
 
-  constructor(pkg : ModuleInfo) {
+  constructor(pkg: ModuleInfo) {
     if (!pkg.maintainers) {
       pkg.maintainers = [];
     } else if (!Array.isArray(pkg.maintainers)) {
@@ -72,7 +72,8 @@ export default class Module {
 
   get licenseString() {
     // Legacy: 'licenses' field
-    let license : string = (this.package.license || this.package.licenses) as string;
+    let license: string = (this.package.license ||
+      this.package.licenses) as string;
 
     // Legacy: array of licenses?
     if (Array.isArray(license)) {
@@ -82,7 +83,7 @@ export default class Module {
     }
 
     // Legacy: license object?
-    if (typeof (license) == 'object') license = (license as OldLicense).type;
+    if (typeof license == 'object') license = (license as OldLicense).type;
 
     if (!license) return undefined;
 
