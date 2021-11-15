@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { QueryLink, Pane, Section, Tags, Tag, ExternalLink } from './Inspector';
-import { human, fetchJSON, simplur, $ } from './util';
 import { hierarchy, treemap } from 'd3-hierarchy';
+import React, { useEffect, useState } from 'react';
+import { ExternalLink, Pane, QueryLink, Section, Tag, Tags } from './Inspector';
+import { $, fetchJSON, human, simplur } from './util';
 import '/css/ModulePane.scss';
 
 function ScoreBar({ title, score, style }) {
@@ -158,7 +158,7 @@ export default function ModulePane({ module, ...props }) {
   const scores = npmsInfo?.detail || {};
   if (npmsInfo) scores.final = npmsInfo.final;
 
-  function BundleStats({ bundleInfo, ...props }) {
+  function BundleStats({ bundleInfo }) {
     return (
       <div
         style={{

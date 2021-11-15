@@ -58,8 +58,6 @@ export function Section({
   title,
   children,
   open = true,
-  style,
-  ...props
 }: { title: string; open: boolean } & HTMLAttributes<HTMLDivElement>) {
   return (
     <details open={open}>
@@ -104,7 +102,6 @@ export function Tag({
   count = 0,
   gravatar,
   className,
-  ...props
 }: {
   type: string;
   name: string;

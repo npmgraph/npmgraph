@@ -1,12 +1,11 @@
-import './bugsnag'; // Initialize ASAP!
-
 import React from 'react';
 import { render } from 'react-dom';
 import App from './App';
+import './bugsnag'; // Initialize ASAP!
 import { Flash } from './Components';
 
 // Used to feature-detect that es6 modules are loading
-(window as any).indexLoaded = true;
+(window as { indexLoaded?: boolean }).indexLoaded = true;
 
 window.addEventListener('error', err => {
   console.error(err);

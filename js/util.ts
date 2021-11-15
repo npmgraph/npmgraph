@@ -70,7 +70,7 @@ export function $<T extends Element>(...args: [string] | [Element, string]) {
 }
 
 class ElementSet<T extends Element> extends Array<T> {
-  on(...args: [string, () => {}]) {
+  on(...args: [string, () => () => void]) {
     const els = [...this];
 
     for (const el of els) {
@@ -96,7 +96,7 @@ class ElementSet<T extends Element> extends Array<T> {
     return this.find(n => n.contains(el)) ? true : false;
   }
 
-  attr(k: string, v?: any) {
+  attr(k: string, v?: string) {
     if (arguments.length == 1) {
       return this[0]?.getAttribute(k);
     } else if (v === null) {
@@ -148,7 +148,10 @@ $.create = function <T extends HTMLElement>(name: string, atts?: object): T {
 };
 
 // Find parent or self matching selector (or test function)
-$.up = function <T extends Element>(el: Element, sel?: string | Function): T {
+$.up = function <T extends Element>(
+  el: Element,
+  sel?: string | ((el: Element) => boolean)
+): T {
   if (typeof sel === 'string') {
     while (el && !el.matches(sel)) el = el.parentElement;
   } else if (typeof sel === 'function') {

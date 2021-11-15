@@ -1,4 +1,7 @@
-declare var bugsnag: any;
+declare let bugsnag: (options: object) => {
+  start: (apiKey: string) => void;
+  notify: (error: Error) => void;
+};
 
 import { version as appVersion } from '../package.json';
 

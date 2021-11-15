@@ -39,10 +39,7 @@ import { useEffect, useState } from 'react';
  * @returns {Function} React hook function
  */
 
-export default function <T>(
-  value: T,
-  name?: string /* for debugging */
-): Function {
+export default function <T>(value: T): () => [val: T, set: (val: T) => void] {
   const setters = new Set<(v: T) => void>();
 
   return function useSharedState(): [T, (value: T) => void] {

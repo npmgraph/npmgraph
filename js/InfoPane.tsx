@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Pane, QueryLink } from './Inspector';
 import { store, useQuery } from './App';
+import { Pane, QueryLink } from './Inspector';
 import '/css/InfoPane.scss';
 
 // Get names of uploaded modules in session storage
@@ -50,8 +50,8 @@ export default function InfoPane(props) {
   const readFile = async file => {
     const reader = new FileReader();
 
-    const content = await new Promise((resolve, reject) => {
-      reader.onload = () => resolve(reader.result);
+    const content: string = await new Promise(resolve => {
+      reader.onload = () => resolve(reader.result as string);
       reader.readAsText(file);
     });
 
@@ -74,7 +74,7 @@ export default function InfoPane(props) {
     setQuery(key ? [key] : []);
     setRecents(getFileEntries());
 
-    const url = new URL(location);
+    const url = new URL(location.href);
     url.searchParams.set('q', key);
     history.pushState(null, null, url);
   };

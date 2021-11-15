@@ -71,7 +71,8 @@ class Store {
 
   // Inject a module directly into the request cache (used for module file uploads)
   cachePackage(pkg) {
-    let { name, version } = pkg;
+    let { name } = pkg;
+    const { version } = pkg;
     name = name.replace(/\//g, '%2F');
     const path = version ? `${name}/${version}` : name;
     this.requestCache[path] = Promise.resolve(pkg);

@@ -269,7 +269,7 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
   }
 }
 
-function GraphControls({ zoom, setZoom, ...props }) {
+function GraphControls({ zoom, setZoom }) {
   return (
     <div id="graph-controls">
       <button
@@ -392,7 +392,7 @@ function createAbortable() {
   };
 }
 
-export default function Graph(props) {
+export default function Graph() {
   const [query] = useQuery();
   const [includeDev] = useIncludeDev();
   const [, setPane] = usePane();

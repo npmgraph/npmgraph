@@ -4,7 +4,6 @@ import '/css/Components.scss';
 
 export function Loader({
   activity,
-  ...props
 }: { activity: LoadActivity } & HTMLAttributes<HTMLDivElement>) {
   return (
     <div className="loader">
@@ -64,7 +63,7 @@ export function Flash(o, bg = '#f80') {
     el.classList.add('error');
     el.innerText = o.message;
   } else if (o instanceof Document) {
-    el.append.apply(el, o.querySelector('body').children);
+    el.append(...o.querySelector('body').children);
   } else if (o instanceof Element || o instanceof DocumentFragment) {
     el.append(o);
   } else if (typeof o == 'string') {

@@ -1,20 +1,13 @@
 module.exports = {
   root: true,
-  parser: '@babel/eslint-parser',
   env: {
     browser: true,
-    // es2020: true,
+    node: true,
   },
-  extends: [
-    'eslint:recommended',
-    'prettier:recommended',
-    'prettier:react',
-    'plugin:react/recommended',
-  ],
-  settings: {
-    react: {
-      version: 'detect',
-    },
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint', 'prettier'],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+  rules: {
+    '@typescript-eslint/ban-ts-comment': 'off',
   },
-  rules: {},
 };

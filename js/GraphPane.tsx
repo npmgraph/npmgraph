@@ -105,7 +105,7 @@ export default function GraphPane({ graph, ...props }) {
 
   const occurances = {};
   const maintainers: { [key: string]: Person & { count?: number } } = {};
-  let licenseCounts: { [key: string]: number } = {};
+  const licenseCounts: { [key: string]: number } = {};
   for (const [
     ,
     {
