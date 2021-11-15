@@ -1,6 +1,8 @@
 import { client } from './bugsnag';
 
 export class HttpError extends Error {
+  code: number;
+
   constructor(code, message = `HTTP Error ${code}`) {
     super(message);
     this.code = code;
@@ -17,10 +19,10 @@ function _report(severity, err) {
 export const report = {
   error: _report.bind(null, 'error'),
   warn: _report.bind(null, 'warn'),
-  info: _report.bind(null, 'info')
+  info: _report.bind(null, 'info'),
 };
 
-const UNITS = [
+const UNITS: [number, string][] = [
   [6, 'E'],
   [5, 'P'],
   [4, 'T'],
@@ -33,7 +35,7 @@ const UNITS = [
   [-3, 'n'],
   [-4, 'p'],
   [-5, 'f'],
-  [-6, 'a']
+  [-6, 'a'],
 ];
 
 export function human(v, suffix = '', sig = 0) {
@@ -54,39 +56,47 @@ export function human(v, suffix = '', sig = 0) {
 /**
  * DOM maniulation methods
  */
-export function $(...args) {
-  const target = args.length == 2 ? args.shift() : document;
-  return target ? ElementSet.from(target.querySelectorAll(...args)) : new ElementSet();
+export function $<T extends Element>(...args: [string] | [Element, string]) {
+  const target: Element = (
+    args.length == 2 ? args.shift() : document
+  ) as Element;
+  const sel = args[0] as string;
+  if (target) {
+    const els = target.querySelectorAll<T>(sel);
+    return ElementSet.from(els) as unknown as ElementSet<T>;
+  } else {
+    return new ElementSet<T>();
+  }
 }
 
-class ElementSet extends Array {
-  on(...args) {
+class ElementSet<T extends Element> extends Array<T> {
+  on(...args: [string, () => () => void]) {
     const els = [...this];
 
     for (const el of els) {
       el.addEventListener(...args);
     }
 
-    return function() {
+    return function () {
       for (const el of els) {
         el.removeEventListener(...args);
       }
     };
   }
 
-  clear() {
-    return this.forEach(el => (el.innerText = ''));
+  clear(): void {
+    return this.forEach(el => ((el as unknown as HTMLElement).innerText = ''));
   }
 
-  remove() {
+  remove(): void {
     return this.forEach(el => el.remove());
   }
 
-  contains(el) {
-    return this.find(n => n.contains(el));
+  contains(el: T): boolean {
+    return this.find(n => n.contains(el)) ? true : false;
   }
 
-  attr(k, v) {
+  attr(k: string, v?: string) {
     if (arguments.length == 1) {
       return this[0]?.getAttribute(k);
     } else if (v === null) {
@@ -96,32 +106,32 @@ class ElementSet extends Array {
     }
   }
 
-  get textContent() {
+  get textContent(): string {
     return this[0]?.textContent;
   }
 
   set textContent(str) {
-    this.forEach(el => el.textContent = str);
+    this.forEach(el => (el.textContent = str));
   }
 
-  get innerText() {
-    return this[0]?.innerText;
+  get innerText(): string {
+    return (this[0] as unknown as HTMLElement)?.innerText;
   }
 
   set innerText(str) {
-    this.forEach(el => el.innerText = str);
+    this.forEach(el => ((el as unknown as HTMLElement).innerText = str));
   }
 
-  get innerHTML() {
+  get innerHTML(): string {
     return this[0]?.innerHTML;
   }
 
   set innerHTML(str) {
-    this.forEach(el => el.innerHTML = str);
+    this.forEach(el => (el.innerHTML = str));
   }
 
-  appendChild(nel) {
-    if (typeof (nel) == 'string') nel = document.createTextNode(nel);
+  appendChild(nel: Text | Element) {
+    if (typeof nel == 'string') nel = document.createTextNode(nel);
     return this.forEach((el, i) => {
       el.appendChild(i > 0 ? nel : nel.cloneNode(true));
     });
@@ -129,31 +139,35 @@ class ElementSet extends Array {
 }
 
 // Create a new DOM element
-$.create = function(name, atts) {
+$.create = function <T extends HTMLElement>(name: string, atts?: object): T {
   const el = document.createElement(name);
   if (atts) {
     for (const k in atts) el[k] = atts[k];
   }
-  return el;
+  return el as T;
 };
 
 // Find parent or self matching selector (or test function)
-$.up = function(el, sel) {
-  if (typeof (sel) === 'string') {
+$.up = function <T extends Element>(
+  el: Element,
+  sel?: string | ((el: Element) => boolean)
+): T {
+  if (typeof sel === 'string') {
     while (el && !el.matches(sel)) el = el.parentElement;
-  } else if (typeof (sel) === 'function') {
+  } else if (typeof sel === 'function') {
     while (el && !sel(el)) el = el.parentElement;
   }
-  return el;
+  return el as T;
 };
 
 /**
  * Lite class for tracking async activity
  */
 export class LoadActivity {
+  title = '';
+
   total = 0;
   active = 0;
-
   onChange = null;
 
   get percent() {
@@ -189,12 +203,11 @@ export class LoadActivity {
  * Wrapper for fetch() that returns JSON response object
  * @param  {...any} args
  */
-export function fetchJSON(...args) {
-  const p = window.fetch(...args)
-    .then(res => {
-      if (!res.ok) throw new HttpError(res.status);
-      return res.json();
-    });
+export function fetchJSON<T>(...args: [string, RequestInit?]): Promise<T> {
+  const p = window.fetch(...args).then(res => {
+    if (!res.ok) throw new HttpError(res.status);
+    return res.json();
+  });
 
   return p;
 }
@@ -225,7 +238,7 @@ export function simplur(strings, ...exps) {
   let label = n;
   if (Array.isArray(n) && n.length == 2) [n, label] = n;
   for (const s of strings) {
-    if (typeof (n) == 'number') {
+    if (typeof n == 'number') {
       result.push(s.replace(/\[([^|]*)\|([^\]]*)\]/g, n == 1 ? '$1' : '$2'));
     } else {
       result.push(s);

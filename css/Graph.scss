@@ -48,8 +48,12 @@ svg {
 }
 
 pattern#warning {
-  .line0 { stroke: var(--warning0); }
-  .line1 { stroke: var(--warning1); }
+  .line0 {
+    stroke: var(--warning0);
+  }
+  .line1 {
+    stroke: var(--warning1);
+  }
 }
 
 g .stub {
@@ -90,7 +94,8 @@ g.node {
 }
 
 g.edge {
-  > path { // stylelint-disable-line no-descending-specificity
+  > path {
+    // stylelint-disable-line no-descending-specificity
     stroke: var(--text);
   }
 
