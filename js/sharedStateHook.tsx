@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
 /**
  * Factory function for creating React shared-state hooks.
  *
@@ -38,15 +39,15 @@ import { useState, useEffect } from 'react';
  * @returns {Function} React hook function
  */
 
-export default function(value, name /* for debugging */) {
-  const setters = new Set();
+export default function<T>(value : T, name ?: string /* for debugging */): Function {
+  const setters = new Set<(v : T) => void>();
 
-  return function useSharedState() {
-    const [val, setVal] = useState(value);
+  return function useSharedState() : [T, (value : T) => void] {
+    const [val, setVal] = useState<T>(value);
 
     useEffect(() => {
       setters.add(setVal);
-      return () => setters.delete(setVal);
+      return () => {setters.delete(setVal)};
     }, [val]);
 
     return [val, v => {

@@ -4,11 +4,11 @@ module.exports = {
   env: {
     browser: true
     // es2020: true,
-    // node: true
   },
   extends: [
     'eslint:recommended',
-    'semistandard',
+    'prettier:recommended',
+    'prettier:recat',
     'plugin:react/recommended'
   ],
   settings: {
@@ -17,6 +17,7 @@ module.exports = {
     }
   },
   rules: {
+    /*
     'brace-style': ['error', '1tbs'],
     'no-return-assign': 'off',
     'no-var': ['error'],
@@ -28,5 +29,6 @@ module.exports = {
     eqeqeq: 'off',
     'import/no-absolute-path': 'off',
     'react/prop-types': 'off' // TODO: Enable this
+    */
   }
 };

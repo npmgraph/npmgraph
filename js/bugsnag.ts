@@ -1,6 +1,6 @@
-/* global bugsnag */
+declare var bugsnag: any;
 
-import { version as appVersion } from '/package.json';
+import { version as appVersion } from '../package.json';
 
 const config = {
   appVersion,

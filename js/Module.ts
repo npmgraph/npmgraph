@@ -1,3 +1,5 @@
+import { ModuleInfo, OldLicense } from "./types";
+
 function parseGithubPath(s) {
   s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
   return s?.replace?.(/\.git$/, '');
@@ -8,6 +10,8 @@ export function moduleKey(name, version) {
 }
 
 export default class Module {
+  package : ModuleInfo;
+
   static stub({ name, version, error }) {
     return {
       stub: true,
@@ -18,7 +22,7 @@ export default class Module {
     };
   }
 
-  constructor(pkg = {}) {
+  constructor(pkg : ModuleInfo) {
     if (!pkg.maintainers) {
       pkg.maintainers = [];
     } else if (!Array.isArray(pkg.maintainers)) {
@@ -37,7 +41,9 @@ export default class Module {
 
   get version() {
     const version = this.package.version;
-    return version && (version.version || version);
+    // I've forgotten under what circumstances package.version.version might
+    // actually be a thing... :-/
+    return version && ((version as unknown as ModuleInfo).version || version);
   }
 
   get npmLink() {
@@ -66,7 +72,7 @@ export default class Module {
 
   get licenseString() {
     // Legacy: 'licenses' field
-    let license = this.package.license || this.package.licenses;
+    let license : string = (this.package.license || this.package.licenses) as string;
 
     // Legacy: array of licenses?
     if (Array.isArray(license)) {
@@ -76,7 +82,7 @@ export default class Module {
     }
 
     // Legacy: license object?
-    if (typeof (license) == 'object') license = license.type;
+    if (typeof (license) == 'object') license = (license as OldLicense).type;
 
     if (!license) return undefined;
 

@@ -6,7 +6,7 @@ import App from './App';
 import { Flash } from './Components';
 
 // Used to feature-detect that es6 modules are loading
-window.indexLoaded = true;
+(window as any).indexLoaded = true;
 
 window.addEventListener('error', err => {
   console.error(err);

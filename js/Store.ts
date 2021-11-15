@@ -1,13 +1,16 @@
-import { fetchJSON, report } from './util';
-import Module, { moduleKey } from './Module';
-import isSemverValid from 'semver/functions/valid';
 import doesSatisfySemver from 'semver/functions/satisfies';
+import isSemverValid from 'semver/functions/valid';
+import Module, { moduleKey } from './Module';
+import { ModuleInfo } from './types';
+import { fetchJSON, LoadActivity, report } from './util';
 
 class Store {
+  activity : LoadActivity;
+  
   moduleCache = {};
-  requestCache = {};
+  requestCache : { [key: string]: Promise<ModuleInfo> } = {};
 
-  constructor(activity) {
+  constructor(activity : LoadActivity) {
     this.activity = activity;
     this.init();
   }
@@ -33,7 +36,7 @@ class Store {
     return this.moduleCache[key];
   }
 
-  getModule(name, version) {
+  getModule(name, version ?: string) {
     // Parse versioned-names (e.g. "less@1.2.3")
     if (!version && /(.+)@(.*)/.test(name)) {
       name = RegExp.$1;
@@ -75,7 +78,7 @@ class Store {
   }
 
   // fetch module url, caching results (in memory for the time being)
-  async fetchPackage(name, version) {
+  async fetchPackage(name : string, version : string) {
     const isScoped = name.startsWith('@');
     const versionIsValid = isSemverValid(version);
 
@@ -94,25 +97,26 @@ class Store {
       const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
       const finish = this.activity.start(`Fetching ${decodeURIComponent(reqPath)}`);
-      req = this.requestCache[reqPath] = fetchJSON(`https://registry.npmjs.cf/${reqPath}`)
+      req = this.requestCache[reqPath] = fetchJSON<ModuleInfo>(`https://registry.npmjs.cf/${reqPath}`)
         // Errors get turned into stub modules, below
         .catch(err => err)
         .finally(finish);
     }
 
-    let body;
+    let body : ModuleInfo;
+    let failure : Error;
     try {
       body = await req;
     } catch (err) {
-      body = err;
+      failure = err;
     }
 
     if (!body) {
-      body = Error('No info provided by NPM repo');
+      failure = Error('No info provided by NPM repo');
     } else if (typeof (body) != 'object') {
-      body = Error('Data provided by NPM repo is not in the expected format');
+      failure = Error('Data provided by NPM repo is not in the expected format');
     } else if (body.unpublished) {
-      body = Error('Module is unpublished');
+      failure = Error('Module is unpublished');
     } else if (body.versions) {
       // Available versions (most recent first)
       const versions = Object.values(body.versions).reverse();
@@ -122,13 +126,16 @@ class Store {
 
       // Resolve to specific version (use version specifier if provided, otherwise latest dist version, otherwise latest)
       const resolvedVersion = versions.find(v => doesSatisfySemver(v.version, version));
-
-      body = resolvedVersion || Error(`No version matching "${version}" found`);
+      if (resolvedVersion) {
+        body = resolvedVersion as ModuleInfo;
+      } else {
+        failure = Error(`No version matching "${version}" found`);
+      } 
     }
 
     // Error = stub module containing the error
-    if (body instanceof Error) {
-      return Module.stub({ name, version, error: body });
+    if (failure) {
+      return Module.stub({ name, version, error: failure });
     }
 
     return body;
