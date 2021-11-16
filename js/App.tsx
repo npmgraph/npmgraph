@@ -4,6 +4,7 @@ import Graph from './Graph';
 import Inspector from './Inspector';
 import sharedStateHook from './sharedStateHook';
 import Store from './Store';
+import { GraphState } from './types';
 import { LoadActivity } from './util';
 import '/css/App.scss';
 
@@ -11,7 +12,7 @@ export const usePane = sharedStateHook('info', 'pane');
 export const useInspectorOpen = sharedStateHook(true, 'inspectorOpen');
 export const useQuery = sharedStateHook(queryFromLocation(), 'query');
 export const useModule = sharedStateHook([], 'module');
-export const useGraph = sharedStateHook(null, 'graph');
+export const useGraph = sharedStateHook(null as GraphState, 'graph');
 export const useColorize = sharedStateHook('', 'colorize');
 export const useIncludeDev = sharedStateHook(false, 'includeDev');
 export const useExcludes = sharedStateHook([], 'excludes');
