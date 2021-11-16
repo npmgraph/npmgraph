@@ -33,3 +33,17 @@ export type ModuleInfo = {
   // Only for versionless-repository requests
   versions?: ModuleInfo[];
 };
+
+export type GraphModuleInfo = {
+  module: ModuleInfo;
+  level: number;
+  dependencies?: object[];
+};
+
+export type GraphState = {
+  // Map of module key -> module info
+  modules: Map<string, GraphModuleInfo>;
+
+  // Upstream dependency types for each module
+  referenceTypes: Map<string, Set<string>>;
+};

@@ -156,8 +156,8 @@ export default function Inspector(props) {
       break;
   }
 
-  function doSearch(e) {
-    const names = e.currentTarget.value
+  function doSearch(e: React.KeyboardEvent<HTMLInputElement>) {
+    const names = (e.currentTarget as HTMLInputElement).value
       .split(',')
       .map(v => v.trim())
       .filter(Boolean);
