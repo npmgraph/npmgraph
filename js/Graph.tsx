@@ -445,15 +445,26 @@ export default function Graph() {
     setPane(module ? 'module' : 'graph');
   }
 
-  function applyZoom(svg = $('#graph svg')[0]) {
-    const vb = svg?.getAttribute('viewBox')?.split(' ');
+  function applyZoom() {
+    const graphEl = $<HTMLDivElement>('#graph')[0];
+    const svg = $<SVGSVGElement>('#graph svg')[0];
+    if (!svg) return;
 
+    // Note: Not using svg.getBBox() here because (for some reason???) it's
+    // smaller than the actual bounding box
+    const vb = svg.getAttribute('viewBox')?.split(' ').map(Number);
     if (!vb) return;
+
+    const [, , w, h] = vb;
+    graphEl.classList.toggle(
+      'centered',
+      zoom === 0 && w < graphEl.clientWidth && h < graphEl.clientHeight
+    );
 
     switch (zoom) {
       case 0:
-        svg.setAttribute('width', vb[2]);
-        svg.setAttribute('height', vb[3]);
+        svg.setAttribute('width', String(w));
+        svg.setAttribute('height', String(h));
         break;
 
       case 1:
@@ -512,13 +523,12 @@ export default function Graph() {
 
       // Parse markup
       const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
-        .children[0];
+        .children[0] as SVGSVGElement;
       svgDom.remove();
 
       // Remove background element so page background shows thru
       $(svgDom, '.graph > polygon').remove();
-
-      applyZoom(svgDom);
+      svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
 
       // Inject into DOM
       const el = $('#graph');
@@ -597,7 +607,7 @@ export default function Graph() {
   }, [colorize, domSignal]);
 
   // (Re)apply zoom if/when it changes
-  useEffect(applyZoom, [zoom]);
+  useEffect(applyZoom, [zoom, domSignal]);
 
   $('title').innerText = `NPMGraph - ${query.join(', ')}`;
 
