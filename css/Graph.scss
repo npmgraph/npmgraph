@@ -1,4 +1,10 @@
 #graph {
+  &.centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   flex-grow: 1;
   height: 100vh;
   overflow: auto;
@@ -6,6 +12,7 @@
   user-select: none;
   -webkit-user-select: none;
   padding-right: var(--splitter-size);
+
 
   --warning0: #f6f6e0;
   --warning1: #d9d9d9;
