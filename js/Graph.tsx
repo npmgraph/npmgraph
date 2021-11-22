@@ -477,6 +477,8 @@ export default function Graph() {
         svg.setAttribute('height', '100%');
         break;
     }
+
+    select('#graph svg .node').node()?.scrollIntoView();
   }
 
   // Filter for which modules should be shown / collapsed in the graph
@@ -584,8 +586,6 @@ export default function Graph() {
           tagElement(el, 'license', m.licenseString);
         }
       }
-
-      select('#graph svg .node').node()?.scrollIntoView();
 
       setPane(graph?.modules.size ? 'graph' : 'info');
 
