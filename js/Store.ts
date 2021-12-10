@@ -2,7 +2,7 @@ import doesSatisfySemver from 'semver/functions/satisfies';
 import isSemverValid from 'semver/functions/valid';
 import Module, { moduleKey } from './Module';
 import { ModuleInfo } from './types';
-import { fetchJSON, LoadActivity, report } from './util';
+import { fetchJSON, HttpError, LoadActivity, report } from './util';
 
 class Store {
   activity: LoadActivity;
@@ -104,10 +104,7 @@ class Store {
       );
       req = this.requestCache[reqPath] = fetchJSON<ModuleInfo>(
         `https://registry.npmjs.cf/${reqPath}`
-      )
-        // Errors get turned into stub modules, below
-        .catch(err => err)
-        .finally(finish);
+      ).finally(finish);
     }
 
     let body: ModuleInfo;
@@ -118,12 +115,14 @@ class Store {
       failure = err;
     }
 
-    if (!body) {
+    if (failure) {
+      if (failure instanceof HttpError) {
+        failure.message = `Error getting module from NPM (status: ${failure.code})`;
+      }
+    } else if (!body) {
       failure = Error('No info provided by NPM repo');
     } else if (typeof body != 'object') {
-      failure = Error(
-        'Data provided by NPM repo is not in the expected format'
-      );
+      failure = Error('Data not in expected format');
     } else if (body.unpublished) {
       failure = Error('Module is unpublished');
     } else if (body.versions) {

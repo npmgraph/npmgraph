@@ -205,7 +205,9 @@ export class LoadActivity {
  */
 export function fetchJSON<T>(...args: [string, RequestInit?]): Promise<T> {
   const p = window.fetch(...args).then(res => {
-    if (!res.ok) throw new HttpError(res.status);
+    if (!res.ok) {
+      return Promise.reject(new HttpError(res.status));
+    }
     return res.json();
   });
 
