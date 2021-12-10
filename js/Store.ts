@@ -117,14 +117,14 @@ class Store {
 
     if (failure) {
       if (failure instanceof HttpError) {
-        failure.message = `Error getting module from NPM (status: ${failure.code})`;
+        failure.message = `Request for module data failed (status: ${failure.code})`;
       }
     } else if (!body) {
-      failure = Error('No info provided by NPM repo');
+      failure = Error('Empty module data');
     } else if (typeof body != 'object') {
-      failure = Error('Data not in expected format');
+      failure = Error('Unexpected module data structure');
     } else if (body.unpublished) {
-      failure = Error('Module is unpublished');
+      failure = Error('This module is unpublished');
     } else if (body.versions) {
       // Available versions (most recent first)
       const versions = Object.values(body.versions).reverse();
