@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>NPMGraph Search</ShortName>
+  <Description>Show An NPM Dependency Graph</Description>
+  <Url type="application/rss+xml" template="http://npmgraph.js.org/?q={searchTerms}"/>
+</OpenSearchDescription>
