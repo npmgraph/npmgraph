@@ -13,6 +13,7 @@
   ],
   "dependencies": {
     "@hpcc-js/wasm": "1.6.0",
+    "@parcel/transformer-xml": "2.0.1",
     "d3-hierarchy": "^3.0.1",
     "d3-interpolate": "^3.0.1",
     "d3-scale": "^4.0.2",
@@ -38,6 +39,7 @@
     "type": "git"
   },
   "devDependencies": {
+    "@parcel/packager-xml": "2.0.1",
     "@parcel/runtime-react-refresh": "2.0.1",
     "@parcel/transformer-sass": "2.0.1",
     "@types/md5": "2.3.1",
