@@ -67,7 +67,7 @@ export function Section({
   );
 }
 
-export function Pane({ children, ...props }) {
+export function Pane({ children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div className="pane" {...props}>
       {children}
@@ -129,7 +129,7 @@ export function Tag({
   );
 }
 
-function Tab({ active, children, ...props }) {
+function Tab({ active, children, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={`tab bright-hover ${active ? 'active' : ''}`} {...props}>
       {children}
