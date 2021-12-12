@@ -47,3 +47,14 @@ export type GraphState = {
   // Upstream dependency types for each module
   referenceTypes: Map<string, Set<string>>;
 };
+
+export type npmsioResponse = {
+  score: {
+    final: number;
+    detail: {
+      quality: number;
+      popularity: number;
+      maintenance: number;
+    };
+  };
+};

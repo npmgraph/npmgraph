@@ -1,6 +1,7 @@
 import { hierarchy, treemap } from 'd3-hierarchy';
 import React, { useEffect, useState } from 'react';
 import { ExternalLink, Pane, QueryLink, Section, Tag, Tags } from './Inspector';
+import { npmsioResponse } from './types';
 import { $, fetchJSON, human, simplur } from './util';
 import '/css/ModulePane.scss';
 
@@ -112,15 +113,33 @@ function TreeMap({ data, style, ...props }) {
 export default function ModulePane({ module, ...props }) {
   const pkg = module?.package;
 
-  if (!pkg)
+  const [bundleInfo, setBundleInfo] = useState(null);
+  const [npmsInfo, setNpmsInfo] = useState(null);
+
+  const pn = pkg ? encodeURIComponent(`${pkg.name}@${pkg.version}`) : null;
+
+  useEffect(async () => {
+    setBundleInfo(pkg ? null : Error('No package selected'));
+    setNpmsInfo(null);
+
+    if (!pkg) return;
+
+    fetchJSON(`https://bundlephobia.com/api/size?package=${pn}`)
+      .then(setBundleInfo)
+      .catch(setBundleInfo);
+
+    fetchJSON<npmsioResponse>(`https://api.npms.io/v2/package/${pkg.name}`)
+      .then(search => setNpmsInfo(search.score))
+      .catch(setNpmsInfo);
+  }, [pkg]);
+
+  if (!pkg) {
     return (
       <Pane>
         No module selected. Click a module in the graph to see details.
       </Pane>
     );
-
-  const [bundleInfo, setBundleInfo] = useState(null);
-  const [npmsInfo, setNpmsInfo] = useState(null);
+  }
 
   if (pkg.stub) {
     return (
@@ -134,24 +153,6 @@ export default function ModulePane({ module, ...props }) {
       </Pane>
     );
   }
-
-  const pn = pkg ? encodeURIComponent(`${pkg.name}@${pkg.version}`) : null;
-
-  useEffect(async () => {
-    setBundleInfo(pkg ? null : Error('No package selected'));
-    setNpmsInfo(pkg ? null : Error('No package selected'));
-    setNpmsInfo(null);
-
-    if (!pkg) return;
-
-    fetchJSON(`https://bundlephobia.com/api/size?package=${pn}`)
-      .then(setBundleInfo)
-      .catch(setBundleInfo);
-
-    fetchJSON(`https://api.npms.io/v2/package/${pkg.name}`)
-      .then(search => setNpmsInfo(search.score))
-      .catch(setNpmsInfo);
-  }, [pkg]);
 
   const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
 
