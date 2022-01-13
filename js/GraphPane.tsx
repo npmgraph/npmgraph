@@ -4,7 +4,7 @@ import { interpolateSpectral } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
 import { arc, pie } from 'd3-shape';
 import React, { useEffect, useRef } from 'react';
-import { useColorize, useExcludes, useIncludeDev } from './App';
+import { useColorize, useExcludes, useFilterPattern, useIncludeDev } from './App';
 import { Toggle } from './Components';
 import { hslFor } from './Graph';
 import { Pane, Section, Tag, Tags } from './Inspector';
@@ -100,6 +100,7 @@ export default function GraphPane({ graph, ...props }) {
     a < b ? -1 : a > b ? 1 : 0;
   const compareEntryValue = ([, a], [, b]) => (a < b ? -1 : a > b ? 1 : 0);
   const [colorize, setColorize] = useColorize();
+  const [filterPattern, setFilterPattern] = useFilterPattern();
   const [excludes] = useExcludes();
   const [includeDev, setIncludeDev] = useIncludeDev();
 
@@ -172,6 +173,17 @@ export default function GraphPane({ graph, ...props }) {
           <span style={{ color: hslFor(2 / 2) }}>{'\u2B24'}</span> = 100%
         </div>
       ) : null}
+
+			<label>
+				Filter with pattern:
+				<input
+					defaultValue={filterPattern}
+					onBlur={(e) => setFilterPattern(e.target.value)}
+          onKeyDown={e => {
+            if (/^(?:Enter|Tab)$/.test(e.key)) setFilterPattern(e.target.value);
+          }}
+				></input>
+			</label>
 
       <Section title={simplur`${graph.modules.size} Module[|s]`}>
         <Tags>

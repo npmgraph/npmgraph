@@ -9,6 +9,7 @@ import {
   store,
   useColorize,
   useExcludes,
+  useFilterPattern,
   useGraph,
   useIncludeDev,
   useInspectorOpen,
@@ -411,6 +412,7 @@ export default function Graph() {
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
   const [colorize] = useColorize();
+  const [filterPattern] = useFilterPattern();
 
   const [zoom, setZoom] = useState(0);
 
@@ -483,7 +485,7 @@ export default function Graph() {
 
   // Filter for which modules should be shown / collapsed in the graph
   function moduleFilter({ name }) {
-    return !excludes?.includes(name);
+    return !excludes?.includes(name) && (!filterPattern || new RegExp(filterPattern).test(name));
   }
 
   // NOTE: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
@@ -501,7 +503,7 @@ export default function Graph() {
     setGraph(newGraph);
 
     return abort;
-  }, [query, includeDev, excludes]);
+  }, [query, includeDev, excludes, filterPattern]);
 
   // Effect: Parse SVG markup into DOM
   useEffect(() => {

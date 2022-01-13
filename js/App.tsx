@@ -14,6 +14,7 @@ export const useQuery = sharedStateHook(queryFromLocation(), 'query');
 export const useModule = sharedStateHook([], 'module');
 export const useGraph = sharedStateHook(null as GraphState, 'graph');
 export const useColorize = sharedStateHook('', 'colorize');
+export const useFilterPattern = sharedStateHook('', 'filterPattern');
 export const useIncludeDev = sharedStateHook(false, 'includeDev');
 export const useExcludes = sharedStateHook([], 'excludes');
 
