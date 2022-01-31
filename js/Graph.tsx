@@ -396,7 +396,6 @@ function createAbortable() {
   return {
     signal,
     abort: () => {
-      console.log('ABORTING');
       signal.aborted = true;
     },
   };
