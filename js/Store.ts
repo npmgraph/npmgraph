@@ -103,7 +103,7 @@ class Store {
         `Fetching ${decodeURIComponent(reqPath)}`
       );
       req = this.requestCache[reqPath] = fetchJSON<ModuleInfo>(
-        `https://registry.npmjs.cf/${reqPath}`
+        `https://registry.npmjs.org/${reqPath}`
       ).finally(finish);
     }
 
