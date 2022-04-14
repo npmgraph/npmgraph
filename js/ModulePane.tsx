@@ -118,7 +118,7 @@ export default function ModulePane({ module, ...props }) {
 
   const pn = pkg ? encodeURIComponent(`${pkg.name}@${pkg.version}`) : null;
 
-  useEffect(async () => {
+  useEffect(() => {
     setBundleInfo(pkg ? null : Error('No package selected'));
     setNpmsInfo(null);
 
