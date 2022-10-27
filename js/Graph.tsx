@@ -339,7 +339,7 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       el => store.cachedEntry(el.dataset.module).name
     );
 
-    // NPMS.io limits to 250 packages
+    // npms.io limits to 250 packages
     const reqs = [];
     const MAX_PACKAGES = 250;
     while (packageNames.length) {
@@ -609,7 +609,7 @@ export default function Graph() {
   // (Re)apply zoom if/when it changes
   useEffect(applyZoom, [zoom, domSignal]);
 
-  $('title').innerText = `NPMGraph - ${query.join(', ')}`;
+  $('title').innerText = `npmgraph - ${query.join(', ')}`;
 
   return (
     <div id="graph" onClick={handleGraphClick}>

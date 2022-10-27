@@ -149,10 +149,10 @@ export default function GraphPane({ graph, ...props }) {
         >
           <option value="">Nothing (uncolored)</option>
 
-          <option value="overall"> NPMS.io overall score</option>
-          <option value="quality"> NPMS.io quality score</option>
-          <option value="popularity"> NPMS.io popularity score</option>
-          <option value="maintenance">NPMS.io maintenance score</option>
+          <option value="overall"> npms.io overall score</option>
+          <option value="quality"> npms.io quality score</option>
+          <option value="popularity"> npms.io popularity score</option>
+          <option value="maintenance">npms.io maintenance score</option>
 
           <option value="bus"># of maintainers</option>
         </select>

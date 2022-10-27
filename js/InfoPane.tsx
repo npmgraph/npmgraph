@@ -100,7 +100,7 @@ export default function InfoPane(props) {
       />
 
       <p>
-        Enter NPM module name here{' '}
+        Enter npm module name here{' '}
         <i className="material-icons">arrow_upward</i> to see the dependency
         graph. Separate multiple module names with commas (e.g.{' '}
         <a href="?q=mocha, chalk, rimraf">&quot;mocha, chalk, rimraf&quot;</a>).
