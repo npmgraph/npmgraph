@@ -8,7 +8,7 @@ export type OldLicense = {
   url: string;
 };
 
-// TODO: Actual schema for NPM module info is pretty complex.  This is just a
+// TODO: Actual schema for npm module info is pretty complex.  This is just a
 // quick pass at the types we currently care about
 export type ModuleInfo = {
   version: string;
