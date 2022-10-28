@@ -13,7 +13,7 @@
   ],
   "dependencies": {
     "@hpcc-js/wasm": "1.14.1",
-w    "d3-hierarchy": "3.1.2",
+    "d3-hierarchy": "3.1.2",
     "d3-interpolate": "3.0.1",
     "d3-scale": "4.0.2",
     "d3-scale-chromatic": "3.0.0",
