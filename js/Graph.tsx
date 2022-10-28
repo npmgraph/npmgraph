@@ -489,15 +489,16 @@ export default function Graph() {
   // Thus, it's broken up into different useEffect() actions, below.
 
   // Effect: Fetch modules
-  useEffect(async () => {
+  useEffect(() => {
     const { signal, abort } = createAbortable();
     setGraph(null);
     setModule([]);
 
-    const newGraph = await modulesForQuery(query, includeDev, moduleFilter);
-    if (signal.aborted) return; // Check after async
+    modulesForQuery(query, includeDev, moduleFilter).then(newGraph => {
+      if (signal.aborted) return; // Check after async
 
-    setGraph(newGraph);
+      setGraph(newGraph);
+    });
 
     return abort;
   }, [query, includeDev, excludes]);

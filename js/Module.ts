@@ -56,7 +56,7 @@ export default class Module {
   }
 
   get apiLink() {
-    return `https://registry.npmjs.cf/${this.name}/${this.version}`;
+    return `https://registry.npmjs.org/${this.name}/${this.version}`;
   }
 
   get githubPath() {
