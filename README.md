@@ -1,6 +1,6 @@
-# NPMGraph
+# npmgraph
 
-A tool for exploring NPM modules and dependencies.
+A tool for exploring npm modules and dependencies.
 
 **Available online at https://npmgraph.js.org/.**
 

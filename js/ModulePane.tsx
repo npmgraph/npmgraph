@@ -195,7 +195,7 @@ export default function ModulePane({ module, ...props }) {
       <p>{pkg?.description}</p>
 
       <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
-        NPM
+        npm
       </ExternalLink>
       {module.repoLink ? (
         <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>
@@ -236,7 +236,7 @@ export default function ModulePane({ module, ...props }) {
         ) : null}
       </Section>
 
-      <Section title="NPMS.io Score">
+      <Section title="npms.io Score">
         {!npmsInfo ? (
           'Loading'
         ) : npmsInfo instanceof Error ? (

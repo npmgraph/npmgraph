@@ -204,7 +204,7 @@ export default function Inspector(props) {
       {paneComponent}
 
       <footer>
-        {'\xa9'} NPMGraph Contributors &mdash;{' '}
+        {'\xa9'} npmgraph Contributors &mdash;{' '}
         <ExternalLink id="github" href="https://github.com/npmgraph/npmgraph">
           GitHub
         </ExternalLink>{' '}
