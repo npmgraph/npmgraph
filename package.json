@@ -12,8 +12,8 @@
     "last 2 versions"
   ],
   "funding": [
-    "url": "https://github.com/sponsors/broofa",
-    "url": "https://github.com/sponsors/fregante"
+    "https://github.com/sponsors/broofa",
+    "https://github.com/sponsors/fregante"
   ],
   "dependencies": {
     "@hpcc-js/wasm": "1.14.1",
