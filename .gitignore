@@ -3,3 +3,4 @@ node_modules
 *.code-workspace
 dist
 .vscode
+!package-lock.json
