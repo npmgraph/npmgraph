@@ -11,6 +11,10 @@
   "browserslist": [
     "last 2 versions"
   ],
+  "funding": [
+    "url": "https://github.com/sponsors/broofa",
+    "url": "https://github.com/sponsors/fregante"
+  ],
   "dependencies": {
     "@hpcc-js/wasm": "1.14.1",
     "d3-hierarchy": "3.1.2",
