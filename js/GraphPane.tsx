@@ -2,43 +2,63 @@ import { quantize } from 'd3-interpolate';
 import { scaleOrdinal } from 'd3-scale';
 import { interpolateSpectral } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
-import { arc, pie } from 'd3-shape';
-import React, { useEffect, useRef } from 'react';
-import { useColorize, useExcludes, useIncludeDev } from './App';
-import { Toggle } from './Components';
-import { hslFor } from './Graph';
-import { Pane, Section, Tag, Tags } from './Inspector';
-import { Person } from './types';
-import { simplur } from './util';
+import { PieArcDatum, arc, pie } from 'd3-shape';
+import React, { HTMLProps, useEffect, useRef } from 'react';
+import { useColorize, useExcludes, useIncludeDev } from './App.js';
+import { Toggle } from './components/Toggle.js';
+import { hslFor } from './Graph.js';
+import { Tag } from './components/Tag.js';
+import { Tags } from './components/Tags.js';
+import { Pane } from './components/Pane.js';
+import { Section } from './components/Section.js';
+import { GraphState, Person } from './types.js';
+import { simplur } from './util.js';
 import '/css/GraphPane.scss';
 
-function PieGraph({ entries, ...props }) {
-  const svgEl = useRef();
+function compareEntryValue<T = string | number>(
+  [, a]: [string, T],
+  [, b]: [string, T],
+) {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
+
+type PieDatum = [string, number];
+
+function PieGraph({
+  entries,
+  ...props
+}: { entries: PieDatum[] } & HTMLProps<SVGSVGElement>) {
+  const svgEl = useRef<SVGSVGElement>(null);
   useEffect(() => {
     // Chart code from https://observablehq.com/@d3/pie-chart
 
-    const svg = select(svgEl.current);
+    const svgElement = svgEl.current;
+    if (!svgElement) return;
+
+    const svg = select(svgElement);
+    const svgNode = svg.node();
+    if (!svgNode) return;
 
     // Align SVG view box to actual element dimensions
-    const { width, height } = svg.node().getBoundingClientRect();
+    const { width, height } = svgNode.getBoundingClientRect();
     const w2 = width / 2,
       h2 = height / 2;
     const radius = Math.min(w2, h2);
     svg.attr('viewBox', `${-w2} ${-h2} ${width} ${height}`);
 
     // Create arcs
-    const arcs = pie()
+    const arcs = pie<PieDatum>()
       .value(e => e[1])
       .sort(null)(entries);
 
     // Create colors
-    const color = scaleOrdinal()
+    const color = scaleOrdinal<string>()
       .domain(entries.map(e => e[0]))
       .range(
         quantize(
           t => interpolateSpectral(t * 0.8 + 0.1),
-          entries.length
-        ).reverse()
+          entries.length,
+        ).reverse(),
       );
 
     // Render arcs
@@ -51,15 +71,15 @@ function PieGraph({ entries, ...props }) {
       .attr('fill', e => color(e.data[0]))
       .attr(
         'd',
-        arc()
+        arc<PieArcDatum<PieDatum>>()
           .innerRadius(radius / 2)
-          .outerRadius(radius)
+          .outerRadius(radius),
       )
       .append('title')
       .text(d => `${d.data[0]}: ${d.data[1].toLocaleString()}`);
 
     // Render labels
-    const arcLabel = arc()
+    const arcLabel = arc<PieArcDatum<PieDatum>>()
       .innerRadius(radius * 0.8)
       .outerRadius(radius * 0.8);
     svg
@@ -73,13 +93,13 @@ function PieGraph({ entries, ...props }) {
       .attr('transform', d => `translate(${arcLabel.centroid(d)})`)
       .attr(
         'font-size',
-        d => `${0.75 + (d.endAngle - d.startAngle) / Math.PI / 2}em`
+        d => `${0.75 + (d.endAngle - d.startAngle) / Math.PI / 2}em`,
       )
       .call(text =>
         text
           .append('tspan')
           .attr('y', '-0.4em')
-          .text(d => d.data[0])
+          .text(d => d.data[0]),
       )
       .call(text =>
         text
@@ -88,24 +108,26 @@ function PieGraph({ entries, ...props }) {
           .attr('x', 0)
           .attr('y', '0.7em')
           .attr('fill-opacity', 0.5)
-          .text(d => d.data[1].toLocaleString())
+          .text(d => d.data[1].toLocaleString()),
       );
   });
 
   return <svg ref={svgEl} {...props} />;
 }
 
-export default function GraphPane({ graph, ...props }) {
+export default function GraphPane({
+  graph,
+  ...props
+}: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const compareEntryKey = ([a]: [string, unknown], [b]: [string, unknown]) =>
     a < b ? -1 : a > b ? 1 : 0;
-  const compareEntryValue = ([, a], [, b]) => (a < b ? -1 : a > b ? 1 : 0);
   const [colorize, setColorize] = useColorize();
   const [excludes] = useExcludes();
   const [includeDev, setIncludeDev] = useIncludeDev();
 
   if (!graph?.modules) return <div>Loading</div>;
 
-  const occurances = {};
+  const occurances: { [key: string]: number } = {};
   const maintainers: { [key: string]: Person & { count?: number } } = {};
   const licenseCounts: { [key: string]: number } = {};
   for (const [
@@ -118,16 +140,20 @@ export default function GraphPane({ graph, ...props }) {
     occurances[pkg.name] = (occurances[pkg.name] || 0) + 1;
 
     // Tally maintainers
-    for (const { name, email } of pkg.maintainers) {
-      if (!maintainers[name]) {
+    for (const { name, email } of pkg.maintainers ?? []) {
+      const maints = maintainers[name];
+
+      if (!maints) {
         maintainers[name] = { name, email, count: 1 };
       } else {
-        maintainers[name].count++;
+        maints.count = (maints.count ?? 0) + 1;
       }
     }
 
     // Tally licenses
-    licenseCounts[license] = (licenseCounts[license] || 0) + 1;
+    if (license) {
+      licenseCounts[license] = (licenseCounts[license] || 0) + 1;
+    }
   }
 
   const licenses = Object.entries(licenseCounts)
@@ -183,7 +209,7 @@ export default function GraphPane({ graph, ...props }) {
                 name={name}
                 type="module"
                 count={count}
-                className={excludes.includes(name) ? 'collapsed' : null}
+                className={excludes.includes(name) ? 'collapsed' : ''}
               />
             ))}
         </Tags>
@@ -210,7 +236,7 @@ export default function GraphPane({ graph, ...props }) {
                 key={name + count}
                 name={name}
                 type="maintainer"
-                count={count}
+                count={count ?? 0}
                 gravatar={email}
               />
             ))}

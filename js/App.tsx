@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import { Loader } from './Components';
-import Graph from './Graph';
-import Inspector from './Inspector';
-import sharedStateHook from './sharedStateHook';
-import Store from './Store';
-import { GraphState } from './types';
-import { LoadActivity } from './util';
+import { Loader } from './components/Loader.js';
+import Graph from './Graph.js';
+import Inspector from './Inspector.js';
+import sharedStateHook from './sharedStateHook.js';
+import Store from './Store.js';
+import { GraphState } from './types.js';
+import { LoadActivity } from './util.js';
 import '/css/App.scss';
+import Module from './Module.js';
 
 export const usePane = sharedStateHook('info', 'pane');
 export const useInspectorOpen = sharedStateHook(true, 'inspectorOpen');
 export const useQuery = sharedStateHook(queryFromLocation(), 'query');
-export const useModule = sharedStateHook([], 'module');
-export const useGraph = sharedStateHook(null as GraphState, 'graph');
+export const useModule = sharedStateHook(
+  undefined as Module | undefined,
+  'module',
+);
+export const useGraph = sharedStateHook(null as GraphState | null, 'graph');
 export const useColorize = sharedStateHook('', 'colorize');
 export const useIncludeDev = sharedStateHook(false, 'includeDev');
-export const useExcludes = sharedStateHook([], 'excludes');
+export const useExcludes = sharedStateHook([] as string[], 'excludes');
 
-function Splitter({ onClick, isOpen }) {
+function Splitter({
+  onClick,
+  isOpen,
+}: {
+  onClick: () => void;
+  isOpen: boolean;
+}) {
   return (
     <div id="splitter" className="bright-hover" onClick={onClick}>
       {isOpen ? '\u{25b6}' : '\u{25c0}'}

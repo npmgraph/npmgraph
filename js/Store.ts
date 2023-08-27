@@ -1,13 +1,19 @@
-import doesSatisfySemver from 'semver/functions/satisfies';
-import isSemverValid from 'semver/functions/valid';
-import Module, { moduleKey } from './Module';
-import { ModuleInfo } from './types';
-import { fetchJSON, HttpError, LoadActivity, report } from './util';
+import semver from 'semver';
+import Module, { moduleKey } from './Module.js';
+import { ModuleInfo } from './types.js';
+import { fetchJSON, HttpError, isPromise, LoadActivity } from './util.js';
+import { report } from './bugsnag.js';
+
+type ModuleCacheEntry = {
+  promise: Promise<Module>;
+  module?: Module; // Set once module is loaded
+  error?: Error; // Set if module fails to load
+};
 
 class Store {
   activity: LoadActivity;
 
-  moduleCache = {};
+  moduleCache: Record<string, ModuleCacheEntry> = {};
   requestCache: { [key: string]: Promise<ModuleInfo> } = {};
 
   constructor(activity: LoadActivity) {
@@ -21,9 +27,8 @@ class Store {
 
     for (let i = 0; i < sessionStorage.length; i++) {
       try {
-        const module = JSON.parse(
-          sessionStorage.getItem(sessionStorage.key(i))
-        );
+        const cached = sessionStorage.getItem(sessionStorage.key(i) ?? '');
+        const module = cached && JSON.parse(cached);
         if (!module?.name) continue;
 
         this.cachePackage(module);
@@ -33,12 +38,13 @@ class Store {
     }
   }
 
-  cachedEntry(key) {
-    if (!this.moduleCache[key]) throw Error(`${key} is not cached`);
-    return this.moduleCache[key];
+  getCachedModule(key: string) {
+    return this.moduleCache[key]?.module;
   }
 
-  getModule(name, version?: string) {
+  getModule(name: string, version?: string) {
+    if (!name) throw Error('Invalid module name');
+
     // Parse versioned-names (e.g. "less@1.2.3")
     if (!version && /(.+)@(.*)/.test(name)) {
       name = RegExp.$1;
@@ -52,25 +58,31 @@ class Store {
     const cacheKey = moduleKey(name, version);
 
     if (!this.moduleCache[cacheKey]) {
-      this.moduleCache[cacheKey] = this.fetchPackage(name, version)
-        .then(pkg => {
-          const module = new Module(pkg);
+      let cacheEntry: ModuleCacheEntry = {
+        promise: this.fetchPackage(name, version)
+          .then(pkg => {
+            const module = new Module(pkg);
 
-          // Cache based on arguments (memoize), but also cache based on name
-          // and version as declared in module info
-          this.moduleCache[cacheKey] = module;
-          this.moduleCache[`${module.name}@${module.version}`] = module;
+            // Cache based on arguments (memoize), but also cache based on name
+            // and version as declared in module info
+            cacheEntry.module = module;
+            this.moduleCache[`${module.name}@${module.version}`] = cacheEntry;
 
-          return (this.moduleCache[cacheKey] = module);
-        })
-        .catch(err => report.error(err));
+            return module;
+          })
+          .catch(err => {
+            // We don't expect to get here, so just catch and rethrow
+            throw err;
+          }),
+      };
+      this.moduleCache[cacheKey] = cacheEntry;
     }
 
-    return this.moduleCache[cacheKey];
+    return this.moduleCache[cacheKey].promise;
   }
 
   // Inject a module directly into the request cache (used for module file uploads)
-  cachePackage(pkg) {
+  cachePackage(pkg: ModuleInfo) {
     let { name } = pkg;
     const { version } = pkg;
     name = name.replace(/\//g, '%2F');
@@ -81,9 +93,9 @@ class Store {
   }
 
   // fetch module url, caching results (in memory for the time being)
-  async fetchPackage(name: string, version: string) {
+  async fetchPackage(name: string, version?: string) {
     const isScoped = name.startsWith('@');
-    const versionIsValid = isSemverValid(version);
+    const versionIsValid = semver.valid(version);
 
     // url-escape "/"'s in the name
     const path = `${name.replace(/\//g, '%2F')}`;
@@ -94,58 +106,67 @@ class Store {
 
     if (!req) {
       // If semver isn't valid (i.e. not a simple, canonical version - e.g.
-      // "1.2.3") fetch all versions (we'll figure out the specific version below)
+      // "1.2.3") fetch all versions (we'll figure out the specific version
+      // below)
       //
-      // Also, we can't fetch scoped modules at specific versions.  See https://goo.gl/dSMitm
+      // Also, we can't fetch scoped modules at specific versions.  See
+      // https://goo.gl/dSMitm
       const reqPath = !isScoped && versionIsValid ? pathAndVersion : path;
 
       const finish = this.activity.start(
-        `Fetching ${decodeURIComponent(reqPath)}`
+        `Fetching ${decodeURIComponent(reqPath)}`,
       );
       req = this.requestCache[reqPath] = fetchJSON<ModuleInfo>(
-        `https://registry.npmjs.org/${reqPath}`
+        `https://registry.npmjs.org/${reqPath}`,
       ).finally(finish);
     }
 
-    let body: ModuleInfo;
-    let failure: Error;
+    function fail(err: unknown) {
+      return Module.stub(
+        name,
+        version,
+        err instanceof Error ? err : new Error(String(err)),
+      );
+    }
+
+    let body: ModuleInfo | undefined;
+    let failure: Error | undefined;
     try {
       body = await req;
     } catch (err) {
-      failure = err;
+      return fail(err as Error);
     }
 
-    if (failure) {
-      if (failure instanceof HttpError) {
-        failure.message = `Request for module data failed (status: ${failure.code})`;
-      }
-    } else if (!body) {
-      failure = Error('Empty module data');
-    } else if (typeof body != 'object') {
-      failure = Error('Unexpected module data structure');
-    } else if (body.unpublished) {
-      failure = Error('This module is unpublished');
-    } else if (body.versions) {
+    if (!body) {
+      return fail('Empty module data');
+    }
+
+    if (typeof body != 'object') {
+      return fail('Unexpected module data structure');
+    }
+
+    if (body.unpublished) {
+      return fail('This module is unpublished');
+    }
+
+    if (body.versions) {
       // Available versions (most recent first)
       const versions = Object.values(body.versions).reverse();
 
       // Version we're looking for
-      version = version || body['dist-tags']?.latest || '*';
+      const versionQuery =
+        version || (body['dist-tags']?.latest as string) || '*';
 
-      // Resolve to specific version (use version specifier if provided, otherwise latest dist version, otherwise latest)
+      // Resolve to specific version (use version specifier if provided,
+      // otherwise latest dist version, otherwise latest)
       const resolvedVersion = versions.find(v =>
-        doesSatisfySemver(v.version, version)
+        semver.satisfies(v.version, versionQuery),
       );
       if (resolvedVersion) {
         body = resolvedVersion as ModuleInfo;
       } else {
-        failure = Error(`No version matching "${version}" found`);
+        return fail(`No version matching "${version}" found`);
       }
-    }
-
-    // Error = stub module containing the error
-    if (failure) {
-      return Module.stub({ name, version, error: failure });
     }
 
     return body;

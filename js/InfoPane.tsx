@@ -1,31 +1,36 @@
-import React, { useState } from 'react';
-import { store, useQuery } from './App';
-import { Pane, QueryLink } from './Inspector';
+import React, { HTMLAttributes, HTMLProps, useState } from 'react';
+import { store, useQuery } from './App.js';
+import { Pane } from './components/Pane.js';
+import { QueryLink } from './components/QueryLink.js';
 import '/css/InfoPane.scss';
 
 // Get names of uploaded modules in session storage
 function getFileEntries() {
   return Object.keys(window.sessionStorage).map(k =>
-    k.replace('/', '@').replace(/%2f/gi, '/')
+    k.replace('/', '@').replace(/%2f/gi, '/'),
   );
 }
 
-export default function InfoPane(props) {
+export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [, setQuery] = useQuery();
 
   const [recents, setRecents] = useState(getFileEntries());
 
   // Handle file selection via input
-  const onSelect = ev => {
-    readFile(ev.target.files.item(0));
+  const onSelect = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const file = ev.target.files?.item(0);
+    if (file) {
+      readFile(file);
+    }
 
     // Reset field
     ev.target.value = '';
   };
 
   // Handle file drops
-  const onDrop = ev => {
-    ev.target.classList.remove('drag');
+  const onDrop = (ev: React.DragEvent) => {
+    const target = ev.target as HTMLElement;
+    target.classList.remove('drag');
     ev.preventDefault();
 
     // If dropped items aren't files, reject them
@@ -41,13 +46,13 @@ export default function InfoPane(props) {
     const file = item.getAsFile();
     if (!file)
       return alert(
-        'Please drop a file, not... well... whatever else it was you dropped'
+        'Please drop a file, not... well... whatever else it was you dropped',
       );
 
     readFile(file);
   };
 
-  const readFile = async file => {
+  const readFile = async (file: File) => {
     const reader = new FileReader();
 
     const content: string = await new Promise(resolve => {
@@ -76,16 +81,18 @@ export default function InfoPane(props) {
 
     const url = new URL(location.href);
     url.searchParams.set('q', key);
-    history.pushState(null, null, url);
+    history.pushState(null, '', url);
   };
 
-  const onDragOver = ev => {
-    ev.target.classList.add('drag');
+  const onDragOver = (ev: React.DragEvent<HTMLElement>) => {
+    const target = ev.target as HTMLElement;
+    target.classList.add('drag');
     ev.preventDefault();
   };
 
-  const onDragLeave = ev => {
-    ev.currentTarget.classList.remove('drag');
+  const onDragLeave = (ev: React.DragEvent<HTMLElement>) => {
+    const currentTarget = ev.currentTarget as HTMLElement;
+    currentTarget.classList.remove('drag');
     ev.preventDefault();
   };
 
