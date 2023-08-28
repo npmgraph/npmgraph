@@ -51,7 +51,7 @@ function getDependencyEntries(
 ) {
   const dependencyTypes: DependencyKey[] = ['dependencies', 'peerDependencies'];
   if (includeDev && level <= 0) {
-    dependencyTypes.push('optionalDependencies');
+    dependencyTypes.push('devDependencies');
   }
 
   const moduleInfo = isModule(pkg) ? pkg.package : pkg;
