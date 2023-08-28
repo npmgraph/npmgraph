@@ -1,8 +1,9 @@
+import './bugsnag.js'; // Initialize ASAP!
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
-import './bugsnag'; // Initialize ASAP!
-import { Flash } from './Components';
+import App from './App.js';
+import { Flash } from './components/Flash.js';
 
 // Used to feature-detect that es6 modules are loading
 (window as { indexLoaded?: boolean }).indexLoaded = true;
@@ -18,6 +19,6 @@ window.addEventListener('unhandledrejection', err => {
 });
 
 window.onload = function () {
-  const root = createRoot(document.querySelector('#app'));
+  const root = createRoot(document.querySelector('#app') as HTMLDivElement);
   root.render(<App />);
 };

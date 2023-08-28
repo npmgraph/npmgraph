@@ -41,7 +41,7 @@ import { useEffect, useState } from 'react';
 
 export default function <T>(
   value: T,
-  name?: string // eslint-disable-line @typescript-eslint/no-unused-vars
+  name?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
 ): () => [val: T, set: (val: T) => void] {
   const setters = new Set<(v: T) => void>();
 

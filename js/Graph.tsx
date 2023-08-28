@@ -1,9 +1,6 @@
-import { graphviz } from '@hpcc-js/wasm';
+import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
-// prettier-ignore
-// @ts-ignore
-import wasmUrl from "url:@hpcc-js/wasm/dist/graphvizlib.wasm";
 import {
   activity,
   store,
@@ -15,18 +12,20 @@ import {
   useModule,
   usePane,
   useQuery,
-} from './App';
-import { GraphState, ModuleInfo } from './types';
-import { $, fetchJSON, report, tagElement } from './util';
+} from './App.js';
+import Module from './Module.js';
+import { report } from './bugsnag.js';
+import { NPMSIOData } from './fetch_types.js';
+import {
+  DependencyKey,
+  GraphModuleInfo,
+  GraphState,
+  ModuleInfo,
+} from './types.js';
+import { $, fetchJSON, tagElement } from './util.js';
 import '/css/Graph.scss';
 
-// Promise<ArrayBuffer> contents of graphviz WASM file
-const wasmBinaryPromise = fetch(wasmUrl, { credentials: 'same-origin' })
-  .then(res => {
-    if (!res.ok) throw Error(`Failed to load '${wasmUrl}'`);
-    return res.arrayBuffer();
-  })
-  .then(ab => new Uint8Array(ab));
+const graphvizP = Graphviz.load();
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -35,36 +34,46 @@ const EDGE_ATTRIBUTES = {
   devDependencies: '[color=red]',
   peerDependencies:
     '[label=peer fontcolor="#bbbbbb" color="#bbbbbb" style=dashed]',
-  // optionalDependencies: '[color=black style=dashed]',
-  // optionalDevDependencies: '[color=red style=dashed]'
+  optionalDependencies: '[color=black style=dashed]', // unused
+  optionalDevDependencies: '[color=red style=dashed]', // unused
 };
 
-function getDependencyEntries(pkg, includeDev, level = 0) {
-  const dependencyTypes = [
-    'dependencies',
-    'peerDependencies',
-    includeDev && level <= 0 ? 'devDependencies' : null,
-  ];
+function isModule(m: Module | ModuleInfo): m is Module {
+  return 'package' in m;
+}
 
-  pkg = pkg.package || pkg;
+type DependencyEntry = { name: string; version: string; type: DependencyKey };
 
-  const deps = [];
+function getDependencyEntries(
+  pkg: Module | ModuleInfo,
+  includeDev: boolean,
+  level = 0,
+) {
+  const dependencyTypes: DependencyKey[] = ['dependencies', 'peerDependencies'];
+  if (includeDev && level <= 0) {
+    dependencyTypes.push('devDependencies');
+  }
+
+  const moduleInfo = isModule(pkg) ? pkg.package : pkg;
+
+  const depEntries: Array<DependencyEntry> = [];
   for (const type of dependencyTypes) {
-    if (!pkg[type]) continue;
+    const deps = moduleInfo[type];
+    if (!deps) continue;
 
     // Only do one level for non-"dependencies"
     if (level > 0 && type != 'dependencies') continue;
 
     // Get entries, adding type to each entry
-    const d = Object.entries(pkg[type]);
-    d.forEach(o => o.push(type));
-    deps.push(...d);
+    for (const [name, version] of Object.entries(deps)) {
+      depEntries.push({ name, version, type });
+    }
   }
 
-  return deps;
+  return depEntries;
 }
 
-export function hslFor(perc) {
+export function hslFor(perc: number) {
   return `hsl(${(Math.max(0, Math.min(1, perc)) * 120).toFixed(0)}, 100%, 75%)`;
 }
 
@@ -75,13 +84,17 @@ export function hslFor(perc) {
  * @param {Function} moduleFilter applied to module dependency list(s)
  * @returns {Promise<Map>} Map of key -> {module, level, dependencies}
  */
-async function modulesForQuery(query, includeDev, moduleFilter) {
+async function modulesForQuery(
+  query: string[],
+  includeDev: boolean,
+  moduleFilter: (m: Module | ModuleInfo) => boolean,
+) {
   const graphState: GraphState = {
     modules: new Map(),
     referenceTypes: new Map(),
   };
 
-  function _walk(module, level = 0) {
+  function _walk(module: Module[] | Module, level = 0): Promise<unknown> {
     if (!module) return Promise.resolve(Error('Undefined module'));
 
     // Array?  Apply to each element
@@ -93,30 +106,29 @@ async function modulesForQuery(query, includeDev, moduleFilter) {
     if (graphState.modules.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
-    const depEntries = moduleFilter(module)
+    const deps = moduleFilter(module)
       ? getDependencyEntries(module, includeDev, level)
       : [];
 
     // Create object that captures info about how this module fits in the dependency graph
-    const info: { module: ModuleInfo; level: number; dependencies?: object[] } =
-      { module, level };
+    const info: GraphModuleInfo = { module: module, level };
     graphState.modules.set(module.key, info);
 
     return Promise.all(
-      depEntries.map(async ([name, version, type]) => {
+      deps.map(async ({ name, version, type }) => {
         const module = await store.getModule(name, version);
 
         // Record the types of dependency references to this module
         if (!graphState.referenceTypes.has(module.key)) {
           graphState.referenceTypes.set(module.key, new Set());
         }
-        graphState.referenceTypes.get(module.key).add(type);
+        graphState.referenceTypes.get(module.key)?.add(type);
 
         if (type !== 'peerDependencies') {
           await _walk(module, level + 1);
         }
         return { module, type };
-      })
+      }),
     ).then(dependencies => (info.dependencies = dependencies));
   }
 
@@ -125,24 +137,20 @@ async function modulesForQuery(query, includeDev, moduleFilter) {
     query.map(async name => {
       const m = await store.getModule(name);
       return m && _walk(m);
-    })
+    }),
   ).then(() => graphState);
 }
 
 // Compose directed graph document (GraphViz notation)
-function composeDOT(graph) {
+function composeDOT(graph: Map<string, GraphModuleInfo>) {
   // Sort modules by [level, key]
   const entries = [...graph.entries()];
   entries.sort(([aKey, a], [bKey, b]) => {
     if (a.level != b.level) {
-      a = a.level;
-      b = b.level;
+      return a.level - b.level;
     } else {
-      a = aKey;
-      b = bKey;
+      return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
     }
-
-    return a < b ? -1 : a > b ? 1 : 0;
   });
 
   const nodes = ['\n// Nodes & per-node styling'];
@@ -150,14 +158,15 @@ function composeDOT(graph) {
 
   for (const [, { module, level, dependencies }] of entries) {
     nodes.push(`"${module}"${level == 0 ? ' [root=true]' : ''}`);
+    if (!dependencies) continue;
     for (const { module: dependency, type } of dependencies) {
       edges.push(`"${module}" -> "${dependency}" ${EDGE_ATTRIBUTES[type]}`);
     }
   }
 
   const title = entries
-    .filter(([, level]) => level == 0)
-    .map(m => m.name)
+    .filter(([, m]) => m.level == 0)
+    .map(([, m]) => m.module.name)
     .join();
   return [
     'digraph {',
@@ -178,13 +187,14 @@ function composeDOT(graph) {
             .filter(info => info.level == 0)
             .map(info => `"${info.module}"`)
             .join('; ')};}`
-        : ''
+        : '',
     )
     .concat('}')
     .join('\n');
 }
 
-function download(type) {
+type DownloadExtension = 'svg' | 'png';
+function download(type: DownloadExtension) {
   switch (type) {
     case 'svg':
       downloadSvg();
@@ -198,16 +208,22 @@ function download(type) {
 function downloadPng() {
   const svg = $<SVGSVGElement>('#graph svg')[0];
   const data = svg.outerHTML;
-  const vb = svg.getAttribute('viewBox').split(' ');
+  const vb = svg.getAttribute('viewBox')?.split(' ');
+
+  if (!vb) {
+    report.error(Error('No viewBox'));
+    return;
+  }
 
   const canvas = $.create<HTMLCanvasElement>('canvas');
   canvas.width = parseInt(vb[2]);
   canvas.height = parseInt(vb[3]);
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
   const DOMURL = window.URL || window.webkitURL;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
   const url = DOMURL.createObjectURL(svgBlob);
+
   img.onload = function () {
     ctx.drawImage(img, 0, 0);
     DOMURL.revokeObjectURL(url);
@@ -219,7 +235,7 @@ function downloadPng() {
 
 function downloadSvg() {
   alert(
-    'Note: SVG downloads use the "Roboto Condensed" font, available at https://fonts.google.com/specimen/Roboto+Condensed.'
+    'Note: SVG downloads use the "Roboto Condensed" font, available at https://fonts.google.com/specimen/Roboto+Condensed.',
   );
 
   const svgData = $<SVGSVGElement>('#graph svg')[0].outerHTML;
@@ -228,7 +244,7 @@ function downloadSvg() {
   generateLinkToDownload('svg', svgUrl);
 }
 
-function generateLinkToDownload(extension, link) {
+function generateLinkToDownload(extension: DownloadExtension, link: string) {
   const name = $('title').innerText.replace(/.*- /, '').replace(/\W+/g, '_');
   const downloadLink = $.create<HTMLAnchorElement>('a');
   downloadLink.href = link;
@@ -238,9 +254,19 @@ function generateLinkToDownload(extension, link) {
   document.body.removeChild(downloadLink);
 }
 
-export function selectTag(tag, selectEdges = false, scroll = false) {
+export function selectTag(
+  tag: string | HTMLElement | SVGElement | undefined,
+  selectEdges = false,
+  scroll = false,
+) {
   // If tag (element) is already selected, do nothing
-  if (tag && tag.classList && tag.classList.contains('selected')) return;
+  if (
+    tag instanceof HTMLElement &&
+    tag.classList &&
+    tag.classList.contains('selected')
+  ) {
+    return;
+  }
 
   // Unselect nodes and edges
   $('svg .node').forEach(el => el.classList.remove('selected'));
@@ -248,7 +274,7 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
 
   if (!tag) return;
 
-  let els;
+  let els: (HTMLElement | SVGElement)[];
 
   if (typeof tag == 'string') {
     els = $(`svg .node.${tag}`);
@@ -266,20 +292,30 @@ export function selectTag(tag, selectEdges = false, scroll = false) {
   if (selectEdges) {
     $('.edge title').forEach(title => {
       for (const el of els) {
-        const module = store.cachedEntry(el.dataset.module);
-        if (title.textContent.indexOf(module?.key) >= 0) {
+        const module = store.getCachedModule(el.dataset.module ?? '');
+        if (!module) continue;
+
+        if ((title.textContent ?? '').indexOf(module.key) >= 0) {
           const edge = $.up<SVGPathElement>(title, '.edge');
-          edge?.classList.add('selected');
+          if (!edge) continue;
+
+          edge.classList.add('selected');
 
           // Move edge to end of child list so it's painted last
-          edge.parentElement.appendChild(edge);
+          edge.parentElement?.appendChild(edge);
         }
       }
     });
   }
 }
 
-function GraphControls({ zoom, setZoom }) {
+function GraphControls({
+  zoom,
+  setZoom,
+}: {
+  zoom: number;
+  setZoom: (zoom: number) => void;
+}) {
   return (
     <div id="graph-controls">
       <button
@@ -291,7 +327,7 @@ function GraphControls({ zoom, setZoom }) {
         swap_horiz
       </button>
       <button
-        className={zoom == 0 ? 'selected' : null}
+        className={zoom == 0 ? 'selected' : ''}
         onClick={() => setZoom(0)}
         title="zoom (1:1)"
         style={{
@@ -326,38 +362,50 @@ function GraphControls({ zoom, setZoom }) {
 
 function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   if (!colorize) {
-    $(svg, 'g.node path').attr('style', null);
+    $(svg, 'g.node path').attr('style', undefined);
   } else if (colorize == 'bus') {
     for (const el of $<SVGGElement>(svg, 'g.node')) {
-      const m = store.cachedEntry(el.dataset.module);
+      const m = store.getCachedModule(el.dataset.module ?? '');
       $<SVGPathElement>(el, 'path')[0].style.fill = hslFor(
-        (m?.package.maintainers.length - 1) / 3
+        ((m?.package.maintainers?.length ?? 1) - 1) / 3,
       );
     }
   } else {
-    let packageNames = $<SVGGElement>('#graph g.node').map(
-      el => store.cachedEntry(el.dataset.module).name
-    );
+    let packageNames = $<SVGGElement>('#graph g.node')
+      .map(el => store.getCachedModule(el.dataset.module ?? '')?.name)
+      .filter(Boolean);
 
-    // npms.io limits to 250 packages
-    const reqs = [];
+    // npms.io limits to 250 packages, so query in batches
+    const reqs: Promise<Record<string, NPMSIOData> | null>[] = [];
     const MAX_PACKAGES = 250;
     while (packageNames.length) {
       reqs.push(
-        fetchJSON('https://api.npms.io/v2/package/mget', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(packageNames.slice(0, MAX_PACKAGES)),
-        }).catch(err => {
+        fetchJSON<Record<string, NPMSIOData>>(
+          'https://api.npms.io/v2/package/mget',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(packageNames.slice(0, MAX_PACKAGES)),
+          },
+        ).catch(err => {
           console.error(err);
           return null;
-        })
+        }),
       );
       packageNames = packageNames.slice(MAX_PACKAGES);
     }
 
     Promise.all(reqs)
-      .then(arrs => arrs.filter(a => a).reduce((a, b) => ({ ...a, ...b }), {}))
+      .then(infos => {
+        // Merge results back into a single object
+        const infoAccum: { [key: string]: NPMSIOData } = {};
+        for (const info of infos) {
+          if (!info) continue;
+          Object.assign(infoAccum, info);
+        }
+
+        return infoAccum;
+      })
       .then(res => {
         // TODO: 'Need hang module names on svg nodes with data-module attributes
         for (const el of $(svg, 'g.node')) {
@@ -365,24 +413,25 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
           if (!key) return;
 
           const moduleName = key.replace(/@[\d.]+$/, '');
-          let score = res[moduleName]?.score;
+          const score = res[moduleName]?.score;
+          let fill: number | undefined;
           switch (score && colorize) {
             case 'overall':
-              score = score.final;
+              fill = score.final;
               break;
             case 'quality':
-              score = score.detail.quality;
+              fill = score.detail.quality;
               break;
             case 'popularity':
-              score = score.detail.popularity;
+              fill = score.detail.popularity;
               break;
             case 'maintenance':
-              score = score.detail.maintenance;
+              fill = score.detail.maintenance;
               break;
           }
 
-          $<SVGPathElement>(el, 'path')[0].style.fill = score
-            ? hslFor(score)
+          $<SVGPathElement>(el, 'path')[0].style.fill = fill
+            ? hslFor(fill)
             : '';
         }
       });
@@ -410,36 +459,41 @@ export default function Graph() {
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
   const [colorize] = useColorize();
-
   const [zoom, setZoom] = useState(0);
 
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
 
-  async function handleGraphClick(event) {
-    if ($('#graph-controls').contains(event.target)) return;
+  async function handleGraphClick(event: React.MouseEvent) {
+    const target = event.target as HTMLDivElement;
 
-    const el = $.up(event.target, '.node');
+    if ($('#graph-controls').contains(target)) return;
 
-    const key = $(el, 'title')?.textContent?.trim();
-    const module = key && store.cachedEntry(key);
+    const el = $.up<SVGElement>(target, '.node');
 
-    if (event.shiftKey) {
-      if (module) {
-        const isIncluded = excludes.includes(module.name);
-        if (isIncluded) {
-          setExcludes(excludes.filter(n => n !== module.name));
-        } else {
-          setExcludes([...excludes, module.name]);
+    let module: Module | undefined;
+    if (el) {
+      const key = $(el, 'title')?.textContent?.trim();
+      module = store.getCachedModule(key);
+      if (event.shiftKey) {
+        if (module) {
+          const isIncluded = excludes.includes(module.name);
+          if (isIncluded) {
+            // Why is `module?.` needed here, but not above or below???
+            setExcludes(excludes.filter(n => n !== module?.name));
+          } else {
+            setExcludes([...excludes, module.name]);
+          }
         }
-      }
 
-      return;
+        return;
+      }
     }
 
     selectTag(el, true);
 
     if (el) setInspectorOpen(true);
+
     setModule(module);
     setPane(module ? 'module' : 'graph');
   }
@@ -457,7 +511,7 @@ export default function Graph() {
     const [, , w, h] = vb;
     graphEl.classList.toggle(
       'centered',
-      zoom === 0 && w < graphEl.clientWidth && h < graphEl.clientHeight
+      zoom === 0 && w < graphEl.clientWidth && h < graphEl.clientHeight,
     );
 
     switch (zoom) {
@@ -477,11 +531,11 @@ export default function Graph() {
         break;
     }
 
-    select('#graph svg .node').node()?.scrollIntoView();
+    (select('#graph svg .node').node() as HTMLElement)?.scrollIntoView();
   }
 
   // Filter for which modules should be shown / collapsed in the graph
-  function moduleFilter({ name }) {
+  function moduleFilter({ name }: { name: string }) {
     return !excludes?.includes(name);
   }
 
@@ -492,7 +546,7 @@ export default function Graph() {
   useEffect(() => {
     const { signal, abort } = createAbortable();
     setGraph(null);
-    setModule([]);
+    setModule(undefined);
 
     modulesForQuery(query, includeDev, moduleFilter).then(newGraph => {
       if (signal.aborted) return; // Check after async
@@ -512,14 +566,12 @@ export default function Graph() {
 
     // Render SVG markup (async)
     (async function () {
-      // Compose SVG markup
-      const wasmBinary = await wasmBinaryPromise; // Avoid race if wasmBinary fetch hasn't completed
+      const graphviz = await graphvizP;
       if (signal.aborted) return; // Check after all async stuff
 
+      // Compose SVG markup
       const svgMarkup = graph?.modules.size
-        ? await graphviz.layout(composeDOT(graph.modules), 'svg', 'dot', {
-            wasmBinary,
-          })
+        ? await graphviz.dot(composeDOT(graph.modules), 'svg')
         : '<svg />';
       if (signal.aborted) return; // Check after all async stuff
 
@@ -554,7 +606,7 @@ export default function Graph() {
         const key = $(el, 'text')[0].textContent;
         if (!key) continue;
 
-        const m = store.cachedEntry(key);
+        const m = store.getCachedModule(key);
 
         const refTypes = graph?.referenceTypes.get(key);
 
@@ -563,11 +615,13 @@ export default function Graph() {
           el.classList.add('peer');
         }
 
-        if (m?.package?.deprecated) {
+        if (!m) continue;
+
+        if (m?.package.deprecated) {
           el.classList.add('warning');
         }
 
-        if (m?.name) {
+        if (m.name) {
           tagElement(el, 'module', m.name);
           el.dataset.module = m.key;
         } else {
@@ -579,10 +633,15 @@ export default function Graph() {
         }
 
         const pkg = m.package;
-        if (pkg.stub) {
+        if (pkg._stub) {
           el.classList.add('stub');
         } else {
-          tagElement(el, 'maintainer', ...pkg.maintainers.map(m => m.name));
+          tagElement(
+            el,
+            'maintainer',
+            ...(pkg.maintainers?.map(m => m.name) ?? []),
+          );
+
           tagElement(el, 'license', m.licenseString);
         }
       }

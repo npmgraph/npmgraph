@@ -1,26 +1,11 @@
-import { client } from './bugsnag';
-
 export class HttpError extends Error {
   code: number;
 
-  constructor(code, message = `HTTP Error ${code}`) {
+  constructor(code: number, message = `HTTP Error ${code}`) {
     super(message);
     this.code = code;
   }
 }
-
-function _report(severity, err) {
-  // HTTP errors are expected (e.g. if 3rd party service is down)
-  if (err instanceof HttpError) return;
-
-  client?.notify(err, { severity });
-}
-
-export const report = {
-  error: _report.bind(null, 'error'),
-  warn: _report.bind(null, 'warn'),
-  info: _report.bind(null, 'info'),
-};
 
 const UNITS: [number, string][] = [
   [6, 'E'],
@@ -38,7 +23,7 @@ const UNITS: [number, string][] = [
   [-6, 'a'],
 ];
 
-export function human(v, suffix = '', sig = 0) {
+export function human(v: number, suffix = '', sig = 0) {
   const base = suffix == 'B' ? 1024 : 1000;
   const { pow, log10, floor, round } = Math;
   let exp = floor(log10(v) / log10(base));
@@ -99,7 +84,7 @@ class ElementSet<T extends Element> extends Array<T> {
   attr(k: string, v?: string) {
     if (arguments.length == 1) {
       return this[0]?.getAttribute(k);
-    } else if (v === null) {
+    } else if (v == null) {
       this.forEach(el => el.removeAttribute(k));
     } else {
       this.forEach(el => el.setAttribute(k, v));
@@ -107,7 +92,7 @@ class ElementSet<T extends Element> extends Array<T> {
   }
 
   get textContent(): string {
-    return this[0]?.textContent;
+    return this[0]?.textContent ?? '';
   }
 
   set textContent(str) {
@@ -139,47 +124,48 @@ class ElementSet<T extends Element> extends Array<T> {
 }
 
 // Create a new DOM element
-$.create = function <T extends HTMLElement>(name: string, atts?: object): T {
+$.create = function <T extends Element>(
+  name: string,
+  atts?: { [key: string]: unknown },
+): T {
   const el = document.createElement(name);
   if (atts) {
-    for (const k in atts) el[k] = atts[k];
+    for (const k in atts) el.setAttribute(k, String(atts[k]));
   }
-  return el as T;
+  return el as unknown as T;
 };
 
 // Find parent or self matching selector (or test function)
 $.up = function <T extends Element>(
   el: Element,
-  sel?: string | ((el: Element) => boolean)
-): T {
+  sel?: string | ((el: Element) => boolean),
+) {
+  let trace: Element | null = el;
   if (typeof sel === 'string') {
-    while (el && !el.matches(sel)) el = el.parentElement;
+    while (trace && !trace.matches(sel)) trace = trace.parentElement;
   } else if (typeof sel === 'function') {
-    while (el && !sel(el)) el = el.parentElement;
+    while (trace && !sel(trace)) trace = trace.parentElement;
   }
-  return el as T;
+  return trace ? (trace as T) : undefined;
 };
+
+type LoadActivityFn = (la: LoadActivity) => void;
 
 /**
  * Lite class for tracking async activity
  */
 export class LoadActivity {
-  title = '';
+  title: string | null = '';
 
   total = 0;
   active = 0;
-  onChange = null;
+  onChange: LoadActivityFn | null = null;
 
   get percent() {
     return `${(1 - this.active / this.total) * 100}%`;
   }
 
-  /**
-   * Start a loading task
-   * @param {String} title of task
-   * @returns {Function} function to call when task is complete
-   */
-  start(title) {
+  start(title: string): () => void {
     if (title) this.title = title;
     this.total++;
     this.active++;
@@ -214,18 +200,22 @@ export function fetchJSON<T>(...args: [string, RequestInit?]): Promise<T> {
   return p;
 }
 
-export function tagify(type = 'tag', tag) {
+export function tagify(type = 'tag', tag: string) {
   return type + '-' + tag.replace(/\W/g, '_').toLowerCase();
 }
 
-export function tagElement(el, type, ...tags) {
-  tags = tags.map(String); // Stringify all tags
-  tags = tags.filter(t => t).map(t => tagify(type, t));
-  el.classList.add(...tags);
+export function tagElement(
+  el: Element,
+  type: string,
+  ...tags: (string | undefined)[]
+) {
+  for (const tag of tags) {
+    if (tag) el.classList.add(tagify(type, tag));
+  }
 }
 
-export function createTag(type, text, count = 0) {
-  const el = $.create('div');
+export function createTag(type: string, text: string, count = 0) {
+  const el = $.create<HTMLDivElement>('div');
 
   el.classList.add('tag', type);
   el.dataset.tag = tagify(type, text);
@@ -234,8 +224,8 @@ export function createTag(type, text, count = 0) {
   return el;
 }
 
-export function simplur(strings, ...exps) {
-  const result = [];
+export function simplur(strings: TemplateStringsArray, ...exps: unknown[]) {
+  const result: string[] = [];
   let n = exps[0];
   let label = n;
   if (Array.isArray(n) && n.length == 2) [n, label] = n;
@@ -249,8 +239,12 @@ export function simplur(strings, ...exps) {
     if (!exps.length) break;
     n = label = exps.shift();
     if (Array.isArray(n) && n.length == 2) [n, label] = n;
-    result.push(label);
+    result.push(String(label));
   }
 
   return result.join('');
+}
+
+export function isPromise<T>(obj: Promise<T> | T): obj is Promise<T> {
+  return obj instanceof Promise;
 }

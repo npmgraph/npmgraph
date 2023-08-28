@@ -1,3 +1,5 @@
+import Module from './Module.js';
+
 export type Person = {
   name: string;
   email: string;
@@ -8,36 +10,50 @@ export type OldLicense = {
   url: string;
 };
 
-// TODO: Actual schema for npm module info is pretty complex.  This is just a
-// quick pass at the types we currently care about
+export type DependencyKey =
+  | 'dependencies'
+  | 'devDependencies'
+  | 'peerDependencies'
+  | 'optionalDependencies';
+
+// Empirically determined type for what registry.npmjs.org returns
+//
+// TODO: Switch to the official type(s) from https://github.com/npm/types
 export type ModuleInfo = {
-  version: string;
-  name: string;
+  // Internal properties used by npmgraph
+  _stub?: boolean;
+  _dropped?: boolean;
+  _stubError?: Error;
+
   author?: Person;
-  maintainers?: Person[];
-  repository?: {
-    type: 'git';
-    url: string;
-  };
-  bugs?: {
-    url: string;
-  };
+  bugs?: { url: string };
+  contributors?: Person[];
+  dependencies?: { [name: string]: string };
+  deprecated?: string;
   description?: string;
+  devDependencies?: { [name: string]: string };
+  'dist-tags': { [tag: string]: string };
   homepage?: string;
   keywords?: string[];
-  unpublished?: boolean;
   license?: string;
   licenses?: OldLicense[];
-  contributors?: Person[];
-
-  // Only for versionless-repository requests
-  versions?: ModuleInfo[];
+  maintainers?: Person[];
+  name: string;
+  optionalDependencies?: { [name: string]: string };
+  peerDependencies?: { [name: string]: string };
+  repository?: { type: 'git'; url: string };
+  unpublished?: boolean;
+  version: string;
+  versions?: ModuleInfo[]; // versionless modules
 };
 
 export type GraphModuleInfo = {
-  module: ModuleInfo;
+  module: Module;
   level: number;
-  dependencies?: object[];
+  dependencies?: {
+    module: Module;
+    type: DependencyKey;
+  }[];
 };
 
 export type GraphState = {
@@ -46,15 +62,4 @@ export type GraphState = {
 
   // Upstream dependency types for each module
   referenceTypes: Map<string, Set<string>>;
-};
-
-export type npmsioResponse = {
-  score: {
-    final: number;
-    detail: {
-      quality: number;
-      popularity: number;
-      maintenance: number;
-    };
-  };
 };

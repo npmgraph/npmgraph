@@ -1,51 +1,32 @@
-declare let bugsnag: (options: object) => {
-  start: (apiKey: string) => void;
-  notify: (error: Error) => void;
-};
-
+import Bugsnag from '@bugsnag/js';
 import { version as appVersion } from '../package.json';
+import { HttpError } from './util.js';
 
-const config = {
+const bugsnag = Bugsnag.default.start({
   appVersion,
   apiKey: process.env.BUGSNAG_KEY,
-  // Note: `parcel build` always sets NODE_ENV='production'.  This isn't really correct
-  // the static files are served locally, however.
-  // To avoid generating bugsnag reports in dev environments, we set the stage based
-  // on hostname-sniffing.
   releaseStage: /npmgraph/.test(window.location.hostname)
     ? 'production'
     : 'development',
-};
+});
 
-const bugsnagLoaded = typeof bugsnag != 'undefined';
-
-if (bugsnagLoaded) {
-  console.log('BugSnag config:', config);
-} else {
-  console.error(
-    'Bugsnag failed to load.  Maybe disable your ad blocker for this site?'
-  );
+function info(err: Error) {
+  console.log(err);
 }
 
-const pageStart = Date.now();
-
-let client = {
-  notify(err, { severity }) {
-    console[severity](err);
-  },
-};
-
-if (bugsnagLoaded && config.apiKey) {
-  client = bugsnag({
-    ...config,
-    notifyReleaseStages: ['production'],
-    beforeSend: function (report) {
-      report.updateMetaData('page', {
-        location: String(location),
-        pageTime: Date.now() - pageStart,
-      });
-    },
-  });
+function warn(err: Error) {
+  console.warn(err);
 }
 
-export { client };
+function error(err: Error) {
+  console.error(err);
+
+  if (err instanceof HttpError) {
+    // Don't report HttpErrors since they're kind of expected from time to time
+    return;
+  }
+
+  bugsnag?.notify(err);
+}
+
+export const report = { info, warn, error };

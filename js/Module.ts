@@ -1,25 +1,26 @@
-import { ModuleInfo, OldLicense } from './types';
+import { ModuleInfo, OldLicense } from './types.js';
 
-function parseGithubPath(s) {
-  s = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
-  return s?.replace?.(/\.git$/, '');
+function parseGithubPath(s: string) {
+  const match = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
+  if (!match) return undefined;
+  return match?.replace?.(/\.git$/, '');
 }
 
-export function moduleKey(name, version) {
+export function moduleKey(name: string, version?: string) {
   return version ? `${name}@${version}` : name;
 }
 
 export default class Module {
   package: ModuleInfo;
 
-  static stub({ name, version, error }) {
+  static stub(name: string, version: string | undefined, error: Error) {
     return {
-      stub: true,
+      _stub: true,
+      _stubError: error,
       name,
       version,
-      error,
       maintainers: [],
-    };
+    } as unknown as ModuleInfo;
   }
 
   constructor(pkg: ModuleInfo) {
@@ -60,14 +61,11 @@ export default class Module {
   }
 
   get githubPath() {
-    const pkg = this.package;
-
-    for (const k of ['repository', 'homepage', 'bugs']) {
-      const path = parseGithubPath(pkg[k]?.url);
-      if (path) return path;
-    }
-
-    return null;
+    const url =
+      this.package.repository?.url ||
+      this.package.homepage ||
+      this.package.bugs?.url;
+    return url ? parseGithubPath(url) : undefined;
   }
 
   get licenseString() {
