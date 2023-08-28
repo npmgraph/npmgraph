@@ -430,7 +430,9 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
               break;
           }
 
-          $<SVGPathElement>(el, 'path')[0].style.fill = fill ? hslFor(fill) : '';
+          $<SVGPathElement>(el, 'path')[0].style.fill = fill
+            ? hslFor(fill)
+            : '';
         }
       });
   }
