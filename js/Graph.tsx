@@ -398,10 +398,10 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     Promise.all(reqs)
       .then(infos => {
         // Merge results back into a single object
-        const infoAccum: Record<string, NPMSIOData> = {};
+        const infoAccum: { [key: string]: NPMSIOData } = {};
         for (const info of infos) {
           if (!info) continue;
-          Object.assign(info, infoAccum);
+          Object.assign(infoAccum, info);
         }
 
         return infoAccum;
@@ -413,24 +413,24 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
           if (!key) return;
 
           const moduleName = key.replace(/@[\d.]+$/, '');
-          const score = res[moduleName].score;
-          let val: number | undefined;
+          const score = res[moduleName]?.score;
+          let fill: number | undefined;
           switch (score && colorize) {
             case 'overall':
-              val = score.final;
+              fill = score.final;
               break;
             case 'quality':
-              val = score.detail.quality;
+              fill = score.detail.quality;
               break;
             case 'popularity':
-              val = score.detail.popularity;
+              fill = score.detail.popularity;
               break;
             case 'maintenance':
-              val = score.detail.maintenance;
+              fill = score.detail.maintenance;
               break;
           }
 
-          $<SVGPathElement>(el, 'path')[0].style.fill = val ? hslFor(val) : '';
+          $<SVGPathElement>(el, 'path')[0].style.fill = fill ? hslFor(fill) : '';
         }
       });
   }
@@ -457,7 +457,6 @@ export default function Graph() {
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
   const [colorize] = useColorize();
-
   const [zoom, setZoom] = useState(0);
 
   // Signal for when Graph DOM changes
