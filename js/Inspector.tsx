@@ -1,4 +1,4 @@
-import React, { AnchorHTMLAttributes, HTMLAttributes, HTMLProps } from 'react';
+import React, { HTMLProps } from 'react';
 import { version as VERSION } from '../package.json';
 import { useGraph, useModule, usePane, useQuery } from './App.js';
 import GraphPane from './GraphPane.js';

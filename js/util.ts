@@ -126,11 +126,11 @@ class ElementSet<T extends Element> extends Array<T> {
 // Create a new DOM element
 $.create = function <T extends Element>(
   name: string,
-  atts?: { [key: string]: any },
+  atts?: { [key: string]: unknown },
 ): T {
   const el = document.createElement(name);
   if (atts) {
-    for (const k in atts) el.setAttribute(k, atts[k]);
+    for (const k in atts) el.setAttribute(k, String(atts[k]));
   }
   return el as unknown as T;
 };

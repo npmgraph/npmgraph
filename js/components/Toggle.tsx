@@ -4,20 +4,18 @@ import React, { HTMLProps } from 'react';
 
 export function Toggle({
   checked = false,
-  value = true,
   onChange,
   style,
   children,
   ...props
 }: HTMLProps<HTMLLabelElement> & {
   checked?: boolean;
-  value?: any;
-  onChange: (value: any) => void;
+  onChange: () => void;
 }) {
   return (
     <label style={style} {...props}>
       <div
-        onClick={() => onChange(checked ? false : value)}
+        onClick={() => onChange()}
         style={{
           display: 'inline-block',
           width: '4em',

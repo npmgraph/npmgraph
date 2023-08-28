@@ -61,7 +61,7 @@ export default class Module {
   }
 
   get githubPath() {
-    let url =
+    const url =
       this.package.repository?.url ||
       this.package.homepage ||
       this.package.bugs?.url;

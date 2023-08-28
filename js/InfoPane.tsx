@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, HTMLProps, useState } from 'react';
+import React, { HTMLProps, useState } from 'react';
 import { store, useQuery } from './App.js';
 import { Pane } from './components/Pane.js';
 import { QueryLink } from './components/QueryLink.js';

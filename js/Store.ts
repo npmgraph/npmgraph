@@ -1,8 +1,7 @@
 import semver from 'semver';
 import Module, { moduleKey } from './Module.js';
 import { ModuleInfo } from './types.js';
-import { fetchJSON, HttpError, isPromise, LoadActivity } from './util.js';
-import { report } from './bugsnag.js';
+import { fetchJSON, LoadActivity } from './util.js';
 
 type ModuleCacheEntry = {
   promise: Promise<Module>;
@@ -58,7 +57,7 @@ class Store {
     const cacheKey = moduleKey(name, version);
 
     if (!this.moduleCache[cacheKey]) {
-      let cacheEntry: ModuleCacheEntry = {
+      const cacheEntry: ModuleCacheEntry = {
         promise: this.fetchPackage(name, version)
           .then(pkg => {
             const module = new Module(pkg);
@@ -130,7 +129,6 @@ class Store {
     }
 
     let body: ModuleInfo | undefined;
-    let failure: Error | undefined;
     try {
       body = await req;
     } catch (err) {

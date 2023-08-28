@@ -13,17 +13,17 @@ import {
   usePane,
   useQuery,
 } from './App.js';
+import Module from './Module.js';
+import { report } from './bugsnag.js';
+import { NPMSIOData } from './fetch_types.js';
 import {
   DependencyKey,
   GraphModuleInfo,
   GraphState,
   ModuleInfo,
 } from './types.js';
-import { $, fetchJSON, isPromise, tagElement } from './util.js';
+import { $, fetchJSON, tagElement } from './util.js';
 import '/css/Graph.scss';
-import Module from './Module.js';
-import { report } from './bugsnag.js';
-import { NPMSIOData } from './fetch_types.js';
 
 const graphvizP = Graphviz.load();
 
@@ -413,7 +413,7 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
           if (!key) return;
 
           const moduleName = key.replace(/@[\d.]+$/, '');
-          let score = res[moduleName].score;
+          const score = res[moduleName].score;
           let val: number | undefined;
           switch (score && colorize) {
             case 'overall':
@@ -638,7 +638,7 @@ export default function Graph() {
           tagElement(
             el,
             'maintainer',
-            ...(pkg.maintainers ? pkg.maintainers?.map(m => m.name) : []),
+            ...(pkg.maintainers?.map(m => m.name) ?? []),
           );
 
           tagElement(el, 'license', m.licenseString);

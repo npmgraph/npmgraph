@@ -1,9 +1,4 @@
-import {
-  HierarchyRectangularNode,
-  hierarchy,
-  stratify,
-  treemap,
-} from 'd3-hierarchy';
+import { HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
 import React, { useEffect, useState } from 'react';
 import { $, human } from '../util.js';
 import { BundlePhobiaData } from '../fetch_types.js';
@@ -29,7 +24,7 @@ export function ModuleTreeMap({
       (sum, n) => sum + n.approximateSize,
       0,
     );
-    const MIN_SIZE = sum * 0.01;
+
     const nodes = [...data.dependencySizes];
 
     // Placeholder root node so the other nodes have a common parent
