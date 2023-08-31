@@ -60,6 +60,6 @@ export type GraphState = {
   // Map of module key -> module info
   modules: Map<string, GraphModuleInfo>;
 
-  // Upstream dependency types for each module
+  // Map of module key -> Set<dependency type that terminates in that module>
   referenceTypes: Map<string, Set<string>>;
 };

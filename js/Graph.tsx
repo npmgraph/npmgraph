@@ -119,10 +119,11 @@ async function modulesForQuery(
         const module = await store.getModule(name, version);
 
         // Record the types of dependency references to this module
-        if (!graphState.referenceTypes.has(module.key)) {
-          graphState.referenceTypes.set(module.key, new Set());
+        let refTypes = graphState.referenceTypes.get(module.key);
+        if (!refTypes) {
+          graphState.referenceTypes.set(module.key, (refTypes = new Set()));
         }
-        graphState.referenceTypes.get(module.key)?.add(type);
+        refTypes.add(type);
 
         if (type !== 'peerDependencies') {
           await _walk(module, level + 1);
