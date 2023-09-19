@@ -23,6 +23,7 @@ export type NPMSIOData = {
         repository: string;
         bugs: string;
       };
+
       license: string;
       dependencies: Record<string, string>;
       devDependencies: Record<string, string>;
