@@ -6,7 +6,7 @@ import { PieArcDatum, arc, pie } from 'd3-shape';
 import React, { HTMLProps, useEffect, useRef } from 'react';
 import { useColorize, useExcludes, useIncludeDev } from './App.js';
 import { Toggle } from './components/Toggle.js';
-import { hslFor } from './Graph.js';
+import { COLORIZE_MODULE_CJS, COLORIZE_MODULE_ESM, hslFor } from './Graph.js';
 import { Tag } from './components/Tag.js';
 import { Tags } from './components/Tags.js';
 import { Pane } from './components/Pane.js';
@@ -174,6 +174,7 @@ export default function GraphPane({
           onChange={e => setColorize(e.target.value)}
         >
           <option value="">Nothing (uncolored)</option>
+          <option value="moduleType">Module type (ESM v. CJS)</option>
 
           <option value="overall"> npms.io overall score</option>
           <option value="quality"> npms.io quality score</option>
@@ -190,6 +191,11 @@ export default function GraphPane({
           <span style={{ color: hslFor(1 / 3) }}>{'\u2B24'}</span> = 2,
           <span style={{ color: hslFor(2 / 3) }}>{'\u2B24'}</span> = 3,
           <span style={{ color: hslFor(3 / 3) }}>{'\u2B24'}</span> = 4+
+        </div>
+      ) : colorize == 'moduleType' ? (
+        <div>
+          <span style={{ color: COLORIZE_MODULE_CJS }}>{'\u2B24'}</span> = CJS,
+          <span style={{ color: COLORIZE_MODULE_ESM }}>{'\u2B24'}</span> = ESM,
         </div>
       ) : colorize ? (
         <div>

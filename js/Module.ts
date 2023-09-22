@@ -57,7 +57,7 @@ export default class Module {
   }
 
   get apiLink() {
-    return `https://registry.npmjs.org/${this.name}/${this.version}`;
+    return `https://cdn.jsdelivr.net/npm/${this.key}/package.json`;
   }
 
   get githubPath() {

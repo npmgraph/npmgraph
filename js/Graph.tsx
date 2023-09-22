@@ -22,7 +22,7 @@ import {
   GraphState,
   ModuleInfo,
 } from './types.js';
-import { $, fetchJSON, tagElement } from './util.js';
+import { $, fetchJSON, simplur, tagElement } from './util.js';
 import '/css/Graph.scss';
 
 const graphvizP = Graphviz.load();
@@ -37,6 +37,9 @@ const EDGE_ATTRIBUTES = {
   optionalDependencies: '[color=black style=dashed]', // unused
   optionalDevDependencies: '[color=red style=dashed]', // unused
 };
+
+export const COLORIZE_MODULE_ESM = '#ffff66';
+export const COLORIZE_MODULE_CJS = '#ffaa66';
 
 function isModule(m: Module | ModuleInfo): m is Module {
   return 'package' in m;
@@ -165,15 +168,24 @@ function composeDOT(graph: Map<string, GraphModuleInfo>) {
     }
   }
 
-  const title = entries
+  const titleParts = entries
     .filter(([, m]) => m.level == 0)
-    .map(([, m]) => m.module.name)
-    .join();
+    .map(([, m]) => m.module.name);
+
+  const MAX_PARTS = 3;
+  if (titleParts.length > MAX_PARTS) {
+    titleParts.splice(
+      MAX_PARTS,
+      Infinity,
+      simplur` and ${titleParts.length - MAX_PARTS} other module[|s]`,
+    );
+  }
+
   return [
     'digraph {',
     'rankdir="LR"',
     'labelloc="t"',
-    `label="${title}"`,
+    `label="${titleParts.join(', ')}"`,
     '// Default styles',
     `graph [fontsize=16 fontname="${FONT}"]`,
     `node [shape=box style=rounded fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
@@ -370,6 +382,25 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       $<SVGPathElement>(el, 'path')[0].style.fill = hslFor(
         ((m?.package.maintainers?.length ?? 1) - 1) / 3,
       );
+    }
+  } else if (colorize == 'moduleType') {
+    for (const el of $<SVGGElement>('#graph g.node')) {
+      const moduleName = el.dataset.module;
+      if (!moduleName) continue;
+
+      const module = store.getCachedModule(el.dataset.module ?? '');
+      const elPath = $<SVGPathElement>(el, 'path')[0];
+      if (module) {
+        const url = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
+        fetchJSON<{ type: string }>(url)
+          .then(pkg => {
+            elPath.style.fill =
+              pkg.type === 'module' ? COLORIZE_MODULE_ESM : COLORIZE_MODULE_CJS;
+          })
+          .catch(() => (elPath.style.fill = ''));
+      } else {
+        elPath.style.fill = '';
+      }
     }
   } else {
     let packageNames = $<SVGGElement>('#graph g.node')
