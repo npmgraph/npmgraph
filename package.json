@@ -75,6 +75,7 @@
     "release": "standard-version",
     "start": "parcel serve index.html",
     "lint": "eslint .",
-    "lint:fix": "prettier -w ."
+    "lint:fix": "prettier -w .",
+    "test": "npm run lint"
   }
 }
