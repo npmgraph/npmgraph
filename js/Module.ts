@@ -88,22 +88,25 @@ export default class Module {
     let license = this.package.license;
 
     // Legacy: 'licenses' field
+    //
+    // E.g. htmlparser@1.7.7 needs this
     if (!license && 'licenses' in this.package) {
-      console.warn(`Module ${this.key} uses legacy 'licenses' field`);
       license = this.package.licenses as string;
     }
 
-    // Legacy: array of licenses?
+    // Legacy: Array of licenses?
+    //
+    // E.g. htmlparser@1.7.7 needs this
     if (Array.isArray(license)) {
-      console.warn(`Module ${this.key} license array should be string`);
       // Convert to SPDX form
       // TODO: Is "OR" the correct operator for this?
       return license.map(l => l.type || l).join(' OR ');
     }
 
     // Legacy: license object?
+    //
+    // E.g. lru-cache@1.0.6 needs this
     if (typeof license == 'object') {
-      console.warn(`Module ${this.key} license object should be string`);
       license = (license as OldLicense).type;
     }
 
