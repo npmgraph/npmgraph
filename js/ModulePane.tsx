@@ -37,7 +37,9 @@ export default function ModulePane({
       .then(data => setBundleInfo(data))
       .catch(err => setBundleInfo(err));
 
-    fetchJSON<NPMSIOData>(`https://api.npms.io/v2/package/${pkg.name}`)
+    fetchJSON<NPMSIOData>(
+      `https://api.npms.io/v2/package/${encodeURIComponent(pkg.name)}`,
+    )
       .then(data => setNpmsData(data))
       .catch(err => setNpmsData(err));
   }, [pkg]);
