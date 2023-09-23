@@ -1,9 +1,6 @@
 import Module from './Module.js';
 
-export type Person = {
-  name: string;
-  email: string;
-};
+import * as npm from '@npm/types';
 
 export type OldLicense = {
   type: string;
@@ -16,36 +13,11 @@ export type DependencyKey =
   | 'peerDependencies'
   | 'optionalDependencies';
 
-// Empirically determined type for what registry.npmjs.org returns
-//
-// TODO: Switch to the official type(s) from https://github.com/npm/types
-export type ModuleInfo = {
-  // Internal properties used by npmgraph
+export interface ModulePackage extends npm.PackumentVersion {
   _stub?: boolean;
   _dropped?: boolean;
   _stubError?: Error;
-
-  author?: Person;
-  bugs?: { url: string };
-  contributors?: Person[];
-  dependencies?: { [name: string]: string };
-  deprecated?: string;
-  description?: string;
-  devDependencies?: { [name: string]: string };
-  'dist-tags': { [tag: string]: string };
-  homepage?: string;
-  keywords?: string[];
-  license?: string;
-  licenses?: OldLicense[];
-  maintainers?: Person[];
-  name: string;
-  optionalDependencies?: { [name: string]: string };
-  peerDependencies?: { [name: string]: string };
-  repository?: { type: 'git'; url: string };
-  unpublished?: boolean;
-  version: string;
-  versions?: ModuleInfo[]; // versionless modules
-};
+}
 
 export type GraphModuleInfo = {
   module: Module;

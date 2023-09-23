@@ -20,7 +20,7 @@ import {
   DependencyKey,
   GraphModuleInfo,
   GraphState,
-  ModuleInfo,
+  ModulePackage,
 } from './types.js';
 import { $, fetchJSON, simplur, tagElement } from './util.js';
 import '/css/Graph.scss';
@@ -41,14 +41,14 @@ const EDGE_ATTRIBUTES = {
 export const COLORIZE_MODULE_ESM = '#ffff66';
 export const COLORIZE_MODULE_CJS = '#ffaa66';
 
-function isModule(m: Module | ModuleInfo): m is Module {
+function isModule(m: Module | ModulePackage): m is Module {
   return 'package' in m;
 }
 
 type DependencyEntry = { name: string; version: string; type: DependencyKey };
 
 function getDependencyEntries(
-  pkg: Module | ModuleInfo,
+  pkg: Module | ModulePackage,
   includeDev: boolean,
   level = 0,
 ) {
@@ -90,7 +90,7 @@ export function hslFor(perc: number) {
 async function modulesForQuery(
   query: string[],
   includeDev: boolean,
-  moduleFilter: (m: Module | ModuleInfo) => boolean,
+  moduleFilter: (m: Module | ModulePackage) => boolean,
 ) {
   const graphState: GraphState = {
     modules: new Map(),
@@ -668,11 +668,7 @@ export default function Graph() {
         if (pkg._stub) {
           el.classList.add('stub');
         } else {
-          tagElement(
-            el,
-            'maintainer',
-            ...(pkg.maintainers?.map(m => m.name) ?? []),
-          );
+          tagElement(el, 'maintainer', ...m.maintainers.map(m => m.name));
 
           tagElement(el, 'license', m.licenseString);
         }

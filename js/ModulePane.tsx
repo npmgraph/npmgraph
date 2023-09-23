@@ -66,7 +66,7 @@ export default function ModulePane({
 
   const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
 
-  const maintainers = pkg.maintainers ?? [];
+  const maintainers = module.maintainers;
 
   return (
     <Pane {...props}>
@@ -140,7 +140,7 @@ export default function ModulePane({
         title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
       >
         <Tags>
-          {maintainers.map(({ name, email }) => (
+          {maintainers.map(({ name = 'Unknown', email }) => (
             <Tag
               key={name + email}
               name={name}

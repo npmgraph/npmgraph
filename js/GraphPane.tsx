@@ -11,9 +11,10 @@ import { Tag } from './components/Tag.js';
 import { Tags } from './components/Tags.js';
 import { Pane } from './components/Pane.js';
 import { Section } from './components/Section.js';
-import { GraphState, Person } from './types.js';
+import { GraphState } from './types.js';
 import { simplur } from './util.js';
 import '/css/GraphPane.scss';
+import { Maintainer } from '@npm/types';
 
 function compareEntryValue<T = string | number>(
   [, a]: [string, T],
@@ -128,20 +129,20 @@ export default function GraphPane({
   if (!graph?.modules) return <div>Loading</div>;
 
   const occurances: { [key: string]: number } = {};
-  const maintainers: { [key: string]: Person & { count?: number } } = {};
+  const maintainers: {
+    [key: string]: Exclude<Maintainer, string> & { count?: number };
+  } = {};
   const licenseCounts: { [key: string]: number } = {};
-  for (const [
-    ,
-    {
-      module: { package: pkg, licenseString: license },
-    },
-  ] of graph.modules) {
+
+  for (const { module } of graph.modules.values()) {
+    const { package: pkg, licenseString: license } = module;
     // Tally module occurances
     occurances[pkg.name] = (occurances[pkg.name] || 0) + 1;
 
     // Tally maintainers
-    for (const { name, email } of pkg.maintainers ?? []) {
-      const maints = maintainers[name];
+    for (const { name, email } of module.maintainers) {
+      if (!name) continue;
+      const maints = name && maintainers[name];
 
       if (!maints) {
         maintainers[name] = { name, email, count: 1 };
@@ -237,7 +238,7 @@ export default function GraphPane({
         <Tags>
           {Object.entries(maintainers)
             .sort(compareEntryKey)
-            .map(([, { name, email, count }]) => (
+            .map(([, { name = 'Unknown', email, count }]) => (
               <Tag
                 key={name + count}
                 name={name}
