@@ -1,4 +1,4 @@
-import { ModuleInfo, OldLicense } from './types.js';
+import { ModulePackage, OldLicense } from './types.js';
 
 function parseGithubPath(s: string) {
   const match = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
@@ -11,7 +11,7 @@ export function moduleKey(name: string, version?: string) {
 }
 
 export default class Module {
-  package: ModuleInfo;
+  package: ModulePackage;
 
   static stub(name: string, version: string | undefined, error: Error) {
     return {
@@ -20,15 +20,16 @@ export default class Module {
       name,
       version,
       maintainers: [],
-    } as unknown as ModuleInfo;
+    } as unknown as ModulePackage;
   }
 
-  constructor(pkg: ModuleInfo) {
+  constructor(pkg: ModulePackage) {
     if (!pkg.maintainers) {
       pkg.maintainers = [];
     } else if (!Array.isArray(pkg.maintainers)) {
       pkg.maintainers = [pkg.maintainers];
     }
+
     this.package = pkg;
   }
 
@@ -40,11 +41,19 @@ export default class Module {
     return this.package.name;
   }
 
+  get maintainers() {
+    return this.package.maintainers.map(m =>
+      typeof m === 'string' ? { name: m } : m,
+    );
+  }
+
   get version() {
     const version = this.package.version;
     // I've forgotten under what circumstances package.version.version might
     // actually be a thing... :-/
-    return version && ((version as unknown as ModuleInfo).version || version);
+    return (
+      version && ((version as unknown as ModulePackage).version || version)
+    );
   }
 
   get npmLink() {
@@ -60,20 +69,34 @@ export default class Module {
     return `https://cdn.jsdelivr.net/npm/${this.key}/package.json`;
   }
 
+  get repository() {
+    // TODO: Handle non-github repositories
+    const { repository } = this.package;
+    if (typeof repository == 'string') return repository;
+    return repository?.url;
+  }
+
   get githubPath() {
-    const url =
-      this.package.repository?.url ||
-      this.package.homepage ||
-      this.package.bugs?.url;
+    const { homepage, bugs } = this.package;
+
+    const url = this.repository ?? homepage ?? bugs?.url;
+
     return url ? parseGithubPath(url) : undefined;
   }
 
   get licenseString() {
-    // Legacy: 'licenses' field
-    let license: string = (this.package.license ||
-      this.package.licenses) as string;
+    let license = this.package.license;
 
-    // Legacy: array of licenses?
+    // Legacy: 'licenses' field
+    //
+    // E.g. htmlparser@1.7.7 needs this
+    if (!license && 'licenses' in this.package) {
+      license = this.package.licenses as string;
+    }
+
+    // Legacy: Array of licenses?
+    //
+    // E.g. htmlparser@1.7.7 needs this
     if (Array.isArray(license)) {
       // Convert to SPDX form
       // TODO: Is "OR" the correct operator for this?
@@ -81,7 +104,11 @@ export default class Module {
     }
 
     // Legacy: license object?
-    if (typeof license == 'object') license = (license as OldLicense).type;
+    //
+    // E.g. lru-cache@1.0.6 needs this
+    if (typeof license == 'object') {
+      license = (license as OldLicense).type;
+    }
 
     if (!license) return undefined;
 

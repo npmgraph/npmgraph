@@ -1,7 +1,8 @@
 import semver from 'semver';
 import Module, { moduleKey } from './Module.js';
-import { ModuleInfo } from './types.js';
+import { ModulePackage } from './types.js';
 import { fetchJSON, LoadActivity } from './util.js';
+import { Packument, PackumentVersion } from '@npm/types';
 
 type ModuleCacheEntry = {
   promise: Promise<Module>;
@@ -9,11 +10,16 @@ type ModuleCacheEntry = {
   error?: Error; // Set if module fails to load
 };
 
+function isPackument(obj: unknown): obj is Packument {
+  // return true if obj is an object with a "versions" property
+  return typeof obj && typeof (obj as Packument).versions === 'object';
+}
+
 class Store {
   activity: LoadActivity;
 
   moduleCache: Record<string, ModuleCacheEntry> = {};
-  requestCache: { [key: string]: Promise<ModuleInfo> } = {};
+  requestCache: { [key: string]: Promise<Packument | PackumentVersion> } = {};
 
   constructor(activity: LoadActivity) {
     this.activity = activity;
@@ -81,7 +87,7 @@ class Store {
   }
 
   // Inject a module directly into the request cache (used for module file uploads)
-  cachePackage(pkg: ModuleInfo) {
+  cachePackage(pkg: ModulePackage) {
     let { name } = pkg;
     const { version } = pkg;
     name = name.replace(/\//g, '%2F');
@@ -100,7 +106,8 @@ class Store {
     const path = `${name.replace(/\//g, '%2F')}`;
     const pathAndVersion = `${path}/${version}`;
 
-    // Use cached request if available.  (We can get module info from versioned or unversioned API requests)
+    // Use cached request if available.  (We can get module info from versioned
+    // or unversioned API requests)
     let req = this.requestCache[pathAndVersion] || this.requestCache[path];
 
     if (!req) {
@@ -115,9 +122,9 @@ class Store {
       const finish = this.activity.start(
         `Fetching ${decodeURIComponent(reqPath)}`,
       );
-      req = this.requestCache[reqPath] = fetchJSON<ModuleInfo>(
-        `https://registry.npmjs.org/${reqPath}`,
-      ).finally(finish);
+      req = this.requestCache[reqPath] = fetchJSON<
+        Packument | PackumentVersion
+      >(`https://registry.npmjs.org/${reqPath}`).finally(finish);
     }
 
     function fail(err: unknown) {
@@ -128,7 +135,7 @@ class Store {
       );
     }
 
-    let body: ModuleInfo | undefined;
+    let body: Packument | PackumentVersion;
     try {
       body = await req;
     } catch (err) {
@@ -143,11 +150,12 @@ class Store {
       return fail('Unexpected module data structure');
     }
 
-    if (body.unpublished) {
+    // TODO: Remember why I have this check here and document the reason!  Elsewise, :-p
+    if ((body as unknown as { unpublished: boolean }).unpublished) {
       return fail('This module is unpublished');
     }
 
-    if (body.versions) {
+    if (isPackument(body)) {
       // Available versions (most recent first)
       const versions = Object.values(body.versions).reverse();
 
@@ -161,7 +169,7 @@ class Store {
         semver.satisfies(v.version, versionQuery),
       );
       if (resolvedVersion) {
-        body = resolvedVersion as ModuleInfo;
+        body = resolvedVersion as ModulePackage;
       } else {
         return fail(`No version matching "${version}" found`);
       }
