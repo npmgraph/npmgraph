@@ -64,9 +64,10 @@
     <script type="module" src="/js/index.tsx"></script>
     <script>
       window.addEventListener('DOMContentLoaded', function () {
-        // Detect load failure.  `indexLoaded` gets set by index.js if it loads properly
-        // If it's not set here, then a script failed to load (probably due to a parse
-        // error from some unsupported language feature).
+        // Detect load failure.  `indexLoaded` gets set by index.js if it loads
+        // properly. If it's not set here, then a script failed to load
+        // (probably due to a parse error from some unsupported language
+        // feature).
         if (window.indexLoaded) return;
 
         const body = document.body;

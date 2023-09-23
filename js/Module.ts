@@ -14,13 +14,12 @@ export default class Module {
   package: ModulePackage;
 
   static stub(name: string, version: string | undefined, error: Error) {
-    return {
+    return new Module({
       _stub: true,
       _stubError: error,
       name,
       version,
-      maintainers: [],
-    } as unknown as ModulePackage;
+    } as unknown as ModulePackage);
   }
 
   constructor(pkg: ModulePackage) {

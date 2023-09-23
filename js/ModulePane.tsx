@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Tag } from './components/Tag.js';
-import { Tags } from './components/Tags.js';
-import { Pane } from './components/Pane.js';
-import { Section } from './components/Section.js';
-import { QueryLink } from './components/QueryLink.js';
-import { ExternalLink } from './components/ExternalLink.js';
-import { fetchJSON, simplur } from './util.js';
-import '/css/ModulePane.scss';
-import { BundlePhobiaData, NPMSIOData } from './fetch_types.js';
 import Module from './Module.js';
+import { ExternalLink } from './components/ExternalLink.js';
 import { ModuleBundleStats } from './components/ModuleBundleStats.js';
 import { ModuleNpmsIOScores } from './components/ModuleNpmsIOScores.js';
 import { ModuleTreeMap } from './components/ModuleTreeMap.js';
+import { Pane } from './components/Pane.js';
+import { QueryLink } from './components/QueryLink.js';
+import { Section } from './components/Section.js';
+import { Tag } from './components/Tag.js';
+import { Tags } from './components/Tags.js';
+import { BundlePhobiaData, NPMSIOData } from './fetch_types.js';
+import fetchJSON from './util/fetchJSON.js';
+import simplur from './util/simplur.js';
+import '/css/ModulePane.scss';
 
 export default function ModulePane({
   module,

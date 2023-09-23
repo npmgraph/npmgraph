@@ -1,7 +1,8 @@
 import { HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
 import React, { useEffect, useState } from 'react';
-import { $, human } from '../util.js';
 import { BundlePhobiaData } from '../fetch_types.js';
+import $ from '../util/dom.js';
+import human from '../util/human.js';
 
 export function ModuleTreeMap({
   data,

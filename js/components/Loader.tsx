@@ -1,7 +1,7 @@
+import LoadActivity from '../util/LoadActivity.js';
 import '/css/Components.scss';
 
 import React, { HTMLProps } from 'react';
-import { LoadActivity } from '../util.js';
 
 export function Loader({
   activity,

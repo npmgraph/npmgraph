@@ -2,8 +2,6 @@ import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
 import {
-  activity,
-  store,
   useColorize,
   useExcludes,
   useGraph,
@@ -22,7 +20,11 @@ import {
   GraphState,
   ModulePackage,
 } from './types.js';
-import { $, fetchJSON, simplur, tagElement } from './util.js';
+import LoadActivity from './util/LoadActivity.js';
+import { getCachedModule, getModule } from './util/NPMRegistry.js';
+import $, { tagElement } from './util/dom.js';
+import fetchJSON from './util/fetchJSON.js';
+import simplur from './util/simplur.js';
 import '/css/Graph.scss';
 
 const graphvizP = Graphviz.load();
@@ -57,11 +59,11 @@ function getDependencyEntries(
     dependencyTypes.push('devDependencies');
   }
 
-  const moduleInfo = isModule(pkg) ? pkg.package : pkg;
+  const packageData = isModule(pkg) ? pkg.package : pkg;
 
   const depEntries: Array<DependencyEntry> = [];
   for (const type of dependencyTypes) {
-    const deps = moduleInfo[type];
+    const deps = packageData[type];
     if (!deps) continue;
 
     // Only do one level for non-"dependencies"
@@ -119,7 +121,7 @@ async function modulesForQuery(
 
     return Promise.all(
       deps.map(async ({ name, version, type }) => {
-        const module = await store.getModule(name, version);
+        const module = await getModule(name, version);
 
         // Record the types of dependency references to this module
         let refTypes = graphState.referenceTypes.get(module.key);
@@ -139,7 +141,7 @@ async function modulesForQuery(
   // Walk dependencies of each module in the query
   return Promise.all(
     query.map(async name => {
-      const m = await store.getModule(name);
+      const m = await getModule(name);
       return m && _walk(m);
     }),
   ).then(() => graphState);
@@ -305,7 +307,7 @@ export function selectTag(
   if (selectEdges) {
     $('.edge title').forEach(title => {
       for (const el of els) {
-        const module = store.getCachedModule(el.dataset.module ?? '');
+        const module = getCachedModule(el.dataset.module ?? '');
         if (!module) continue;
 
         if ((title.textContent ?? '').indexOf(module.key) >= 0) {
@@ -378,7 +380,7 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     $(svg, 'g.node path').attr('style', undefined);
   } else if (colorize == 'bus') {
     for (const el of $<SVGGElement>(svg, 'g.node')) {
-      const m = store.getCachedModule(el.dataset.module ?? '');
+      const m = getCachedModule(el.dataset.module ?? '');
       $<SVGPathElement>(el, 'path')[0].style.fill = hslFor(
         ((m?.package.maintainers?.length ?? 1) - 1) / 3,
       );
@@ -388,7 +390,7 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       const moduleName = el.dataset.module;
       if (!moduleName) continue;
 
-      const module = store.getCachedModule(el.dataset.module ?? '');
+      const module = getCachedModule(el.dataset.module ?? '');
       const elPath = $<SVGPathElement>(el, 'path')[0];
       if (module) {
         const url = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
@@ -404,7 +406,7 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     }
   } else {
     let packageNames = $<SVGGElement>('#graph g.node')
-      .map(el => store.getCachedModule(el.dataset.module ?? '')?.name)
+      .map(el => getCachedModule(el.dataset.module ?? '')?.name)
       .filter(Boolean);
 
     // npms.io limits to 250 packages, so query in batches
@@ -482,7 +484,7 @@ function createAbortable() {
   };
 }
 
-export default function Graph() {
+export default function Graph({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
   const [includeDev] = useIncludeDev();
   const [, setPane] = usePane();
@@ -506,7 +508,7 @@ export default function Graph() {
     let module: Module | undefined;
     if (el) {
       const key = $(el, 'title')?.textContent?.trim();
-      module = store.getCachedModule(key);
+      module = getCachedModule(key);
       if (event.shiftKey) {
         if (module) {
           const isIncluded = excludes.includes(module.name);
@@ -638,7 +640,7 @@ export default function Graph() {
         const key = $(el, 'text')[0].textContent;
         if (!key) continue;
 
-        const m = store.getCachedModule(key);
+        const m = getCachedModule(key);
 
         const refTypes = graph?.referenceTypes.get(key);
 

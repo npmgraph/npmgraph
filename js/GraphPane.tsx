@@ -1,3 +1,4 @@
+import { Maintainer } from '@npm/types';
 import { quantize } from 'd3-interpolate';
 import { scaleOrdinal } from 'd3-scale';
 import { interpolateSpectral } from 'd3-scale-chromatic';
@@ -5,16 +6,15 @@ import { select } from 'd3-selection';
 import { PieArcDatum, arc, pie } from 'd3-shape';
 import React, { HTMLProps, useEffect, useRef } from 'react';
 import { useColorize, useExcludes, useIncludeDev } from './App.js';
-import { Toggle } from './components/Toggle.js';
 import { COLORIZE_MODULE_CJS, COLORIZE_MODULE_ESM, hslFor } from './Graph.js';
-import { Tag } from './components/Tag.js';
-import { Tags } from './components/Tags.js';
 import { Pane } from './components/Pane.js';
 import { Section } from './components/Section.js';
+import { Tag } from './components/Tag.js';
+import { Tags } from './components/Tags.js';
+import { Toggle } from './components/Toggle.js';
 import { GraphState } from './types.js';
-import { simplur } from './util.js';
+import simplur from './util/simplur.js';
 import '/css/GraphPane.scss';
-import { Maintainer } from '@npm/types';
 
 function compareEntryValue<T = string | number>(
   [, a]: [string, T],

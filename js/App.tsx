@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Loader } from './components/Loader.js';
 import Graph from './Graph.js';
 import Inspector from './Inspector.js';
-import sharedStateHook from './sharedStateHook.js';
-import Store from './Store.js';
-import { GraphState } from './types.js';
-import { LoadActivity } from './util.js';
-import '/css/App.scss';
 import Module from './Module.js';
+import { Loader } from './components/Loader.js';
+import sharedStateHook from './sharedStateHook.js';
+import { GraphState } from './types.js';
+import LoadActivity from './util/LoadActivity.js';
+import '/css/App.scss';
 
 export const usePane = sharedStateHook('info', 'pane');
 export const useInspectorOpen = sharedStateHook(true, 'inspectorOpen');
@@ -44,10 +43,14 @@ function queryFromLocation() {
     .filter(Boolean);
 }
 
-export const activity = new LoadActivity();
-export const store = new Store(activity);
+let activity: LoadActivity;
+export function setActivityForApp(ack: LoadActivity) {
+  activity = ack;
+}
+
 export function useActivity() {
   const [bool, setBool] = useState(true);
+  if (!activity) throw new Error('Activity not set');
   activity.onChange = () => setBool(!bool);
   return activity;
 }
@@ -73,7 +76,7 @@ export default function App() {
   return (
     <>
       {activity.total > 0 ? <Loader activity={activity} /> : null}
-      <Graph />
+      <Graph activity={activity} />
       <Splitter
         isOpen={inspectorOpen}
         onClick={() => setInspectorOpen(!inspectorOpen)}

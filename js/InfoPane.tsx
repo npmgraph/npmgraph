@@ -1,7 +1,8 @@
 import React, { HTMLProps, useState } from 'react';
-import { store, useQuery } from './App.js';
+import { useQuery } from './App.js';
 import { Pane } from './components/Pane.js';
 import { QueryLink } from './components/QueryLink.js';
+import { cachePackage } from './util/fetchJSON.js';
 import '/css/InfoPane.scss';
 
 // Get names of uploaded modules in session storage
@@ -73,7 +74,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
     pkg._dropped = true;
 
     // Stash upload in
-    const cacheKey = store.cachePackage(pkg);
+    const cacheKey = cachePackage(pkg);
     window.sessionStorage.setItem(cacheKey, JSON.stringify(pkg));
     const key = cacheKey.replace(/\//, '@');
     setQuery(key ? [key] : []);
