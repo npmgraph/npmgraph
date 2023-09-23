@@ -106,7 +106,8 @@ class Store {
     const path = `${name.replace(/\//g, '%2F')}`;
     const pathAndVersion = `${path}/${version}`;
 
-    // Use cached request if available.  (We can get module info from versioned or unversioned API requests)
+    // Use cached request if available.  (We can get module info from versioned
+    // or unversioned API requests)
     let req = this.requestCache[pathAndVersion] || this.requestCache[path];
 
     if (!req) {
