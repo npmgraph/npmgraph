@@ -2,8 +2,7 @@ import { Manifest } from '@npm/types';
 import semverGt from 'semver/functions/gt.js';
 import semverSatisfies from 'semver/functions/satisfies.js';
 import semverValid from 'semver/functions/valid.js';
-import Module, { moduleKey } from '../Module.js';
-import { ModulePackage } from '../types.js';
+import Module, { ModulePackage } from './Module.js';
 import fetchJSON from './fetchJSON.js';
 
 const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
@@ -80,7 +79,7 @@ export async function getModule(
 
   ({ name, version } = validateNameAndVersion(name, version));
 
-  const cacheKey = moduleKey(name, version);
+  const cacheKey = Module.key(name, version);
 
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(cacheKey);

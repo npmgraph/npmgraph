@@ -1,6 +1,6 @@
 import md5 from 'md5';
 import React, { HTMLProps } from 'react';
-import { selectTag } from '../Graph.js';
+import { selectTag } from '../graphdiagram/GraphDiagram.js';
 import { tagify } from '../util/dom.js';
 
 export function Tag({

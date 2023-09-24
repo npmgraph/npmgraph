@@ -1,16 +1,10 @@
 import React, { HTMLProps, useState } from 'react';
-import { useQuery } from './App.js';
-import Module from './Module.js';
-import { Pane } from './components/Pane.js';
-import { QueryLink } from './components/QueryLink.js';
-import { ModulePackage } from './types.js';
-import { cacheModule } from './util/ModuleRegistry.js';
+import { useQuery } from '../components/App.js';
+import { Pane } from '../components/Pane.js';
+import { QueryLink } from '../components/QueryLink.js';
+import Module, { ModulePackage } from '../util/Module.js';
+import { cacheModule } from '../util/ModuleRegistry.js';
 import '/css/InfoPane.scss';
-
-// Get names of uploaded modules in session storage
-function getFileEntries() {
-  return Object.keys(window.sessionStorage);
-}
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [, setQuery] = useQuery();
@@ -149,4 +143,9 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       ) : null}
     </Pane>
   );
+}
+
+// Get names of uploaded modules in session storage
+function getFileEntries() {
+  return Object.keys(window.sessionStorage);
 }
