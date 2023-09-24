@@ -361,48 +361,46 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       packageNames = packageNames.slice(MAX_PACKAGES);
     }
 
-    Promise.allSettled(reqs)
-      .then(results => {
-        // Merge results back into a single object
-        const infoAccum: { [key: string]: NPMSIOData } = {};
-        for (const result of results) {
-          if (result.status !== 'fulfilled') {
-            flash('npms.io fetch failed');
-            return;
-          }
-          Object.assign(infoAccum, result.value);
+    Promise.allSettled(reqs).then(results => {
+      // Merge results back into a single object
+      const combinedResults: { [key: string]: NPMSIOData } = {};
+      let rejected = 0;
+      for (const result of results) {
+        if (result.status == 'rejected') {
+          rejected++;
+        } else {
+          Object.assign(combinedResults, result.value);
+        }
+      }
+      if (rejected) {
+        flash(`${rejected} of ${results.length} npms.io requests failed`);
+      }
+
+      // Colorize nodes
+      for (const el of $(svg, 'g.node')) {
+        const key = $(el, 'text')[0].textContent;
+        if (!key) return;
+
+        const moduleName = key.replace(/@[\d.]+$/, '');
+        const score = combinedResults[moduleName]?.score;
+        let fill: number | undefined;
+        switch (score && colorize) {
+          case 'overall':
+            fill = score.final;
+            break;
+          case 'quality':
+            fill = score.detail.quality;
+            break;
+          case 'popularity':
+            fill = score.detail.popularity;
+            break;
+          case 'maintenance':
+            fill = score.detail.maintenance;
+            break;
         }
 
-        return infoAccum;
-      })
-      .then(res => {
-        // TODO: 'Need hang module names on svg nodes with data-module attributes
-        for (const el of $(svg, 'g.node')) {
-          const key = $(el, 'text')[0].textContent;
-          if (!key) return;
-
-          const moduleName = key.replace(/@[\d.]+$/, '');
-          const score = res[moduleName]?.score;
-          let fill: number | undefined;
-          switch (score && colorize) {
-            case 'overall':
-              fill = score.final;
-              break;
-            case 'quality':
-              fill = score.detail.quality;
-              break;
-            case 'popularity':
-              fill = score.detail.popularity;
-              break;
-            case 'maintenance':
-              fill = score.detail.maintenance;
-              break;
-          }
-
-          $<SVGPathElement>(el, 'path')[0].style.fill = fill
-            ? hslFor(fill)
-            : '';
-        }
-      });
+        $<SVGPathElement>(el, 'path')[0].style.fill = fill ? hslFor(fill) : '';
+      }
+    });
   }
 }
