@@ -15,7 +15,7 @@ export type DependencyKey =
 
 export interface ModulePackage extends npm.PackumentVersion {
   _stub?: boolean;
-  _dropped?: boolean;
+  _local?: boolean;
   _stubError?: Error;
 }
 

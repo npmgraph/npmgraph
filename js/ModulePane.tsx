@@ -99,7 +99,7 @@ export default function ModulePane({
       ) : null}
       {
         // Displaying dropped package contents is a bit problematic, but we give it a shot here.
-        module.package._dropped ? (
+        module.package._local ? (
           <ExternalLink
             href={`data:text/json;base64,${btoa(
               JSON.stringify(module.package),

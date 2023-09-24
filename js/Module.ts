@@ -33,7 +33,8 @@ export default class Module {
   }
 
   get key() {
-    return moduleKey(this.name, this.version);
+    const key = moduleKey(this.name, this.version);
+    return this.package._local ? `local:${key}` : key;
   }
 
   get name() {

@@ -1,6 +1,6 @@
 import Bugsnag from '@bugsnag/js';
-import { version as appVersion } from '../package.json';
-import HttpError from './util/HttpError.js';
+import { version as appVersion } from '../../package.json';
+import HttpError from './HttpError.js';
 
 const bugsnag = Bugsnag.default.start({
   appVersion,

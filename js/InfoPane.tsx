@@ -1,15 +1,15 @@
 import React, { HTMLProps, useState } from 'react';
 import { useQuery } from './App.js';
+import Module from './Module.js';
 import { Pane } from './components/Pane.js';
 import { QueryLink } from './components/QueryLink.js';
-import { cachePackage } from './util/fetchJSON.js';
+import { ModulePackage } from './types.js';
+import { cacheModule } from './util/ModuleRegistry.js';
 import '/css/InfoPane.scss';
 
 // Get names of uploaded modules in session storage
 function getFileEntries() {
-  return Object.keys(window.sessionStorage).map(k =>
-    k.replace('/', '@').replace(/%2f/gi, '/'),
-  );
+  return Object.keys(window.sessionStorage);
 }
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
@@ -61,27 +61,31 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       reader.readAsText(file);
     });
 
-    const pkg = JSON.parse(content);
+    const pkg: ModulePackage = JSON.parse(content);
 
+    // Construct a local module for the package
     if (!pkg.name) pkg.name = '(upload)';
     if (!pkg.version) {
-      const d = new Date();
       // Make semver string of form YYYY.MM.DD-HH:MM:SS.ddd
-      pkg.version = d.toISOString().replace(/-/g, '.').replace('T', '-');
+      pkg.version = new Date()
+        .toISOString()
+        .replace(/-/g, '.')
+        .replace('T', '-');
     }
+    pkg._local = true;
+    const module = new Module(pkg);
 
-    // Mark package as having been supplied by the user
-    pkg._dropped = true;
+    // Cache module in registry and session storage
+    cacheModule(module);
+    window.sessionStorage.setItem(module.key, JSON.stringify(pkg));
 
-    // Stash upload in
-    const cacheKey = cachePackage(pkg);
-    window.sessionStorage.setItem(cacheKey, JSON.stringify(pkg));
-    const key = cacheKey.replace(/\//, '@');
-    setQuery(key ? [key] : []);
+    // Update UI
+    setQuery([module.key]);
     setRecents(getFileEntries());
 
+    // Update location
     const url = new URL(location.href);
-    url.searchParams.set('q', key);
+    url.searchParams.set('q', module.key);
     history.pushState(null, '', url);
   };
 

@@ -12,7 +12,6 @@ import {
   useQuery,
 } from './App.js';
 import Module from './Module.js';
-import { report } from './bugsnag.js';
 import { NPMSIOData } from './fetch_types.js';
 import {
   DependencyKey,
@@ -21,7 +20,8 @@ import {
   ModulePackage,
 } from './types.js';
 import LoadActivity from './util/LoadActivity.js';
-import { getCachedModule, getModule } from './util/NPMRegistry.js';
+import { getCachedModule, getModule } from './util/ModuleRegistry.js';
+import { report } from './util/bugsnag.js';
 import $, { tagElement } from './util/dom.js';
 import fetchJSON from './util/fetchJSON.js';
 import simplur from './util/simplur.js';

@@ -37,22 +37,23 @@ function selectVersionFromManifest(
   return bestVersion;
 }
 
-export async function getModule(
-  name: string,
-  version?: string,
-): Promise<Module> {
-  if (!name) throw Error('Undefined module name');
+function validateNameAndVersion(name: string, version?: string) {
+  if (name.startsWith('local:')) {
+    return { name, version };
+  }
 
-  // Version strings like "npm:<package name>@<version>" can be used to create
-  // an alias to a different module.  We detect that here and massage the inputs
-  // accordingly.  See `@isaacs/cliui` package for an example.
+  // "npm:<package name>@<version>"-style names are used to create aliases.  We
+  // detect that here and massage the inputs accordingly
+  //
+  // See `@isaacs/cliui` package for an example.
   if (version?.startsWith('npm:')) {
     name = version.slice(4);
     version = undefined;
+    // Important: Fall through so name gets parsed, below...
   }
 
-  // Parse versioned-names (e.g. "less@1.2.3")
   if (!version) {
+    // Parse versioned-names (e.g. "less@1.2.3")
     const parts = name.match(/(.+)@(.*)/);
     if (parts) {
       name = parts[1];
@@ -67,6 +68,17 @@ export async function getModule(
       version = gitless;
     }
   }
+
+  return { name, version };
+}
+
+export async function getModule(
+  name: string,
+  version?: string,
+): Promise<Module> {
+  if (!name) throw Error('Undefined module name');
+
+  ({ name, version } = validateNameAndVersion(name, version));
 
   const cacheKey = moduleKey(name, version);
 
@@ -131,9 +143,14 @@ export async function getModule(
     }
 
     // Create module
-    const pkg = await fetchJSON<ModulePackage>(
-      `${REGISTRY_BASE_URL}/${name}/${version}`,
-    );
+    let pkg: ModulePackage;
+    try {
+      pkg = await fetchJSON<ModulePackage>(
+        `${REGISTRY_BASE_URL}/${name}/${version}`,
+      );
+    } catch (err) {
+      return fail(err);
+    }
 
     // Expose module on cache entry
     cacheEntry.module = new Module(pkg);
@@ -150,4 +167,28 @@ export async function getModule(
 
 export function getCachedModule(key: string) {
   return moduleCache.get(key)?.module;
+}
+
+export function cacheModule(module: Module) {
+  moduleCache.set(module.key, { promise: Promise.resolve(module), module });
+}
+
+export function loadLocalModules() {
+  // Reconstitute [uploaded] modules from sessionStorage
+  const { sessionStorage } = window;
+
+  // Pull in user-supplied package.json files that may have been stored in sessionStorage
+  for (let i = 0; i < sessionStorage.length; i++) {
+    const moduleKey = sessionStorage.key(i);
+    if (!moduleKey?.startsWith('local:')) continue;
+
+    try {
+      const packageJson = sessionStorage.getItem(moduleKey);
+      const pkg: ModulePackage = packageJson && JSON.parse(packageJson);
+      const module = new Module(pkg);
+      cacheModule(module);
+    } catch (err) {
+      console.error(err);
+    }
+  }
 }
