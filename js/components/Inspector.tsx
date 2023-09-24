@@ -1,12 +1,12 @@
 import React, { HTMLProps } from 'react';
-import { version as VERSION } from '../package.json';
+import { version as VERSION } from '../../package.json';
+import GraphPane from '../graphpane/GraphPane.js';
+import InfoPane from '../infopane/InfoPane.js';
+import ModulePane from '../modulepane/ModulePane.js';
 import { useGraph, useModule, usePane, useQuery } from './App.js';
-import GraphPane from './GraphPane.js';
-import InfoPane from './InfoPane.js';
-import ModulePane from './ModulePane.js';
+import { ExternalLink } from './ExternalLink.js';
+import { Tab } from './Tab.js';
 import '/css/Inspector.scss';
-import { ExternalLink } from './components/ExternalLink.js';
-import { Tab } from './components/Tab.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [query, setQuery] = useQuery();

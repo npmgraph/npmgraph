@@ -1,6 +1,6 @@
 import filterAlteredClicks from 'filter-altered-clicks';
 import React from 'react';
-import { useQuery } from '../App.js';
+import { useQuery } from './App.js';
 
 export function QueryLink({ query }: { query: string | string[] }) {
   const [, setQuery] = useQuery();

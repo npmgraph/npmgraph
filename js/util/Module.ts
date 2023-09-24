@@ -1,17 +1,22 @@
-import { ModulePackage, OldLicense } from './types.js';
+import { PackumentVersion } from '@npm/types';
 
-function parseGithubPath(s: string) {
-  const match = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
-  if (!match) return undefined;
-  return match?.replace?.(/\.git$/, '');
+export interface ModulePackage extends PackumentVersion {
+  _stub?: boolean;
+  _local?: boolean;
+  _stubError?: Error;
 }
 
-export function moduleKey(name: string, version?: string) {
-  return version ? `${name}@${version}` : name;
-}
+type OldLicense = {
+  type: string;
+  url: string;
+};
 
 export default class Module {
   package: ModulePackage;
+
+  static key(name: string, version?: string) {
+    return version ? `${name}@${version}` : name;
+  }
 
   static stub(name: string, version: string | undefined, error: Error) {
     return new Module({
@@ -33,7 +38,7 @@ export default class Module {
   }
 
   get key() {
-    const key = moduleKey(this.name, this.version);
+    const key = Module.key(this.name, this.version);
     return this.package._local ? `local:${key}` : key;
   }
 
@@ -123,4 +128,10 @@ export default class Module {
   toJSON() {
     return this.package;
   }
+}
+
+function parseGithubPath(s: string) {
+  const match = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
+  if (!match) return undefined;
+  return match?.replace?.(/\.git$/, '');
 }

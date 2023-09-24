@@ -1,6 +1,6 @@
 import React from 'react';
+import { NPMSIOData } from '../util/fetch_types.js';
 import { ModuleScoreBar } from './ModuleScoreBar.js';
-import { NPMSIOData } from '../fetch_types.js';
 
 export function ModuleNpmsIOScores({
   scores,
