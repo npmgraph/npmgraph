@@ -13,14 +13,15 @@ import {
 } from '../components/App.js';
 import LoadActivity from '../util/LoadActivity.js';
 import Module from '../util/Module.js';
-import { getCachedModule } from '../util/ModuleRegistry.js';
+import { getCachedModule } from '../util/ModuleCache.js';
 import { report } from '../util/bugsnag.js';
 import { createAbortable } from '../util/createAbortable.js';
 import $, { tagElement } from '../util/dom.js';
 import fetchJSON from '../util/fetchJSON.js';
 import { NPMSIOData } from '../util/fetch_types.js';
+import { flash } from '../util/flash.js';
 import { GraphDiagramControls } from './GraphDiagramControls.js';
-import { composeDOT, hslFor, modulesForQuery } from './graph_util.js';
+import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
 import '/css/Graph.scss';
 
 const graphvizP = Graphviz.load();
@@ -126,7 +127,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     setGraph(null);
     setModule(undefined);
 
-    modulesForQuery(query, includeDev, moduleFilter).then(newGraph => {
+    getGraphForQuery(query, includeDev, moduleFilter).then(newGraph => {
       if (signal.aborted) return; // Check after async
 
       setGraph(newGraph);
@@ -360,13 +361,16 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       packageNames = packageNames.slice(MAX_PACKAGES);
     }
 
-    Promise.all(reqs)
-      .then(infos => {
+    Promise.allSettled(reqs)
+      .then(results => {
         // Merge results back into a single object
         const infoAccum: { [key: string]: NPMSIOData } = {};
-        for (const info of infos) {
-          if (!info) continue;
-          Object.assign(infoAccum, info);
+        for (const result of results) {
+          if (result.status !== 'fulfilled') {
+            flash('npms.io fetch failed');
+            return;
+          }
+          Object.assign(infoAccum, result.value);
         }
 
         return infoAccum;

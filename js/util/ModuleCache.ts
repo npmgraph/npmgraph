@@ -172,6 +172,19 @@ export function cacheModule(module: Module) {
   moduleCache.set(module.key, { promise: Promise.resolve(module), module });
 }
 
+//
+// Local storage cache for modules
+//
+
+export function getLocalModuleNames() {
+  return Object.keys(window.sessionStorage);
+}
+
+export function cacheLocalModule(module: Module) {
+  // Store in sessionStorage
+  window.sessionStorage.setItem(module.key, JSON.stringify(module.package));
+}
+
 export function loadLocalModules() {
   // Reconstitute [uploaded] modules from sessionStorage
   const { sessionStorage } = window;

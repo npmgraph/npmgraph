@@ -3,13 +3,17 @@ import { useQuery } from '../components/App.js';
 import { Pane } from '../components/Pane.js';
 import { QueryLink } from '../components/QueryLink.js';
 import Module, { ModulePackage } from '../util/Module.js';
-import { cacheModule } from '../util/ModuleRegistry.js';
+import {
+  cacheLocalModule,
+  cacheModule,
+  getLocalModuleNames,
+} from '../util/ModuleCache.js';
 import '/css/InfoPane.scss';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [, setQuery] = useQuery();
 
-  const [recents, setRecents] = useState(getFileEntries());
+  const [recents, setRecents] = useState(getLocalModuleNames());
 
   // Handle file selection via input
   const onSelect = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,13 +73,13 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
     pkg._local = true;
     const module = new Module(pkg);
 
-    // Cache module in registry and session storage
+    // Put module in cache and local cache
     cacheModule(module);
-    window.sessionStorage.setItem(module.key, JSON.stringify(pkg));
+    cacheLocalModule(module);
 
     // Update UI
     setQuery([module.key]);
-    setRecents(getFileEntries());
+    setRecents(getLocalModuleNames());
 
     // Update location
     const url = new URL(location.href);
@@ -143,9 +147,4 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       ) : null}
     </Pane>
   );
-}
-
-// Get names of uploaded modules in session storage
-function getFileEntries() {
-  return Object.keys(window.sessionStorage);
 }

@@ -3,22 +3,22 @@ import './util/bugsnag.js'; // Initialize ASAP!
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App, { setActivityForApp } from './components/App.js';
-import { Flash } from './components/Flash.js';
 import LoadActivity from './util/LoadActivity.js';
-import { loadLocalModules } from './util/ModuleRegistry.js';
+import { loadLocalModules } from './util/ModuleCache.js';
 import { setActivityForRequestCache } from './util/fetchJSON.js';
+import { flash } from './util/flash.js';
 
 // Used to feature-detect that es6 modules are loading
 (window as { indexLoaded?: boolean }).indexLoaded = true;
 
 window.addEventListener('error', err => {
   console.error(err);
-  Flash(err.message);
+  flash(err.message);
 });
 
 window.addEventListener('unhandledrejection', err => {
   console.error(err);
-  Flash(err.reason);
+  flash(err.reason);
 });
 
 window.onload = function () {

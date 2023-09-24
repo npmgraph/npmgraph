@@ -1,6 +1,6 @@
 import '/css/Components.scss';
 
-export function Flash(wat: unknown, bg = '#f80') {
+export function flash(wat: unknown, bg = '#f80') {
   const SPACE = 10;
 
   const graph = document.querySelector('#graph') as HTMLDivElement;

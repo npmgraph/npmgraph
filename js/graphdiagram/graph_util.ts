@@ -1,5 +1,5 @@
 import Module, { ModulePackage } from '../util/Module.js';
-import { getModule } from '../util/ModuleRegistry.js';
+import { getModule } from '../util/ModuleCache.js';
 import simplur from '../util/simplur.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
@@ -38,8 +38,8 @@ export type GraphState = {
   // Map of module key -> module info
   modules: Map<string, GraphModuleInfo>;
 
-  // Map of module key -> Set<dependency type that terminates in that module>
-  referenceTypes: Map<string, Set<string>>;
+  // Map of module -> types of dependencies that terminate in the module
+  referenceTypes: Map<string, Set<DependencyKey>>;
 };
 
 export function getDependencyEntries(
@@ -70,13 +70,14 @@ export function getDependencyEntries(
 }
 
 /**
- * Fetch the module dependency tree for a given query
+ * Fetch the module dependency tree for a given query.
+ *
  * @param {[String]} query names of module entry points
  * @param {Boolean} includeDev flag for including devDependencies
  * @param {Function} moduleFilter applied to module dependency list(s)
  * @returns {Promise<Map>} Map of key -> {module, level, dependencies}
  */
-export async function modulesForQuery(
+export async function getGraphForQuery(
   query: string[],
   includeDev: boolean,
   moduleFilter: (m: Module | ModulePackage) => boolean,
@@ -86,12 +87,12 @@ export async function modulesForQuery(
     referenceTypes: new Map(),
   };
 
-  function _walk(module: Module[] | Module, level = 0): Promise<unknown> {
-    if (!module) return Promise.resolve(Error('Undefined module'));
+  function _walk(module: Module[] | Module, level = 0): Promise<void> {
+    if (!module) return Promise.reject(Error('Undefined module'));
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
-      return Promise.all(module.map(m => _walk(m, level)));
+      return Promise.all(module.map(m => _walk(m, level))).then();
     }
 
     // Skip modules we've already seen
@@ -106,27 +107,31 @@ export async function modulesForQuery(
     const info: GraphModuleInfo = { module: module, level };
     graphState.modules.set(module.key, info);
 
+    // Walk all dependencies
     return Promise.all(
       deps.map(async ({ name, version, type }) => {
         const module = await getModule(name, version);
 
-        // Record the types of dependency references to this module
+        // Record dependency type in the module it terminates in
         let refTypes = graphState.referenceTypes.get(module.key);
         if (!refTypes) {
           graphState.referenceTypes.set(module.key, (refTypes = new Set()));
         }
         refTypes.add(type);
 
+        // Don't walk peerDependencies
         if (type !== 'peerDependencies') {
           await _walk(module, level + 1);
         }
         return { module, type };
       }),
-    ).then(dependencies => (info.dependencies = dependencies));
+    )
+      .then(dependencies => (info.dependencies = dependencies))
+      .then();
   }
 
   // Walk dependencies of each module in the query
-  return Promise.all(
+  return Promise.allSettled(
     query.map(async name => {
       const m = await getModule(name);
       return m && _walk(m);
