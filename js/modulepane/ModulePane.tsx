@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import Module from './Module.js';
-import { ExternalLink } from './components/ExternalLink.js';
-import { ModuleBundleStats } from './components/ModuleBundleStats.js';
-import { ModuleNpmsIOScores } from './components/ModuleNpmsIOScores.js';
-import { ModuleTreeMap } from './components/ModuleTreeMap.js';
-import { Pane } from './components/Pane.js';
-import { QueryLink } from './components/QueryLink.js';
-import { Section } from './components/Section.js';
-import { Tag } from './components/Tag.js';
-import { Tags } from './components/Tags.js';
-import { BundlePhobiaData, NPMSIOData } from './fetch_types.js';
-import fetchJSON from './util/fetchJSON.js';
-import simplur from './util/simplur.js';
+import { ExternalLink } from '../components/ExternalLink.js';
+import { QueryLink } from '../components/QueryLink.js';
+import { Section } from '../components/Section.js';
+import { Tag } from '../components/Tag.js';
+import { Tags } from '../components/Tags.js';
+import Module from '../util/Module.js';
+import fetchJSON from '../util/fetchJSON.js';
+import { BundlePhobiaData, NPMSIOData } from '../util/fetch_types.js';
+import simplur from '../util/simplur.js';
+import { ModuleBundleStats } from './ModuleBundleStats.js';
+import { ModuleNpmsIOScores } from './ModuleNpmsIOScores.js';
+import { ModuleTreeMap } from './ModuleTreeMap.js';
+import { Pane } from '../components/Pane.js';
 import '/css/ModulePane.scss';
 
 export default function ModulePane({

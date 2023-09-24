@@ -2,7 +2,7 @@ import './util/bugsnag.js'; // Initialize ASAP!
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App, { setActivityForApp } from './App.js';
+import App, { setActivityForApp } from './components/App.js';
 import { Flash } from './components/Flash.js';
 import LoadActivity from './util/LoadActivity.js';
 import { loadLocalModules } from './util/ModuleRegistry.js';
