@@ -4,6 +4,8 @@ import semverSatisfies from 'semver/functions/satisfies.js';
 import semverValid from 'semver/functions/valid.js';
 import Module, { ModulePackage } from './Module.js';
 import fetchJSON from './fetchJSON.js';
+import { isDefined } from './guards.js';
+import sharedStateHook from './sharedStateHook.js';
 
 const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
 
@@ -210,6 +212,19 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
 // Local storage cache for modules
 //
 
+export const [useLocalModules, setLocalModules] = sharedStateHook<Module[]>(
+  [],
+  'localModules',
+);
+
+function _updateLocalModules() {
+  const localModules = getLocalModuleNames()
+    .sort()
+    .map(getCachedModule)
+    .filter(isDefined);
+  setLocalModules(localModules);
+}
+
 export function getLocalModuleNames() {
   return Object.keys(window.sessionStorage);
 }
@@ -217,6 +232,13 @@ export function getLocalModuleNames() {
 export function cacheLocalModule(module: Module) {
   // Store in sessionStorage
   window.sessionStorage.setItem(module.key, JSON.stringify(module.package));
+  _updateLocalModules();
+}
+
+export function uncacheModule(moduleKey: string) {
+  moduleCache.delete(moduleKey);
+  window.sessionStorage.removeItem(moduleKey);
+  _updateLocalModules();
 }
 
 export function loadLocalModules() {
@@ -233,6 +255,7 @@ export function loadLocalModules() {
       const pkg: ModulePackage = packageJson && JSON.parse(packageJson);
       const module = new Module(pkg);
       cacheModule(module);
+      _updateLocalModules();
     } catch (err) {
       console.error(err);
     }

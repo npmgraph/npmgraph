@@ -1,0 +1,16 @@
+#local-modules li {
+  display: flex;
+  list-style: none;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+
+  a {
+    flex-grow: 1;
+  }
+  button {
+    flex-grow: 0;
+  }
+  &:hover {
+    background-color: var(--bg2);
+  }
+}

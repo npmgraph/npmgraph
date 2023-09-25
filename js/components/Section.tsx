@@ -4,9 +4,11 @@ export function Section({
   title,
   children,
   open = true,
-}: { title: string; open?: boolean } & HTMLProps<HTMLDivElement>) {
+
+  ...props
+}: { title: string; open?: boolean } & HTMLProps<HTMLDetailsElement>) {
   return (
-    <details open={open}>
+    <details open={open} {...props}>
       <summary>{title || 'Untitled'}</summary>
       {children}
     </details>
