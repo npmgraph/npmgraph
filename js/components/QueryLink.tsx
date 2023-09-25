@@ -5,14 +5,13 @@ import { useQuery } from './App.js';
 
 export function QueryLink({ query }: { query: string | string[] }) {
   const [, setQuery] = useQuery();
-  const [location, setLocation] = useLocation();
+  const [location] = useLocation();
+
   const queries = Array.isArray(query) ? query : [query];
 
   function onClick(e: React.MouseEvent) {
-    const target = e.target as HTMLAnchorElement;
     e.preventDefault();
     setQuery(queries);
-    setLocation(target.href);
   }
 
   const url = new URL(location);

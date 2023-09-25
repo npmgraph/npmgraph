@@ -13,10 +13,10 @@ export default function useLocation() {
       val = new URL(val);
     }
 
+    if (val.href === location.href) return;
+
     // Dont' allow direct manipulation
     Object.freeze(val);
-
-    if (val.href === location.href) return;
 
     // Update state value
     if (replace) {

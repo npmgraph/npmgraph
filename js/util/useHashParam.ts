@@ -1,18 +1,21 @@
 import useLocation from './useLocation.js';
 
 export default function useHashParam<T extends string>(
-  hashProp: string,
+  paramName: string,
 ): readonly [val: T, set: (val: T) => void] {
   const [location, setLocation] = useLocation();
   const params = new URLSearchParams(location.hash.replace(/^#/, ''));
-  const value = (params.get(hashProp) ?? '') as T;
+  const value = (params.get(paramName) ?? '') as T;
 
   const setValue = (val: T) => {
+    if (val === value) return;
+    console.log('Setting hash', paramName, 'to', val);
+
     // Update state value
     if (!val) {
-      params.delete(hashProp);
+      params.delete(paramName);
     } else {
-      params.set(hashProp, val);
+      params.set(paramName, val);
     }
 
     // Update page
