@@ -4,6 +4,7 @@ import GraphPane from '../graphpane/GraphPane.js';
 import InfoPane from '../infopane/InfoPane.js';
 import ModulePane from '../modulepane/ModulePane.js';
 import { queryModuleCache } from '../util/ModuleCache.js';
+import { isDefined } from '../util/guards.js';
 import useGraphSelection from '../util/useGraphSelection.js';
 import useLocation from '../util/useLocation.js';
 import { useGraph, usePane, useQuery } from './App.js';
@@ -38,7 +39,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     const names = (e.currentTarget as HTMLInputElement).value
       .split(',')
       .map(v => v.trim())
-      .filter(Boolean);
+      .filter(isDefined);
     const query = [...new Set(names)]; // De-dupe
 
     // Update location

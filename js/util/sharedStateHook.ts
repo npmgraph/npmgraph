@@ -44,12 +44,14 @@ export default function sharedStateHook<T>(
   name?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
 ) {
   const setters = new Set<(v: T) => void>();
+  let sharedValue: T = defaultValue;
   const notifySetters = (value: T) => {
+    sharedValue = value;
     for (const setter of setters) setter(value);
   };
 
   const hook = function useSharedState() {
-    const [val, setVal] = useState<T>(defaultValue);
+    const [val, setVal] = useState<T>(sharedValue);
 
     useEffect(() => {
       setters.add(setVal);
