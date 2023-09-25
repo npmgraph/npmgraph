@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ExternalLink } from '../components/ExternalLink.js';
+import { Pane } from '../components/Pane.js';
 import { QueryLink } from '../components/QueryLink.js';
 import { Section } from '../components/Section.js';
 import { Tag } from '../components/Tag.js';
@@ -11,7 +12,6 @@ import simplur from '../util/simplur.js';
 import { ModuleBundleStats } from './ModuleBundleStats.js';
 import { ModuleNpmsIOScores } from './ModuleNpmsIOScores.js';
 import { ModuleTreeMap } from './ModuleTreeMap.js';
-import { Pane } from '../components/Pane.js';
 import '/css/ModulePane.scss';
 
 export default function ModulePane({
@@ -146,8 +146,8 @@ export default function ModulePane({
           {maintainers.map(({ name = 'Unknown', email }) => (
             <Tag
               key={name + email}
-              name={name}
               type="maintainer"
+              value={name}
               gravatar={email}
             />
           ))}

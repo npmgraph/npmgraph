@@ -18,7 +18,6 @@ export default function useHashProp<T extends string>(
     // Update page
     const url = new URL(location);
     url.hash = params.toString();
-    console.log('URL', url);
     setLocation(url, true);
   };
 

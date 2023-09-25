@@ -3,8 +3,10 @@ import { version as VERSION } from '../../package.json';
 import GraphPane from '../graphpane/GraphPane.js';
 import InfoPane from '../infopane/InfoPane.js';
 import ModulePane from '../modulepane/ModulePane.js';
+import { queryModuleCache } from '../util/ModuleCache.js';
+import useGraphSelection from '../util/useGraphSelection.js';
 import useLocation from '../util/useLocation.js';
-import { useGraph, useModule, usePane, useQuery } from './App.js';
+import { useGraph, usePane, useQuery } from './App.js';
 import { ExternalLink } from './ExternalLink.js';
 import { Tab } from './Tab.js';
 import '/css/Inspector.scss';
@@ -12,14 +14,17 @@ import '/css/Inspector.scss';
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [query, setQuery] = useQuery();
   const [pane, setPane] = usePane();
-  const [module] = useModule();
+  const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGraph();
   const [location, setLocation] = useLocation();
+
+  const selectedModules = queryModuleCache(queryType, queryValue);
+  const firstModule = selectedModules.values().next().value;
 
   let paneComponent;
   switch (pane) {
     case 'module':
-      paneComponent = <ModulePane id="pane-module" module={module} />;
+      paneComponent = <ModulePane id="pane-module" module={firstModule} />;
       break;
     case 'graph':
       paneComponent = <GraphPane id="pane-graph" graph={graph} />;

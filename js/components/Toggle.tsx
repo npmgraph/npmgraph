@@ -19,7 +19,7 @@ export function Toggle({
         style={{
           display: 'inline-block',
           width: '4em',
-          backgroundColor: '#ccc',
+          backgroundColor: 'var(--bg2)',
           borderRadius: '.5em',
           marginRight: '.5em',
         }}
@@ -31,8 +31,7 @@ export function Toggle({
             textAlign: 'center',
             transition: '.15s',
             marginLeft: checked ? '0' : '1em',
-            backgroundColor: checked ? '#090' : '#aaa',
-            color: '#fff',
+            backgroundColor: checked ? 'var(--bg-green)' : 'var(--bg1)',
           }}
         >
           {checked ? 'On' : 'Off'}

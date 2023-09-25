@@ -1,21 +1,22 @@
 import md5 from 'md5';
 import React, { HTMLProps } from 'react';
-import { selectTag } from '../graphdiagram/GraphDiagram.js';
-import { tagify } from '../util/dom.js';
+import { QueryType } from '../util/ModuleCache.js';
+import useGraphSelection from '../util/useGraphSelection.js';
 
 export function Tag({
   type,
-  name,
+  value,
   count = 0,
   gravatar,
   className,
 }: {
-  name: string;
-  type: string;
+  type: QueryType;
+  value: string;
   count?: number;
   gravatar?: string;
 } & HTMLProps<HTMLDivElement>) {
-  let title = name;
+  const [, , setGraphSelection] = useGraphSelection();
+  let title = value;
   if (count > 1) title += ` (${count})`;
 
   let img = null;
@@ -28,7 +29,7 @@ export function Tag({
     <div
       className={`tag ${type} bright-hover ${className ?? ''}`}
       title={title}
-      onClick={() => selectTag(tagify(type, name), true, true)}
+      onClick={() => setGraphSelection(type, value)}
     >
       {img}
       {title}

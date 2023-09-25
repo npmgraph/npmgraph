@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import GraphDiagram from '../graphdiagram/GraphDiagram.js';
 import { GraphState } from '../graphdiagram/graph_util.js';
 import LoadActivity from '../util/LoadActivity.js';
-import Module from '../util/Module.js';
 import sharedStateHook from '../util/sharedStateHook.js';
 import useHashProp from '../util/useHashProp.js';
+import useLocation from '../util/useLocation.js';
 import Inspector from './Inspector.js';
 import { Loader } from './Loader.js';
 import { Splitter } from './Splitter.js';
@@ -12,30 +12,19 @@ import '/css/App.scss';
 
 export const [usePane] = sharedStateHook('info', 'pane');
 export const [useQuery] = sharedStateHook(queryFromLocation(), 'query');
-export const [useModule] = sharedStateHook(
-  undefined as Module | undefined,
-  'module',
-);
 export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');
 export const [useExcludes] = sharedStateHook([] as string[], 'excludes');
+export const [useDomSignal] = sharedStateHook(0, 'dom signal');
 
 export default function App() {
   const activity = useActivity();
   const [, setQuery] = useQuery();
+  const [location] = useLocation();
+  const [zenMode, setZenMode] = useHashProp('zen');
 
   useEffect(() => {
-    function handlePopState() {
-      setQuery(queryFromLocation());
-    }
-
-    window.addEventListener('popstate', handlePopState);
-
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, []);
-
-  const [zenMode, setZenMode] = useHashProp('zen');
+    setQuery(queryFromLocation());
+  }, [location]);
 
   return (
     <>

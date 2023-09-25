@@ -16,8 +16,12 @@
   --text: #020303;
   --text-dim: #999;
   --bg0: #f1f4f4;
-  --bg1: #d6d6d6;
+  --bg1: #bbb;
   --bg2: #ddd;
+  --bg-red: #f55;
+  --bg-orange: #f90;
+  --bg-yellow: #ff6;
+  --bg-green: #5f5;
   --tabs-bg: #7e7e7d;
   --tabs-text: #fff;
   --highlight: #e65c00;
@@ -33,6 +37,10 @@
     --bg0: #262222;
     --bg1: #696666;
     --bg2: #333;
+    --bg-red: #700;
+    --bg-orange: #840;
+    --bg-yellow: #660;
+    --bg-green: #070;
     --highlight: #ff761a;
     --inset-shadow-color: black;
   }

@@ -1,30 +1,34 @@
 import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
-import {
-  useExcludes,
-  useGraph,
-  useModule,
-  usePane,
-  useQuery,
-} from '../components/App.js';
+import { useExcludes, useGraph, usePane, useQuery } from '../components/App.js';
 import LoadActivity from '../util/LoadActivity.js';
-import Module from '../util/Module.js';
-import { getCachedModule } from '../util/ModuleCache.js';
+import {
+  QueryType,
+  getCachedModule,
+  queryModuleCache,
+} from '../util/ModuleCache.js';
 import { report } from '../util/bugsnag.js';
 import { createAbortable } from '../util/createAbortable.js';
-import $, { tagElement } from '../util/dom.js';
+import $ from '../util/dom.js';
 import fetchJSON from '../util/fetchJSON.js';
 import { NPMSIOData } from '../util/fetch_types.js';
 import { flash } from '../util/flash.js';
+import useGraphSelection from '../util/useGraphSelection.js';
 import useHashProp from '../util/useHashProp.js';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
 import '/css/Graph.scss';
 
-export const COLORIZE_MODULE_ESM = '#ffff66';
-export const COLORIZE_MODULE_CJS = '#ffaa66';
+export const COLORIZE_MODULE_ESM = 'var(--bg-yellow)';
+export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
+export const COLORIZE_COLORS = [
+  'var(--bg-red)',
+  'var(--bg-orange)',
+  'var(--bg-yellow)',
+  'var(--bg-green)',
+];
 
 export const ZOOM_NONE = '';
 export const ZOOM_FIT_WIDTH = 'w';
@@ -50,7 +54,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [includeDev] = useHashProp('dev');
   const [, setPane] = usePane();
   const [, setZenMode] = useHashProp('zen');
-  const [, setModule] = useModule();
+  const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
   const [colorize] = useHashProp('c');
@@ -66,31 +70,27 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     const el = $.up<SVGElement>(target, '.node');
 
-    let module: Module | undefined;
-    if (el) {
-      const key = $(el, 'title')?.textContent?.trim();
-      module = getCachedModule(key);
-      if (event.shiftKey) {
-        if (module) {
-          const isIncluded = excludes.includes(module.name);
-          if (isIncluded) {
-            // Why is `module?.` needed here, but not above or below???
-            setExcludes(excludes.filter(n => n !== module?.name));
-          } else {
-            setExcludes([...excludes, module.name]);
-          }
+    const moduleKey = el ? $(el, 'title')?.textContent?.trim() : '';
+    const module = moduleKey ? getCachedModule(moduleKey) : undefined;
+
+    // Toggle exclude filter?
+    if (el && event.shiftKey) {
+      if (module) {
+        const isIncluded = excludes.includes(module.name);
+        if (isIncluded) {
+          setExcludes(excludes.filter(n => n !== module.name));
+        } else {
+          setExcludes([...excludes, module.name]);
         }
-
-        return;
       }
-    }
 
-    selectTag(el, true);
+      return;
+    }
 
     if (el) setZenMode('');
 
-    setModule(module);
-    setPane(module ? 'module' : 'graph');
+    setGraphSelection('exact', moduleKey);
+    setPane(moduleKey ? 'module' : 'graph');
   }
 
   function applyZoom() {
@@ -140,8 +140,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useEffect(() => {
     const { signal, abort } = createAbortable();
-    setGraph(null);
-    setModule(undefined);
 
     getGraphForQuery(query, Boolean(includeDev), moduleFilter).then(
       newGraph => {
@@ -152,9 +150,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     );
 
     return abort;
-  }, [query, includeDev, excludes]);
+  }, [[...query].sort().join(), includeDev, excludes]);
 
-  // Effect: Parse SVG markup into DOM
+  // Effect: Insert SVG markup into DOM
   useEffect(() => {
     const { signal, abort } = createAbortable();
 
@@ -219,7 +217,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         }
 
         if (m.name) {
-          tagElement(el, 'module', m.name);
           el.dataset.module = m.key;
         } else {
           report.warn(Error(`Bad replace: ${key}`));
@@ -232,10 +229,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         const pkg = m.package;
         if (pkg._stub) {
           el.classList.add('stub');
-        } else {
-          tagElement(el, 'maintainer', ...m.maintainers.map(m => m.name));
-
-          tagElement(el, 'license', m.licenseString);
         }
       }
 
@@ -252,6 +245,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       abort();
     };
   }, [graph]);
+
+  // Effect: render graph selection
+  useEffect(
+    () => updateSelection(queryType, queryValue),
+    [queryType, queryValue, domSignal],
+  );
 
   // Effect: Colorize nodes
   useEffect(() => {
@@ -273,59 +272,40 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   );
 }
 
-export function selectTag(
-  tag: string | HTMLElement | SVGElement | undefined,
-  selectEdges = false,
-  scroll = false,
-) {
-  // If tag (element) is already selected, do nothing
-  if (
-    tag instanceof HTMLElement &&
-    tag.classList &&
-    tag.classList.contains('selected')
-  ) {
-    return;
-  }
+export function updateSelection(queryType: QueryType, queryValue: string) {
+  const modules = queryModuleCache(queryType, queryValue);
+  // Locate target element(s)
+  const els = [...$<SVGElement>('svg .node[data-module]')].filter(el => {
+    modules.has(el.dataset.module ?? '');
+    return modules.has(el.dataset.module ?? '');
+  });
 
   // Unselect nodes and edges
   $('svg .node').forEach(el => el.classList.remove('selected'));
   $('svg .edge').forEach(el => el.classList.remove('selected'));
 
-  if (!tag) return;
-
-  let els: (HTMLElement | SVGElement)[];
-
-  if (typeof tag == 'string') {
-    els = $(`svg .node.${tag}`);
-  } else {
-    els = [tag];
-  }
-
-  // Select nodes
-  els.forEach((el, i) => {
+  for (const el of els) {
     el.classList.add('selected');
-    if (i == 0 && scroll) el.scrollIntoView();
-  });
+    el.scrollIntoView({ behavior: 'smooth' });
+  }
 
   // Select edges
-  if (selectEdges) {
-    $('.edge title').forEach(title => {
-      for (const el of els) {
-        const module = getCachedModule(el.dataset.module ?? '');
-        if (!module) continue;
+  $('.edge title').forEach(title => {
+    for (const el of els) {
+      const module = getCachedModule(el.dataset.module ?? '');
+      if (!module) continue;
 
-        if ((title.textContent ?? '').indexOf(module.key) >= 0) {
-          const edge = $.up<SVGPathElement>(title, '.edge');
-          if (!edge) continue;
+      if ((title.textContent ?? '').indexOf(module.key) >= 0) {
+        const edge = $.up<SVGPathElement>(title, '.edge');
+        if (!edge) continue;
 
-          edge.classList.add('selected');
+        edge.classList.add('selected');
 
-          // Move edge to end of child list so it's painted last
-          edge.parentElement?.appendChild(edge);
-        }
+        // Move edge to end of child list so it's painted last
+        edge.parentElement?.appendChild(edge);
       }
-    });
-  }
+    }
+  });
 }
 
 function colorizeGraph(svg: SVGSVGElement, colorize: string) {
@@ -334,9 +314,8 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   } else if (colorize == 'bus') {
     for (const el of $<SVGGElement>(svg, 'g.node')) {
       const m = getCachedModule(el.dataset.module ?? '');
-      $<SVGPathElement>(el, 'path')[0].style.fill = hslFor(
-        ((m?.package.maintainers?.length ?? 1) - 1) / 3,
-      );
+      const bus = Math.min(m?.package.maintainers?.length ?? 1, 4);
+      $<SVGPathElement>(el, 'path')[0].style.fill = COLORIZE_COLORS[bus - 1];
     }
   } else if (colorize == 'moduleType') {
     for (const el of $<SVGGElement>('#graph g.node')) {
@@ -393,6 +372,7 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
           Object.assign(combinedResults, result.value);
         }
       }
+
       if (rejected) {
         flash(`${rejected} of ${results.length} npms.io requests failed`);
       }

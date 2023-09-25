@@ -9,6 +9,7 @@ import { Tags } from '../components/Tags.js';
 import { Toggle } from '../components/Toggle.js';
 import {
   COLORIZE_BUS,
+  COLORIZE_COLORS,
   COLORIZE_MAINTENANCE,
   COLORIZE_MODULE_CJS,
   COLORIZE_MODULE_ESM,
@@ -74,8 +75,7 @@ export default function GraphPane({
         checked={Boolean(includeDev)}
         onChange={() => setIncludeDev(includeDev ? '' : '1')}
       >
-        Include <code>devDependencies</code> (
-        <span style={{ color: 'red' }}>{'\u{27f6}'}</span>)
+        Include devDependencies
       </Toggle>
 
       <label id="colorize-ui">
@@ -100,10 +100,13 @@ export default function GraphPane({
 
       {colorize == COLORIZE_BUS ? (
         <div>
-          <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 1 maintainer,
-          <span style={{ color: hslFor(1 / 3) }}>{'\u2B24'}</span> = 2,
-          <span style={{ color: hslFor(2 / 3) }}>{'\u2B24'}</span> = 3,
-          <span style={{ color: hslFor(3 / 3) }}>{'\u2B24'}</span> = 4+
+          <span style={{ fontWeight: 'bold', color: COLORIZE_COLORS[0] }}>
+            {'\u2B24'}
+          </span>{' '}
+          = 1 maintainer,
+          <span style={{ color: COLORIZE_COLORS[1] }}>{'\u2B24'}</span> = 2,
+          <span style={{ color: COLORIZE_COLORS[2] }}>{'\u2B24'}</span> = 3,
+          <span style={{ color: COLORIZE_COLORS[3] }}>{'\u2B24'}</span> = 4+
         </div>
       ) : colorize == COLORIZE_MODULE_TYPE ? (
         <div>
@@ -122,13 +125,13 @@ export default function GraphPane({
         <Tags>
           {Object.entries(occurances)
             .sort(compareEntryKey)
-            .map(([name, count]) => (
+            .map(([value, count]) => (
               <Tag
-                key={name + count}
-                name={name}
-                type="module"
+                key={value + count}
+                type="name"
+                value={value}
                 count={count}
-                className={excludes.includes(name) ? 'collapsed' : ''}
+                className={excludes.includes(value) ? 'collapsed' : ''}
               />
             ))}
         </Tags>
@@ -153,8 +156,8 @@ export default function GraphPane({
             .map(([, { name = 'Unknown', email, count }]) => (
               <Tag
                 key={name + count}
-                name={name}
                 type="maintainer"
+                value={name}
                 count={count ?? 0}
                 gravatar={email}
               />
@@ -164,8 +167,13 @@ export default function GraphPane({
 
       <Section title={simplur`${licenses.length} License[|s]`}>
         <Tags>
-          {licenses.map(([name, count]) => (
-            <Tag key={name + count} name={name} type="license" count={count} />
+          {licenses.map(([value, count]) => (
+            <Tag
+              key={value + count}
+              type="license"
+              value={value}
+              count={count}
+            />
           ))}
         </Tags>
 
