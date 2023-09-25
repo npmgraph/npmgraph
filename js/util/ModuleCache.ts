@@ -175,12 +175,7 @@ export function cacheModule(module: Module) {
 }
 
 /**
- * Ad-hoc DSL for querying the module cache.  Format is "<type>:<value>" where
- * <type> is one of:
- *  - "name": Matches module name-only
- *  - "key": Matches module name & version
- *  - "license": Match module license
- *  - "maintainer": Matches maintainer
+ * Convenience method for getting loaded modules by some criteria.
  */
 export function queryModuleCache(queryType: QueryType, queryValue: string) {
   const results = new Map<string, Module>();

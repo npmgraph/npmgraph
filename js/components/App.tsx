@@ -14,7 +14,6 @@ export const [usePane] = sharedStateHook('info', 'pane');
 export const [useQuery] = sharedStateHook(queryFromLocation(), 'query');
 export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');
 export const [useExcludes] = sharedStateHook([] as string[], 'excludes');
-export const [useDomSignal] = sharedStateHook(0, 'dom signal');
 
 export default function App() {
   const activity = useActivity();
