@@ -73,5 +73,4 @@ function generateLinkToDownload(extension: DownloadExtension, link: string) {
   downloadLink.href = link;
   downloadLink.download = `${name}_dependencies.${extension}`;
   downloadLink.click();
-  document.body.removeChild(downloadLink);
 }

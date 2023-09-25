@@ -1,44 +1,64 @@
 import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
-import {
-  useColorize,
-  useExcludes,
-  useGraph,
-  useIncludeDev,
-  useInspectorOpen,
-  useModule,
-  usePane,
-  useQuery,
-} from '../components/App.js';
+import { useExcludes, useGraph, usePane, useQuery } from '../components/App.js';
 import LoadActivity from '../util/LoadActivity.js';
-import Module from '../util/Module.js';
-import { getCachedModule } from '../util/ModuleCache.js';
+import {
+  QueryType,
+  getCachedModule,
+  queryModuleCache,
+} from '../util/ModuleCache.js';
 import { report } from '../util/bugsnag.js';
 import { createAbortable } from '../util/createAbortable.js';
-import $, { tagElement } from '../util/dom.js';
+import $ from '../util/dom.js';
 import fetchJSON from '../util/fetchJSON.js';
 import { NPMSIOData } from '../util/fetch_types.js';
 import { flash } from '../util/flash.js';
-import { GraphDiagramControls } from './GraphDiagramControls.js';
+import useGraphSelection from '../util/useGraphSelection.js';
+import useHashProp from '../util/useHashProp.js';
+import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
+import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
 import '/css/Graph.scss';
 
-const graphvizP = Graphviz.load();
+export const COLORIZE_MODULE_ESM = 'var(--bg-yellow)';
+export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
+export const COLORIZE_COLORS = [
+  'var(--bg-red)',
+  'var(--bg-orange)',
+  'var(--bg-yellow)',
+  'var(--bg-green)',
+];
 
-export const COLORIZE_MODULE_ESM = '#ffff66';
-export const COLORIZE_MODULE_CJS = '#ffaa66';
+export const ZOOM_NONE = '';
+export const ZOOM_FIT_WIDTH = 'w';
+export const ZOOM_FIT_HEIGHT = 'h';
+
+export const COLORIZE_NONE = '';
+export const COLORIZE_BUS = 'bus';
+export const COLORIZE_MODULE_TYPE = 'moduleType';
+export const COLORIZE_OVERALL = 'overall';
+export const COLORIZE_QUALITY = 'quality';
+export const COLORIZE_POPULARITY = 'popularity';
+export const COLORIZE_MAINTENANCE = 'maintenance';
+
+export type ZoomOption =
+  | typeof ZOOM_NONE
+  | typeof ZOOM_FIT_WIDTH
+  | typeof ZOOM_FIT_HEIGHT;
+
+const graphvizP = Graphviz.load();
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
-  const [includeDev] = useIncludeDev();
+  const [includeDev] = useHashProp('dev');
   const [, setPane] = usePane();
-  const [, setInspectorOpen] = useInspectorOpen();
-  const [, setModule] = useModule();
+  const [, setZenMode] = useHashProp('zen');
+  const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
-  const [colorize] = useColorize();
-  const [zoom, setZoom] = useState(0);
+  const [colorize] = useHashProp('c');
+  const [zoom] = useHashProp('z');
 
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
@@ -50,31 +70,27 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     const el = $.up<SVGElement>(target, '.node');
 
-    let module: Module | undefined;
-    if (el) {
-      const key = $(el, 'title')?.textContent?.trim();
-      module = getCachedModule(key);
-      if (event.shiftKey) {
-        if (module) {
-          const isIncluded = excludes.includes(module.name);
-          if (isIncluded) {
-            // Why is `module?.` needed here, but not above or below???
-            setExcludes(excludes.filter(n => n !== module?.name));
-          } else {
-            setExcludes([...excludes, module.name]);
-          }
-        }
+    const moduleKey = el ? $(el, 'title')?.textContent?.trim() : '';
+    const module = moduleKey ? getCachedModule(moduleKey) : undefined;
 
-        return;
+    // Toggle exclude filter?
+    if (el && event.shiftKey) {
+      if (module) {
+        const isIncluded = excludes.includes(module.name);
+        if (isIncluded) {
+          setExcludes(excludes.filter(n => n !== module.name));
+        } else {
+          setExcludes([...excludes, module.name]);
+        }
       }
+
+      return;
     }
 
-    selectTag(el, true);
+    if (el) setZenMode('');
 
-    if (el) setInspectorOpen(true);
-
-    setModule(module);
-    setPane(module ? 'module' : 'graph');
+    setGraphSelection('exact', moduleKey);
+    setPane(moduleKey ? 'module' : 'graph');
   }
 
   function applyZoom() {
@@ -90,21 +106,21 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const [, , w, h] = vb;
     graphEl.classList.toggle(
       'centered',
-      zoom === 0 && w < graphEl.clientWidth && h < graphEl.clientHeight,
+      zoom === ZOOM_NONE && w < graphEl.clientWidth && h < graphEl.clientHeight,
     );
 
     switch (zoom) {
-      case 0:
+      case ZOOM_NONE:
         svg.setAttribute('width', String(w));
         svg.setAttribute('height', String(h));
         break;
 
-      case 1:
+      case ZOOM_FIT_WIDTH:
         svg.setAttribute('width', '100%');
         svg.removeAttribute('height');
         break;
 
-      case 2:
+      case ZOOM_FIT_HEIGHT:
         svg.removeAttribute('width');
         svg.setAttribute('height', '100%');
         break;
@@ -124,19 +140,19 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useEffect(() => {
     const { signal, abort } = createAbortable();
-    setGraph(null);
-    setModule(undefined);
 
-    getGraphForQuery(query, includeDev, moduleFilter).then(newGraph => {
-      if (signal.aborted) return; // Check after async
+    getGraphForQuery(query, Boolean(includeDev), moduleFilter).then(
+      newGraph => {
+        if (signal.aborted) return; // Check after async
 
-      setGraph(newGraph);
-    });
+        setGraph(newGraph);
+      },
+    );
 
     return abort;
-  }, [query, includeDev, excludes]);
+  }, [[...query].sort().join(), includeDev, excludes]);
 
-  // Effect: Parse SVG markup into DOM
+  // Effect: Insert SVG markup into DOM
   useEffect(() => {
     const { signal, abort } = createAbortable();
 
@@ -201,7 +217,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         }
 
         if (m.name) {
-          tagElement(el, 'module', m.name);
           el.dataset.module = m.key;
         } else {
           report.warn(Error(`Bad replace: ${key}`));
@@ -214,10 +229,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         const pkg = m.package;
         if (pkg._stub) {
           el.classList.add('stub');
-        } else {
-          tagElement(el, 'maintainer', ...m.maintainers.map(m => m.name));
-
-          tagElement(el, 'license', m.licenseString);
         }
       }
 
@@ -235,6 +246,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     };
   }, [graph]);
 
+  // Effect: render graph selection
+  useEffect(
+    () => updateSelection(queryType, queryValue),
+    [queryType, queryValue, domSignal],
+  );
+
   // Effect: Colorize nodes
   useEffect(() => {
     colorizeGraph($<SVGSVGElement>('#graph svg')[0], colorize);
@@ -247,64 +264,48 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   return (
     <div id="graph" onClick={handleGraphClick}>
-      <GraphDiagramControls zoom={zoom} setZoom={setZoom} />
+      <div id="graph-controls">
+        <GraphDiagramZoomButtons />
+        <GraphDiagramDownloadButton />
+      </div>
     </div>
   );
 }
 
-export function selectTag(
-  tag: string | HTMLElement | SVGElement | undefined,
-  selectEdges = false,
-  scroll = false,
-) {
-  // If tag (element) is already selected, do nothing
-  if (
-    tag instanceof HTMLElement &&
-    tag.classList &&
-    tag.classList.contains('selected')
-  ) {
-    return;
-  }
+export function updateSelection(queryType: QueryType, queryValue: string) {
+  const modules = queryModuleCache(queryType, queryValue);
+  // Locate target element(s)
+  const els = [...$<SVGElement>('svg .node[data-module]')].filter(el => {
+    modules.has(el.dataset.module ?? '');
+    return modules.has(el.dataset.module ?? '');
+  });
 
   // Unselect nodes and edges
   $('svg .node').forEach(el => el.classList.remove('selected'));
   $('svg .edge').forEach(el => el.classList.remove('selected'));
 
-  if (!tag) return;
-
-  let els: (HTMLElement | SVGElement)[];
-
-  if (typeof tag == 'string') {
-    els = $(`svg .node.${tag}`);
-  } else {
-    els = [tag];
-  }
-
-  // Select nodes
-  els.forEach((el, i) => {
+  for (const el of els) {
     el.classList.add('selected');
-    if (i == 0 && scroll) el.scrollIntoView();
-  });
+    el.scrollIntoView({ behavior: 'smooth' });
+  }
 
   // Select edges
-  if (selectEdges) {
-    $('.edge title').forEach(title => {
-      for (const el of els) {
-        const module = getCachedModule(el.dataset.module ?? '');
-        if (!module) continue;
+  $('.edge title').forEach(title => {
+    for (const el of els) {
+      const module = getCachedModule(el.dataset.module ?? '');
+      if (!module) continue;
 
-        if ((title.textContent ?? '').indexOf(module.key) >= 0) {
-          const edge = $.up<SVGPathElement>(title, '.edge');
-          if (!edge) continue;
+      if ((title.textContent ?? '').indexOf(module.key) >= 0) {
+        const edge = $.up<SVGPathElement>(title, '.edge');
+        if (!edge) continue;
 
-          edge.classList.add('selected');
+        edge.classList.add('selected');
 
-          // Move edge to end of child list so it's painted last
-          edge.parentElement?.appendChild(edge);
-        }
+        // Move edge to end of child list so it's painted last
+        edge.parentElement?.appendChild(edge);
       }
-    });
-  }
+    }
+  });
 }
 
 function colorizeGraph(svg: SVGSVGElement, colorize: string) {
@@ -313,9 +314,8 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   } else if (colorize == 'bus') {
     for (const el of $<SVGGElement>(svg, 'g.node')) {
       const m = getCachedModule(el.dataset.module ?? '');
-      $<SVGPathElement>(el, 'path')[0].style.fill = hslFor(
-        ((m?.package.maintainers?.length ?? 1) - 1) / 3,
-      );
+      const bus = Math.min(m?.package.maintainers?.length ?? 1, 4);
+      $<SVGPathElement>(el, 'path')[0].style.fill = COLORIZE_COLORS[bus - 1];
     }
   } else if (colorize == 'moduleType') {
     for (const el of $<SVGGElement>('#graph g.node')) {
@@ -361,48 +361,47 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       packageNames = packageNames.slice(MAX_PACKAGES);
     }
 
-    Promise.allSettled(reqs)
-      .then(results => {
-        // Merge results back into a single object
-        const infoAccum: { [key: string]: NPMSIOData } = {};
-        for (const result of results) {
-          if (result.status !== 'fulfilled') {
-            flash('npms.io fetch failed');
-            return;
-          }
-          Object.assign(infoAccum, result.value);
+    Promise.allSettled(reqs).then(results => {
+      // Merge results back into a single object
+      const combinedResults: { [key: string]: NPMSIOData } = {};
+      let rejected = 0;
+      for (const result of results) {
+        if (result.status == 'rejected') {
+          rejected++;
+        } else {
+          Object.assign(combinedResults, result.value);
+        }
+      }
+
+      if (rejected) {
+        flash(`${rejected} of ${results.length} npms.io requests failed`);
+      }
+
+      // Colorize nodes
+      for (const el of $(svg, 'g.node')) {
+        const key = $(el, 'text')[0].textContent;
+        if (!key) return;
+
+        const moduleName = key.replace(/@[\d.]+$/, '');
+        const score = combinedResults[moduleName]?.score;
+        let fill: number | undefined;
+        switch (score && colorize) {
+          case COLORIZE_OVERALL:
+            fill = score.final;
+            break;
+          case COLORIZE_QUALITY:
+            fill = score.detail.quality;
+            break;
+          case COLORIZE_POPULARITY:
+            fill = score.detail.popularity;
+            break;
+          case COLORIZE_MAINTENANCE:
+            fill = score.detail.maintenance;
+            break;
         }
 
-        return infoAccum;
-      })
-      .then(res => {
-        // TODO: 'Need hang module names on svg nodes with data-module attributes
-        for (const el of $(svg, 'g.node')) {
-          const key = $(el, 'text')[0].textContent;
-          if (!key) return;
-
-          const moduleName = key.replace(/@[\d.]+$/, '');
-          const score = res[moduleName]?.score;
-          let fill: number | undefined;
-          switch (score && colorize) {
-            case 'overall':
-              fill = score.final;
-              break;
-            case 'quality':
-              fill = score.detail.quality;
-              break;
-            case 'popularity':
-              fill = score.detail.popularity;
-              break;
-            case 'maintenance':
-              fill = score.detail.maintenance;
-              break;
-          }
-
-          $<SVGPathElement>(el, 'path')[0].style.fill = fill
-            ? hslFor(fill)
-            : '';
-        }
-      });
+        $<SVGPathElement>(el, 'path')[0].style.fill = fill ? hslFor(fill) : '';
+      }
+    });
   }
 }

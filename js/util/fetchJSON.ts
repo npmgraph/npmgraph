@@ -12,9 +12,10 @@ export default function fetchJSON<T>(
   init?: RequestInit,
 ): Promise<T> {
   const url = typeof input === 'string' ? input : input.toString();
+  const cacheKey = `${url} ${JSON.stringify(init)}`;
 
-  if (requestCache.has(url)) {
-    return requestCache.get(url) as Promise<T>;
+  if (requestCache.has(cacheKey)) {
+    return requestCache.get(cacheKey) as Promise<T>;
   }
 
   const finish = activity?.start(`Fetching ${decodeURIComponent(url)}`);
@@ -26,7 +27,7 @@ export default function fetchJSON<T>(
     )
     .finally(() => finish?.());
 
-  requestCache.set(url, p);
+  requestCache.set(cacheKey, p);
 
   return p as Promise<T>;
 }

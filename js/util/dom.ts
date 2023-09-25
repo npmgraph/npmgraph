@@ -43,27 +43,3 @@ $.up = function <T extends Element>(
   }
   return trace ? (trace as T) : undefined;
 };
-
-export function tagify(type = 'tag', tag: string) {
-  return type + '-' + tag.replace(/\W/g, '_').toLowerCase();
-}
-
-export function tagElement(
-  el: Element,
-  type: string,
-  ...tags: (string | undefined)[]
-) {
-  for (const tag of tags) {
-    if (tag) el.classList.add(tagify(type, tag));
-  }
-}
-
-export function createTag(type: string, text: string, count = 0) {
-  const el = $.create<HTMLDivElement>('div');
-
-  el.classList.add('tag', type);
-  el.dataset.tag = tagify(type, text);
-  el.title = el.innerText = count < 2 ? text : `${text}(${count})`;
-
-  return el;
-}

@@ -8,10 +8,12 @@ import {
   cacheModule,
   getLocalModuleNames,
 } from '../util/ModuleCache.js';
+import useLocation from '../util/useLocation.js';
 import '/css/InfoPane.scss';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [, setQuery] = useQuery();
+  const [location, setLocation] = useLocation();
 
   const [recents, setRecents] = useState(getLocalModuleNames());
 
@@ -82,9 +84,9 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
     setRecents(getLocalModuleNames());
 
     // Update location
-    const url = new URL(location.href);
+    const url = new URL(location);
     url.searchParams.set('q', module.key);
-    history.pushState(null, '', url);
+    setLocation(url);
   };
 
   const onDragOver = (ev: React.DragEvent<HTMLElement>) => {
@@ -113,7 +115,10 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
         Enter npm module name here{' '}
         <i className="material-icons">arrow_upward</i> to see the dependency
         graph. Separate multiple module names with commas (e.g.{' '}
-        <a href="?q=mocha, chalk, rimraf">&quot;mocha, chalk, rimraf&quot;</a>).
+        <a href="?q=minimatch, cross-env, rimraf">
+          &quot;minimatch, cross-env, rimraf&quot;
+        </a>
+        ).
       </p>
 
       <label

@@ -9,6 +9,8 @@ const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 
+export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
+
 type ModuleCacheEntry = {
   promise: Promise<Module>;
   module?: Module; // Set once module is loaded
@@ -170,6 +172,38 @@ export function getCachedModule(key: string) {
 
 export function cacheModule(module: Module) {
   moduleCache.set(module.key, { promise: Promise.resolve(module), module });
+}
+
+/**
+ * Convenience method for getting loaded modules by some criteria.
+ */
+export function queryModuleCache(queryType: QueryType, queryValue: string) {
+  const results = new Map<string, Module>();
+
+  if (!queryType || !queryValue) return results;
+
+  for (const { module } of moduleCache.values()) {
+    if (!module) continue;
+
+    switch (queryType) {
+      case 'exact':
+        if (module.key === queryValue) results.set(module.key, module);
+        break;
+      case 'name':
+        if (module.name === queryValue) results.set(module.key, module);
+        break;
+      case 'license':
+        if (module.licenseString === queryValue)
+          results.set(module.key, module);
+        break;
+      case 'maintainer':
+        if (module.maintainers.find(({ name }) => name === queryValue))
+          results.set(module.key, module);
+        break;
+    }
+  }
+
+  return results;
 }
 
 //

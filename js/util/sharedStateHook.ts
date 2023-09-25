@@ -35,32 +35,29 @@ import { useEffect, useState } from 'react';
  *    that depend on just one of the properties in a context, but that rerender when
  *    *any* property is changed.
  *
- * @param {any} value
+ * @param {any} defaultValue
  * @returns {Function} React hook function
  */
 
-export default function <T>(
-  value: T,
+export default function sharedStateHook<T>(
+  defaultValue: T,
   name?: string, // eslint-disable-line @typescript-eslint/no-unused-vars
-): () => [val: T, set: (val: T) => void] {
+) {
   const setters = new Set<(v: T) => void>();
+  const notifySetters = (value: T) => {
+    for (const setter of setters) setter(value);
+  };
 
-  return function useSharedState(): [T, (value: T) => void] {
-    const [val, setVal] = useState<T>(value);
+  const hook = function useSharedState() {
+    const [val, setVal] = useState<T>(defaultValue);
 
     useEffect(() => {
       setters.add(setVal);
-      return () => {
-        setters.delete(setVal);
-      };
+      return () => void setters.delete(setVal);
     }, [val]);
 
-    return [
-      val,
-      v => {
-        value = v;
-        for (const setter of setters) setter(value);
-      },
-    ];
+    return [val, notifySetters] as const;
   };
+
+  return [hook, notifySetters] as const;
 }
