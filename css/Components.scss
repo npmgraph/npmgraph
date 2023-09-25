@@ -14,7 +14,9 @@
   line-height: var(--tabs-height);
   overflow: hidden;
   font-weight: 600;
-  text-align: center;
+  text-wrap: nowrap;
+  box-sizing: border-box;
+  padding-left: 0.5em;
   color: var(--tabs-text);
   background: var(--tabs-bg) var(--bg-gradient);
   border-top-left-radius: var(--rad_lg);
