@@ -1,8 +1,8 @@
 import { QueryType } from './ModuleCache.js';
-import useHashProp from './useHashProp.js';
+import useHashParam from './useHashParam.js';
 
 export default function useGraphSelection() {
-  const [sel, setSel] = useHashProp('sel');
+  const [sel, setSel] = useHashParam('sel');
   const i = sel.indexOf(':');
   const type = (i > 0 ? sel.slice(0, i) : '') as QueryType;
   const value = i > 0 ? sel.slice(i + 1) : '';

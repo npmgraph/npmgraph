@@ -14,8 +14,9 @@ import $ from '../util/dom.js';
 import fetchJSON from '../util/fetchJSON.js';
 import { NPMSIOData } from '../util/fetch_types.js';
 import { flash } from '../util/flash.js';
+import { isDefined } from '../util/guards.js';
 import useGraphSelection from '../util/useGraphSelection.js';
-import useHashProp from '../util/useHashProp.js';
+import useHashParam from '../util/useHashParam.js';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
@@ -51,14 +52,14 @@ const graphvizP = Graphviz.load();
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
-  const [includeDev] = useHashProp('dev');
+  const [includeDev] = useHashParam('dev');
   const [, setPane] = usePane();
-  const [, setZenMode] = useHashProp('zen');
+  const [, setZenMode] = useHashParam('zen');
   const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
-  const [colorize] = useHashProp('c');
-  const [zoom] = useHashProp('z');
+  const [colorize] = useHashParam('c');
+  const [zoom] = useHashParam('z');
 
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
@@ -339,7 +340,7 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   } else {
     let packageNames = $<SVGGElement>('#graph g.node')
       .map(el => getCachedModule(el.dataset.module ?? '')?.name)
-      .filter(Boolean);
+      .filter(isDefined);
 
     // npms.io limits to 250 packages, so query in batches
     const reqs: Promise<Record<string, NPMSIOData> | null>[] = [];

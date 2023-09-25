@@ -21,7 +21,7 @@ import {
 } from '../graphdiagram/GraphDiagram.js';
 import { GraphState, hslFor } from '../graphdiagram/graph_util.js';
 import simplur from '../util/simplur.js';
-import useHashProp from '../util/useHashProp.js';
+import useHashParam from '../util/useHashParam.js';
 import '/css/GraphPane.scss';
 
 export default function GraphPane({
@@ -30,9 +30,9 @@ export default function GraphPane({
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const compareEntryKey = ([a]: [string, unknown], [b]: [string, unknown]) =>
     a < b ? -1 : a > b ? 1 : 0;
-  const [colorize, setColorize] = useHashProp('c');
+  const [colorize, setColorize] = useHashParam('c');
   const [excludes] = useExcludes();
-  const [includeDev, setIncludeDev] = useHashProp('dev');
+  const [includeDev, setIncludeDev] = useHashParam('dev');
 
   if (!graph?.modules) return <div>Loading</div>;
 

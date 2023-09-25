@@ -1,29 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import GraphDiagram from '../graphdiagram/GraphDiagram.js';
 import { GraphState } from '../graphdiagram/graph_util.js';
 import LoadActivity from '../util/LoadActivity.js';
 import sharedStateHook from '../util/sharedStateHook.js';
-import useHashProp from '../util/useHashProp.js';
-import useLocation from '../util/useLocation.js';
+import useHashParam from '../util/useHashParam.js';
+import useSearchParam from '../util/useSearchParam.js';
 import Inspector from './Inspector.js';
 import { Loader } from './Loader.js';
 import { Splitter } from './Splitter.js';
 import '/css/App.scss';
 
 export const [usePane] = sharedStateHook('info', 'pane');
-export const [useQuery] = sharedStateHook(queryFromLocation(), 'query');
 export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');
 export const [useExcludes] = sharedStateHook([] as string[], 'excludes');
 
+export function useQuery() {
+  const [val, setVal] = useSearchParam('q');
+  const moduleKeys = val.split(/[, ]+/).filter(Boolean);
+  return [
+    moduleKeys,
+    function setQuery(moduleKeys: string[] = []) {
+      setVal(moduleKeys.join(','));
+    },
+  ] as const;
+}
+
 export default function App() {
   const activity = useActivity();
-  const [, setQuery] = useQuery();
-  const [location] = useLocation();
-  const [zenMode, setZenMode] = useHashProp('zen');
-
-  useEffect(() => {
-    setQuery(queryFromLocation());
-  }, [location]);
+  const [zenMode, setZenMode] = useHashParam('zen');
 
   return (
     <>
@@ -36,15 +40,6 @@ export default function App() {
       <Inspector className={zenMode ? '' : 'open'} />
     </>
   );
-}
-
-// Parse `q` query param from browser location
-function queryFromLocation() {
-  const q = new URL(location.href).searchParams.get('q');
-  return (q ?? '')
-    .split(',')
-    .map(v => v.trim())
-    .filter(Boolean);
 }
 
 let activity: LoadActivity;
