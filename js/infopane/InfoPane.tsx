@@ -1,21 +1,15 @@
-import React, { HTMLProps, useState } from 'react';
+import React, { HTMLProps } from 'react';
 import { useQuery } from '../components/App.js';
 import { Pane } from '../components/Pane.js';
-import { QueryLink } from '../components/QueryLink.js';
 import Module, { ModulePackage } from '../util/Module.js';
-import {
-  cacheLocalModule,
-  cacheModule,
-  getLocalModuleNames,
-} from '../util/ModuleCache.js';
+import { cacheLocalModule, cacheModule } from '../util/ModuleCache.js';
 import useLocation from '../util/useLocation.js';
+import LocalModuleList from './LocalModuleList.js';
 import '/css/InfoPane.scss';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [, setQuery] = useQuery();
   const [location, setLocation] = useLocation();
-
-  const [recents, setRecents] = useState(getLocalModuleNames());
 
   // Handle file selection via input
   const onSelect = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +75,6 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
 
     // Update UI
     setQuery([module.key]);
-    setRecents(getLocalModuleNames());
 
     // Update location
     const url = new URL(location);
@@ -132,24 +125,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
         Alternatively, <button type="button">select</button> or drop a{' '}
         <code>package.json</code> file here
       </label>
-      {recents.length ? (
-        <>
-          <div style={{ textAlign: 'start' }}>
-            <p style={{ marginTop: '1em' }}>Recent files:</p>
-            <ul>
-              {recents.map(name => (
-                <li key={name}>
-                  <QueryLink query={name} />
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div style={{ fontSize: '85%', color: 'gray' }}>
-            (Dropped files do not leave your computer and are cleared when
-            browser closes.)
-          </div>
-        </>
-      ) : null}
+      <LocalModuleList />
     </Pane>
   );
 }
