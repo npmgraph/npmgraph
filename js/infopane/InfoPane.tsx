@@ -115,7 +115,10 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
         Enter npm module name here{' '}
         <i className="material-icons">arrow_upward</i> to see the dependency
         graph. Separate multiple module names with commas (e.g.{' '}
-        <a href="?q=mocha, chalk, rimraf">&quot;mocha, chalk, rimraf&quot;</a>).
+        <a href="?q=minimatch, cross-env, rimraf">
+          &quot;minimatch, cross-env, rimraf&quot;
+        </a>
+        ).
       </p>
 
       <label
