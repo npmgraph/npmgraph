@@ -15,12 +15,12 @@ export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');
 export const [useExcludes] = sharedStateHook([] as string[], 'excludes');
 
 export function useQuery() {
-  const [val, setVal] = useSearchParam('q');
-  const moduleKeys = val.split(/[, ]+/).filter(Boolean);
+  const [queryString, setQueryString] = useSearchParam('q');
+  const moduleKeys = queryString.split(/[, ]+/).filter(Boolean);
   return [
     moduleKeys,
     function setQuery(moduleKeys: string[] = []) {
-      setVal(moduleKeys.join(','));
+      setQueryString(moduleKeys.join(','), true);
     },
   ] as const;
 }
