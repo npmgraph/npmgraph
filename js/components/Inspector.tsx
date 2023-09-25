@@ -3,6 +3,7 @@ import { version as VERSION } from '../../package.json';
 import GraphPane from '../graphpane/GraphPane.js';
 import InfoPane from '../infopane/InfoPane.js';
 import ModulePane from '../modulepane/ModulePane.js';
+import useLocation from '../util/useLocation.js';
 import { useGraph, useModule, usePane, useQuery } from './App.js';
 import { ExternalLink } from './ExternalLink.js';
 import { Tab } from './Tab.js';
@@ -13,6 +14,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = usePane();
   const [module] = useModule();
   const [graph] = useGraph();
+  const [location, setLocation] = useLocation();
 
   let paneComponent;
   switch (pane) {
@@ -35,13 +37,13 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     const query = [...new Set(names)]; // De-dupe
 
     // Update location
-    const url = new URL(location.href);
+    const url = new URL(location);
     url.hash = '';
     query.length
       ? url.searchParams.set('q', query.join(','))
       : url.searchParams.delete('q');
 
-    history.replaceState(null, document.title, url);
+    setLocation(url);
 
     setQuery(query);
   }

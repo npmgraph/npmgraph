@@ -3,3 +3,13 @@
     opacity: 0.5;
   }
 }
+
+#colorize-ui {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: solid 1px var(--bg1);
+}
+
+#colorize-ui select {
+  margin-left: 0.5em;
+}

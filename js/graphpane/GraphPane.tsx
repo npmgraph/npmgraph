@@ -1,18 +1,26 @@
 import { Maintainer } from '@npm/types';
 import React from 'react';
-import { useColorize, useExcludes, useIncludeDev } from '../components/App.js';
+import { useExcludes } from '../components/App.js';
 import { Pane } from '../components/Pane.js';
+import { PieGraph } from '../components/PieGraph.js';
 import { Section } from '../components/Section.js';
 import { Tag } from '../components/Tag.js';
 import { Tags } from '../components/Tags.js';
 import { Toggle } from '../components/Toggle.js';
 import {
+  COLORIZE_BUS,
+  COLORIZE_MAINTENANCE,
   COLORIZE_MODULE_CJS,
   COLORIZE_MODULE_ESM,
+  COLORIZE_MODULE_TYPE,
+  COLORIZE_NONE,
+  COLORIZE_OVERALL,
+  COLORIZE_POPULARITY,
+  COLORIZE_QUALITY,
 } from '../graphdiagram/GraphDiagram.js';
 import { GraphState, hslFor } from '../graphdiagram/graph_util.js';
 import simplur from '../util/simplur.js';
-import { PieGraph } from '../components/PieGraph.js';
+import useHashProp from '../util/useHashProp.js';
 import '/css/GraphPane.scss';
 
 export default function GraphPane({
@@ -21,9 +29,9 @@ export default function GraphPane({
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const compareEntryKey = ([a]: [string, unknown], [b]: [string, unknown]) =>
     a < b ? -1 : a > b ? 1 : 0;
-  const [colorize, setColorize] = useColorize();
+  const [colorize, setColorize] = useHashProp('c');
   const [excludes] = useExcludes();
-  const [includeDev, setIncludeDev] = useIncludeDev();
+  const [includeDev, setIncludeDev] = useHashProp('dev');
 
   if (!graph?.modules) return <div>Loading</div>;
 
@@ -62,37 +70,42 @@ export default function GraphPane({
 
   return (
     <Pane {...props}>
-      <Toggle checked={includeDev} onChange={() => setIncludeDev(!includeDev)}>
+      <Toggle
+        checked={Boolean(includeDev)}
+        onChange={() => setIncludeDev(includeDev ? '' : '1')}
+      >
         Include <code>devDependencies</code> (
         <span style={{ color: 'red' }}>{'\u{27f6}'}</span>)
       </Toggle>
 
-      <label>
+      <label id="colorize-ui">
         Colorize by:
         <select
           value={colorize ?? ''}
           onChange={e => setColorize(e.target.value)}
         >
-          <option value="">Nothing (uncolored)</option>
-          <option value="moduleType">Module type (ESM v. CJS)</option>
+          <option value={COLORIZE_NONE}>Nothing (uncolored)</option>
+          <option value={COLORIZE_MODULE_TYPE}>Module type (ESM v. CJS)</option>
 
-          <option value="overall"> npms.io overall score</option>
-          <option value="quality"> npms.io quality score</option>
-          <option value="popularity"> npms.io popularity score</option>
-          <option value="maintenance">npms.io maintenance score</option>
+          <option value={COLORIZE_OVERALL}> npms.io overall score</option>
+          <option value={COLORIZE_QUALITY}> npms.io quality score</option>
+          <option value={COLORIZE_POPULARITY}> npms.io popularity score</option>
+          <option value={COLORIZE_MAINTENANCE}>
+            npms.io maintenance score
+          </option>
 
-          <option value="bus"># of maintainers</option>
+          <option value={COLORIZE_BUS}># of maintainers</option>
         </select>
       </label>
 
-      {colorize == 'bus' ? (
+      {colorize == COLORIZE_BUS ? (
         <div>
           <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 1 maintainer,
           <span style={{ color: hslFor(1 / 3) }}>{'\u2B24'}</span> = 2,
           <span style={{ color: hslFor(2 / 3) }}>{'\u2B24'}</span> = 3,
           <span style={{ color: hslFor(3 / 3) }}>{'\u2B24'}</span> = 4+
         </div>
-      ) : colorize == 'moduleType' ? (
+      ) : colorize == COLORIZE_MODULE_TYPE ? (
         <div>
           <span style={{ color: COLORIZE_MODULE_CJS }}>{'\u2B24'}</span> = CJS,
           <span style={{ color: COLORIZE_MODULE_ESM }}>{'\u2B24'}</span> = ESM,

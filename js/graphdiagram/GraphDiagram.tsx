@@ -2,11 +2,8 @@ import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
 import {
-  useColorize,
   useExcludes,
   useGraph,
-  useIncludeDev,
-  useInspectorOpen,
   useModule,
   usePane,
   useQuery,
@@ -20,25 +17,44 @@ import $, { tagElement } from '../util/dom.js';
 import fetchJSON from '../util/fetchJSON.js';
 import { NPMSIOData } from '../util/fetch_types.js';
 import { flash } from '../util/flash.js';
-import { GraphDiagramControls } from './GraphDiagramControls.js';
+import useHashProp from '../util/useHashProp.js';
+import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
+import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
 import '/css/Graph.scss';
-
-const graphvizP = Graphviz.load();
 
 export const COLORIZE_MODULE_ESM = '#ffff66';
 export const COLORIZE_MODULE_CJS = '#ffaa66';
 
+export const ZOOM_NONE = '';
+export const ZOOM_FIT_WIDTH = 'w';
+export const ZOOM_FIT_HEIGHT = 'h';
+
+export const COLORIZE_NONE = '';
+export const COLORIZE_BUS = 'bus';
+export const COLORIZE_MODULE_TYPE = 'moduleType';
+export const COLORIZE_OVERALL = 'overall';
+export const COLORIZE_QUALITY = 'quality';
+export const COLORIZE_POPULARITY = 'popularity';
+export const COLORIZE_MAINTENANCE = 'maintenance';
+
+export type ZoomOption =
+  | typeof ZOOM_NONE
+  | typeof ZOOM_FIT_WIDTH
+  | typeof ZOOM_FIT_HEIGHT;
+
+const graphvizP = Graphviz.load();
+
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
-  const [includeDev] = useIncludeDev();
+  const [includeDev] = useHashProp('dev');
   const [, setPane] = usePane();
-  const [, setInspectorOpen] = useInspectorOpen();
+  const [, setZenMode] = useHashProp('zen');
   const [, setModule] = useModule();
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
-  const [colorize] = useColorize();
-  const [zoom, setZoom] = useState(0);
+  const [colorize] = useHashProp('c');
+  const [zoom] = useHashProp('z');
 
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
@@ -71,7 +87,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     selectTag(el, true);
 
-    if (el) setInspectorOpen(true);
+    if (el) setZenMode('');
 
     setModule(module);
     setPane(module ? 'module' : 'graph');
@@ -90,21 +106,21 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const [, , w, h] = vb;
     graphEl.classList.toggle(
       'centered',
-      zoom === 0 && w < graphEl.clientWidth && h < graphEl.clientHeight,
+      zoom === ZOOM_NONE && w < graphEl.clientWidth && h < graphEl.clientHeight,
     );
 
     switch (zoom) {
-      case 0:
+      case ZOOM_NONE:
         svg.setAttribute('width', String(w));
         svg.setAttribute('height', String(h));
         break;
 
-      case 1:
+      case ZOOM_FIT_WIDTH:
         svg.setAttribute('width', '100%');
         svg.removeAttribute('height');
         break;
 
-      case 2:
+      case ZOOM_FIT_HEIGHT:
         svg.removeAttribute('width');
         svg.setAttribute('height', '100%');
         break;
@@ -127,11 +143,13 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     setGraph(null);
     setModule(undefined);
 
-    getGraphForQuery(query, includeDev, moduleFilter).then(newGraph => {
-      if (signal.aborted) return; // Check after async
+    getGraphForQuery(query, Boolean(includeDev), moduleFilter).then(
+      newGraph => {
+        if (signal.aborted) return; // Check after async
 
-      setGraph(newGraph);
-    });
+        setGraph(newGraph);
+      },
+    );
 
     return abort;
   }, [query, includeDev, excludes]);
@@ -247,7 +265,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   return (
     <div id="graph" onClick={handleGraphClick}>
-      <GraphDiagramControls zoom={zoom} setZoom={setZoom} />
+      <div id="graph-controls">
+        <GraphDiagramZoomButtons />
+        <GraphDiagramDownloadButton />
+      </div>
     </div>
   );
 }
@@ -385,16 +406,16 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
         const score = combinedResults[moduleName]?.score;
         let fill: number | undefined;
         switch (score && colorize) {
-          case 'overall':
+          case COLORIZE_OVERALL:
             fill = score.final;
             break;
-          case 'quality':
+          case COLORIZE_QUALITY:
             fill = score.detail.quality;
             break;
-          case 'popularity':
+          case COLORIZE_POPULARITY:
             fill = score.detail.popularity;
             break;
-          case 'maintenance':
+          case COLORIZE_MAINTENANCE:
             fill = score.detail.maintenance;
             break;
         }
