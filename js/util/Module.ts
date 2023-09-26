@@ -1,6 +1,9 @@
 import { PackumentVersion } from '@npm/types';
 
 export interface ModulePackage extends PackumentVersion {
+  // TODO: This needs to be fixed in @npm/types
+  deprecated?: boolean;
+
   _stub?: boolean;
   _local?: boolean;
   _stubError?: Error;
