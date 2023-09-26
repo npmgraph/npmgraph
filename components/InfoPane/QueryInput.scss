@@ -1,0 +1,13 @@
+#search-field {
+  font: inherit;
+  line-height: 1em;
+  padding: 0.3em 0.7em;
+  margin-left: 1em;
+  border: solid 1px white;
+  border-radius: 15px;
+  outline: none;
+
+  &:focus {
+    border-color: var(--highlight);
+  }
+}
