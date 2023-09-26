@@ -40,7 +40,8 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
       />
       {isGithubUrl(url) ? (
         <div className="tip">
-          Note: Files in private GitHub repos must use the URL shown when{' '}
+          Note: URLs that refer to private GitHub repos or gists should use the
+          URL shown when{' '}
           <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
             viewing the "Raw" file
           </ExternalLink>
@@ -58,5 +59,6 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
 }
 
 function isGithubUrl(url?: URL) {
-  return /\.?github.com$/.test(url?.host ?? '');
+  if (!url) return false;
+  return /^github.com$|\.github.com$/.test(url?.host ?? '');
 }
