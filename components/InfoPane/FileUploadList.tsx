@@ -8,7 +8,7 @@ import './FileUploadList.scss';
 export default function FileUploadList() {
   const [localModules] = useLocalModules();
   return (
-    <Section title="Previous uploads" id="local-modules">
+    <Section title="Previous Uploads" id="local-modules">
       {localModules.map(module => {
         return (
           <li key={module.name}>
