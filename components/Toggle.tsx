@@ -1,5 +1,5 @@
 import React, { HTMLProps } from 'react';
-import { cn } from '../util/dom.js';
+import { cn } from '../lib/dom.js';
 import './Toggle.scss';
 
 export function Toggle({

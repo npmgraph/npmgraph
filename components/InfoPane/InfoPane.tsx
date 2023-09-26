@@ -1,11 +1,11 @@
 import React, { HTMLProps } from 'react';
-import { useQuery } from '../components/App.js';
-import { Pane } from '../components/Pane.js';
-import Module, { ModulePackage } from '../util/Module.js';
-import { cacheLocalModule, cacheModule } from '../util/ModuleCache.js';
-import useLocation from '../util/useLocation.js';
-import LocalModuleList from './LocalModuleList.js';
+import Module, { ModulePackage } from '../../lib/Module.js';
+import { cacheLocalModule, cacheModule } from '../../lib/ModuleCache.js';
+import useLocation from '../../lib/useLocation.js';
+import { useQuery } from '../App.js';
+import { Pane } from '../Pane.js';
 import './InfoPane.scss';
+import LocalModuleList from './LocalModuleList.js';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [, setQuery] = useQuery();

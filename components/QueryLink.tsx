@@ -1,6 +1,6 @@
 import filterAlteredClicks from 'filter-altered-clicks';
 import React from 'react';
-import useLocation from '../util/useLocation.js';
+import useLocation from '../lib/useLocation.js';
 import { useQuery } from './App.js';
 
 export function QueryLink({ query }: { query: string | string[] }) {

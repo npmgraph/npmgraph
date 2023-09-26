@@ -1,26 +1,26 @@
 import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
-import { useExcludes, useGraph, usePane, useQuery } from '../components/App.js';
-import LoadActivity from '../util/LoadActivity.js';
+import LoadActivity from '../../lib/LoadActivity.js';
 import {
   QueryType,
   getCachedModule,
   queryModuleCache,
-} from '../util/ModuleCache.js';
-import { report } from '../util/bugsnag.js';
-import { createAbortable } from '../util/createAbortable.js';
-import $ from '../util/dom.js';
-import fetchJSON from '../util/fetchJSON.js';
-import { NPMSIOData } from '../util/fetch_types.js';
-import { flash } from '../util/flash.js';
-import { isDefined } from '../util/guards.js';
-import useGraphSelection from '../util/useGraphSelection.js';
-import useHashParam from '../util/useHashParam.js';
+} from '../../lib/ModuleCache.js';
+import { report } from '../../lib/bugsnag.js';
+import { createAbortable } from '../../lib/createAbortable.js';
+import $ from '../../lib/dom.js';
+import fetchJSON from '../../lib/fetchJSON.js';
+import { NPMSIOData } from '../../lib/fetch_types.js';
+import { flash } from '../../lib/flash.js';
+import { isDefined } from '../../lib/guards.js';
+import useGraphSelection from '../../lib/useGraphSelection.js';
+import useHashParam from '../../lib/useHashParam.js';
+import { useExcludes, useGraph, usePane, useQuery } from '../App.js';
+import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
-import './GraphDiagram.scss';
 
 export const COLORIZE_MODULE_ESM = 'var(--bg-yellow)';
 export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';

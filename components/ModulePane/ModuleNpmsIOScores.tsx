@@ -1,5 +1,5 @@
 import React from 'react';
-import { NPMSIOData } from '../util/fetch_types.js';
+import { NPMSIOData } from '../../lib/fetch_types.js';
 import { ModuleScoreBar } from './ModuleScoreBar.js';
 
 export function ModuleNpmsIOScores({

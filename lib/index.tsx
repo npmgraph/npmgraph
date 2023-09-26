@@ -1,12 +1,12 @@
-import './util/bugsnag.js'; // Initialize ASAP!
+import './bugsnag.js'; // Initialize ASAP!
 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import App, { setActivityForApp } from './components/App.js';
-import LoadActivity from './util/LoadActivity.js';
-import { loadLocalModules } from './util/ModuleCache.js';
-import { setActivityForRequestCache } from './util/fetchJSON.js';
-import { flash } from './util/flash.js';
+import LoadActivity from './LoadActivity.js';
+import { loadLocalModules } from './ModuleCache.js';
+import { setActivityForRequestCache } from './fetchJSON.js';
+import { flash } from './flash.js';
+import App, { setActivityForApp } from '../components/App.js';
 
 // Used to feature-detect that es6 modules are loading
 (window as { indexLoaded?: boolean }).indexLoaded = true;

@@ -1,6 +1,6 @@
 import React from 'react';
-import { report } from '../util/bugsnag.js';
-import $ from '../util/dom.js';
+import { report } from '../../lib/bugsnag.js';
+import $ from '../../lib/dom.js';
 
 type DownloadExtension = 'svg' | 'png';
 

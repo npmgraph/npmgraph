@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import GraphDiagram from '../graphdiagram/GraphDiagram.js';
-import { GraphState } from '../graphdiagram/graph_util.js';
-import LoadActivity from '../util/LoadActivity.js';
-import sharedStateHook from '../util/sharedStateHook.js';
-import useHashParam from '../util/useHashParam.js';
-import useSearchParam from '../util/useSearchParam.js';
+import LoadActivity from '../lib/LoadActivity.js';
+import sharedStateHook from '../lib/sharedStateHook.js';
+import useHashParam from '../lib/useHashParam.js';
+import useSearchParam from '../lib/useSearchParam.js';
+import './App.scss';
+import GraphDiagram from './GraphDiagram/GraphDiagram.js';
+import { GraphState } from './GraphDiagram/graph_util.js';
 import Inspector from './Inspector.js';
 import { Loader } from './Loader.js';
 import { Splitter } from './Splitter.js';
-import './App.scss';
 
 export const [usePane] = sharedStateHook('info', 'pane');
 export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');

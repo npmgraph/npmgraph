@@ -1,6 +1,6 @@
 import React from 'react';
-import { BundlePhobiaData } from '../util/fetch_types.js';
-import human from '../util/human.js';
+import { BundlePhobiaData } from '../../lib/fetch_types.js';
+import human from '../../lib/human.js';
 
 export function ModuleBundleStats({
   bundleInfo,

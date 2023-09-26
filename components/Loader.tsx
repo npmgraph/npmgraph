@@ -1,4 +1,4 @@
-import LoadActivity from '../util/LoadActivity.js';
+import LoadActivity from '../lib/LoadActivity.js';
 import './Loader.scss';
 
 import React, { HTMLProps } from 'react';

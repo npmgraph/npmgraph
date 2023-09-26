@@ -1,16 +1,16 @@
 import React, { HTMLProps } from 'react';
-import { version as VERSION } from '../../package.json';
-import GraphPane from '../graphpane/GraphPane.js';
-import InfoPane from '../infopane/InfoPane.js';
-import ModulePane from '../modulepane/ModulePane.js';
-import { queryModuleCache } from '../util/ModuleCache.js';
-import { isDefined } from '../util/guards.js';
-import useGraphSelection from '../util/useGraphSelection.js';
-import useLocation from '../util/useLocation.js';
+import { queryModuleCache } from '../lib/ModuleCache.js';
+import { isDefined } from '../lib/guards.js';
+import useGraphSelection from '../lib/useGraphSelection.js';
+import useLocation from '../lib/useLocation.js';
+import { version as VERSION } from '../package.json';
+import GraphPane from './GraphPane/GraphPane.js';
+import InfoPane from './InfoPane/InfoPane.js';
+import ModulePane from './ModulePane/ModulePane.js';
 import { useGraph, usePane, useQuery } from './App.js';
 import { ExternalLink } from './ExternalLink.js';
-import { Tab } from './Tab.js';
 import './Inspector.scss';
+import { Tab } from './Tab.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [query, setQuery] = useQuery();

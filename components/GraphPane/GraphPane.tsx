@@ -1,12 +1,14 @@
 import { Maintainer } from '@npm/types';
 import React from 'react';
-import { useExcludes } from '../components/App.js';
-import { Pane } from '../components/Pane.js';
-import { PieGraph } from '../components/PieGraph.js';
-import { Section } from '../components/Section.js';
-import { Tag } from '../components/Tag.js';
-import { Tags } from '../components/Tags.js';
-import { Toggle } from '../components/Toggle.js';
+import simplur from '../../lib/simplur.js';
+import useHashParam from '../../lib/useHashParam.js';
+import { useExcludes } from '../App.js';
+import { Pane } from '../Pane.js';
+import { PieGraph } from '../PieGraph.js';
+import { Section } from '../Section.js';
+import { Tag } from '../Tag.js';
+import { Tags } from '../Tags.js';
+import { Toggle } from '../Toggle.js';
 import {
   COLORIZE_BUS,
   COLORIZE_COLORS,
@@ -18,10 +20,8 @@ import {
   COLORIZE_OVERALL,
   COLORIZE_POPULARITY,
   COLORIZE_QUALITY,
-} from '../graphdiagram/GraphDiagram.js';
-import { GraphState, hslFor } from '../graphdiagram/graph_util.js';
-import simplur from '../util/simplur.js';
-import useHashParam from '../util/useHashParam.js';
+} from '../GraphDiagram/GraphDiagram.js';
+import { GraphState, hslFor } from '../GraphDiagram/graph_util.js';
 import './GraphPane.scss';
 
 export default function GraphPane({

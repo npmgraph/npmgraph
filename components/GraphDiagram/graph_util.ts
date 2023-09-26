@@ -1,6 +1,6 @@
-import Module, { ModulePackage } from '../util/Module.js';
-import { getModule } from '../util/ModuleCache.js';
-import simplur from '../util/simplur.js';
+import Module, { ModulePackage } from '../../lib/Module.js';
+import { getModule } from '../../lib/ModuleCache.js';
+import simplur from '../../lib/simplur.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
 

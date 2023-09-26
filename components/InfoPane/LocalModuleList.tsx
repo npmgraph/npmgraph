@@ -1,7 +1,7 @@
 import React from 'react';
-import { QueryLink } from '../components/QueryLink.js';
-import { Section } from '../components/Section.js';
-import { uncacheModule, useLocalModules } from '../util/ModuleCache.js';
+import { uncacheModule, useLocalModules } from '../../lib/ModuleCache.js';
+import { QueryLink } from '../QueryLink.js';
+import { Section } from '../Section.js';
 
 import './LocalModuleList.scss';
 

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { ExternalLink } from '../components/ExternalLink.js';
-import { Pane } from '../components/Pane.js';
-import { QueryLink } from '../components/QueryLink.js';
-import { Section } from '../components/Section.js';
-import { Tag } from '../components/Tag.js';
-import { Tags } from '../components/Tags.js';
-import Module from '../util/Module.js';
-import fetchJSON from '../util/fetchJSON.js';
-import { BundlePhobiaData, NPMSIOData } from '../util/fetch_types.js';
-import simplur from '../util/simplur.js';
+import Module from '../../lib/Module.js';
+import fetchJSON from '../../lib/fetchJSON.js';
+import { BundlePhobiaData, NPMSIOData } from '../../lib/fetch_types.js';
+import simplur from '../../lib/simplur.js';
+import { ExternalLink } from '../ExternalLink.js';
+import { Pane } from '../Pane.js';
+import { QueryLink } from '../QueryLink.js';
+import { Section } from '../Section.js';
+import { Tag } from '../Tag.js';
+import { Tags } from '../Tags.js';
 import { ModuleBundleStats } from './ModuleBundleStats.js';
 import { ModuleNpmsIOScores } from './ModuleNpmsIOScores.js';
-import { ModuleTreeMap } from './ModuleTreeMap.js';
 import './ModulePane.scss';
+import { ModuleTreeMap } from './ModuleTreeMap.js';
 
 export default function ModulePane({
   module,

@@ -1,5 +1,5 @@
 import Bugsnag from '@bugsnag/js';
-import { version as appVersion } from '../../package.json';
+import { version as appVersion } from '../package.json';
 import HttpError from './HttpError.js';
 
 declare let process: {
