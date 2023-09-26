@@ -5,7 +5,7 @@ import Module, { ModulePackage } from '../util/Module.js';
 import { cacheLocalModule, cacheModule } from '../util/ModuleCache.js';
 import useLocation from '../util/useLocation.js';
 import LocalModuleList from './LocalModuleList.js';
-import '/css/InfoPane.scss';
+import './InfoPane.scss';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [, setQuery] = useQuery();

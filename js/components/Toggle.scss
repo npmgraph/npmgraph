@@ -1,0 +1,21 @@
+.toggle {
+  & > div {
+    display: inline-block;
+    width: 4em;
+    background-color: var(--bg2);
+    border-radius: 0.5em;
+    margin-right: 0.5em;
+  }
+  & > div > div {
+    width: 3em;
+    border-radius: 0.5em;
+    text-align: center;
+    transition: 0.15s;
+    margin-left: 1em;
+    background-color: var(--bg1);
+  }
+  &.checked > div > div {
+    margin-left: 0;
+    background-color: var(--bg-green);
+  }
+}

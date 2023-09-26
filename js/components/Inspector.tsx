@@ -10,7 +10,7 @@ import useLocation from '../util/useLocation.js';
 import { useGraph, usePane, useQuery } from './App.js';
 import { ExternalLink } from './ExternalLink.js';
 import { Tab } from './Tab.js';
-import '/css/Inspector.scss';
+import './Inspector.scss';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [query, setQuery] = useQuery();

@@ -1,5 +1,5 @@
 import LoadActivity from '../util/LoadActivity.js';
-import '/css/Components.scss';
+import './Loader.scss';
 
 import React, { HTMLProps } from 'react';
 

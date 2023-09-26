@@ -1,4 +1,4 @@
-import '/css/Components.scss';
+import './flash.scss';
 
 export function flash(wat: unknown, bg = '#f80') {
   const SPACE = 10;

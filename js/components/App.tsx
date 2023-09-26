@@ -8,7 +8,7 @@ import useSearchParam from '../util/useSearchParam.js';
 import Inspector from './Inspector.js';
 import { Loader } from './Loader.js';
 import { Splitter } from './Splitter.js';
-import '/css/App.scss';
+import './App.scss';
 
 export const [usePane] = sharedStateHook('info', 'pane');
 export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');

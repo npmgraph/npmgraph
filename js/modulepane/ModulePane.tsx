@@ -12,7 +12,7 @@ import simplur from '../util/simplur.js';
 import { ModuleBundleStats } from './ModuleBundleStats.js';
 import { ModuleNpmsIOScores } from './ModuleNpmsIOScores.js';
 import { ModuleTreeMap } from './ModuleTreeMap.js';
-import '/css/ModulePane.scss';
+import './ModulePane.scss';
 
 export default function ModulePane({
   module,

@@ -22,7 +22,7 @@ import {
 import { GraphState, hslFor } from '../graphdiagram/graph_util.js';
 import simplur from '../util/simplur.js';
 import useHashParam from '../util/useHashParam.js';
-import '/css/GraphPane.scss';
+import './GraphPane.scss';
 
 export default function GraphPane({
   graph,

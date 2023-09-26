@@ -20,7 +20,7 @@ import useHashParam from '../util/useHashParam.js';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
-import '/css/Graph.scss';
+import './GraphDiagram.scss';
 
 export const COLORIZE_MODULE_ESM = 'var(--bg-yellow)';
 export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
