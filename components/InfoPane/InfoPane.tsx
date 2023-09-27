@@ -1,6 +1,6 @@
 import React, { HTMLProps } from 'react';
-import Module, { ModulePackage } from '../../lib/Module.js';
-import { cacheLocalModule, cacheModule } from '../../lib/ModuleCache.js';
+import { ModulePackage } from '../../lib/Module.js';
+import { cacheLocalPackage } from '../../lib/ModuleCache.js';
 import useLocation from '../../lib/useLocation.js';
 import { useQuery } from '../App.js';
 import { Pane } from '../Pane.js';
@@ -57,21 +57,8 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
 
     const pkg: ModulePackage = JSON.parse(content);
 
-    // Construct a local module for the package
-    if (!pkg.name) pkg.name = '(upload)';
-    if (!pkg.version) {
-      // Make semver string of form YYYY.MM.DD-HH:MM:SS.ddd
-      pkg.version = new Date()
-        .toISOString()
-        .replace(/-/g, '.')
-        .replace('T', '-');
-    }
-    pkg._local = true;
-    const module = new Module(pkg);
-
-    // Put module in cache and local cache
-    cacheModule(module);
-    cacheLocalModule(module);
+    // Inject package into local cache and get corresponding Module
+    const module = cacheLocalPackage(pkg);
 
     // Update UI
     setQuery([module.key]);

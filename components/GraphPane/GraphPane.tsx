@@ -3,12 +3,6 @@ import React from 'react';
 import simplur from '../../lib/simplur.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { useExcludes } from '../App.js';
-import { Pane } from '../Pane.js';
-import { PieGraph } from '../PieGraph.js';
-import { Section } from '../Section.js';
-import { Tag } from '../Tag.js';
-import { Tags } from '../Tags.js';
-import { Toggle } from '../Toggle.js';
 import {
   COLORIZE_BUS,
   COLORIZE_COLORS,
@@ -22,6 +16,12 @@ import {
   COLORIZE_QUALITY,
 } from '../GraphDiagram/GraphDiagram.js';
 import { GraphState, hslFor } from '../GraphDiagram/graph_util.js';
+import { Pane } from '../Pane.js';
+import { PieGraph } from '../PieGraph.js';
+import { Section } from '../Section.js';
+import { Tag } from '../Tag.js';
+import { Tags } from '../Tags.js';
+import { Toggle } from '../Toggle.js';
 import './GraphPane.scss';
 
 export default function GraphPane({

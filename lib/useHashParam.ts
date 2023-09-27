@@ -9,7 +9,6 @@ export default function useHashParam<T extends string>(
 
   const setValue = (val: T) => {
     if (val === value) return;
-    console.log('Setting hash', paramName, 'to', val);
 
     // Update state value
     if (!val) {

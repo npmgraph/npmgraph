@@ -229,6 +229,27 @@ export function getLocalModuleNames() {
   return Object.keys(window.sessionStorage);
 }
 
+// TODO: Use this instead of
+export function cacheLocalPackage(pkg: ModulePackage) {
+  // Construct a local module for the package
+  if (!pkg.name) pkg.name = '(upload)';
+  if (!pkg.version) {
+    // Make semver string of form YYYY.MM.DD-HH:MM:SS.ddd
+    pkg.version = new Date().toISOString().replace(/-/g, '.').replace('T', '-');
+  }
+  pkg._local = true;
+  const module = new Module(pkg);
+
+  // Put module in cache and local cache
+  cacheModule(module);
+
+  // Store in sessionStorage
+  window.sessionStorage.setItem(module.key, JSON.stringify(module.package));
+  _updateLocalModules();
+
+  return module;
+}
+
 export function cacheLocalModule(module: Module) {
   // Store in sessionStorage
   window.sessionStorage.setItem(module.key, JSON.stringify(module.package));

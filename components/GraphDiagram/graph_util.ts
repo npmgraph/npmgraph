@@ -38,6 +38,8 @@ export type GraphState = {
   // Map of module key -> module info
   modules: Map<string, GraphModuleInfo>;
 
+  entryModules: Set<Module>;
+
   // Map of module -> types of dependencies that terminate in the module
   referenceTypes: Map<string, Set<DependencyKey>>;
 };
@@ -84,6 +86,7 @@ export async function getGraphForQuery(
 ) {
   const graphState: GraphState = {
     modules: new Map(),
+    entryModules: new Set(),
     referenceTypes: new Map(),
   };
 
@@ -134,6 +137,7 @@ export async function getGraphForQuery(
   return Promise.allSettled(
     query.map(async name => {
       const m = await getModule(name);
+      graphState.entryModules.add(m);
       return m && _walk(m);
     }),
   ).then(() => graphState);

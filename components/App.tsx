@@ -6,6 +6,7 @@ import useSearchParam from '../lib/useSearchParam.js';
 import './App.scss';
 import GraphDiagram from './GraphDiagram/GraphDiagram.js';
 import { GraphState } from './GraphDiagram/graph_util.js';
+import HashUploader from './HashUploader.js';
 import Inspector from './Inspector.js';
 import { Loader } from './Loader.js';
 import { Splitter } from './Splitter.js';
@@ -38,6 +39,8 @@ export default function App() {
         onClick={() => setZenMode(zenMode ? '' : '1')}
       />
       <Inspector className={zenMode ? '' : 'open'} />
+
+      <HashUploader />
     </>
   );
 }

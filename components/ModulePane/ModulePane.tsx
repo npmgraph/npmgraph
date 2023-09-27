@@ -89,28 +89,20 @@ export default function ModulePane({
 
       <p>{pkg?.description}</p>
 
-      <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
-        npm
-      </ExternalLink>
-      {module.repoLink ? (
-        <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>
-          GitHub
-        </ExternalLink>
-      ) : null}
-      {
-        // Displaying dropped package contents is a bit problematic, but we give it a shot here.
-        module.package._local ? (
-          <ExternalLink
-            href={`data:text/json;base64,${btoa(
-              JSON.stringify(module.package),
-            )}`}
-          >
-            package.json
-          </ExternalLink>
-        ) : (
+      {/* For NPM packages */}
+      {!module.package._local ? (
+        <>
           <ExternalLink href={module.apiLink}>package.json</ExternalLink>
-        )
-      }
+          <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
+            npm
+          </ExternalLink>
+          {module.repoLink ? (
+            <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>
+              GitHub
+            </ExternalLink>
+          ) : null}
+        </>
+      ) : null}
 
       <Section title="Bundle Size">
         {!bundleInfo ? (

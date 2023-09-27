@@ -4,12 +4,13 @@ import { isDefined } from '../lib/guards.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 import useLocation from '../lib/useLocation.js';
 import { version as VERSION } from '../package.json';
-import GraphPane from './GraphPane/GraphPane.js';
-import InfoPane from './InfoPane/InfoPane.js';
-import ModulePane from './ModulePane/ModulePane.js';
 import { useGraph, usePane, useQuery } from './App.js';
 import { ExternalLink } from './ExternalLink.js';
+import GraphPane from './GraphPane/GraphPane.js';
+import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';
+import ModulePane from './ModulePane/ModulePane.js';
+import ShareButton from './ShareButton.js';
 import { Tab } from './Tab.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
@@ -78,6 +79,8 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
             autoFocus
           />
         </div>
+
+        <ShareButton />
       </div>
 
       {paneComponent}

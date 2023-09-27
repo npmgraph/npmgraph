@@ -77,6 +77,15 @@ export default class Module {
     return `https://cdn.jsdelivr.net/npm/${this.key}/package.json`;
   }
 
+  getShareableLink() {
+    const json = JSON.stringify(this.package);
+    const url = new URL(window.location.href);
+    const hashParams = new URLSearchParams(location.hash.replace(/^#/, ''));
+    hashParams.set('package_json', json);
+    url.hash = hashParams.toString();
+    return url;
+  }
+
   get repository() {
     // TODO: Handle non-github repositories
     const { repository } = this.package;
