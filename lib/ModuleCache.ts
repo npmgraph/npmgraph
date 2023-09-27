@@ -244,8 +244,28 @@ export function getLocalModuleNames() {
   return Object.keys(window.sessionStorage);
 }
 
+const PACKAGE_WHITELIST: (keyof PackageJson)[] = [
+  'author',
+  'dependencies',
+  'devDependencies',
+  'license',
+  'name',
+  'peerDependencies',
+  'version',
+];
+
+function sanitizePackage(pkg: PackageJson) {
+  const sanitized: PackageJson = {} as PackageJson;
+  for (const key of PACKAGE_WHITELIST) {
+    if (key in pkg) (sanitized[key] as unknown) = pkg[key];
+  }
+  return sanitized;
+}
+
 // TODO: Use this instead of
 export function cacheLocalPackage(pkg: ModulePackage) {
+  pkg = sanitizePackage(pkg) as ModulePackage;
+
   // Construct a local module for the package
   if (!pkg.name) pkg.name = '(upload)';
   if (!pkg.version) {
@@ -263,12 +283,6 @@ export function cacheLocalPackage(pkg: ModulePackage) {
   _updateLocalModules();
 
   return module;
-}
-
-export function cacheLocalModule(module: Module) {
-  // Store in sessionStorage
-  window.sessionStorage.setItem(module.key, JSON.stringify(module.package));
-  _updateLocalModules();
 }
 
 export function uncacheModule(moduleKey: string) {

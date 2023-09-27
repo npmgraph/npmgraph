@@ -92,7 +92,9 @@ export default function ModulePane({
       {/* For NPM packages */}
       {!module.package._local ? (
         <>
-          <ExternalLink href={module.apiLink}>package.json</ExternalLink>
+          <ExternalLink href={module.packageJsonLink}>
+            package.json
+          </ExternalLink>
           <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
             npm
           </ExternalLink>
