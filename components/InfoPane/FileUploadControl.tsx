@@ -4,7 +4,6 @@ import { cacheLocalPackage } from '../../lib/ModuleCache.js';
 import useLocation from '../../lib/useLocation.js';
 import { useQuery } from '../App.js';
 import './FileUploadControl.scss';
-import FileUploadList from './FileUploadList.js';
 
 export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
   const [, setQuery] = useQuery();
@@ -101,8 +100,6 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
         Alternatively, <button type="button">select</button> or drop a{' '}
         <code>package.json</code> file here
       </label>
-
-      <FileUploadList />
     </>
   );
 }

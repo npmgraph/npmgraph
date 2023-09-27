@@ -223,27 +223,6 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
   return results;
 }
 
-//
-// Local storage cache for modules
-//
-
-export const [useLocalModules, setLocalModules] = sharedStateHook<Module[]>(
-  [],
-  'localModules',
-);
-
-function _updateLocalModules() {
-  const localModules = getLocalModuleNames()
-    .sort()
-    .map(getCachedModule)
-    .filter(isDefined);
-  setLocalModules(localModules);
-}
-
-export function getLocalModuleNames() {
-  return Object.keys(window.sessionStorage);
-}
-
 const PACKAGE_WHITELIST: (keyof PackageJson)[] = [
   'author',
   'dependencies',
@@ -278,36 +257,5 @@ export function cacheLocalPackage(pkg: ModulePackage) {
   // Put module in cache and local cache
   cacheModule(module);
 
-  // Store in sessionStorage
-  window.sessionStorage.setItem(module.key, JSON.stringify(module.package));
-  _updateLocalModules();
-
   return module;
-}
-
-export function uncacheModule(moduleKey: string) {
-  moduleCache.delete(moduleKey);
-  window.sessionStorage.removeItem(moduleKey);
-  _updateLocalModules();
-}
-
-export function loadLocalModules() {
-  // Reconstitute [uploaded] modules from sessionStorage
-  const { sessionStorage } = window;
-
-  // Pull in user-supplied package.json files that may have been stored in sessionStorage
-  for (let i = 0; i < sessionStorage.length; i++) {
-    const moduleKey = sessionStorage.key(i);
-    if (!moduleKey?.startsWith(LOCAL_PREFIX)) continue;
-
-    try {
-      const packageJson = sessionStorage.getItem(moduleKey);
-      const pkg: ModulePackage = packageJson && JSON.parse(packageJson);
-      const module = new Module(pkg);
-      cacheModule(module);
-      _updateLocalModules();
-    } catch (err) {
-      console.error(err);
-    }
-  }
 }
