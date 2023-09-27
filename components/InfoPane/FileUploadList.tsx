@@ -3,12 +3,12 @@ import { uncacheModule, useLocalModules } from '../../lib/ModuleCache.js';
 import { QueryLink } from '../QueryLink.js';
 import { Section } from '../Section.js';
 
-import './LocalModuleList.scss';
+import './FileUploadList.scss';
 
-export default function LocalModuleList() {
+export default function FileUploadList() {
   const [localModules] = useLocalModules();
   return (
-    <Section title="Previous uploads" id="local-modules">
+    <Section title="Previous Uploads" id="local-modules">
       {localModules.map(module => {
         return (
           <li key={module.name}>

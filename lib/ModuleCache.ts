@@ -1,8 +1,8 @@
-import { Manifest } from '@npm/types';
+import { Manifest, PackageJson } from '@npm/types';
 import semverGt from 'semver/functions/gt.js';
 import semverSatisfies from 'semver/functions/satisfies.js';
 import semverValid from 'semver/functions/valid.js';
-import Module, { ModulePackage } from './Module.js';
+import Module, { LOCAL_PREFIX, ModulePackage } from './Module.js';
 import fetchJSON from './fetchJSON.js';
 import { isDefined } from './guards.js';
 import sharedStateHook from './sharedStateHook.js';
@@ -40,11 +40,7 @@ function selectVersionFromManifest(
   return bestVersion;
 }
 
-function validateNameAndVersion(name: string, version?: string) {
-  if (name.startsWith('local:')) {
-    return { name, version };
-  }
-
+function validateNPMNameAndVersion(name: string, version?: string) {
   // "npm:<package name>@<version>"-style names are used to create aliases.  We
   // detect that here and massage the inputs accordingly
   //
@@ -75,15 +71,75 @@ function validateNameAndVersion(name: string, version?: string) {
   return { name, version };
 }
 
+async function getModuleFromURL(urlString: string) {
+  const url = new URL(urlString);
+
+  // TODO: We should probably be fetching github content via their REST API, but
+  // that makes this code much more github-specific.  So, for now, we just do
+  // some URL-messaging to pull from the "raw" URL
+  if (/\.?github.com$/.test(url.host)) {
+    url.host = 'raw.githubusercontent.com';
+    url.pathname = url.pathname.replace('/blob', '');
+  }
+  const pkg: PackageJson = await fetchJSON<PackageJson>(url);
+
+  if (!pkg.name) pkg.name = url.toString();
+
+  return new Module(pkg as ModulePackage);
+}
+
+async function getModuleFromNPM(
+  name: string,
+  version?: string,
+): Promise<Module> {
+  // Non-numeric or ambiguous version need to be resolved.  To do that, we
+  // fetch the package's manifest and select the best version.
+  if (!semverValid(version)) {
+    // Get the manifest. `Accept:` header here lets us get a compact version of
+    // the manifest object. See
+    // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
+    const manifest: Manifest = await fetchJSON<Manifest>(
+      `${REGISTRY_BASE_URL}/${name}`,
+      {
+        headers: { Accept: 'application/vnd.npm.install-v1+json' },
+      },
+    );
+
+    // Match best version from manifest
+    version = selectVersionFromManifest(manifest, version);
+  }
+
+  if (!version) {
+    throw new Error(`Failed to find version`);
+  } else if (!semverValid(version)) {
+    // This shouldn't happen, but if it does we potentially have an infinite loop ...
+    throw new Error(`Non-specific version`);
+  }
+
+  // Create module
+  const pkg: ModulePackage = await fetchJSON<ModulePackage>(
+    `${REGISTRY_BASE_URL}/${name}/${version}`,
+  );
+
+  return new Module(pkg);
+}
+
 export async function getModule(
   name: string,
   version?: string,
 ): Promise<Module> {
   if (!name) throw Error('Undefined module name');
 
-  ({ name, version } = validateNameAndVersion(name, version));
-
-  const cacheKey = Module.key(name, version);
+  // Get cacheKey based on type of module
+  let cacheKey: string;
+  if (name.startsWith(LOCAL_PREFIX)) {
+    cacheKey = Module.key(name, version);
+  } else if (/^https?:\/\//.test(name)) {
+    cacheKey = Module.key(name, version);
+  } else {
+    ({ name, version } = validateNPMNameAndVersion(name, version));
+    cacheKey = Module.key(name, version);
+  }
 
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(cacheKey);
@@ -97,73 +153,32 @@ export async function getModule(
   const cacheEntry = {} as ModuleCacheEntry;
   moduleCache.set(cacheKey, cacheEntry);
 
-  // Create promise that hydrates the module
-  //
-  // Using an async-IIEF here allows us to build the promise using the syntactic
-  // sugar of async/await
-  cacheEntry.promise = (async function () {
-    // Helper to do the stuff we need to do when a module fails to load
-    function fail(err: unknown) {
-      const module = Module.stub(
-        name,
-        version,
-        err instanceof Error ? err : new Error(String(err)),
-      );
+  let promise: Promise<Module>;
 
+  // Fetch module based on type
+  if (name.startsWith(LOCAL_PREFIX)) {
+    promise = Promise.reject(new Error(`${cacheKey} is not cached`));
+    console.warn(`Request for uncached local module`);
+    cacheKey = Module.key(name, version);
+  } else if (/^https?:\/\//.test(name)) {
+    promise = getModuleFromURL(name);
+  } else {
+    ({ name, version } = validateNPMNameAndVersion(name, version));
+    promise = getModuleFromNPM(name, version);
+  }
+
+  cacheEntry.promise = promise
+    .catch(err => {
       console.warn(`Failed to load module "${cacheKey}": ${err}`);
-
-      cacheEntry.promise = Promise.resolve(module);
+      return Module.stub(name, version, err);
+    })
+    .then(module => {
       cacheEntry.module = module;
 
+      // Add cache entry for module's computed key
+      moduleCache.set(module.key, cacheEntry);
       return module;
-    }
-
-    // Non-numeric or ambiguous version need to be resolved.  To do that, we
-    // fetch the package's manifest and select the best version.
-    if (!semverValid(version)) {
-      // Get the manifest
-      let manifest: Manifest;
-      try {
-        // `Accept:` header here lets us get a compact version of the manifest
-        // object. See
-        // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
-        manifest = await fetchJSON<Manifest>(`${REGISTRY_BASE_URL}/${name}`, {
-          headers: { Accept: 'application/vnd.npm.install-v1+json' },
-        });
-      } catch (err) {
-        return fail(err);
-      }
-
-      // Match best version from manifest
-      version = selectVersionFromManifest(manifest, version);
-    }
-
-    if (!version) {
-      return fail(`Failed to find version for "${cacheKey}"`);
-    } else if (!semverValid(version)) {
-      // This shouldn't happen, but if it does we potentially have an infinite loop ...
-      return fail(`Non-specific version for "${cacheKey}"`);
-    }
-
-    // Create module
-    let pkg: ModulePackage;
-    try {
-      pkg = await fetchJSON<ModulePackage>(
-        `${REGISTRY_BASE_URL}/${name}/${version}`,
-      );
-    } catch (err) {
-      return fail(err);
-    }
-
-    // Expose module on cache entry
-    cacheEntry.module = new Module(pkg);
-
-    // ... and provide cache key for exact version (used by UI when user clicks
-    // on modules in graph, where the exact version is always shown)
-    moduleCache.set(cacheEntry.module.key, cacheEntry);
-
-    return cacheEntry.module;
-  })();
+    });
 
   return cacheEntry.promise;
 }
@@ -248,7 +263,7 @@ export function loadLocalModules() {
   // Pull in user-supplied package.json files that may have been stored in sessionStorage
   for (let i = 0; i < sessionStorage.length; i++) {
     const moduleKey = sessionStorage.key(i);
-    if (!moduleKey?.startsWith('local:')) continue;
+    if (!moduleKey?.startsWith(LOCAL_PREFIX)) continue;
 
     try {
       const packageJson = sessionStorage.getItem(moduleKey);

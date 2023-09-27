@@ -108,7 +108,9 @@ export default function ModulePane({
             package.json
           </ExternalLink>
         ) : (
-          <ExternalLink href={module.apiLink}>package.json</ExternalLink>
+          <ExternalLink href={module.packageJsonLink}>
+            package.json
+          </ExternalLink>
         )
       }
 
