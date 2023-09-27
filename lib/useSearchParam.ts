@@ -7,7 +7,7 @@ export default function useSearchParam<T extends string>(paramName: string) {
 
   const setValue = (val: T, resetHash = false) => {
     if (val === value) return;
-    console.log('Setting search', paramName, 'to', val);
+
     // Update state value
     if (!val) {
       params.delete(paramName);

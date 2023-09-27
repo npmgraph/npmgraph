@@ -1,5 +1,7 @@
 import { PackumentVersion } from '@npm/types';
 
+export const LOCAL_PREFIX = 'local:';
+
 export interface ModulePackage extends PackumentVersion {
   // TODO: This needs to be fixed in @npm/types
   deprecated?: boolean;
@@ -42,7 +44,7 @@ export default class Module {
 
   get key() {
     const key = Module.key(this.name, this.version);
-    return this.package._local ? `local:${key}` : key;
+    return this.package._local ? `${LOCAL_PREFIX}${key}` : key;
   }
 
   get name() {
@@ -73,7 +75,7 @@ export default class Module {
     return gh && `https://www.github.com/${gh}`;
   }
 
-  get apiLink() {
+  get packageJsonLink() {
     return `https://cdn.jsdelivr.net/npm/${this.key}/package.json`;
   }
 

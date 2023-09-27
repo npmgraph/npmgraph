@@ -1,0 +1,19 @@
+#search-field {
+  font: inherit;
+  line-height: 1em;
+  padding: 0.3em 0.7em;
+  margin-left: 1em;
+
+  &:focus {
+    border-color: var(--highlight);
+  }
+}
+
+.tip {
+  font-size: 0.85em;
+  font-style: italic;
+  line-height: 1.5em;
+  color: var(--text-dim);
+  padding: 0.5em;
+  border-radius: .5em;
+}

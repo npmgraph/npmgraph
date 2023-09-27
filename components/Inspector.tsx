@@ -1,10 +1,8 @@
 import React, { HTMLProps } from 'react';
 import { queryModuleCache } from '../lib/ModuleCache.js';
-import { isDefined } from '../lib/guards.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
-import useLocation from '../lib/useLocation.js';
 import { version as VERSION } from '../package.json';
-import { useGraph, usePane, useQuery } from './App.js';
+import { useGraph, usePane } from './App.js';
 import { ExternalLink } from './ExternalLink.js';
 import GraphPane from './GraphPane/GraphPane.js';
 import InfoPane from './InfoPane/InfoPane.js';
@@ -14,11 +12,9 @@ import ShareButton from './ShareButton.js';
 import { Tab } from './Tab.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
-  const [query, setQuery] = useQuery();
   const [pane, setPane] = usePane();
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGraph();
-  const [location, setLocation] = useLocation();
 
   const selectedModules = queryModuleCache(queryType, queryValue);
   const firstModule = selectedModules.values().next().value;
@@ -36,49 +32,18 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       break;
   }
 
-  function doSearch(e: React.KeyboardEvent<HTMLInputElement>) {
-    const names = (e.currentTarget as HTMLInputElement).value
-      .split(',')
-      .map(v => v.trim())
-      .filter(isDefined);
-    const query = [...new Set(names)]; // De-dupe
-
-    // Update location
-    const url = new URL(location);
-    url.hash = '';
-    query.length
-      ? url.searchParams.set('q', query.join(','))
-      : url.searchParams.delete('q');
-
-    setLocation(url);
-
-    setQuery(query);
-  }
-
   return (
     <div id="inspector" {...props}>
       <div id="tabs">
-        <Tab active={pane == 'module'} onClick={() => setPane('module')}>
-          Module
+        <Tab active={pane == 'info'} onClick={() => setPane('info')}>
+          Start
         </Tab>
         <Tab active={pane == 'graph'} onClick={() => setPane('graph')}>
           Graph
         </Tab>
-        <Tab active={pane == 'info'} onClick={() => setPane('info')}>
-          {'\u{24d8}'}
+        <Tab active={pane == 'module'} onClick={() => setPane('module')}>
+          Module
         </Tab>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <input
-            type="text"
-            id="search-field"
-            defaultValue={query}
-            onKeyDown={e => {
-              if (/^(?:Enter|Tab)$/.test(e.key)) doSearch(e);
-            }}
-            placeholder={'\u{1F50D} \xa0Enter module name'}
-            autoFocus
-          />
-        </div>
 
         <ShareButton />
       </div>
