@@ -13,12 +13,17 @@ import {
   COLORIZE_MODULE_TYPE,
   COLORIZE_NONE,
   COLORIZE_OVERALL,
-  COLORIZE_PARAM,
   COLORIZE_POPULARITY,
   COLORIZE_QUALITY,
-  DEV_DEPENDENCIES_PARAM,
+  PARAM_COLORIZE,
+  PARAM_DEPENDENCIES,
 } from '../../lib/constants.js';
-import { GraphState, hslFor } from '../GraphDiagram/graph_util.js';
+import { isDefined } from '../../lib/guards.js';
+import {
+  DependencyKey,
+  GraphState,
+  hslFor,
+} from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
 import { PieGraph } from '../PieGraph.js';
 import { Section } from '../Section.js';
@@ -33,10 +38,15 @@ export default function GraphPane({
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const compareEntryKey = ([a]: [string, unknown], [b]: [string, unknown]) =>
     a < b ? -1 : a > b ? 1 : 0;
-  const [colorize, setColorize] = useHashParam(COLORIZE_PARAM);
+  const [colorize, setColorize] = useHashParam(PARAM_COLORIZE);
   const [excludes] = useExcludes();
-  const [includeDev, setIncludeDev] = useHashParam(DEV_DEPENDENCIES_PARAM);
+  const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
 
+  const dependencyTypes = (depTypes.split(/\s*,\s*/) as DependencyKey[]).filter(
+    isDefined,
+  );
+
+  const includeDev = dependencyTypes.includes('devDependencies');
   if (!graph?.modules) return <div>Loading</div>;
 
   const occurances: { [key: string]: number } = {};
@@ -75,8 +85,8 @@ export default function GraphPane({
   return (
     <Pane {...props}>
       <Toggle
-        checked={Boolean(includeDev)}
-        onChange={() => setIncludeDev(includeDev ? '' : '1')}
+        checked={includeDev}
+        onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
       >
         Include devDependencies
       </Toggle>

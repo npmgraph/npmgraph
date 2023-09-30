@@ -1,8 +1,8 @@
-import { QUERY_PARAM } from './constants.js';
+import { PARAM_QUERY } from './constants.js';
 import useSearchParam from './useSearchParam.js';
 
 export function useQuery() {
-  const [queryString, setQueryString] = useSearchParam(QUERY_PARAM);
+  const [queryString, setQueryString] = useSearchParam(PARAM_QUERY);
   const moduleKeys = queryString.split(/[, ]+/).filter(Boolean);
   return [
     moduleKeys,

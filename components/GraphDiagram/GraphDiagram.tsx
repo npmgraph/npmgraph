@@ -14,15 +14,15 @@ import {
   COLORIZE_MODULE_CJS,
   COLORIZE_MODULE_ESM,
   COLORIZE_OVERALL,
-  COLORIZE_PARAM,
   COLORIZE_POPULARITY,
   COLORIZE_QUALITY,
-  DEV_DEPENDENCIES_PARAM,
-  ZEN_PARAM,
+  PARAM_COLORIZE,
+  PARAM_DEPENDENCIES,
+  PARAM_VIEW_MODE,
+  PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
   ZOOM_FIT_WIDTH,
   ZOOM_NONE,
-  ZOOM_PARAM,
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
 import $ from '../../lib/dom.js';
@@ -37,7 +37,12 @@ import { useExcludes, useGraph, usePane } from '../App.js';
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
-import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
+import {
+  DependencyKey,
+  composeDOT,
+  getGraphForQuery,
+  hslFor,
+} from './graph_util.js';
 
 export type ZoomOption =
   | typeof ZOOM_NONE
@@ -48,14 +53,24 @@ const graphvizP = Graphviz.load();
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
-  const [includeDev] = useHashParam(DEV_DEPENDENCIES_PARAM);
+  const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [, setPane] = usePane();
-  const [, setZenMode] = useHashParam(ZEN_PARAM);
+  const [, setZenMode] = useHashParam(PARAM_VIEW_MODE);
   const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
-  const [colorize] = useHashParam(COLORIZE_PARAM);
-  const [zoom] = useHashParam(ZOOM_PARAM);
+  const [colorize] = useHashParam(PARAM_COLORIZE);
+  const [zoom] = useHashParam(PARAM_ZOOM);
+
+  // Dependencies to include for top-level modules
+  const dependencyTypes = new Set<DependencyKey>([
+    'dependencies',
+    'peerDependencies',
+  ]);
+  depTypes
+    .split(/\s*,\s*/)
+    .sort()
+    .forEach(dtype => dependencyTypes.add(dtype as DependencyKey));
 
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
@@ -138,16 +153,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   useEffect(() => {
     const { signal, abort } = createAbortable();
 
-    getGraphForQuery(query, Boolean(includeDev), moduleFilter).then(
-      newGraph => {
-        if (signal.aborted) return; // Check after async
+    getGraphForQuery(query, dependencyTypes, moduleFilter).then(newGraph => {
+      if (signal.aborted) return; // Check after async
 
-        setGraph(newGraph);
-      },
-    );
+      setGraph(newGraph);
+    });
 
     return abort;
-  }, [[...query].sort().join(), includeDev, excludes]);
+  }, [[...query].sort().join(), [...dependencyTypes].join(), excludes]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {

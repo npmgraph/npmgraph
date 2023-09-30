@@ -1,6 +1,6 @@
 import React, { HTMLProps, useState } from 'react';
 import URLPlus from '../../lib/URLPlus.js';
-import { PACKAGES_PARAM } from '../../lib/constants.js';
+import { PARAM_PACKAGES } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useLocation from '../../lib/useLocation.js';
 import { useQuery } from '../../lib/useQuery.js';
@@ -32,7 +32,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     const url = new URLPlus(location);
     url.hash = '';
     url.setSearchParam('q', moduleKeys.join(', '));
-    url.setHashParam(PACKAGES_PARAM, '');
+    url.setHashParam(PARAM_PACKAGES, '');
     setLocation(url, false);
   }
 

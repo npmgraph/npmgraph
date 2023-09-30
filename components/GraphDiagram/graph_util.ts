@@ -19,7 +19,7 @@ type DependencyEntry = {
   type: DependencyKey;
 };
 
-type DependencyKey =
+export type DependencyKey =
   | 'dependencies'
   | 'devDependencies'
   | 'peerDependencies'
@@ -44,15 +44,15 @@ export type GraphState = {
   referenceTypes: Map<string, Set<DependencyKey>>;
 };
 
-export function getDependencyEntries(
+const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
+
+function getDependencyEntries(
   module: Module,
-  includeDev: boolean,
+  dependencyTypes: Set<DependencyKey>,
   level = 0,
 ) {
-  const dependencyTypes: DependencyKey[] = ['dependencies', 'peerDependencies'];
-  if (includeDev && level <= 0) {
-    dependencyTypes.push('devDependencies');
-  }
+  // We only add non-"dependencies" at the top-level.
+  if (level > 0) dependencyTypes = DEPENDENCIES_ONLY;
 
   const depEntries: Array<DependencyEntry> = [];
   for (const type of dependencyTypes) {
@@ -73,15 +73,10 @@ export function getDependencyEntries(
 
 /**
  * Fetch the module dependency tree for a given query.
- *
- * @param {[String]} query names of module entry points
- * @param {Boolean} includeDev flag for including devDependencies
- * @param {Function} moduleFilter applied to module dependency list(s)
- * @returns {Promise<Map>} Map of key -> {module, level, dependencies}
  */
 export async function getGraphForQuery(
   query: string[],
-  includeDev: boolean,
+  dependencyTypes: Set<DependencyKey>,
   moduleFilter: (m: Module | ModulePackage) => boolean,
 ) {
   const graphState: GraphState = {
@@ -102,9 +97,12 @@ export async function getGraphForQuery(
     if (graphState.modules.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
-    const deps = moduleFilter(module)
-      ? getDependencyEntries(module, includeDev, level)
-      : [];
+    let deps: DependencyEntry[];
+    if (moduleFilter(module)) {
+      deps = getDependencyEntries(module, dependencyTypes, level);
+    } else {
+      deps = [];
+    }
 
     // Create object that captures info about how this module fits in the dependency graph
     const info: GraphModuleInfo = { module: module, level };

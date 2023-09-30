@@ -3,7 +3,7 @@ import React, { HTMLProps } from 'react';
 import { ModulePackage } from '../../lib/Module.js';
 import { cacheLocalPackage } from '../../lib/ModuleCache.js';
 import URLPlus from '../../lib/URLPlus.js';
-import { PACKAGES_PARAM, QUERY_PARAM } from '../../lib/constants.js';
+import { PARAM_PACKAGES, PARAM_QUERY } from '../../lib/constants.js';
 import useLocation from '../../lib/useLocation.js';
 import './FileUploadControl.scss';
 
@@ -56,14 +56,17 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
 
     // Parse module and insert into cache
     const pkg: PackageJson = JSON.parse(content);
+
+    pkg.name ??= 'Unnamed package';
+
     // Note: cacheLocalPackage() sanitizes pkg.keys in-place(!)
     const module = cacheLocalPackage(pkg as ModulePackage);
 
     // Set query, and attach package contents in hash
     const url = new URLPlus(location);
     url.hash = '';
-    url.setHashParam(PACKAGES_PARAM, JSON.stringify([pkg]));
-    url.setSearchParam(QUERY_PARAM, module.key);
+    url.setHashParam(PARAM_PACKAGES, JSON.stringify([pkg]));
+    url.setSearchParam(PARAM_QUERY, module.key);
     setLocation(url, false);
   }
 

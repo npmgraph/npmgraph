@@ -2,14 +2,14 @@ import { PackageJson } from '@npm/types';
 import { useEffect } from 'react';
 import { ModulePackage } from '../lib/Module.js';
 import { cacheLocalPackage } from '../lib/ModuleCache.js';
-import { PACKAGES_PARAM } from '../lib/constants.js';
+import { PARAM_PACKAGES } from '../lib/constants.js';
 import { flash } from '../lib/flash.js';
 import useHashParam from '../lib/useHashParam.js';
 
 type PachagesHash = PackageJson[];
 
-export default function PackagesHashHAndler() {
-  const [hashPackages] = useHashParam(PACKAGES_PARAM);
+export default function PackagesHashHandler() {
+  const [hashPackages] = useHashParam(PARAM_PACKAGES);
 
   useEffect(() => {
     let packages: PachagesHash;
@@ -23,7 +23,7 @@ export default function PackagesHashHAndler() {
         cacheLocalPackage(pkg as ModulePackage);
       }
     } catch (err) {
-      flash(`"${PACKAGES_PARAM}" param could not be parsed`);
+      flash(`"${PARAM_PACKAGES}" param could not be parsed`);
       return;
     }
   }, [hashPackages]);

@@ -1,7 +1,7 @@
 import filterAlteredClicks from 'filter-altered-clicks';
 import React, { HTMLProps } from 'react';
+import { PARAM_QUERY } from '../lib/constants.js';
 import useLocation from '../lib/useLocation.js';
-import { QUERY_PARAM } from '../lib/constants.js';
 
 export function QueryLink({
   query,
@@ -15,7 +15,7 @@ export function QueryLink({
   const queries = Array.isArray(query) ? query : [query];
 
   const url = new URL(location);
-  url.search = query.length ? `${QUERY_PARAM}=${queries.join(',')}` : '';
+  url.search = query.length ? `${PARAM_QUERY}=${queries.join(',')}` : '';
   url.hash = '';
 
   function onClick(e: React.MouseEvent) {
