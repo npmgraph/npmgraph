@@ -248,24 +248,6 @@ export function sanitizePackageKeys(pkg: PackageJson) {
 export function cacheLocalPackage(pkg: ModulePackage) {
   pkg = sanitizePackageKeys(pkg) as ModulePackage;
 
-  // Construct a local module for the package
-  if (!pkg.name) pkg.name = '(upload)';
-  if (!pkg.version) {
-    // Create version string.  Sadly, there isn't a great semver-compliant
-    // scheme out there.  CalVer is a thing but kind of a mess, so I'm using
-    // this format, instead: <year>.<dayOfYear>.<secondsOfDay>
-    //
-    // https://github.com/mahmoud/calver/issues/created_by/broofa
-    const now = new Date();
-    const year = now.getUTCFullYear();
-    let seconds = (Number(now) - Number(new Date(year, 1, 1))) / 1000;
-    const dayOfYear = Math.floor(seconds / 86400);
-    seconds -= dayOfYear * 86400;
-    const version = `${year}.${dayOfYear}.${Math.floor(seconds)}`;
-
-    pkg.version = version;
-  }
-
   pkg._local = true;
 
   const module = new Module(pkg);
