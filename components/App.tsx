@@ -6,9 +6,9 @@ import useSearchParam from '../lib/useSearchParam.js';
 import './App.scss';
 import GraphDiagram from './GraphDiagram/GraphDiagram.js';
 import { GraphState } from './GraphDiagram/graph_util.js';
-import HashUploader from './HashUploader.js';
 import Inspector from './Inspector.js';
 import { Loader } from './Loader.js';
+import PackagesHashHAndler from './PackagesHashHandler.js';
 import { Splitter } from './Splitter.js';
 
 export const [usePane] = sharedStateHook('info', 'pane');
@@ -29,7 +29,7 @@ export default function App() {
       />
       <Inspector className={zenMode ? '' : 'open'} />
 
-      <HashUploader />
+      <PackagesHashHAndler />
     </>
   );
 }
