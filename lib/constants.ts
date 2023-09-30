@@ -5,11 +5,11 @@ export const COLORIZE_COLORS = [
   'var(--bg-yellow)',
   'var(--bg-green)',
 ];
-export const COLORIZE_MAINTENANCE = 'maintenance';
 export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
 export const COLORIZE_MODULE_ESM = 'var(--bg-yellow)';
-export const COLORIZE_MODULE_TYPE = 'moduleType';
 
+export const COLORIZE_MAINTENANCE = 'maintenance';
+export const COLORIZE_MODULE_TYPE = 'moduleType';
 export const COLORIZE_NONE = '';
 export const COLORIZE_OVERALL = 'overall';
 export const COLORIZE_POPULARITY = 'popularity';
