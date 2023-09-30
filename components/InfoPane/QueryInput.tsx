@@ -1,16 +1,21 @@
-import React, { HTMLProps } from 'react';
+import React, { HTMLProps, useState } from 'react';
+import URLPlus from '../../lib/URLPlus.js';
+import { PARAM_PACKAGES } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
-import { useQuery } from '../App.js';
+import useLocation from '../../lib/useLocation.js';
+import { useQuery } from '../../lib/useQuery.js';
 import { ExternalLink } from '../ExternalLink.js';
 import './QueryInput.scss';
 
 export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
-  const [query, setQuery] = useQuery();
-  const [value, setValue] = React.useState(query.join(', '));
-  let url: URL | undefined = undefined;
+  const [query] = useQuery();
+  const [location, setLocation] = useLocation();
+
+  const [value, setValue] = useState(query.join(', '));
+  let valueAsURL: URL | undefined = undefined;
 
   try {
-    url = new URL(value.trim());
+    valueAsURL = new URL(value.trim());
   } catch (err) {
     // ignore
   }
@@ -18,13 +23,17 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!/^(?:Enter|Tab)$/.test(e.key)) return;
 
-    const names = (e.currentTarget as HTMLInputElement).value
+    let moduleKeys = (e.currentTarget as HTMLInputElement).value
       .split(',')
       .map(v => v.trim())
       .filter(isDefined);
-    const query = [...new Set(names)]; // De-dupe
+    moduleKeys = [...new Set(moduleKeys)]; // De-dupe
 
-    setQuery(query);
+    const url = new URLPlus(location);
+    url.hash = '';
+    url.setSearchParam('q', moduleKeys.join(', '));
+    url.setHashParam(PARAM_PACKAGES, '');
+    setLocation(url, false);
   }
 
   return (
@@ -38,7 +47,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
         autoFocus
         {...props}
       />
-      {isGithubUrl(url) ? (
+      {isGithubUrl(valueAsURL) ? (
         <div className="tip">
           Note: URLs that refer to private GitHub repos or gists should use the
           URL shown when{' '}
@@ -48,10 +57,10 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
           .
         </div>
       ) : null}
-      {url ? (
+      {valueAsURL ? (
         <div className="tip">
-          Note: {url.host} must allow CORS requests from the {location.host}{' '}
-          domain for this to work
+          Note: {valueAsURL.host} must allow CORS requests from the{' '}
+          {location.host} domain for this to work
         </div>
       ) : null}
     </>

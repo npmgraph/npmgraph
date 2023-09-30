@@ -8,6 +8,22 @@ import {
   queryModuleCache,
 } from '../../lib/ModuleCache.js';
 import { report } from '../../lib/bugsnag.js';
+import {
+  COLORIZE_COLORS,
+  COLORIZE_MAINTENANCE,
+  COLORIZE_MODULE_CJS,
+  COLORIZE_MODULE_ESM,
+  COLORIZE_OVERALL,
+  COLORIZE_POPULARITY,
+  COLORIZE_QUALITY,
+  PARAM_COLORIZE,
+  PARAM_DEPENDENCIES,
+  PARAM_VIEW_MODE,
+  PARAM_ZOOM,
+  ZOOM_FIT_HEIGHT,
+  ZOOM_FIT_WIDTH,
+  ZOOM_NONE,
+} from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
 import $ from '../../lib/dom.js';
 import fetchJSON from '../../lib/fetchJSON.js';
@@ -16,32 +32,17 @@ import { flash } from '../../lib/flash.js';
 import { isDefined } from '../../lib/guards.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
 import useHashParam from '../../lib/useHashParam.js';
-import { useExcludes, useGraph, usePane, useQuery } from '../App.js';
+import { useQuery } from '../../lib/useQuery.js';
+import { useExcludes, useGraph, usePane } from '../App.js';
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
-import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
-
-export const COLORIZE_MODULE_ESM = 'var(--bg-yellow)';
-export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
-export const COLORIZE_COLORS = [
-  'var(--bg-red)',
-  'var(--bg-orange)',
-  'var(--bg-yellow)',
-  'var(--bg-green)',
-];
-
-export const ZOOM_NONE = '';
-export const ZOOM_FIT_WIDTH = 'w';
-export const ZOOM_FIT_HEIGHT = 'h';
-
-export const COLORIZE_NONE = '';
-export const COLORIZE_BUS = 'bus';
-export const COLORIZE_MODULE_TYPE = 'moduleType';
-export const COLORIZE_OVERALL = 'overall';
-export const COLORIZE_QUALITY = 'quality';
-export const COLORIZE_POPULARITY = 'popularity';
-export const COLORIZE_MAINTENANCE = 'maintenance';
+import {
+  DependencyKey,
+  composeDOT,
+  getGraphForQuery,
+  hslFor,
+} from './graph_util.js';
 
 export type ZoomOption =
   | typeof ZOOM_NONE
@@ -52,14 +53,24 @@ const graphvizP = Graphviz.load();
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
-  const [includeDev] = useHashParam('dev');
+  const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [, setPane] = usePane();
-  const [, setZenMode] = useHashParam('zen');
+  const [, setZenMode] = useHashParam(PARAM_VIEW_MODE);
   const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
-  const [colorize] = useHashParam('c');
-  const [zoom] = useHashParam('z');
+  const [colorize] = useHashParam(PARAM_COLORIZE);
+  const [zoom] = useHashParam(PARAM_ZOOM);
+
+  // Dependencies to include for top-level modules
+  const dependencyTypes = new Set<DependencyKey>([
+    'dependencies',
+    'peerDependencies',
+  ]);
+  depTypes
+    .split(/\s*,\s*/)
+    .sort()
+    .forEach(dtype => dependencyTypes.add(dtype as DependencyKey));
 
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
@@ -142,16 +153,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   useEffect(() => {
     const { signal, abort } = createAbortable();
 
-    getGraphForQuery(query, Boolean(includeDev), moduleFilter).then(
-      newGraph => {
-        if (signal.aborted) return; // Check after async
+    getGraphForQuery(query, dependencyTypes, moduleFilter).then(newGraph => {
+      if (signal.aborted) return; // Check after async
 
-        setGraph(newGraph);
-      },
-    );
+      setGraph(newGraph);
+    });
 
     return abort;
-  }, [[...query].sort().join(), includeDev, excludes]);
+  }, [[...query].sort().join(), [...dependencyTypes].join(), excludes]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {

@@ -3,12 +3,7 @@ import React from 'react';
 import simplur from '../../lib/simplur.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { useExcludes } from '../App.js';
-import { Pane } from '../Pane.js';
-import { PieGraph } from '../PieGraph.js';
-import { Section } from '../Section.js';
-import { Tag } from '../Tag.js';
-import { Tags } from '../Tags.js';
-import { Toggle } from '../Toggle.js';
+
 import {
   COLORIZE_BUS,
   COLORIZE_COLORS,
@@ -20,8 +15,21 @@ import {
   COLORIZE_OVERALL,
   COLORIZE_POPULARITY,
   COLORIZE_QUALITY,
-} from '../GraphDiagram/GraphDiagram.js';
-import { GraphState, hslFor } from '../GraphDiagram/graph_util.js';
+  PARAM_COLORIZE,
+  PARAM_DEPENDENCIES,
+} from '../../lib/constants.js';
+import { isDefined } from '../../lib/guards.js';
+import {
+  DependencyKey,
+  GraphState,
+  hslFor,
+} from '../GraphDiagram/graph_util.js';
+import { Pane } from '../Pane.js';
+import { PieGraph } from '../PieGraph.js';
+import { Section } from '../Section.js';
+import { Tag } from '../Tag.js';
+import { Tags } from '../Tags.js';
+import { Toggle } from '../Toggle.js';
 import './GraphPane.scss';
 
 export default function GraphPane({
@@ -30,10 +38,15 @@ export default function GraphPane({
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const compareEntryKey = ([a]: [string, unknown], [b]: [string, unknown]) =>
     a < b ? -1 : a > b ? 1 : 0;
-  const [colorize, setColorize] = useHashParam('c');
+  const [colorize, setColorize] = useHashParam(PARAM_COLORIZE);
   const [excludes] = useExcludes();
-  const [includeDev, setIncludeDev] = useHashParam('dev');
+  const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
 
+  const dependencyTypes = (depTypes.split(/\s*,\s*/) as DependencyKey[]).filter(
+    isDefined,
+  );
+
+  const includeDev = dependencyTypes.includes('devDependencies');
   if (!graph?.modules) return <div>Loading</div>;
 
   const occurances: { [key: string]: number } = {};
@@ -72,8 +85,8 @@ export default function GraphPane({
   return (
     <Pane {...props}>
       <Toggle
-        checked={Boolean(includeDev)}
-        onChange={() => setIncludeDev(includeDev ? '' : '1')}
+        checked={includeDev}
+        onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
       >
         Include devDependencies
       </Toggle>

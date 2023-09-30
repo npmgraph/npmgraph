@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import LoadActivity from '../lib/LoadActivity.js';
+import { PARAM_VIEW_MODE, VIEW_MODE_CLOSED } from '../lib/constants.js';
 import sharedStateHook from '../lib/sharedStateHook.js';
 import useHashParam from '../lib/useHashParam.js';
-import useSearchParam from '../lib/useSearchParam.js';
 import './App.scss';
 import GraphDiagram from './GraphDiagram/GraphDiagram.js';
 import { GraphState } from './GraphDiagram/graph_util.js';
@@ -16,17 +16,19 @@ export const [useExcludes] = sharedStateHook([] as string[], 'excludes');
 
 export default function App() {
   const activity = useActivity();
-  const [zenMode, setZenMode] = useHashParam('zen');
+  const [viewMode, setViewMode] = useHashParam(PARAM_VIEW_MODE);
+
+  const isOpen = viewMode != VIEW_MODE_CLOSED;
 
   return (
     <>
       {activity.total > 0 ? <Loader activity={activity} /> : null}
       <GraphDiagram activity={activity} />
       <Splitter
-        isOpen={!zenMode}
-        onClick={() => setZenMode(zenMode ? '' : '1')}
+        isOpen={isOpen}
+        onClick={() => setViewMode(isOpen ? VIEW_MODE_CLOSED : '')}
       />
-      <Inspector className={zenMode ? '' : 'open'} />
+      <Inspector className={viewMode ? '' : 'open'} />
     </>
   );
 }
@@ -41,25 +43,4 @@ export function useActivity() {
   if (!activity) throw new Error('Activity not set');
   activity.onChange = () => setBool(!bool);
   return activity;
-}
-
-export function useQuery() {
-  const [queryString, setQueryString] = useSearchParam('q');
-  const moduleKeys = queryString.split(/[, ]+/).filter(Boolean);
-  return [
-    moduleKeys,
-    function setQuery(moduleKeys: string[] = []) {
-      // Clean up keys
-      moduleKeys = moduleKeys.filter(Boolean).map(key => {
-        key = key.trim();
-
-        // Don't lowercase URLs
-        if (/https?:\/\//i.test(key)) return key;
-
-        return key.toLowerCase();
-      });
-      moduleKeys = [...new Set(moduleKeys)];
-      setQueryString(moduleKeys.join(','), true);
-    },
-  ] as const;
 }

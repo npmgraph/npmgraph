@@ -1,8 +1,11 @@
 #search-field {
+  border-radius: 15px;
+  border: solid 1px var(--text-dim);
   font: inherit;
   line-height: 1em;
-  padding: 0.3em 0.7em;
   margin-left: 1em;
+  outline: none;
+  padding: 0.3em 0.7em;
 
   &:focus {
     border-color: var(--highlight);
@@ -10,10 +13,10 @@
 }
 
 .tip {
+  border-radius: 0.5em;
+  color: var(--text-dim);
   font-size: 0.85em;
   font-style: italic;
   line-height: 1.5em;
-  color: var(--text-dim);
   padding: 0.5em;
-  border-radius: .5em;
 }

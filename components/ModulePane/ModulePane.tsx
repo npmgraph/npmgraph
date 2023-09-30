@@ -24,8 +24,11 @@ export default function ModulePane({
   const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
 
   const pn = pkg ? encodeURIComponent(`${pkg.name}@${pkg.version}`) : null;
+  const isLocalModule = Boolean(pkg?._local);
 
   useEffect(() => {
+    if (isLocalModule) return;
+
     setBundleInfo(pkg ? undefined : Error('No package selected'));
     setNpmsData(undefined);
 
@@ -48,6 +51,16 @@ export default function ModulePane({
     return (
       <Pane>
         No module selected. Click a module in the graph to see details.
+      </Pane>
+    );
+  } else if (isLocalModule) {
+    return (
+      <Pane>
+        <h2>{module.key}</h2>
+        <p>
+          This is a locally-defined module. Additional information is not
+          available at this time.
+        </p>
       </Pane>
     );
   }
@@ -89,30 +102,22 @@ export default function ModulePane({
 
       <p>{pkg?.description}</p>
 
-      <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
-        npm
-      </ExternalLink>
-      {module.repoLink ? (
-        <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>
-          GitHub
-        </ExternalLink>
-      ) : null}
-      {
-        // Displaying dropped package contents is a bit problematic, but we give it a shot here.
-        module.package._local ? (
-          <ExternalLink
-            href={`data:text/json;base64,${btoa(
-              JSON.stringify(module.package),
-            )}`}
-          >
-            package.json
-          </ExternalLink>
-        ) : (
+      {/* For NPM packages */}
+      {!module.package._local ? (
+        <>
           <ExternalLink href={module.packageJsonLink}>
             package.json
           </ExternalLink>
-        )
-      }
+          <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
+            npm
+          </ExternalLink>
+          {module.repoLink ? (
+            <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>
+              GitHub
+            </ExternalLink>
+          ) : null}
+        </>
+      ) : null}
 
       <Section title="Bundle Size">
         {!bundleInfo ? (

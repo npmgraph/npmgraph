@@ -1,9 +1,14 @@
 import React from 'react';
+import {
+  PARAM_ZOOM,
+  ZOOM_FIT_HEIGHT,
+  ZOOM_FIT_WIDTH,
+  ZOOM_NONE,
+} from '../../lib/constants.js';
 import useHashParam from '../../lib/useHashParam.js';
-import { ZOOM_FIT_HEIGHT, ZOOM_FIT_WIDTH, ZOOM_NONE } from './GraphDiagram.js';
 
 export function GraphDiagramZoomButtons() {
-  const [zoom, setZoom] = useHashParam('z');
+  const [zoom, setZoom] = useHashParam(PARAM_ZOOM);
   return (
     <>
       <button

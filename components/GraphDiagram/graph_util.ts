@@ -19,7 +19,7 @@ type DependencyEntry = {
   type: DependencyKey;
 };
 
-type DependencyKey =
+export type DependencyKey =
   | 'dependencies'
   | 'devDependencies'
   | 'peerDependencies'
@@ -38,19 +38,21 @@ export type GraphState = {
   // Map of module key -> module info
   modules: Map<string, GraphModuleInfo>;
 
+  entryModules: Set<Module>;
+
   // Map of module -> types of dependencies that terminate in the module
   referenceTypes: Map<string, Set<DependencyKey>>;
 };
 
-export function getDependencyEntries(
+const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
+
+function getDependencyEntries(
   module: Module,
-  includeDev: boolean,
+  dependencyTypes: Set<DependencyKey>,
   level = 0,
 ) {
-  const dependencyTypes: DependencyKey[] = ['dependencies', 'peerDependencies'];
-  if (includeDev && level <= 0) {
-    dependencyTypes.push('devDependencies');
-  }
+  // We only add non-"dependencies" at the top-level.
+  if (level > 0) dependencyTypes = DEPENDENCIES_ONLY;
 
   const depEntries: Array<DependencyEntry> = [];
   for (const type of dependencyTypes) {
@@ -71,19 +73,15 @@ export function getDependencyEntries(
 
 /**
  * Fetch the module dependency tree for a given query.
- *
- * @param {[String]} query names of module entry points
- * @param {Boolean} includeDev flag for including devDependencies
- * @param {Function} moduleFilter applied to module dependency list(s)
- * @returns {Promise<Map>} Map of key -> {module, level, dependencies}
  */
 export async function getGraphForQuery(
   query: string[],
-  includeDev: boolean,
+  dependencyTypes: Set<DependencyKey>,
   moduleFilter: (m: Module | ModulePackage) => boolean,
 ) {
   const graphState: GraphState = {
     modules: new Map(),
+    entryModules: new Set(),
     referenceTypes: new Map(),
   };
 
@@ -99,9 +97,12 @@ export async function getGraphForQuery(
     if (graphState.modules.has(module.key)) return Promise.resolve();
 
     // Get dependency [name, version, dependency type] entries
-    const deps = moduleFilter(module)
-      ? getDependencyEntries(module, includeDev, level)
-      : [];
+    let deps: DependencyEntry[];
+    if (moduleFilter(module)) {
+      deps = getDependencyEntries(module, dependencyTypes, level);
+    } else {
+      deps = [];
+    }
 
     // Create object that captures info about how this module fits in the dependency graph
     const info: GraphModuleInfo = { module: module, level };
@@ -110,7 +111,7 @@ export async function getGraphForQuery(
     // Walk all dependencies
     return Promise.all(
       deps.map(async ({ name, version, type }) => {
-        const module = await getModule(name, version);
+        const module = await getModule(Module.key(name, version));
 
         // Record dependency type in the module it terminates in
         let refTypes = graphState.referenceTypes.get(module.key);
@@ -132,8 +133,9 @@ export async function getGraphForQuery(
 
   // Walk dependencies of each module in the query
   return Promise.allSettled(
-    query.map(async name => {
-      const m = await getModule(name);
+    query.map(async moduleKey => {
+      const m = await getModule(moduleKey);
+      graphState.entryModules.add(m);
       return m && _walk(m);
     }),
   ).then(() => graphState);

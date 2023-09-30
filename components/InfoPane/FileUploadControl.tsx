@@ -1,13 +1,13 @@
+import { PackageJson } from '@npm/types';
 import React, { HTMLProps } from 'react';
-import Module, { ModulePackage } from '../../lib/Module.js';
-import { cacheLocalModule, cacheModule } from '../../lib/ModuleCache.js';
+import { ModulePackage } from '../../lib/Module.js';
+import { cacheLocalPackage } from '../../lib/ModuleCache.js';
+import URLPlus from '../../lib/URLPlus.js';
+import { PARAM_PACKAGES, PARAM_QUERY } from '../../lib/constants.js';
 import useLocation from '../../lib/useLocation.js';
-import { useQuery } from '../App.js';
 import './FileUploadControl.scss';
-import FileUploadList from './FileUploadList.js';
 
 export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
-  const [, setQuery] = useQuery();
   const [location, setLocation] = useLocation();
 
   // Handle file selection via input
@@ -54,31 +54,20 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
       reader.readAsText(file);
     });
 
-    const pkg: ModulePackage = JSON.parse(content);
+    // Parse module and insert into cache
+    const pkg: PackageJson = JSON.parse(content);
 
-    // Construct a local module for the package
-    if (!pkg.name) pkg.name = '(upload)';
-    if (!pkg.version) {
-      // Make semver string of form YYYY.MM.DD-HH:MM:SS.ddd
-      pkg.version = new Date()
-        .toISOString()
-        .replace(/-/g, '.')
-        .replace('T', '-');
-    }
-    pkg._local = true;
-    const module = new Module(pkg);
+    pkg.name ??= 'Unnamed package';
 
-    // Put module in cache and local cache
-    cacheModule(module);
-    cacheLocalModule(module);
+    // Note: cacheLocalPackage() sanitizes pkg.keys in-place(!)
+    const module = cacheLocalPackage(pkg as ModulePackage);
 
-    // Update UI
-    setQuery([module.key]);
-
-    // Update location
-    const url = new URL(location);
-    url.searchParams.set('q', module.key);
-    setLocation(url);
+    // Set query, and attach package contents in hash
+    const url = new URLPlus(location);
+    url.hash = '';
+    url.setHashParam(PARAM_PACKAGES, JSON.stringify([pkg]));
+    url.setSearchParam(PARAM_QUERY, module.key);
+    setLocation(url, false);
   }
 
   function onDragOver(ev: React.DragEvent<HTMLElement>) {
@@ -114,8 +103,6 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
         Alternatively, <button type="button">select</button> or drop a{' '}
         <code>package.json</code> file here
       </label>
-
-      <FileUploadList />
     </>
   );
 }
