@@ -3,18 +3,26 @@ export default class URLPlus extends URL {
     const params = new URLSearchParams(this.hash.slice(1));
     return params.get(key);
   }
-  setHashParam(key: string, value: string) {
+  setHashParam(key: string, value?: string) {
     const params = new URLSearchParams(this.hash.slice(1));
-    params.set(key, value);
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
     this.hash = params.toString();
   }
   getSearchParam(key: string) {
     const params = new URLSearchParams(this.search);
     return params.get(key);
   }
-  setSearchParam(key: string, value: string) {
+  setSearchParam(key: string, value?: string) {
     const params = new URLSearchParams(this.search);
-    params.set(key, value);
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
     this.search = params.toString();
   }
 }
