@@ -24,8 +24,11 @@ export default function ModulePane({
   const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
 
   const pn = pkg ? encodeURIComponent(`${pkg.name}@${pkg.version}`) : null;
+  const isLocalModule = Boolean(pkg?._local);
 
   useEffect(() => {
+    if (isLocalModule) return;
+
     setBundleInfo(pkg ? undefined : Error('No package selected'));
     setNpmsData(undefined);
 
@@ -48,6 +51,16 @@ export default function ModulePane({
     return (
       <Pane>
         No module selected. Click a module in the graph to see details.
+      </Pane>
+    );
+  } else if (isLocalModule) {
+    return (
+      <Pane>
+        <h2>{module.key}</h2>
+        <p>
+          This is a locally-defined module. Additional information is not
+          available at this time.
+        </p>
       </Pane>
     );
   }

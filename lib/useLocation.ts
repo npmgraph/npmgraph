@@ -1,9 +1,15 @@
+import { syncPackagesHash } from './ModuleCache.js';
 import sharedStateHook from './sharedStateHook.js';
 
 const [useHref, setHref] = sharedStateHook(new URL(location.href), '');
 
-window.addEventListener('hashchange', () => setHref(new URL(location.href)));
-window.addEventListener('popstate', () => setHref(new URL(location.href)));
+function handleLocationUpdate() {
+  syncPackagesHash();
+  setHref(new URL(location.href));
+}
+
+window.addEventListener('hashchange', handleLocationUpdate);
+window.addEventListener('popstate', handleLocationUpdate);
 
 export default function useLocation() {
   const [href, setHref] = useHref();

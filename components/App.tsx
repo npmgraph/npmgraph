@@ -8,7 +8,6 @@ import GraphDiagram from './GraphDiagram/GraphDiagram.js';
 import { GraphState } from './GraphDiagram/graph_util.js';
 import Inspector from './Inspector.js';
 import { Loader } from './Loader.js';
-import PackagesHashHandler from './PackagesHashHandler.js';
 import { Splitter } from './Splitter.js';
 
 export const [usePane] = sharedStateHook('info', 'pane');
@@ -30,8 +29,6 @@ export default function App() {
         onClick={() => setViewMode(isOpen ? VIEW_MODE_CLOSED : '')}
       />
       <Inspector className={viewMode ? '' : 'open'} />
-
-      <PackagesHashHandler />
     </>
   );
 }

@@ -3,7 +3,10 @@ import semverGt from 'semver/functions/gt.js';
 import semverSatisfies from 'semver/functions/satisfies.js';
 import semverValid from 'semver/functions/valid.js';
 import Module, { ModulePackage } from './Module.js';
+import URLPlus from './URLPlus.js';
+import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
+import { flash } from './flash.js';
 
 const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
 
@@ -177,11 +180,13 @@ export function getCachedModule(key: string) {
 }
 
 export function cacheModule(module: Module) {
-  const entry = moduleCache.get(module.key);
+  const moduleKey = module.key;
+  const entry = moduleCache.get(moduleKey);
+
   if (entry) {
     entry.resolve(module);
   } else {
-    moduleCache.set(module.key, {
+    moduleCache.set(moduleKey, {
       promise: Promise.resolve(module),
       module,
       resolve() {},
@@ -260,11 +265,39 @@ export function cacheLocalPackage(pkg: ModulePackage) {
 
     pkg.version = version;
   }
+
   pkg._local = true;
+
   const module = new Module(pkg);
 
   // Put module in cache and local cache
   cacheModule(module);
 
   return module;
+}
+
+let lastPackagesVal: string | null;
+
+// Make sure any packages in the URL hash are loaded into the module cache
+export function syncPackagesHash() {
+  const url = new URLPlus(window.location.href);
+  const packagesJson = url.getHashParam(PARAM_PACKAGES);
+
+  // If the hash param hasn't changed, there's nothing to do
+  if (lastPackagesVal === packagesJson) return;
+  lastPackagesVal = packagesJson;
+
+  if (!packagesJson) return;
+
+  let packages: PackageJson[];
+  try {
+    packages = JSON.parse(packagesJson);
+  } catch (err) {
+    flash('"packages" hash param is not valid JSON');
+    return;
+  }
+
+  for (const pkg of packages) {
+    cacheLocalPackage(pkg as ModulePackage);
+  }
 }

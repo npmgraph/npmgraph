@@ -4,6 +4,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App, { setActivityForApp } from '../components/App.js';
 import LoadActivity from './LoadActivity.js';
+import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
 
@@ -21,6 +22,9 @@ window.addEventListener('unhandledrejection', err => {
 });
 
 window.onload = function () {
+  // Make sure module cache is synced with hash param
+  syncPackagesHash();
+
   // Inject LoadActivity dependencies
   const activity = new LoadActivity();
   setActivityForRequestCache(activity);
