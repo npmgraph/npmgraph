@@ -30,6 +30,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     moduleKeys = [...new Set(moduleKeys)]; // De-dupe
 
     const url = new URLPlus(location);
+    url.hash = '';
     url.setSearchParam('q', moduleKeys.join(', '));
     url.setHashParam(PACKAGES_PARAM, '');
     setLocation(url, false);

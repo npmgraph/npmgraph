@@ -61,6 +61,7 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
 
     // Set query, and attach package contents in hash
     const url = new URLPlus(location);
+    url.hash = '';
     url.setHashParam(PACKAGES_PARAM, JSON.stringify([pkg]));
     url.setSearchParam(QUERY_PARAM, module.key);
     setLocation(url, false);
