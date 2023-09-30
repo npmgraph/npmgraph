@@ -3,7 +3,7 @@ import useSearchParam from './useSearchParam.js';
 
 export function useQuery() {
   const [queryString, setQueryString] = useSearchParam(PARAM_QUERY);
-  const moduleKeys = queryString.split(/[, ]+/).filter(Boolean);
+  const moduleKeys = queryString.split(/\s*,\s*/).filter(Boolean);
   return [
     moduleKeys,
     function setQuery(moduleKeys: string[] = [], replace = false) {

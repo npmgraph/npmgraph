@@ -1,6 +1,6 @@
 import React, { HTMLProps, useState } from 'react';
 import URLPlus from '../../lib/URLPlus.js';
-import { PARAM_PACKAGES } from '../../lib/constants.js';
+import { PARAM_PACKAGES, UNNAMED_PACKAGE } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useLocation from '../../lib/useLocation.js';
 import { useQuery } from '../../lib/useQuery.js';
@@ -11,7 +11,11 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   const [query] = useQuery();
   const [location, setLocation] = useLocation();
 
-  const [value, setValue] = useState(query.join(', '));
+  const initialValue = query.join(', ');
+
+  const [value, setValue] = useState(
+    initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue,
+  );
   let valueAsURL: URL | undefined = undefined;
 
   try {
