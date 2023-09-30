@@ -3,9 +3,8 @@ import React, { HTMLProps } from 'react';
 import { ModulePackage } from '../../lib/Module.js';
 import { cacheLocalPackage } from '../../lib/ModuleCache.js';
 import URLPlus from '../../lib/URLPlus.js';
+import { PACKAGES_PARAM, QUERY_PARAM } from '../../lib/constants.js';
 import useLocation from '../../lib/useLocation.js';
-import { QUERY_PARAM } from '../../lib/useQuery.js';
-import { PACKAGES_PARAM } from '../PackagesHashHandler.js';
 import './FileUploadControl.scss';
 
 export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {

@@ -3,6 +3,7 @@ import React from 'react';
 import simplur from '../../lib/simplur.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { useExcludes } from '../App.js';
+
 import {
   COLORIZE_BUS,
   COLORIZE_COLORS,
@@ -12,9 +13,11 @@ import {
   COLORIZE_MODULE_TYPE,
   COLORIZE_NONE,
   COLORIZE_OVERALL,
+  COLORIZE_PARAM,
   COLORIZE_POPULARITY,
   COLORIZE_QUALITY,
-} from '../GraphDiagram/GraphDiagram.js';
+  DEV_DEPENDENCIES_PARAM,
+} from '../../lib/constants.js';
 import { GraphState, hslFor } from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
 import { PieGraph } from '../PieGraph.js';
@@ -30,9 +33,9 @@ export default function GraphPane({
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const compareEntryKey = ([a]: [string, unknown], [b]: [string, unknown]) =>
     a < b ? -1 : a > b ? 1 : 0;
-  const [colorize, setColorize] = useHashParam('c');
+  const [colorize, setColorize] = useHashParam(COLORIZE_PARAM);
   const [excludes] = useExcludes();
-  const [includeDev, setIncludeDev] = useHashParam('dev');
+  const [includeDev, setIncludeDev] = useHashParam(DEV_DEPENDENCIES_PARAM);
 
   if (!graph?.modules) return <div>Loading</div>;
 

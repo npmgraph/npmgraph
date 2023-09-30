@@ -1,6 +1,5 @@
+import { QUERY_PARAM } from './constants.js';
 import useSearchParam from './useSearchParam.js';
-
-export const QUERY_PARAM = 'q';
 
 export function useQuery() {
   const [queryString, setQueryString] = useSearchParam(QUERY_PARAM);

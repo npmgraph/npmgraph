@@ -1,10 +1,10 @@
 import React, { HTMLProps, useState } from 'react';
 import URLPlus from '../../lib/URLPlus.js';
+import { PACKAGES_PARAM } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useLocation from '../../lib/useLocation.js';
 import { useQuery } from '../../lib/useQuery.js';
 import { ExternalLink } from '../ExternalLink.js';
-import { PACKAGES_PARAM } from '../PackagesHashHandler.js';
 import './QueryInput.scss';
 
 export default function QueryInput(props: HTMLProps<HTMLInputElement>) {

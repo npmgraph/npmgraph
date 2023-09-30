@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import LoadActivity from '../lib/LoadActivity.js';
+import { ZEN_PARAM } from '../lib/constants.js';
 import sharedStateHook from '../lib/sharedStateHook.js';
 import useHashParam from '../lib/useHashParam.js';
 import './App.scss';
@@ -16,7 +17,7 @@ export const [useExcludes] = sharedStateHook([] as string[], 'excludes');
 
 export default function App() {
   const activity = useActivity();
-  const [zenMode, setZenMode] = useHashParam('zen');
+  const [zenMode, setZenMode] = useHashParam(ZEN_PARAM);
 
   return (
     <>

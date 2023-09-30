@@ -8,6 +8,22 @@ import {
   queryModuleCache,
 } from '../../lib/ModuleCache.js';
 import { report } from '../../lib/bugsnag.js';
+import {
+  COLORIZE_COLORS,
+  COLORIZE_MAINTENANCE,
+  COLORIZE_MODULE_CJS,
+  COLORIZE_MODULE_ESM,
+  COLORIZE_OVERALL,
+  COLORIZE_PARAM,
+  COLORIZE_POPULARITY,
+  COLORIZE_QUALITY,
+  DEV_DEPENDENCIES_PARAM,
+  ZEN_PARAM,
+  ZOOM_FIT_HEIGHT,
+  ZOOM_FIT_WIDTH,
+  ZOOM_NONE,
+  ZOOM_PARAM,
+} from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
 import $ from '../../lib/dom.js';
 import fetchJSON from '../../lib/fetchJSON.js';
@@ -23,27 +39,6 @@ import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import { composeDOT, getGraphForQuery, hslFor } from './graph_util.js';
 
-export const COLORIZE_MODULE_ESM = 'var(--bg-yellow)';
-export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
-export const COLORIZE_COLORS = [
-  'var(--bg-red)',
-  'var(--bg-orange)',
-  'var(--bg-yellow)',
-  'var(--bg-green)',
-];
-
-export const ZOOM_NONE = '';
-export const ZOOM_FIT_WIDTH = 'w';
-export const ZOOM_FIT_HEIGHT = 'h';
-
-export const COLORIZE_NONE = '';
-export const COLORIZE_BUS = 'bus';
-export const COLORIZE_MODULE_TYPE = 'moduleType';
-export const COLORIZE_OVERALL = 'overall';
-export const COLORIZE_QUALITY = 'quality';
-export const COLORIZE_POPULARITY = 'popularity';
-export const COLORIZE_MAINTENANCE = 'maintenance';
-
 export type ZoomOption =
   | typeof ZOOM_NONE
   | typeof ZOOM_FIT_WIDTH
@@ -53,14 +48,14 @@ const graphvizP = Graphviz.load();
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
-  const [includeDev] = useHashParam('dev');
+  const [includeDev] = useHashParam(DEV_DEPENDENCIES_PARAM);
   const [, setPane] = usePane();
-  const [, setZenMode] = useHashParam('zen');
+  const [, setZenMode] = useHashParam(ZEN_PARAM);
   const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
   const [excludes, setExcludes] = useExcludes();
-  const [colorize] = useHashParam('c');
-  const [zoom] = useHashParam('z');
+  const [colorize] = useHashParam(COLORIZE_PARAM);
+  const [zoom] = useHashParam(ZOOM_PARAM);
 
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
