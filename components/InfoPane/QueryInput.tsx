@@ -14,7 +14,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   const initialValue = query.join(', ');
 
   const [value, setValue] = useState(
-    initialValue === UNNAMED_PACKAGE ? '' : initialValue,
+    initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue,
   );
   let valueAsURL: URL | undefined = undefined;
 
