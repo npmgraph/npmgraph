@@ -2,10 +2,8 @@ import { Manifest, PackageJson } from '@npm/types';
 import semverGt from 'semver/functions/gt.js';
 import semverSatisfies from 'semver/functions/satisfies.js';
 import semverValid from 'semver/functions/valid.js';
-import Module, { LOCAL_PREFIX, ModulePackage } from './Module.js';
+import Module, { ModulePackage } from './Module.js';
 import fetchJSON from './fetchJSON.js';
-import { isDefined } from './guards.js';
-import sharedStateHook from './sharedStateHook.js';
 
 const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
 
@@ -15,6 +13,8 @@ export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
 
 type ModuleCacheEntry = {
   promise: Promise<Module>;
+  resolve: (module: Module) => void;
+  reject: (err: Error) => void;
   module?: Module; // Set once module is loaded
 };
 
@@ -40,7 +40,7 @@ function selectVersionFromManifest(
   return bestVersion;
 }
 
-function validateNPMNameAndVersion(name: string, version?: string) {
+function validateModuleKey(name: string, version?: string) {
   // "npm:<package name>@<version>"-style names are used to create aliases.  We
   // detect that here and massage the inputs accordingly
   //
@@ -53,11 +53,7 @@ function validateNPMNameAndVersion(name: string, version?: string) {
 
   if (!version) {
     // Parse versioned-names (e.g. "less@1.2.3")
-    const parts = name.match(/(.+)@(.*)/);
-    if (parts) {
-      name = parts[1];
-      version = parts[2];
-    }
+    [name, version] = Module.unkey(name);
   } else {
     // Remove "git...#" repo URIs from version strings
     const gitless = version?.replace(/git.*#(.*)/, '');
@@ -68,7 +64,7 @@ function validateNPMNameAndVersion(name: string, version?: string) {
     }
   }
 
-  return { name, version };
+  return [name, version];
 }
 
 async function getModuleFromURL(urlString: string) {
@@ -124,25 +120,21 @@ async function getModuleFromNPM(
   return new Module(pkg);
 }
 
-export async function getModule(
-  name: string,
-  version?: string,
-): Promise<Module> {
-  if (!name) throw Error('Undefined module name');
+export async function getModule(moduleKey: string): Promise<Module> {
+  if (!moduleKey) throw Error('Undefined module name');
 
-  // Get cacheKey based on type of module
-  let cacheKey: string;
-  if (name.startsWith(LOCAL_PREFIX)) {
-    cacheKey = Module.key(name, version);
-  } else if (/^https?:\/\//.test(name)) {
-    cacheKey = Module.key(name, version);
+  let [name, version] = Module.unkey(moduleKey);
+  if (/^https?:\/\//.test(moduleKey)) {
+    name = moduleKey;
+    version = '';
+    // unchanged
   } else {
-    ({ name, version } = validateNPMNameAndVersion(name, version));
-    cacheKey = Module.key(name, version);
+    [name, version] = validateModuleKey(name, version);
   }
 
+  moduleKey = Module.key(name, version);
   // Check cache once we're done massaging the version string
-  const cachedEntry = moduleCache.get(cacheKey);
+  const cachedEntry = moduleCache.get(moduleKey);
   if (cachedEntry) {
     return cachedEntry.promise;
   }
@@ -151,33 +143,30 @@ export async function getModule(
   // promise object (and thus the same module), even if the module hasn't been
   // loaded yet
   const cacheEntry = {} as ModuleCacheEntry;
-  moduleCache.set(cacheKey, cacheEntry);
+  cacheEntry.promise = new Promise<Module>((resolve, reject) => {
+    cacheEntry.resolve = resolve;
+    cacheEntry.reject = reject;
+  });
+  moduleCache.set(moduleKey, cacheEntry);
 
   let promise: Promise<Module>;
 
   // Fetch module based on type
-  if (name.startsWith(LOCAL_PREFIX)) {
-    promise = Promise.reject(new Error(`${cacheKey} is not cached`));
-    console.warn(`Request for uncached local module`);
-    cacheKey = Module.key(name, version);
-  } else if (/^https?:\/\//.test(name)) {
-    promise = getModuleFromURL(name);
+  if (/^https?:\/\//.test(moduleKey)) {
+    promise = getModuleFromURL(moduleKey);
   } else {
-    ({ name, version } = validateNPMNameAndVersion(name, version));
     promise = getModuleFromNPM(name, version);
   }
-
-  cacheEntry.promise = promise
+  promise
     .catch(err => {
-      console.warn(`Failed to load module "${cacheKey}": ${err}`);
-      return Module.stub(name, version, err);
+      return Module.stub(moduleKey, err);
     })
     .then(module => {
       cacheEntry.module = module;
 
       // Add cache entry for module's computed key
       moduleCache.set(module.key, cacheEntry);
-      return module;
+      cacheEntry.resolve(module);
     });
 
   return cacheEntry.promise;
@@ -188,7 +177,17 @@ export function getCachedModule(key: string) {
 }
 
 export function cacheModule(module: Module) {
-  moduleCache.set(module.key, { promise: Promise.resolve(module), module });
+  const entry = moduleCache.get(module.key);
+  if (entry) {
+    entry.resolve(module);
+  } else {
+    moduleCache.set(module.key, {
+      promise: Promise.resolve(module),
+      module,
+      resolve() {},
+      reject() {},
+    });
+  }
 }
 
 /**
@@ -233,7 +232,7 @@ const PACKAGE_WHITELIST: (keyof PackageJson)[] = [
   'version',
 ];
 
-function sanitizePackage(pkg: PackageJson) {
+export function sanitizePackageKeys(pkg: PackageJson) {
   const sanitized: PackageJson = {} as PackageJson;
   for (const key of PACKAGE_WHITELIST) {
     if (key in pkg) (sanitized[key] as unknown) = pkg[key];
@@ -241,15 +240,25 @@ function sanitizePackage(pkg: PackageJson) {
   return sanitized;
 }
 
-// TODO: Use this instead of
 export function cacheLocalPackage(pkg: ModulePackage) {
-  pkg = sanitizePackage(pkg) as ModulePackage;
+  pkg = sanitizePackageKeys(pkg) as ModulePackage;
 
   // Construct a local module for the package
   if (!pkg.name) pkg.name = '(upload)';
   if (!pkg.version) {
-    // Make semver string of form YYYY.MM.DD-HH:MM:SS.ddd
-    pkg.version = new Date().toISOString().replace(/-/g, '.').replace('T', '-');
+    // Create version string.  Sadly, there isn't a great semver-compliant
+    // scheme out there.  CalVer is a thing but kind of a mess, so I'm using
+    // this format, instead: <year>.<dayOfYear>.<secondsOfDay>
+    //
+    // https://github.com/mahmoud/calver/issues/created_by/broofa
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    let seconds = (Number(now) - Number(new Date(year, 1, 1))) / 1000;
+    const dayOfYear = Math.floor(seconds / 86400);
+    seconds -= dayOfYear * 86400;
+    const version = `${year}.${dayOfYear}.${Math.floor(seconds)}`;
+
+    pkg.version = version;
   }
   pkg._local = true;
   const module = new Module(pkg);

@@ -113,7 +113,7 @@ export async function getGraphForQuery(
     // Walk all dependencies
     return Promise.all(
       deps.map(async ({ name, version, type }) => {
-        const module = await getModule(name, version);
+        const module = await getModule(Module.key(name, version));
 
         // Record dependency type in the module it terminates in
         let refTypes = graphState.referenceTypes.get(module.key);
@@ -135,8 +135,8 @@ export async function getGraphForQuery(
 
   // Walk dependencies of each module in the query
   return Promise.allSettled(
-    query.map(async name => {
-      const m = await getModule(name);
+    query.map(async moduleKey => {
+      const m = await getModule(moduleKey);
       graphState.entryModules.add(m);
       return m && _walk(m);
     }),

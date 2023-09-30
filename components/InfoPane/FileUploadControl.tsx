@@ -1,12 +1,14 @@
+import { PackageJson } from '@npm/types';
 import React, { HTMLProps } from 'react';
 import { ModulePackage } from '../../lib/Module.js';
 import { cacheLocalPackage } from '../../lib/ModuleCache.js';
+import URLPlus from '../../lib/URLPlus.js';
 import useLocation from '../../lib/useLocation.js';
-import { useQuery } from '../App.js';
+import { QUERY_PARAM } from '../../lib/useQuery.js';
+import { PACKAGES_PARAM } from '../PackagesHashHandler.js';
 import './FileUploadControl.scss';
 
 export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
-  const [, setQuery] = useQuery();
   const [location, setLocation] = useLocation();
 
   // Handle file selection via input
@@ -53,18 +55,16 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
       reader.readAsText(file);
     });
 
-    const pkg: ModulePackage = JSON.parse(content);
+    // Parse module and insert into cache
+    const pkg: PackageJson = JSON.parse(content);
+    // Note: cacheLocalPackage() sanitizes pkg.keys in-place(!)
+    const module = cacheLocalPackage(pkg as ModulePackage);
 
-    // Construct a local module for the package
-    const module = cacheLocalPackage(pkg);
-
-    // Update UI
-    setQuery([module.key]);
-
-    // Update location
-    const url = new URL(location);
-    url.searchParams.set('q', module.key);
-    setLocation(url);
+    // Set query, and attach package contents in hash
+    const url = new URLPlus(location);
+    url.setHashParam(PACKAGES_PARAM, JSON.stringify([pkg]));
+    url.setSearchParam(QUERY_PARAM, module.key);
+    setLocation(url, false);
   }
 
   function onDragOver(ev: React.DragEvent<HTMLElement>) {

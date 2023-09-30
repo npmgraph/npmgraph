@@ -1,7 +1,7 @@
 import filterAlteredClicks from 'filter-altered-clicks';
 import React, { HTMLProps } from 'react';
 import useLocation from '../lib/useLocation.js';
-import { useQuery } from './App.js';
+import { QUERY_PARAM } from '../lib/useQuery.js';
 
 export function QueryLink({
   query,
@@ -10,18 +10,18 @@ export function QueryLink({
 }: HTMLProps<HTMLAnchorElement> & {
   query: string | string[];
 }) {
-  const [, setQuery] = useQuery();
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
 
   const queries = Array.isArray(query) ? query : [query];
 
+  const url = new URL(location);
+  url.search = query.length ? `${QUERY_PARAM}=${queries.join(',')}` : '';
+  url.hash = '';
+
   function onClick(e: React.MouseEvent) {
     e.preventDefault();
-    setQuery(queries);
+    setLocation(url, false);
   }
-
-  const url = new URL(location);
-  url.search = query.length ? `q=${queries.join(',')}` : '';
 
   if (!children) {
     return (

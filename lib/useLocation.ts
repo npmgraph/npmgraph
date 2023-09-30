@@ -8,7 +8,7 @@ window.addEventListener('popstate', () => setHref(new URL(location.href)));
 export default function useLocation() {
   const [href, setHref] = useHref();
 
-  const setValue = (val: string | URL, replace = false) => {
+  const setLocation = (val: string | URL, replace: boolean) => {
     if (typeof val === 'string') {
       val = new URL(val);
     }
@@ -27,5 +27,5 @@ export default function useLocation() {
     setHref(val);
   };
 
-  return [href, setValue] as const;
+  return [href, setLocation] as const;
 }

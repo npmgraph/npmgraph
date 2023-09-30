@@ -5,7 +5,7 @@ export default function useSearchParam<T extends string>(paramName: string) {
   const params = new URLSearchParams(location.search);
   const value = (params.get(paramName) ?? '') as T;
 
-  const setValue = (val: T, resetHash = false) => {
+  const setValue = (val: T, replace = false) => {
     if (val === value) return;
 
     // Update state value
@@ -19,9 +19,7 @@ export default function useSearchParam<T extends string>(paramName: string) {
     const url = new URL(location);
     url.search = params.toString();
 
-    if (resetHash) url.hash = '';
-
-    setLocation(url);
+    setLocation(url, replace);
   };
 
   return [value, setValue] as const;

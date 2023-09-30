@@ -1,7 +1,5 @@
 import { PackumentVersion } from '@npm/types';
 
-export const LOCAL_PREFIX = 'local:';
-
 export interface ModulePackage extends PackumentVersion {
   // TODO: This needs to be fixed in @npm/types
   deprecated?: boolean;
@@ -20,18 +18,34 @@ export default class Module {
   package: ModulePackage;
 
   static key(name: string, version?: string) {
+    if (/^https?:\/\//.test(name)) {
+      if (version) throw new Error(`URL-based module should not have version`);
+      return name;
+    }
+
     return version ? `${name}@${version}` : name;
   }
 
-  static stub(name: string, version: string | undefined, error: Error) {
+  static unkey(moduleKey: string): string[] {
+    const parts = moduleKey.match(/(.+)@(.*)/);
+    if (!parts) return [moduleKey];
+
+    parts.shift(); // remove full match
+    return parts; // [name, version]
+  }
+
+  static stub(moduleKey: string, error: Error) {
+    const [name, version] = Module.unkey(moduleKey) ?? {};
     return new Module({
-      _stub: true,
-      _stubError: error,
       name,
       version,
+      _stub: true,
+      _stubError: error,
     } as unknown as ModulePackage);
   }
 
+  // TODO: This should take either ModulePackage or PackageJSON... but need to
+  // be clear about the differences between the two!
   constructor(pkg: ModulePackage) {
     if (!pkg.maintainers) {
       pkg.maintainers = [];
@@ -43,8 +57,7 @@ export default class Module {
   }
 
   get key() {
-    const key = Module.key(this.name, this.version);
-    return this.package._local ? `${LOCAL_PREFIX}${key}` : key;
+    return Module.key(this.name, this.version);
   }
 
   get name() {
