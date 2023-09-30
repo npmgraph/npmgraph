@@ -90,7 +90,7 @@ Specify zoom mode.
 
 **Example**: Graph `send`, fit view width
 
-https://npmgraph.js.org/?q=send@0.18.0#view=closed
+https://npmgraph.js.org/?q=send@0.18.0#zoom=w
 
 
 ## Running locally
