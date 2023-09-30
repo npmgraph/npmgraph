@@ -8,7 +8,6 @@ import GraphPane from './GraphPane/GraphPane.js';
 import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.js';
-import ShareButton from './ShareButton.js';
 import { Tab } from './Tab.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
@@ -44,8 +43,6 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
         <Tab active={pane == 'module'} onClick={() => setPane('module')}>
           Module
         </Tab>
-
-        <ShareButton />
       </div>
 
       {paneComponent}
