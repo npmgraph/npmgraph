@@ -66,6 +66,7 @@
     "eslint-plugin-prettier": "5.0.0",
     "parcel": "^2.9.3",
     "prettier": "3.0.2",
+    "prettier-plugin-css-order": "2.0.0",
     "process": "0.11.10",
     "standard-version": "9.5.0",
     "typescript": "5.2.2"
@@ -75,7 +76,8 @@
     "release": "standard-version",
     "start": "parcel serve index.html",
     "lint": "eslint .",
-    "lint:fix": "prettier -w .",
-    "test": "npm run lint"
+    "format:check": "prettier -c .",
+    "format:fix": "prettier -w .",
+    "test": "npm run format:check && npm run lint"
   }
 }
