@@ -1,19 +1,19 @@
 .bundle-item {
-  position: absolute;
   display: grid;
+  position: absolute;
   align-content: center;
-  box-sizing: border-box;
   cursor: default;
-  text-align: center;
+  box-sizing: border-box;
   border-radius: var(--rad_sm);
   background-color: var(--bg1);
   overflow: hidden;
+  text-align: center;
 }
 
 .bundle-item > span {
+  color: rgba(0, 0, 0, 0.5);
   font-weight: 600;
   font-size: 115%;
-  color: rgba(0, 0, 0, 0.5);
 }
 
 .score-bar,

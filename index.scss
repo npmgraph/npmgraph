@@ -47,6 +47,7 @@
 }
 
 html {
+  font-size: 10pt;
   font-family:
     system-ui,
     Segoe UI,
@@ -55,7 +56,6 @@ html {
     sans-serif,
     Apple Color Emoji,
     Segoe UI Emoji;
-  font-size: 10pt;
 }
 
 html,
@@ -67,17 +67,17 @@ body {
 body.fail {
   /* Image from https://www.redbubble.com/people/JonThomson/shop */
   background: url('/images/fail_giraffe.png') right 0 no-repeat;
-  background-color: var(--bg1);
   background-size: 30%;
+  background-color: var(--bg1);
 }
 
 #app {
-  position: fixed;
   display: flex;
+  position: fixed;
   top: 0;
-  left: 0;
-  bottom: 0;
   right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 p {
@@ -85,8 +85,8 @@ p {
 }
 
 h2 {
-  font-size: 14pt;
   border-radius: var(--rad_sm);
+  font-size: 14pt;
 }
 
 .material-icons {

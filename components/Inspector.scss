@@ -1,11 +1,11 @@
 #inspector {
-  flex-basis: 0;
   display: flex;
+  flex-basis: 0;
   flex-direction: column;
-  height: 100vh;
-  color: var(--text);
-  overflow: hidden;
   transition: flex-basis 0.5s;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--text);
 
   &.open {
     flex: 0 0 var(--inspector-size);
@@ -21,13 +21,13 @@
 
   .tag {
     cursor: pointer;
-    background-color: var(--bg1);
-    color: var(--text);
     border-radius: var(--rad_lg);
+    background-color: var(--bg1);
     padding: 2px 8px;
     overflow: hidden;
-    white-space: nowrap;
+    color: var(--text);
     text-overflow: ellipsis;
+    white-space: nowrap;
 
     &.maintainer {
       padding: 0;
@@ -41,11 +41,11 @@
   }
 
   footer {
+    box-sizing: border-box;
+    padding: 0.5em;
+    width: 32em;
     color: var(--text-dim);
     text-align: center;
-    padding: 0.5em;
-    box-sizing: border-box;
-    width: 32em;
 
     #github {
       color: inherit;
@@ -61,19 +61,19 @@ label {
 
 summary {
   position: -webkit-sticky;
-  font-size: 1.2em;
-  font-weight: 600;
+  cursor: pointer;
   margin: 0.7em 0 0.5em;
+  outline: none;
   border-top: solid 3px var(--bg1);
   padding: 0.2em;
-  outline: none;
-  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.2em;
 }
 
 #tabs {
-  flex-basis: auto;
-  flex-shrink: 0;
   display: flex;
+  flex-shrink: 0;
+  flex-basis: auto;
   background: var(--tabs-bg) var(--bg-gradient);
   color: var(--tabs-text);
   user-select: none;
@@ -83,12 +83,12 @@ summary {
   }
 
   .tab {
-    padding: 0 10px;
     cursor: pointer;
-    background: var(--tabs-bg) var(--bg-gradient);
     border-left: solid 1px #888;
-    font-size: 12pt;
+    background: var(--tabs-bg) var(--bg-gradient);
+    padding: 0 10px;
     font-weight: 600;
+    font-size: 12pt;
 
     &.active {
       border-color: transparent;
@@ -97,13 +97,13 @@ summary {
   }
 
   #search-field {
-    font: inherit;
-    line-height: 1em;
-    padding: 0.3em 0.7em;
     margin-left: 1em;
+    outline: none;
     border: solid 1px white;
     border-radius: 15px;
-    outline: none;
+    padding: 0.3em 0.7em;
+    font: inherit;
+    line-height: 1em;
 
     &:focus {
       border-color: var(--highlight);
@@ -113,15 +113,15 @@ summary {
 
 .pane {
   flex-grow: 1;
-  width: 32em;
-  padding: 0.5em 1em;
-  color: var(--text);
-  background-color: var(--bg0);
   box-sizing: border-box;
-  overflow-y: auto;
-  overflow-x: hidden;
-  border-bottom-left-radius: var(--rad_lg);
   box-shadow: inset 1px -1px 6px var(--inset-shadow-color, #d6d6d677);
+  border-bottom-left-radius: var(--rad_lg);
+  background-color: var(--bg0);
+  padding: 0.5em 1em;
+  width: 32em;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: var(--text);
 
   a {
     color: var(--highlight);

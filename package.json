@@ -65,7 +65,7 @@
     "eslint-config-prettier": "9.0.0",
     "eslint-plugin-prettier": "5.0.0",
     "parcel": "^2.9.3",
-    "prettier": "3.0.2",
+    "prettier": "3.0.3",
     "prettier-plugin-css-order": "2.0.0",
     "process": "0.11.10",
     "standard-version": "9.5.0",

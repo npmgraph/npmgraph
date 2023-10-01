@@ -1,13 +1,13 @@
 #drop_target {
-  background-color: var(--bg2);
   border: dashed 2px var(--text-dim);
-  padding: 4em 1em;
   border-radius: var(--rad_sm);
+  background-color: var(--bg2);
+  padding: 4em 1em;
 }
 
 #drop_target.drag {
-  background-color: #ccf;
   border-color: #68a;
+  background-color: #ccf;
 }
 
 #drop_target * {

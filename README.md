@@ -8,7 +8,7 @@ A tool for exploring npm modules and dependencies.
 
 `npmgraph` diagrams can be configured using the URL parameters below.
 
-NOTE: With the exception of the `q`  (query) parameter, these are **not** search parameters.  These parameters are stored in the location _`hash`_, using normal URL query param encoding.
+NOTE: With the exception of the `q` (query) parameter, these are **not** search parameters. These parameters are stored in the location _`hash`_, using normal URL query param encoding.
 
 ### `q` (search param)
 
@@ -20,24 +20,23 @@ https://npmgraph.js.org/?q=send
 
 ### `color` (hash param)
 
-"Colorization" mode (a.k.a "Colorize by..." field in UI).  Currently supports the following values:
+"Colorization" mode (a.k.a "Colorize by..." field in UI). Currently supports the following values:
 
-|   |   |
-|---|---|
-| `moduleType` | Color by `package.json#type`` |
-| `overall` | Color by npms.io score |
+|               |                                      |
+| ------------- | ------------------------------------ |
+| `moduleType`  | Color by `package.json#type``        |
+| `overall`     | Color by npms.io score               |
 | `maintenance` | Color by npms.io score (maintenance) |
-| `popularity` | Color by npms.io score (popularity) |
-| `quality` | Color by npms.io score (quality) |
-
+| `popularity`  | Color by npms.io score (popularity)  |
+| `quality`     | Color by npms.io score (quality)     |
 
 **Example**: Graph `send`, colorize by module type:
 
 https://npmgraph.js.org/?q=send#color=moduleType
 
-### `deps`  (hash param)
+### `deps` (hash param)
 
-Comma-separated list of the _types_ dependencies to include for modules at the top-level of the graph.  (Lower-level modules only ever show `dependencies`).
+Comma-separated list of the _types_ dependencies to include for modules at the top-level of the graph. (Lower-level modules only ever show `dependencies`).
 
 `dependencies` and `peerDependencies` are currently always included.
 
@@ -60,7 +59,7 @@ https://npmgraph.js.org/?q=my_package%400.0.1#packages=%5B%7B%22name%22%3A%22my_
 Select a module or category of modules.
 
 Values should have one of the following forms:
-|   |   |
+| | |
 |---|---|
 | `exact:<module key>` | Select a specific module |
 | `name:<module name>` | Select modules by name, all versions |
@@ -73,7 +72,7 @@ https://npmgraph.js.org/?q=send@0.18.0#select=exact%3Afresh%400.5.2
 
 ### `view` (hash param)
 
-Specify the view configuration.  Currently only accepts one value, `closed` to minimize the inspector.
+Specify the view configuration. Currently only accepts one value, `closed` to minimize the inspector.
 
 **Example**: Graph `send`, close the inspector
 
@@ -83,19 +82,18 @@ https://npmgraph.js.org/?q=send@0.18.0#view=closed
 
 Specify zoom mode.
 
-|   |   |
-|---|---|
-| `w` | Fit view width |
+|     |                 |
+| --- | --------------- |
+| `w` | Fit view width  |
 | `h` | Fit view height |
 
 **Example**: Graph `send`, fit view width
 
 https://npmgraph.js.org/?q=send@0.18.0#zoom=w
 
-
 ## Running locally
 
-`NPMGraph` is built with `parcel`.  To run in your local dev environment:
+`NPMGraph` is built with `parcel`. To run in your local dev environment:
 
 ```shell
 $ git clone https://github.com/npmgraph/npmgraph.git
