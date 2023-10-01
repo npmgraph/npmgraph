@@ -3,6 +3,7 @@ import './bugsnag.js'; // Initialize ASAP!
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App, { setActivityForApp } from '../components/App.js';
+import { DiagramTitle } from './DiagramTitle.js';
 import LoadActivity from './LoadActivity.js';
 import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
@@ -30,6 +31,9 @@ window.onload = function () {
   setActivityForRequestCache(activity);
   setActivityForApp(activity);
 
-  const root = createRoot(document.querySelector('#app') as HTMLDivElement);
-  root.render(<App />);
+  const appEl = document.querySelector('#app') as HTMLDivElement;
+  createRoot(appEl).render(<App />);
+
+  const titleEl = document.querySelector('title') as HTMLTitleElement;
+  createRoot(titleEl).render(<DiagramTitle defaultTitle={titleEl.innerText} />);
 };
