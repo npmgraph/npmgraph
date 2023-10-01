@@ -1,18 +1,18 @@
 .toggle {
   & > div {
     display: inline-block;
-    width: 4em;
-    background-color: var(--bg2);
-    border-radius: 0.5em;
     margin-right: 0.5em;
+    border-radius: 0.5em;
+    background-color: var(--bg2);
+    width: 4em;
   }
   & > div > div {
-    width: 3em;
-    border-radius: 0.5em;
-    text-align: center;
     transition: 0.15s;
     margin-left: 1em;
+    border-radius: 0.5em;
     background-color: var(--bg1);
+    width: 3em;
+    text-align: center;
   }
   &.checked > div > div {
     margin-left: 0;

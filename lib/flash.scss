@@ -1,7 +1,7 @@
 .flash {
   position: fixed;
-  padding: 4px;
-  transition-property: left;
   transition-duration: 0.7s;
+  transition-property: left;
   border-radius: var(--rad_sm);
+  padding: 4px;
 }

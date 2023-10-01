@@ -1,21 +1,21 @@
 #graph {
-  &.centered {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  position: relative;
 
   flex-grow: 1;
+  padding-right: var(--splitter-size);
   height: 100vh;
   overflow: auto;
-  position: relative;
   user-select: none;
   -webkit-user-select: none;
-  padding-right: var(--splitter-size);
 
   --warning0: #f6f6e0;
   --warning1: #d9d9d9;
   --stub: #f00;
+  &.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -34,14 +34,14 @@
 
   button {
     display: inline-block;
+    margin: 0;
+    outline: 0;
+    border: solid 1px var(--bg1);
+    border-radius: var(--rad_sm);
+    background: var(--bg0);
+    color: var(--text);
     font-size: 1.8em;
     line-height: 1em;
-    margin: 0;
-    color: var(--text);
-    border: solid 1px var(--bg1);
-    background: var(--bg0);
-    border-radius: var(--rad_sm);
-    outline: 0;
 
     &.selected {
       background-color: var(--highlight);

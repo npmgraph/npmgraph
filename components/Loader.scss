@@ -1,19 +1,19 @@
-
 .loader {
   position: absolute;
   right: 0;
-  width: calc(var(--inspector-size) + var(--splitter-size));
   z-index: 99;
-  line-height: var(--tabs-height);
-  overflow: hidden;
-  font-weight: 600;
-  text-wrap: nowrap;
   box-sizing: border-box;
-  padding-left: 0.5em;
-  color: var(--tabs-text);
-  background: var(--tabs-bg) var(--bg-gradient);
   border-top-left-radius: var(--rad_lg);
   border-bottom-left-radius: var(--rad_lg);
+  background: var(--tabs-bg) var(--bg-gradient);
+  padding-left: 0.5em;
+  width: calc(var(--inspector-size) + var(--splitter-size));
+  overflow: hidden;
+  color: var(--tabs-text);
+  font-weight: 600;
+  line-height: var(--tabs-height);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   @keyframes MOVE-BG {
     from {
@@ -26,10 +26,12 @@
 
   .bg {
     position: absolute;
-    z-index: -1;
-    width: calc(100% + 57px);
     bottom: 0;
-    height: 2pt;
+    z-index: -1;
+    animation-duration: 1.6s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-name: MOVE-BG;
     background: repeating-linear-gradient(
       -45deg,
       white 0,
@@ -37,9 +39,7 @@
       var(--highlight) 20px,
       var(--highlight) 40px
     );
-    animation-name: MOVE-BG;
-    animation-duration: 1.6s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
+    width: calc(100% + 57px);
+    height: 2pt;
   }
 }
