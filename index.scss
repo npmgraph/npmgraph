@@ -18,13 +18,24 @@
   --bg0: #f1f4f4;
   --bg1: #bbb;
   --bg2: #ddd;
-  --bg-red: #f55;
-  --bg-orange: #f90;
-  --bg-yellow: #ff6;
-  --bg-green: #5f5;
+
   --tabs-bg: #7e7e7d;
   --tabs-text: #fff;
   --highlight: #e65c00;
+
+  // Named background colors
+  --bg-l: 75%; // Background intensity
+  --bg-s: 100%; // Background saturation
+
+  --bg-red: hsl(0, var(--bg-s), var(--bg-l));
+  --bg-orange: hsl(30, var(--bg-s), var(--bg-l));
+  --bg-yellow: hsl(60, var(--bg-s), var(--bg-l));
+  --bg-green: hsl(120, var(--bg-s), var(--bg-l));
+  --bg-blue: hsl(180, var(--bg-s), var(--bg-l));
+  --bg-indigo: hsl(240, var(--bg-s), var(--bg-l));
+  --bg-violet: hsl(300, var(--bg-s), var(--bg-l));
+
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,10 +48,9 @@
     --bg0: #262222;
     --bg1: #696666;
     --bg2: #333;
-    --bg-red: #700;
-    --bg-orange: #840;
-    --bg-yellow: #660;
-    --bg-green: #070;
+
+    --bg-l: 35%; // Background intensity (dark)
+
     --highlight: #ff761a;
     --inset-shadow-color: black;
   }

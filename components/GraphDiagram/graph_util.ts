@@ -1,6 +1,6 @@
+import simplur from 'simplur';
 import Module, { ModulePackage } from '../../lib/Module.js';
 import { getModule } from '../../lib/ModuleCache.js';
-import simplur from '../../lib/simplur.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -204,7 +204,5 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
 
 // Use color-mix to blend two colors in HSL space
 export function hslFor(perc: number) {
-  return `color-mix(in hsl , var(--bg-red), var(--bg-green) ${Math.floor(
-    perc * 100,
-  )}%)`;
+  return `hsl(${Math.round(perc * 120)}, 80%, var(--bg-l))`;
 }

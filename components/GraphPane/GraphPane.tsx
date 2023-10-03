@@ -1,8 +1,8 @@
 import { Maintainer } from '@npm/types';
 import React from 'react';
-import simplur from '../../lib/simplur.js';
+import simplur from 'simplur';
 import useHashParam from '../../lib/useHashParam.js';
-import { useExcludes } from '../App.js';
+import { useExcludes } from '../App/App.js';
 
 import {
   COLORIZE_BUS,
@@ -112,7 +112,7 @@ export default function GraphPane({
       </label>
 
       {colorize == COLORIZE_BUS ? (
-        <div>
+        <div id="colorize-key">
           <span style={{ fontWeight: 'bold', color: COLORIZE_COLORS[0] }}>
             {'\u2B24'}
           </span>{' '}
@@ -122,15 +122,20 @@ export default function GraphPane({
           <span style={{ color: COLORIZE_COLORS[3] }}>{'\u2B24'}</span> = 4+
         </div>
       ) : colorize == COLORIZE_MODULE_TYPE ? (
-        <div>
+        <div id="colorize-key">
           <span style={{ color: COLORIZE_MODULE_CJS }}>{'\u2B24'}</span> = CJS,
           <span style={{ color: COLORIZE_MODULE_ESM }}>{'\u2B24'}</span> = ESM,
         </div>
       ) : colorize ? (
-        <div>
-          <span style={{ color: hslFor(0) }}>{'\u2B24'}</span> = 0%,
-          <span style={{ color: hslFor(1 / 2) }}>{'\u2B24'}</span> = 50%,
-          <span style={{ color: hslFor(2 / 2) }}>{'\u2B24'}</span> = 100%
+        <div id="colorize-key" style={{ display: 'flex' }}>
+          <span>0%&nbsp;</span>
+          {new Array(20).fill(0).map((_, i) => (
+            <span
+              key={i}
+              style={{ flexGrow: '1', backgroundColor: hslFor(i / 19) }}
+            />
+          ))}
+          <span>&nbsp;100%</span>
         </div>
       ) : null}
 
