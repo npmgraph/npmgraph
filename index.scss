@@ -34,8 +34,6 @@
   --bg-blue: hsl(180, var(--bg-s), var(--bg-l));
   --bg-indigo: hsl(240, var(--bg-s), var(--bg-l));
   --bg-violet: hsl(300, var(--bg-s), var(--bg-l));
-
-
 }
 
 @media (prefers-color-scheme: dark) {
@@ -75,7 +73,10 @@ body {
 }
 
 body.fail {
-  /* Image from https://www.redbubble.com/people/JonThomson/shop */
+  /*
+  Image from https://www.redbubble.com/people/JonThomson/shop or
+  https://i.etsystatic.com/9308954/r/il/0b8cbf/4306171179/il_1588xN.4306171179_jd8g.jpg
+   */
   background: url('/images/fail_giraffe.png') right 0 no-repeat;
   background-size: 30%;
   background-color: var(--bg1);
