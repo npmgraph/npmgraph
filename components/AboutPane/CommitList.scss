@@ -1,0 +1,37 @@
+.commit-item {
+  margin-top: 1rem;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.1);
+  padding-top: 1rem;
+  line-height: 1.5rem;
+
+  & .when {
+    opacity: 0.7;
+    margin-right: 0.3;
+  }
+
+  & .info {
+    margin-left: 0.5rem;
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  & .cc-type {
+    display: inline-block;
+    margin: 0 0.3rem;
+    border: solid 1px rgba(127, 127, 127, 0.5);
+    border-radius: 0.5rem;
+    background-color: var(--bg1);
+    padding: 0.15rem;
+    min-width: 2rem;
+    font-size: 0.75rem;
+    line-height: 0.75rem;
+    text-align: center;
+
+    &.cc-fix {
+      background-color: var(--bg-yellow);
+    }
+    &.cc-feat {
+      background-color: var(--bg-green);
+    }
+  }
+}

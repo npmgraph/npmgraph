@@ -1,0 +1,17 @@
+.pane a.github-sponsor {
+  display: inline-block;
+
+  border: solid 1px var(--bg1);
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  color: var(--text);
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+
+  & svg {
+    vertical-align: middle;
+    margin-left: 1rem;
+    stroke: var(--bg-violet);
+  }
+}
