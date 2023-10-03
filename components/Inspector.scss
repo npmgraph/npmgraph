@@ -95,20 +95,6 @@ summary {
       background: var(--highlight);
     }
   }
-
-  #search-field {
-    margin-left: 1em;
-    outline: none;
-    border: solid 1px white;
-    border-radius: 15px;
-    padding: 0.3em 0.7em;
-    font: inherit;
-    line-height: 1em;
-
-    &:focus {
-      border-color: var(--highlight);
-    }
-  }
 }
 
 .pane {
