@@ -5,9 +5,9 @@ import sharedStateHook from '../../lib/sharedStateHook.js';
 import useHashParam from '../../lib/useHashParam.js';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.js';
 import { GraphState } from '../GraphDiagram/graph_util.js';
-import { Splitter } from './../Splitter.js';
+import Inspector from '../Inspector.js';
+import { Splitter } from '../Splitter.js';
 import './App.scss';
-import Inspector from './Inspector.js';
 import { Loader } from './Loader.js';
 
 export const [usePane] = sharedStateHook('info', 'pane');

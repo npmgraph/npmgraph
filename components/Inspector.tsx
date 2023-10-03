@@ -1,17 +1,17 @@
 import React, { HTMLProps, useEffect, useState } from 'react';
-import { queryModuleCache } from '../../lib/ModuleCache.js';
-import fetchJSON from '../../lib/fetchJSON.js';
-import { GithubCommit } from '../../lib/fetch_types.js';
-import useGraphSelection from '../../lib/useGraphSelection.js';
-import { version as VERSION } from '../../package.json';
-import AboutPane from '../AboutPane/AboutPane.js';
-import { ExternalLink } from './../ExternalLink.js';
-import GraphPane from './../GraphPane/GraphPane.js';
-import InfoPane from './../InfoPane/InfoPane.js';
-import ModulePane from './../ModulePane/ModulePane.js';
-import { Tab } from './../Tab.js';
-import { useGraph, usePane } from './App.js';
+import { queryModuleCache } from '../lib/ModuleCache.js';
+import fetchJSON from '../lib/fetchJSON.js';
+import { GithubCommit } from '../lib/fetch_types.js';
+import useGraphSelection from '../lib/useGraphSelection.js';
+import { version as VERSION } from '../package.json';
+import AboutPane from './AboutPane/AboutPane.js';
+import { useGraph, usePane } from './App/App.js';
+import { ExternalLink } from './ExternalLink.js';
+import GraphPane from './GraphPane/GraphPane.js';
+import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';
+import ModulePane from './ModulePane/ModulePane.js';
+import { Tab } from './Tab.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = usePane();
