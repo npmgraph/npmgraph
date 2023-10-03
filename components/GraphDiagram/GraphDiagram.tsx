@@ -33,7 +33,7 @@ import { isDefined } from '../../lib/guards.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { useQuery } from '../../lib/useQuery.js';
-import { useExcludes, useGraph, usePane } from '../App.js';
+import { useExcludes, useGraph, usePane } from '../App/App.js';
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';

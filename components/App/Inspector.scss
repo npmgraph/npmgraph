@@ -82,20 +82,6 @@ summary {
     line-height: var(--tabs-height);
   }
 
-  .tab {
-    cursor: pointer;
-    border-left: solid 1px #888;
-    background: var(--tabs-bg) var(--bg-gradient);
-    padding: 0 10px;
-    font-weight: 600;
-    font-size: 12pt;
-
-    &.active {
-      border-color: transparent;
-      background: var(--highlight);
-    }
-  }
-
   #search-field {
     margin-left: 1em;
     outline: none;

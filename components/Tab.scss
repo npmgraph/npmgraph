@@ -1,0 +1,26 @@
+.tab {
+  position: relative;
+  cursor: pointer;
+  border-left: solid 1px #888;
+  background: var(--tabs-bg) var(--bg-gradient);
+  padding: 0 10px;
+  font-weight: 600;
+  font-size: 12pt;
+
+  &.active {
+    border-color: transparent;
+    background: var(--highlight);
+  }
+
+  & .badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-radius: 0.5rem;
+    background-color: var(--bg-red);
+    padding: 0.2rem;
+    font-weight: 600;
+    font-size: 0.7rem;
+    line-height: 0.7rem;
+  }
+}
