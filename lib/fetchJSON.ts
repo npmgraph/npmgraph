@@ -9,17 +9,20 @@ export function setActivityForRequestCache(act: LoadActivity) {
 }
 export default function fetchJSON<T>(
   input: RequestInfo | URL,
-  init?: RequestInit,
+  init?: RequestInit & { silent?: boolean },
 ): Promise<T> {
   const url = typeof input === 'string' ? input : input.toString();
   const cacheKey = `${url} ${JSON.stringify(init)}`;
+
+  console.log('INIT', init);
 
   if (requestCache.has(cacheKey)) {
     return requestCache.get(cacheKey) as Promise<T>;
   }
 
-  const finish = activity?.start(`Fetching ${decodeURIComponent(url)}`);
-
+  const finish = init?.silent
+    ? () => {}
+    : activity?.start(`Fetching ${decodeURIComponent(url)}`);
   const p = window
     .fetch(input, init)
     .then(res =>
