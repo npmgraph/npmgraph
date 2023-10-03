@@ -270,8 +270,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // (Re)apply zoom if/when it changes
   useEffect(applyZoom, [zoom, domSignal]);
 
-  $('title').innerText = `npmgraph - ${query.join(', ')}`;
-
   return (
     <div id="graph" onClick={handleGraphClick}>
       <div id="graph-controls">

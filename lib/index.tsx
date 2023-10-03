@@ -7,6 +7,7 @@ import LoadActivity from './LoadActivity.js';
 import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
+import { DiagramTitle } from './DiagramTitle.js';
 
 // Used to feature-detect that es6 modules are loading
 (window as { indexLoaded?: boolean }).indexLoaded = true;
@@ -30,6 +31,9 @@ window.onload = function () {
   setActivityForRequestCache(activity);
   setActivityForApp(activity);
 
-  const root = createRoot(document.querySelector('#app') as HTMLDivElement);
-  root.render(<App />);
+  const appEl = document.querySelector('#app') as HTMLDivElement;
+  createRoot(appEl).render(<App />);
+
+  const titleEl = document.querySelector('title') as HTMLTitleElement;
+  createRoot(titleEl).render(<DiagramTitle defaultTitle={titleEl.innerText} />);
 };

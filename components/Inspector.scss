@@ -82,17 +82,17 @@ summary {
     line-height: var(--tabs-height);
   }
 
-  #search-field {
-    margin-left: 1em;
-    outline: none;
-    border: solid 1px white;
-    border-radius: 15px;
-    padding: 0.3em 0.7em;
-    font: inherit;
-    line-height: 1em;
+  .tab {
+    cursor: pointer;
+    border-left: solid 1px #888;
+    background: var(--tabs-bg) var(--bg-gradient);
+    padding: 0 10px;
+    font-weight: 600;
+    font-size: 12pt;
 
-    &:focus {
-      border-color: var(--highlight);
+    &.active {
+      border-color: transparent;
+      background: var(--highlight);
     }
   }
 }
