@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import simplur from 'simplur';
 import Module from '../../lib/Module.js';
 import fetchJSON from '../../lib/fetchJSON.js';
 import { BundlePhobiaData, NPMSIOData } from '../../lib/fetch_types.js';
-import simplur from '../../lib/simplur.js';
 import { ExternalLink } from '../ExternalLink.js';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';

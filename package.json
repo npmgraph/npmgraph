@@ -32,7 +32,8 @@
     "md5": "2.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "semver": "7.5.4"
+    "semver": "7.5.4",
+    "simplur": "3.0.1"
   },
   "description": "Visualize npm dependency graphs (public and private!)",
   "keywords": [
