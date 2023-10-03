@@ -1,4 +1,5 @@
 import React, { HTMLProps } from 'react';
+import { cn } from '../lib/dom.js';
 
 export function ExternalLink({
   href,
@@ -10,7 +11,7 @@ export function ExternalLink({
   return (
     <a
       href={href}
-      className={`bright-hover ${className ?? ''}`}
+      className={cn('bright-hover', className)}
       target={target}
       {...props}
     >
