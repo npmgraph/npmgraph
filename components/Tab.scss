@@ -13,12 +13,15 @@
   }
 
   & .badge {
+    display: inline-block;
     position: absolute;
     top: 0;
-    right: 0;
+    right: -0.5rem;
     border-radius: 0.5rem;
     background-color: var(--bg-red);
     padding: 0.2rem;
+    min-width: 0.7rem;
+    min-height: 0.7rem;
     font-weight: 600;
     font-size: 0.7rem;
     line-height: 0.7rem;

@@ -1,12 +1,13 @@
 import React, { HTMLProps, useEffect } from 'react';
 
 import simplur from 'simplur';
+import { ExternalLink } from '../ExternalLink.js';
 import { Pane } from '../Pane.js';
 import useCommits from '../useCommits.js';
 import './AboutPane.scss';
 import { CommitList } from './CommitList.js';
 import GithubSponsorButton from './GithubSponsorButton.js';
-// import { GithubIcon, ZoomHorizontalIcon } from './Icons.js';
+import { GithubIcon, ZoomHorizontalIcon } from './Icons.js';
 
 export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
   const [commits, newCount, reset] = useCommits();
@@ -19,10 +20,10 @@ export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
 
   return (
     <Pane {...props}>
-      {/* <ExternalLink href="https://github.com/npmgraph/npmgraph">
+      <ExternalLink href="https://github.com/npmgraph/npmgraph">
         Visit us on Github <GithubIcon />
       </ExternalLink>
-      <ZoomHorizontalIcon /> */}
+      <ZoomHorizontalIcon />
 
       <p>
         Hi, thanks for taking an interest in this project. We're hosted over on

@@ -1,7 +1,10 @@
 import { syncPackagesHash } from './ModuleCache.js';
 import sharedStateHook from './sharedStateHook.js';
 
-const [useHref, setHref] = sharedStateHook(new URL(location.href), '');
+const [useHref, setHref] = sharedStateHook(
+  new URL(location.href),
+  'location.href',
+);
 
 function handleLocationUpdate() {
   syncPackagesHash();

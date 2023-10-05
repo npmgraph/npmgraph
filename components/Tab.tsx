@@ -6,11 +6,16 @@ export function Tab({
   badge,
   children,
   ...props
-}: HTMLProps<HTMLDivElement> & { active: boolean; badge?: string | number }) {
+}: HTMLProps<HTMLDivElement> & {
+  active: boolean;
+  badge?: string | number | boolean;
+}) {
   return (
     <div className={cn('tab bright-hover', { active })} {...props}>
       {children}
-      {badge ? <span className="badge">{badge}</span> : null}
+      {badge ? (
+        <span className="badge">{badge === true ? ' ' : badge}</span>
+      ) : null}
     </div>
   );
 }

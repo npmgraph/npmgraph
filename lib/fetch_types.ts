@@ -138,7 +138,8 @@ export type BundlePhobiaData = {
 
 // Commits types in Github rest API
 export type GithubCommit = {
-  sha: string;
+  isNew?: boolean; // We add this
+
   node_id: string;
   commit: {
     author: {

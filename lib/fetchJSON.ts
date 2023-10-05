@@ -14,8 +14,6 @@ export default function fetchJSON<T>(
   const url = typeof input === 'string' ? input : input.toString();
   const cacheKey = `${url} ${JSON.stringify(init)}`;
 
-  console.log('INIT', init);
-
   if (requestCache.has(cacheKey)) {
     return requestCache.get(cacheKey) as Promise<T>;
   }

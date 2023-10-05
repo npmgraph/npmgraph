@@ -1,7 +1,5 @@
-import React, { HTMLProps, useEffect, useState } from 'react';
+import React, { HTMLProps } from 'react';
 import { queryModuleCache } from '../lib/ModuleCache.js';
-import fetchJSON from '../lib/fetchJSON.js';
-import { GithubCommit } from '../lib/fetch_types.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 import { version as VERSION } from '../package.json';
 import AboutPane from './AboutPane/AboutPane.js';
@@ -12,35 +10,16 @@ import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.js';
 import { Tab } from './Tab.js';
+import useCommits from './useCommits.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = usePane();
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGraph();
-  const [commits, setCommits] = useState<GithubCommit[]>([]);
+  const [, newCommitsCount] = useCommits();
 
   const selectedModules = queryModuleCache(queryType, queryValue);
   const firstModule = selectedModules.values().next().value;
-
-  useEffect(() => {
-    async function fetchCommits() {
-      const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      try {
-        const commits = await fetchJSON<GithubCommit[]>(
-          `https://api.github.com/repos/npmgraph/npmgraph/commits?since=${since.toISOString()}`,
-          { silent: true },
-        );
-        setCommits(commits);
-      } catch (err) {
-        // ignore
-        setCommits([]);
-      }
-    }
-
-    const timeout = setTimeout(fetchCommits, 1000);
-
-    return () => clearTimeout(timeout);
-  }, []);
 
   let paneComponent;
   switch (pane) {
@@ -54,7 +33,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       paneComponent = <InfoPane id="pane-info" />;
       break;
     case 'about':
-      paneComponent = <AboutPane id="pane-about" commits={commits} />;
+      paneComponent = <AboutPane id="pane-about" />;
       break;
   }
 
@@ -73,7 +52,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
         <Tab
           active={pane == 'about'}
           onClick={() => setPane('about')}
-          badge={commits.length || ''}
+          badge={newCommitsCount}
         >
           About
         </Tab>

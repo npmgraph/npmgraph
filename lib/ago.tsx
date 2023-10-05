@@ -5,7 +5,7 @@ const UNITS = [
   [60, 'minute'],
   [60, 'hour'],
   [24, 'day'],
-  [7, 'week]'],
+  [7, 'week'],
   [30 / 7, 'month'],
   [12, 'year]'],
 ] as [number, string][];
