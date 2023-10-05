@@ -1,21 +1,25 @@
-import React, { HTMLProps } from 'react';
-import { cn } from '../../lib/dom.js';
-import { GithubCommit } from '../../lib/fetch_types.js';
-
+import React, { HTMLProps, useEffect } from 'react';
+import simplur from 'simplur';
 import { ago } from '../../lib/ago.js';
+import { cn } from '../../lib/dom.js';
+import useCommits from '../useCommits.js';
 import './CommitList.scss';
 
 // Note: https://github.com/pvdlg/conventional-changelog-metahub has a nice list of
 // cc-types to emoji
 
-export function CommitList({
-  commits,
-  className,
-  ...props
-}: { commits: GithubCommit[] } & HTMLProps<HTMLDivElement>) {
+export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
+  const [commits, newCount, reset] = useCommits();
+
   const commitEls = commits.map((commit, i) => {
     const date = new Date(commit.commit.author.date);
     let message = commit.commit.message;
+
+    // Reset new commit
+    useEffect(() => {
+      // Only reset lastVisit time if there are new commits
+      if (newCount > 0) return reset;
+    }, [reset]);
 
     // Parse conventional-commit type
     let ccType = commit.commit.message.match(/^([a-z]+):/)?.[1];
@@ -28,7 +32,7 @@ export function CommitList({
       else if (ccType.startsWith('fix')) ccType = 'fix';
       else if (ccType.startsWith('doc')) ccType = 'docs';
       else if (ccType.startsWith('refactor')) ccType = 'refactor';
-      else ccType = 'other';
+      else ccType = '';
     }
     message = message
       .replace(/\n[\S\s]*/m, '')
@@ -40,11 +44,13 @@ export function CommitList({
     });
     return (
       <div className={cn('commit-item', ccClasses)} key={i}>
-        {commit.isNew ? <div className="new-dot" /> : null}
-        <span className="message">{message}</span>
-        {ccType ? (
-          <span className={cn('cc-pill', ccClasses)}>{ccType}</span>
-        ) : null}
+        <div className="commit-top">
+          {commit.isNew ? <div className="new-dot" /> : null}
+          <span className="message">{message}</span>
+          {ccType ? (
+            <span className={cn('cc-pill', ccClasses)}>{ccType}</span>
+          ) : null}
+        </div>
         <div>
           &mdash; <span className="when">{ago(date)}</span>
           <span className="info">
@@ -57,8 +63,14 @@ export function CommitList({
   });
 
   return (
-    <div id="commit-list" className={cn('commit-list', className)} {...props}>
-      {commitEls}
+    <div id="commit-list">
+      <div id="commit-list-header">
+        Recent changes{newCount > 0 ? simplur` (${newCount} new)` : null}
+      </div>
+
+      <div className={cn('commit-list', className)} {...props}>
+        {commitEls}
+      </div>
     </div>
   );
 }

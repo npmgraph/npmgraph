@@ -4,6 +4,7 @@ import Module from '../../lib/Module.js';
 import fetchJSON from '../../lib/fetchJSON.js';
 import { BundlePhobiaData, NPMSIOData } from '../../lib/fetch_types.js';
 import { ExternalLink } from '../ExternalLink.js';
+import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
 import { Section } from '../Section.js';
@@ -104,19 +105,23 @@ export default function ModulePane({
 
       {/* For NPM packages */}
       {!module.package._local ? (
-        <>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <ExternalLink href={module.packageJsonLink}>
             package.json
           </ExternalLink>
           <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
-            npm
+            npmjs.org
           </ExternalLink>
           {module.repoLink ? (
-            <ExternalLink href={module.repoLink} style={{ marginRight: '1em' }}>
-              GitHub
+            <ExternalLink
+              href={module.repoLink}
+              style={{ marginRight: '1em' }}
+              icon={GithubIcon}
+            >
+              Project Page
             </ExternalLink>
           ) : null}
-        </>
+        </div>
       ) : null}
 
       <Section title="Bundle Size">

@@ -6,17 +6,20 @@
     <meta
       http-equiv="Content-Security-Policy"
       content="
-      default-src
-      'unsafe-eval' 'unsafe-inline' 'self'
-      *.doubleclick.net
+      default-src 'self' 'unsafe-inline' 'unsafe-eval'
+      blob:
       fonts.googleapis.com
       fonts.gstatic.com
       notify.bugsnag.com
       sessions.bugsnag.com
       www.google-analytics.com
       www.googletagmanager.com
+      ;
+      img-src 'self'
       www.gravatar.com
-      blob:
+      avatars.githubusercontent.com
+      github.com
+      www.google-analytics.com
       ;
       connect-src *
       "
@@ -30,7 +33,7 @@
 
     <link rel="icon" type="image/png" href="/images/favicon.png" />
     <link
-      href="https://fonts.googleapis.com/css?family=Roboto+Condensed|Material+Icons"
+      href="https://fonts.googleapis.com/css?family=Roboto+Condensed"
       rel="stylesheet"
     />
     <link href="./index.scss" rel="stylesheet" />

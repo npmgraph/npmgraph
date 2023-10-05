@@ -107,7 +107,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   function applyZoom() {
     const graphEl = $<HTMLDivElement>('#graph')[0];
-    const svg = $<SVGSVGElement>('#graph svg')[0];
+    const svg = getDiagramElement();
     if (!svg) return;
 
     // Note: Not using svg.getBBox() here because (for some reason???) it's
@@ -188,10 +188,11 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       // Remove background element so page background shows thru
       $(svgDom, '.graph > polygon').remove();
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+      svgDom.id = 'graph-diagram';
 
       // Inject into DOM
       const el = $('#graph');
-      select('#graph svg').remove();
+      getDiagramElement()?.remove();
       el.appendChild(svgDom);
 
       // Inject bg pattern for deprecated modules
@@ -264,7 +265,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   // Effect: Colorize nodes
   useEffect(() => {
-    colorizeGraph($<SVGSVGElement>('#graph svg')[0], colorize);
+    const svg = getDiagramElement();
+    if (!svg) return;
+    colorizeGraph(svg, colorize);
   }, [colorize, domSignal]);
 
   // (Re)apply zoom if/when it changes
@@ -412,4 +415,8 @@ function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       }
     });
   }
+}
+
+export function getDiagramElement() {
+  return document.querySelector<SVGSVGElement>('#graph svg#graph-diagram');
 }

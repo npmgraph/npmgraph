@@ -4,7 +4,6 @@ export function Section({
   title,
   children,
   open = true,
-
   ...props
 }: { title: string; open?: boolean } & HTMLProps<HTMLDetailsElement>) {
   return (

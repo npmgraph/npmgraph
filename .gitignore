@@ -4,3 +4,4 @@ node_modules
 dist
 .vscode
 !package-lock.json
+art/**/*.svg.*.svg  # inkscape backup files

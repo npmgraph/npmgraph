@@ -28,6 +28,7 @@
   --bg-s: 100%; // Background saturation
 
   --bg-red: hsl(0, var(--bg-s), var(--bg-l));
+  --bg-darkred: hsl(0, var(--bg-s), 50%);
   --bg-orange: hsl(30, var(--bg-s), var(--bg-l));
   --bg-yellow: hsl(60, var(--bg-s), var(--bg-l));
   --bg-green: hsl(120, var(--bg-s), var(--bg-l));
@@ -98,8 +99,4 @@ p {
 h2 {
   border-radius: var(--rad_sm);
   font-size: 14pt;
-}
-
-.material-icons {
-  font-size: inherit;
 }

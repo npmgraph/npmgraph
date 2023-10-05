@@ -16,13 +16,7 @@ export async function fetchCommits() {
     );
 
     // Filter out merge commits
-    commits = commits.filter(commit => {
-      console.log(
-        commit.commit.message,
-        !/^merge/i.test(commit.commit.message),
-      );
-      return !/^merge/i.test(commit.commit.message);
-    });
+    commits = commits.filter(commit => !/^merge/i.test(commit.commit.message));
 
     setCommitState(commits);
   } catch (err) {
