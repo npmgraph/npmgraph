@@ -5,22 +5,24 @@ import {
   ZOOM_FIT_WIDTH,
   ZOOM_NONE,
 } from '../../lib/constants.js';
+import { cn } from '../../lib/dom.js';
 import useHashParam from '../../lib/useHashParam.js';
+import { ZoomHorizontalIcon, ZoomVerticalIcon } from '../Icons.js';
 
 export function GraphDiagramZoomButtons() {
   const [zoom, setZoom] = useHashParam(PARAM_ZOOM);
   return (
     <>
       <button
-        className={`material-icons ${zoom == ZOOM_FIT_WIDTH ? 'selected' : ''}`}
+        className={cn({ selected: zoom == ZOOM_FIT_WIDTH })}
         onClick={() => setZoom(ZOOM_FIT_WIDTH)}
         title="zoom (fit width)"
         style={{ borderRadius: '3px 0 0 3px' }}
       >
-        swap_horiz
+        <ZoomHorizontalIcon />
       </button>
       <button
-        className={zoom == ZOOM_NONE ? 'selected' : ''}
+        className={cn({ selected: zoom == ZOOM_NONE })}
         onClick={() => setZoom(ZOOM_NONE)}
         title="zoom (1:1)"
         style={{
@@ -34,14 +36,12 @@ export function GraphDiagramZoomButtons() {
         1:1
       </button>
       <button
-        className={`material-icons ${
-          zoom == ZOOM_FIT_HEIGHT ? 'selected' : ''
-        }`}
+        className={cn({ selected: zoom == ZOOM_FIT_HEIGHT })}
         onClick={() => setZoom(ZOOM_FIT_HEIGHT)}
         title="zoom (fit height)"
         style={{ borderRadius: '0 3px 3px 0' }}
       >
-        swap_vert
+        <ZoomVerticalIcon />
       </button>
     </>
   );

@@ -1,6 +1,8 @@
 import React from 'react';
 import { report } from '../../lib/bugsnag.js';
 import $ from '../../lib/dom.js';
+import { DownloadIcon } from '../Icons.js';
+import { getDiagramElement } from './GraphDiagram.js';
 
 type DownloadExtension = 'svg' | 'png';
 
@@ -9,10 +11,9 @@ export default function GraphDiagramDownloadButton() {
     <button
       onClick={() => download('svg')}
       title="download as SVG"
-      className="material-icons"
       style={{ marginLeft: '0.5em' }}
     >
-      cloud_download
+      <DownloadIcon />
     </button>
   );
 }
@@ -29,7 +30,10 @@ function download(type: DownloadExtension) {
 }
 
 function downloadPng() {
-  const svg = $<SVGSVGElement>('#graph svg')[0];
+  const svg = getDiagramElement();
+
+  if (!svg) return;
+
   const data = svg.outerHTML;
   const vb = svg.getAttribute('viewBox')?.split(' ');
 
@@ -57,11 +61,14 @@ function downloadPng() {
 }
 
 function downloadSvg() {
+  const svg = getDiagramElement();
+  if (!svg) return;
+
   alert(
     'Note: SVG downloads use the "Roboto Condensed" font, available at https://fonts.google.com/specimen/Roboto+Condensed.',
   );
 
-  const svgData = $<SVGSVGElement>('#graph svg')[0].outerHTML;
+  const svgData = svg.outerHTML;
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const svgUrl = URL.createObjectURL(svgBlob);
   generateLinkToDownload('svg', svgUrl);

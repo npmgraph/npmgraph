@@ -104,7 +104,7 @@ export default function ModulePane({
 
       {/* For NPM packages */}
       {!module.package._local ? (
-        <>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <ExternalLink href={module.packageJsonLink}>
             package.json
           </ExternalLink>
@@ -116,7 +116,7 @@ export default function ModulePane({
               GitHub
             </ExternalLink>
           ) : null}
-        </>
+        </div>
       ) : null}
 
       <Section title="Bundle Size">

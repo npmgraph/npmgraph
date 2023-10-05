@@ -1,4 +1,5 @@
 import React, { HTMLProps } from 'react';
+import { OffsiteLinkIcon } from './Icons.js';
 
 export function ExternalLink({
   href,
@@ -15,7 +16,7 @@ export function ExternalLink({
       {...props}
     >
       {children}
-      <span className="material-icons">open_in_new</span>
+      <OffsiteLinkIcon style={{ marginLeft: '0.25em' }} />
     </a>
   );
 }
