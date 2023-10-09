@@ -4,6 +4,9 @@ import $ from '../../lib/dom.js';
 import { DownloadIcon } from '../Icons.js';
 import { getDiagramElement } from './GraphDiagram.js';
 
+import indexStyles from 'bundle-text:../../index.scss';
+import diagramStyles from 'bundle-text:./GraphDiagram.scss';
+
 type DownloadExtension = 'svg' | 'png';
 
 export default function GraphDiagramDownloadButton() {
@@ -61,12 +64,27 @@ function downloadPng() {
 }
 
 function downloadSvg() {
-  const svg = getDiagramElement();
+  // Get svg DOM (cloned, so we can tweak as needed for SVG export)
+  const svg = getDiagramElement()?.cloneNode(true) as SVGSVGElement | undefined;
   if (!svg) return;
 
-  alert(
-    'Note: SVG downloads use the "Roboto Condensed" font, available at https://fonts.google.com/specimen/Roboto+Condensed.',
-  );
+  // Add link(s) to font files
+  document
+    .querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
+    .forEach(link => {
+      if (!link.href.includes('fonts.googleapis.com')) return;
+
+      const fontEl = document.createElement('defs');
+      fontEl.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
+      svg.insertBefore(fontEl, svg.firstChild);
+    });
+
+  // Inline app stylesheets (we can't just link to these since they change as the app changes)
+  for (const styles of [indexStyles, diagramStyles]) {
+    const styleEl = document.createElement('style');
+    styleEl.innerHTML = styles;
+    svg.appendChild(styleEl);
+  }
 
   const svgData = svg.outerHTML;
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });

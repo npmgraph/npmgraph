@@ -6,11 +6,11 @@ const FONT = 'Roboto Condensed, sans-serif';
 
 const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
-  devDependencies: '[color=red]',
+  devDependencies: '[color=black]',
   peerDependencies:
     '[label=peer fontcolor="#bbbbbb" color="#bbbbbb" style=dashed]',
   optionalDependencies: '[color=black style=dashed]', // unused
-  optionalDevDependencies: '[color=red style=dashed]', // unused
+  optionalDevDependencies: '[color=black style=dashed]', // unused
 };
 
 type DependencyEntry = {
