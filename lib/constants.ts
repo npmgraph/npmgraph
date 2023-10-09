@@ -5,15 +5,6 @@ export const COLORIZE_COLORS = [
   'var(--bg-yellow)',
   'var(--bg-green)',
 ];
-export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
-export const COLORIZE_MODULE_ESM = 'var(--bg-blue)';
-
-export const COLORIZE_MAINTENANCE = 'maintenance';
-export const COLORIZE_MODULE_TYPE = 'moduleType';
-export const COLORIZE_NONE = '';
-export const COLORIZE_OVERALL = 'overall';
-export const COLORIZE_POPULARITY = 'popularity';
-export const COLORIZE_QUALITY = 'quality';
 
 export const PARAM_COLORIZE = 'color';
 export const PARAM_DEPENDENCIES = 'deps';
