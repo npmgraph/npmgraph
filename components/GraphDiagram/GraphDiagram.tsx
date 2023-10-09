@@ -2,6 +2,7 @@ import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
 import LoadActivity from '../../lib/LoadActivity.js';
+import Module from '../../lib/Module.js';
 import {
   QueryType,
   getCachedModule,
@@ -9,13 +10,6 @@ import {
 } from '../../lib/ModuleCache.js';
 import { report } from '../../lib/bugsnag.js';
 import {
-  COLORIZE_COLORS,
-  COLORIZE_MAINTENANCE,
-  COLORIZE_MODULE_CJS,
-  COLORIZE_MODULE_ESM,
-  COLORIZE_OVERALL,
-  COLORIZE_POPULARITY,
-  COLORIZE_QUALITY,
   PARAM_COLORIZE,
   PARAM_DEPENDENCIES,
   PARAM_VIEW_MODE,
@@ -26,23 +20,18 @@ import {
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
 import $ from '../../lib/dom.js';
-import fetchJSON from '../../lib/fetchJSON.js';
-import { NPMSIOData } from '../../lib/fetch_types.js';
-import { flash } from '../../lib/flash.js';
-import { isDefined } from '../../lib/guards.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { useQuery } from '../../lib/useQuery.js';
 import { useExcludes, useGraph, usePane } from '../App/App.js';
+import {
+  getColorizer,
+  isSimpleColorizer,
+} from '../GraphPane/colorizers/index.js';
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
-import {
-  DependencyKey,
-  composeDOT,
-  getGraphForQuery,
-  hslFor,
-} from './graph_util.js';
+import { DependencyKey, composeDOT, getGraphForQuery } from './graph_util.js';
 
 export type ZoomOption =
   | typeof ZOOM_NONE
@@ -319,102 +308,58 @@ export function updateSelection(queryType: QueryType, queryValue: string) {
   });
 }
 
-function colorizeGraph(svg: SVGSVGElement, colorize: string) {
-  if (!colorize) {
-    $(svg, 'g.node path').attr('style', undefined);
-  } else if (colorize == 'bus') {
-    for (const el of $<SVGGElement>(svg, 'g.node')) {
-      const m = getCachedModule(el.dataset.module ?? '');
-      const bus = Math.min(m?.package.maintainers?.length ?? 1, 4);
-      $<SVGPathElement>(el, 'path')[0].style.fill = COLORIZE_COLORS[bus - 1];
-    }
-  } else if (colorize == 'moduleType') {
-    for (const el of $<SVGGElement>('#graph g.node')) {
-      const moduleName = el.dataset.module;
-      if (!moduleName) continue;
+async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
+  const colorizer = getColorizer(colorize);
 
-      const module = getCachedModule(el.dataset.module ?? '');
+  if (!colorizer) {
+    // Unset all node colors
+    $(svg, 'g.node path').attr('style', undefined);
+    return;
+  }
+
+  const moduleEls = $<SVGGElement>(svg, 'g.node');
+
+  if (isSimpleColorizer(colorizer)) {
+    // For each node in graph
+    for (const el of moduleEls) {
+      const moduleKey = el.dataset.module;
+      const m = moduleKey && getCachedModule(moduleKey);
       const elPath = $<SVGPathElement>(el, 'path')[0];
-      if (module) {
-        const url = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
-        fetchJSON<{ type: string }>(url)
-          .then(pkg => {
-            elPath.style.fill =
-              pkg.type === 'module' ? COLORIZE_MODULE_ESM : COLORIZE_MODULE_CJS;
-          })
-          .catch(() => (elPath.style.fill = ''));
-      } else {
+
+      // Reset color if there's no module
+      if (!m) {
         elPath.style.fill = '';
+        continue;
       }
+
+      // Colorize it (async)
+      colorizer.colorForModule(m).then(color => {
+        elPath.style.fill = color ?? '';
+      });
     }
   } else {
-    let packageNames = $<SVGGElement>('#graph g.node')
-      .map(el => getCachedModule(el.dataset.module ?? '')?.name)
-      .filter(isDefined);
-
-    // npms.io limits to 250 packages, so query in batches
-    const reqs: Promise<Record<string, NPMSIOData> | null>[] = [];
-    const MAX_PACKAGES = 250;
-    while (packageNames.length) {
-      reqs.push(
-        fetchJSON<Record<string, NPMSIOData>>(
-          'https://api.npms.io/v2/package/mget',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(packageNames.slice(0, MAX_PACKAGES)),
-          },
-        ).catch(err => {
-          console.error(err);
-          return null;
-        }),
-      );
-      packageNames = packageNames.slice(MAX_PACKAGES);
+    // Bundle up modules
+    const modules: Module[] = [];
+    for (const el of moduleEls) {
+      const moduleKey = el.dataset.module;
+      const m = moduleKey && getCachedModule(moduleKey);
+      if (m) modules.push(m);
     }
 
-    Promise.allSettled(reqs).then(results => {
-      // Merge results back into a single object
-      const combinedResults: { [key: string]: NPMSIOData } = {};
-      let rejected = 0;
-      for (const result of results) {
-        if (result.status == 'rejected') {
-          rejected++;
-        } else {
-          Object.assign(combinedResults, result.value);
-        }
-      }
+    // Get colors for all modules
+    const colors = await colorizer.colorsForModules(modules);
 
-      if (rejected) {
-        flash(`${rejected} of ${results.length} npms.io requests failed`);
-      }
+    // Apply colors
+    for (const el of moduleEls) {
+      const moduleKey = el.dataset.module;
+      const m = moduleKey && getCachedModule(moduleKey);
+      const elPath = $<SVGPathElement>(el, 'path')[0];
 
-      // Colorize nodes
-      for (const el of $(svg, 'g.node')) {
-        const key = $(el, 'text')[0].textContent;
-        if (!key) return;
-
-        const moduleName = key.replace(/@[\d.]+$/, '');
-        const score = combinedResults[moduleName]?.score;
-        let fill: number | undefined;
-        switch (score && colorize) {
-          case COLORIZE_OVERALL:
-            fill = score.final;
-            break;
-          case COLORIZE_QUALITY:
-            fill = score.detail.quality;
-            break;
-          case COLORIZE_POPULARITY:
-            fill = score.detail.popularity;
-            break;
-          case COLORIZE_MAINTENANCE:
-            fill = score.detail.maintenance;
-            break;
-        }
-
-        $<SVGPathElement>(el, 'path')[0].style.fill = fill ? hslFor(fill) : '';
-      }
-    });
+      elPath.style.fill = (m && colors.get(m)) ?? '';
+    }
   }
+
+  return;
 }
 
 export function getDiagramElement() {

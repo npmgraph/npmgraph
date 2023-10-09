@@ -3,6 +3,9 @@ import semverGt from 'semver/functions/gt.js';
 import semverSatisfies from 'semver/functions/satisfies.js';
 import semverValid from 'semver/functions/valid.js';
 import Module, { ModulePackage } from './Module.js';
+import PromiseWithResolvers, {
+  PromiseWithResolversType,
+} from './PromiseWithResolvers.js';
 import URLPlus from './URLPlus.js';
 import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
@@ -14,10 +17,7 @@ const moduleCache = new Map<string, ModuleCacheEntry>();
 
 export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
 
-type ModuleCacheEntry = {
-  promise: Promise<Module>;
-  resolve: (module: Module) => void;
-  reject: (err: Error) => void;
+type ModuleCacheEntry = PromiseWithResolversType<Module> & {
   module?: Module; // Set once module is loaded
 };
 
@@ -145,11 +145,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   // Set up the cache so subsequent requests for this module will get the same
   // promise object (and thus the same module), even if the module hasn't been
   // loaded yet
-  const cacheEntry = {} as ModuleCacheEntry;
-  cacheEntry.promise = new Promise<Module>((resolve, reject) => {
-    cacheEntry.resolve = resolve;
-    cacheEntry.reject = reject;
-  });
+  const cacheEntry = PromiseWithResolvers<Module>() as ModuleCacheEntry;
   moduleCache.set(moduleKey, cacheEntry);
 
   let promise: Promise<Module>;
