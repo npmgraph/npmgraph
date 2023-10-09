@@ -204,5 +204,5 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
 
 // Use color-mix to blend two colors in HSL space
 export function hslFor(perc: number) {
-  return `hsl(${Math.round(perc * 120)}, 80%, var(--bg-l))`;
+  return `hsl(${Math.round(perc * 120)}, 80%, var(--bg-L))`;
 }

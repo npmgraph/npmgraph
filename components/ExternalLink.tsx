@@ -23,7 +23,7 @@ export function ExternalLink({
       {...props}
     >
       {children}
-      <IconComponent style={{ marginLeft: '0.25em' }} />
+      <IconComponent style={{ marginLeft: '0.2rem' }} />
     </a>
   );
 }
