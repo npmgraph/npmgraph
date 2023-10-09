@@ -11,15 +11,15 @@ import './CommitList.scss';
 export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
   const [commits, newCount, reset] = useCommits();
 
+  // Reset new commit
+  useEffect(() => {
+    // Only reset lastVisit time if there are new commits
+    if (newCount > 0) return reset;
+  }, [reset]);
+
   const commitEls = commits.map((commit, i) => {
     const date = new Date(commit.commit.author.date);
     let message = commit.commit.message;
-
-    // Reset new commit
-    useEffect(() => {
-      // Only reset lastVisit time if there are new commits
-      if (newCount > 0) return reset;
-    }, [reset]);
 
     // Parse conventional-commit type
     let ccType = commit.commit.message.match(/^([a-z]+):/)?.[1];

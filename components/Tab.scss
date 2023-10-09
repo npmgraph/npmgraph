@@ -15,13 +15,13 @@
   & .badge {
     display: inline-block;
     position: absolute;
-    top: 0;
-    right: -0.5rem;
+    top: .2rem;
+    right: -0.1rem;
     border-radius: 0.5rem;
     background-color: var(--bg-darkred);
     padding: 0.2rem;
-    min-width: 0.7rem;
-    min-height: 0.7rem;
+    min-width: 0.3rem;
+    min-height: 0.3rem;
     font-weight: 600;
     font-size: 0.7rem;
     line-height: 0.7rem;

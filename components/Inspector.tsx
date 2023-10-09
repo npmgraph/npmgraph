@@ -52,7 +52,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
         <Tab
           active={pane == 'about'}
           onClick={() => setPane('about')}
-          badge={newCommitsCount}
+          badge={newCommitsCount > 0}
         >
           About
         </Tab>
