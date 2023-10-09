@@ -3,13 +3,13 @@ import React, { HTMLProps } from 'react';
 // SVG icons.  To create a new icon, get the icon's SVG `path` and copy-paste it
 // here.  The path should fit w/in a 16x16 box (with a ~0.5px margin).  The paths provided by octicons work pretty well for this, but may need to be scaled.
 
-type IconProps = {
+export type IconProps = {
   width?: number;
   height?: number;
 } & HTMLProps<SVGSVGElement>;
 
 // General SVG-based icon component path.
-function Icon({
+export default function Icon({
   strokePath,
   fillPath,
   width = 16,
@@ -26,7 +26,7 @@ function Icon({
     // unless it's wrapped in a <div>.  No idea why.
     <div style={{ display: 'inline-block', verticalAlign: 'middle' }}>
       <svg viewBox={`0 0 16 16`} width={width} height={height} {...props}>
-        {strokePath ? (
+        {fillPath ? (
           <path
             d={fillPath}
             style={{

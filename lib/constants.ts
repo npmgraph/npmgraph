@@ -6,7 +6,7 @@ export const COLORIZE_COLORS = [
   'var(--bg-green)',
 ];
 export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
-export const COLORIZE_MODULE_ESM = 'var(--bg-yellow)';
+export const COLORIZE_MODULE_ESM = 'var(--bg-blue)';
 
 export const COLORIZE_MAINTENANCE = 'maintenance';
 export const COLORIZE_MODULE_TYPE = 'moduleType';

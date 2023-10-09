@@ -1,6 +1,7 @@
 import md5 from 'md5';
 import React, { HTMLProps } from 'react';
 import { QueryType } from '../lib/ModuleCache.js';
+import { cn } from '../lib/dom.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 
 export function Tag({
@@ -27,7 +28,7 @@ export function Tag({
 
   return (
     <div
-      className={`tag ${type} bright-hover ${className ?? ''}`}
+      className={cn('tag', type, 'bright-hover', className)}
       title={title}
       onClick={() => setGraphSelection(type, value)}
     >

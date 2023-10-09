@@ -1,22 +1,29 @@
 import React, { HTMLProps } from 'react';
-import { OffsiteLinkIcon } from './Icons.js';
+import { cn } from '../lib/dom.js';
+import { IconProps, OffsiteLinkIcon } from './Icons.js';
+
+import './ExternalLink.scss';
 
 export function ExternalLink({
   href,
   children,
   target = '_blank',
+  icon: IconComponent = OffsiteLinkIcon,
   className,
   ...props
-}: HTMLProps<HTMLAnchorElement> & { className?: string }) {
+}: HTMLProps<HTMLAnchorElement> & {
+  className?: string;
+  icon?: (props: IconProps) => React.JSX.Element;
+}) {
   return (
     <a
       href={href}
-      className={`bright-hover ${className ?? ''}`}
+      className={cn('bright-hover', 'external-link', className)}
       target={target}
       {...props}
     >
       {children}
-      <OffsiteLinkIcon style={{ marginLeft: '0.25em' }} />
+      <IconComponent style={{ marginLeft: '0.25em' }} />
     </a>
   );
 }
