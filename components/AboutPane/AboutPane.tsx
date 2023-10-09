@@ -10,7 +10,7 @@ export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
       <div style={{ lineHeight: '1.5rem' }}>
-        Questions, comments or suggestions? Visit the{' '}
+        Questions or comments? Visit the{' '}
         <ExternalLink
           href="https://github.com/npmgraph/npmgraph"
           icon={GithubIcon}
@@ -20,7 +20,7 @@ export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
       </div>
 
       <p>
-        Want to support the project?
+        Want to show your appreciation?
         <GithubSponsorButton username="broofa" style={{ marginLeft: '1rem' }} />
       </p>
 

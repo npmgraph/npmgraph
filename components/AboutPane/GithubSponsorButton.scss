@@ -1,16 +1,18 @@
 .pane a.github-sponsor {
   display: inline-block;
 
+  margin-left: 1rem;
+
   border: solid 1px var(--bg1);
   border-radius: 0.375rem;
+  background-color: var(--bg2);
   padding: 0.5rem;
   color: var(--text);
   text-align: center;
   text-decoration: none;
 
-  & svg {
-    vertical-align: middle;
-    margin-right: 1rem;
-    stroke: var(--bg-violet);
+  .icon {
+    margin-right: 0.5rem;
+    color: var(--bg-violet);
   }
 }

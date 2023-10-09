@@ -24,15 +24,15 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      showgrid="true"
-     inkscape:zoom="60.4375"
+     inkscape:zoom="39.5"
      inkscape:cx="8"
-     inkscape:cy="7.991727"
+     inkscape:cy="8"
      inkscape:window-width="1392"
      inkscape:window-height="1261"
-     inkscape:window-x="662"
-     inkscape:window-y="25"
+     inkscape:window-x="533"
+     inkscape:window-y="29"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1">
+     inkscape:current-layer="layer5">
     <inkscape:grid
        id="grid1"
        units="px"
@@ -169,13 +169,25 @@
      inkscape:label="Horizontal Zoom"
      inkscape:groupmode="layer"
      id="layer1"
-     style="display:inline">
+     style="display:none"
+     sodipodi:insensitive="true">
     <path
-       id="path2"
+       id="path3"
        sodipodi:nodetypes="cccccccccccccccc"
        inkscape:label="path"
-       style="display:inline;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       style="display:none;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
        d="M 13,8 H 3 M 5,5 3,8 5,11 m 6,-6 2,3 -2,3 M 4,1 H 1 V 15 H 4 M 12,1 h 3 v 14 h -3" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="Sponsor"
+     style="display:inline">
+    <path
+       d="M 8,4 C 13,-1 20,6 8,14 -4,6 3,-1 8,4 Z"
+       style="display:inline;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
+       id="path1-4"
+       sodipodi:nodetypes="ccc" />
   </g>
   <g
      inkscape:groupmode="layer"

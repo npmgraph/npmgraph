@@ -12,7 +12,6 @@
     transparent 100%
   );
 
-  /* https://coolors.co/020303-f1f4f4-c8d3a7-e65c00 */
   --text: #020303;
   --text-dim: #999;
   --bg0: #f1f4f4;
@@ -24,31 +23,40 @@
   --highlight: #e65c00;
 
   // Named background colors
-  --bg-l: 75%; // Background intensity
-  --bg-s: 100%; // Background saturation
+  --bg-L: 40%; // Background intensity
+  --bg-S: 50%; // Background saturation
+  --bg-dark-L: 60%; // Dark bg intensity
+  --bg-dark-S: 40%; // Dark bg saturation
 
-  --bg-red: hsl(0, var(--bg-s), var(--bg-l));
-  --bg-darkred: hsl(0, var(--bg-s), 50%);
-  --bg-orange: hsl(30, var(--bg-s), var(--bg-l));
-  --bg-yellow: hsl(60, var(--bg-s), var(--bg-l));
-  --bg-green: hsl(120, var(--bg-s), var(--bg-l));
-  --bg-blue: hsl(180, var(--bg-s), var(--bg-l));
-  --bg-indigo: hsl(240, var(--bg-s), var(--bg-l));
-  --bg-violet: hsl(300, var(--bg-s), var(--bg-l));
+  --bg-blue: hsl(180, var(--bg-S), var(--bg-L));
+  --bg-green: hsl(120, var(--bg-S), var(--bg-L));
+  --bg-indigo: hsl(240, var(--bg-S), var(--bg-L));
+  --bg-orange: hsl(30, var(--bg-S), var(--bg-L));
+  --bg-red: hsl(0, var(--bg-S), var(--bg-L));
+  --bg-violet: hsl(300, var(--bg-S), var(--bg-L));
+  --bg-yellow: hsl(60, var(--bg-S), var(--bg-L));
+
+  --bg-darkblue: hsl(180, var(--bg-dark-S), var(--bg-dark-L));
+  --bg-darkgreen: hsl(120, var(--bg-dark-S), var(--bg-dark-L));
+  --bg-darkindigo: hsl(240, var(--bg-dark-S), var(--bg-dark-L));
+  --bg-darkorange: hsl(30, var(--bg-dark-S), var(--bg-dark-L));
+  --bg-darkred: hsl(0, var(--bg-dark-S), var(--bg-dark-L));
+  --bg-darkviolet: hsl(300, var(--bg-dark-S), var(--bg-dark-L));
+  --bg-darkyellow: hsl(60, var(--bg-dark-S), var(--bg-dark-L));
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     background-color: #111;
 
-    /* https://coolors.co/f1f4f4-606c38-283618-ff761a */
     --text: #f3f3f3;
     --text-dim: #766;
     --bg0: #262222;
     --bg1: #696666;
     --bg2: #333;
 
-    --bg-l: 35%; // Background intensity (dark)
+    --bg-L: 35%; // Background intensity (dark)
+    --bg-dark-L: 35%; // Background intensity (dark)
 
     --highlight: #ff761a;
     --inset-shadow-color: black;
