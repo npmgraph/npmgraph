@@ -1,5 +1,6 @@
 import React, { HTMLProps } from 'react';
 import { queryModuleCache } from '../lib/ModuleCache.js';
+import useCommits from '../lib/useCommits.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 import { version as VERSION } from '../package.json';
 import AboutPane from './AboutPane/AboutPane.js';
@@ -10,7 +11,6 @@ import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.js';
 import { Tab } from './Tab.js';
-import useCommits from './useCommits.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = usePane();

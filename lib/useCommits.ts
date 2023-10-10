@@ -1,6 +1,6 @@
-import fetchJSON from '../lib/fetchJSON.js';
-import { GithubCommit } from '../lib/fetch_types.js';
-import sharedStateHook from '../lib/sharedStateHook.js';
+import fetchJSON from './fetchJSON.js';
+import { GithubCommit } from './fetch_types.js';
+import sharedStateHook from './sharedStateHook.js';
 
 const lastVisit = Number(localStorage.getItem('lastVisit'));
 
@@ -15,8 +15,30 @@ export async function fetchCommits() {
       { silent: true },
     );
 
-    // Filter out merge commits
-    commits = commits.filter(commit => !/^merge/i.test(commit.commit.message));
+    // Walk commits and tag commits we want to expose with the
+    // conventional-commit type
+    for (const commit of commits) {
+      let { message } = commit.commit;
+      let ccType = (message.match(/^([a-z]+):/)?.[1] ?? '').toLowerCase();
+
+      // Strip ccType from message
+      if (ccType) {
+        message = message.slice(ccType.length + 1);
+      }
+      message = message.replace(/\n[\S\s]*/m, '').trim();
+
+      if (ccType.startsWith('break')) ccType = 'breaking';
+      else if (ccType.startsWith('feat')) ccType = 'feat';
+      else if (ccType.startsWith('fix')) ccType = 'fix';
+      else if (ccType.startsWith('doc')) ccType = 'docs';
+      else ccType = '';
+
+      commit.ccType = ccType;
+      commit.ccMessage = message;
+    }
+
+    // Filter out commits we're not interested in
+    commits = commits.filter(commit => Boolean(commit.ccType));
 
     setCommitState(commits);
   } catch (err) {

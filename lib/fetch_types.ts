@@ -139,6 +139,8 @@ export type BundlePhobiaData = {
 // Commits types in Github rest API
 export type GithubCommit = {
   isNew?: boolean; // We add this
+  ccType?: string; // We add this
+  ccMessage?: string; // Message w/out ccType prefix
 
   node_id: string;
   commit: {

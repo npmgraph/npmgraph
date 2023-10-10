@@ -25,8 +25,8 @@
   // Named background colors
   --bg-L: 50%; // Background intensity
   --bg-S: 80%; // Background saturation
-  --bg-dark-L: 60%; // Dark bg intensity
-  --bg-dark-S: 80%; // Dark bg saturation
+  --bg-dark-L: 50%; // Dark bg intensity
+  --bg-dark-S: 60%; // Dark bg saturation
 
   --bg-blue: hsl(180, var(--bg-S), var(--bg-L));
   --bg-green: hsl(120, var(--bg-S), var(--bg-L));

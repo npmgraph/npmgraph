@@ -2,7 +2,7 @@ import React, { HTMLProps, useEffect } from 'react';
 import simplur from 'simplur';
 import { ago } from '../../lib/ago.js';
 import { cn } from '../../lib/dom.js';
-import useCommits from '../useCommits.js';
+import useCommits from '../../lib/useCommits.js';
 import './CommitList.scss';
 
 // Note: https://github.com/pvdlg/conventional-changelog-metahub has a nice list of
@@ -19,34 +19,15 @@ export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
 
   const commitEls = commits.map((commit, i) => {
     const date = new Date(commit.commit.author.date);
-    let message = commit.commit.message;
+    const { ccType, ccMessage } = commit;
 
-    // Parse conventional-commit type
-    let ccType = commit.commit.message.match(/^([a-z]+):/)?.[1];
-    if (ccType) {
-      message = message.substring(ccType.length + 1);
-      ccType = ccType.toLowerCase();
-      if (ccType.startsWith('break') || ccType.endsWith('!'))
-        ccType = 'breaking';
-      else if (ccType.startsWith('feat')) ccType = 'feat';
-      else if (ccType.startsWith('fix')) ccType = 'fix';
-      else if (ccType.startsWith('doc')) ccType = 'docs';
-      else if (ccType.startsWith('refactor')) ccType = 'refactor';
-      else ccType = '';
-    }
-    message = message
-      .replace(/\n[\S\s]*/m, '')
-      .trim()
-      .replace(/^[a-z]/, c => c.toUpperCase());
-    const ccClasses = cn({
-      cc: Boolean(ccType),
-      [`cc-${ccType}`]: ccType,
-    });
+    const ccClasses = cn({ cc: Boolean(ccType), [`cc-${ccType}`]: ccType });
+
     return (
       <div className={cn('commit-item', ccClasses)} key={i}>
         <div className="commit-top">
           {commit.isNew ? <div className="new-dot" /> : null}
-          <span className="message">{message}</span>
+          <span className="message">{ccMessage}</span>
           {ccType ? (
             <span className={cn('cc-pill', ccClasses)}>{ccType}</span>
           ) : null}

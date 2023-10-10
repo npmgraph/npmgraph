@@ -72,17 +72,20 @@
     line-height: 0.75rem;
     text-align: center;
 
+    &.cc-breaking {
+      background-color: var(--bg-red);
+    }
     &.cc-fix {
       background-color: var(--bg-yellow);
-    }
-    &.cc-refactor {
-      background-color: var(--bg-blue);
     }
     &.cc-feat {
       background-color: var(--bg-green);
     }
     &.cc-docs {
-      background-color: var(--bg-indigo);
+      background-color: var(--bg-blue);
+    }
+    &.cc-refactor {
+      background-color: var(--bg-darkblue);
     }
   }
 }

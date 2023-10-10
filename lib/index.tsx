@@ -3,12 +3,12 @@ import './bugsnag.js'; // Initialize ASAP!
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App, { setActivityForApp } from '../components/App/App.js';
-import { fetchCommits } from '../components/useCommits.js';
 import { DiagramTitle } from './DiagramTitle.js';
 import LoadActivity from './LoadActivity.js';
 import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
+import { fetchCommits } from './useCommits.js';
 
 window.addEventListener('error', err => {
   console.error(err);
