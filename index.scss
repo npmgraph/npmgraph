@@ -81,14 +81,13 @@ body {
   padding: 0;
 }
 
-body.fail {
-  /*
-  Image from https://www.redbubble.com/people/JonThomson/shop or
-  https://i.etsystatic.com/9308954/r/il/0b8cbf/4306171179/il_1588xN.4306171179_jd8g.jpg
-   */
-  background: url('/images/fail_giraffe.png') right 0 no-repeat;
-  background-size: 30%;
-  background-color: var(--bg1);
+p {
+  line-height: 1.5em;
+}
+
+h2 {
+  border-radius: var(--rad_sm);
+  font-size: 14pt;
 }
 
 #app {
@@ -98,13 +97,4 @@ body.fail {
   right: 0;
   bottom: 0;
   left: 0;
-}
-
-p {
-  line-height: 1.5em;
-}
-
-h2 {
-  border-radius: var(--rad_sm);
-  font-size: 14pt;
 }

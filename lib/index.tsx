@@ -10,9 +10,6 @@ import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
 
-// Used to feature-detect that es6 modules are loading
-(window as { indexLoaded?: boolean }).indexLoaded = true;
-
 window.addEventListener('error', err => {
   console.error(err);
   flash(err.message);
