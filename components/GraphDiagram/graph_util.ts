@@ -209,6 +209,61 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
     .join('\n');
 }
 
+export function gatherSelectionInfo(
+  graphState: GraphState,
+  selectedModules: IterableIterator<Module>,
+) {
+  // Gather *string* identifiers used to identify the various DOM elements that
+  // represent the selection
+  const selectedKeys = new Set<string>();
+  const upstreamEdgeKeys = new Set<string>();
+  const upstreamModuleKeys = new Set<string>();
+  const downstreamEdgeKeys = new Set<string>();
+  const downstreamModuleKeys = new Set<string>();
+
+  function _visitUpstream(fromModule: Module, visited = new Set<Module>()) {
+    if (visited.has(fromModule)) return;
+    visited.add(fromModule);
+
+    const info = graphState.modules.get(fromModule.key);
+    if (!info) return;
+
+    for (const { module } of info.upstream) {
+      upstreamModuleKeys.add(module.key);
+      upstreamEdgeKeys.add(`${module.key}->${fromModule.key}`);
+      _visitUpstream(module, visited);
+    }
+  }
+
+  function _visitDownstream(fromModule: Module, visited = new Set<Module>()) {
+    if (visited.has(fromModule)) return;
+    visited.add(fromModule);
+
+    const info = graphState.modules.get(fromModule.key);
+    if (!info) return;
+
+    for (const { module } of info.downstream) {
+      downstreamModuleKeys.add(module.key);
+      downstreamEdgeKeys.add(`${fromModule.key}->${module.key}`);
+      _visitDownstream(module, visited);
+    }
+  }
+
+  for (const selectedModule of selectedModules) {
+    selectedKeys.add(selectedModule.key);
+    _visitUpstream(selectedModule);
+    _visitDownstream(selectedModule);
+  }
+
+  return {
+    selectedKeys,
+    upstreamEdgeKeys,
+    upstreamModuleKeys,
+    downstreamEdgeKeys,
+    downstreamModuleKeys,
+  };
+}
+
 // Use color-mix to blend two colors in HSL space
 export function hslFor(perc: number) {
   return `hsl(${Math.round(perc * 120)}, 80%, var(--bg-L))`;

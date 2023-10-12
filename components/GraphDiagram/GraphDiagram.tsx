@@ -31,7 +31,13 @@ import {
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
-import { DependencyKey, composeDOT, getGraphForQuery } from './graph_util.js';
+import {
+  DependencyKey,
+  GraphState,
+  composeDOT,
+  gatherSelectionInfo,
+  getGraphForQuery,
+} from './graph_util.js';
 
 export type ZoomOption =
   | typeof ZOOM_NONE
@@ -143,7 +149,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const { signal, abort } = createAbortable();
 
     getGraphForQuery(query, dependencyTypes, moduleFilter).then(newGraph => {
-      console.log(newGraph);
       if (signal.aborted) return; // Check after async
 
       setGraph(newGraph);
@@ -213,7 +218,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
               peerDeps++;
             }
           }
-          isPeer = peerDeps === graphInfo.upstream.size;
+          isPeer = peerDeps > 1 && peerDeps === graphInfo.upstream.size;
         } else {
           isPeer = false;
         }
@@ -259,7 +264,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   // Effect: render graph selection
   useEffect(
-    () => updateSelection(queryType, queryValue),
+    () => updateSelection(graph, queryType, queryValue),
     [queryType, queryValue, domSignal],
   );
 
@@ -283,42 +288,54 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   );
 }
 
-export function updateSelection(queryType: QueryType, queryValue: string) {
+export function updateSelection(
+  graph: GraphState | null,
+  queryType: QueryType,
+  queryValue: string,
+) {
+  if (!graph) return;
+
   const modules = queryModuleCache(queryType, queryValue);
 
-  // Locate target element(s)
-  const els = [...$<SVGElement>('svg .node[data-module]')].filter(el => {
-    modules.has(el.dataset.module ?? '');
-    return modules.has(el.dataset.module ?? '');
-  });
+  // Get selection info
+  const si = gatherSelectionInfo(graph, modules.values());
+  const isSelection = modules.size > 0;
 
-  // Unselect nodes and edges
-  $('svg .node').forEach(el => el.classList.remove('selected'));
-  $('svg .edge').forEach(el => el.classList.remove('selected'));
-
-  // Select module elements
-  for (const el of els) {
-    el.classList.add('selected');
-    el.scrollIntoView({ behavior: 'smooth' });
+  // Set selection classes for node elements
+  for (const el of [...$<SVGElement>('svg .node[data-module]')]) {
+    const moduleKey = el.dataset.module ?? '';
+    const isSelected = si.selectedKeys.has(moduleKey);
+    const isUpstream = si.upstreamModuleKeys.has(moduleKey);
+    const isDownstream = si.downstreamModuleKeys.has(moduleKey);
+    el.classList.toggle('selected', isSelection && isSelected);
+    el.classList.toggle('upstream', isSelection && isUpstream);
+    el.classList.toggle('downstream', isSelection && isDownstream);
+    el.classList.toggle(
+      'unselected',
+      isSelection && !isSelected && !isUpstream && !isDownstream,
+    );
   }
 
-  // Select edges
-  $('.edge title').forEach(title => {
-    for (const el of els) {
-      const module = getCachedModule(el.dataset.module ?? '');
-      if (!module) continue;
+  // Set selection classes for edge elements
+  for (const titleEl of [...$<SVGElement>('svg .edge')]) {
+    const edgeTitle = $(titleEl, '.edge title')?.textContent ?? '';
+    const edge = $.up<SVGPathElement>(titleEl, '.edge');
+    if (!edge) continue;
 
-      if ((title.textContent ?? '').indexOf(module.key) >= 0) {
-        const edge = $.up<SVGPathElement>(title, '.edge');
-        if (!edge) continue;
+    const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
+    const isDownstream = si.downstreamEdgeKeys.has(edgeTitle);
+    edge.classList.toggle('upstream', isSelection && isUpstream);
+    edge.classList.toggle('downstream', isSelection && isDownstream);
+    edge.classList.toggle(
+      'unselected',
+      isSelection && !isUpstream && !isDownstream,
+    );
 
-        edge.classList.add('selected');
-
-        // Move edge to end of child list so it's painted last
-        edge.parentElement?.appendChild(edge);
-      }
+    // Move edge to end of child list so it's painted last
+    if (isUpstream || isDownstream) {
+      edge.parentElement?.appendChild(edge);
     }
-  });
+  }
 }
 
 async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
