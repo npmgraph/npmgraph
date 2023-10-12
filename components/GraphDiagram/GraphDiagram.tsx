@@ -143,6 +143,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const { signal, abort } = createAbortable();
 
     getGraphForQuery(query, dependencyTypes, moduleFilter).then(newGraph => {
+      console.log(newGraph);
       if (signal.aborted) return; // Check after async
 
       setGraph(newGraph);
@@ -203,12 +204,22 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
         const m = getCachedModule(key);
 
-        const refTypes = graph?.referenceTypes.get(key);
+        const graphInfo = graph?.modules.get(key);
+        let isPeer;
+        if (graphInfo) {
+          let peerDeps = 0;
+          for (const { type } of graphInfo.upstream) {
+            if (type === 'peerDependencies') {
+              peerDeps++;
+            }
+          }
+          isPeer = peerDeps === graphInfo.upstream.size;
+        } else {
+          isPeer = false;
+        }
 
         // Style peer dependencies
-        if (refTypes?.has('peerDependencies') && refTypes.size === 1) {
-          el.classList.add('peer');
-        }
+        el.classList.toggle('peer', isPeer);
 
         if (!m) continue;
 
@@ -274,6 +285,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
 export function updateSelection(queryType: QueryType, queryValue: string) {
   const modules = queryModuleCache(queryType, queryValue);
+
   // Locate target element(s)
   const els = [...$<SVGElement>('svg .node[data-module]')].filter(el => {
     modules.has(el.dataset.module ?? '');
@@ -284,6 +296,7 @@ export function updateSelection(queryType: QueryType, queryValue: string) {
   $('svg .node').forEach(el => el.classList.remove('selected'));
   $('svg .edge').forEach(el => el.classList.remove('selected'));
 
+  // Select module elements
   for (const el of els) {
     el.classList.add('selected');
     el.scrollIntoView({ behavior: 'smooth' });

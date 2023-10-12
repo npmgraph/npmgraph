@@ -13,25 +13,28 @@ const EDGE_ATTRIBUTES = {
   optionalDevDependencies: '[color=black style=dashed]', // unused
 };
 
-type DependencyEntry = {
-  name: string;
-  version: string;
-  type: DependencyKey;
-};
-
 export type DependencyKey =
   | 'dependencies'
   | 'devDependencies'
   | 'peerDependencies'
   | 'optionalDependencies';
 
+type DependencyEntry = {
+  name: string;
+  version: string;
+  type: DependencyKey;
+};
+
+type Dependency = {
+  module: Module;
+  type: DependencyKey;
+};
+
 type GraphModuleInfo = {
   module: Module;
   level: number;
-  dependencies?: {
-    module: Module;
-    type: DependencyKey;
-  }[];
+  upstream: Set<Dependency>;
+  downstream: Set<Dependency>;
 };
 
 export type GraphState = {
@@ -39,9 +42,6 @@ export type GraphState = {
   modules: Map<string, GraphModuleInfo>;
 
   entryModules: Set<Module>;
-
-  // Map of module -> types of dependencies that terminate in the module
-  referenceTypes: Map<string, Set<DependencyKey>>;
 };
 
 const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
@@ -54,7 +54,7 @@ function getDependencyEntries(
   // We only add non-"dependencies" at the top-level.
   if (level > 0) dependencyTypes = DEPENDENCIES_ONLY;
 
-  const depEntries: Array<DependencyEntry> = [];
+  const depEntries = new Set<DependencyEntry>();
   for (const type of dependencyTypes) {
     const deps = module.package[type];
     if (!deps) continue;
@@ -64,7 +64,7 @@ function getDependencyEntries(
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
-      depEntries.push({ name, version, type });
+      depEntries.add({ name, version, type });
     }
   }
 
@@ -82,53 +82,60 @@ export async function getGraphForQuery(
   const graphState: GraphState = {
     modules: new Map(),
     entryModules: new Set(),
-    referenceTypes: new Map(),
   };
 
-  function _walk(module: Module[] | Module, level = 0): Promise<void> {
+  async function _visit(
+    module: Module[] | Module,
+    level = 0,
+    walk = true,
+  ): Promise<GraphModuleInfo | void> {
     if (!module) return Promise.reject(Error('Undefined module'));
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
-      return Promise.all(module.map(m => _walk(m, level))).then();
+      await Promise.all(module.map(m => _visit(m, level)));
+      return;
     }
 
-    // Skip modules we've already seen
-    if (graphState.modules.has(module.key)) return Promise.resolve();
-
-    // Get dependency [name, version, dependency type] entries
-    let deps: DependencyEntry[];
-    if (moduleFilter(module)) {
-      deps = getDependencyEntries(module, dependencyTypes, level);
-    } else {
-      deps = [];
+    let info: GraphModuleInfo | undefined = graphState.modules.get(module.key);
+    if (info) {
+      return info;
     }
 
     // Create object that captures info about how this module fits in the dependency graph
-    const info: GraphModuleInfo = { module: module, level };
+    info = {
+      module,
+      level,
+      upstream: new Set(),
+      downstream: new Set(),
+    };
     graphState.modules.set(module.key, info);
 
-    // Walk all dependencies
-    return Promise.all(
-      deps.map(async ({ name, version, type }) => {
-        const module = await getModule(Module.key(name, version));
+    if (!walk) return info;
 
-        // Record dependency type in the module it terminates in
-        let refTypes = graphState.referenceTypes.get(module.key);
-        if (!refTypes) {
-          graphState.referenceTypes.set(module.key, (refTypes = new Set()));
-        }
-        refTypes.add(type);
+    // Get dependency entries
+    const downstreamEntries = moduleFilter(module)
+      ? getDependencyEntries(module, dependencyTypes, level)
+      : new Set<DependencyEntry>();
+
+    // Walk downstream dependencies
+    await Promise.allSettled(
+      [...downstreamEntries].map(async ({ name, version, type }) => {
+        const downstreamModule = await getModule(Module.key(name, version));
 
         // Don't walk peerDependencies
-        if (type !== 'peerDependencies') {
-          await _walk(module, level + 1);
-        }
-        return { module, type };
+        const moduleInfo = await _visit(
+          downstreamModule,
+          level + 1,
+          type !== 'peerDependencies',
+        );
+
+        moduleInfo?.upstream.add({ module, type });
+        info?.downstream.add({ module: downstreamModule, type });
       }),
-    )
-      .then(dependencies => (info.dependencies = dependencies))
-      .then();
+    );
+
+    return info;
   }
 
   // Walk dependencies of each module in the query
@@ -136,7 +143,7 @@ export async function getGraphForQuery(
     query.map(async moduleKey => {
       const m = await getModule(moduleKey);
       graphState.entryModules.add(m);
-      return m && _walk(m);
+      return m && _visit(m);
     }),
   ).then(() => graphState);
 }
@@ -156,10 +163,10 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
   const nodes = ['\n// Nodes & per-node styling'];
   const edges = ['\n// Edges & per-edge styling'];
 
-  for (const [, { module, level, dependencies }] of entries) {
+  for (const [, { module, level, downstream }] of entries) {
     nodes.push(`"${module}"${level == 0 ? ' [root=true]' : ''}`);
-    if (!dependencies) continue;
-    for (const { module: dependency, type } of dependencies) {
+    if (!downstream) continue;
+    for (const { module: dependency, type } of downstream) {
       edges.push(`"${module}" -> "${dependency}" ${EDGE_ATTRIBUTES[type]}`);
     }
   }
