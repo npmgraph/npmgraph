@@ -15,7 +15,7 @@ export default class Module {
   package: ModulePackage;
 
   static key(name: string, version?: string) {
-    if (/^https?:\/\//.test(name)) {
+    if (this.isHttpModule(name)) {
       if (version) throw new Error(`URL-based module should not have version`);
       return name;
     }
@@ -39,6 +39,10 @@ export default class Module {
       _stub: true,
       _stubError: error,
     } as unknown as ModulePackage);
+  }
+
+  static isHttpModule(moduleKey: string) {
+    return /^https?:\/\//.test(moduleKey);
   }
 
   // TODO: This should take either ModulePackage or PackageJSON... but need to

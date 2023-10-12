@@ -14,6 +14,7 @@ import { flash } from './flash.js';
 const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
+const modifiedDates = new Map<string, Date>();
 
 export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
 
@@ -87,6 +88,28 @@ async function getModuleFromURL(urlString: string) {
   return new Module(pkg as ModulePackage);
 }
 
+async function getNPMManifest(moduleName: string) {
+  // Get the manifest. `Accept:` header here lets us get a compact version of
+  // the manifest object. See
+  // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
+  const manifest = await fetchJSON<Manifest>(
+    `${REGISTRY_BASE_URL}/${moduleName}`,
+    {
+      headers: { Accept: 'application/vnd.npm.install-v1+json' },
+    },
+  ).catch(err => {
+    console.error(`Failed to fetch manifest for ${moduleName}`, err);
+    return undefined;
+  });
+
+  const modifiedDate = new Date(manifest?.modified ?? '');
+  if (!isNaN(modifiedDate.getTime())) {
+    modifiedDates.set(moduleName, modifiedDate);
+  }
+
+  return manifest;
+}
+
 async function getModuleFromNPM(
   name: string,
   version?: string,
@@ -94,18 +117,10 @@ async function getModuleFromNPM(
   // Non-numeric or ambiguous version need to be resolved.  To do that, we
   // fetch the package's manifest and select the best version.
   if (!semverValid(version)) {
-    // Get the manifest. `Accept:` header here lets us get a compact version of
-    // the manifest object. See
-    // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
-    const manifest: Manifest = await fetchJSON<Manifest>(
-      `${REGISTRY_BASE_URL}/${name}`,
-      {
-        headers: { Accept: 'application/vnd.npm.install-v1+json' },
-      },
-    );
+    const manifest = await getNPMManifest(name);
 
     // Match best version from manifest
-    version = selectVersionFromManifest(manifest, version);
+    version = manifest && selectVersionFromManifest(manifest, version);
   }
 
   if (!version) {
@@ -127,7 +142,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   if (!moduleKey) throw Error('Undefined module name');
 
   let [name, version] = Module.unkey(moduleKey);
-  if (/^https?:\/\//.test(moduleKey)) {
+  if (Module.isHttpModule(moduleKey)) {
     name = moduleKey;
     version = '';
     // unchanged
@@ -151,7 +166,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   let promise: Promise<Module>;
 
   // Fetch module based on type
-  if (/^https?:\/\//.test(moduleKey)) {
+  if (Module.isHttpModule(moduleKey)) {
     promise = getModuleFromURL(moduleKey);
   } else {
     promise = getModuleFromNPM(name, version);
@@ -173,6 +188,16 @@ export async function getModule(moduleKey: string): Promise<Module> {
 
 export function getCachedModule(key: string) {
   return moduleCache.get(key)?.module;
+}
+
+export async function getModifiedDate(moduleName: string) {
+  if (Module.isHttpModule(moduleName)) return;
+
+  if (!modifiedDates.has(moduleName)) {
+    await getNPMManifest(moduleName);
+  }
+
+  return modifiedDates.get(moduleName);
 }
 
 export function cacheModule(module: Module) {

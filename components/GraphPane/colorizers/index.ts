@@ -1,5 +1,6 @@
 import Module from '../../../lib/Module.js';
 import BusFactorColorizer from './BusFactorColorizer.js';
+import ModifiedDateColorizer from './ModifiedDateColorizer.js';
 import ModuleTypeColorizer from './ModuleTypeColorizer.js';
 import {
   NPMSMaintenanceColorizer,
@@ -25,6 +26,7 @@ export interface BulkColorizer extends Colorizer {
 const colorizers: (SimpleColorizer | BulkColorizer)[] = [
   ModuleTypeColorizer,
   BusFactorColorizer,
+  ModifiedDateColorizer,
   NPMSOverallColorizer,
   NPMSQualityColorizer,
   NPMSPopularityColorizer,

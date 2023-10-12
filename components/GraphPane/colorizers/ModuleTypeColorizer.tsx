@@ -7,7 +7,7 @@ export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
 export const COLORIZE_MODULE_ESM = 'var(--bg-blue)';
 
 export default {
-  title: 'Module type',
+  title: 'Module Type',
   name: 'moduleType',
 
   legend() {
@@ -21,8 +21,10 @@ export default {
 
   colorForModule(module: Module) {
     const url = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
-    return fetchJSON<{ type: string }>(url).then(pkg =>
-      pkg.type === 'module' ? COLORIZE_MODULE_ESM : COLORIZE_MODULE_CJS,
-    );
+    return fetchJSON<{ type: string }>(url)
+      .then(pkg =>
+        pkg.type === 'module' ? COLORIZE_MODULE_ESM : COLORIZE_MODULE_CJS,
+      )
+      .catch(() => '');
   },
 } as SimpleColorizer;
