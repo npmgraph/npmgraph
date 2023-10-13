@@ -18,7 +18,10 @@
   stroke: var(--bg-violet);
 }
 
-a .icon,
-button .icon {
+a .icon {
   vertical-align: middle;
+}
+
+button .icon {
+  vertical-align: baseline;
 }

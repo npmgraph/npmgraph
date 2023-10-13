@@ -86,9 +86,27 @@ g.node {
     opacity: 0.5;
   }
 
-  &.selected > path {
-    stroke-width: 3;
-    stroke: var(--highlight);
+  &.selected {
+    & > path {
+      stroke-width: 3;
+      stroke: var(--highlight);
+    }
+  }
+
+  &.upstream {
+    & > path {
+      stroke: var(--bg-blue);
+    }
+  }
+
+  &.downstream {
+    & > path {
+      stroke: var(--bg-orange);
+    }
+  }
+
+  &.unselected {
+    opacity: 0.35;
   }
 
   &.warning > path {
@@ -111,14 +129,30 @@ g.edge {
     fill: var(--text);
   }
 
-  &.selected > path {
-    stroke-width: 3;
-    stroke: var(--highlight);
+  &.upstream {
+    & > path {
+      stroke: var(--bg-blue);
+    }
+
+    & > polygon {
+      stroke: var(--bg-blue);
+      fill: var(--bg-blue);
+    }
   }
 
-  &.selected > polygon {
-    stroke: var(--highlight);
-    fill: var(--highlight);
+  &.downstream {
+    & > path {
+      stroke: var(--bg-orange);
+    }
+
+    & > polygon {
+      stroke: var(--bg-orange);
+      fill: var(--bg-orange);
+    }
+  }
+
+  &.unselected {
+    opacity: 0.35;
   }
 }
 

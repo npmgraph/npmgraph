@@ -123,6 +123,7 @@ async function getModuleFromNPM(
   return new Module(pkg);
 }
 
+// Note: getModule() should never throw. Instead, it should return a stub module
 export async function getModule(moduleKey: string): Promise<Module> {
   if (!moduleKey) throw Error('Undefined module name');
 
