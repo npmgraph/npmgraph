@@ -48,7 +48,6 @@ export default class Module {
   // TODO: This should take either ModulePackage or PackageJSON... but need to
   // be clear about the differences between the two!
   constructor(pkg: ModulePackage) {
-    console.log('Module', pkg.name, pkg.version, pkg.npmVersion);
     if (!pkg.name) {
       throw new Error(`Package name is required`);
     }

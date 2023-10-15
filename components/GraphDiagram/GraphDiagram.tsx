@@ -88,7 +88,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (isIncluded) {
           setCollapse(collapse.filter(n => n !== module.name));
         } else {
-          console.log('fdsjafdsj');
           setCollapse([...collapse, module.name]);
         }
       }
