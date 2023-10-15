@@ -110,7 +110,7 @@ class NPMSColorizer implements BulkColorizer {
 }
 
 export const NPMSOverallColorizer = new NPMSColorizer(
-  'NPMS.io Score (Overall)',
+  'NPMS.io Score',
   COLORIZE_OVERALL,
 );
 export const NPMSPopularityColorizer = new NPMSColorizer(

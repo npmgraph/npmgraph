@@ -1,12 +1,8 @@
 import Module from '../../../lib/Module.js';
 import BusFactorColorizer from './BusFactorColorizer.js';
 import ModuleTypeColorizer from './ModuleTypeColorizer.js';
-import {
-  NPMSMaintenanceColorizer,
-  NPMSOverallColorizer,
-  NPMSPopularityColorizer,
-  NPMSQualityColorizer,
-} from './NPMSColorizer.js';
+import { NPMSOverallColorizer } from './NPMSColorizer.js';
+import OutdatedColorizer from './OutdatedColorizer.js';
 
 interface Colorizer {
   title: string;
@@ -25,10 +21,8 @@ export interface BulkColorizer extends Colorizer {
 const colorizers: (SimpleColorizer | BulkColorizer)[] = [
   ModuleTypeColorizer,
   BusFactorColorizer,
+  OutdatedColorizer,
   NPMSOverallColorizer,
-  NPMSQualityColorizer,
-  NPMSPopularityColorizer,
-  NPMSMaintenanceColorizer,
 ];
 
 export function isSimpleColorizer(

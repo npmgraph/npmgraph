@@ -18,14 +18,19 @@ export default function fetchJSON<T>(
     return requestCache.get(cacheKey) as Promise<T>;
   }
 
+  const traceError = new Error();
+
   const finish = init?.silent
     ? () => {}
     : activity?.start(`Fetching ${decodeURIComponent(url)}`);
   const p = window
     .fetch(input, init)
-    .then(res =>
-      res.ok ? res.json() : Promise.reject(new HttpError(res.status)),
-    )
+    .then(res => {
+      if (res.ok) return res.json();
+      const err = new HttpError(res.status);
+      err.stack = traceError.stack;
+      return Promise.reject(err);
+    })
     .finally(() => finish?.());
 
   requestCache.set(cacheKey, p);
