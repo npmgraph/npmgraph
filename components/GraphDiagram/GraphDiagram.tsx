@@ -20,10 +20,11 @@ import {
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
 import $ from '../../lib/dom.js';
+import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { useQuery } from '../../lib/useQuery.js';
-import { useExcludes, useGraph, usePane } from '../App/App.js';
+import { useGraph, usePane } from '../App/App.js';
 import {
   getColorizer,
   isSimpleColorizer,
@@ -53,7 +54,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [, setZenMode] = useHashParam(PARAM_VIEW_MODE);
   const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
-  const [excludes, setExcludes] = useExcludes();
+  const [collapse, setCollapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
 
@@ -83,11 +84,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     // Toggle exclude filter?
     if (el && event.shiftKey) {
       if (module) {
-        const isIncluded = excludes.includes(module.name);
+        const isIncluded = collapse.includes(module.name);
         if (isIncluded) {
-          setExcludes(excludes.filter(n => n !== module.name));
+          setCollapse(collapse.filter(n => n !== module.name));
         } else {
-          setExcludes([...excludes, module.name]);
+          console.log('fdsjafdsj');
+          setCollapse([...collapse, module.name]);
         }
       }
 
@@ -138,7 +140,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   // Filter for which modules should be shown / collapsed in the graph
   function moduleFilter({ name }: { name: string }) {
-    return !excludes?.includes(name);
+    return !collapse?.includes(name);
   }
 
   // NOTE: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
@@ -155,7 +157,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     });
 
     return abort;
-  }, [[...query].sort().join(), [...dependencyTypes].join(), excludes]);
+  }, [[...query].sort().join(), [...dependencyTypes].join(), collapse]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {

@@ -12,7 +12,6 @@ import { Loader } from './Loader.js';
 
 export const [usePane] = sharedStateHook('info', 'pane');
 export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');
-export const [useExcludes] = sharedStateHook([] as string[], 'excludes');
 
 export default function App() {
   const activity = useActivity();

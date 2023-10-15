@@ -8,6 +8,7 @@ export const COLORIZE_COLORS = [
 
 export const PARAM_COLORIZE = 'color';
 export const PARAM_DEPENDENCIES = 'deps';
+export const PARAM_COLLAPSE = 'collapse';
 export const PARAM_PACKAGES = 'packages';
 export const PARAM_QUERY = 'q';
 export const PARAM_SELECTION = 'select';
