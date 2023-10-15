@@ -2,10 +2,10 @@ import { Maintainer } from '@npm/types';
 import React from 'react';
 import simplur from 'simplur';
 import useHashParam from '../../lib/useHashParam.js';
-import { useExcludes } from '../App/App.js';
 
 import { PARAM_DEPENDENCIES } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
+import useCollapse from '../../lib/useCollapse.js';
 import { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
 import { PieGraph } from '../PieGraph.js';
@@ -22,7 +22,7 @@ export default function GraphPane({
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const compareEntryKey = ([a]: [string, unknown], [b]: [string, unknown]) =>
     a < b ? -1 : a > b ? 1 : 0;
-  const [excludes] = useExcludes();
+  const [collapse, setCollapse] = useCollapse();
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
 
   const dependencyTypes = (depTypes.split(/\s*,\s*/) as DependencyKey[]).filter(
@@ -86,7 +86,7 @@ export default function GraphPane({
                 type="name"
                 value={value}
                 count={count}
-                className={excludes.includes(value) ? 'collapsed' : ''}
+                className={collapse.includes(value) ? 'collapsed' : ''}
               />
             ))}
         </Tags>
@@ -98,7 +98,14 @@ export default function GraphPane({
             marginTop: '1em',
           }}
         >
-          (Shift-click modules in graph to expand/collapse)
+          {collapse.length ? (
+            <span>
+              {simplur`${collapse.length} module[|s] collapsed `}
+              <button onClick={() => setCollapse([])}>Expand All</button>
+            </span>
+          ) : (
+            <span>(Shift-click modules in graph to expand/collapse)</span>
+          )}
         </div>
       </Section>
 
