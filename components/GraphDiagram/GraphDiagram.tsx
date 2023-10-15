@@ -302,7 +302,7 @@ export function updateSelection(
   const isSelection = modules.size > 0;
 
   // Set selection classes for node elements
-  const graphEl = (window.graphEl = document.querySelector('#graph'));
+  const graphEl = document.querySelector('#graph');
   for (const el of [...$<SVGElement>('svg .node[data-module]')]) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
