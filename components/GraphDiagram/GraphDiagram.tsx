@@ -302,6 +302,7 @@ export function updateSelection(
   const isSelection = modules.size > 0;
 
   // Set selection classes for node elements
+  const graphEl = (window.graphEl = document.querySelector('#graph'));
   for (const el of [...$<SVGElement>('svg .node[data-module]')]) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
@@ -314,6 +315,23 @@ export function updateSelection(
       'unselected',
       isSelection && !isSelected && !isUpstream && !isDownstream,
     );
+
+    if (isSelection && isSelected) {
+      // el.scrollIntoView({ behavior: 'smooth' });
+      if (graphEl) {
+        // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
+        // Firefox.  And even in Chrome it just scrolls the element to *barely*
+        // be in view, which isn't really what we want.  (We'd like element to
+        // be centered in the view.)  So, instead, we manually compute the
+        // scroll coordinates.
+        const { top, left } = el.getBoundingClientRect();
+        graphEl.scrollTo({
+          left: graphEl.scrollLeft + left - graphEl.clientWidth / 2,
+          top: graphEl.scrollTop + top - graphEl.clientHeight / 2,
+          behavior: 'smooth',
+        });
+      }
+    }
   }
 
   // Set selection classes for edge elements
