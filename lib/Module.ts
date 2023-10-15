@@ -15,7 +15,7 @@ export default class Module {
   package: ModulePackage;
 
   static key(name: string, version?: string) {
-    if (/^https?:\/\//.test(name)) {
+    if (this.isHttpModule(name)) {
       if (version) throw new Error(`URL-based module should not have version`);
       return name;
     }
@@ -41,9 +41,14 @@ export default class Module {
     } as unknown as ModulePackage);
   }
 
+  static isHttpModule(moduleKey: string) {
+    return /^https?:\/\//.test(moduleKey);
+  }
+
   // TODO: This should take either ModulePackage or PackageJSON... but need to
   // be clear about the differences between the two!
   constructor(pkg: ModulePackage) {
+    console.log('Module', pkg.name, pkg.version, pkg.npmVersion);
     if (!pkg.name) {
       throw new Error(`Package name is required`);
     }

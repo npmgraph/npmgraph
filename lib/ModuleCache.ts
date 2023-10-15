@@ -87,6 +87,23 @@ async function getModuleFromURL(urlString: string) {
   return new Module(pkg as ModulePackage);
 }
 
+export async function getNPMManifest(moduleName: string) {
+  // Get the manifest. `Accept:` header here lets us get a compact version of
+  // the manifest object. See
+  // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
+  const manifest = await fetchJSON<Manifest>(
+    `${REGISTRY_BASE_URL}/${moduleName}`,
+    {
+      headers: { Accept: 'application/vnd.npm.install-v1+json' },
+    },
+  ).catch(err => {
+    console.error(`Failed to fetch manifest for ${moduleName}`, err);
+    return undefined;
+  });
+
+  return manifest;
+}
+
 async function getModuleFromNPM(
   name: string,
   version?: string,
@@ -94,18 +111,10 @@ async function getModuleFromNPM(
   // Non-numeric or ambiguous version need to be resolved.  To do that, we
   // fetch the package's manifest and select the best version.
   if (!semverValid(version)) {
-    // Get the manifest. `Accept:` header here lets us get a compact version of
-    // the manifest object. See
-    // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
-    const manifest: Manifest = await fetchJSON<Manifest>(
-      `${REGISTRY_BASE_URL}/${name}`,
-      {
-        headers: { Accept: 'application/vnd.npm.install-v1+json' },
-      },
-    );
+    const manifest = await getNPMManifest(name);
 
     // Match best version from manifest
-    version = selectVersionFromManifest(manifest, version);
+    version = manifest && selectVersionFromManifest(manifest, version);
   }
 
   if (!version) {
@@ -128,7 +137,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   if (!moduleKey) throw Error('Undefined module name');
 
   let [name, version] = Module.unkey(moduleKey);
-  if (/^https?:\/\//.test(moduleKey)) {
+  if (Module.isHttpModule(moduleKey)) {
     name = moduleKey;
     version = '';
     // unchanged
@@ -152,7 +161,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   let promise: Promise<Module>;
 
   // Fetch module based on type
-  if (/^https?:\/\//.test(moduleKey)) {
+  if (Module.isHttpModule(moduleKey)) {
     promise = getModuleFromURL(moduleKey);
   } else {
     promise = getModuleFromNPM(name, version);

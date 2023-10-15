@@ -1,6 +1,7 @@
 import React from 'react';
 import Module from '../../../lib/Module.js';
 import { COLORIZE_COLORS } from '../../../lib/constants.js';
+import { LegendColor } from './LegendColor.js';
 import { SimpleColorizer } from './index.js';
 
 export default {
@@ -10,14 +11,10 @@ export default {
   legend() {
     return (
       <>
-        <span style={{ fontWeight: 'bold', color: COLORIZE_COLORS[0] }}>
-          {'\u2B24'}
-        </span>{' '}
-        = 1 maintainer,
-        <span style={{ color: COLORIZE_COLORS[1] }}>{'\u2B24'}</span> = 2,
-        <span style={{ color: COLORIZE_COLORS[2] }}>{'\u2B24'}</span> = 3,
-        <span style={{ color: COLORIZE_COLORS[3] }}>{'\u2B24'}</span> = 4 or
-        more
+        <LegendColor color="0">1 Maintainer</LegendColor>
+        <LegendColor color="1">2 Maintainers</LegendColor>
+        <LegendColor color="2">3 Maintainers</LegendColor>
+        <LegendColor color="3">4+ Maintainers</LegendColor>
       </>
     );
   },
