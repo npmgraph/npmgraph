@@ -8,7 +8,7 @@ export function Splitter({
   isOpen: boolean;
 }) {
   return (
-    <div id="splitter" className="bright-hover" onClick={onClick}>
+    <div id="splitter" className="bright-hover tab" onClick={onClick}>
       {isOpen ? '✗' : '\u{25c0}'}
     </div>
   );
