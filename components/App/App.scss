@@ -18,21 +18,20 @@
 }
 
 #splitter {
-  display: flex;
-  flex-shrink: 0;
-  flex-basis: var(--splitter-size);
-  align-items: center;
+  position: absolute;
+  top: 0;
+  right: 0;
   z-index: 1;
   cursor: pointer;
-  box-sizing: border-box;
-  margin-left: calc(-1 * var(--splitter-size));
-  border-top-left-radius: var(--rad_lg);
-  border-bottom-left-radius: var(--rad_lg);
   background: var(--tabs-bg) var(--bg-gradient);
-  padding-left: 10px;
   height: 24pt;
   color: var(--tabs-text);
   user-select: none;
+  text-align: center;
+  #inspector:not(.open) & {
+    border-top-left-radius: var(--rad_lg);
+    border-bottom-left-radius: var(--rad_lg);
+  }
 }
 
 @media print {

@@ -11,12 +11,18 @@ import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.js';
 import { Tab } from './Tab.js';
+import { Splitter } from './Splitter.js';
+import { PARAM_VIEW_MODE, VIEW_MODE_CLOSED } from '../lib/constants.js';
+import useHashParam from '../lib/useHashParam.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = usePane();
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGraph();
   const [, newCommitsCount] = useCommits();
+  const [viewMode, setViewMode] = useHashParam(PARAM_VIEW_MODE);
+
+  const isOpen = viewMode != VIEW_MODE_CLOSED;
 
   const selectedModules = queryModuleCache(queryType, queryValue);
   const firstModule = selectedModules.values().next().value;
@@ -38,7 +44,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   }
 
   return (
-    <div id="inspector" {...props}>
+    <div id="inspector" className={viewMode ? '' : 'open'} {...props}>
       <div id="tabs">
         <Tab active={pane == 'info'} onClick={() => setPane('info')}>
           Start
@@ -56,6 +62,10 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
         >
           About
         </Tab>
+        <Splitter
+          isOpen={isOpen}
+          onClick={() => setViewMode(isOpen ? VIEW_MODE_CLOSED : '')}
+        />
       </div>
 
       {paneComponent}
