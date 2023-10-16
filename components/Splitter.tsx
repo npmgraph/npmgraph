@@ -9,7 +9,7 @@ export function Splitter({
 }) {
   return (
     <div id="splitter" className="bright-hover" onClick={onClick}>
-      {isOpen ? '\u{25b6}' : '\u{25c0}'}
+      {isOpen ? '✗' : '\u{25c0}'}
     </div>
   );
 }
