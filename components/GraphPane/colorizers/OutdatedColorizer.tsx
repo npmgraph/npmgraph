@@ -1,7 +1,7 @@
 import React from 'react';
 import { diff } from 'semver';
 import Module from '../../../lib/Module.js';
-import { getNPMManifest } from '../../../lib/ModuleCache.js';
+import { fetchNPMPackument } from '../../../lib/ModuleCache.js';
 import { COLORIZE_COLORS } from '../../../lib/constants.js';
 import { LegendColor } from './LegendColor.js';
 import { SimpleColorizer } from './index.js';
@@ -22,7 +22,7 @@ export default {
   },
 
   async colorForModule(module: Module) {
-    const manifest = await getNPMManifest(module.name);
+    const manifest = await fetchNPMPackument(module.name);
 
     const latestVersion = manifest?.['dist-tags']?.latest ?? '';
 
@@ -33,7 +33,7 @@ export default {
       console.error(err);
       return '';
     }
-    console.log(module.key, module.version, latestVersion, outdated);
+
     switch (outdated) {
       case 'major':
         return COLORIZE_COLORS[0];

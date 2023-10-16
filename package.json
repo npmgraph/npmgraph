@@ -52,7 +52,7 @@
     "packageExports-why": "added this because new graphviz uses exports in package.json"
   },
   "devDependencies": {
-    "@npm/types": "broofa/npm_types",
+    "@npm/types": "github:broofa/npm_types",
     "@parcel/runtime-react-refresh": "^2.9.3",
     "@parcel/transformer-inline-string": "2.9.3",
     "@parcel/transformer-sass": "^2.9.3",

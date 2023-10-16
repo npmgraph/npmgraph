@@ -14,6 +14,7 @@ const bugsnag = Bugsnag.default.start({
   releaseStage: /npmgraph/.test(window.location.hostname)
     ? 'production'
     : 'development',
+  enabledReleaseStages: ['production'],
 });
 
 function info(err: Error) {

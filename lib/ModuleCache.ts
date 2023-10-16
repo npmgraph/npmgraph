@@ -1,7 +1,7 @@
-import { Manifest, PackageJson } from '@npm/types';
+import { PackageJson, Packument, PackumentVersion } from '@npm/types';
 import semverGt from 'semver/functions/gt.js';
 import semverSatisfies from 'semver/functions/satisfies.js';
-import semverValid from 'semver/functions/valid.js';
+import HttpError from './HttpError.js';
 import Module, { ModulePackage } from './Module.js';
 import PromiseWithResolvers, {
   PromiseWithResolversType,
@@ -10,6 +10,12 @@ import URLPlus from './URLPlus.js';
 import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
 import { flash } from './flash.js';
+import {
+  getModuleKey,
+  isHttpModule,
+  parseModuleKey,
+  resolveModule,
+} from './module_util.js';
 
 const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
 
@@ -21,56 +27,46 @@ type ModuleCacheEntry = PromiseWithResolversType<Module> & {
   module?: Module; // Set once module is loaded
 };
 
-function selectVersionFromManifest(
-  manifest: Manifest,
+function selectVersion(
+  packument: Packument,
   targetVersion: string = 'latest',
-): string | undefined {
+): PackumentVersion | undefined {
+  let selectedVersion: string | undefined;
+
   // If version matches a dist-tag (e.g. "latest", "best", etc), use that
-  const distVersion = manifest['dist-tags']?.[targetVersion];
+  const distVersion = packument['dist-tags']?.[targetVersion];
   if (distVersion) {
-    return distVersion;
-  }
-
-  // Find highest matching version
-  let bestVersion: string | undefined;
-  for (const version of Object.keys(manifest.versions)) {
-    if (!semverSatisfies(version, targetVersion)) continue;
-    if (!bestVersion || semverGt(version, bestVersion ?? '')) {
-      bestVersion = version;
-    }
-  }
-
-  return bestVersion;
-}
-
-function validateModuleKey(name: string, version?: string) {
-  // "npm:<package name>@<version>"-style names are used to create aliases.  We
-  // detect that here and massage the inputs accordingly
-  //
-  // See `@isaacs/cliui` package for an example.
-  if (version?.startsWith('npm:')) {
-    name = version.slice(4);
-    version = undefined;
-    // Important: Fall through so name gets parsed, below...
-  }
-
-  if (!version) {
-    // Parse versioned-names (e.g. "less@1.2.3")
-    [name, version] = Module.unkey(name);
+    selectedVersion = distVersion;
   } else {
-    // Remove "git...#" repo URIs from version strings
-    const gitless = version?.replace(/git.*#(.*)/, '');
-    if (version && gitless !== version) {
-      // TODO: Update why this check is needed once we have real-world examples
-      console.warn('Found git-based version string');
-      version = gitless;
+    // Find highest matching version
+    for (const version of Object.keys(packument.versions)) {
+      if (!semverSatisfies(version, targetVersion)) continue;
+      if (!selectedVersion || semverGt(version, selectedVersion)) {
+        selectedVersion = version;
+      }
     }
   }
 
-  return [name, version];
+  return packument.versions[selectedVersion ?? ''];
 }
 
-async function getModuleFromURL(urlString: string) {
+async function fetchModuleFromNPM(
+  moduleName: string,
+  version?: string,
+): Promise<Module> {
+  const packument = await fetchNPMPackument(moduleName);
+
+  // Match best version from manifest
+  const packumentVersion = packument && selectVersion(packument, version);
+
+  if (!packumentVersion) {
+    throw new Error(`No version ${packumentVersion} found for ${moduleName}`);
+  }
+
+  return new Module(packumentVersion);
+}
+
+async function fetchModuleFromURL(urlString: string) {
   const url = new URL(urlString);
 
   // TODO: We should probably be fetching github content via their REST API, but
@@ -87,65 +83,44 @@ async function getModuleFromURL(urlString: string) {
   return new Module(pkg as ModulePackage);
 }
 
-export async function getNPMManifest(moduleName: string) {
-  // Get the manifest. `Accept:` header here lets us get a compact version of
-  // the manifest object. See
-  // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
-  const manifest = await fetchJSON<Manifest>(
+export async function fetchNPMPackument(moduleName: string) {
+  const packument = await fetchJSON<Packument>(
     `${REGISTRY_BASE_URL}/${moduleName}`,
     {
-      headers: { Accept: 'application/vnd.npm.install-v1+json' },
+      // Per
+      // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
+      // we should arguably be using the 'Accept:
+      // application/vnd.npm.install-v1+json' header to reduce the request size.
+      // But that doesn't actually work.
+      //
+      // REF: https://github.com/npm/feedback/discussions/1014
+      //
+      // So instead we're sending 'application/json'.  The responses are smaller
+      // and we get full "version" objects, so we don't have to send follow-up
+      // requests.
+      headers: { Accept: 'application/json' },
     },
-  ).catch(err => {
-    console.error(`Failed to fetch manifest for ${moduleName}`, err);
-    return undefined;
-  });
-
-  return manifest;
-}
-
-async function getModuleFromNPM(
-  name: string,
-  version?: string,
-): Promise<Module> {
-  // Non-numeric or ambiguous version need to be resolved.  To do that, we
-  // fetch the package's manifest and select the best version.
-  if (!semverValid(version)) {
-    const manifest = await getNPMManifest(name);
-
-    // Match best version from manifest
-    version = manifest && selectVersionFromManifest(manifest, version);
-  }
-
-  if (!version) {
-    throw new Error(`Failed to find version`);
-  } else if (!semverValid(version)) {
-    // This shouldn't happen, but if it does we potentially have an infinite loop ...
-    throw new Error(`Non-specific version`);
-  }
-
-  // Create module
-  const pkg: ModulePackage = await fetchJSON<ModulePackage>(
-    `${REGISTRY_BASE_URL}/${name}/${version}`,
   );
 
-  return new Module(pkg);
+  return packument;
 }
 
-// Note: getModule() should never throw. Instead, it should return a stub module
+// Note: This method should not throw!  Errors should be returned as part of a
+// stub module
 export async function getModule(moduleKey: string): Promise<Module> {
   if (!moduleKey) throw Error('Undefined module name');
 
-  let [name, version] = Module.unkey(moduleKey);
-  if (Module.isHttpModule(moduleKey)) {
+  let [name, version] = parseModuleKey(moduleKey);
+
+  if (isHttpModule(moduleKey)) {
     name = moduleKey;
     version = '';
     // unchanged
   } else {
-    [name, version] = validateModuleKey(name, version);
+    [name, version] = resolveModule(name, version);
   }
 
-  moduleKey = Module.key(name, version);
+  moduleKey = getModuleKey(name, version);
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(moduleKey);
   if (cachedEntry) {
@@ -161,13 +136,17 @@ export async function getModule(moduleKey: string): Promise<Module> {
   let promise: Promise<Module>;
 
   // Fetch module based on type
-  if (Module.isHttpModule(moduleKey)) {
-    promise = getModuleFromURL(moduleKey);
+  if (isHttpModule(moduleKey)) {
+    promise = fetchModuleFromURL(moduleKey);
   } else {
-    promise = getModuleFromNPM(name, version);
+    promise = fetchModuleFromNPM(name, version);
   }
   promise
     .catch(err => {
+      if (err instanceof HttpError) {
+        err.message = `Fetch failed for ${moduleKey} (code = ${err.code})`;
+      }
+
       return Module.stub(moduleKey, err);
     })
     .then(module => {
@@ -175,6 +154,8 @@ export async function getModule(moduleKey: string): Promise<Module> {
 
       // Add cache entry for module's computed key
       moduleCache.set(module.key, cacheEntry);
+
+      // Resolve promise
       cacheEntry.resolve(module);
     });
 
@@ -243,7 +224,7 @@ const PACKAGE_WHITELIST: (keyof PackageJson)[] = [
   'version',
 ];
 
-export function sanitizePackageKeys(pkg: PackageJson) {
+function sanitizePackageKeys(pkg: PackageJson) {
   const sanitized: PackageJson = {} as PackageJson;
   for (const key of PACKAGE_WHITELIST) {
     if (key in pkg) (sanitized[key] as unknown) = pkg[key];

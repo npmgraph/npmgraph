@@ -1,4 +1,5 @@
 import { PackumentVersion } from '@npm/types';
+import { getModuleKey, parseModuleKey } from './module_util.js';
 
 export interface ModulePackage extends PackumentVersion {
   _stub?: boolean;
@@ -14,35 +15,14 @@ type OldLicense = {
 export default class Module {
   package: ModulePackage;
 
-  static key(name: string, version?: string) {
-    if (this.isHttpModule(name)) {
-      if (version) throw new Error(`URL-based module should not have version`);
-      return name;
-    }
-
-    return version ? `${name}@${version}` : name;
-  }
-
-  static unkey(moduleKey: string): string[] {
-    const parts = moduleKey.match(/(.+)@(.*)/);
-    if (!parts) return [moduleKey];
-
-    parts.shift(); // remove full match
-    return parts; // [name, version]
-  }
-
   static stub(moduleKey: string, error: Error) {
-    const [name, version] = Module.unkey(moduleKey) ?? {};
+    const [name, version] = parseModuleKey(moduleKey) ?? {};
     return new Module({
       name,
       version,
       _stub: true,
       _stubError: error,
     } as unknown as ModulePackage);
-  }
-
-  static isHttpModule(moduleKey: string) {
-    return /^https?:\/\//.test(moduleKey);
   }
 
   // TODO: This should take either ModulePackage or PackageJSON... but need to
@@ -62,7 +42,7 @@ export default class Module {
   }
 
   get key() {
-    return Module.key(this.name, this.version);
+    return getModuleKey(this.name, this.version);
   }
 
   get name() {
