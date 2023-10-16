@@ -1,6 +1,7 @@
 import simplur from 'simplur';
 import Module, { ModulePackage } from '../../lib/Module.js';
 import { getModule } from '../../lib/ModuleCache.js';
+import { getModuleKey } from '../../lib/module_util.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -121,7 +122,7 @@ export async function getGraphForQuery(
     // Walk downstream dependencies
     await Promise.allSettled(
       [...downstreamEntries].map(async ({ name, version, type }) => {
-        const downstreamModule = await getModule(Module.key(name, version));
+        const downstreamModule = await getModule(getModuleKey(name, version));
 
         // Don't walk peerDependencies
         const moduleInfo = await _visit(

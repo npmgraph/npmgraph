@@ -23,6 +23,7 @@ export default function fetchJSON<T>(
   const finish = init?.silent
     ? () => {}
     : activity?.start(`Fetching ${decodeURIComponent(url)}`);
+
   const p = window
     .fetch(input, init)
     .then(res => {

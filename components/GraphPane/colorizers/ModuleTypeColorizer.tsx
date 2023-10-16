@@ -1,6 +1,6 @@
+import { PackageJson } from '@npm/types';
 import React from 'react';
 import Module from '../../../lib/Module.js';
-import fetchJSON from '../../../lib/fetchJSON.js';
 import { LegendColor } from './LegendColor.js';
 import { SimpleColorizer } from './index.js';
 
@@ -20,12 +20,8 @@ export default {
     );
   },
 
-  colorForModule(module: Module) {
-    const url = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
-    return fetchJSON<{ type: string }>(url)
-      .then(pkg =>
-        pkg.type === 'module' ? COLORIZE_MODULE_ESM : COLORIZE_MODULE_CJS,
-      )
-      .catch(() => '');
+  async colorForModule(module: Module) {
+    const pkg = module.package as PackageJson;
+    return pkg.type === 'module' ? COLORIZE_MODULE_ESM : COLORIZE_MODULE_CJS;
   },
 } as SimpleColorizer;
