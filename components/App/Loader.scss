@@ -3,11 +3,9 @@
   right: 0;
   z-index: 99;
   box-sizing: border-box;
-  border-top-left-radius: var(--rad_lg);
-  border-bottom-left-radius: var(--rad_lg);
   background: var(--tabs-bg) var(--bg-gradient);
   padding-left: 0.5em;
-  width: calc(var(--inspector-size) + var(--splitter-size));
+  width: var(--inspector-size);
   overflow: hidden;
   color: var(--tabs-text);
   font-weight: 600;
