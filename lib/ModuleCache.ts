@@ -94,7 +94,12 @@ export async function getNPMManifest(moduleName: string) {
   const manifest = await fetchJSON<Manifest>(
     `${REGISTRY_BASE_URL}/${moduleName}`,
     {
-      headers: { Accept: 'application/vnd.npm.install-v1+json' },
+      // In theory we should be sending 'application/vnd.npm.install-v1+json'
+      // here to reduce response size, but that doesn't actually work.   (It
+      // also removes some useful fields.)
+      //
+      // REF: https://github.com/npm/feedback/discussions/1014
+      headers: { Accept: 'application/json' },
     },
   ).catch(err => {
     console.error(`Failed to fetch manifest for ${moduleName}`, err);

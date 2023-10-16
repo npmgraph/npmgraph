@@ -33,7 +33,7 @@ export default {
       console.error(err);
       return '';
     }
-    console.log(module.key, module.version, latestVersion, outdated);
+
     switch (outdated) {
       case 'major':
         return COLORIZE_COLORS[0];
