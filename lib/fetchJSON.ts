@@ -9,7 +9,7 @@ export function setActivityForRequestCache(act: LoadActivity) {
 }
 export default function fetchJSON<T>(
   input: RequestInfo | URL,
-  init?: RequestInit & { silent?: boolean },
+  init?: RequestInit & { silent?: boolean; timeout?: number },
 ): Promise<T> {
   const url = typeof input === 'string' ? input : input.toString();
   const cacheKey = `${url} ${JSON.stringify(init)}`;
@@ -18,9 +18,17 @@ export default function fetchJSON<T>(
     return requestCache.get(cacheKey) as Promise<T>;
   }
 
+  init ??= {};
+
+  if (init.timeout) {
+    if (init.signal) throw new Error('Cannot use timeout with signal');
+    // Abort request after `timeout`, while also respecting user-supplied `signal`
+    init.signal = AbortSignal.timeout(init.timeout);
+  }
+
   const traceError = new Error();
 
-  const finish = init?.silent
+  const finish = init.silent
     ? () => {}
     : activity?.start(`Fetching ${decodeURIComponent(url)}`);
 
