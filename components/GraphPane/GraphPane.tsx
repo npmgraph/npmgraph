@@ -13,6 +13,7 @@ import { Section } from '../Section.js';
 import { Tag } from '../Tag.js';
 import { Tags } from '../Tags.js';
 import { Toggle } from '../Toggle.js';
+import { Analysis } from './Analysis.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
 
@@ -75,6 +76,10 @@ export default function GraphPane({
       </Toggle>
 
       <ColorizeInput />
+
+      <Section title={`Analysis`}>
+        <Analysis />
+      </Section>
 
       <Section title={simplur`${graph.modules.size} Module[|s]`}>
         <Tags>
