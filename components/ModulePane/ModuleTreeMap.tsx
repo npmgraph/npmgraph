@@ -19,14 +19,16 @@ export function ModuleTreeMap({
     const { clientWidth: w, clientHeight: h } = $('#treemap')[0],
       m = 1;
 
-    const { size } = data;
+    // Note: dependencySizes is *sometimes* undefined.  E.g.
+    // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
+    const { size, dependencySizes = [] } = data;
 
     const sum = data.dependencySizes?.reduce(
       (sum, n) => sum + n.approximateSize,
       0,
     );
 
-    const nodes = [...data.dependencySizes];
+    const nodes = [...dependencySizes];
 
     // Placeholder root node so the other nodes have a common parent
     nodes.push({ name: '__root', approximateSize: 0 });
