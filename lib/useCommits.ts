@@ -12,7 +12,7 @@ export async function fetchCommits() {
   try {
     let commits = await fetchJSON<GithubCommit[]>(
       `https://api.github.com/repos/npmgraph/npmgraph/commits?since=${since.toISOString()}`,
-      { silent: true },
+      { silent: true, timeout: 5000 },
     );
 
     // Walk commits and tag commits we want to expose with the

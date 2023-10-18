@@ -37,12 +37,14 @@ export default function ModulePane({
 
     fetchJSON<BundlePhobiaData>(
       `https://bundlephobia.com/api/size?package=${pn}`,
+      { silent: true, timeout: 5000 },
     )
       .then(data => setBundleInfo(data))
       .catch(err => setBundleInfo(err));
 
     fetchJSON<NPMSIOData>(
       `https://api.npms.io/v2/package/${encodeURIComponent(pkg.name)}`,
+      { silent: true, timeout: 5000 },
     )
       .then(data => setNpmsData(data))
       .catch(err => setNpmsData(err));
@@ -128,7 +130,7 @@ export default function ModulePane({
         {!bundleInfo ? (
           'Loading ...'
         ) : bundleInfo instanceof Error ? (
-          'Unavailable'
+          'Bundle size not currently available'
         ) : (
           <>
             <ModuleBundleStats bundleInfo={bundleInfo} />
@@ -143,9 +145,9 @@ export default function ModulePane({
 
       <Section title="npms.io Score">
         {!npmsData ? (
-          'Loading'
+          'Loading ...'
         ) : npmsData instanceof Error ? (
-          'Unavailable'
+          'Score not currently available'
         ) : (
           <ModuleNpmsIOScores scores={npmsData.score} />
         )}

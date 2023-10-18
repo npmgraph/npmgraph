@@ -57,6 +57,8 @@ class NPMSColorizer implements BulkColorizer {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(namesInRequest),
+            silent: true,
+            timeout: 5000,
           },
         ),
       );
