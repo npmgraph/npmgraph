@@ -94,7 +94,7 @@ export default function ModulePane({
           <QueryLink query={module.key} />
         </h2>
 
-        {colorize === OutdatedColorizer.name ? (
+        {!colorize || colorize === OutdatedColorizer.name ? (
           <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
         ) : null}
       </div>
