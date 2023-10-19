@@ -1,7 +1,9 @@
 import React, { HTMLProps } from 'react';
 import { queryModuleCache } from '../lib/ModuleCache.js';
+import { PARAM_VIEW_MODE, VIEW_MODE_CLOSED } from '../lib/constants.js';
 import useCommits from '../lib/useCommits.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
+import useHashParam from '../lib/useHashParam.js';
 import { version as VERSION } from '../package.json';
 import AboutPane from './AboutPane/AboutPane.js';
 import { useGraph, usePane } from './App/App.js';
@@ -10,10 +12,8 @@ import GraphPane from './GraphPane/GraphPane.js';
 import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.js';
-import { Tab } from './Tab.js';
 import { Splitter } from './Splitter.js';
-import { PARAM_VIEW_MODE, VIEW_MODE_CLOSED } from '../lib/constants.js';
-import useHashParam from '../lib/useHashParam.js';
+import { Tab } from './Tab.js';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = usePane();
@@ -25,12 +25,13 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const isOpen = viewMode != VIEW_MODE_CLOSED;
 
   const selectedModules = queryModuleCache(queryType, queryValue);
-  const firstModule = selectedModules.values().next().value;
 
   let paneComponent;
   switch (pane) {
     case 'module':
-      paneComponent = <ModulePane id="pane-module" module={firstModule} />;
+      paneComponent = (
+        <ModulePane id="pane-module" selectedModules={selectedModules} />
+      );
       break;
     case 'graph':
       paneComponent = <GraphPane id="pane-graph" graph={graph} />;
