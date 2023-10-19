@@ -63,7 +63,7 @@ async function fetchModuleFromNPM(
     throw new Error(`No version ${packumentVersion} found for ${moduleName}`);
   }
 
-  return new Module(packumentVersion);
+  return new Module(packumentVersion, packument);
 }
 
 async function fetchModuleFromURL(urlString: string) {

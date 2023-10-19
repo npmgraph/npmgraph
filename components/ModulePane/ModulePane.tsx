@@ -1,7 +1,10 @@
 import React from 'react';
 import simplur from 'simplur';
 import Module from '../../lib/Module.js';
+import { PARAM_COLORIZE } from '../../lib/constants.js';
+import useHashParam from '../../lib/useHashParam.js';
 import { ExternalLink } from '../ExternalLink.js';
+import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.js';
 import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
@@ -11,6 +14,7 @@ import { Tags } from '../Tags.js';
 import ModuleBundleSize from './ModuleBundleSize.js';
 import ModuleNpmsIOScores from './ModuleNpmsIOScores.js';
 import './ModulePane.scss';
+import { ModuleVersionInfo } from './ModuleVersionInfo.js';
 
 export default function ModulePane({
   selectedModules,
@@ -18,6 +22,7 @@ export default function ModulePane({
 }: {
   selectedModules?: Map<string, Module>;
 } & React.HTMLAttributes<HTMLDivElement>) {
+  const [colorize] = useHashParam(PARAM_COLORIZE);
   const nSelected = selectedModules?.size ?? 0;
   if (nSelected == 0) {
     return (
@@ -70,9 +75,29 @@ export default function ModulePane({
 
   return (
     <Pane {...props}>
-      <h2>
-        <QueryLink query={module.key} />
-      </h2>
+      <div
+        style={{
+          display: 'flex',
+          padding: '0.5rem 0',
+          gap: '1rem',
+          flexWrap: 'wrap',
+          alignItems: 'baseline',
+        }}
+      >
+        <h2
+          style={{
+            flexGrow: 0,
+            whiteSpace: 'nowrap',
+            margin: 0,
+          }}
+        >
+          <QueryLink query={module.key} />
+        </h2>
+
+        {colorize === OutdatedColorizer.name ? (
+          <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
+        ) : null}
+      </div>
 
       {pkg.deprecated ? (
         <div
