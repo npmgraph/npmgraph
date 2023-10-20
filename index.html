@@ -41,21 +41,24 @@
     <title>npmgraph - NPM Dependency Diagrams</title>
   </head>
 
-  <body>
-    <div id="app">Loading...</div>
-  </body>
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script src="https://www.googletagmanager.com/gtag/js?id=UA-6434483-2"></script>
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-0FPWJCJM5R"
+  ></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() {
       dataLayer.push(arguments);
     }
-    window.GA_TRACKING_ID = 'UA-6434483-2';
     gtag('js', new Date());
-    gtag('config', window.GA_TRACKING_ID);
+
+    gtag('config', 'G-0FPWJCJM5R');
   </script>
+
+  <body>
+    <div id="app">Loading...</div>
+  </body>
 
   <script type="module" src="./lib/index.tsx"></script>
 </html>
