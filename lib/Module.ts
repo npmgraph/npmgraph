@@ -1,4 +1,4 @@
-import { PackumentVersion } from '@npm/types';
+import { Packument, PackumentVersion } from '@npm/types';
 import { getModuleKey, parseModuleKey } from './module_util.js';
 
 export interface ModulePackage extends PackumentVersion {
@@ -14,6 +14,7 @@ type OldLicense = {
 
 export default class Module {
   package: ModulePackage;
+  packument?: Packument;
 
   static stub(moduleKey: string, error: Error) {
     const [name, version] = parseModuleKey(moduleKey) ?? {};
@@ -27,10 +28,12 @@ export default class Module {
 
   // TODO: This should take either ModulePackage or PackageJSON... but need to
   // be clear about the differences between the two!
-  constructor(pkg: ModulePackage) {
+  constructor(pkg: ModulePackage, packument?: Packument) {
     if (!pkg.name) {
       throw new Error(`Package name is required`);
     }
+
+    this.packument = packument;
 
     if (!pkg.maintainers) {
       pkg.maintainers = [];
