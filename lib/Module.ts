@@ -1,45 +1,32 @@
 import { Packument, PackumentVersion } from '@npm/types';
 import { getModuleKey, parseModuleKey } from './module_util.js';
 
-export interface ModulePackage extends PackumentVersion {
-  _stub?: boolean;
-  _local?: boolean;
-  _stubError?: Error;
-}
-
 type OldLicense = {
   type: string;
   url: string;
 };
 
 export default class Module {
-  package: ModulePackage;
+  package: PackumentVersion;
   packument?: Packument;
+  isLocal = false;
+  stubError?: Error;
 
   static stub(moduleKey: string, error: Error) {
     const [name, version] = parseModuleKey(moduleKey) ?? {};
-    return new Module({
-      name,
-      version,
-      _stub: true,
-      _stubError: error,
-    } as unknown as ModulePackage);
+    const module = new Module({ name, version } as PackumentVersion);
+    module.stubError = error;
+    return module;
   }
 
-  // TODO: This should take either ModulePackage or PackageJSON... but need to
+  // TODO: This should take either PackumentVersion or PackageJSON... but need to
   // be clear about the differences between the two!
-  constructor(pkg: ModulePackage, packument?: Packument) {
+  constructor(pkg: PackumentVersion, packument?: Packument) {
     if (!pkg.name) {
       throw new Error(`Package name is required`);
     }
 
     this.packument = packument;
-
-    if (!pkg.maintainers) {
-      pkg.maintainers = [];
-    } else if (!Array.isArray(pkg.maintainers)) {
-      pkg.maintainers = [pkg.maintainers];
-    }
 
     this.package = pkg;
   }
@@ -52,10 +39,21 @@ export default class Module {
     return this.package.name;
   }
 
+  get isStub() {
+    return Boolean(this.stubError);
+  }
+
   get maintainers() {
-    return this.package.maintainers.map(m =>
-      typeof m === 'string' ? { name: m } : m,
-    );
+    let maintainers = this.package.maintainers ?? [];
+
+    if (!Array.isArray(maintainers)) {
+      console.warn(
+        `Unexpected maintainers type for ${this.key}: ${maintainers}`,
+      );
+      maintainers = [maintainers];
+    }
+
+    return maintainers.map(m => (typeof m === 'string' ? { name: m } : m));
   }
 
   get version() {
@@ -63,21 +61,8 @@ export default class Module {
     // I've forgotten under what circumstances package.version.version might
     // actually be a thing... :-/
     return (
-      version && ((version as unknown as ModulePackage).version || version)
+      version && ((version as unknown as PackumentVersion).version || version)
     );
-  }
-
-  get npmLink() {
-    return `https://www.npmjs.com/package/${this.name}/v/${this.version}`;
-  }
-
-  get repoLink() {
-    const gh = this.githubPath;
-    return gh && `https://www.github.com/${gh}`;
-  }
-
-  get packageJsonLink() {
-    return `https://cdn.jsdelivr.net/npm/${this.key}/package.json`;
   }
 
   getShareableLink() {

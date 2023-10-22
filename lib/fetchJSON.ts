@@ -40,6 +40,10 @@ export default function fetchJSON<T>(
       err.stack = traceError.stack;
       return Promise.reject(err);
     })
+    .catch(err => {
+      err.message = `Failed to get ${url}`;
+      return Promise.reject(err);
+    })
     .finally(() => finish?.());
 
   requestCache.set(cacheKey, p);

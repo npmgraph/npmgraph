@@ -2,7 +2,7 @@ import { PackageJson, Packument, PackumentVersion } from '@npm/types';
 import semverGt from 'semver/functions/gt.js';
 import semverSatisfies from 'semver/functions/satisfies.js';
 import HttpError from './HttpError.js';
-import Module, { ModulePackage } from './Module.js';
+import Module from './Module.js';
 import PromiseWithResolvers, {
   PromiseWithResolversType,
 } from './PromiseWithResolvers.js';
@@ -80,7 +80,7 @@ async function fetchModuleFromURL(urlString: string) {
 
   if (!pkg.name) pkg.name = url.toString();
 
-  return new Module(pkg as ModulePackage);
+  return new Module(pkg as PackumentVersion);
 }
 
 export async function fetchNPMPackument(moduleName: string) {
@@ -224,20 +224,20 @@ const PACKAGE_WHITELIST: (keyof PackageJson)[] = [
   'version',
 ];
 
-function sanitizePackageKeys(pkg: PackageJson) {
+export function sanitizePackageKeys(pkg: PackageJson) {
   const sanitized: PackageJson = {} as PackageJson;
+
   for (const key of PACKAGE_WHITELIST) {
     if (key in pkg) (sanitized[key] as unknown) = pkg[key];
   }
+
   return sanitized;
 }
 
-export function cacheLocalPackage(pkg: ModulePackage) {
-  pkg = sanitizePackageKeys(pkg) as ModulePackage;
-
-  pkg._local = true;
-
+export function cacheLocalPackage(pkg: PackumentVersion) {
   const module = new Module(pkg);
+
+  module.isLocal = true;
 
   // Put module in cache and local cache
   cacheModule(module);
@@ -267,6 +267,6 @@ export function syncPackagesHash() {
   }
 
   for (const pkg of packages) {
-    cacheLocalPackage(pkg as ModulePackage);
+    cacheLocalPackage(pkg as PackumentVersion);
   }
 }

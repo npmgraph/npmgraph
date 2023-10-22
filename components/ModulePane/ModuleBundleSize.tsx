@@ -15,10 +15,9 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
   const pn = encodeURIComponent(`${pkg.name}@${pkg.version}`);
   const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
   const bpApiUrl = `https://bundlephobia.com/api/size?package=${pn}`;
-  const isLocalModule = Boolean(pkg._local);
 
   useEffect(() => {
-    if (isLocalModule) return;
+    if (module.isLocal) return;
 
     setBundleInfo(undefined);
 

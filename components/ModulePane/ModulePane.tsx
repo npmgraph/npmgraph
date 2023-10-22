@@ -42,9 +42,8 @@ export default function ModulePane({
   const module = selectedModules?.values().next().value as Module;
 
   const pkg = module.package;
-  const isLocalModule = Boolean(pkg?._local);
 
-  if (isLocalModule) {
+  if (module.isLocal) {
     return (
       <Pane>
         <h2>{module.key}</h2>
@@ -56,22 +55,35 @@ export default function ModulePane({
     );
   }
 
-  if (pkg._stub) {
+  if (module.isStub) {
     return (
       <Pane>
         <h2>{module.name}</h2>
-        <p>
-          Information and dependencies for this module cannot be displayed due
-          to the following error:
-        </p>
-        <p style={{ color: 'red', fontWeight: 'bold' }}>
-          {pkg._stubError?.message}
-        </p>
+        <p>Sorry, but info for this module isn't available. 😢</p>
+        <p className="stub-error">{module.stubError?.message}</p>
       </Pane>
     );
   }
 
   const maintainers = module.maintainers;
+
+  const projectUrl = getProjectUrlForModule(module);
+  let projectLink = null;
+  if (projectUrl) {
+    if (/github.com/i.test(projectUrl)) {
+      projectLink = (
+        <ExternalLink href={projectUrl} icon={GithubIcon}>
+          Github
+        </ExternalLink>
+      );
+    } else {
+      projectLink = <ExternalLink href={projectUrl}>Project Page</ExternalLink>;
+    }
+  }
+
+  const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
+
+  const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
 
   return (
     <Pane {...props}>
@@ -111,26 +123,11 @@ export default function ModulePane({
 
       <p>{pkg?.description}</p>
 
-      {/* For NPM packages */}
-      {!module.package._local ? (
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <ExternalLink href={module.packageJsonLink}>
-            package.json
-          </ExternalLink>
-          <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
-            npmjs.org
-          </ExternalLink>
-          {module.repoLink ? (
-            <ExternalLink
-              href={module.repoLink}
-              style={{ marginRight: '1em' }}
-              icon={GithubIcon}
-            >
-              Project Page
-            </ExternalLink>
-          ) : null}
-        </div>
-      ) : null}
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <ExternalLink href={npmUrl}>npmjs.org</ExternalLink>
+        {projectLink}
+        <ExternalLink href={packageUrl}>package.json</ExternalLink>
+      </div>
 
       <Section title="Bundle Size">
         <ModuleBundleSize module={module} />
@@ -156,4 +153,32 @@ export default function ModulePane({
       </Section>
     </Pane>
   );
+}
+
+function getProjectUrlForModule(module: Module) {
+  const { homepage, bugs, repository } = module.package;
+
+  if (homepage) return homepage;
+
+  // Look to repository and bugs fields for a github URL
+  let repo;
+  if (repository) {
+    if (typeof repository === 'string') {
+      repo = repository;
+    } else {
+      repo = repository.url;
+    }
+  } else if (homepage) {
+    repo = homepage;
+  } else if (bugs) {
+    repo = bugs.url;
+  }
+
+  // Extract github project path from URL
+  const match = repo?.match(/github.com\/([^/]+\/[^/?#]+)?/);
+  if (!match) return undefined;
+
+  repo = match[1].replace(/\.git$/, '');
+
+  return `https://www.github.com/${repo}`;
 }

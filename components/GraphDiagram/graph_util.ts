@@ -1,5 +1,5 @@
 import simplur from 'simplur';
-import Module, { ModulePackage } from '../../lib/Module.js';
+import Module from '../../lib/Module.js';
 import { getModule } from '../../lib/ModuleCache.js';
 import { getModuleKey } from '../../lib/module_util.js';
 
@@ -78,7 +78,7 @@ function getDependencyEntries(
 export async function getGraphForQuery(
   query: string[],
   dependencyTypes: Set<DependencyKey>,
-  moduleFilter: (m: Module | ModulePackage) => boolean,
+  moduleFilter: (m: Module) => boolean,
 ) {
   const graphState: GraphState = {
     modules: new Map(),

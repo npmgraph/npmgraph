@@ -7,23 +7,18 @@ import { ModuleScoreBar } from './ModuleScoreBar.js';
 export default function ModuleNpmsIOScores({ module }: { module: Module }) {
   const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
 
-  const pkg = module?.package;
-  const isLocalModule = Boolean(pkg?._local);
-
   useEffect(() => {
-    if (isLocalModule) return;
+    if (module.isLocal) return;
 
     setNpmsData(undefined);
 
-    if (!pkg) return;
-
     fetchJSON<NPMSIOData>(
-      `https://api.npms.io/v2/package/${encodeURIComponent(pkg.name)}`,
+      `https://api.npms.io/v2/package/${encodeURIComponent(module.name)}`,
       { silent: true, timeout: 5000 },
     )
       .then(data => setNpmsData(data))
       .catch(err => setNpmsData(err));
-  }, [pkg]);
+  }, [module]);
 
   if (!npmsData) {
     return 'Loading ...';

@@ -253,8 +253,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           el.classList.add('collapsed');
         }
 
-        const pkg = m.package;
-        if (pkg._stub) {
+        if (m.isStub) {
           el.classList.add('stub');
         }
       }

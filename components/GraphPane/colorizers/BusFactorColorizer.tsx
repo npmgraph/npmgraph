@@ -20,7 +20,7 @@ export default {
   },
 
   async colorForModule(module: Module) {
-    const bus = Math.min(module?.package.maintainers?.length ?? 1, 4);
-    return COLORIZE_COLORS[bus - 1];
+    const bus = Math.min(module.maintainers.length, 4);
+    return COLORIZE_COLORS[Math.max(0, bus - 1)];
   },
 } as SimpleColorizer;
