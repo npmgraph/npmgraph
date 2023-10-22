@@ -149,6 +149,10 @@ export async function getGraphForQuery(
   ).then(() => graphState);
 }
 
+function dotEscape(str: string) {
+  return str.replace(/"/g, '\\"');
+}
+
 // Compose directed graph document (GraphViz notation)
 export function composeDOT(graph: Map<string, GraphModuleInfo>) {
   // Sort modules by [level, key]
@@ -165,16 +169,20 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
   const edges = ['\n// Edges & per-edge styling'];
 
   for (const [, { module, level, downstream }] of entries) {
-    nodes.push(`"${module}"${level == 0 ? ' [root=true]' : ''}`);
+    nodes.push(`"${dotEscape(module.key)}"${level == 0 ? ' [root=true]' : ''}`);
     if (!downstream) continue;
     for (const { module: dependency, type } of downstream) {
-      edges.push(`"${module}" -> "${dependency}" ${EDGE_ATTRIBUTES[type]}`);
+      edges.push(
+        `"${dotEscape(module.key)}" -> "${dependency}" ${
+          EDGE_ATTRIBUTES[type]
+        }`,
+      );
     }
   }
 
   const titleParts = entries
     .filter(([, m]) => m.level == 0)
-    .map(([, m]) => m.module.name);
+    .map(([, m]) => dotEscape(m.module.name));
 
   const MAX_PARTS = 3;
   if (titleParts.length > MAX_PARTS) {

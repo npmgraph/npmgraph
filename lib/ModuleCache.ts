@@ -60,7 +60,7 @@ async function fetchModuleFromNPM(
   const packumentVersion = packument && selectVersion(packument, version);
 
   if (!packumentVersion) {
-    throw new Error(`No version ${packumentVersion} found for ${moduleName}`);
+    throw new Error(`${moduleName} does not have a version ${version}`);
   }
 
   return new Module(packumentVersion, packument);

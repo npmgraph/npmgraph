@@ -20,6 +20,7 @@ import {
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
 import $ from '../../lib/dom.js';
+import { flash } from '../../lib/flash.js';
 import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
 import useHashParam from '../../lib/useHashParam.js';
@@ -171,9 +172,18 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       if (signal.aborted) return; // Check after all async stuff
 
       // Compose SVG markup
-      const svgMarkup = graph?.modules.size
-        ? await graphviz.dot(composeDOT(graph.modules), 'svg')
-        : '<svg />';
+      let svgMarkup = '<svg />';
+      if (graph?.modules?.size) {
+        const dotDoc = composeDOT(graph.modules);
+        try {
+          svgMarkup = graph?.modules.size
+            ? await graphviz.dot(dotDoc, 'svg')
+            : '<svg />';
+        } catch (err) {
+          console.error(err);
+          flash('Error while rendering graph');
+        }
+      }
       if (signal.aborted) return; // Check after all async stuff
 
       // Parse markup
