@@ -391,9 +391,15 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       }
 
       // Colorize it (async)
-      colorizer.colorForModule(m).then(color => {
-        elPath.style.fill = color ?? '';
-      });
+      colorizer
+        .colorForModule(m)
+        .catch(err => {
+          console.warn(`Error colorizing ${m.name}: ${err.message}`);
+          return null;
+        })
+        .then(color => {
+          elPath.style.fill = color ?? '';
+        });
     }
   } else {
     // Bundle up modules
