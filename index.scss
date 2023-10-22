@@ -21,9 +21,20 @@
   --tabs-text: #fff;
   --highlight: #e65c00;
 
-  // Named background colors
-  --bg-L: 50%; // Background intensity
-  --bg-S: 80%; // Background saturation
+  // Named stroke colors (for borders and lines that should contrast well with background colors)
+  --stroke-L: 40%;
+  --stroke-S: 100%;
+  --stroke-blue: hsl(180, var(--stroke-S), var(--stroke-L));
+  --stroke-orange: hsl(30, var(--stroke-S), var(--stroke-L));
+  --stroke-green: hsl(120, var(--stroke-S), var(--stroke-L));
+  --stroke-indigo: hsl(240, var(--stroke-S), var(--stroke-L));
+  --stroke-red: hsl(0, var(--stroke-S), var(--stroke-L));
+  --stroke-violet: hsl(300, var(--stroke-S), var(--stroke-L));
+  --stroke-yellow: hsl(60, var(--stroke-S), var(--stroke-L));
+
+  // Named background colors (should contrast well with text color)
+  --bg-L: 70%; // Background intensity
+  --bg-S: 100%; // Background saturation
   --bg-dark-L: 50%; // Dark bg intensity
   --bg-dark-S: 60%; // Dark bg saturation
 
@@ -54,9 +65,9 @@
     --bg1: #696666;
     --bg2: #333;
 
-    --bg-L: 30%; // Background intensity
-    --bg-S: 100%; // Background saturation
-    --bg-dark-L: 40%; // Background intensity (dark)
+    --stroke-L: 60%;
+    --bg-L: 30%;
+    --bg-dark-L: 40%;
 
     --highlight: #ff761a;
     --inset-shadow-color: black;

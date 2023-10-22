@@ -1,5 +1,7 @@
 import React from 'react';
 
+import './Splitter.scss';
+
 export function Splitter({
   onClick,
   isOpen,

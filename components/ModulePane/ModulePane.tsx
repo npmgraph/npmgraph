@@ -1,60 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import simplur from 'simplur';
 import Module from '../../lib/Module.js';
-import fetchJSON from '../../lib/fetchJSON.js';
-import { BundlePhobiaData, NPMSIOData } from '../../lib/fetch_types.js';
+import { PARAM_COLORIZE } from '../../lib/constants.js';
+import useHashParam from '../../lib/useHashParam.js';
 import { ExternalLink } from '../ExternalLink.js';
+import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.js';
 import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
 import { Section } from '../Section.js';
 import { Tag } from '../Tag.js';
 import { Tags } from '../Tags.js';
-import { ModuleBundleStats } from './ModuleBundleStats.js';
-import { ModuleNpmsIOScores } from './ModuleNpmsIOScores.js';
+import ModuleBundleSize from './ModuleBundleSize.js';
+import ModuleNpmsIOScores from './ModuleNpmsIOScores.js';
 import './ModulePane.scss';
-import { ModuleTreeMap } from './ModuleTreeMap.js';
+import { ModuleVersionInfo } from './ModuleVersionInfo.js';
 
 export default function ModulePane({
-  module,
+  selectedModules,
   ...props
-}: { module?: Module } & React.HTMLAttributes<HTMLDivElement>) {
-  const pkg = module?.package;
-
-  const [bundleInfo, setBundleInfo] = useState<BundlePhobiaData | Error>();
-  const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
-
-  const pn = pkg ? encodeURIComponent(`${pkg.name}@${pkg.version}`) : null;
-  const isLocalModule = Boolean(pkg?._local);
-
-  useEffect(() => {
-    if (isLocalModule) return;
-
-    setBundleInfo(pkg ? undefined : Error('No package selected'));
-    setNpmsData(undefined);
-
-    if (!pkg) return;
-
-    fetchJSON<BundlePhobiaData>(
-      `https://bundlephobia.com/api/size?package=${pn}`,
-    )
-      .then(data => setBundleInfo(data))
-      .catch(err => setBundleInfo(err));
-
-    fetchJSON<NPMSIOData>(
-      `https://api.npms.io/v2/package/${encodeURIComponent(pkg.name)}`,
-    )
-      .then(data => setNpmsData(data))
-      .catch(err => setNpmsData(err));
-  }, [pkg]);
-
-  if (!pkg) {
+}: {
+  selectedModules?: Map<string, Module>;
+} & React.HTMLAttributes<HTMLDivElement>) {
+  const [colorize] = useHashParam(PARAM_COLORIZE);
+  const nSelected = selectedModules?.size ?? 0;
+  if (nSelected == 0) {
     return (
       <Pane>
-        No module selected. Click a module in the graph to see details.
+        No modules selected. Click a module in the graph to see details.
       </Pane>
     );
-  } else if (isLocalModule) {
+  } else if (nSelected > 1) {
+    return (
+      <Pane>
+        Multiple modules selected. Click a single module in the graph to see
+        details.
+      </Pane>
+    );
+  }
+
+  const module = selectedModules?.values().next().value as Module;
+
+  const pkg = module.package;
+
+  if (module.isLocal) {
     return (
       <Pane>
         <h2>{module.key}</h2>
@@ -66,30 +55,61 @@ export default function ModulePane({
     );
   }
 
-  if (pkg._stub) {
+  if (module.isStub) {
     return (
       <Pane>
         <h2>{module.name}</h2>
-        <p>
-          Information and dependencies for this module cannot be displayed due
-          to the following error:
-        </p>
-        <p style={{ color: 'red', fontWeight: 'bold' }}>
-          {pkg._stubError?.message}
-        </p>
+        <p>Sorry, but info for this module isn't available. 😢</p>
+        <p className="stub-error">{module.stubError?.message}</p>
       </Pane>
     );
   }
 
-  const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
-
   const maintainers = module.maintainers;
+
+  const projectUrl = getProjectUrlForModule(module);
+  let projectLink = null;
+  if (projectUrl) {
+    if (/github.com/i.test(projectUrl)) {
+      projectLink = (
+        <ExternalLink href={projectUrl} icon={GithubIcon}>
+          Github
+        </ExternalLink>
+      );
+    } else {
+      projectLink = <ExternalLink href={projectUrl}>Project Page</ExternalLink>;
+    }
+  }
+
+  const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
+
+  const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
 
   return (
     <Pane {...props}>
-      <h2>
-        <QueryLink query={module.key} />
-      </h2>
+      <div
+        style={{
+          display: 'flex',
+          padding: '0.5rem 0',
+          gap: '1rem',
+          flexWrap: 'wrap',
+          alignItems: 'baseline',
+        }}
+      >
+        <h2
+          style={{
+            flexGrow: 0,
+            whiteSpace: 'nowrap',
+            margin: 0,
+          }}
+        >
+          <QueryLink query={module.key} />
+        </h2>
+
+        {!colorize || colorize === OutdatedColorizer.name ? (
+          <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
+        ) : null}
+      </div>
 
       {pkg.deprecated ? (
         <div
@@ -103,52 +123,18 @@ export default function ModulePane({
 
       <p>{pkg?.description}</p>
 
-      {/* For NPM packages */}
-      {!module.package._local ? (
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <ExternalLink href={module.packageJsonLink}>
-            package.json
-          </ExternalLink>
-          <ExternalLink href={module.npmLink} style={{ marginRight: '1em' }}>
-            npmjs.org
-          </ExternalLink>
-          {module.repoLink ? (
-            <ExternalLink
-              href={module.repoLink}
-              style={{ marginRight: '1em' }}
-              icon={GithubIcon}
-            >
-              Project Page
-            </ExternalLink>
-          ) : null}
-        </div>
-      ) : null}
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <ExternalLink href={npmUrl}>npmjs.org</ExternalLink>
+        {projectLink}
+        <ExternalLink href={packageUrl}>package.json</ExternalLink>
+      </div>
 
       <Section title="Bundle Size">
-        {!bundleInfo ? (
-          'Loading ...'
-        ) : bundleInfo instanceof Error ? (
-          'Unavailable'
-        ) : (
-          <>
-            <ModuleBundleStats bundleInfo={bundleInfo} />
-            <ModuleTreeMap
-              style={{ height: '150px', margin: '1em' }}
-              data={bundleInfo}
-            />
-            Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
-          </>
-        )}
+        <ModuleBundleSize module={module} />
       </Section>
 
       <Section title="npms.io Score">
-        {!npmsData ? (
-          'Loading'
-        ) : npmsData instanceof Error ? (
-          'Unavailable'
-        ) : (
-          <ModuleNpmsIOScores scores={npmsData.score} />
-        )}
+        <ModuleNpmsIOScores module={module} />
       </Section>
 
       <Section
@@ -167,4 +153,32 @@ export default function ModulePane({
       </Section>
     </Pane>
   );
+}
+
+function getProjectUrlForModule(module: Module) {
+  const { homepage, bugs, repository } = module.package;
+
+  if (homepage) return homepage;
+
+  // Look to repository and bugs fields for a github URL
+  let repo;
+  if (repository) {
+    if (typeof repository === 'string') {
+      repo = repository;
+    } else {
+      repo = repository.url;
+    }
+  } else if (homepage) {
+    repo = homepage;
+  } else if (bugs) {
+    repo = bugs.url;
+  }
+
+  // Extract github project path from URL
+  const match = repo?.match(/github.com\/([^/]+\/[^/?#]+)?/);
+  if (!match) return undefined;
+
+  repo = match[1].replace(/\.git$/, '');
+
+  return `https://www.github.com/${repo}`;
 }

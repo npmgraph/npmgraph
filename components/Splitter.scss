@@ -1,0 +1,16 @@
+#splitter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  cursor: pointer;
+  background: var(--tabs-bg) var(--bg-gradient);
+  height: 24pt;
+  color: var(--tabs-text);
+  user-select: none;
+  text-align: center;
+  #inspector:not(.open) & {
+    border-top-left-radius: var(--rad_lg);
+    border-bottom-left-radius: var(--rad_lg);
+  }
+}

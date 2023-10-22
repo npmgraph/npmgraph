@@ -94,13 +94,13 @@ g.node {
 
   &.upstream {
     & > path {
-      stroke: var(--bg-blue);
+      stroke: var(--stroke-blue);
     }
   }
 
   &.downstream {
     & > path {
-      stroke: var(--bg-orange);
+      stroke: var(--stroke-orange);
     }
   }
 
@@ -118,6 +118,8 @@ g.node {
 }
 
 g.edge {
+  --selected-edge-width: 2;
+
   > path {
     // stylelint-disable-line no-descending-specificity
     stroke: var(--text);
@@ -130,23 +132,25 @@ g.edge {
 
   &.upstream {
     & > path {
-      stroke: var(--bg-blue);
+      stroke: var(--stroke-blue);
+      stroke-width: var(--selected-edge-width);
     }
 
     & > polygon {
-      stroke: var(--bg-blue);
-      fill: var(--bg-blue);
+      stroke: var(--stroke-blue);
+      fill: var(--stroke-blue);
     }
   }
 
   &.downstream {
     & > path {
-      stroke: var(--bg-orange);
+      stroke: var(--stroke-orange);
+      stroke-width: var(--selected-edge-width);
     }
 
     & > polygon {
-      stroke: var(--bg-orange);
-      fill: var(--bg-orange);
+      stroke: var(--stroke-orange);
+      fill: var(--stroke-orange);
     }
   }
 

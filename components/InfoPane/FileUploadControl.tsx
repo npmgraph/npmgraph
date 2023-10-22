@@ -1,7 +1,9 @@
-import { PackageJson } from '@npm/types';
+import { PackageJson, PackumentVersion } from '@npm/types';
 import React, { HTMLProps } from 'react';
-import { ModulePackage } from '../../lib/Module.js';
-import { cacheLocalPackage } from '../../lib/ModuleCache.js';
+import {
+  cacheLocalPackage,
+  sanitizePackageKeys,
+} from '../../lib/ModuleCache.js';
 import URLPlus from '../../lib/URLPlus.js';
 import {
   PARAM_PACKAGES,
@@ -59,7 +61,6 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
       reader.readAsText(file);
     });
 
-    console.log(file);
     // Parse module and insert into cache
     let pkg: PackageJson;
     try {
@@ -69,10 +70,13 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
       return;
     }
 
+    // Sanitize package contents *immediately*, so we don't risk propagating
+    // possibly-sensitive fields user may have in their package.json
+    pkg = sanitizePackageKeys(pkg);
+
     pkg.name ??= UNNAMED_PACKAGE;
 
-    // Note: cacheLocalPackage() sanitizes pkg.keys in-place(!)
-    const module = cacheLocalPackage(pkg as ModulePackage);
+    const module = cacheLocalPackage(pkg as PackumentVersion);
 
     // Set query, and attach package contents in hash
     const url = new URLPlus(location);
