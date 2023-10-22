@@ -15,6 +15,15 @@
     justify-content: center;
     align-items: center;
   }
+
+  &.graphviz-loading,
+  &.graphviz-failed {
+    margin-top: 20vh;
+    text-align: center;
+  }
+  &.graphviz-failed {
+    color: var(--stroke-red);
+  }
 }
 
 @media (prefers-color-scheme: dark) {

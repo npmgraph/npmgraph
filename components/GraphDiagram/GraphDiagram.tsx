@@ -46,7 +46,22 @@ export type ZoomOption =
   | typeof ZOOM_FIT_WIDTH
   | typeof ZOOM_FIT_HEIGHT;
 
-const graphvizP = Graphviz.load();
+function useGraphviz() {
+  const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Graphviz.load()
+      .catch(err => {
+        console.error('Graphviz failed to load', err);
+        return undefined;
+      })
+      .then(setGraphviz)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return [graphviz, loading] as const;
+}
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
@@ -58,6 +73,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [collapse, setCollapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
+  const [graphviz, graphvizLoading] = useGraphviz();
 
   // Dependencies to include for top-level modules
   const dependencyTypes = new Set<DependencyKey>([
@@ -168,7 +184,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     // Render SVG markup (async)
     (async function () {
-      const graphviz = await graphvizP;
+      if (!graphviz) return;
+
       if (signal.aborted) return; // Check after all async stuff
 
       // Compose SVG markup
@@ -270,7 +287,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       finish();
       abort();
     };
-  }, [graph]);
+  }, [graphviz, graph]);
 
   // Effect: render graph selection
   useEffect(
@@ -287,6 +304,18 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   // (Re)apply zoom if/when it changes
   useEffect(applyZoom, [zoom, domSignal]);
+
+  if (!graphviz) {
+    if (graphvizLoading) {
+      return (
+        <div id="graph" className="graphviz-loading">
+          {graphvizLoading
+            ? 'Loading layout package...'
+            : 'Layout package failed to load.'}
+        </div>
+      );
+    }
+  }
 
   return (
     <div id="graph" onClick={handleGraphClick}>
