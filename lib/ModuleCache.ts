@@ -3,6 +3,11 @@ import semverGt from 'semver/functions/gt.js';
 import semverSatisfies from 'semver/functions/satisfies.js';
 import HttpError from './HttpError.js';
 import Module from './Module.js';
+import {
+  cachePackument,
+  getCachedPackument,
+  getNPMPackument,
+} from './PackumentCache.js';
 import PromiseWithResolvers, {
   PromiseWithResolversType,
 } from './PromiseWithResolvers.js';
@@ -17,7 +22,7 @@ import {
   resolveModule,
 } from './module_util.js';
 
-const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
+export const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 
@@ -54,7 +59,11 @@ async function fetchModuleFromNPM(
   moduleName: string,
   version?: string,
 ): Promise<Module> {
-  const packument = await fetchNPMPackument(moduleName);
+  const packument = await getNPMPackument(moduleName);
+
+  if (!packument) {
+    throw new Error(`Could not find ${moduleName} module`);
+  }
 
   // Match best version from manifest
   const packumentVersion = packument && selectVersion(packument, version);
@@ -83,28 +92,6 @@ async function fetchModuleFromURL(urlString: string) {
   return new Module(pkg as PackumentVersion);
 }
 
-export async function fetchNPMPackument(moduleName: string) {
-  const packument = await fetchJSON<Packument>(
-    `${REGISTRY_BASE_URL}/${moduleName}`,
-    {
-      // Per
-      // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
-      // we should arguably be using the 'Accept:
-      // application/vnd.npm.install-v1+json' header to reduce the request size.
-      // But that doesn't actually work.
-      //
-      // REF: https://github.com/npm/feedback/discussions/1014
-      //
-      // So instead we're sending 'application/json'.  The responses are smaller
-      // and we get full "version" objects, so we don't have to send follow-up
-      // requests.
-      headers: { Accept: 'application/json' },
-    },
-  );
-
-  return packument;
-}
-
 // Note: This method should not throw!  Errors should be returned as part of a
 // stub module
 export async function getModule(moduleKey: string): Promise<Module> {
@@ -130,7 +117,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   // Set up the cache so subsequent requests for this module will get the same
   // promise object (and thus the same module), even if the module hasn't been
   // loaded yet
-  const cacheEntry = PromiseWithResolvers<Module>() as ModuleCacheEntry;
+  const cacheEntry = PromiseWithResolvers() as ModuleCacheEntry;
   moduleCache.set(moduleKey, cacheEntry);
 
   let promise: Promise<Module>;
@@ -235,6 +222,28 @@ export function sanitizePackageKeys(pkg: PackageJson) {
 }
 
 export function cacheLocalPackage(pkg: PackumentVersion) {
+  let packument = getCachedPackument(pkg.name);
+  if (!packument) {
+    // Create a stub packument
+    packument = {
+      name: pkg.name,
+      versions: {},
+      'dist-tags': {},
+      maintainers: [],
+      time: {
+        modified: new Date().toISOString(),
+        created: new Date().toISOString(),
+      },
+      license: pkg.license ?? 'UNLICENSED',
+    };
+
+    // Put it into the packument cache
+    cachePackument(pkg.name, packument);
+  }
+
+  // Add version to packument
+  packument.versions[pkg.version] = pkg;
+
   const module = new Module(pkg);
 
   module.isLocal = true;
