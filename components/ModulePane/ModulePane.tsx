@@ -46,7 +46,9 @@ export default function ModulePane({
   if (module.isLocal) {
     return (
       <Pane>
-        <h2>{module.key}</h2>
+        <h2>
+          <QueryLink query={module.key} reset={false} />
+        </h2>
         <p>
           This is a locally-defined module. Additional information is not
           available at this time.
