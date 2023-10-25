@@ -1,8 +1,8 @@
 # npmgraph
 
-A tool for exploring npm modules and dependencies.
+A tool for exploring npm modules and dependencies.  Available online at https://npmgraph.js.org/.
 
-**Available online at https://npmgraph.js.org/.**
+**Be sure to check out [the `npmgraph` CLI](https://github.com/npmgraph/npmgraph-cli)!**
 
 ## URL API
 
@@ -22,13 +22,12 @@ https://npmgraph.js.org/?q=send
 
 "Colorization" mode (a.k.a "Colorize by..." field in UI). Currently supports the following values:
 
-|               |                                      |
-| ------------- | ------------------------------------ |
-| `moduleType`  | Color by `package.json#type``        |
-| `overall`     | Color by npms.io score               |
-| `maintenance` | Color by npms.io score (maintenance) |
-| `popularity`  | Color by npms.io score (popularity)  |
-| `quality`     | Color by npms.io score (quality)     |
+| `color=...`   | Graph nodes colored by...        |
+| ------------- | -------------------------------- |
+| `moduleType`  | `package.json#type` value        |
+| `bus`         | # of maintainers                 |
+| `outdated`    | Level of `version` outdated-ness |
+| `maintenance` | npms.io score                    |
 
 **Example**: Graph `send`, colorize by module type:
 
