@@ -25,8 +25,8 @@ https://npmgraph.js.org/?q=send
 | `color=...`   | Graph nodes colored by...        |
 | ------------- | -------------------------------- |
 | `moduleType`  | `package.json#type` value        |
-| `bus`         | # of maintainers                 |
-| `outdated`    | Level of `version` outdated-ness |
+| `bus`         | # of maintainers  ("bus" = [bus factor](https://en.wikipedia.org/wiki/Bus_factor))                |
+| `outdated`    | Degree of `version` outdated-ness |
 | `maintenance` | npms.io score                    |
 
 **Example**: Graph `send`, colorize by module type:
@@ -69,9 +69,9 @@ Values should have one of the following forms:
 
 https://npmgraph.js.org/?q=send@0.18.0#select=exact%3Afresh%400.5.2
 
-### `view` (hash param)
+### `hide` (hash param)
 
-Specify the view configuration. Currently only accepts one value, `closed` to minimize the inspector.
+If defined (e.g. `...#hide`), hides the inspector.
 
 **Example**: Graph `send`, close the inspector
 

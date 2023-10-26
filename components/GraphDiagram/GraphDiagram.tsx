@@ -12,7 +12,7 @@ import { report } from '../../lib/bugsnag.js';
 import {
   PARAM_COLORIZE,
   PARAM_DEPENDENCIES,
-  PARAM_VIEW_MODE,
+  PARAM_HIDE,
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
   ZOOM_FIT_WIDTH,
@@ -67,7 +67,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
   const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [, setPane] = usePane();
-  const [, setZenMode] = useHashParam(PARAM_VIEW_MODE);
+  const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
   const [collapse, setCollapse] = useCollapse();
@@ -80,7 +80,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     'dependencies',
     'peerDependencies',
   ]);
-  depTypes
+  (depTypes ?? '')
     .split(/\s*,\s*/)
     .sort()
     .forEach(dtype => dependencyTypes.add(dtype as DependencyKey));
@@ -299,7 +299,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   useEffect(() => {
     const svg = getDiagramElement();
     if (!svg) return;
-    colorizeGraph(svg, colorize);
+    colorizeGraph(svg, colorize ?? '');
   }, [colorize, domSignal]);
 
   // (Re)apply zoom if/when it changes
