@@ -2,7 +2,7 @@
 
 A tool for exploring npm modules and dependencies.  Available online at https://npmgraph.js.org/.
 
-**Be sure to check out [the `npmgraph` CLI](https://github.com/npmgraph/npmgraph-cli)!**
+**Be sure to check out [the new npmgraph CLI](https://github.com/npmgraph/npmgraph-cli).**
 
 ## URL API
 
