@@ -5,16 +5,20 @@ export default function useHashParam(paramName: string) {
   const params = new URLSearchParams(location.hash.replace(/^#/, ''));
   const param = params.get(paramName);
 
-  const setValue = (val: string | boolean | number, replace = true) => {
+  const setValue = (
+    val: string | boolean | number | null | undefined,
+    replace = true,
+  ) => {
     if (val === param) return;
 
-    // Update state value
-    if (typeof val === 'boolean') {
-      val ? params.set(paramName, '') : params.delete(paramName);
-    } else if (typeof val === 'number') {
-      params.set(paramName, String(val));
+    if (typeof val === 'number') val = String(val);
+
+    if (!val) {
+      params.delete(paramName);
+    } else if (val === true) {
+      params.set(paramName, '');
     } else {
-      val ? params.set(paramName, String(val)) : params.delete(paramName);
+      params.set(paramName, val);
     }
 
     // Update page
