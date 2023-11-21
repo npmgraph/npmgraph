@@ -2,7 +2,6 @@ import React from 'react';
 import Module from '../../../lib/Module.js';
 import { COLORIZE_COLORS } from '../../../lib/constants.js';
 import { LegendColor } from './LegendColor.js';
-import { SimpleColorizer } from './index.js';
 
 export default {
   title: 'Maintainer Count',
@@ -23,4 +22,4 @@ export default {
     const bus = Math.min(module.maintainers.length, 4);
     return COLORIZE_COLORS[Math.max(0, bus - 1)];
   },
-} as SimpleColorizer;
+};

@@ -2,7 +2,6 @@ import { PackageJson } from '@npm/types';
 import React from 'react';
 import Module from '../../../lib/Module.js';
 import { LegendColor } from './LegendColor.js';
-import { SimpleColorizer } from './index.js';
 
 export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';
 export const COLORIZE_MODULE_ESM = 'var(--bg-blue)';
@@ -24,4 +23,4 @@ export default {
     const pkg = module.package as PackageJson;
     return pkg.type === 'module' ? COLORIZE_MODULE_ESM : COLORIZE_MODULE_CJS;
   },
-} as SimpleColorizer;
+};

@@ -1,10 +1,9 @@
 import React from 'react';
 import { diff } from 'semver';
 import Module from '../../../lib/Module.js';
-import { fetchNPMPackument } from '../../../lib/ModuleCache.js';
+import { getNPMPackument } from '../../../lib/PackumentCache.js';
 import { COLORIZE_COLORS } from '../../../lib/constants.js';
 import { LegendColor } from './LegendColor.js';
-import { SimpleColorizer } from './index.js';
 
 export default {
   title: 'Outdated Level',
@@ -22,7 +21,9 @@ export default {
   },
 
   async colorForModule(module: Module) {
-    const manifest = await fetchNPMPackument(module.name);
+    if (module.isLocal || module.isStub) return '';
+
+    const manifest = await getNPMPackument(module.name);
 
     const latestVersion = manifest?.['dist-tags']?.latest ?? '';
 
@@ -47,4 +48,4 @@ export default {
         return '';
     }
   },
-} as SimpleColorizer;
+};

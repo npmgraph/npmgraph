@@ -1,6 +1,6 @@
 import React, { HTMLProps } from 'react';
 import { queryModuleCache } from '../lib/ModuleCache.js';
-import { PARAM_VIEW_MODE, VIEW_MODE_CLOSED } from '../lib/constants.js';
+import { PARAM_HIDE } from '../lib/constants.js';
 import useCommits from '../lib/useCommits.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 import useHashParam from '../lib/useHashParam.js';
@@ -20,9 +20,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGraph();
   const [, newCommitsCount] = useCommits();
-  const [viewMode, setViewMode] = useHashParam(PARAM_VIEW_MODE);
-
-  const isOpen = viewMode != VIEW_MODE_CLOSED;
+  const [hide, setHide] = useHashParam(PARAM_HIDE);
 
   const selectedModules = queryModuleCache(queryType, queryValue);
 
@@ -45,7 +43,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   }
 
   return (
-    <div id="inspector" className={viewMode ? '' : 'open'} {...props}>
+    <div id="inspector" className={hide !== null ? '' : 'open'} {...props}>
       <div id="tabs">
         <Tab active={pane == 'info'} onClick={() => setPane('info')}>
           Start
@@ -64,8 +62,8 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
           About
         </Tab>
         <Splitter
-          isOpen={isOpen}
-          onClick={() => setViewMode(isOpen ? VIEW_MODE_CLOSED : '')}
+          isOpen={hide === null}
+          onClick={() => setHide(hide === null)}
         />
       </div>
 

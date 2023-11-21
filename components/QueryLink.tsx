@@ -5,9 +5,11 @@ import useLocation from '../lib/useLocation.js';
 
 export function QueryLink({
   query,
+  reset = true,
   children,
   ...props
 }: HTMLProps<HTMLAnchorElement> & {
+  reset?: boolean;
   query: string | string[];
 }) {
   const [location, setLocation] = useLocation();
@@ -16,7 +18,7 @@ export function QueryLink({
 
   const url = new URL(location);
   url.search = query.length ? `${PARAM_QUERY}=${queries.join(',')}` : '';
-  url.hash = '';
+  url.hash = reset ? '' : url.hash;
 
   function onClick(e: React.MouseEvent) {
     e.preventDefault();

@@ -4,9 +4,9 @@ import useHashParam from './useHashParam.js';
 
 export default function useGraphSelection() {
   const [sel, setSel] = useHashParam(PARAM_SELECTION);
-  const i = sel.indexOf(':');
-  const type = (i > 0 ? sel.slice(0, i) : '') as QueryType;
-  const value = i > 0 ? sel.slice(i + 1) : '';
+  const i = (sel ?? '').indexOf(':');
+  const type = (sel && i > 0 ? sel?.slice(0, i) : '') as QueryType;
+  const value = sel && i > 0 ? sel?.slice(i + 1) : '';
 
   return [
     type,

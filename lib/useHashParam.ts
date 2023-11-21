@@ -1,16 +1,22 @@
 import useLocation from './useLocation.js';
 
-export default function useHashParam<T extends string>(paramName: string) {
+export default function useHashParam(paramName: string) {
   const [location, setLocation] = useLocation();
   const params = new URLSearchParams(location.hash.replace(/^#/, ''));
-  const value = (params.get(paramName) ?? '') as T;
+  const param = params.get(paramName);
 
-  const setValue = (val: T, replace = true) => {
-    if (val === value) return;
+  const setValue = (
+    val: string | boolean | number | null | undefined,
+    replace = true,
+  ) => {
+    if (val === param) return;
 
-    // Update state value
+    if (typeof val === 'number') val = String(val);
+
     if (!val) {
       params.delete(paramName);
+    } else if (val === true) {
+      params.set(paramName, '');
     } else {
       params.set(paramName, val);
     }
@@ -21,5 +27,5 @@ export default function useHashParam<T extends string>(paramName: string) {
     setLocation(url, replace);
   };
 
-  return [value, setValue] as const;
+  return [param, setValue] as const;
 }

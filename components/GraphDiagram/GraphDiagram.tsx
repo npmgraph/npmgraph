@@ -12,7 +12,7 @@ import { report } from '../../lib/bugsnag.js';
 import {
   PARAM_COLORIZE,
   PARAM_DEPENDENCIES,
-  PARAM_VIEW_MODE,
+  PARAM_HIDE,
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
   ZOOM_FIT_WIDTH,
@@ -46,25 +46,41 @@ export type ZoomOption =
   | typeof ZOOM_FIT_WIDTH
   | typeof ZOOM_FIT_HEIGHT;
 
-const graphvizP = Graphviz.load();
+function useGraphviz() {
+  const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Graphviz.load()
+      .catch(err => {
+        console.error('Graphviz failed to load', err);
+        return undefined;
+      })
+      .then(setGraphviz)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return [graphviz, loading] as const;
+}
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
   const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [, setPane] = usePane();
-  const [, setZenMode] = useHashParam(PARAM_VIEW_MODE);
+  const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [queryType, queryValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGraph();
   const [collapse, setCollapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
+  const [graphviz, graphvizLoading] = useGraphviz();
 
   // Dependencies to include for top-level modules
   const dependencyTypes = new Set<DependencyKey>([
     'dependencies',
     'peerDependencies',
   ]);
-  depTypes
+  (depTypes ?? '')
     .split(/\s*,\s*/)
     .sort()
     .forEach(dtype => dependencyTypes.add(dtype as DependencyKey));
@@ -168,7 +184,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     // Render SVG markup (async)
     (async function () {
-      const graphviz = await graphvizP;
+      if (!graphviz) return;
+
       if (signal.aborted) return; // Check after all async stuff
 
       // Compose SVG markup
@@ -270,7 +287,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       finish();
       abort();
     };
-  }, [graph]);
+  }, [graphviz, graph]);
 
   // Effect: render graph selection
   useEffect(
@@ -282,11 +299,23 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   useEffect(() => {
     const svg = getDiagramElement();
     if (!svg) return;
-    colorizeGraph(svg, colorize);
+    colorizeGraph(svg, colorize ?? '');
   }, [colorize, domSignal]);
 
   // (Re)apply zoom if/when it changes
   useEffect(applyZoom, [zoom, domSignal]);
+
+  if (!graphviz) {
+    if (graphvizLoading) {
+      return (
+        <div id="graph" className="graphviz-loading">
+          {graphvizLoading
+            ? 'Loading layout package...'
+            : 'Layout package failed to load.'}
+        </div>
+      );
+    }
+  }
 
   return (
     <div id="graph" onClick={handleGraphClick}>
@@ -391,9 +420,15 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       }
 
       // Colorize it (async)
-      colorizer.colorForModule(m).then(color => {
-        elPath.style.fill = color ?? '';
-      });
+      colorizer
+        .colorForModule(m)
+        .catch(err => {
+          console.warn(`Error colorizing ${m.name}: ${err.message}`);
+          return null;
+        })
+        .then(color => {
+          elPath.style.fill = color ?? '';
+        });
     }
   } else {
     // Bundle up modules

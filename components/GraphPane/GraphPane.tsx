@@ -26,9 +26,9 @@ export default function GraphPane({
   const [collapse, setCollapse] = useCollapse();
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
 
-  const dependencyTypes = (depTypes.split(/\s*,\s*/) as DependencyKey[]).filter(
-    isDefined,
-  );
+  const dependencyTypes = (
+    (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
+  ).filter(isDefined);
 
   const includeDev = dependencyTypes.includes('devDependencies');
   if (!graph?.modules) return <div>Loading</div>;

@@ -12,13 +12,11 @@ export const PARAM_COLLAPSE = 'collapse';
 export const PARAM_PACKAGES = 'packages';
 export const PARAM_QUERY = 'q';
 export const PARAM_SELECTION = 'select';
-export const PARAM_VIEW_MODE = 'view';
+export const PARAM_HIDE = 'hide';
 export const PARAM_ZOOM = 'zoom';
 
 export const UNNAMED_PACKAGE = 'Unnamed package';
 
-export const VIEW_MODE_CLOSED = 'closed';
-
 export const ZOOM_FIT_HEIGHT = 'h';
 export const ZOOM_FIT_WIDTH = 'w';
-export const ZOOM_NONE = '';
+export const ZOOM_NONE = null;
