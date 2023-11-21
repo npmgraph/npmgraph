@@ -13,7 +13,7 @@ import { Section } from '../Section.js';
 import { Tag } from '../Tag.js';
 import { Tags } from '../Tags.js';
 import { Toggle } from '../Toggle.js';
-import { Analysis } from './Analysis.js';
+import { ModulesSummary } from './ModulesSummary.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
 
@@ -31,7 +31,7 @@ export default function GraphPane({
   ).filter(isDefined);
 
   const includeDev = dependencyTypes.includes('devDependencies');
-  if (!graph?.modules) return <div>Loading</div>;
+  if (!graph?.moduleInfos) return <div>Loading</div>;
 
   const occurances: { [key: string]: number } = {};
   const maintainers: {
@@ -39,7 +39,7 @@ export default function GraphPane({
   } = {};
   const licenseCounts: { [key: string]: number } = {};
 
-  for (const { module } of graph.modules.values()) {
+  for (const { module } of graph.moduleInfos.values()) {
     const { package: pkg, licenseString: license } = module;
     // Tally module occurances
     occurances[pkg.name] = (occurances[pkg.name] || 0) + 1;
@@ -77,11 +77,9 @@ export default function GraphPane({
 
       <ColorizeInput />
 
-      <Section title={`Analysis`}>
-        <Analysis />
-      </Section>
+      <ModulesSummary />
 
-      <Section title={simplur`${graph.modules.size} Module[|s]`}>
+      <Section title={simplur`${graph.moduleInfos.size} Module[|s]`}>
         <Tags>
           {Object.entries(occurances)
             .sort(compareEntryKey)
