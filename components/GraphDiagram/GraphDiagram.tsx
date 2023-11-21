@@ -190,10 +190,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
       // Compose SVG markup
       let svgMarkup = '<svg />';
-      if (graph?.modules?.size) {
-        const dotDoc = composeDOT(graph.modules);
+      if (graph?.moduleInfos?.size) {
+        const dotDoc = composeDOT(graph.moduleInfos);
         try {
-          svgMarkup = graph?.modules.size
+          svgMarkup = graph?.moduleInfos.size
             ? await graphviz.dot(dotDoc, 'svg')
             : '<svg />';
         } catch (err) {
@@ -237,7 +237,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
         const m = getCachedModule(key);
 
-        const graphInfo = graph?.modules.get(key);
+        const graphInfo = graph?.moduleInfos.get(key);
         let isPeer;
         if (graphInfo) {
           let peerDeps = 0;
@@ -275,7 +275,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         }
       }
 
-      setPane(graph?.modules.size ? 'graph' : 'info');
+      setPane(graph?.moduleInfos.size ? 'graph' : 'info');
 
       // Signal other hooks that graph DOM has changed
       setDomSignal(domSignal + 1);
