@@ -1,0 +1,10 @@
+.root {
+  cursor: default;
+  margin-left: 0.3rem;
+  margin-right: 0.3rem;
+  text-wrap: nowrap;
+
+  &:hover {
+    color: var(--stroke-orange);
+  }
+}

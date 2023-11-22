@@ -13,9 +13,10 @@ import { Section } from '../Section.js';
 import { Tag } from '../Tag.js';
 import { Tags } from '../Tags.js';
 import { Toggle } from '../Toggle.js';
-import { ModulesSummary } from './ModulesSummary.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
+import { ModulesSummary } from './ModulesSummary.js';
+import { OwnersSummary } from './OwnerSummary.js';
 
 export default function GraphPane({
   graph,
@@ -70,6 +71,7 @@ export default function GraphPane({
     <Pane {...props}>
       <Toggle
         checked={includeDev}
+        style={{ marginTop: '1rem' }}
         onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
       >
         Include devDependencies
@@ -79,38 +81,24 @@ export default function GraphPane({
 
       <ModulesSummary />
 
-      <Section title={simplur`${graph.moduleInfos.size} Module[|s]`}>
-        <Tags>
-          {Object.entries(occurances)
-            .sort(compareEntryKey)
-            .map(([value, count]) => (
-              <Tag
-                key={value + count}
-                type="name"
-                value={value}
-                count={count}
-                className={collapse.includes(value) ? 'collapsed' : ''}
-              />
-            ))}
-        </Tags>
+      <div
+        style={{
+          fontSize: '90%',
+          color: 'var(--text-dim)',
+          marginTop: '1em',
+        }}
+      >
+        {collapse.length ? (
+          <span>
+            {simplur`${collapse.length} module[|s] collapsed `}
+            <button onClick={() => setCollapse([])}>Expand All</button>
+          </span>
+        ) : (
+          <span>(Shift-click modules in graph to expand/collapse)</span>
+        )}
+      </div>
 
-        <div
-          style={{
-            fontSize: '90%',
-            color: 'var(--text-dim)',
-            marginTop: '1em',
-          }}
-        >
-          {collapse.length ? (
-            <span>
-              {simplur`${collapse.length} module[|s] collapsed `}
-              <button onClick={() => setCollapse([])}>Expand All</button>
-            </span>
-          ) : (
-            <span>(Shift-click modules in graph to expand/collapse)</span>
-          )}
-        </div>
-      </Section>
+      <OwnersSummary />
 
       <Section
         title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}

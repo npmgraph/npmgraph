@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import simplur from 'simplur';
-import Module from '../../lib/Module.js';
 import { useGraph } from '../App/App.js';
 import { Diagnostic } from './Diagnostic.js';
+import { ModuleTable, ModuleTableData } from './ModuleTable.js';
+
+type DetailMode = 'all' | 'repeated' | 'deprecated';
 
 export function ModulesSummary() {
   const [graph] = useGraph();
+  const [detailMode, setDetailMode] = useState<DetailMode>();
+
+  if (!graph) return null;
 
   const caption = simplur`${
     graph?.entryModules.size ?? 0
@@ -13,60 +18,71 @@ export function ModulesSummary() {
     (graph?.moduleInfos.size ?? 0) - (graph?.entryModules.size ?? 0)
   } dependent module[|s]`;
 
-  // Gather duplicate and deprecated module info
-  const modulesByName: Record<string, Module[]> = {};
-  const deprecated = new Set<Module>();
-  for (const moduleInfo of graph?.moduleInfos.values() ?? []) {
-    const { name } = moduleInfo.module.package;
-    modulesByName[name] ??= [];
-    modulesByName[name].push(moduleInfo.module);
-
-    if (moduleInfo.module.package.deprecated) {
-      deprecated.add(moduleInfo.module);
+  // Create table data for all modules
+  const all: ModuleTableData = new Map();
+  for (const { module } of graph.moduleInfos.values() ?? []) {
+    const { name } = module.package;
+    let modules = all.get(name);
+    if (!modules) {
+      all.set(name, (modules = []));
     }
+    modules.push(module);
   }
 
-  const multiMods = Object.entries(modulesByName)
-    .filter(([, modules]) => modules.length > 1)
-    .sort(([a], [b]) => a.localeCompare(b));
+  // Create table data for repeated modules
+  const repeated: ModuleTableData = new Map(
+    [...all.entries()].filter(([, v]) => v.length > 1),
+  );
+
+  // Create table data for deprecated modules
+  const deprecated: ModuleTableData = new Map();
+  for (const { module } of graph.moduleInfos.values() ?? []) {
+    if (!module.package.deprecated) continue;
+
+    const { name } = module.package;
+    let modules = deprecated.get(name);
+    if (!modules) {
+      deprecated.set(name, (modules = []));
+    }
+    modules.push(module);
+  }
 
   return (
     <>
-      <h3>{caption}</h3>
+      <h3>Modules</h3>
 
-      {multiMods.length > 0 ? (
+      <Diagnostic
+        message={caption}
+        onClick={() => setDetailMode(detailMode === 'all' ? undefined : 'all')}
+      >
+        <ModuleTable data={all} />
+      </Diagnostic>
+
+      {repeated.size > 0 ? (
         <Diagnostic
-          message={simplur`${multiMods.length} module[|s] with multiple versions`}
-        />
+          type="warn"
+          message={simplur`${repeated.size} modules with multiple versions`}
+          onClick={() =>
+            setDetailMode(detailMode === 'repeated' ? undefined : 'repeated')
+          }
+        >
+          <ModuleTable data={repeated} />
+        </Diagnostic>
       ) : null}
 
       {deprecated.size > 0 ? (
         <Diagnostic
+          type="warn"
           message={simplur`${deprecated.size} deprecated module[|s]`}
-        />
+          onClick={() =>
+            setDetailMode(
+              detailMode === 'deprecated' ? undefined : 'deprecated',
+            )
+          }
+        >
+          <ModuleTable data={deprecated} />
+        </Diagnostic>
       ) : null}
-
-      <ul>
-        {multiMods.map(([moduleName, modules]) => {
-          return (
-            <li key={moduleName}>
-              {moduleName}{' '}
-              {modules
-                .map(m => m.version)
-                .sort()
-                .join(', ')}
-            </li>
-          );
-        })}
-      </ul>
-      <h3>Deprecated Modules</h3>
-      <ul>
-        {Array.from(deprecated)
-          .sort()
-          .map(module => {
-            return <li>{module.key}</li>;
-          })}
-      </ul>
     </>
   );
 }

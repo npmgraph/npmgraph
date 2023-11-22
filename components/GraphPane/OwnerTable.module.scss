@@ -1,0 +1,22 @@
+.root {
+  display: grid;
+  grid-template-columns: auto min-content;
+  gap: 0.5rem 1rem;
+  margin: 0.5rem;
+  border-radius: 0.3rem;
+  background-color: var(--bg1);
+  padding: 0.2rem;
+
+  &Name {
+  }
+
+  &Versions {
+    :global {
+      & .selectable {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}
