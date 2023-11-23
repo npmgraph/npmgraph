@@ -13,14 +13,14 @@ import { Section } from '../Section.js';
 import { Tag } from '../Tag.js';
 import { Tags } from '../Tags.js';
 import { Toggle } from '../Toggle.js';
+import { AnalyzerSection } from './AnalyzerItem.js';
 import ColorizeInput from './ColorizeInput.js';
-import { DiagnosticSection } from './DiagnosticSection.js';
 import './GraphPane.scss';
-import { allMaintainers } from './diagnostics/allMaintainers.js';
-import { allModules } from './diagnostics/allModules.js';
-import { deprecatedModules } from './diagnostics/deprecatedModules.js';
-import { repeatedModules } from './diagnostics/repeatedModules.js';
-import { soloMaintainers } from './diagnostics/soloMaintainers.js';
+import { allMaintainers } from './analyzers/allMaintainers.js';
+import { allModules } from './analyzers/allModules.js';
+import { deprecatedModules } from './analyzers/deprecatedModules.js';
+import { repeatedModules } from './analyzers/repeatedModules.js';
+import { soloMaintainers } from './analyzers/soloMaintainers.js';
 
 export default function GraphPane({
   graph,
@@ -83,32 +83,6 @@ export default function GraphPane({
 
       <ColorizeInput />
 
-      <h3>Modules</h3>
-
-      <DiagnosticSection graph={graph} diagnostic={allModules} />
-
-      <DiagnosticSection
-        type="warn"
-        graph={graph}
-        diagnostic={repeatedModules}
-      />
-
-      <DiagnosticSection
-        type="warn"
-        graph={graph}
-        diagnostic={deprecatedModules}
-      />
-
-      <h3>Maintainers</h3>
-
-      <DiagnosticSection graph={graph} diagnostic={allMaintainers} />
-
-      <DiagnosticSection
-        type="warn"
-        graph={graph}
-        diagnostic={soloMaintainers}
-      />
-
       <div
         style={{
           fontSize: '90%',
@@ -126,23 +100,19 @@ export default function GraphPane({
         )}
       </div>
 
-      <Section
-        title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
-      >
-        <Tags>
-          {Object.entries(maintainers)
-            .sort(compareEntryKey)
-            .map(([, { name = 'Unknown', email, count }]) => (
-              <Tag
-                key={name + count}
-                type="maintainer"
-                value={name}
-                count={count ?? 0}
-                gravatar={email}
-              />
-            ))}
-        </Tags>
-      </Section>
+      <h3>Modules</h3>
+
+      <AnalyzerSection graph={graph} analyzer={allModules} />
+
+      <AnalyzerSection type="warn" graph={graph} analyzer={repeatedModules} />
+
+      <AnalyzerSection type="warn" graph={graph} analyzer={deprecatedModules} />
+
+      <h3>Maintainers</h3>
+
+      <AnalyzerSection graph={graph} analyzer={allMaintainers} />
+
+      <AnalyzerSection type="warn" graph={graph} analyzer={soloMaintainers} />
 
       <Section title={simplur`${licenses.length} License[|s]`}>
         <Tags>

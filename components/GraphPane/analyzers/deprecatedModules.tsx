@@ -1,10 +1,10 @@
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
 import { Selectable } from '../../Selectable.js';
-import { Diagnostic } from './Diagnostic.js';
+import { Analyzer } from './Analyzer.js';
 import styles from './deprecatedModules.module.scss';
 
-export const deprecatedModules: Diagnostic<{
+export const deprecatedModules: Analyzer<{
   deprecated: Module[];
 }> = {
   map(graph, { module }, mapState) {

@@ -1,9 +1,9 @@
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
-import { Diagnostic } from './Diagnostic.js';
+import { Analyzer } from './Analyzer.js';
 import { allMaintainers } from './allMaintainers.js';
 
-export const soloMaintainers: Diagnostic<{
+export const soloMaintainers: Analyzer<{
   modulesByMaintainer: Record<string, Module[]>;
 }> = {
   map(graph, moduleInfo, mapState) {

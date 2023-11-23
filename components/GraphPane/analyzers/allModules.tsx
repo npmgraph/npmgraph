@@ -1,14 +1,14 @@
 import simplur from 'simplur';
 import { cn } from '../../../lib/dom.js';
 import { Selectable } from '../../Selectable.js';
-import { Diagnostic } from './Diagnostic.js';
+import { Analyzer } from './Analyzer.js';
 import styles from './allModules.module.scss';
 
-export const allModules: Diagnostic<never> = {
+export const allModules: Analyzer<never> = {
   map() {},
 
   reduce({ moduleInfos, entryModules }) {
-    const summary = simplur`All modules (${entryModules.size} entr[y|ies],  ${
+    const summary = simplur`All modules (${entryModules.size} root[|s],  ${
       moduleInfos.size - entryModules.size
     } dependent[|s])`;
 

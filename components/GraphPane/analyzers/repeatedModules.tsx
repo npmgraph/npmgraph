@@ -1,10 +1,10 @@
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
 import { Selectable } from '../../Selectable.js';
-import { Diagnostic } from './Diagnostic.js';
+import { Analyzer } from './Analyzer.js';
 import styles from './repeatedModules.module.scss';
 
-export const repeatedModules: Diagnostic<{
+export const repeatedModules: Analyzer<{
   versionsByName: Record<string, Module[]>;
 }> = {
   map(graph, { module }, mapState) {
