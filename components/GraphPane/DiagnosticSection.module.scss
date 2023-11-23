@@ -1,0 +1,65 @@
+.root {
+  cursor: default;
+  border: solid 1px transparent;
+
+  &[open] {
+    border-radius: 0.3rem;
+  }
+
+  &[open] {
+    margin-bottom: 1rem;
+    border-color: var(--bg1);
+  }
+
+  :global {
+    summary {
+      position: sticky;
+      top: 0;
+      border-radius: 0.3rem;
+      background-color: var(--bg0);
+      color: var(--highlight);
+      font-weight: normal;
+      font-size: 1rem;
+      line-height: 1.5rem;
+    }
+
+    // TODO: There has to be a better way of removing the arrow marker on
+    // SUMMARY elements... right?!?
+    summary::marker {
+      font-size: 0;
+    }
+  }
+}
+
+.symbol {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
+  width: 1rem;
+  font-size: 1.3rem;
+  text-align: left;
+}
+
+.info .symbol {
+  color: green;
+}
+.warn .symbol {
+  color: var(--stroke-yellow);
+}
+.error .symbol {
+  color: green;
+}
+
+.body {
+  padding: 0.5rem 0;
+
+  & > * {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  & > *:nth-child(even) {
+    background-color: rgba(127, 127, 127, 0.05);
+  }
+}

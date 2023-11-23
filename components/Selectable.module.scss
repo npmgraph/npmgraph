@@ -1,10 +1,11 @@
 .root {
-  cursor: default;
-  margin-left: 0.3rem;
-  margin-right: 0.3rem;
-  text-wrap: nowrap;
-
-  &:hover {
-    color: var(--stroke-orange);
+  --selectable: #840;
+  @media (prefers-color-scheme: dark) {
+    --selectable: #fc9;
   }
+
+  cursor: default;
+  margin-inline-end: 0.6rem;
+  text-wrap: nowrap;
+  color: var(--selectable);
 }

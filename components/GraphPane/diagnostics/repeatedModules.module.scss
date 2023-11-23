@@ -1,0 +1,19 @@
+.row {
+  display: flex;
+  line-height: 1.5rem;
+}
+
+.name {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.version {
+  display: flex;
+  flex-grow: 0;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  font-family: monospace;
+}

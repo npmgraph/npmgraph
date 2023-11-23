@@ -31,7 +31,7 @@ type Dependency = {
   type: DependencyKey;
 };
 
-type GraphModuleInfo = {
+export type GraphModuleInfo = {
   module: Module;
   level: number;
   upstream: Set<Dependency>;

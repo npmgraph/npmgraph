@@ -1,4 +1,4 @@
-import React, { HTMLProps } from 'react';
+import { HTMLProps } from 'react';
 import { QueryType } from '../lib/ModuleCache.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 
@@ -21,7 +21,7 @@ export function Selectable({
 
   return (
     <span
-      className={cn(styles.root, 'selectable', className)}
+      className={cn(styles.root, 'selectable', 'bright-hover', className)}
       title={title}
       onClick={() => setGraphSelection(type, value)}
       {...props}
