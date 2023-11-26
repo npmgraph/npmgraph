@@ -1,7 +1,7 @@
 .row {
   display: flex;
-  line-height: 1.5rem;
   gap: 1rem;
+  line-height: 1.5rem;
 }
 
 .name {
@@ -9,7 +9,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 
 .version {
   flex-grow: 0;
