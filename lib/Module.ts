@@ -1,7 +1,8 @@
 import { Packument, PackumentVersion } from '@npm/types';
+import { isDefined } from './guards.js';
 import { getModuleKey, parseModuleKey } from './module_util.js';
 
-type OldLicense = {
+type DeprecatedLicense = {
   type: string;
   url: string;
 };
@@ -89,36 +90,11 @@ export default class Module {
     return url ? parseGithubPath(url) : undefined;
   }
 
-  get licenseString() {
-    let license = this.package.license;
-
-    // Legacy: 'licenses' field
-    //
-    // E.g. htmlparser@1.7.7 needs this
-    if (!license && 'licenses' in this.package) {
-      license = this.package.licenses as string;
-    }
-
-    // Legacy: Array of licenses?
-    //
-    // E.g. htmlparser@1.7.7 needs this
-    if (Array.isArray(license)) {
-      // Convert to SPDX form
-      // TODO: Is "OR" the correct operator for this?
-      return license.map(l => l.type || l).join(' OR ');
-    }
-
-    // Legacy: license object?
-    //
-    // E.g. lru-cache@1.0.6 needs this
-    if (typeof license == 'object') {
-      license = (license as OldLicense).type;
-    }
-
-    if (!license) return undefined;
-
-    // Strip outer ()'s (SPDX notation)
-    return String(license).replace(/^\(|\)$/g, '');
+  getLicenses() {
+    return parseLicense(
+      this.package.license ||
+        (this.package as unknown as { licenses: string[] }).licenses,
+    );
   }
 
   toString() {
@@ -128,6 +104,26 @@ export default class Module {
   toJSON() {
     return this.package;
   }
+}
+
+function parseLicense(
+  license:
+    | string
+    | DeprecatedLicense
+    | (string | DeprecatedLicense)[]
+    | undefined,
+): string[] {
+  if (Array.isArray(license)) {
+    return license.flatMap(parseLicense).filter(isDefined);
+  } else if (typeof license === 'object') {
+    license = license.type;
+  }
+
+  license = license?.trim().toLowerCase();
+
+  if (!license) return [];
+
+  return license.replace(/^\(|\)$/g, '').split(/\s+or\s+/);
 }
 
 function parseGithubPath(s: string) {

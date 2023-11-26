@@ -5,7 +5,6 @@ import { GraphState } from '../GraphDiagram/graph_util.js';
 import styles from './AnalyzerItem.module.scss';
 import { Analyzer } from './analyzers/Analyzer.js';
 
-// Make this a hook with graph and analyzer constraints?
 function runAnalyzer<T extends object>(
   graph: GraphState,
   analyzer: Analyzer<T>,

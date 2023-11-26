@@ -7,16 +7,18 @@ import { Selectable } from '../../Selectable.js';
 import { Analyzer } from './Analyzer.js';
 import styles from './allMaintainers.module.scss';
 
+export type MaintainerMapState = {
+  modulesByMaintainer: Record<string, Module[]>;
+  maintainerEmails: Record<string, string>;
+};
+
 function normalizeMaintainer(maintainer: Maintainer | string) {
   return !maintainer || typeof maintainer === 'string'
     ? { name: maintainer }
     : maintainer;
 }
 
-export const allMaintainers: Analyzer<{
-  modulesByMaintainer: Record<string, Module[]>;
-  maintainerEmails: Record<string, string>;
-}> = {
+export const allMaintainers: Analyzer<MaintainerMapState> = {
   map(graph, { module }, mapState) {
     mapState.modulesByMaintainer ??= {};
     mapState.maintainerEmails ??= {};
@@ -52,7 +54,6 @@ export const allMaintainers: Analyzer<{
     const details = Object.entries(modulesByMaintainer)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([name, modules]) => {
-        console.log('modulesByMaintainer', name);
         const email = maintainerEmails[name];
         let img: JSX.Element | null = null;
         if (email) {

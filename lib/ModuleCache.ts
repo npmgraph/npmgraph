@@ -188,7 +188,7 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
         if (module.name === queryValue) results.set(module.key, module);
         break;
       case 'license':
-        if (module.licenseString === queryValue)
+        if (module.getLicenses().includes(queryValue.toLowerCase()))
           results.set(module.key, module);
         break;
       case 'maintainer':
