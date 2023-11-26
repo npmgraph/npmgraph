@@ -5,10 +5,11 @@ import useHashParam from '../../lib/useHashParam.js';
 import { PARAM_DEPENDENCIES } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useCollapse from '../../lib/useCollapse.js';
+import { ExternalLink } from '../ExternalLink.js';
 import { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
 import { Toggle } from '../Toggle.js';
-import { AnalyzerSection } from './AnalyzerItem.js';
+import { AnalyzerItem } from './AnalyzerItem.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
 import { allLicenses } from './analyzers/allLicenses.js';
@@ -68,25 +69,59 @@ export default function GraphPane({
 
       <h3>Modules</h3>
 
-      <AnalyzerSection graph={graph} analyzer={allModules} />
-      <AnalyzerSection type="warn" graph={graph} analyzer={repeatedModules} />
-      <AnalyzerSection type="warn" graph={graph} analyzer={deprecatedModules} />
+      <AnalyzerItem graph={graph} analyzer={allModules} />
+      <AnalyzerItem type="warn" graph={graph} analyzer={repeatedModules}>
+        Module repetition is a result of incompatible version constraints, and
+        may lead to increased bundle and <code>node_modules</code> directory
+        size. Consider asking the owners of modules{' '}
+        <em>that depend on these modules</em> to update to the latest version or
+        loosen the version constraint.
+      </AnalyzerItem>
+      <AnalyzerItem type="warn" graph={graph} analyzer={deprecatedModules}>
+        Deprecated modules are unsupported and may have unpatched security
+        vulnerabilities. See the deprecation notes below for module-specific
+        instructions.
+      </AnalyzerItem>
 
       <h3>Maintainers</h3>
 
-      <AnalyzerSection graph={graph} analyzer={allMaintainers} />
-      <AnalyzerSection type="warn" graph={graph} analyzer={soloMaintainers} />
+      <AnalyzerItem graph={graph} analyzer={allMaintainers} />
+
+      <AnalyzerItem type="warn" graph={graph} analyzer={soloMaintainers}>
+        Modules with a single maintainer are at risk of unexpected abandonment.
+        See also{' '}
+        <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
+          Bus factor
+        </ExternalLink>
+        .
+      </AnalyzerItem>
 
       <h3>Licenses</h3>
 
-      <AnalyzerSection graph={graph} analyzer={allLicenses} />
-      <AnalyzerSection type="warn" graph={graph} analyzer={missingLicenses} />
-      <AnalyzerSection
-        type="warn"
-        graph={graph}
-        analyzer={discouragedLicenses}
-      />
-      <AnalyzerSection type="warn" graph={graph} analyzer={obsoleteLicenses} />
+      <AnalyzerItem graph={graph} analyzer={allLicenses} />
+      <AnalyzerItem type="warn" graph={graph} analyzer={missingLicenses}>
+        Modules without a declared license, or that are explicitely
+        "UNLICENSED", are not opensource and may be illegal to use. Consider
+        contacting the module owner to clarify the terms under which the module
+        may be used.
+      </AnalyzerItem>
+      <AnalyzerItem type="warn" graph={graph} analyzer={discouragedLicenses}>
+        Modules with a "discouraged" license are using a license for which there
+        is typically a more popular alternative. See{' '}
+        <ExternalLink href="https://opensource.org/licenses/">
+          OSI Licenses
+        </ExternalLink>
+        .
+      </AnalyzerItem>
+      <AnalyzerItem type="warn" graph={graph} analyzer={obsoleteLicenses}>
+        Modules with "obsolete" licenses are using an older version of a
+        license. Consider asking the module owner to update to the most recent
+        version of the license. See{' '}
+        <ExternalLink href="https://opensource.org/licenses/">
+          OSI Licenses
+        </ExternalLink>
+        .
+      </AnalyzerItem>
     </Pane>
   );
 }

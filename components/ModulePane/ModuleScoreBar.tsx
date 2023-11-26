@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './ModuleScoreBar.module.scss';
 
 export function ModuleScoreBar({
   title,
@@ -10,27 +11,24 @@ export function ModuleScoreBar({
   style?: React.CSSProperties;
 }) {
   const perc = (score * 100).toFixed(0) + '%';
-  const inner = (
-    <div
-      style={{
-        width: perc,
-        textAlign: 'right',
-        backgroundColor: `hsl(${score * 120}, 75%, 70%)`,
-        ...style,
-      }}
-    >
-      {perc}
-    </div>
-  );
 
   return (
     <>
-      <span style={{ marginRight: '1em', ...style }}>{title}</span>
-      <div
-        className="score-bar"
-        style={{ border: 'solid 1px #ccc', width: '200px' }}
-      >
-        {inner}
+      <span className={styles.label} style={style}>
+        {title}
+      </span>
+      <div className={styles.bar}>
+        <div
+          className={styles.inner}
+          style={{
+            width: perc,
+            backgroundColor: `hsl(${score * 120}, 50%, 50%)`,
+            ...style,
+          }}
+        >
+          {perc}
+          &ensp;
+        </div>
       </div>
     </>
   );

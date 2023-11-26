@@ -8,7 +8,7 @@ export const allModules: Analyzer<never> = {
   map() {},
 
   reduce({ moduleInfos, entryModules }) {
-    const summary = simplur`All modules (${entryModules.size} root[|s],  ${
+    const summary = simplur`All modules (${entryModules.size} top level,  ${
       moduleInfos.size - entryModules.size
     } dependent[|s])`;
 

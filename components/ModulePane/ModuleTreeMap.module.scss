@@ -1,4 +1,4 @@
-.bundle-item {
+.root {
   display: grid;
   position: absolute;
   align-content: center;
@@ -8,19 +8,8 @@
   background-color: var(--bg1);
   overflow: hidden;
   text-align: center;
-}
 
-.bundle-item > span {
-  color: rgba(0, 0, 0, 0.5);
-  font-weight: 600;
-  font-size: 115%;
-}
-
-.score-bar,
-#treemap {
-  color: black;
-}
-
-.stub-error {
-  color: var(--stroke-orange);
+  & > span {
+    color: var(--bg0);
+  }
 }

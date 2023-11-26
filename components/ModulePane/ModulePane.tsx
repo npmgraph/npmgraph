@@ -13,7 +13,7 @@ import { Tag } from '../Tag.js';
 import { Tags } from '../Tags.js';
 import ModuleBundleSize from './ModuleBundleSize.js';
 import ModuleNpmsIOScores from './ModuleNpmsIOScores.js';
-import './ModulePane.scss';
+import styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.js';
 
 export default function ModulePane({
@@ -62,7 +62,7 @@ export default function ModulePane({
       <Pane>
         <h2>{module.name}</h2>
         <p>Sorry, but info for this module isn't available. 😢</p>
-        <p className="stub-error">{module.stubError?.message}</p>
+        <p className={styles.stubError}>{module.stubError?.message}</p>
       </Pane>
     );
   }

@@ -90,10 +90,18 @@ export default class Module {
     return url ? parseGithubPath(url) : undefined;
   }
 
+  getLatestVersion() {
+    const latestVersion = this.packument?.['dist-tags'].latest;
+    if (!latestVersion) return;
+    return this.packument?.versions[latestVersion];
+  }
+
   getLicenses() {
+    // Pick license from latest `dist` version, if available
+    const pkg = this.getLatestVersion() ?? this.package;
+
     return parseLicense(
-      this.package.license ||
-        (this.package as unknown as { licenses: string[] }).licenses,
+      pkg.license || (pkg as unknown as { licenses: string[] }).licenses,
     );
   }
 

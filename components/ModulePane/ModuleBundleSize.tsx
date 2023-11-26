@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Module from '../../lib/Module.js';
 import fetchJSON from '../../lib/fetchJSON.js';
 import { BundlePhobiaData } from '../../lib/fetch_types.js';
 import { ExternalLink } from '../ExternalLink.js';
 import { ModuleBundleStats } from './ModuleBundleStats.js';
-import './ModulePane.scss';
 import { ModuleTreeMap } from './ModuleTreeMap.js';
 
 export default function ModuleBundleSize({ module }: { module: Module }) {
