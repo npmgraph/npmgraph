@@ -101,22 +101,20 @@ export default function GraphPane({
       <AnalyzerItem graph={graph} analyzer={allLicenses} />
       <AnalyzerItem type="warn" graph={graph} analyzer={missingLicenses}>
         Modules without a declared license, or that are explicitely
-        "UNLICENSED", are not opensource and may be illegal to use. Consider
-        contacting the module owner to clarify the terms under which the module
-        may be used.
+        "UNLICENSED", are not opensource and may infringe on the owner's
+        copyright. Consider contacting the owner to clarify the licensing terms.
       </AnalyzerItem>
       <AnalyzerItem type="warn" graph={graph} analyzer={discouragedLicenses}>
-        Modules with a "discouraged" license are using a license for which there
-        is typically a more popular alternative. See{' '}
+        "Discouraged" licenses typically have a more popular alternative. See{' '}
         <ExternalLink href="https://opensource.org/licenses/">
           OSI Licenses
         </ExternalLink>
         .
       </AnalyzerItem>
       <AnalyzerItem type="warn" graph={graph} analyzer={obsoleteLicenses}>
-        Modules with "obsolete" licenses are using an older version of a
-        license. Consider asking the module owner to update to the most recent
-        version of the license. See{' '}
+        "Obsolete" licenses are out of date and will typically have a newer
+        version available. Consider asking the module owner to update to the
+        latest version. See{' '}
         <ExternalLink href="https://opensource.org/licenses/">
           OSI Licenses
         </ExternalLink>
