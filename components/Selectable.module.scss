@@ -1,0 +1,10 @@
+.root {
+  --selectable: #840;
+  @media (prefers-color-scheme: dark) {
+    --selectable: #fc9;
+  }
+
+  cursor: default;
+  text-wrap: nowrap;
+  color: var(--selectable);
+}

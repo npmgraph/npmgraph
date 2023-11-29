@@ -31,7 +31,7 @@ type Dependency = {
   type: DependencyKey;
 };
 
-type GraphModuleInfo = {
+export type GraphModuleInfo = {
   module: Module;
   level: number;
   upstream: Set<Dependency>;
@@ -40,7 +40,7 @@ type GraphModuleInfo = {
 
 export type GraphState = {
   // Map of module key -> module info
-  modules: Map<string, GraphModuleInfo>;
+  moduleInfos: Map<string, GraphModuleInfo>;
 
   entryModules: Set<Module>;
 };
@@ -81,7 +81,7 @@ export async function getGraphForQuery(
   moduleFilter: (m: Module) => boolean,
 ) {
   const graphState: GraphState = {
-    modules: new Map(),
+    moduleInfos: new Map(),
     entryModules: new Set(),
   };
 
@@ -98,7 +98,9 @@ export async function getGraphForQuery(
       return;
     }
 
-    let info: GraphModuleInfo | undefined = graphState.modules.get(module.key);
+    let info: GraphModuleInfo | undefined = graphState.moduleInfos.get(
+      module.key,
+    );
     if (info) {
       return info;
     }
@@ -110,7 +112,7 @@ export async function getGraphForQuery(
       upstream: new Set(),
       downstream: new Set(),
     };
-    graphState.modules.set(module.key, info);
+    graphState.moduleInfos.set(module.key, info);
 
     if (!walk) return info;
 
@@ -234,7 +236,7 @@ export function gatherSelectionInfo(
     if (visited.has(fromModule)) return;
     visited.add(fromModule);
 
-    const info = graphState.modules.get(fromModule.key);
+    const info = graphState.moduleInfos.get(fromModule.key);
     if (!info) return;
 
     for (const { module } of info.upstream) {
@@ -248,7 +250,7 @@ export function gatherSelectionInfo(
     if (visited.has(fromModule)) return;
     visited.add(fromModule);
 
-    const info = graphState.modules.get(fromModule.key);
+    const info = graphState.moduleInfos.get(fromModule.key);
     if (!info) return;
 
     for (const { module } of info.downstream) {

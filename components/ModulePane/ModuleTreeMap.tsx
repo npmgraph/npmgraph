@@ -4,6 +4,8 @@ import $ from '../../lib/dom.js';
 import { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';
 
+import styles from './ModuleTreeMap.module.scss';
+
 export function ModuleTreeMap({
   data,
   style,
@@ -54,16 +56,14 @@ export function ModuleTreeMap({
         <div
           key={i}
           title={`${d.data.name} (${size})`}
-          className="bundle-item"
+          className={styles.root}
           style={{
             left: `${rd.x0 + m / 2}px`,
             top: `${rd.y0 + m / 2}px`,
             width: `${rd.x1 - rd.x0 - m}px`,
             height: `${rd.y1 - rd.y0 - m}px`,
             fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
-            backgroundColor: `hsl(${
-              (75 + (i / a.length) * 360) % 360
-            }, 50%, 70%)`,
+            backgroundColor: `hsl(${30 + (i / a.length) * 180}, 50%, 50%)`,
           }}
         >
           {d.data.name} <span>{size}</span>

@@ -1,4 +1,3 @@
-import { Maintainer } from '@npm/types';
 import React from 'react';
 import simplur from 'simplur';
 import useHashParam from '../../lib/useHashParam.js';
@@ -6,22 +5,29 @@ import useHashParam from '../../lib/useHashParam.js';
 import { PARAM_DEPENDENCIES } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useCollapse from '../../lib/useCollapse.js';
+import { ExternalLink } from '../ExternalLink.js';
 import { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
-import { PieGraph } from '../PieGraph.js';
-import { Section } from '../Section.js';
-import { Tag } from '../Tag.js';
-import { Tags } from '../Tags.js';
 import { Toggle } from '../Toggle.js';
+import { AnalyzerItem } from './AnalyzerItem.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
+import { allLicenses } from './analyzers/allLicenses.js';
+import { allMaintainers } from './analyzers/allMaintainers.js';
+import { allModules } from './analyzers/allModules.js';
+import { deprecatedModules } from './analyzers/deprecatedModules.js';
+import {
+  discouragedLicenses,
+  missingLicenses,
+  obsoleteLicenses,
+} from './analyzers/missingLicenses.js';
+import { repeatedModules } from './analyzers/repeatedModules.js';
+import { soloMaintainers } from './analyzers/soloMaintainers.js';
 
 export default function GraphPane({
   graph,
   ...props
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
-  const compareEntryKey = ([a]: [string, unknown], [b]: [string, unknown]) =>
-    a < b ? -1 : a > b ? 1 : 0;
   const [collapse, setCollapse] = useCollapse();
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
 
@@ -30,45 +36,13 @@ export default function GraphPane({
   ).filter(isDefined);
 
   const includeDev = dependencyTypes.includes('devDependencies');
-  if (!graph?.modules) return <div>Loading</div>;
-
-  const occurances: { [key: string]: number } = {};
-  const maintainers: {
-    [key: string]: Exclude<Maintainer, string> & { count?: number };
-  } = {};
-  const licenseCounts: { [key: string]: number } = {};
-
-  for (const { module } of graph.modules.values()) {
-    const { package: pkg, licenseString: license } = module;
-    // Tally module occurances
-    occurances[pkg.name] = (occurances[pkg.name] || 0) + 1;
-
-    // Tally maintainers
-    for (const { name, email } of module.maintainers) {
-      if (!name) continue;
-      const maints = name && maintainers[name];
-
-      if (!maints) {
-        maintainers[name] = { name, email, count: 1 };
-      } else {
-        maints.count = (maints.count ?? 0) + 1;
-      }
-    }
-
-    // Tally licenses
-    if (license) {
-      licenseCounts[license] = (licenseCounts[license] || 0) + 1;
-    }
-  }
-
-  const licenses = Object.entries(licenseCounts)
-    .sort(compareEntryValue)
-    .reverse();
+  if (!graph?.moduleInfos) return <div>Loading</div>;
 
   return (
     <Pane {...props}>
       <Toggle
         checked={includeDev}
+        style={{ marginTop: '1rem' }}
         onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
       >
         Include devDependencies
@@ -76,83 +50,79 @@ export default function GraphPane({
 
       <ColorizeInput />
 
-      <Section title={simplur`${graph.modules.size} Module[|s]`}>
-        <Tags>
-          {Object.entries(occurances)
-            .sort(compareEntryKey)
-            .map(([value, count]) => (
-              <Tag
-                key={value + count}
-                type="name"
-                value={value}
-                count={count}
-                className={collapse.includes(value) ? 'collapsed' : ''}
-              />
-            ))}
-        </Tags>
-
-        <div
-          style={{
-            fontSize: '90%',
-            color: 'var(--text-dim)',
-            marginTop: '1em',
-          }}
-        >
-          {collapse.length ? (
-            <span>
-              {simplur`${collapse.length} module[|s] collapsed `}
-              <button onClick={() => setCollapse([])}>Expand All</button>
-            </span>
-          ) : (
-            <span>(Shift-click modules in graph to expand/collapse)</span>
-          )}
-        </div>
-      </Section>
-
-      <Section
-        title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
+      <div
+        style={{
+          fontSize: '90%',
+          color: 'var(--text-dim)',
+          marginTop: '1em',
+        }}
       >
-        <Tags>
-          {Object.entries(maintainers)
-            .sort(compareEntryKey)
-            .map(([, { name = 'Unknown', email, count }]) => (
-              <Tag
-                key={name + count}
-                type="maintainer"
-                value={name}
-                count={count ?? 0}
-                gravatar={email}
-              />
-            ))}
-        </Tags>
-      </Section>
+        {collapse.length ? (
+          <span>
+            {simplur`${collapse.length} module[|s] collapsed `}
+            <button onClick={() => setCollapse([])}>Expand All</button>
+          </span>
+        ) : (
+          <span>(Shift-click modules in graph to expand/collapse)</span>
+        )}
+      </div>
 
-      <Section title={simplur`${licenses.length} License[|s]`}>
-        <Tags>
-          {licenses.map(([value, count]) => (
-            <Tag
-              key={value + count}
-              type="license"
-              value={value}
-              count={count}
-            />
-          ))}
-        </Tags>
+      <h3>Modules</h3>
 
-        {licenses.length > 1 ? (
-          <PieGraph
-            style={{ width: '100%', height: '200px', padding: '1em 0' }}
-            entries={licenses}
-          />
-        ) : null}
-      </Section>
+      <AnalyzerItem graph={graph} analyzer={allModules} />
+
+      <AnalyzerItem type="warn" graph={graph} analyzer={repeatedModules}>
+        Module repetition is a result of incompatible version constraints, and
+        may lead to increased bundle and <code>node_modules</code> directory
+        size. Consider asking <em>upstream</em> module owners to update to the
+        latest version or loosen the version constraint.
+      </AnalyzerItem>
+
+      <AnalyzerItem type="warn" graph={graph} analyzer={deprecatedModules}>
+        Deprecated modules are unsupported and may have unpatched security
+        vulnerabilities. See the deprecation notes below for module-specific
+        instructions.
+      </AnalyzerItem>
+
+      <h3>Maintainers</h3>
+
+      <AnalyzerItem graph={graph} analyzer={allMaintainers} />
+
+      <AnalyzerItem type="warn" graph={graph} analyzer={soloMaintainers}>
+        Modules with fewer than 2 maintainers are at risk of "unplanned
+        abandonment". See{' '}
+        <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
+          Bus factor
+        </ExternalLink>
+        .
+      </AnalyzerItem>
+
+      <h3>Licenses</h3>
+
+      <AnalyzerItem graph={graph} analyzer={allLicenses} />
+
+      <AnalyzerItem type="warn" graph={graph} analyzer={missingLicenses}>
+        Modules without a declared license, or that are explicitely
+        "UNLICENSED", are not opensource and may infringe on the owner's
+        copyright. Consider contacting the owner to clarify licensing terms.
+      </AnalyzerItem>
+
+      <AnalyzerItem type="warn" graph={graph} analyzer={discouragedLicenses}>
+        "Discouraged" licenses typically have a more popular alternative. See{' '}
+        <ExternalLink href="https://opensource.org/licenses/">
+          OSI Licenses
+        </ExternalLink>
+        .
+      </AnalyzerItem>
+
+      <AnalyzerItem type="warn" graph={graph} analyzer={obsoleteLicenses}>
+        "Obsolete" licenses have a newer version available. Consider asking the
+        module owner to update to a more recent version. See{' '}
+        <ExternalLink href="https://opensource.org/licenses/">
+          OSI Licenses
+        </ExternalLink>
+        .
+      </AnalyzerItem>
     </Pane>
   );
-}
-
-function compareEntryValue<T = string | number>(
-  [, a]: [string, T],
-  [, b]: [string, T],
-) {
-  return a < b ? -1 : a > b ? 1 : 0;
 }

@@ -1,0 +1,13 @@
+.label {
+  margin-right: 1rem;
+}
+
+.bar {
+  border: 1px solid rgb(204, 204, 204);
+  width: 200px;
+
+  & > .inner {
+    color: var(--bg0);
+    text-align: right;
+  }
+}

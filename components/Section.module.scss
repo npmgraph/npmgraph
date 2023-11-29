@@ -1,0 +1,7 @@
+.root {
+  & > summary {
+    margin-block-start: 1rem;
+    margin-block-end: 0.5rem;
+    font-size: 1.3rem;
+  }
+}

@@ -1,9 +1,9 @@
 .bright-hover {
-  transition: filter 0.5s;
+  transition: filter 0.2s;
 
   &:hover {
     filter: brightness(125%);
-    transition-duration: 0.15s;
+    transition-duration: 0.1s;
   }
 }
 

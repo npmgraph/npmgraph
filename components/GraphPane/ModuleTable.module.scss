@@ -1,0 +1,25 @@
+.root {
+  margin: 0.5rem;
+  border-radius: 0.3rem;
+  background-color: var(--bg1);
+  padding: 0.2rem;
+
+  &Row {
+    display: flex;
+    line-height: 1.5rem;
+  }
+
+  &Name {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &Version {
+    display: flex;
+    flex-grow: 0;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    font-family: monospace;
+  }
+}

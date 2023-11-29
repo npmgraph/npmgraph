@@ -59,17 +59,6 @@ label {
   margin: 0.3em 0;
 }
 
-summary {
-  position: -webkit-sticky;
-  cursor: pointer;
-  margin: 0.7em 0 0.5em;
-  outline: none;
-  border-top: solid 1px var(--bg1);
-  padding: 0.2em;
-  font-weight: 600;
-  font-size: 1.2em;
-}
-
 #tabs {
   display: flex;
   flex-shrink: 0;
@@ -103,7 +92,7 @@ summary {
   box-shadow: inset 1px -1px 6px var(--inset-shadow-color, #d6d6d677);
   border-bottom-left-radius: var(--rad_lg);
   background-color: var(--bg0);
-  padding: 0.5em 1em;
+  padding: 0 1em;
   width: 32em;
   overflow-x: hidden;
   overflow-y: auto;
