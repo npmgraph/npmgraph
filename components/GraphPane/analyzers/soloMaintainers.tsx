@@ -17,7 +17,7 @@ export const soloMaintainers: Analyzer<MaintainerMapState> = {
       nModules += m.length;
     }
 
-    results.summary = simplur`Modules with 1 maintainer (${nModules})`;
+    results.summary = simplur`Fewer than 2 maintainers (${nModules})`;
 
     return results;
   },
