@@ -4,7 +4,8 @@ import { AllMaintainersAnalyzer } from './AllMaintainersAnalyzer.js';
 
 export class SoloMaintainersAnalyzer extends AllMaintainersAnalyzer {
   map(moduleInfo: GraphModuleInfo) {
-    if (moduleInfo.module.package?.maintainers?.length > 1) return;
+    if (moduleInfo.module.package?.maintainers?.length !== 1) return;
+
     super.map(moduleInfo);
   }
 
@@ -18,7 +19,7 @@ export class SoloMaintainersAnalyzer extends AllMaintainersAnalyzer {
       nModules += m.length;
     }
 
-    results.summary = simplur`Fewer than two maintainers (${nModules})`;
+    results.summary = simplur`Modules with only one maintainer (${nModules})`;
 
     return results;
   }

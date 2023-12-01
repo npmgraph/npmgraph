@@ -27,10 +27,11 @@ export class AllMaintainersAnalyzer extends Analyzer {
     if (module.isStub) return;
 
     const { maintainers } = module.package;
-    if (!maintainers) {
-      report.error(new Error(`No maintainers for package ${module.key}`));
-      return;
-    }
+
+    // Consider adding "no maintainer" here? This will all the
+    // SoloMaintainersAnalyzer to identifiy modules with no maintainers, which
+    // may be helpful.
+    if (!maintainers) return;
 
     for (const m of maintainers) {
       const maintainer = normalizeMaintainer(m);
