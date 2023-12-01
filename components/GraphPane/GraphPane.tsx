@@ -12,6 +12,14 @@ import { Toggle } from '../Toggle.js';
 import { AnalyzerItem } from './AnalyzerItem.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
+import { AllLicensesAnalyzer } from './analyzers/AllLicensesAnalyzer.js';
+import { AllMaintainersAnalyzer } from './analyzers/AllMaintainersAnalyzer.js';
+import { AllModulesAnalyzer } from './analyzers/AllModulesAnalyzer.js';
+import { DeprecatedModulesAnalyzer } from './analyzers/DeprecatedModulesAnalyzer.js';
+import { LicenseKeywordAnalyzer } from './analyzers/LicenseKeywordAnalyzer.js';
+import { MissingLicensesAnalyzer } from './analyzers/MissingLicensesAnalyzer.js';
+import { RepeatedModulesAnalyzer } from './analyzers/RepeatedModulesAnalyzer.js';
+import { SoloMaintainersAnalyzer } from './analyzers/SoloMaintainersAnalyzer.js';
 
 export default function GraphPane({
   graph,
@@ -31,7 +39,6 @@ export default function GraphPane({
     <Pane {...props}>
       <Toggle
         checked={includeDev}
-        style={{ marginTop: '1rem' }}
         style={{ marginTop: '1rem' }}
         onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
       >
@@ -104,7 +111,6 @@ export default function GraphPane({
       <h3>Licenses</h3>
 
       <AnalyzerItem graph={graph} analyzer={new AllLicensesAnalyzer(graph)} />
-      {/*
 
       <AnalyzerItem
         type="warn"
@@ -139,7 +145,7 @@ export default function GraphPane({
           OSI Licenses
         </ExternalLink>
         .
-      </AnalyzerItem> */}
+      </AnalyzerItem>
     </Pane>
   );
 }
