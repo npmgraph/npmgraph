@@ -6,19 +6,7 @@ import { GraphState } from '../GraphDiagram/graph_util.js';
 import styles from './AnalyzerItem.module.scss';
 import { Analyzer } from './analyzers/Analyzer.js';
 
-function runAnalyzer<T extends object>(
-  graph: GraphState,
-  analyzer: Analyzer<T>,
-) {
-  const mapState = {} as T;
-  for (const [, moduleInfo] of graph.moduleInfos) {
-    analyzer.map(graph, moduleInfo, mapState);
-  }
-
-  return analyzer.reduce(graph, mapState);
-}
-
-export function AnalyzerItem<T extends object>({
+export function AnalyzerItem({
   graph,
   analyzer,
   type = 'info',
@@ -26,7 +14,7 @@ export function AnalyzerItem<T extends object>({
   ...props
 }: {
   graph: GraphState;
-  analyzer: Analyzer<T>;
+  analyzer: Analyzer;
   type?: 'info' | 'warn' | 'error';
 } & React.HTMLAttributes<HTMLDetailsElement>) {
   let symbol: string | null = null;
@@ -36,7 +24,11 @@ export function AnalyzerItem<T extends object>({
 
   let results;
   try {
-    results = runAnalyzer(graph, analyzer);
+    for (const [, moduleInfo] of graph.moduleInfos) {
+      analyzer.map(moduleInfo);
+    }
+
+    results = analyzer.reduce();
   } catch (err) {
     report.error(err as Error);
     return;

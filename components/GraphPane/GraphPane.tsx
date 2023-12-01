@@ -12,17 +12,14 @@ import { Toggle } from '../Toggle.js';
 import { AnalyzerItem } from './AnalyzerItem.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
-import { allLicenses } from './analyzers/allLicenses.js';
-import { allMaintainers } from './analyzers/allMaintainers.js';
-import { allModules } from './analyzers/allModules.js';
-import { deprecatedModules } from './analyzers/deprecatedModules.js';
-import {
-  discouragedLicenses,
-  missingLicenses,
-  obsoleteLicenses,
-} from './analyzers/missingLicenses.js';
-import { repeatedModules } from './analyzers/repeatedModules.js';
-import { soloMaintainers } from './analyzers/soloMaintainers.js';
+import { AllLicensesAnalyzer } from './analyzers/AllLicensesAnalyzer.js';
+import { AllMaintainersAnalyzer } from './analyzers/AllMaintainersAnalyzer.js';
+import { AllModulesAnalyzer } from './analyzers/AllModulesAnalyzer.js';
+import { DeprecatedModulesAnalyzer } from './analyzers/DeprecatedModulesAnalyzer.js';
+import { LicenseKeywordAnalyzer } from './analyzers/LicenseKeywordAnalyzer.js';
+import { MissingLicensesAnalyzer } from './analyzers/MissingLicensesAnalyzer.js';
+import { RepeatedModulesAnalyzer } from './analyzers/RepeatedModulesAnalyzer.js';
+import { SoloMaintainersAnalyzer } from './analyzers/SoloMaintainersAnalyzer.js';
 
 export default function GraphPane({
   graph,
@@ -69,16 +66,23 @@ export default function GraphPane({
 
       <h3>Modules</h3>
 
-      <AnalyzerItem graph={graph} analyzer={allModules} />
+      <AnalyzerItem graph={graph} analyzer={new AllModulesAnalyzer(graph)} />
 
-      <AnalyzerItem type="warn" graph={graph} analyzer={repeatedModules}>
+      <AnalyzerItem
+        type="warn"
+        graph={graph}
+        analyzer={new RepeatedModulesAnalyzer(graph)}
+      >
         Module repetition is a result of incompatible version constraints, and
         may lead to increased bundle and <code>node_modules</code> directory
         size. Consider asking <em>upstream</em> module owners to update to the
         latest version or loosen the version constraint.
       </AnalyzerItem>
-
-      <AnalyzerItem type="warn" graph={graph} analyzer={deprecatedModules}>
+      <AnalyzerItem
+        type="warn"
+        graph={graph}
+        analyzer={new DeprecatedModulesAnalyzer(graph)}
+      >
         Deprecated modules are unsupported and may have unpatched security
         vulnerabilities. See the deprecation notes below for module-specific
         instructions.
@@ -86,11 +90,18 @@ export default function GraphPane({
 
       <h3>Maintainers</h3>
 
-      <AnalyzerItem graph={graph} analyzer={allMaintainers} />
+      <AnalyzerItem
+        graph={graph}
+        analyzer={new AllMaintainersAnalyzer(graph)}
+      />
 
-      <AnalyzerItem type="warn" graph={graph} analyzer={soloMaintainers}>
-        Modules with fewer than 2 maintainers are at risk of "unplanned
-        abandonment". See{' '}
+      <AnalyzerItem
+        type="warn"
+        graph={graph}
+        analyzer={new SoloMaintainersAnalyzer(graph)}
+      >
+        Modules with a single maintainer are at risk of "unplanned abandonment".
+        See{' '}
         <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
           Bus factor
         </ExternalLink>
@@ -99,15 +110,23 @@ export default function GraphPane({
 
       <h3>Licenses</h3>
 
-      <AnalyzerItem graph={graph} analyzer={allLicenses} />
+      <AnalyzerItem graph={graph} analyzer={new AllLicensesAnalyzer(graph)} />
 
-      <AnalyzerItem type="warn" graph={graph} analyzer={missingLicenses}>
+      <AnalyzerItem
+        type="warn"
+        graph={graph}
+        analyzer={new MissingLicensesAnalyzer(graph)}
+      >
         Modules without a declared license, or that are explicitely
         "UNLICENSED", are not opensource and may infringe on the owner's
         copyright. Consider contacting the owner to clarify licensing terms.
       </AnalyzerItem>
 
-      <AnalyzerItem type="warn" graph={graph} analyzer={discouragedLicenses}>
+      <AnalyzerItem
+        type="warn"
+        graph={graph}
+        analyzer={new LicenseKeywordAnalyzer(graph, 'discouraged')}
+      >
         "Discouraged" licenses typically have a more popular alternative. See{' '}
         <ExternalLink href="https://opensource.org/licenses/">
           OSI Licenses
@@ -115,7 +134,11 @@ export default function GraphPane({
         .
       </AnalyzerItem>
 
-      <AnalyzerItem type="warn" graph={graph} analyzer={obsoleteLicenses}>
+      <AnalyzerItem
+        type="warn"
+        graph={graph}
+        analyzer={new LicenseKeywordAnalyzer(graph, 'obsolete')}
+      >
         "Obsolete" licenses have a newer version available. Consider asking the
         module owner to update to a more recent version. See{' '}
         <ExternalLink href="https://opensource.org/licenses/">

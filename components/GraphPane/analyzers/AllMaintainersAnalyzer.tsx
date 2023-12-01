@@ -3,9 +3,10 @@ import md5 from 'md5';
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
 import { report } from '../../../lib/bugsnag.js';
+import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
+import styles from './AllMaintainersAnalyzer.module.scss';
 import { Analyzer } from './Analyzer.js';
-import styles from './allMaintainers.module.scss';
 
 export type MaintainerMapState = {
   modulesByMaintainer: Record<string, Module[]>;
@@ -18,18 +19,19 @@ function normalizeMaintainer(maintainer: Maintainer | string) {
     : maintainer;
 }
 
-export const allMaintainers: Analyzer<MaintainerMapState> = {
-  map(graph, { module }, mapState) {
-    mapState.modulesByMaintainer ??= {};
-    mapState.maintainerEmails ??= {};
+export class AllMaintainersAnalyzer extends Analyzer {
+  modulesByMaintainer: Record<string, Module[]> = {};
+  maintainerEmails: Record<string, string> = {};
 
+  map({ module }: GraphModuleInfo) {
     if (module.isStub) return;
 
     const { maintainers } = module.package;
-    if (!maintainers) {
-      report.error(new Error(`No maintainers for package ${module.key}`));
-      return;
-    }
+
+    // Consider adding "no maintainer" here? This will all the
+    // SoloMaintainersAnalyzer to identifiy modules with no maintainers, which
+    // may be helpful.
+    if (!maintainers) return;
 
     for (const m of maintainers) {
       const maintainer = normalizeMaintainer(m);
@@ -37,7 +39,7 @@ export const allMaintainers: Analyzer<MaintainerMapState> = {
       // Combine information the maintainer across multiple modules (increases
       // the odds of us having an email to generate gravatar image from)
       if (maintainer.email && maintainer.name) {
-        mapState.maintainerEmails[maintainer.name] = maintainer.email;
+        this.maintainerEmails[maintainer.name] = maintainer.email;
       }
 
       if (!maintainer.name) {
@@ -45,16 +47,16 @@ export const allMaintainers: Analyzer<MaintainerMapState> = {
         maintainer.name = '\u{26A0}\u{FE0F} (unnamed maintainer)';
       }
 
-      mapState.modulesByMaintainer[maintainer.name] ??= [];
-      mapState.modulesByMaintainer[maintainer.name].push(module);
+      this.modulesByMaintainer[maintainer.name] ??= [];
+      this.modulesByMaintainer[maintainer.name].push(module);
     }
-  },
+  }
 
-  reduce(graph, { modulesByMaintainer, maintainerEmails }) {
-    const details = Object.entries(modulesByMaintainer)
+  reduce() {
+    const details = Object.entries(this.modulesByMaintainer)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([name, modules]) => {
-        const email = maintainerEmails[name];
+        const email = this.maintainerEmails[name];
         let img: JSX.Element | null = null;
         if (email) {
           img = (
@@ -85,5 +87,5 @@ export const allMaintainers: Analyzer<MaintainerMapState> = {
 
     const summary = simplur`All maintainers (${details.length})`;
     return { summary, details };
-  },
-};
+  }
+}

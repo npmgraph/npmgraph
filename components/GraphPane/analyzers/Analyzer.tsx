@@ -16,7 +16,8 @@ interface AnalyzerResult {
   details: JSX.Element[];
 }
 
-export interface Analyzer<MapState extends object> {
-  map(graph: GraphState, moduleInfo: GraphModuleInfo, mapState: MapState): void;
-  reduce(graph: GraphState, mapState: MapState): AnalyzerResult | undefined;
+export abstract class Analyzer {
+  constructor(public graph: GraphState) {}
+  abstract map(moduleInfo: GraphModuleInfo): void;
+  abstract reduce(): AnalyzerResult | undefined;
 }
