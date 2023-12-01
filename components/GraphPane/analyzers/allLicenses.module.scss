@@ -1,0 +1,59 @@
+.root {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-block-start: 0.4rem;
+  margin-block-end: 0.4rem;
+  line-height: 1.5rem;
+}
+
+.license {
+  flex: 0 0 17ch;
+
+  > span {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+  }
+
+  > img {
+    flex-grow: 0;
+    margin-inline-start: 0.5rem;
+    border-radius: 0.3rem;
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.modules {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  font-size: 0.9rem;
+  font-family: monospace;
+
+  :global {
+    .selectable {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  line-height: 1rem;
+
+  .keyword {
+    margin: 0.2rem;
+    border-radius: 1rem;
+    background-color: rgba(127, 127, 127, 0.3);
+    padding: 0.2rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}

@@ -12,12 +12,6 @@ import { Toggle } from '../Toggle.js';
 import { AnalyzerItem } from './AnalyzerItem.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
-import { AllLicensesAnalyzer } from './analyzers/AllLicensesAnalyzer.js';
-import { AllMaintainersAnalyzer } from './analyzers/AllMaintainersAnalyzer.js';
-import { AllModulesAnalyzer } from './analyzers/AllModulesAnalyzer.js';
-import { DeprecatedModulesAnalyzer } from './analyzers/DeprecatedModulesAnalyzer.js';
-import { RepeatedModulesAnalyzer } from './analyzers/RepeatedModulesAnalyzer.js';
-import { SoloMaintainersAnalyzer } from './analyzers/SoloMaintainersAnalyzer.js';
 
 export default function GraphPane({
   graph,
@@ -37,6 +31,7 @@ export default function GraphPane({
     <Pane {...props}>
       <Toggle
         checked={includeDev}
+        style={{ marginTop: '1rem' }}
         style={{ marginTop: '1rem' }}
         onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
       >
