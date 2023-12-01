@@ -1,23 +1,23 @@
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
+import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
 import { Analyzer } from './Analyzer.js';
-import styles from './deprecatedModules.module.scss';
+import styles from './DeprecatedModulesAnalyzer.module.scss';
 
-export const deprecatedModules: Analyzer<{
-  deprecated: Module[];
-}> = {
-  map(graph, { module }, mapState) {
-    mapState.deprecated ??= [];
+export class DeprecatedModulesAnalyzer extends Analyzer {
+  deprecated: Module[] = [];
+
+  map({ module }: GraphModuleInfo) {
     if (module.package.deprecated) {
-      mapState.deprecated.push(module);
+      this.deprecated.push(module);
     }
-  },
+  }
 
-  reduce(graph, { deprecated }) {
-    if (deprecated.length <= 0) return;
+  reduce() {
+    if (this.deprecated.length <= 0) return;
 
-    const details = deprecated
+    const details = this.deprecated
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(module => {
         return (
@@ -31,7 +31,7 @@ export const deprecatedModules: Analyzer<{
         );
       });
 
-    const summary = simplur`Deprecated modules (${deprecated.length})`;
+    const summary = simplur`Deprecated modules (${this.deprecated.length})`;
     return { summary, details };
-  },
-};
+  }
+}

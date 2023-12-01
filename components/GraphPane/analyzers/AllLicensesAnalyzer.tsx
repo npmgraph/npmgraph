@@ -1,17 +1,20 @@
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
 import { LICENSES } from '../../../lib/licenses.js';
+import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
+import styles from './AllLicensesAnalyzer.module.scss';
 import { Analyzer } from './Analyzer.js';
-import styles from './allLicenses.module.scss';
 
 export type LicenseMapState = {
   modulesByLicense: Record<string, Module[]>;
 };
 
-export const allLicenses: Analyzer<LicenseMapState> = {
-  map(graph, { module }, mapState) {
-    mapState.modulesByLicense ??= {};
+export class AllLicensesAnalyzer extends Analyzer {
+  modulesByLicense: Record<string, Module[]> = {};
+
+  map({ module }: GraphModuleInfo) {
+    this.modulesByLicense ??= {};
 
     if (module.isStub) return;
 
@@ -23,13 +26,13 @@ export const allLicenses: Analyzer<LicenseMapState> = {
 
     for (let license of licenses) {
       license = license.toLowerCase();
-      mapState.modulesByLicense[license] ??= [];
-      mapState.modulesByLicense[license].push(module);
+      this.modulesByLicense[license] ??= [];
+      this.modulesByLicense[license].push(module);
     }
-  },
+  }
 
-  reduce(graph, { modulesByLicense }) {
-    const details = Object.entries(modulesByLicense)
+  reduce() {
+    const details = Object.entries(this.modulesByLicense)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([license, modules]) => {
         const keywords = LICENSES[license.toLowerCase()]?.keywords;
@@ -45,7 +48,9 @@ export const allLicenses: Analyzer<LicenseMapState> = {
               {keywords ? (
                 <div className={styles.keywords}>
                   {keywords.map(k => (
-                    <span className={styles.keyword}>{k}</span>
+                    <span className={styles.keyword} key={k}>
+                      {k}
+                    </span>
                   ))}
                 </div>
               ) : null}
@@ -64,5 +69,5 @@ export const allLicenses: Analyzer<LicenseMapState> = {
 
     const summary = simplur`All licenses (${details.length})`;
     return { summary, details };
-  },
-};
+  }
+}

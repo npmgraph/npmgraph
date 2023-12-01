@@ -1,20 +1,20 @@
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
+import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
 import { Analyzer } from './Analyzer.js';
-import styles from './repeatedModules.module.scss';
+import styles from './RepeatedModulesAnalyzer.module.scss';
 
-export const repeatedModules: Analyzer<{
-  versionsByName: Record<string, Module[]>;
-}> = {
-  map(graph, { module }, mapState) {
-    mapState.versionsByName ??= {};
-    mapState.versionsByName[module.name] ??= [];
-    mapState.versionsByName[module.name].push(module);
-  },
+export class RepeatedModulesAnalyzer extends Analyzer {
+  versionsByName: Record<string, Module[]> = {};
 
-  reduce(graph, { versionsByName }) {
-    const details = Object.entries(versionsByName)
+  map({ module }: GraphModuleInfo) {
+    this.versionsByName[module.name] ??= [];
+    this.versionsByName[module.name].push(module);
+  }
+
+  reduce() {
+    const details = Object.entries(this.versionsByName)
       .filter(([, v]) => v.length > 1)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([name, versions]) => {
@@ -39,5 +39,5 @@ export const repeatedModules: Analyzer<{
 
     const summary = simplur`Modules with multiple versions (${details.length})`;
     return { summary, details };
-  },
-};
+  }
+}
