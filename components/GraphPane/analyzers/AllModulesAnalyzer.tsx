@@ -21,7 +21,6 @@ export class AllModulesAnalyzer extends Analyzer {
     const details = Array.from(moduleInfos.values())
       .sort((a, b) => a.module.key.localeCompare(b.module.key))
       .map(({ module }) => {
-        console.log('GRAPH', module);
         return (
           <div className={cn(styles.row)} key={module.key}>
             <Selectable
