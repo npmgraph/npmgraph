@@ -15,6 +15,7 @@ import ModuleBundleSize from './ModuleBundleSize.js';
 import ModuleNpmsIOScores from './ModuleNpmsIOScores.js';
 import styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.js';
+import { ReleaseTimeline } from './ReleaseTimeline.js';
 
 export default function ModulePane({
   selectedModules,
@@ -130,6 +131,8 @@ export default function ModulePane({
         {projectLink}
         <ExternalLink href={packageUrl}>package.json</ExternalLink>
       </div>
+
+      <ReleaseTimeline module={module} />
 
       <Section title="Bundle Size">
         <ModuleBundleSize module={module} />

@@ -1,0 +1,64 @@
+.root {
+  border: solid 1px var(--bg1);
+  border-radius: 0.3rem;
+
+  width: 100%;
+  height: 8rem;
+}
+
+.legend {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: 0.5rem;
+
+  & .dotKey {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    background-color: red;
+    width: 0.7em;
+    height: 0.7em;
+  }
+  .dotKeyMajor {
+    background-color: var(--bg-red);
+    width: 1em;
+    height: 1em;
+  }
+  .dotKeyMinor {
+    background-color: var(--bg-orange);
+  }
+  .dotKeyPatch {
+    background-color: var(--bg-yellow);
+  }
+  .dotKeyPrerelease {
+    background-color: var(--bg-blue);
+  }
+}
+
+svg {
+  cursor: default;
+
+  > .layer-grid {
+    stroke: var(--stroke-green);
+    opacity: 0.6;
+  }
+
+  .layer-major {
+    fill: var(--bg-red);
+  }
+  .layer-minor {
+    fill: var(--bg-orange);
+  }
+  .layer-patch {
+    fill: var(--bg-yellow);
+  }
+  .layer-prerelease {
+    fill: var(--bg-blue);
+  }
+}
+
+.xAxis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
