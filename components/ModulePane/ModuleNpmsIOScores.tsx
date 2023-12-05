@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Module from '../../lib/Module.js';
 import fetchJSON from '../../lib/fetchJSON.js';
 import { NPMSIOData } from '../../lib/fetch_types.js';
