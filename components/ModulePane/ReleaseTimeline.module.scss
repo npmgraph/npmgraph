@@ -1,6 +1,7 @@
 .root {
-  border: solid 1px var(--bg1);
+  border: solid 1px var(--grey70);
   border-radius: 0.3rem;
+  background-color: var(--grey90);
 
   width: 100%;
   height: 8rem;
@@ -39,8 +40,7 @@ svg {
   cursor: default;
 
   > .layer-grid {
-    stroke: var(--stroke-green);
-    opacity: 0.6;
+    stroke: var(--grey20);
   }
 
   .layer-major {

@@ -12,6 +12,13 @@ function timestring(t: number) {
   return new Date(t).toISOString().replace(/T.*/, '');
 }
 
+function createScale(in0: number, in1: number, out0: number, out1: number) {
+  return function (v: number) {
+    if (in1 === in0) return (out1 + out0) / 2;
+    return ((v - in0) / (in1 - in0)) * (out1 - out0) + out0;
+  };
+}
+
 export function ReleaseTimeline({ module }: { module: Module }) {
   const [ref, { width: w, height: h }] = useMeasure<SVGSVGElement>();
   if (!module.packument?.versions) return;
@@ -37,9 +44,14 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       return a.time < b.time ? -1 : 0;
     });
 
-  const majorMax = byTime.reduce((acc, [, v]) => v.semver.major, 0);
-  const majorSep = h / majorMax;
-  const vmax = majorMax * majorSep;
+  const majorMax = byTime.reduce(
+    (acc, [, v]) => Math.max(acc, v.semver.major),
+    byTime[0][1].semver.major,
+  );
+  const majorMin = byTime.reduce(
+    (acc, [, v]) => Math.min(acc, v.semver.major),
+    byTime[0][1].semver.major,
+  );
 
   const tmin = byTime[0][1].time;
   const tmax = Date.now(); // byTime[byTime.length - 1][1].time;
@@ -54,9 +66,8 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     text: [] as JSX.Element[],
   };
 
-  function xForT(t: number) {
-    return ((t - tmin) / (tmax - tmin)) * w;
-  }
+  const xScale = createScale(tmin, tmax, 0, w);
+  const yScale = createScale(majorMax, majorMin, 0, h);
 
   // Add grid lines for each year
   for (
@@ -64,7 +75,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     year <= new Date(tmax).getFullYear();
     year++
   ) {
-    const x = xForT(new Date(String(year)).getTime());
+    const x = xScale(Date.parse(String(year)));
     layers.grid.push(<line x1={x} y1={0} x2={x} y2={h} key={`year-${year}`} />);
   }
 
@@ -74,9 +85,9 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
     if (!semver) continue;
 
-    const x = xForT(time);
+    const x = xScale(time);
     const title = `${key} published ${timestring(time)}`;
-    const y = vmax - semver.major * majorSep;
+    const y = yScale(semver.major);
 
     let r = 10;
 
