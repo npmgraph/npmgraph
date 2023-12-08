@@ -1,6 +1,10 @@
 :root {
   color-scheme: light dark;
 
+  @for $i from 0 through 10 {
+    --grey#{($i) * 10}: hsl(0, 0%, #{$i * 10%});
+  }
+
   --rad_sm: 5px;
   --rad_lg: 10px;
   --inspector-size: 32em;
@@ -57,6 +61,10 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
+    @for $i from 0 through 10 {
+      --grey#{(10-$i) * 10}: hsl(0, 0%, #{$i * 10%});
+    }
+
     background-color: #111;
 
     --text: #f3f3f3;
