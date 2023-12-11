@@ -16,7 +16,7 @@ export class AllModulesAnalyzer extends Analyzer {
     const { entryModules, moduleInfos } = this.graph;
     const summary = simplur`All modules (${entryModules.size} top level,  ${
       moduleInfos.size - entryModules.size
-    } dependent[|s])`;
+    } dependenc[y|ies])`;
 
     const details = Array.from(moduleInfos.values())
       .sort((a, b) => a.module.key.localeCompare(b.module.key))
