@@ -53,6 +53,10 @@ To graph a custom package.json module, provide the package contents here (in the
 
 https://npmgraph.js.org/?q=my_package%400.0.1#packages=%5B%7B%22name%22%3A%22my_package%22%2C%22version%22%3A%220.0.1%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%7D%7D%5D
 
+```js
+'https://npmgraph.js.org/?q=my_package#' + new URLSearchParams([['packages', JSON.stringify(packageJson)]]).toString()
+```
+
 ### `select` (hash param)
 
 Select a module or category of modules.
