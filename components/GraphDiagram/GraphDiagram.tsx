@@ -192,6 +192,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       let svgMarkup = '<svg />';
       if (graph?.moduleInfos?.size) {
         const dotDoc = composeDOT(graph.moduleInfos);
+
         try {
           svgMarkup = graph?.moduleInfos.size
             ? await graphviz.dot(dotDoc, 'svg')
