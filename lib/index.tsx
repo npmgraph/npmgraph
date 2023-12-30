@@ -10,6 +10,28 @@ import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
 import { fetchCommits } from './useCommits.js';
 
+// Various features we depend on that have triggered bugsnag errors in the past
+function hasExpectedFeatures() {
+  if (!window.Promise) return false;
+  if (!window.fetch) return false;
+  if (!window.AbortSignal?.timeout) return false;
+
+  return false;
+}
+
+function renderUnsupported() {
+  const el = document.querySelector('body');
+  el!.innerHTML = `
+    <div class="unsupported">
+      <h1>Unsupported Browser</h1>
+      <p>
+        NPMGraph requires a browser with modern JavaScript features.
+        Please try the latest version of Chrome, Firefox, Safari, or Edge.
+      </p>
+    </div>
+  `;
+}
+
 window.addEventListener('error', err => {
   console.error(err);
   flash(err.message);
@@ -21,6 +43,11 @@ window.addEventListener('unhandledrejection', err => {
 });
 
 window.onload = function () {
+  if (!hasExpectedFeatures()) {
+    renderUnsupported();
+    return;
+  }
+
   // Make sure module cache is synced with hash param
   syncPackagesHash();
 
