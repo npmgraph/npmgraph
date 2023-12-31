@@ -17,7 +17,7 @@ function hasExpectedFeatures() {
   if (!window.fetch) return false;
   if (!window.AbortSignal?.timeout) return false;
 
-  return false;
+  return true;
 }
 
 window.addEventListener('error', err => {
