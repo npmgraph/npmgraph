@@ -9,6 +9,7 @@ import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
 import { fetchCommits } from './useCommits.js';
+import { Unsupported } from '../components/Unsupported.js';
 
 // Various features we depend on that have triggered bugsnag errors in the past
 function hasExpectedFeatures() {
@@ -17,19 +18,6 @@ function hasExpectedFeatures() {
   if (!window.AbortSignal?.timeout) return false;
 
   return false;
-}
-
-function renderUnsupported() {
-  const el = document.querySelector('body');
-  el!.innerHTML = `
-    <div class="unsupported">
-      <h1>Unsupported Browser</h1>
-      <p>
-        NPMGraph requires a browser with modern JavaScript features.
-        Please try the latest version of Chrome, Firefox, Safari, or Edge.
-      </p>
-    </div>
-  `;
 }
 
 window.addEventListener('error', err => {
@@ -44,7 +32,7 @@ window.addEventListener('unhandledrejection', err => {
 
 window.onload = function () {
   if (!hasExpectedFeatures()) {
-    renderUnsupported();
+    createRoot(document.querySelector('body')!).render(<Unsupported />);
     return;
   }
 
