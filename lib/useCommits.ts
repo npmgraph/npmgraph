@@ -2,13 +2,12 @@ import fetchJSON from './fetchJSON.js';
 import { GithubCommit } from './fetch_types.js';
 import sharedStateHook from './sharedStateHook.js';
 
-const lastVisit = Number(localStorage.getItem('lastVisit'));
-
 const [useCommitState, setCommitState] = sharedStateHook<GithubCommit[]>([]);
-const [useLastVisit, setLastVisit] = sharedStateHook(lastVisit);
+const [useLastVisit, setLastVisit] = sharedStateHook(0);
 
 export async function fetchCommits() {
   const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
   try {
     let commits = await fetchJSON<GithubCommit[]>(
       `https://api.github.com/repos/npmgraph/npmgraph/commits?since=${since.toISOString()}`,
@@ -45,6 +44,12 @@ export async function fetchCommits() {
     // This is non-essential so don't cmoplain too loudly
     console.warn('Request for project commits failed');
   }
+
+  // Not really part of fetching commits, but we don't want to access
+  // localStorage until after we've done the feature detect logic.  So we read
+  // lastVisit here rather than as part of loading the module.
+  const lastVisit = Number(localStorage.getItem('lastVisit'));
+  setLastVisit(lastVisit);
 }
 
 export default function useCommits() {

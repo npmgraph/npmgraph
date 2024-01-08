@@ -21,7 +21,6 @@ function detectFeatures() {
   const features = {
     'AbortSignal.timeout': window.AbortSignal?.timeout,
     fetch: window.fetch,
-    localStorage: window.localStorage,
     Promise: window.Promise,
   };
 

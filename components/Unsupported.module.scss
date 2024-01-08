@@ -1,6 +1,7 @@
 .root {
+  position: relative;
   margin: 2rem auto;
-  border: 1px solid #ccc;
+  border: 1px solid black;
   border-radius: 10px;
 
   padding: 1rem;
@@ -18,4 +19,10 @@ code {
 
 .footer {
   text-align: right;
+}
+
+.sad_kilroy {
+  position: absolute;
+  bottom: -10px;
+  left: 100px;
 }
