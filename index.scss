@@ -57,11 +57,6 @@
   --bg-darkred: hsl(0, var(--bg-dark-S), var(--bg-dark-L));
   --bg-darkviolet: hsl(300, var(--bg-dark-S), var(--bg-dark-L));
   --bg-darkyellow: hsl(60, var(--bg-dark-S), var(--bg-dark-L));
-
-  .unsupported {
-    padding: 1rem;
-    text-align: center;
-  }
 }
 
 @media (prefers-color-scheme: dark) {

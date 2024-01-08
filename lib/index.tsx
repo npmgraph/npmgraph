@@ -12,12 +12,42 @@ import { fetchCommits } from './useCommits.js';
 import { Unsupported } from '../components/Unsupported.js';
 
 // Various features we depend on that have triggered bugsnag errors in the past
-function hasExpectedFeatures() {
-  if (!window.Promise) return false;
-  if (!window.fetch) return false;
-  if (!window.AbortSignal?.timeout) return false;
+function detectFeatures() {
+  const unsupported: JSX.Element[] = [];
 
-  return true;
+  unsupported.push();
+
+  // API checks
+  const features = {
+    'AbortSignal.timeout': window.AbortSignal?.timeout,
+    fetch: window.fetch,
+    localStorage: window.localStorage,
+    Promise: window.Promise,
+  };
+
+  for (const [k, v] of Object.entries(features)) {
+    if (v) continue;
+
+    unsupported.push(
+      <>
+        <code>{k}</code> is not supported
+      </>,
+    );
+  }
+
+  // localStorage may not work if cookies are disabled. See #202
+  try {
+    window.localStorage.setItem('test', 'test');
+    window.localStorage.removeItem('test');
+  } catch (err) {
+    unsupported.push(
+      <>
+        <code>localStorage</code> is not supported
+      </>,
+    );
+  }
+
+  return unsupported;
 }
 
 window.addEventListener('error', err => {
@@ -31,8 +61,11 @@ window.addEventListener('unhandledrejection', err => {
 });
 
 window.onload = function () {
-  if (!hasExpectedFeatures()) {
-    createRoot(document.querySelector('body')!).render(<Unsupported />);
+  const unsupported = detectFeatures();
+  if (unsupported.length > 0) {
+    createRoot(document.querySelector('body')!).render(
+      <Unsupported unsupported={unsupported} />,
+    );
     return;
   }
 

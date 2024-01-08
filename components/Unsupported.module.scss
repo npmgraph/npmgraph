@@ -1,0 +1,21 @@
+.root {
+  h1 {
+    text-align: center;
+  }
+
+  padding: 1rem;
+  max-width: 40rem;
+  margin: 2rem auto;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
+code {
+  color: var(--stroke-orange);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.footer {
+  text-align: right;
+}
