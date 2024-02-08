@@ -3,11 +3,23 @@ import LoadActivity from '../../lib/LoadActivity.js';
 import sharedStateHook from '../../lib/sharedStateHook.js';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.js';
 import { GraphState } from '../GraphDiagram/graph_util.js';
-import Inspector from '../Inspector.js';
+import Inspector, { PANE } from '../Inspector.js';
 import './App.scss';
 import { Loader } from './Loader.js';
+import URLPlus from '../../lib/URLPlus.js';
 
-export const [usePane] = sharedStateHook('info', 'pane');
+function _getInitialPane() {
+  const loc = new URLPlus(location.href);
+  if (!loc.getSearchParam('q')) {
+    return PANE.INFO;
+  }
+  const select = loc.getHashParam('select')?.split(/[, ]+/);
+  return select ? PANE.MODULE : PANE.GRAPH;
+}
+
+const initialPane = _getInitialPane();
+console.log('initialPane', initialPane);
+export const [usePane] = sharedStateHook(initialPane, 'pane');
 export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');
 
 export default function App() {

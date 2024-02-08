@@ -6,10 +6,13 @@ import useLocation from '../../lib/useLocation.js';
 import { useQuery } from '../../lib/useQuery.js';
 import { ExternalLink } from '../ExternalLink.js';
 import './QueryInput.scss';
+import { usePane } from '../App/App.js';
+import { PANE } from '../Inspector.js';
 
 export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   const [query] = useQuery();
   const [location, setLocation] = useLocation();
+  const [, setPane] = usePane();
 
   const initialValue = query.join(', ');
 
@@ -39,6 +42,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     url.hash = '';
 
     setLocation(url, false);
+    setPane(PANE.GRAPH);
   }
 
   return (

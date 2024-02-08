@@ -40,6 +40,7 @@ import {
   gatherSelectionInfo,
   getGraphForQuery,
 } from './graph_util.js';
+import { PANE } from '../Inspector.js';
 
 export type ZoomOption =
   | typeof ZOOM_NONE
@@ -115,7 +116,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (el) setZenMode('');
 
     setGraphSelection('exact', moduleKey);
-    setPane(moduleKey ? 'module' : 'graph');
+    setPane(moduleKey ? PANE.MODULE : PANE.GRAPH);
   }
 
   function applyZoom() {
@@ -275,8 +276,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           el.classList.add('stub');
         }
       }
-
-      setPane(graph?.moduleInfos.size ? 'graph' : 'info');
 
       // Signal other hooks that graph DOM has changed
       setDomSignal(domSignal + 1);
