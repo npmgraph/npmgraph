@@ -15,6 +15,13 @@ import ModulePane from './ModulePane/ModulePane.js';
 import { Splitter } from './Splitter.js';
 import { Tab } from './Tab.js';
 
+export enum PANE {
+  MODULE = 'module',
+  GRAPH = 'graph',
+  INFO = 'info',
+  ABOUT = 'about',
+}
+
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = usePane();
   const [queryType, queryValue] = useGraphSelection();
@@ -26,18 +33,18 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   let paneComponent;
   switch (pane) {
-    case 'module':
+    case PANE.MODULE:
       paneComponent = (
         <ModulePane id="pane-module" selectedModules={selectedModules} />
       );
       break;
-    case 'graph':
+    case PANE.GRAPH:
       paneComponent = <GraphPane id="pane-graph" graph={graph} />;
       break;
-    case 'info':
+    case PANE.INFO:
       paneComponent = <InfoPane id="pane-info" />;
       break;
-    case 'about':
+    case PANE.ABOUT:
       paneComponent = <AboutPane id="pane-about" />;
       break;
   }
@@ -45,18 +52,18 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   return (
     <div id="inspector" className={hide !== null ? '' : 'open'} {...props}>
       <div id="tabs">
-        <Tab active={pane == 'info'} onClick={() => setPane('info')}>
+        <Tab active={pane == PANE.INFO} onClick={() => setPane(PANE.INFO)}>
           Start
         </Tab>
-        <Tab active={pane == 'graph'} onClick={() => setPane('graph')}>
+        <Tab active={pane == PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
           Graph
         </Tab>
-        <Tab active={pane == 'module'} onClick={() => setPane('module')}>
+        <Tab active={pane == PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
           Module
         </Tab>
         <Tab
-          active={pane == 'about'}
-          onClick={() => setPane('about')}
+          active={pane == PANE.ABOUT}
+          onClick={() => setPane(PANE.ABOUT)}
           badge={newCommitsCount > 0}
         >
           About

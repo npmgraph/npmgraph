@@ -2,6 +2,8 @@ import filterAlteredClicks from 'filter-altered-clicks';
 import React, { HTMLProps } from 'react';
 import { PARAM_QUERY } from '../lib/constants.js';
 import useLocation from '../lib/useLocation.js';
+import { usePane } from './App/App.js';
+import { PANE } from './Inspector.js';
 
 export function QueryLink({
   query,
@@ -13,6 +15,7 @@ export function QueryLink({
   query: string | string[];
 }) {
   const [location, setLocation] = useLocation();
+  const [, setPane] = usePane();
 
   const queries = Array.isArray(query) ? query : [query];
 
@@ -22,6 +25,7 @@ export function QueryLink({
 
   function onClick(e: React.MouseEvent) {
     e.preventDefault();
+    setPane(PANE.GRAPH);
     setLocation(url, false);
   }
 
