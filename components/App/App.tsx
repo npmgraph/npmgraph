@@ -18,7 +18,7 @@ function _getInitialPane() {
 }
 
 const initialPane = _getInitialPane();
-console.log('initialPane', initialPane);
+
 export const [usePane] = sharedStateHook(initialPane, 'pane');
 export const [useGraph] = sharedStateHook(null as GraphState | null, 'graph');
 
