@@ -30,6 +30,7 @@ import {
   getColorizer,
   isSimpleColorizer,
 } from '../GraphPane/colorizers/index.js';
+import { PANE } from '../Inspector.js';
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
@@ -40,7 +41,6 @@ import {
   gatherSelectionInfo,
   getGraphForQuery,
 } from './graph_util.js';
-import { PANE } from '../Inspector.js';
 
 export type ZoomOption =
   | typeof ZOOM_NONE
@@ -77,10 +77,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [graphviz, graphvizLoading] = useGraphviz();
 
   // Dependencies to include for top-level modules
-  const dependencyTypes = new Set<DependencyKey>([
-    'dependencies',
-    'peerDependencies',
-  ]);
+  const dependencyTypes = new Set<DependencyKey>(['dependencies']);
   (depTypes ?? '')
     .split(/\s*,\s*/)
     .sort()
@@ -238,23 +235,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (!key) continue;
 
         const m = getCachedModule(key);
-
-        const graphInfo = graph?.moduleInfos.get(key);
-        let isPeer;
-        if (graphInfo) {
-          let peerDeps = 0;
-          for (const { type } of graphInfo.upstream) {
-            if (type === 'peerDependencies') {
-              peerDeps++;
-            }
-          }
-          isPeer = peerDeps > 1 && peerDeps === graphInfo.upstream.size;
-        } else {
-          isPeer = false;
-        }
-
-        // Style peer dependencies
-        el.classList.toggle('peer', isPeer);
 
         if (!m) continue;
 

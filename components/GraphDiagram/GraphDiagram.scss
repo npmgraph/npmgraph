@@ -89,8 +89,7 @@ g.node {
     fill: var(--bg0);
   }
 
-  &.collapsed,
-  &.peer {
+  &.collapsed {
     opacity: 0.5;
   }
 

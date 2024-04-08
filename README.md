@@ -37,7 +37,7 @@ https://npmgraph.js.org/?q=send#color=moduleType
 
 Comma-separated list of the _types_ dependencies to include for modules at the top-level of the graph. (Lower-level modules only ever show `dependencies`).
 
-`dependencies` and `peerDependencies` are currently always included.
+`dependencies` is always included.
 
 **Example**: Graph `send`, include `devDependencies`:
 
