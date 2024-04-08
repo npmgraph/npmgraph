@@ -13,6 +13,9 @@ export class MissingLicensesAnalyzer extends Analyzer {
     if (module.isStub) return;
     const licenses = module.getLicenses();
 
+    // Skip private packages
+    if (module.package.private) return;
+
     if (!licenses.length || licenses[0] === 'unlicensed')
       this.modules.push(module);
   }
@@ -25,7 +28,7 @@ export class MissingLicensesAnalyzer extends Analyzer {
     const details = this.modules
       .sort((a, b) => a.key.localeCompare(b.key))
       .map(module => (
-        <div className={cn(styles.row)} key={module.key}>
+        <div className={cn(styles.row, 'zebra-stripe')} key={module.key}>
           <Selectable
             className={cn(styles.name)}
             type="exact"

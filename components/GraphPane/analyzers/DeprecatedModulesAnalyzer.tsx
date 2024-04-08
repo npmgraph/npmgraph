@@ -4,6 +4,7 @@ import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
 import { Analyzer } from './Analyzer.js';
 import styles from './DeprecatedModulesAnalyzer.module.scss';
+import { cn } from '../../../lib/dom.js';
 
 export class DeprecatedModulesAnalyzer extends Analyzer {
   deprecated: Module[] = [];
@@ -21,7 +22,7 @@ export class DeprecatedModulesAnalyzer extends Analyzer {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(module => {
         return (
-          <div className={styles.root} key={module.key}>
+          <div className={cn(styles.root, 'zebra-stripe')} key={module.key}>
             <Selectable type="exact" value={module.key} />
             {': '}
             <span className={styles.body}>

@@ -18,6 +18,7 @@ import { AllModulesAnalyzer } from './analyzers/AllModulesAnalyzer.js';
 import { DeprecatedModulesAnalyzer } from './analyzers/DeprecatedModulesAnalyzer.js';
 import { LicenseKeywordAnalyzer } from './analyzers/LicenseKeywordAnalyzer.js';
 import { MissingLicensesAnalyzer } from './analyzers/MissingLicensesAnalyzer.js';
+import { PeerDependenciesAnalyzer } from './analyzers/PeerDependenciesAnalyzer.js';
 import { RepeatedModulesAnalyzer } from './analyzers/RepeatedModulesAnalyzer.js';
 import { SoloMaintainersAnalyzer } from './analyzers/SoloMaintainersAnalyzer.js';
 
@@ -78,6 +79,7 @@ export default function GraphPane({
         size. Consider asking <em>upstream</em> module owners to update to the
         latest version or loosen the version constraint.
       </AnalyzerItem>
+
       <AnalyzerItem
         type="warn"
         graph={graph}
@@ -87,6 +89,13 @@ export default function GraphPane({
         vulnerabilities. See the deprecation notes below for module-specific
         instructions.
       </AnalyzerItem>
+
+      <h3>Peer Dependencies</h3>
+
+      <AnalyzerItem
+        graph={graph}
+        analyzer={new PeerDependenciesAnalyzer(graph)}
+      />
 
       <h3>Maintainers</h3>
 

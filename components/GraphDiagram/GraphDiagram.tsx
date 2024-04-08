@@ -335,6 +335,7 @@ export function updateSelection(
   if (!graph) return;
 
   const modules = queryModuleCache(queryType, queryValue);
+  if (!modules) return;
 
   // Get selection info
   const si = gatherSelectionInfo(graph, modules.values());

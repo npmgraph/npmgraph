@@ -5,6 +5,7 @@ import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
 import styles from './AllLicensesAnalyzer.module.scss';
 import { Analyzer } from './Analyzer.js';
+import { cn } from '../../../lib/dom.js';
 
 export type LicenseMapState = {
   modulesByLicense: Record<string, Module[]>;
@@ -38,7 +39,7 @@ export class AllLicensesAnalyzer extends Analyzer {
         const keywords = LICENSES[license.toLowerCase()]?.keywords;
 
         return (
-          <div className={styles.root} key={license}>
+          <div className={cn(styles.root, 'zebra-stripe')} key={license}>
             <div className={styles.license}>
               <Selectable
                 type="license"

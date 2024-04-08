@@ -141,14 +141,16 @@ export async function getGraphForQuery(
     return info;
   }
 
-  // Walk dependencies of each module in the query
-  return Promise.allSettled(
+  // deep-resolve all modules in query
+  await Promise.allSettled(
     query.map(async moduleKey => {
       const m = await getModule(moduleKey);
       graphState.entryModules.add(m);
       return m && _visit(m);
     }),
-  ).then(() => graphState);
+  );
+
+  return graphState;
 }
 
 function dotEscape(str: string) {

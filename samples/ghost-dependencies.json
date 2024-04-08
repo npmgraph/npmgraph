@@ -1,0 +1,7 @@
+{
+  "name": "ghost-dependencies",
+  "dependencies": {
+    "react-redux": "5.0.5",
+    "redux-rx": "0.5.0"
+  }
+}

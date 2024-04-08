@@ -11,7 +11,7 @@ export class SoloMaintainersAnalyzer extends AllMaintainersAnalyzer {
 
   reduce() {
     const results = super.reduce();
-    if (!results) return results;
+    if (!results) return;
 
     // Total # of modules with <= 1 maintainer
     let nModules = 0;

@@ -7,6 +7,7 @@ import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
 import styles from './AllMaintainersAnalyzer.module.scss';
 import { Analyzer } from './Analyzer.js';
+import { cn } from '../../../lib/dom.js';
 
 export type MaintainerMapState = {
   modulesByMaintainer: Record<string, Module[]>;
@@ -68,7 +69,7 @@ export class AllMaintainersAnalyzer extends Analyzer {
         }
 
         return (
-          <div className={styles.root} key={name}>
+          <div className={cn(styles.root, 'zebra-stripe')} key={name}>
             <div className={styles.maintainer}>
               {img}
               <Selectable type="maintainer" value={name} />
