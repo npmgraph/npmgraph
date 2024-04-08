@@ -3,11 +3,11 @@ import md5 from 'md5';
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
 import { report } from '../../../lib/bugsnag.js';
+import { cn } from '../../../lib/dom.js';
 import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
 import styles from './AllMaintainersAnalyzer.module.scss';
 import { Analyzer } from './Analyzer.js';
-import { cn } from '../../../lib/dom.js';
 
 export type MaintainerMapState = {
   modulesByMaintainer: Record<string, Module[]>;
@@ -69,7 +69,7 @@ export class AllMaintainersAnalyzer extends Analyzer {
         }
 
         return (
-          <div className={cn(styles.root, 'zebra-stripe')} key={name}>
+          <div className={cn(styles.root, 'zebra-row')} key={name}>
             <div className={styles.maintainer}>
               {img}
               <Selectable type="maintainer" value={name} />

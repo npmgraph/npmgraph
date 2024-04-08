@@ -1,10 +1,10 @@
 import simplur from 'simplur';
 import Module from '../../../lib/Module.js';
+import { cn } from '../../../lib/dom.js';
 import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
 import { Analyzer } from './Analyzer.js';
 import styles from './DeprecatedModulesAnalyzer.module.scss';
-import { cn } from '../../../lib/dom.js';
 
 export class DeprecatedModulesAnalyzer extends Analyzer {
   deprecated: Module[] = [];
@@ -22,7 +22,7 @@ export class DeprecatedModulesAnalyzer extends Analyzer {
       .sort((a, b) => a.name.localeCompare(b.name))
       .map(module => {
         return (
-          <div className={cn(styles.root, 'zebra-stripe')} key={module.key}>
+          <div className={cn(styles.root, 'zebra-row')} key={module.key}>
             <Selectable type="exact" value={module.key} />
             {': '}
             <span className={styles.body}>

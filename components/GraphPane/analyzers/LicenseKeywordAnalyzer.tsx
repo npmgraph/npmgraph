@@ -38,7 +38,7 @@ export class LicenseKeywordAnalyzer extends Analyzer {
     const details = this.modules
       .sort((a, b) => a.key.localeCompare(b.key))
       .map(module => (
-        <div className={cn(styles.row, 'zebra-stripe')} key={module.key}>
+        <div className={cn(styles.row, 'zebra-row')} key={module.key}>
           <Selectable
             className={cn(styles.name)}
             type="exact"

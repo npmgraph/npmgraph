@@ -17,7 +17,7 @@
   }
 
   :global {
-    .zebra-stripe:nth-child(even) {
+    .zebra-row:nth-child(even) {
       background-color: rgba(127, 127, 127, 0.05);
     }
 

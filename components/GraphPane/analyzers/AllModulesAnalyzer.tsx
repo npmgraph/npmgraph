@@ -22,7 +22,7 @@ export class AllModulesAnalyzer extends Analyzer {
       .sort((a, b) => a.module.key.localeCompare(b.module.key))
       .map(({ module }) => {
         return (
-          <div className={cn(styles.row, 'zebra-stripe')} key={module.key}>
+          <div className={cn(styles.row, 'zebra-row')} key={module.key}>
             <Selectable
               className={cn(styles.name, {
                 [styles.entry]: entryModules.has(module),

@@ -1,10 +1,10 @@
 import { lt, satisfies } from 'semver';
 import Module from '../../../lib/Module.js';
+import { cn } from '../../../lib/dom.js';
 import { GraphModuleInfo } from '../../GraphDiagram/graph_util.js';
 import { Selectable } from '../../Selectable.js';
 import { Analyzer } from './Analyzer.js';
 import styles from './PeerDependenciesAnalyzer.module.scss';
-import { cn } from '../../../lib/dom.js';
 
 type PeerDependencyInfo = {
   name: string;
@@ -77,7 +77,7 @@ export class PeerDependenciesAnalyzer extends Analyzer {
                 nPeerDependencies++;
                 return (
                   <div
-                    className={cn('zebra-stripe', styles.row)}
+                    className={cn('zebra-row', styles.row)}
                     key={`${pdi.name}${pdi.versionRange}`}
                   >
                     <span className={styles.wants}>
