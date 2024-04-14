@@ -2,16 +2,10 @@ import Bugsnag from '@bugsnag/js';
 import { version as appVersion } from '../package.json';
 import HttpError from './HttpError.js';
 
-// declare let process: {
-//   env: {
-//     BUGSNAG_KEY: string;
-//   };
-// };
-
 const bugsnag = Bugsnag.default.start({
   appVersion,
-  // apiKey: process.env.BUGSNAG_KEY,
-  apiKey: 'fsafdafs',
+  // @ts-ignore See https://github.com/parcel-bundler/parcel/issues/9643
+  apiKey: process.env.BUGSNAG_KEY,
   releaseStage: /npmgraph/.test(window.location.hostname)
     ? 'production'
     : 'development',

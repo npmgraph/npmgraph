@@ -31,7 +31,7 @@ export function analyzeMaintainers({
   const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
     modules,
     (module: Module) => {
-      const maintainers = module.maintainers;
+      const { maintainers } = module;
 
       // Discard stub and private modules
       if (module.isStub || module.package.private) return '';
@@ -50,7 +50,7 @@ export function analyzeMaintainers({
   for (const { module } of moduleInfos.values()) {
     if (module.isStub) continue;
 
-    const { maintainers } = module.package;
+    const { maintainers } = module;
 
     for (const m of maintainers) {
       const maintainer = normalizeMaintainer(m);
