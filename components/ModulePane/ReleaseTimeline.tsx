@@ -149,7 +149,11 @@ export function ReleaseTimeline({ module }: { module: Module }) {
         ref={ref}
       >
         {Object.entries(layers).map(([k, layer]) => {
-          return <g className={styles[`layer-${k}`]}>{layer}</g>;
+          return (
+            <g key={`layer-${k}`} className={styles[`layer-${k}`]}>
+              {layer}
+            </g>
+          );
         })}
       </svg>
 
