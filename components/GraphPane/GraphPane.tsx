@@ -91,8 +91,6 @@ export default function GraphPane({
         instructions.
       </ReportItem>
 
-      <h3>Peer Dependencies</h3>
-
       <ReportItem
         data={peerDependencyAnalysis}
         reporter={peerDependenciesAll}
