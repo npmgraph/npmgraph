@@ -1,0 +1,16 @@
+.root {
+  margin-block-end: 0.5rem;
+  line-height: 1.5rem;
+
+  .body {
+    display: block;
+    margin-left: 1rem;
+    font-style: italic;
+  }
+
+  :global {
+    .selectable {
+      margin-inline-end: 0;
+    }
+  }
+}

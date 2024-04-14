@@ -1,0 +1,37 @@
+.dim {
+  color: var(--text-dim);
+}
+
+.section {
+  margin-bottom: 1rem;
+}
+
+.header {
+  display: flex;
+  gap: 0 1rem;
+  & > *:nth-child(1) {
+    flex-grow: 1;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    white-space: nowrap;
+  }
+  & > *:nth-child(2) {
+    flex-grow: 0;
+    white-space: nowrap;
+  }
+}
+
+.row {
+  display: flex;
+  gap: 0.2rem 1rem;
+  margin: 0.3rem 0;
+  margin-left: 1rem;
+}
+
+.wants {
+  flex-grow: 1;
+}
+
+.gets {
+  flex-grow: 0;
+}
