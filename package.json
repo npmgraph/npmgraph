@@ -16,7 +16,7 @@
     "https://github.com/sponsors/fregante"
   ],
   "dependencies": {
-    "@bugsnag/js": "7.21.0",
+    "@bugsnag/js": "7.22.4",
     "@hpcc-js/wasm": "2.13.1",
     "@types/d3-interpolate": "3.0.1",
     "@types/d3-scale": "4.0.4",
@@ -32,7 +32,7 @@
     "md5": "2.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "semver": "7.5.4",
+    "semver": "7.6.0",
     "simplur": "3.0.1"
   },
   "description": "Visualize npm dependency graphs (public and private!)",
@@ -52,28 +52,28 @@
     "packageExports-why": "added this because new graphviz uses exports in package.json"
   },
   "devDependencies": {
-    "@npm/types": "github:broofa/npm_types",
-    "@parcel/runtime-react-refresh": "^2.9.3",
-    "@parcel/transformer-inline-string": "2.9.3",
-    "@parcel/transformer-sass": "^2.9.3",
+    "@npm/types": "https://github.com/broofa/npm_types.git#commit=2dcb6445eb5f15b514ef4621ab441d6c102054b7",
+    "@parcel/runtime-react-refresh": "^2.12.0",
+    "@parcel/transformer-inline-string": "2.12.0",
+    "@parcel/transformer-sass": "^2.12.0",
     "@types/d3-hierarchy": "3.1.3",
     "@types/d3-selection": "3.0.6",
     "@types/md5": "2.3.2",
-    "@types/react": "18.2.21",
-    "@types/react-dom": "18.2.7",
+    "@types/react": "18.2.78",
+    "@types/react-dom": "18.2.25",
     "@typescript-eslint/eslint-plugin": "6.4.1",
     "@typescript-eslint/parser": "6.4.1",
-    "eslint": "8.48.0",
-    "eslint-config-prettier": "9.0.0",
-    "eslint-plugin-prettier": "5.0.0",
-    "parcel": "^2.9.3",
-    "postcss": "8.4.31",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.1.3",
+    "parcel": "^2.12.0",
+    "postcss": "8.4.38",
     "postcss-modules": "4.3.1",
-    "prettier": "3.0.3",
-    "prettier-plugin-css-order": "2.0.0",
+    "prettier": "3.2.5",
+    "prettier-plugin-css-order": "2.1.2",
     "process": "0.11.10",
     "standard-version": "9.5.0",
-    "typescript": "5.2.2"
+    "typescript": "5.4.5"
   },
   "scripts": {
     "build": "parcel build index.html",
@@ -83,5 +83,6 @@
     "format:check": "prettier -c .",
     "format:fix": "prettier -w .",
     "test": "npm run format:check && npm run lint"
-  }
+  },
+  "packageManager": "yarn@4.1.1+sha256.f3cc0eda8e5560e529c7147565b30faa43b4e472d90e8634d7134a37c7f59781"
 }

@@ -8,11 +8,16 @@
 
 .header {
   display: flex;
+  gap: 0 1rem;
   & > *:nth-child(1) {
     flex-grow: 1;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    white-space: nowrap;
   }
   & > *:nth-child(2) {
     flex-grow: 0;
+    white-space: nowrap;
   }
 }
 

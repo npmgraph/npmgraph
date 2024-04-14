@@ -1,46 +1,36 @@
 import React from 'react';
 
-import { report } from '../../lib/bugsnag.js';
 import { cn } from '../../lib/dom.js';
-import { GraphState } from '../GraphDiagram/graph_util.js';
 import styles from './AnalyzerItem.module.scss';
-import { Analyzer } from './analyzers/Analyzer.js';
+import { RenderedAnalysis } from './analysis/Analyzer.js';
 
-export function AnalyzerItem({
-  graph,
-  analyzer,
-  type = 'info',
+const SYMBOLS = {
+  info: null,
+  warn: '\u{26a0}',
+  error: '\u{1f6ab}',
+};
+
+export function AnalyzerItem2<T>({
+  state,
+  renderer,
   children,
   ...props
 }: {
-  graph: GraphState;
-  analyzer: Analyzer;
+  state?: T;
+  renderer: (state: T) => RenderedAnalysis;
   type?: 'info' | 'warn' | 'error';
 } & React.HTMLAttributes<HTMLDetailsElement>) {
-  let symbol: string | null = null;
-  if (type === 'info') symbol = null;
-  else if (type === 'warn') symbol = '\u{26a0}';
-  else if (type === 'error') symbol = '\u{1f6ab}';
+  if (!state) return null;
 
-  let results;
-  try {
-    for (const [, moduleInfo] of graph.moduleInfos) {
-      analyzer.map(moduleInfo);
-    }
+  const rendered = renderer(state);
+  if (!rendered) return null;
 
-    results = analyzer.reduce();
-  } catch (err) {
-    report.error(err as Error);
-    return;
-  }
-
-  if (!results) return;
-  const { summary, details } = results;
+  const { type, summary, details } = rendered;
 
   return (
     <details className={cn(styles.root, styles[type])} {...props}>
       <summary className="bright-hover">
-        <span className={styles.symbol}>{symbol}</span>
+        <span className={styles.symbol}>{SYMBOLS[type]}</span>
         {summary}
       </summary>
       {children ? <div className={styles.description}>{children}</div> : null}

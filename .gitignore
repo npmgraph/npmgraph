@@ -1,7 +1,7 @@
-node_modules
-.parcel-cache
 *.code-workspace
-dist
+.parcel-cache
 .vscode
-!package-lock.json
+.yarn
 art/**/*.svg.*.svg  # inkscape backup files
+dist
+node_modules
