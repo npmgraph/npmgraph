@@ -76,16 +76,16 @@ export default function GraphPane({
 
       <h3>Modules</h3>
 
-      <ReportItem state={moduleAnalysis} renderer={modulesAll} />
+      <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
-      <ReportItem state={moduleAnalysis} renderer={modulesRepeated}>
+      <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
         Module repetition is a result of incompatible version constraints, and
         may lead to increased bundle and <code>node_modules</code> directory
         size. Consider asking <em>upstream</em> module owners to update to the
         latest version or loosen the version constraint.
       </ReportItem>
 
-      <ReportItem state={moduleAnalysis} renderer={modulesDeprecated}>
+      <ReportItem data={moduleAnalysis} reporter={modulesDeprecated}>
         Deprecated modules are unsupported and may have unpatched security
         vulnerabilities. See the deprecation notes below for module-specific
         instructions.
@@ -94,15 +94,15 @@ export default function GraphPane({
       <h3>Peer Dependencies</h3>
 
       <ReportItem
-        state={peerDependencyAnalysis}
-        renderer={peerDependenciesAll}
+        data={peerDependencyAnalysis}
+        reporter={peerDependenciesAll}
       />
 
       <h3>Maintainers</h3>
 
-      <ReportItem state={maintainersAnalysis} renderer={maintainersAll} />
+      <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
 
-      <ReportItem state={maintainersAnalysis} renderer={maintainersSolo}>
+      <ReportItem data={maintainersAnalysis} reporter={maintainersSolo}>
         Modules with a single maintainer are at risk of "unplanned abandonment".
         See{' '}
         <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
@@ -113,12 +113,12 @@ export default function GraphPane({
 
       <h3>Licenses</h3>
 
-      <ReportItem state={licensesAnalysis} renderer={licensesAll} />
+      <ReportItem data={licensesAnalysis} reporter={licensesAll} />
 
       <ReportItem
         type="warn"
-        state={licensesAnalysis}
-        renderer={licensesMissing}
+        data={licensesAnalysis}
+        reporter={licensesMissing}
       >
         Modules without a declared license, or that are explicitely
         "UNLICENSED", are not opensource and may infringe on the owner's
@@ -127,8 +127,8 @@ export default function GraphPane({
 
       <ReportItem
         type="warn"
-        state={licensesAnalysis}
-        renderer={licensesKeyword('discouraged')}
+        data={licensesAnalysis}
+        reporter={licensesKeyword('discouraged')}
       >
         "Discouraged" licenses typically have a more popular alternative. See{' '}
         <ExternalLink href="https://opensource.org/licenses/">
@@ -139,8 +139,8 @@ export default function GraphPane({
 
       <ReportItem
         type="warn"
-        state={licensesAnalysis}
-        renderer={licensesKeyword('obsolete')}
+        data={licensesAnalysis}
+        reporter={licensesKeyword('obsolete')}
       >
         "Obsolete" licenses have a newer version available. Consider asking the
         module owner to update to a more recent version. See{' '}

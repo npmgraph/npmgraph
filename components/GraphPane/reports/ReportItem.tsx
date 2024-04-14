@@ -11,18 +11,18 @@ const SYMBOLS = {
 };
 
 export function ReportItem<T>({
-  state,
-  renderer,
+  data,
+  reporter: renderer,
   children,
   ...props
 }: {
-  state?: T;
-  renderer: (state: T) => RenderedAnalysis;
+  data?: T;
+  reporter: (state: T) => RenderedAnalysis;
   type?: 'info' | 'warn' | 'error';
 } & React.HTMLAttributes<HTMLDetailsElement>) {
-  if (!state) return null;
+  if (!data) return null;
 
-  const rendered = renderer(state);
+  const rendered = renderer(data);
   if (!rendered) return null;
 
   const { type, summary, details } = rendered;
