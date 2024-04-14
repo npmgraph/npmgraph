@@ -13,7 +13,6 @@ export function maintainersAll({
   const details = Array.from(modulesByMaintainer.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([name, modules]) => {
-      console.log('NAME', name, modules);
       const email = emailByMaintainer.get(name);
       let img: JSX.Element | null = null;
       if (email) {

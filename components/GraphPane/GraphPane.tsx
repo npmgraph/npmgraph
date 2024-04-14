@@ -9,22 +9,22 @@ import { ExternalLink } from '../ExternalLink.js';
 import { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
 import { Toggle } from '../Toggle.js';
-import { AnalyzerItem2 } from './AnalyzerItem.js';
 import ColorizeInput from './ColorizeInput.js';
 import './GraphPane.scss';
-import { analyzeLicenses } from './analysis/analyzeLicenses.js';
-import { analyzeMaintainers } from './analysis/analyzeMaintainers.js';
-import { analyzeModules } from './analysis/analyzeModules.js';
-import { analyzePeerDependencies } from './analysis/analyzePeerDependencies.js';
-import { licensesRenderAll } from './analysis/renderers/licensesRenderAll.js';
-import { licensesRenderKeyword } from './analysis/renderers/licensesRenderKeyword.js';
-import { licensesRenderMissing } from './analysis/renderers/licensesRenderMissing.js';
-import { maintainersRenderAll } from './analysis/renderers/maintainersRenderAll.js';
-import { maintainersRenderSolo } from './analysis/renderers/maintainersRenderSolo.js';
-import { renderAllModules } from './analysis/renderers/modulesRenderAll.js';
-import { modulesRenderDeprecated } from './analysis/renderers/modulesRenderDeprecated.js';
-import { modulesRenderRepeated } from './analysis/renderers/modulesRenderRepeated.js';
-import { peerDependenciesRenderAll } from './analysis/renderers/peerDependenciesRenderAll.js';
+import { ReportItem } from './reports/ReportItem.js';
+import { analyzeLicenses } from './reports/analyzeLicenses.js';
+import { analyzeMaintainers } from './reports/analyzeMaintainers.js';
+import { analyzeModules } from './reports/analyzeModules.js';
+import { analyzePeerDependencies } from './reports/analyzePeerDependencies.js';
+import { licensesAll } from './reports/reporters/licensesAll.js';
+import { licensesKeyword } from './reports/reporters/licensesKeyword.js';
+import { licensesMissing } from './reports/reporters/licensesMissing.js';
+import { maintainersAll } from './reports/reporters/maintainersAll.js';
+import { maintainersSolo } from './reports/reporters/maintainersSolo.js';
+import { modulesAll } from './reports/reporters/modulesAll.js';
+import { modulesDeprecated } from './reports/reporters/modulesDeprecated.js';
+import { modulesRepeated } from './reports/reporters/modulesRepeated.js';
+import { peerDependenciesAll } from './reports/reporters/peerDependenciesAll.js';
 
 export default function GraphPane({
   graph,
@@ -76,77 +76,71 @@ export default function GraphPane({
 
       <h3>Modules</h3>
 
-      <AnalyzerItem2 state={moduleAnalysis} renderer={renderAllModules} />
+      <ReportItem state={moduleAnalysis} renderer={modulesAll} />
 
-      <AnalyzerItem2 state={moduleAnalysis} renderer={modulesRenderRepeated}>
+      <ReportItem state={moduleAnalysis} renderer={modulesRepeated}>
         Module repetition is a result of incompatible version constraints, and
         may lead to increased bundle and <code>node_modules</code> directory
         size. Consider asking <em>upstream</em> module owners to update to the
         latest version or loosen the version constraint.
-      </AnalyzerItem2>
+      </ReportItem>
 
-      <AnalyzerItem2 state={moduleAnalysis} renderer={modulesRenderDeprecated}>
+      <ReportItem state={moduleAnalysis} renderer={modulesDeprecated}>
         Deprecated modules are unsupported and may have unpatched security
         vulnerabilities. See the deprecation notes below for module-specific
         instructions.
-      </AnalyzerItem2>
+      </ReportItem>
 
       <h3>Peer Dependencies</h3>
 
-      <AnalyzerItem2
+      <ReportItem
         state={peerDependencyAnalysis}
-        renderer={peerDependenciesRenderAll}
+        renderer={peerDependenciesAll}
       />
 
       <h3>Maintainers</h3>
 
-      <AnalyzerItem2
-        state={maintainersAnalysis}
-        renderer={maintainersRenderAll}
-      />
+      <ReportItem state={maintainersAnalysis} renderer={maintainersAll} />
 
-      <AnalyzerItem2
-        state={maintainersAnalysis}
-        renderer={maintainersRenderSolo}
-      >
+      <ReportItem state={maintainersAnalysis} renderer={maintainersSolo}>
         Modules with a single maintainer are at risk of "unplanned abandonment".
         See{' '}
         <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
           Bus factor
         </ExternalLink>
         .
-      </AnalyzerItem2>
+      </ReportItem>
 
       <h3>Licenses</h3>
 
-      <AnalyzerItem2 state={licensesAnalysis} renderer={licensesRenderAll} />
+      <ReportItem state={licensesAnalysis} renderer={licensesAll} />
 
-      <AnalyzerItem2
+      <ReportItem
         type="warn"
         state={licensesAnalysis}
-        renderer={licensesRenderMissing}
+        renderer={licensesMissing}
       >
         Modules without a declared license, or that are explicitely
         "UNLICENSED", are not opensource and may infringe on the owner's
         copyright. Consider contacting the owner to clarify licensing terms.
-      </AnalyzerItem2>
+      </ReportItem>
 
-      <AnalyzerItem2
+      <ReportItem
         type="warn"
         state={licensesAnalysis}
-        renderer={licensesRenderKeyword('discouraged')}
+        renderer={licensesKeyword('discouraged')}
       >
         "Discouraged" licenses typically have a more popular alternative. See{' '}
         <ExternalLink href="https://opensource.org/licenses/">
           OSI Licenses
         </ExternalLink>
         .
-      </AnalyzerItem2>
+      </ReportItem>
 
-      <AnalyzerItem2
+      <ReportItem
         type="warn"
         state={licensesAnalysis}
-        renderer={licensesRenderKeyword('obsolete')}
+        renderer={licensesKeyword('obsolete')}
       >
         "Obsolete" licenses have a newer version available. Consider asking the
         module owner to update to a more recent version. See{' '}
@@ -154,7 +148,7 @@ export default function GraphPane({
           OSI Licenses
         </ExternalLink>
         .
-      </AnalyzerItem2>
+      </ReportItem>
     </Pane>
   );
 }

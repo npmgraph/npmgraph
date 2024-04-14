@@ -26,7 +26,7 @@ export function analyzeMaintainers({
 
   let soloModulesCount = 0;
   const modules = Array.from(moduleInfos.values()).map(({ module }) => module);
-  console.log('MODULES', modules);
+
   // @ts-ignore TODO: fixup code here once Map.groupBy lands in TS and VSCode
   const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
     modules,
@@ -34,15 +34,18 @@ export function analyzeMaintainers({
       const maintainers = module.maintainers;
 
       // Discard stub and private modules
-      if (module.isStub || module.package.private) return;
+      if (module.isStub || module.package.private) return '';
 
       // Discard modules with multiple maintainers
-      if (maintainers.length > 1) return;
+      if (maintainers.length > 1) return '';
 
       soloModulesCount++;
       return maintainers[0].name;
     },
   );
+
+  // Non-solo modules got slotted under "", so remove that key
+  soloModulesByMaintainer.delete('');
 
   for (const { module } of moduleInfos.values()) {
     if (module.isStub) continue;
