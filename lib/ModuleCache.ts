@@ -174,7 +174,7 @@ export function cacheModule(module: Module) {
 export function queryModuleCache(queryType: QueryType, queryValue: string) {
   const results = new Map<string, Module>();
 
-  if (!queryType || !queryValue) return;
+  if (!queryType || !queryValue) return results;
 
   for (const { module } of moduleCache.values()) {
     if (!module) continue;
