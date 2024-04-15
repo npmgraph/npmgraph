@@ -1,8 +1,8 @@
-import { lt, satisfies } from 'semver';
+import { satisfies } from 'semver';
 import Module from '../../../lib/Module.js';
 import { GraphState } from '../../GraphDiagram/graph_util.js';
 
-type PeerDependencyInfo = {
+export type PeerDependencyInfo = {
   name: string;
   optional: true | undefined;
   versionRange: string;
@@ -11,26 +11,18 @@ type PeerDependencyInfo = {
 };
 
 export type PeerDependenciesState = {
-  peerDeps: Map<string, PeerDependencyInfo>;
-  peerDepsBySource: Map<string, PeerDependencyInfo[]>;
+  peerDependencyInfos: PeerDependencyInfo[];
 };
 
-export function analyzePeerDependencies(
-  graph: GraphState,
-): PeerDependenciesState | undefined {
-  const peerDeps = new Map();
-  const peerDepsBySource = new Map();
+export function analyzePeerDependencies({
+  moduleInfos,
+}: GraphState): PeerDependenciesState | undefined {
+  const peerDependencyInfos: PeerDependencyInfo[] = [];
 
-  for (const { module } of graph.moduleInfos.values()) {
+  for (const { module } of moduleInfos.values()) {
     const { peerDependencies, peerDependenciesMeta } = module.package;
     if (!peerDependencies) continue;
 
-    if (!peerDepsBySource.has(module.key)) {
-      peerDepsBySource.set(module.key, []);
-    }
-    const pdis = peerDepsBySource.get(module.key)!;
-
-    const { moduleInfos } = graph;
     for (const [name, versionRange] of Object.entries(peerDependencies)) {
       const pdi: PeerDependencyInfo = {
         name,
@@ -41,24 +33,15 @@ export function analyzePeerDependencies(
       };
 
       for (const { module: mod } of moduleInfos.values()) {
-        if (mod.name !== name) continue;
+        if (mod.name !== name || !satisfies(mod.version, versionRange))
+          continue;
 
-        if (satisfies(mod.version, versionRange)) {
-          pdi.destination = mod;
-          // Take the highest version that satisfies the peer dependency
-          const currentPdi = peerDeps.get(name);
-          if (
-            !currentPdi?.destination ||
-            lt(currentPdi.destination.version, pdi.destination.version)
-          ) {
-            peerDeps.set(name, pdi);
-          }
-        }
+        pdi.destination = mod;
       }
 
-      pdis.push(pdi);
+      peerDependencyInfos.push(pdi);
     }
   }
 
-  return { peerDeps, peerDepsBySource };
+  return { peerDependencyInfos };
 }

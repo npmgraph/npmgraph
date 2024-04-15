@@ -27,24 +27,24 @@ export function analyzeMaintainers({
   let soloModulesCount = 0;
   const modules = Array.from(moduleInfos.values()).map(({ module }) => module);
 
-  // @ts-ignore TODO: fixup code here once Map.groupBy lands in TS and VSCode
+  // Find modules that have a single maintainer, group by maintainer
+  //
+  // @ts-ignore TODO: unignore once Map.groupBy lands in TS types
   const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
     modules,
     (module: Module) => {
       const { maintainers } = module;
 
-      // Discard stub and private modules
-      if (module.isStub || module.package.private) return '';
-
-      // Discard modules with multiple maintainers
-      if (maintainers.length > 1) return '';
+      // Group modules we aren't interested in under "" (removed below)
+      if (module.isStub || module.package.private || maintainers.length !== 1)
+        return '';
 
       soloModulesCount++;
       return maintainers[0].name;
     },
   );
 
-  // Non-solo modules got slotted under "", so remove that key
+  // Remove the "" key (modules we're not interested in)
   soloModulesByMaintainer.delete('');
 
   for (const { module } of moduleInfos.values()) {

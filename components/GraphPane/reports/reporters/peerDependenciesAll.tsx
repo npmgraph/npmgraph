@@ -1,13 +1,23 @@
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
 import { RenderedAnalysis } from '../Analyzer.js';
-import { PeerDependenciesState } from '../analyzePeerDependencies.js';
+import {
+  PeerDependenciesState,
+  PeerDependencyInfo,
+} from '../analyzePeerDependencies.js';
 import styles from './peerDependenciesAll.module.scss';
 
 export function peerDependenciesAll({
-  peerDepsBySource,
+  peerDependencyInfos,
 }: PeerDependenciesState): RenderedAnalysis {
-  let nPeerDependencies = 0;
+  if (!peerDependencyInfos.length) return;
+
+  // @ts-ignore Unignore once TS types know about Map.groupBy()
+  const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
+    peerDependencyInfos,
+    (pdi: PeerDependencyInfo) => pdi.source.key,
+  );
+
   const details = Array.from(peerDepsBySource.keys())
     .sort()
     .map(sourceName => {
@@ -18,14 +28,16 @@ export function peerDependenciesAll({
           <div className={styles.header}>
             <span>
               <Selectable type="exact" value={sourceName} />{' '}
-              <span className={styles.dim}>needs</span>
             </span>
-            <span className={styles.dim}>resolves to</span>
           </div>
           <div className={styles.section}>
+            <div className={styles.header_row}>
+              <span className={styles.wants}>Wants</span>
+              <span className={styles.gets}>Gets</span>
+            </div>
+
             {pdis.map(pdi => {
               const { name, optional, versionRange, destination } = pdi;
-              nPeerDependencies++;
               return (
                 <div
                   className={cn('zebra-row', styles.row)}
@@ -53,9 +65,23 @@ export function peerDependenciesAll({
       );
     });
 
-  if (!nPeerDependencies) return;
-
-  const summary = `All peer dependencies (${nPeerDependencies})`;
+  const summary = `All peer dependencies (${peerDependencyInfos.length})`;
 
   return { type: 'info', summary, details };
+}
+
+export function peerDependenciesUnresolved({
+  peerDependencyInfos,
+}: PeerDependenciesState): RenderedAnalysis {
+  const unresolvedInfos = peerDependencyInfos.filter(
+    pdi => !pdi.destination && !pdi.optional,
+  );
+  const result = peerDependenciesAll({ peerDependencyInfos: unresolvedInfos });
+  if (!result) return;
+
+  return {
+    type: 'warn',
+    summary: `Unresolved peer dependencies (${unresolvedInfos.length})`,
+    details: result?.details,
+  };
 }

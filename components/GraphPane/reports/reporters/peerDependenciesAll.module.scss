@@ -11,8 +11,8 @@
   gap: 0 1rem;
   & > *:nth-child(1) {
     flex-grow: 1;
-    text-overflow: ellipsis;
     overflow-x: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
   & > *:nth-child(2) {
@@ -21,11 +21,16 @@
   }
 }
 
+.header_row,
 .row {
   display: flex;
   gap: 0.2rem 1rem;
   margin: 0.3rem 0;
   margin-left: 1rem;
+}
+
+.header_row {
+  font-weight: bold;
 }
 
 .wants {
