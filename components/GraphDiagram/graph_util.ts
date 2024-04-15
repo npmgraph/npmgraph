@@ -171,7 +171,9 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
   const edges = ['\n// Edges & per-edge styling'];
 
   for (const [, { module, level, downstream }] of entries) {
-    nodes.push(`"${dotEscape(module.key)}"${level == 0 ? ' [root=true]' : ''}`);
+    nodes.push(
+      `"${dotEscape(module.key)}"${level == 0 ? ' [root=true]' : `[fontsize="${(6 + Math.random() * Math.random() * 30) | 0}"]`}`,
+    );
     if (!downstream) continue;
     for (const { module: dependency, type } of downstream) {
       edges.push(
