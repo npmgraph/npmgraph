@@ -74,7 +74,7 @@ export function ModuleVersionInfo({
 
     content = (
       <>
-        {message} {latestVersion} (<code>latest</code>)
+        {message} <code>latest</code> ({latestVersion})
       </>
     );
   }

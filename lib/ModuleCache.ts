@@ -1,6 +1,5 @@
 import { PackageJson, Packument, PackumentVersion } from '@npm/types';
-import semverGt from 'semver/functions/gt.js';
-import semverSatisfies from 'semver/functions/satisfies.js';
+import { gt, satisfies } from 'semver';
 import HttpError from './HttpError.js';
 import Module from './Module.js';
 import {
@@ -45,8 +44,8 @@ function selectVersion(
   } else {
     // Find highest matching version
     for (const version of Object.keys(packument.versions)) {
-      if (!semverSatisfies(version, targetVersion)) continue;
-      if (!selectedVersion || semverGt(version, selectedVersion)) {
+      if (!satisfies(version, targetVersion)) continue;
+      if (!selectedVersion || gt(version, selectedVersion)) {
         selectedVersion = version;
       }
     }
@@ -208,6 +207,7 @@ const PACKAGE_WHITELIST: (keyof PackageJson)[] = [
   'license',
   'name',
   'peerDependencies',
+  'peerDependenciesMeta',
   'version',
 ];
 

@@ -1,8 +1,7 @@
 import { PackumentVersion } from '@npm/types';
 import Module from '../../lib/Module.js';
 
-import { SemVer } from 'semver';
-import semverParse from 'semver/functions/parse.js';
+import { SemVer, parse } from 'semver';
 import { cn } from '../../lib/dom.js';
 import useMeasure from '../../lib/useMeasure.js';
 import { Section } from '../Section.js';
@@ -32,7 +31,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
         {
           ...version,
           time: Date.parse(time[key]),
-          semver: semverParse(key),
+          semver: parse(key),
         } as PackumentVersion & {
           time: number;
           semver: SemVer;
@@ -150,7 +149,11 @@ export function ReleaseTimeline({ module }: { module: Module }) {
         ref={ref}
       >
         {Object.entries(layers).map(([k, layer]) => {
-          return <g className={styles[`layer-${k}`]}>{layer}</g>;
+          return (
+            <g key={`layer-${k}`} className={styles[`layer-${k}`]}>
+              {layer}
+            </g>
+          );
         })}
       </svg>
 

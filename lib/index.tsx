@@ -1,15 +1,14 @@
 import './bugsnag.js'; // Initialize ASAP!
 
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App, { setActivityForApp } from '../components/App/App.js';
+import { Unsupported } from '../components/Unsupported.js';
 import { DiagramTitle } from './DiagramTitle.js';
 import LoadActivity from './LoadActivity.js';
 import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
 import { fetchCommits } from './useCommits.js';
-import { Unsupported } from '../components/Unsupported.js';
 
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
@@ -20,6 +19,8 @@ function detectFeatures() {
   // API checks
   const features = {
     'AbortSignal.timeout': window.AbortSignal?.timeout,
+    // @ts-ignore remove this ignore once VSCode knows about groupBy
+    'Map.groupBy': window.Map?.groupBy,
     fetch: window.fetch,
     Promise: window.Promise,
   };
