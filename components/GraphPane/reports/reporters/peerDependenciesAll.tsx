@@ -45,6 +45,7 @@ export function peerDependenciesAll({
                 >
                   <span className={styles.wants}>
                     {name}@{versionRange}
+                    {optional ? <i>(optional)</i> : ''}
                   </span>
                   <span className={styles.gets}>
                     {destination ? (
@@ -54,7 +55,7 @@ export function peerDependenciesAll({
                         value={destination.key}
                       />
                     ) : (
-                      <i>{optional ? '(optional)' : 'unresolved'}</i>
+                      <i>{optional ? '—' : 'missing'}</i>
                     )}
                   </span>
                 </div>
@@ -70,18 +71,18 @@ export function peerDependenciesAll({
   return { type: 'info', summary, details };
 }
 
-export function peerDependenciesUnresolved({
+export function peerDependenciesMissing({
   peerDependencyInfos,
 }: PeerDependenciesState): RenderedAnalysis {
-  const unresolvedInfos = peerDependencyInfos.filter(
+  const missingInfos = peerDependencyInfos.filter(
     pdi => !pdi.destination && !pdi.optional,
   );
-  const result = peerDependenciesAll({ peerDependencyInfos: unresolvedInfos });
+  const result = peerDependenciesAll({ peerDependencyInfos: missingInfos });
   if (!result) return;
 
   return {
     type: 'warn',
-    summary: `Unresolved peer dependencies (${unresolvedInfos.length})`,
+    summary: `Missing peer dependencies (${missingInfos.length})`,
     details: result?.details,
   };
 }

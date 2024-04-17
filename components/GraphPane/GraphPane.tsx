@@ -26,7 +26,7 @@ import { modulesDeprecated } from './reports/reporters/modulesDeprecated.js';
 import { modulesRepeated } from './reports/reporters/modulesRepeated.js';
 import {
   peerDependenciesAll,
-  peerDependenciesUnresolved,
+  peerDependenciesMissing,
 } from './reports/reporters/peerDependenciesAll.js';
 
 export default function GraphPane({
@@ -101,7 +101,7 @@ export default function GraphPane({
 
       <ReportItem
         data={peerDependencyAnalysis}
-        reporter={peerDependenciesUnresolved}
+        reporter={peerDependenciesMissing}
       />
 
       <h3>Maintainers</h3>
