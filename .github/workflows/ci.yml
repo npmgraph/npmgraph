@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: echo "TEST"
       - run: corepack enable
       - run: yarn install --immutable
       - run: yarn test
