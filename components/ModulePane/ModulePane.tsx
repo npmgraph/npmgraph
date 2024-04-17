@@ -1,7 +1,9 @@
+import { Maintainer } from '@npm/types';
 import React from 'react';
 import simplur from 'simplur';
 import Module from '../../lib/Module.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
+import human from '../../lib/human.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { ExternalLink } from '../ExternalLink.js';
 import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.js';
@@ -67,6 +69,8 @@ export default function ModulePane({
       </Pane>
     );
   }
+
+  const { unpackedSize } = module;
 
   const maintainers = module.maintainers;
 
@@ -134,6 +138,10 @@ export default function ModulePane({
 
       <ReleaseTimeline module={module} />
 
+      <Section title="Module Size">
+        <div>{unpackedSize ? human(unpackedSize, 'B') : 'n/a'}</div>
+      </Section>
+
       <Section title="Bundle Size">
         <ModuleBundleSize module={module} />
       </Section>
@@ -146,14 +154,16 @@ export default function ModulePane({
         title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
       >
         <Tags>
-          {maintainers.map(({ name = 'Unknown', email }) => (
-            <Tag
-              key={name + email}
-              type="maintainer"
-              value={name}
-              gravatar={email}
-            />
-          ))}
+          {maintainers.map(
+            ({ name = 'Unknown', email }: Exclude<Maintainer, string>) => (
+              <Tag
+                key={name + email}
+                type="maintainer"
+                value={name}
+                gravatar={email}
+              />
+            ),
+          )}
         </Tags>
       </Section>
     </Pane>

@@ -162,9 +162,17 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
   const edges = ['\n// Edges & per-edge styling'];
 
   for (const [, { module, level, downstream }] of entries) {
+    const { unpackedSize } = module;
+    const sizeScale = unpackedSize
+      ? Math.max(1, Math.log10(unpackedSize / 1000))
+      : 1;
+
+      console.log(module.key, sizeScale, unpackedSize);
+
     nodes.push(
-      `"${dotEscape(module.key)}"${level == 0 ? ' [root=true]' : `[fontsize="${(6 + Math.random() * Math.random() * 30) | 0}"]`}`,
+      `"${dotEscape(module.key)}"${level == 0 ? ' [root=true]' : `[fontsize="${Math.round(11 * sizeScale)}"]`}`,
     );
+
     if (!downstream) continue;
     for (const { module: dependency, type } of downstream) {
       edges.push(

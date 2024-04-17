@@ -1,4 +1,4 @@
-import { Packument, PackumentVersion } from '@npm/types';
+import { Maintainer, Packument, PackumentVersion } from '@npm/types';
 import { isDefined } from './guards.js';
 import { getModuleKey, parseModuleKey } from './module_util.js';
 
@@ -55,7 +55,13 @@ export default class Module {
       maintainers = [maintainers];
     }
 
-    return maintainers.map(m => (typeof m === 'string' ? { name: m } : m));
+    return maintainers.map((m: Maintainer) =>
+      typeof m === 'string' ? { name: m } : m,
+    );
+  }
+
+  get unpackedSize() {
+    return this.package.dist?.unpackedSize;
   }
 
   get version() {
