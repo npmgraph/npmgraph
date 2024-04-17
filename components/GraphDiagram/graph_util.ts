@@ -167,8 +167,6 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
       ? Math.max(1, Math.log10(unpackedSize / 1000))
       : 1;
 
-    console.log(module.key, sizeScale, unpackedSize);
-
     nodes.push(
       `"${dotEscape(module.key)}"${level == 0 ? ' [root=true]' : `[fontsize="${Math.round(11 * sizeScale)}"]`}`,
     );
