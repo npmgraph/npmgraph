@@ -21,10 +21,10 @@ export default function ModulePane({
   selectedModules,
   ...props
 }: {
-  selectedModules?: Map<string, Module>;
+  selectedModules: Map<string, Module>;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
-  const nSelected = selectedModules?.size ?? 0;
+  const nSelected = selectedModules.size;
   if (nSelected == 0) {
     return (
       <Pane>

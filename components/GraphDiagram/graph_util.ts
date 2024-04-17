@@ -8,8 +8,6 @@ const FONT = 'Roboto Condensed, sans-serif';
 const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=black]',
-  peerDependencies:
-    '[label=peer fontcolor="#bbbbbb" color="#bbbbbb" style=dashed]',
   optionalDependencies: '[color=black style=dashed]', // unused
   optionalDevDependencies: '[color=black style=dashed]', // unused
 };
@@ -17,7 +15,6 @@ const EDGE_ATTRIBUTES = {
 export type DependencyKey =
   | 'dependencies'
   | 'devDependencies'
-  | 'peerDependencies'
   | 'optionalDependencies';
 
 type DependencyEntry = {
@@ -88,7 +85,6 @@ export async function getGraphForQuery(
   async function _visit(
     module: Module[] | Module,
     level = 0,
-    walk = true,
   ): Promise<GraphModuleInfo | void> {
     if (!module) return Promise.reject(Error('Undefined module'));
 
@@ -114,8 +110,6 @@ export async function getGraphForQuery(
     };
     graphState.moduleInfos.set(module.key, info);
 
-    if (!walk) return info;
-
     // Get dependency entries
     const downstreamEntries = moduleFilter(module)
       ? getDependencyEntries(module, dependencyTypes, level)
@@ -126,12 +120,7 @@ export async function getGraphForQuery(
       [...downstreamEntries].map(async ({ name, version, type }) => {
         const downstreamModule = await getModule(getModuleKey(name, version));
 
-        // Don't walk peerDependencies
-        const moduleInfo = await _visit(
-          downstreamModule,
-          level + 1,
-          type !== 'peerDependencies',
-        );
+        const moduleInfo = await _visit(downstreamModule, level + 1);
 
         moduleInfo?.upstream.add({ module, type });
         info?.downstream.add({ module: downstreamModule, type });
@@ -141,14 +130,16 @@ export async function getGraphForQuery(
     return info;
   }
 
-  // Walk dependencies of each module in the query
-  return Promise.allSettled(
+  // deep-resolve all modules in query
+  await Promise.allSettled(
     query.map(async moduleKey => {
       const m = await getModule(moduleKey);
       graphState.entryModules.add(m);
       return m && _visit(m);
     }),
-  ).then(() => graphState);
+  );
+
+  return graphState;
 }
 
 function dotEscape(str: string) {

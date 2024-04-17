@@ -17,6 +17,10 @@
   }
 
   :global {
+    .zebra-row:nth-child(even) {
+      background-color: rgba(127, 127, 127, 0.05);
+    }
+
     summary {
       position: sticky;
       top: 0;
@@ -54,12 +58,6 @@
 }
 .error .symbol {
   color: green;
-}
-
-.body {
-  & > *:nth-child(even) {
-    background-color: rgba(127, 127, 127, 0.05);
-  }
 }
 
 .description {
