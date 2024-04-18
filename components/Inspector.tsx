@@ -1,4 +1,4 @@
-import { HTMLProps, useEffect } from 'react';
+import { HTMLProps } from 'react';
 import { queryModuleCache } from '../lib/ModuleCache.js';
 import { PARAM_HIDE } from '../lib/constants.js';
 import useCommits from '../lib/useCommits.js';
@@ -14,6 +14,7 @@ import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.js';
 import { Splitter } from './Splitter.js';
 import { Tab } from './Tab.js';
+import { useKeyboardShortcuts } from './useKeyboardShortcuts.js';
 
 export enum PANE {
   MODULE = 'module',
@@ -21,7 +22,6 @@ export enum PANE {
   INFO = 'info',
   ABOUT = 'about',
 }
-
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = usePane();
   const [queryType, queryValue] = useGraphSelection();
@@ -31,16 +31,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   const selectedModules = queryModuleCache(queryType, queryValue);
 
-  useEffect(() => {
-    function handleKeyPress(ev: KeyboardEvent) {
-      if (ev.key === '/') {
-        setHide(false);
-        setPane(PANE.INFO);
-      }
-    }
-    document.addEventListener('keypress', handleKeyPress);
-    return () => document.removeEventListener('keypress', handleKeyPress);
-  }, []);
+  useKeyboardShortcuts();
 
   let paneComponent;
   switch (pane) {
