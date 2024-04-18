@@ -2,7 +2,7 @@ import React from 'react';
 import simplur from 'simplur';
 import useHashParam from '../../lib/useHashParam.js';
 
-import { PARAM_DEPENDENCIES } from '../../lib/constants.js';
+import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useCollapse from '../../lib/useCollapse.js';
 import { ExternalLink } from '../ExternalLink.js';
@@ -35,6 +35,7 @@ export default function GraphPane({
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const [collapse, setCollapse] = useCollapse();
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
+  const [sizing, setSizing] = useHashParam(PARAM_SIZING);
 
   const dependencyTypes = (
     (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
@@ -56,6 +57,14 @@ export default function GraphPane({
         onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
       >
         Include devDependencies
+      </Toggle>
+
+      <Toggle
+        checked={sizing === ''}
+        style={{ marginTop: '1rem' }}
+        onChange={() => setSizing(sizing === null)}
+      >
+        Size modules by <code>unpackedSize</code>
       </Toggle>
 
       <ColorizeInput />
