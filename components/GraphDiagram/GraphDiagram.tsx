@@ -13,6 +13,7 @@ import {
   PARAM_COLORIZE,
   PARAM_DEPENDENCIES,
   PARAM_HIDE,
+  PARAM_SIZING,
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
   ZOOM_FIT_WIDTH,
@@ -74,6 +75,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [collapse, setCollapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
+  const [sizing] = useHashParam(PARAM_SIZING);
   const [graphviz, graphvizLoading] = useGraphviz();
 
   // Dependencies to include for top-level modules
@@ -185,11 +187,11 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       if (!graphviz) return;
 
       if (signal.aborted) return; // Check after all async stuff
-
+      console.log(sizing, sizing !== null);
       // Compose SVG markup
       let svgMarkup = '<svg />';
       if (graph?.moduleInfos?.size) {
-        const dotDoc = composeDOT(graph.moduleInfos);
+        const dotDoc = composeDOT({ graph, sizing: sizing !== null });
 
         try {
           svgMarkup = graph?.moduleInfos.size
@@ -267,7 +269,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       finish();
       abort();
     };
-  }, [graphviz, graph]);
+  }, [graphviz, graph, sizing]);
 
   // Effect: render graph selection
   useEffect(

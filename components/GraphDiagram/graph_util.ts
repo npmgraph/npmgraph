@@ -5,6 +5,27 @@ import { getModuleKey } from '../../lib/module_util.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
+const DEFAULT_STYLES = {
+  GRAPH: vizStyle({
+    fontsize: 16,
+    fontname: FONT,
+  }),
+  NODE: vizStyle({
+    shape: 'box',
+    style: 'rounded',
+    fontname: FONT,
+    fontsize: 11,
+    height: 0,
+    width: 0,
+    margin: 0.04,
+  }),
+  EDGE: vizStyle({
+    fontsize: 10,
+    fontname: FONT,
+    splines: 'polyline',
+  }),
+};
+
 const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=black]',
@@ -146,10 +167,39 @@ function dotEscape(str: string) {
   return str.replace(/"/g, '\\"');
 }
 
+/**
+ * Creates a GraphViz style string from an object of key-value pairs.
+ *
+ * E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
+ */
+function vizStyle(obj: Record<string, string | number | boolean | undefined>) {
+  const pairs = Object.entries(obj).map(function ([key, value]) {
+    switch (typeof value) {
+      case 'number':
+        return `${key}=${value}`;
+      case 'string':
+        return `${key}="${value}"`;
+      case 'boolean':
+        return `${key}=${value ? 'true' : 'false'}`;
+      case 'undefined':
+        return '';
+      default:
+        throw new Error('Invalid value type');
+    }
+  });
+  return `[${pairs.filter(Boolean).join(' ')}]`;
+}
+
 // Compose directed graph document (GraphViz notation)
-export function composeDOT(graph: Map<string, GraphModuleInfo>) {
+export function composeDOT({
+  graph,
+  sizing,
+}: {
+  graph: GraphState;
+  sizing?: boolean;
+}) {
   // Sort modules by [level, key]
-  const entries = [...graph.entries()];
+  const entries = [...graph.moduleInfos.entries()];
   entries.sort(([aKey, a], [bKey, b]) => {
     if (a.level != b.level) {
       return a.level - b.level;
@@ -162,14 +212,15 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
   const edges = ['\n// Edges & per-edge styling'];
 
   for (const [, { module, level, downstream }] of entries) {
+    let fontsize = 11;
     const { unpackedSize } = module;
-    const sizeScale = unpackedSize
-      ? Math.max(1, Math.log10(unpackedSize / 1000))
-      : 1;
+    if (sizing && unpackedSize) {
+      fontsize *= Math.max(1, Math.log10(unpackedSize / 1000));
+    }
 
-    nodes.push(
-      `"${dotEscape(module.key)}"${level == 0 ? ' [root=true]' : `[fontsize="${Math.round(11 * sizeScale)}"]`}`,
-    );
+    const vs = { root: level == 0, fontsize };
+
+    nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
     if (!downstream) continue;
     for (const { module: dependency, type } of downstream) {
@@ -200,16 +251,16 @@ export function composeDOT(graph: Map<string, GraphModuleInfo>) {
     'labelloc="t"',
     `label="${titleParts.join(', ')}"`,
     '// Default styles',
-    `graph [fontsize=16 fontname="${FONT}"]`,
-    `node [shape=box style=rounded fontname="${FONT}" fontsize=11 height=0 width=0 margin=.04]`,
-    `edge [fontsize=10, fontname="${FONT}" splines="polyline"]`,
+    `graph ${DEFAULT_STYLES.GRAPH}`,
+    `node ${DEFAULT_STYLES.NODE}`,
+    `edge ${DEFAULT_STYLES.EDGE}`,
     '',
   ]
     .concat(nodes)
     .concat(edges)
     .concat(
-      graph.size > 1
-        ? `{rank=same; ${[...graph.values()]
+      graph.moduleInfos.size > 1
+        ? `{rank=same; ${[...graph.moduleInfos.values()]
             .filter(info => info.level == 0)
             .map(info => `"${info.module}"`)
             .join('; ')};}`
