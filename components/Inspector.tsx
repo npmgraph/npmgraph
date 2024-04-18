@@ -1,4 +1,4 @@
-import React, { HTMLProps } from 'react';
+import { HTMLProps, useEffect } from 'react';
 import { queryModuleCache } from '../lib/ModuleCache.js';
 import { PARAM_HIDE } from '../lib/constants.js';
 import useCommits from '../lib/useCommits.js';
@@ -31,6 +31,17 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   const selectedModules = queryModuleCache(queryType, queryValue);
 
+  useEffect(() => {
+    function handleKeyPress(ev: KeyboardEvent) {
+      if (ev.key === '/') {
+        setHide(false);
+        setPane(PANE.INFO);
+      }
+    }
+    document.addEventListener('keypress', handleKeyPress);
+    return () => document.removeEventListener('keypress', handleKeyPress);
+  }, []);
+
   let paneComponent;
   switch (pane) {
     case PANE.MODULE:
@@ -53,7 +64,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     <div id="inspector" className={hide !== null ? '' : 'open'} {...props}>
       <div id="tabs">
         <Tab active={pane == PANE.INFO} onClick={() => setPane(PANE.INFO)}>
-          Start
+          Start <kbd>/</kbd>
         </Tab>
         <Tab active={pane == PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
           Graph

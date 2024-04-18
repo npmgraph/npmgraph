@@ -64,7 +64,7 @@ export default function GraphPane({
         style={{ marginTop: '1rem' }}
         onChange={() => setSizing(sizing === null)}
       >
-        Size modules by <code>unpackedSize</code>
+        Size modules by unpacked size
       </Toggle>
 
       <ColorizeInput />

@@ -26,10 +26,6 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
         .
       </p>
 
-      <h3>
-        Upload a <code>package.json</code> file
-      </h3>
-
       <FileUploadControl />
     </Pane>
   );
