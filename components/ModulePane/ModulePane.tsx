@@ -139,12 +139,15 @@ export default function ModulePane({
       <ReleaseTimeline module={module} />
 
       <Section title="Module Size">
-        {unpackedSize ? (
-          <div>
-            Unpacked Size: <strong>{human(unpackedSize, 'B')}</strong>
-            <hr />
-          </div>
-        ) : null}
+        <div>
+          Unpacked Size:{' '}
+          {unpackedSize ? (
+            <strong>{human(unpackedSize, 'B')}</strong>
+          ) : (
+            <i>not available</i>
+          )}
+          <hr />
+        </div>
         <ModuleBundleSize module={module} />
       </Section>
 

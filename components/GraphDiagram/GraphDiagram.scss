@@ -96,7 +96,7 @@ g.node {
   &.selected {
     & > path {
       stroke-width: 3;
-      stroke: var(--highlight);
+      stroke: var(--highlight) !important;
     }
   }
 
@@ -108,7 +108,7 @@ g.node {
 
   &.downstream {
     & > path {
-      stroke: var(--stroke-orange);
+      stroke: var(--stroke-violet);
     }
   }
 
@@ -126,7 +126,7 @@ g.node {
 }
 
 g.edge {
-  --selected-edge-width: 2;
+  --selected-edge-width: 1;
 
   > path {
     // stylelint-disable-line no-descending-specificity
@@ -152,13 +152,13 @@ g.edge {
 
   &.downstream {
     & > path {
-      stroke: var(--stroke-orange);
+      stroke: var(--stroke-violet);
       stroke-width: var(--selected-edge-width);
     }
 
     & > polygon {
-      stroke: var(--stroke-orange);
-      fill: var(--stroke-orange);
+      stroke: var(--stroke-violet);
+      fill: var(--stroke-violet);
     }
   }
 

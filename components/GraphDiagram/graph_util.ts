@@ -215,7 +215,7 @@ export function composeDOT({
     let fontsize = 11;
     const { unpackedSize } = module;
     if (sizing && unpackedSize) {
-      fontsize *= Math.max(1, Math.log10(unpackedSize / 1000));
+      fontsize *= Math.max(1, Math.log10(unpackedSize) - 2);
     }
 
     const vs = { root: level == 0, fontsize };
