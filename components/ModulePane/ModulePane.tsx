@@ -29,6 +29,8 @@ export default function ModulePane({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const nSelected = selectedModules.size;
+  const [graph] = useGraph();
+
   if (nSelected == 0) {
     return (
       <Pane>
@@ -47,7 +49,6 @@ export default function ModulePane({
   const module = selectedModules?.values().next().value as Module;
 
   const pkg = module.package;
-  const [graph] = useGraph();
 
   if (module.isLocal) {
     return (
