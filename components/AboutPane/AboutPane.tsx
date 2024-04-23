@@ -15,7 +15,7 @@ export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
           href="https://github.com/npmgraph/npmgraph"
           icon={GithubIcon}
         >
-          Github repo
+          GitHub repo
         </ExternalLink>
       </div>
 

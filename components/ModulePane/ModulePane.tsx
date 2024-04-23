@@ -80,7 +80,7 @@ export default function ModulePane({
     if (/github.com/i.test(projectUrl)) {
       projectLink = (
         <ExternalLink href={projectUrl} icon={GithubIcon}>
-          Github
+          GitHub
         </ExternalLink>
       );
     } else {
