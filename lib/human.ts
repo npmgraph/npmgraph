@@ -20,11 +20,11 @@ export default function human(v: number, suffix = '', sig = 0) {
   let exp = floor(log10(v) / log10(base));
   const unit = UNITS.find(([n]) => n <= exp);
 
-  if (!unit) return `0${suffix}`;
+  if (!unit) return `0 ${suffix}`;
 
   v /= pow(base, unit[0]);
   exp = floor(log10(v)) + 1;
   v = exp < sig ? round(v * pow(10, sig - exp)) / pow(10, sig - exp) : round(v);
 
-  return `${v}${unit[1]}${suffix}`;
+  return `${v} ${base === 1024 ? unit[1].toUpperCase() : unit[1]}${suffix}`;
 }

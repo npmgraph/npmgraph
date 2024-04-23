@@ -270,6 +270,36 @@ export function composeDOT({
     .join('\n');
 }
 
+export function foreachUpstream(
+  module: Module,
+  graph: GraphState,
+  callback: (module: Module) => void,
+  seen: Set<Module> = new Set(),
+) {
+  const info = graph.moduleInfos.get(module.key);
+  if (!info || seen.has(module)) return;
+
+  for (const { module } of info.upstream) {
+    callback(module);
+    foreachUpstream(module, graph, callback, seen);
+  }
+}
+
+export function foreachDownstream(
+  module: Module,
+  graph: GraphState,
+  callback: (module: Module) => void,
+  seen: Set<Module> = new Set(),
+) {
+  const info = graph.moduleInfos.get(module.key);
+  if (!info || seen.has(module)) return;
+
+  for (const { module } of info.downstream) {
+    callback(module);
+    foreachDownstream(module, graph, callback, seen);
+  }
+}
+
 export function gatherSelectionInfo(
   graphState: GraphState,
   selectedModules: IterableIterator<Module>,

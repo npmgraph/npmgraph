@@ -5,7 +5,9 @@ import Module from '../../lib/Module.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import human from '../../lib/human.js';
 import useHashParam from '../../lib/useHashParam.js';
+import { useGraph } from '../App/App.js';
 import { ExternalLink } from '../ExternalLink.js';
+import { foreachDownstream } from '../GraphDiagram/graph_util.js';
 import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.js';
 import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
@@ -45,6 +47,7 @@ export default function ModulePane({
   const module = selectedModules?.values().next().value as Module;
 
   const pkg = module.package;
+  const [graph] = useGraph();
 
   if (module.isLocal) {
     return (
@@ -71,6 +74,13 @@ export default function ModulePane({
   }
 
   const { unpackedSize } = module;
+
+  let downstreamUnpackedSize = 0;
+  if (graph) {
+    foreachDownstream(module, graph, m => {
+      downstreamUnpackedSize += m.unpackedSize ?? 0;
+    });
+  }
 
   const maintainers = module.maintainers;
 
@@ -139,15 +149,27 @@ export default function ModulePane({
       <ReleaseTimeline module={module} />
 
       <Section title="Module Size">
-        <div>
-          Unpacked Size:{' '}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'auto 1fr',
+            gap: '.3em 1em',
+          }}
+        >
+          <span>Unpacked Size (module only):</span>
           {unpackedSize ? (
             <strong>{human(unpackedSize, 'B')}</strong>
           ) : (
             <i>not available</i>
           )}
-          <hr />
+          <span>Unpacked Size (module + dependencies):</span>
+          {unpackedSize ? (
+            <strong>{human(unpackedSize + downstreamUnpackedSize, 'B')}</strong>
+          ) : (
+            <i>not available</i>
+          )}
         </div>
+        <hr />
         <ModuleBundleSize module={module} />
       </Section>
 

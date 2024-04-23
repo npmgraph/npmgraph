@@ -15,9 +15,9 @@ export function ModuleBundleStats({
         gap: '.3em 1em',
       }}
     >
-      <span>Minified:</span>
+      <span>Bundle size (minified):</span>
       <strong>{human(bundleInfo.size, 'B')}</strong>
-      <span>Gzipped:</span>
+      <span>Bundle size (compressed):</span>
       <strong>{human(bundleInfo.gzip, 'B')}</strong>
     </div>
   );
