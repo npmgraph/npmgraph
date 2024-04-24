@@ -278,6 +278,7 @@ export function foreachUpstream(
 ) {
   const info = graph.moduleInfos.get(module.key);
   if (!info || seen.has(module)) return;
+  seen.add(module);
 
   for (const { module } of info.upstream) {
     callback(module);
