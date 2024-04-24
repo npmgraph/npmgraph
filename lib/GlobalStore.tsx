@@ -59,8 +59,6 @@ export function setGlobalState<T extends keyof GlobalState>(
     return;
   }
 
-  console.log('Setting global:', key, globalState[key]);
-
   globalState = { ...globalState, [key]: value };
   for (const listener of listeners) {
     listener();
