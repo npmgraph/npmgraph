@@ -1,4 +1,5 @@
 import { HTMLProps } from 'react';
+import { useGlobalState } from '../lib/GlobalStore.js';
 import { queryModuleCache } from '../lib/ModuleCache.js';
 import { PARAM_HIDE } from '../lib/constants.js';
 import useCommits from '../lib/useCommits.js';
@@ -6,7 +7,6 @@ import useGraphSelection from '../lib/useGraphSelection.js';
 import useHashParam from '../lib/useHashParam.js';
 import { version as VERSION } from '../package.json';
 import AboutPane from './AboutPane/AboutPane.js';
-import { useGraph, usePane } from './App/App.js';
 import { ExternalLink } from './ExternalLink.js';
 import GraphPane from './GraphPane/GraphPane.js';
 import InfoPane from './InfoPane/InfoPane.js';
@@ -23,9 +23,9 @@ export enum PANE {
   ABOUT = 'about',
 }
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
-  const [pane, setPane] = usePane();
+  const [pane, setPane] = useGlobalState('pane');
   const [queryType, queryValue] = useGraphSelection();
-  const [graph] = useGraph();
+  const [graph] = useGlobalState('graph');
   const [, newCommitsCount] = useCommits();
   const [hide, setHide] = useHashParam(PARAM_HIDE);
 

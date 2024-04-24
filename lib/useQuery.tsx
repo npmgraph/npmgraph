@@ -1,8 +1,11 @@
+import { useGlobalState } from './GlobalStore.js';
 import { PARAM_QUERY } from './constants.js';
-import useSearchParam from './useSearchParam.js';
+import { searchGet, searchSet } from './url_util.js';
+import { patchLocation } from './useLocation.js';
 
 export function useQuery() {
-  const [queryString, setQueryString] = useSearchParam(PARAM_QUERY);
+  const [location] = useGlobalState('location');
+  const queryString = searchGet(PARAM_QUERY, location) ?? '';
   const moduleKeys = queryString.split(/\s*,\s*/).filter(Boolean);
   return [
     moduleKeys,
@@ -17,7 +20,8 @@ export function useQuery() {
         return key.toLowerCase();
       });
       moduleKeys = [...new Set(moduleKeys)];
-      setQueryString(moduleKeys.join(','), replace);
+      const search = searchSet(PARAM_QUERY, moduleKeys.join(','));
+      patchLocation({ search }, replace);
     },
   ] as const;
 }

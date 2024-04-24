@@ -1,18 +1,17 @@
 import React, { HTMLProps, useState } from 'react';
-import URLPlus from '../../lib/URLPlus.js';
+import { useGlobalState } from '../../lib/GlobalStore.js';
 import { UNNAMED_PACKAGE } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
-import useLocation from '../../lib/useLocation.js';
+import { searchSet } from '../../lib/url_util.js';
+import { patchLocation } from '../../lib/useLocation.js';
 import { useQuery } from '../../lib/useQuery.js';
 import { ExternalLink } from '../ExternalLink.js';
-import './QueryInput.scss';
-import { usePane } from '../App/App.js';
 import { PANE } from '../Inspector.js';
+import './QueryInput.scss';
 
 export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   const [query] = useQuery();
-  const [location, setLocation] = useLocation();
-  const [, setPane] = usePane();
+  const [, setPane] = useGlobalState('pane');
 
   const initialValue = query.join(', ');
 
@@ -28,7 +27,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (!/^(?:Enter|Tab)$/.test(e.key)) return;
+    if (e.key !== 'Enter' && e.key !== 'Tab') return;
 
     let moduleKeys = (e.currentTarget as HTMLInputElement).value
       .split(',')
@@ -37,11 +36,14 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
 
     moduleKeys = [...new Set(moduleKeys)]; // De-dupe
 
-    const url = new URLPlus(location);
-    url.setSearchParam('q', moduleKeys.join(', '));
-    url.hash = '';
+    patchLocation(
+      {
+        search: searchSet('q', moduleKeys.join(', ')),
+        hash: '',
+      },
+      false,
+    );
 
-    setLocation(url, false);
     setPane(PANE.GRAPH);
   }
 

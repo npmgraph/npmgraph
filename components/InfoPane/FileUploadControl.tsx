@@ -4,19 +4,17 @@ import {
   cacheLocalPackage,
   sanitizePackageKeys,
 } from '../../lib/ModuleCache.js';
-import URLPlus from '../../lib/URLPlus.js';
 import {
   PARAM_PACKAGES,
   PARAM_QUERY,
   UNNAMED_PACKAGE,
 } from '../../lib/constants.js';
 import { flash } from '../../lib/flash.js';
-import useLocation from '../../lib/useLocation.js';
+import { hashSet, searchSet } from '../../lib/url_util.js';
+import { patchLocation } from '../../lib/useLocation.js';
 import './FileUploadControl.scss';
 
 export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
-  const [location, setLocation] = useLocation();
-
   // Handle file selection via input
   function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {
     const file = ev.target.files?.item(0);
@@ -79,11 +77,11 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     const module = cacheLocalPackage(pkg as PackumentVersion);
 
     // Set query, and attach package contents in hash
-    const url = new URLPlus(location);
+    const url = new URL(location.href);
     url.hash = '';
-    url.setHashParam(PARAM_PACKAGES, JSON.stringify([pkg]));
-    url.setSearchParam(PARAM_QUERY, module.key);
-    setLocation(url, false);
+    const hash = hashSet(PARAM_PACKAGES, JSON.stringify([pkg]), url);
+    const search = searchSet(PARAM_QUERY, module.key, url);
+    patchLocation({ hash, search }, false);
   }
 
   function onDragOver(ev: React.DragEvent<HTMLElement>) {
