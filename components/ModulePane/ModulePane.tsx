@@ -1,11 +1,11 @@
 import { Maintainer } from '@npm/types';
 import React from 'react';
 import simplur from 'simplur';
+import { useGlobalState } from '../../lib/GlobalStore.js';
 import Module from '../../lib/Module.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import human from '../../lib/human.js';
 import useHashParam from '../../lib/useHashParam.js';
-import { useGraph } from '../App/App.js';
 import { ExternalLink } from '../ExternalLink.js';
 import { foreachDownstream } from '../GraphDiagram/graph_util.js';
 import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.js';
@@ -29,7 +29,7 @@ export default function ModulePane({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const nSelected = selectedModules.size;
-  const [graph] = useGraph();
+  const [graph] = useGlobalState('graph');
 
   if (nSelected == 0) {
     return (

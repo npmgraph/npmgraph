@@ -10,7 +10,6 @@ import {
 import PromiseWithResolvers, {
   PromiseWithResolversType,
 } from './PromiseWithResolvers.js';
-import URLPlus from './URLPlus.js';
 import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
 import { flash } from './flash.js';
@@ -20,6 +19,7 @@ import {
   parseModuleKey,
   resolveModule,
 } from './module_util.js';
+import { hashGet } from './url_util.js';
 
 export const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
 
@@ -258,8 +258,7 @@ let lastPackagesVal: string | null;
 
 // Make sure any packages in the URL hash are loaded into the module cache
 export function syncPackagesHash() {
-  const url = new URLPlus(window.location.href);
-  const packagesJson = url.getHashParam(PARAM_PACKAGES);
+  const packagesJson = hashGet(PARAM_PACKAGES);
 
   // If the hash param hasn't changed, there's nothing to do
   if (lastPackagesVal === packagesJson) return;

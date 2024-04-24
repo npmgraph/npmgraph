@@ -1,6 +1,7 @@
 import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
+import { useGlobalState } from '../../lib/GlobalStore.js';
 import LoadActivity from '../../lib/LoadActivity.js';
 import Module from '../../lib/Module.js';
 import {
@@ -26,7 +27,6 @@ import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { useQuery } from '../../lib/useQuery.js';
-import { useGraph, usePane } from '../App/App.js';
 import {
   getColorizer,
   isSimpleColorizer,
@@ -68,10 +68,11 @@ function useGraphviz() {
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
   const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
-  const [, setPane] = usePane();
+  const [, setPane] = useGlobalState('pane');
   const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [queryType, queryValue, setGraphSelection] = useGraphSelection();
-  const [graph, setGraph] = useGraph();
+  const [graph, setGraph] = useGlobalState('graph');
+
   const [collapse, setCollapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
@@ -187,7 +188,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       if (!graphviz) return;
 
       if (signal.aborted) return; // Check after all async stuff
-      console.log(sizing, sizing !== null);
+
       // Compose SVG markup
       let svgMarkup = '<svg />';
       if (graph?.moduleInfos?.size) {

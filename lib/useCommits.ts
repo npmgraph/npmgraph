@@ -1,9 +1,6 @@
+import { setGlobalState, useGlobalState } from './GlobalStore.js';
 import fetchJSON from './fetchJSON.js';
 import { GithubCommit } from './fetch_types.js';
-import sharedStateHook from './sharedStateHook.js';
-
-const [useCommitState, setCommitState] = sharedStateHook<GithubCommit[]>([]);
-const [useLastVisit, setLastVisit] = sharedStateHook(0);
 
 export async function fetchCommits() {
   const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -39,7 +36,7 @@ export async function fetchCommits() {
     // Filter out commits we're not interested in
     commits = commits.filter(commit => Boolean(commit.ccType));
 
-    setCommitState(commits);
+    setGlobalState('commits', commits);
   } catch (err) {
     // This is non-essential so don't cmoplain too loudly
     console.warn('Request for project commits failed');
@@ -49,12 +46,12 @@ export async function fetchCommits() {
   // localStorage until after we've done the feature detect logic.  So we read
   // lastVisit here rather than as part of loading the module.
   const lastVisit = Number(localStorage.getItem('lastVisit'));
-  setLastVisit(lastVisit);
+  setGlobalState('lastVisit', lastVisit);
 }
 
 export default function useCommits() {
-  const [commits] = useCommitState();
-  const [lastVisit] = useLastVisit();
+  const [commits] = useGlobalState('commits');
+  const [lastVisit] = useGlobalState('lastVisit');
   let newCount = 0;
   for (const commit of commits) {
     const date = Date.parse(commit.commit.author.date);
@@ -65,7 +62,7 @@ export default function useCommits() {
   function reset() {
     const now = Date.now();
     localStorage.setItem('lastVisit', String(now));
-    setLastVisit(now);
+    setGlobalState('lastVisit', now);
   }
 
   return [commits, newCount, reset] as const;

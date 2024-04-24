@@ -1,5 +1,6 @@
 import './bugsnag.js'; // Initialize ASAP!
 
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App, { setActivityForApp } from '../components/App/App.js';
 import { Unsupported } from '../components/Unsupported.js';
@@ -79,7 +80,11 @@ window.onload = function () {
 
   // Main app component
   const appEl = document.querySelector('#app') as HTMLDivElement;
-  createRoot(appEl).render(<App />);
+  createRoot(appEl).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
 
   // A little component for managing the title
   const titleEl = document.querySelector('title') as HTMLTitleElement;

@@ -1,7 +1,6 @@
-import useLocation from './useLocation.js';
+import { patchLocation } from './useLocation.js';
 
 export default function useHashParam(paramName: string) {
-  const [location, setLocation] = useLocation();
   const params = new URLSearchParams(location.hash.replace(/^#/, ''));
   const param = params.get(paramName);
 
@@ -22,9 +21,7 @@ export default function useHashParam(paramName: string) {
     }
 
     // Update page
-    const url = new URL(location);
-    url.hash = params.toString();
-    setLocation(url, replace);
+    patchLocation({ hash: params.toString() }, replace);
   };
 
   return [param, setValue] as const;

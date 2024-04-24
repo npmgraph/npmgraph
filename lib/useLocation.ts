@@ -1,40 +1,32 @@
+import { setGlobalState, useGlobalState } from './GlobalStore.js';
 import { syncPackagesHash } from './ModuleCache.js';
-import sharedStateHook from './sharedStateHook.js';
-
-const [useHref, setHref] = sharedStateHook(
-  new URL(location.href),
-  'location.href',
-);
+import { urlPatch } from './url_util.js';
 
 function handleLocationUpdate() {
   syncPackagesHash();
-  setHref(new URL(location.href));
+  setGlobalState('location', new URL(location.href));
 }
 
 window.addEventListener('hashchange', handleLocationUpdate);
 window.addEventListener('popstate', handleLocationUpdate);
 
+export function patchLocation(urlParts: Partial<URL>, replace: boolean) {
+  const url = urlPatch(urlParts);
+  Object.freeze(url);
+
+  // Assign url directly to the location field
+  if (replace) {
+    window.history.replaceState({}, '', url);
+  } else {
+    window.history.pushState({}, '', url);
+  }
+
+  // ... and also update our global cache of the value (notifies listeners)
+  setGlobalState('location', url);
+}
+
 export default function useLocation() {
-  const [href, setHref] = useHref();
+  const [href] = useGlobalState('location');
 
-  const setLocation = (val: string | URL, replace: boolean) => {
-    if (typeof val === 'string') {
-      val = new URL(val);
-    }
-
-    if (val.href === location.href) return;
-
-    // Dont' allow direct manipulation
-    Object.freeze(val);
-
-    // Update state value
-    if (replace) {
-      window.history.replaceState({}, '', val);
-    } else {
-      window.history.pushState({}, '', val);
-    }
-    setHref(val);
-  };
-
-  return [href, setLocation] as const;
+  return [href] as const;
 }
