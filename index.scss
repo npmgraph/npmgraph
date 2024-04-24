@@ -110,12 +110,10 @@ h2 {
 }
 
 kbd {
-  display: inline-block;
-  border: 1px solid #b4b4b4;
+  border: 1px solid currentcolor;
   border-radius: 0.3em;
-  background-color: var(--bg1);
-  padding: 2px 4px;
-  font-size: 0.75em;
+  padding: 0.2em 0.3em;
+  color: color-mix(in srgb, currentcolor 30%, transparent);
   line-height: 1;
   white-space: nowrap;
 }

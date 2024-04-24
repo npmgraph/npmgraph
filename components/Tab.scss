@@ -1,5 +1,7 @@
 .tab {
+  display: flex;
   position: relative;
+  align-items: center;
   cursor: pointer;
   border-left: solid 1px #888;
   background: var(--tabs-bg) var(--bg-gradient);
@@ -25,5 +27,10 @@
     font-weight: 600;
     font-size: 0.7rem;
     line-height: 0.7rem;
+  }
+
+  kbd {
+    margin-left: 0.7em;
+    font-size: 0.8rem;
   }
 }
