@@ -94,7 +94,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     if ($('#graph-controls')!.contains(target)) return;
 
-    const el = target.closest<SVGElement>('.node');
+    const el = target.closest('g.node');
 
     const moduleKey = el ? el.querySelector('title')?.textContent?.trim() : '';
     const module = moduleKey ? getCachedModule(moduleKey) : undefined;
@@ -359,7 +359,7 @@ export function updateSelection(
   // Set selection classes for edge elements
   for (const titleEl of [...$$('svg g.edge')]) {
     const edgeTitle = titleEl.querySelector('.edge title')?.textContent ?? '';
-    const edge = titleEl.closest<SVGPathElement>('.edge');
+    const edge = titleEl.closest('path.edge');
     if (!edge) continue;
 
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
