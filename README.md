@@ -49,14 +49,17 @@ JSON-encoded array of user-supplied `package.json` contents.
 
 To graph a custom package.json module, provide the package contents here (in the `packages` param), and set the module "name@version" in the `q` param.
 
-**Example**: Graph a custom "mypackage@0.0.1" module
+**Example**: Graph a custom "my_package@0.0.1" module
 
 https://npmgraph.js.org/?q=my_package%400.0.1#packages=%5B%7B%22name%22%3A%22my_package%22%2C%22version%22%3A%220.0.1%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%7D%7D%5D
 
 ```js
 'https://npmgraph.js.org/?q=my_package#' +
-  new URLSearchParams([['packages', JSON.stringify(packageJson)]]).toString();
+  new URLSearchParams([['packages', JSON.stringify([packageJson])]]).toString();
 ```
+
+> [!IMPORTANT]
+> The name provided in `q` must match the `name` in the package.json, at least until [#195](https://github.com/npmgraph/npmgraph/issues/195) is resolved.
 
 ### `select` (hash param)
 
