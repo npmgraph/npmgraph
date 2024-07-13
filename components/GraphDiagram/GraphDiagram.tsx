@@ -48,6 +48,23 @@ export type ZoomOption =
   | typeof ZOOM_FIT_WIDTH
   | typeof ZOOM_FIT_HEIGHT;
 
+function scrollGraphIntoView(el: Element | null) {
+  const graphEl = document.querySelector('#graph')
+  if (graphEl && el) {
+    // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
+    // Firefox.  And even in Chrome it just scrolls the element to *barely*
+    // be in view, which isn't really what we want.  (We'd like element to
+    // be centered in the view.)  So, instead, we manually compute the
+    // scroll coordinates.
+    const { top, left } = el.getBoundingClientRect();
+    graphEl.scrollTo({
+      left: graphEl.scrollLeft + left - graphEl.clientWidth / 2,
+      top: graphEl.scrollTop + top - graphEl.clientHeight / 2,
+      behavior: 'smooth',
+    });
+  }
+}
+
 function useGraphviz() {
   const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
   const [loading, setLoading] = useState(true);
@@ -152,7 +169,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         break;
     }
 
-    (select('#graph svg .node').node() as HTMLElement)?.scrollIntoView();
+    scrollGraphIntoView(select('#graph svg .node').node() as HTMLElement);
   }
 
   // Filter for which modules should be shown / collapsed in the graph
@@ -340,19 +357,7 @@ export function updateSelection(
 
     if (isSelection && isSelected) {
       // el.scrollIntoView({ behavior: 'smooth' });
-      if (graphEl) {
-        // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
-        // Firefox.  And even in Chrome it just scrolls the element to *barely*
-        // be in view, which isn't really what we want.  (We'd like element to
-        // be centered in the view.)  So, instead, we manually compute the
-        // scroll coordinates.
-        const { top, left } = el.getBoundingClientRect();
-        graphEl.scrollTo({
-          left: graphEl.scrollLeft + left - graphEl.clientWidth / 2,
-          top: graphEl.scrollTop + top - graphEl.clientHeight / 2,
-          behavior: 'smooth',
-        });
-      }
+      scrollGraphIntoView(el);
     }
   }
 
