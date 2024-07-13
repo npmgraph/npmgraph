@@ -211,7 +211,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.remove();
 
       // Remove background element so page background shows thru
-      svgDom.querySelector('.graph > polygon')!.remove();
+      svgDom.querySelector('.graph > polygon')?.remove();
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       svgDom.id = 'graph-diagram';
 
