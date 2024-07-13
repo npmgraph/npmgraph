@@ -383,7 +383,9 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
   if (!colorizer) {
     // Unset all node colors
-    svg.querySelector('g.node path')!.removeAttribute('style');
+    for (const node of svg.querySelectorAll('g.node path')) {
+      node.removeAttribute('style');
+    }
     return;
   }
 
