@@ -1,6 +1,6 @@
 import { HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
 import React, { useEffect, useState } from 'react';
-import { $ } from '../../lib/dom.js';
+import $ from '../../lib/dom.js';
 import { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';
 
@@ -18,7 +18,7 @@ export function ModuleTreeMap({
 
   // Render contents as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {
-    const { clientWidth: w, clientHeight: h } = $('#treemap')!,
+    const { clientWidth: w, clientHeight: h } = $('#treemap')[0],
       m = 1;
 
     // Note: dependencySizes is *sometimes* undefined.  E.g.

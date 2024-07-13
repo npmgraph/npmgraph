@@ -1,4 +1,3 @@
-import 'typed-query-selector';
 import './bugsnag.js'; // Initialize ASAP!
 
 import { StrictMode } from 'react';
