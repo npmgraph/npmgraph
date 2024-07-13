@@ -358,7 +358,7 @@ export function updateSelection(
 
   // Set selection classes for edge elements
   for (const titleEl of $$('svg g.edge')) {
-    const edgeTitle = titleEl.querySelector('.edge title')?.textContent ?? '';
+    const edgeTitle = titleEl.querySelector('title')?.textContent ?? '';
     const edge = titleEl.closest('path.edge');
     if (!edge) continue;
 
