@@ -1,6 +1,6 @@
 #inspector {
   display: flex;
-  flex-basis: 0;
+  flex: 0 0;
   flex-direction: column;
   transition: flex-basis 0.5s;
   height: 100vh;
@@ -8,7 +8,7 @@
   color: var(--text);
 
   &.open {
-    flex: 0 0 var(--inspector-size);
+    flex-basis: var(--inspector-size);
   }
 
   .description {
