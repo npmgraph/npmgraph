@@ -3,10 +3,10 @@
   flex-basis: 0;
   flex-direction: column;
   transition: flex-basis 0.5s;
+  box-shadow: 0px 7px 3px var(--inset-shadow-color, rgba(214, 214, 214, 0.467));
   height: 100vh;
   overflow: hidden;
   color: var(--text);
-  box-shadow: 0px 7px 3px var(--inset-shadow-color, rgba(214,214,214,.467));
 
   &.open {
     flex: 0 0 var(--inspector-size);
