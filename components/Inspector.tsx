@@ -5,9 +5,7 @@ import { PARAM_HIDE } from '../lib/constants.js';
 import useCommits from '../lib/useCommits.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 import useHashParam from '../lib/useHashParam.js';
-import { version as VERSION } from '../package.json';
 import AboutPane from './AboutPane/AboutPane.js';
-import { ExternalLink } from './ExternalLink.js';
 import GraphPane from './GraphPane/GraphPane.js';
 import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';
@@ -77,14 +75,6 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       </div>
 
       {paneComponent}
-
-      <footer>
-        {'\xa9'} npmgraph Contributors &mdash;{' '}
-        <ExternalLink id="github" href="https://github.com/npmgraph/npmgraph">
-          GitHub
-        </ExternalLink>{' '}
-        &mdash; v{VERSION}
-      </footer>
     </div>
   );
 }
