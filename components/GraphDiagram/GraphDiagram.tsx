@@ -325,7 +325,7 @@ export function updateSelection(
 
   // Set selection classes for node elements
   const graphEl = document.querySelector('#graph');
-  for (const el of [...$$('svg g.node[data-module]')]) {
+  for (const el of $$('svg g.node[data-module]')) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
     const isUpstream = si.upstreamModuleKeys.has(moduleKey);
@@ -357,7 +357,7 @@ export function updateSelection(
   }
 
   // Set selection classes for edge elements
-  for (const titleEl of [...$$('svg g.edge')]) {
+  for (const titleEl of $$('svg g.edge')) {
     const edgeTitle = titleEl.querySelector('.edge title')?.textContent ?? '';
     const edge = titleEl.closest('path.edge');
     if (!edge) continue;
