@@ -21,7 +21,7 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
-import $ from '../../lib/dom.js';
+import { $$, $ } from '../../lib/dom.js';
 import { flash } from '../../lib/flash.js';
 import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
@@ -92,11 +92,11 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   async function handleGraphClick(event: React.MouseEvent) {
     const target = event.target as HTMLDivElement;
 
-    if ($('#graph-controls').contains(target)) return;
+    if ($('#graph-controls')!.contains(target)) return;
 
-    const el = $.up<SVGElement>(target, '.node');
+    const el = target.closest<SVGElement>('.node');
 
-    const moduleKey = el ? $(el, 'title')?.textContent?.trim() : '';
+    const moduleKey = el ? el.querySelector('title')?.textContent?.trim() : '';
     const module = moduleKey ? getCachedModule(moduleKey) : undefined;
 
     // Toggle exclude filter?
@@ -120,7 +120,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }
 
   function applyZoom() {
-    const graphEl = $<HTMLDivElement>('#graph')[0];
+    const graphEl = $('div#graph')!;
     const svg = getDiagramElement();
     if (!svg) return;
 
@@ -211,12 +211,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.remove();
 
       // Remove background element so page background shows thru
-      $(svgDom, '.graph > polygon').remove();
+      svgDom.querySelector('.graph > polygon')!.remove();
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       svgDom.id = 'graph-diagram';
 
       // Inject into DOM
-      const el = $('#graph');
+      const el = $('#graph')!;
       getDiagramElement()?.remove();
       el.appendChild(svgDom);
 
@@ -232,9 +232,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       select('#graph svg').insert('defs', ':first-child').html(PATTERN);
 
       // Decorate DOM nodes with appropriate classname
-      for (const el of $<SVGPathElement>('#graph g.node')) {
+      for (const el of $$('#graph g.node')) {
         // Find module this node represents
-        const key = $(el, 'text')[0].textContent;
+        const key = el.querySelector('text')!.textContent;
         if (!key) continue;
 
         const m = getCachedModule(key);
@@ -325,7 +325,7 @@ export function updateSelection(
 
   // Set selection classes for node elements
   const graphEl = document.querySelector('#graph');
-  for (const el of [...$<SVGElement>('svg .node[data-module]')]) {
+  for (const el of [...$$('svg g.node[data-module]')]) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
     const isUpstream = si.upstreamModuleKeys.has(moduleKey);
@@ -357,9 +357,9 @@ export function updateSelection(
   }
 
   // Set selection classes for edge elements
-  for (const titleEl of [...$<SVGElement>('svg .edge')]) {
-    const edgeTitle = $(titleEl, '.edge title')?.textContent ?? '';
-    const edge = $.up<SVGPathElement>(titleEl, '.edge');
+  for (const titleEl of [...$$('svg g.edge')]) {
+    const edgeTitle = titleEl.querySelector('.edge title')?.textContent ?? '';
+    const edge = titleEl.closest<SVGPathElement>('.edge');
     if (!edge) continue;
 
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
@@ -383,18 +383,18 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
   if (!colorizer) {
     // Unset all node colors
-    $(svg, 'g.node path').attr('style', undefined);
+    svg.querySelector('g.node path')!.removeAttribute('style');
     return;
   }
 
-  const moduleEls = $<SVGGElement>(svg, 'g.node');
+  const moduleEls = svg.querySelectorAll('g.node');
 
   if (isSimpleColorizer(colorizer)) {
     // For each node in graph
     for (const el of moduleEls) {
       const moduleKey = el.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elPath = $<SVGPathElement>(el, 'path')[0];
+      const elPath = el.querySelector('path')!;
 
       // Reset color if there's no module
       if (!m) {
@@ -429,8 +429,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const el of moduleEls) {
       const moduleKey = el.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elPath = $<SVGPathElement>(el, 'path')[0];
-
+      const elPath = el.querySelector('path')!;
       elPath.style.fill = (m && colors.get(m)) ?? '';
     }
   }
