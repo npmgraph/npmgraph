@@ -49,7 +49,7 @@ export type ZoomOption =
   | typeof ZOOM_FIT_HEIGHT;
 
 function scrollGraphIntoView(el: Element | null) {
-  const graphEl = document.querySelector('#graph')
+  const graphEl = document.querySelector('#graph');
   if (graphEl && el) {
     // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
     // Firefox.  And even in Chrome it just scrolls the element to *barely*
