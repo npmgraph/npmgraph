@@ -48,45 +48,13 @@ export type ZoomOption =
   | typeof ZOOM_FIT_WIDTH
   | typeof ZOOM_FIT_HEIGHT;
 
-function scrollGraphIntoView(el: Element | null) {
-  const graphEl = document.querySelector('#graph');
-  if (graphEl && el) {
-    // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
-    // Firefox.  And even in Chrome it just scrolls the element to *barely*
-    // be in view, which isn't really what we want.  (We'd like element to
-    // be centered in the view.)  So, instead, we manually compute the
-    // scroll coordinates.
-    const { top: elTop, left: elLeft } = el.getBoundingClientRect();
-    const left = graphEl.scrollLeft + elLeft - graphEl.clientWidth / 2;
-    const top = graphEl.scrollTop + elTop - graphEl.clientHeight / 2;
-
-    graphEl.scrollTo({ left, top, behavior: 'smooth' });
-  }
-}
-
-function useGraphviz() {
-  const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    Graphviz.load()
-      .catch(err => {
-        console.error('Graphviz failed to load', err);
-        return undefined;
-      })
-      .then(setGraphviz)
-      .finally(() => setLoading(false));
-  }, []);
-
-  return [graphviz, loading] as const;
-}
-
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
+  const [rootScrolling, setRootScrolling] = useState(true);
   const [query] = useQuery();
   const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [, setPane] = useGlobalState('pane');
   const [, setZenMode] = useHashParam(PARAM_HIDE);
-  const [queryType, queryValue, setGraphSelection] = useGraphSelection();
+  const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGlobalState('graph');
 
   const [collapse, setCollapse] = useCollapse();
@@ -184,6 +152,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     getGraphForQuery(query, dependencyTypes, moduleFilter).then(newGraph => {
       if (signal.aborted) return; // Check after async
 
+      setRootScrolling(true);
       setGraph(newGraph);
     });
 
@@ -290,10 +259,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   useEffect(applyZoom, [zoom, domSignal]);
 
   // Effect: render graph selection
-  useEffect(
-    () => updateSelection(graph, queryType, queryValue),
-    [queryType, queryValue, domSignal],
-  );
+  useEffect(() => {
+    updateSelection(rootScrolling, graph, selectType, selectValue);
+    setRootScrolling(false);
+  }, [selectType, selectValue, domSignal]);
 
   // Effect: Colorize nodes
   useEffect(() => {
@@ -324,7 +293,44 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   );
 }
 
+function scrollGraphIntoView(
+  el: Element | null,
+  scrollOptions?: ScrollToOptions,
+) {
+  const graphEl = document.querySelector('#graph');
+  if (graphEl && el) {
+    // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
+    // Firefox.  And even in Chrome it just scrolls the element to *barely*
+    // be in view, which isn't really what we want.  (We'd like element to
+    // be centered in the view.)  So, instead, we manually compute the
+    // scroll coordinates.
+    const { top: elTop, left: elLeft } = el.getBoundingClientRect();
+    const left = graphEl.scrollLeft + elLeft - graphEl.clientWidth / 2;
+    const top = graphEl.scrollTop + elTop - graphEl.clientHeight / 2;
+
+    graphEl.scrollTo({ left, top, ...scrollOptions });
+  }
+}
+
+function useGraphviz() {
+  const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Graphviz.load()
+      .catch(err => {
+        console.error('Graphviz failed to load', err);
+        return undefined;
+      })
+      .then(setGraphviz)
+      .finally(() => setLoading(false));
+  }, []);
+
+  return [graphviz, loading] as const;
+}
+
 export function updateSelection(
+  rootScrolling: boolean,
   graph: GraphState | null,
   queryType: QueryType,
   queryValue: string,
@@ -353,7 +359,9 @@ export function updateSelection(
     );
 
     if (isSelection && isSelected) {
-      scrollGraphIntoView(el);
+      scrollGraphIntoView(el, {
+        behavior: rootScrolling ? undefined : 'smooth',
+      });
       scrolled = true;
     }
   }
@@ -379,8 +387,9 @@ export function updateSelection(
     }
   }
 
-  // If no selection, scroll to graph root
-  if (!scrolled) {
+  // If no selection and we haven't already scrolled to the root node as part of
+  // the initial render, do that now
+  if (!scrolled && rootScrolling) {
     scrollGraphIntoView(select('#graph svg .node').node() as HTMLElement);
   }
 }
