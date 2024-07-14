@@ -56,12 +56,11 @@ function scrollGraphIntoView(el: Element | null) {
     // be in view, which isn't really what we want.  (We'd like element to
     // be centered in the view.)  So, instead, we manually compute the
     // scroll coordinates.
-    const { top, left } = el.getBoundingClientRect();
-    graphEl.scrollTo({
-      left: graphEl.scrollLeft + left - graphEl.clientWidth / 2,
-      top: graphEl.scrollTop + top - graphEl.clientHeight / 2,
-      behavior: 'smooth',
-    });
+    const { top: elTop, left: elLeft } = el.getBoundingClientRect();
+    const left = graphEl.scrollLeft + elLeft - graphEl.clientWidth / 2;
+    const top = graphEl.scrollTop + elTop - graphEl.clientHeight / 2;
+
+    graphEl.scrollTo({ left, top, behavior: 'smooth' });
   }
 }
 
@@ -168,8 +167,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         svg.setAttribute('height', '100%');
         break;
     }
-
-    scrollGraphIntoView(select('#graph svg .node').node() as HTMLElement);
   }
 
   // Filter for which modules should be shown / collapsed in the graph
@@ -289,6 +286,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     };
   }, [graphviz, graph, sizing]);
 
+  // (Re)apply zoom if/when it changes
+  useEffect(applyZoom, [zoom, domSignal]);
+
   // Effect: render graph selection
   useEffect(
     () => updateSelection(graph, queryType, queryValue),
@@ -301,9 +301,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (!svg) return;
     colorizeGraph(svg, colorize ?? '');
   }, [colorize, domSignal]);
-
-  // (Re)apply zoom if/when it changes
-  useEffect(applyZoom, [zoom, domSignal]);
 
   if (!graphviz) {
     if (graphvizLoading) {
@@ -341,6 +338,7 @@ export function updateSelection(
   const isSelection = modules.size > 0;
 
   // Set selection classes for node elements
+  let scrolled = false;
   for (const el of [...$<SVGElement>('svg .node[data-module]')]) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
@@ -355,8 +353,8 @@ export function updateSelection(
     );
 
     if (isSelection && isSelected) {
-      // el.scrollIntoView({ behavior: 'smooth' });
       scrollGraphIntoView(el);
+      scrolled = true;
     }
   }
 
@@ -379,6 +377,11 @@ export function updateSelection(
     if (isUpstream || isDownstream) {
       edge.parentElement?.appendChild(edge);
     }
+  }
+
+  // If no selection, scroll to graph root
+  if (!scrolled) {
+    scrollGraphIntoView(select('#graph svg .node').node() as HTMLElement);
   }
 }
 
