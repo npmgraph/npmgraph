@@ -5,16 +5,6 @@ export function isHttpModule(moduleKey: string) {
 }
 
 export function resolveModule(name: string, version?: string) {
-  // "npm:<package name>@<version>"-style names are used to create aliases.  We
-  // detect that here and massage the inputs accordingly
-  //
-  // See `@isaacs/cliui` package for an example.
-  if (version?.startsWith('npm:')) {
-    name = version.slice(4);
-    version = undefined;
-    // Important: Fall through so name is parsed, below...
-  }
-
   if (!version) {
     // Parse versioned-names (e.g. "less@1.2.3")
     [name, version] = parseModuleKey(name);
