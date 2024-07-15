@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx",
+    "lib": ["ES2022", "dom"],
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "resolveJsonModule": true,
