@@ -1,6 +1,10 @@
 import { Maintainer, Packument, PackumentVersion } from '@npm/types';
 import { isDefined } from './guards.js';
-import { getModuleKey, parseModuleKey } from './module_util.js';
+import {
+  getModuleKey,
+  parseModuleKey,
+  resolveDependencyAliases,
+} from './module_util.js';
 
 type DeprecatedLicense = {
   type: string;
@@ -28,8 +32,7 @@ export default class Module {
     }
 
     this.packument = packument;
-
-    this.package = pkg;
+    this.package = resolveDependencyAliases(pkg);
   }
 
   get key() {
