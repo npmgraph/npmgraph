@@ -29,7 +29,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key !== 'Enter' && e.key !== 'Tab') return;
 
-    let moduleKeys = (e.currentTarget as HTMLInputElement).value
+    let moduleKeys = e.currentTarget.value
       .split(',')
       .map(v => v.trim())
       .filter(isDefined);

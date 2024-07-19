@@ -27,8 +27,8 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
   }
 
   // Handle file drops
-  function onDrop(ev: React.DragEvent) {
-    const target = ev.target as HTMLElement;
+  function onDrop(ev: React.DragEvent<HTMLElement>) {
+    const target = ev.currentTarget;
     target.classList.remove('drag');
     ev.preventDefault();
 
@@ -85,13 +85,13 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
   }
 
   function onDragOver(ev: React.DragEvent<HTMLElement>) {
-    const target = ev.target as HTMLElement;
+    const target = ev.currentTarget;
     target.classList.add('drag');
     ev.preventDefault();
   }
 
   function onDragLeave(ev: React.DragEvent<HTMLElement>) {
-    const currentTarget = ev.currentTarget as HTMLElement;
+    const currentTarget = ev.currentTarget;
     currentTarget.classList.remove('drag');
     ev.preventDefault();
   }

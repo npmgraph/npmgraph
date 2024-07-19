@@ -1,17 +1,18 @@
+import { $ } from 'select-dom';
 import './flash.scss';
 
 export function flash(wat: unknown, bg = '#f80') {
   const SPACE = 10;
 
-  const graph = document.querySelector('#graph') as HTMLDivElement;
-  const prev = document.querySelector('.flash:last-of-type') as HTMLElement;
+  const graph = $('#graph');
+  const prev = $('.flash:last-of-type');
   const el = document.createElement('div');
 
   if (wat instanceof Error) {
     el.classList.add('error');
     el.innerText = wat.message;
   } else if (wat instanceof Document) {
-    const body = wat.querySelector('body');
+    const body = $('body', wat);
     if (body) {
       el.append(...body.children);
     }

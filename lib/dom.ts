@@ -1,6 +1,3 @@
-export const $ = document.querySelector.bind(document);
-export const $$ = document.querySelectorAll.bind(document);
-
 export function cn(...args: (string | object | undefined)[]) {
   const classes = new Set();
   for (const arg of args) {

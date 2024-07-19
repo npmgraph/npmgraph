@@ -1,6 +1,6 @@
 import React from 'react';
 import { report } from '../../lib/bugsnag.js';
-import { $ } from '../../lib/dom.js';
+import { $ } from 'select-dom';
 import { DownloadIcon } from '../Icons.js';
 import { getDiagramElement } from './GraphDiagram.js';
 

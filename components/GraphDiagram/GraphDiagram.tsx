@@ -21,7 +21,7 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
-import { $$, $ } from '../../lib/dom.js';
+import { $$, $ } from 'select-dom';
 import { flash } from '../../lib/flash.js';
 import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
@@ -89,14 +89,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
 
-  async function handleGraphClick(event: React.MouseEvent) {
-    const target = event.target as HTMLDivElement;
+  async function handleGraphClick(event: React.MouseEvent<HTMLElement>) {
+    const target = event.currentTarget;
 
     if ($('#graph-controls')!.contains(target)) return;
 
     const el = target.closest('g.node');
 
-    const moduleKey = el ? el.querySelector('title')?.textContent?.trim() : '';
+    const moduleKey = el ? $('title', el)?.textContent?.trim() : '';
     const module = moduleKey ? getCachedModule(moduleKey) : undefined;
 
     // Toggle exclude filter?
@@ -234,7 +234,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       // Decorate DOM nodes with appropriate classname
       for (const el of $$('#graph g.node')) {
         // Find module this node represents
-        const key = el.querySelector('text')!.textContent;
+        const key = $('text', el)!.textContent;
         if (!key) continue;
 
         const m = getCachedModule(key);
@@ -324,7 +324,7 @@ export function updateSelection(
   const isSelection = modules.size > 0;
 
   // Set selection classes for node elements
-  const graphEl = document.querySelector('#graph');
+  const graphEl = $('#graph');
   for (const el of $$('svg g.node[data-module]')) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
@@ -358,7 +358,7 @@ export function updateSelection(
 
   // Set selection classes for edge elements
   for (const titleEl of $$('svg g.edge')) {
-    const edgeTitle = titleEl.querySelector('title')?.textContent ?? '';
+    const edgeTitle = $('title', titleEl)?.textContent ?? '';
     const edge = titleEl.closest('path.edge');
     if (!edge) continue;
 
@@ -396,7 +396,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const el of moduleEls) {
       const moduleKey = el.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elPath = el.querySelector('path')!;
+      const elPath = $('path', el)!;
 
       // Reset color if there's no module
       if (!m) {
@@ -431,7 +431,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const el of moduleEls) {
       const moduleKey = el.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elPath = el.querySelector('path')!;
+      const elPath = $('path', el)!;
       elPath.style.fill = (m && colors.get(m)) ?? '';
     }
   }
@@ -440,5 +440,5 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 }
 
 export function getDiagramElement() {
-  return document.querySelector<SVGSVGElement>('#graph svg#graph-diagram');
+  return $<SVGSVGElement>('#graph svg#graph-diagram');
 }
