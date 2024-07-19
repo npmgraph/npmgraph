@@ -33,8 +33,14 @@ export default function ModulePane({
 
   if (nSelected == 0) {
     return (
-      <Pane>
-        No modules selected. Click a module in the graph to see details.
+      <Pane
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        No modules selected.
       </Pane>
     );
   } else if (nSelected > 1) {
