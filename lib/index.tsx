@@ -66,9 +66,7 @@ window.addEventListener('unhandledrejection', err => {
 window.onload = function () {
   const unsupported = detectFeatures();
   if (unsupported.length > 0) {
-    createRoot($('body')!).render(
-      <Unsupported unsupported={unsupported} />,
-    );
+    createRoot($('body')!).render(<Unsupported unsupported={unsupported} />);
     return;
   }
 
