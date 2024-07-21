@@ -4,5 +4,6 @@
 !*.css
 !*.scss
 !*.md
+!*.yml
 
 CHANGELOG.md
