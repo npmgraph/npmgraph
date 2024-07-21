@@ -1,4 +1,4 @@
-import { HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.js';
 import { queryModuleCache } from '../lib/ModuleCache.js';
 import { PARAM_HIDE } from '../lib/constants.js';

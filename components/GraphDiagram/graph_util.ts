@@ -1,5 +1,5 @@
 import simplur from 'simplur';
-import Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.js';
 import { getModule } from '../../lib/ModuleCache.js';
 import { getModuleKey } from '../../lib/module_util.js';
 

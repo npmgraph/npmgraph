@@ -1,7 +1,7 @@
-import { PackumentVersion } from '@npm/types';
-import Module from '../../lib/Module.js';
+import type { PackumentVersion } from '@npm/types';
+import type Module from '../../lib/Module.js';
 
-import { SemVer, parse } from 'semver';
+import { type SemVer, parse } from 'semver';
 import { cn } from '../../lib/dom.js';
 import useMeasure from '../../lib/useMeasure.js';
 import { Section } from '../Section.js';

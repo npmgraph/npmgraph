@@ -1,11 +1,11 @@
 import React from 'react';
-import Module from '../../../lib/Module.js';
+import type Module from '../../../lib/Module.js';
 import PromiseWithResolvers from '../../../lib/PromiseWithResolvers.js';
 import fetchJSON from '../../../lib/fetchJSON.js';
-import { NPMSIOData } from '../../../lib/fetch_types.js';
+import type { NPMSIOData } from '../../../lib/fetch_types.js';
 import { flash } from '../../../lib/flash.js';
 import { hslFor } from '../../GraphDiagram/graph_util.js';
-import { BulkColorizer } from './index.js';
+import type { BulkColorizer } from './index.js';
 
 // Max number of module names allowed per NPMS request
 const NPMS_BULK_LIMIT = 250;

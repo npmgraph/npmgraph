@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.js';
 import fetchJSON from '../../lib/fetchJSON.js';
-import { NPMSIOData } from '../../lib/fetch_types.js';
+import type { NPMSIOData } from '../../lib/fetch_types.js';
 import { ModuleScoreBar } from './ModuleScoreBar.js';
 
 export default function ModuleNpmsIOScores({ module }: { module: Module }) {

@@ -1,4 +1,4 @@
-import React, { HTMLProps, useEffect } from 'react';
+import React, { type HTMLProps, useEffect } from 'react';
 import simplur from 'simplur';
 import { ago } from '../../lib/ago.js';
 import { cn } from '../../lib/dom.js';

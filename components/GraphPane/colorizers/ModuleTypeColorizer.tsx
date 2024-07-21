@@ -1,6 +1,6 @@
-import { PackageJson } from '@npm/types';
+import type { PackageJson } from '@npm/types';
 import React from 'react';
-import Module from '../../../lib/Module.js';
+import type Module from '../../../lib/Module.js';
 import { LegendColor } from './LegendColor.js';
 
 export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';

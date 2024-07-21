@@ -1,5 +1,6 @@
-import { PackageJson, PackumentVersion } from '@npm/types';
-import React, { HTMLProps } from 'react';
+import type { PackageJson, PackumentVersion } from '@npm/types';
+import type React from 'react';
+import type { HTMLProps } from 'react';
 import {
   cacheLocalPackage,
   sanitizePackageKeys,

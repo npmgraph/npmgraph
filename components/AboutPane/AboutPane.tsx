@@ -1,4 +1,4 @@
-import React, { HTMLProps } from 'react';
+import React, { type HTMLProps } from 'react';
 import { ExternalLink } from '../ExternalLink.js';
 import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';

@@ -1,8 +1,8 @@
-import { Maintainer } from '@npm/types';
-import React from 'react';
+import type { Maintainer } from '@npm/types';
+import type React from 'react';
 import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.js';
-import Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import human from '../../lib/human.js';
 import useHashParam from '../../lib/useHashParam.js';

@@ -1,7 +1,7 @@
-import React from 'react';
+import type React from 'react';
 
 import { cn } from '../../../lib/dom.js';
-import { RenderedAnalysis } from './Analyzer.js';
+import type { RenderedAnalysis } from './Analyzer.js';
 import styles from './ReportItem.module.scss';
 
 const SYMBOLS = {

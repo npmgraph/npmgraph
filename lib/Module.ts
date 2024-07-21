@@ -1,4 +1,4 @@
-import { Maintainer, Packument, PackumentVersion } from '@npm/types';
+import type { Maintainer, Packument, PackumentVersion } from '@npm/types';
 import { isDefined } from './guards.js';
 import {
   getModuleKey,

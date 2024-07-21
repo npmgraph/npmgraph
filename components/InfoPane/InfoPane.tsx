@@ -1,4 +1,4 @@
-import React, { HTMLProps } from 'react';
+import React, { type HTMLProps } from 'react';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
 import { default as FileUploadControl } from './FileUploadControl.js';

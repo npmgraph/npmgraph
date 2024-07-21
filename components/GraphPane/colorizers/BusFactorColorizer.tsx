@@ -1,5 +1,5 @@
 import React from 'react';
-import Module from '../../../lib/Module.js';
+import type Module from '../../../lib/Module.js';
 import { COLORIZE_COLORS } from '../../../lib/constants.js';
 import { LegendColor } from './LegendColor.js';
 
