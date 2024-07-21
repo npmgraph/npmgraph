@@ -8,10 +8,8 @@ export function Loader({
 }: { activity: LoadActivity } & HTMLProps<HTMLDivElement>) {
   return (
     <>
-    <div className="progress-bar" />
-    <div className="loader">
-      {activity.title} ...
-    </div>
+      <div className="progress-bar" />
+      <div className="loader">{activity.title} ...</div>
     </>
   );
 }
