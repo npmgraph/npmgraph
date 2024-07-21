@@ -1,3 +1,4 @@
+import 'typed-query-selector';
 import './bugsnag.js'; // Initialize ASAP!
 
 import { StrictMode } from 'react';
@@ -10,6 +11,7 @@ import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
 import { fetchCommits } from './useCommits.js';
+import { $ } from 'select-dom';
 
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
@@ -64,9 +66,7 @@ window.addEventListener('unhandledrejection', err => {
 window.onload = () => {
   const unsupported = detectFeatures();
   if (unsupported.length > 0) {
-    createRoot(document.querySelector('body')!).render(
-      <Unsupported unsupported={unsupported} />,
-    );
+    createRoot($('body')!).render(<Unsupported unsupported={unsupported} />);
     return;
   }
 
@@ -79,7 +79,7 @@ window.onload = () => {
   setActivityForApp(activity);
 
   // Main app component
-  const appEl = document.querySelector('#app') as HTMLDivElement;
+  const appEl = $('#app')!;
   createRoot(appEl).render(
     <StrictMode>
       <App />
@@ -87,7 +87,7 @@ window.onload = () => {
   );
 
   // A little component for managing the title
-  const titleEl = document.querySelector('title') as HTMLTitleElement;
+  const titleEl = $('title')!;
   createRoot(titleEl).render(<DiagramTitle defaultTitle={titleEl.innerText} />);
 
   // Lazily fetch information about commits to the npmgraph repo
