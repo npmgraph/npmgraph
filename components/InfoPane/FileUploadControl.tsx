@@ -37,10 +37,10 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     const dt = ev.dataTransfer;
     if (!dt.items)
       return alert('Sorry, file dropping is not supported by this browser');
-    if (dt.items.length != 1) return alert('You must drop exactly one file');
+    if (dt.items.length !== 1) return alert('You must drop exactly one file');
 
     const item = dt.items[0];
-    if (item.type && item.type != 'application/json')
+    if (item.type && item.type !== 'application/json')
       return alert('File must have a ".json" extension');
 
     const file = item.getAsFile();

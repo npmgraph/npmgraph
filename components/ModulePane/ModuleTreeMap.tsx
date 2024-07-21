@@ -19,8 +19,8 @@ export function ModuleTreeMap({
 
   // Render contents as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {
-    const { clientWidth: w, clientHeight: h } = $('#treemap')!,
-      m = 1;
+    const { clientWidth: w, clientHeight: h } = $('#treemap')!;
+    const m = 1;
 
     // Note: dependencySizes is *sometimes* undefined.  E.g.
     // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
@@ -38,7 +38,7 @@ export function ModuleTreeMap({
 
     const root = stratify<BundlePhobiaData['dependencySizes'][number]>()
       .id(d => d.name)
-      .parentId(node => (node.name == '__root' ? '' : '__root'))(nodes)
+      .parentId(node => (node.name === '__root' ? '' : '__root'))(nodes)
       .sum(d => (d.approximateSize * size) / sum)
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 

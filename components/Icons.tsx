@@ -27,16 +27,14 @@ export default function Icon({
 }: IconProps & SVGProps<SVGSVGElement>) {
   return (
     <svg
-      viewBox={`0 0 16 16`}
+      viewBox={'0 0 16 16'}
       width={width}
       height={height}
       className={cn('icon', { [`icon-${name}`]: name }, className)}
       {...props}
     >
-      {fillPath ? <path d={fillPath} className="icon-path-fill"></path> : null}
-      {strokePath ? (
-        <path d={strokePath} className="icon-path-stroke"></path>
-      ) : null}
+      {fillPath ? <path d={fillPath} className="icon-path-fill" /> : null}
+      {strokePath ? <path d={strokePath} className="icon-path-stroke" /> : null}
     </svg>
   );
 }

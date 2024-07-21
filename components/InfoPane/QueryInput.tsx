@@ -56,7 +56,6 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
         value={value}
         onKeyDown={handleKeyDown}
         onChange={e => setValue(e.target.value)}
-        autoFocus
         {...props}
       />
       {isGithubUrl(valueAsURL) ? (

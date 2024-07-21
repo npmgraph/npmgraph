@@ -21,7 +21,7 @@ export function ModuleTable({ data }: { data: ModuleTableData }) {
           value={modules[0].key}
           label={modules[0].name}
         />
-        <span></span>
+        <span />
       </div>
     ) : (
       <Fragment key={name}>

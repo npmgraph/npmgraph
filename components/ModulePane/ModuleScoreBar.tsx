@@ -10,7 +10,7 @@ export function ModuleScoreBar({
   score: number;
   style?: React.CSSProperties;
 }) {
-  const perc = (score * 100).toFixed(0) + '%';
+  const perc = `${(score * 100).toFixed(0)}%`;
 
   return (
     <>

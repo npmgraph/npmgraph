@@ -70,7 +70,7 @@ class NPMSColorizer implements BulkColorizer {
     const combinedResults: { [key: string]: NPMSIOData } = {};
     let rejected = 0;
     for (const result of results) {
-      if (result.status == 'rejected') {
+      if (result.status === 'rejected') {
         rejected++;
       } else {
         Object.assign(combinedResults, result.value);

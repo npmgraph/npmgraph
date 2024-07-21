@@ -15,7 +15,7 @@ const UNITS: [number, string][] = [
 ];
 
 export default function human(v: number, suffix = '', sig = 0) {
-  const base = suffix == 'B' ? 1024 : 1000;
+  const base = suffix === 'B' ? 1024 : 1000;
   const { pow, log10, floor, round } = Math;
   let exp = floor(log10(v) / log10(base));
   const unit = UNITS.find(([n]) => n <= exp);

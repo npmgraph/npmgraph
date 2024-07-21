@@ -79,7 +79,7 @@ function getDependencyEntries(
     if (!deps) continue;
 
     // Only do one level for non-"dependencies"
-    if (level > 0 && type != 'dependencies') continue;
+    if (level > 0 && type !== 'dependencies') continue;
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
@@ -106,7 +106,7 @@ export async function getGraphForQuery(
   async function _visit(
     module: Module[] | Module,
     level = 0,
-  ): Promise<GraphModuleInfo | void> {
+  ): Promise<GraphModuleInfo | undefined> {
     if (!module) return Promise.reject(Error('Undefined module'));
 
     // Array?  Apply to each element
@@ -201,11 +201,10 @@ export function composeDOT({
   // Sort modules by [level, key]
   const entries = [...graph.moduleInfos.entries()];
   entries.sort(([aKey, a], [bKey, b]) => {
-    if (a.level != b.level) {
+    if (a.level !== b.level) {
       return a.level - b.level;
-    } else {
-      return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
     }
+    return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
   });
 
   const nodes = ['\n// Nodes & per-node styling'];
@@ -218,7 +217,7 @@ export function composeDOT({
       fontsize *= Math.max(1, Math.log10(unpackedSize) - 2);
     }
 
-    const vs = { root: level == 0, fontsize };
+    const vs = { root: level === 0, fontsize };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
@@ -233,7 +232,7 @@ export function composeDOT({
   }
 
   const titleParts = entries
-    .filter(([, m]) => m.level == 0)
+    .filter(([, m]) => m.level === 0)
     .map(([, m]) => dotEscape(m.module.name));
 
   const MAX_PARTS = 3;
@@ -261,7 +260,7 @@ export function composeDOT({
     .concat(
       graph.moduleInfos.size > 1
         ? `{rank=same; ${[...graph.moduleInfos.values()]
-            .filter(info => info.level == 0)
+            .filter(info => info.level === 0)
             .map(info => `"${info.module}"`)
             .join('; ')};}`
         : '',

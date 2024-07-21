@@ -31,7 +31,7 @@ export default function ModulePane({
   const nSelected = selectedModules.size;
   const [graph] = useGlobalState('graph');
 
-  if (nSelected == 0) {
+  if (nSelected === 0) {
     return (
       <Pane
         style={{
@@ -43,7 +43,8 @@ export default function ModulePane({
         No modules selected.
       </Pane>
     );
-  } else if (nSelected > 1) {
+  }
+  if (nSelected > 1) {
     return (
       <Pane>
         Multiple modules selected. Click a single module in the graph to see

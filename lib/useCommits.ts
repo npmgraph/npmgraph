@@ -55,7 +55,7 @@ export default function useCommits() {
   let newCount = 0;
   for (const commit of commits) {
     const date = Date.parse(commit.commit.author.date);
-    commit.isNew = !isNaN(date) && date > lastVisit;
+    commit.isNew = !Number.isNaN(date) && date > lastVisit;
     newCount += commit.isNew ? 1 : 0;
   }
 

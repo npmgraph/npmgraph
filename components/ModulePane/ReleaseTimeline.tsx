@@ -39,7 +39,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       ] as const;
     })
     // "0.0.0" isn't a valid version (e.g. you can't npm publish it)
-    .filter(([, { semver }]) => semver.version != '0.0.0')
+    .filter(([, { semver }]) => semver.version !== '0.0.0')
     .sort(([, a], [, b]) => {
       return a.time < b.time ? -1 : 0;
     });

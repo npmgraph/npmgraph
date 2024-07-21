@@ -28,7 +28,7 @@ export default class Module {
   // be clear about the differences between the two!
   constructor(pkg: PackumentVersion, packument?: Packument) {
     if (!pkg.name) {
-      throw new Error(`Package name is required`);
+      throw new Error('Package name is required');
     }
 
     this.packument = packument;
@@ -88,7 +88,7 @@ export default class Module {
   get repository() {
     // TODO: Handle non-github repositories
     const { repository } = this.package;
-    if (typeof repository == 'string') return repository;
+    if (typeof repository === 'string') return repository;
     return repository?.url;
   }
 
@@ -133,7 +133,8 @@ function parseLicense(
 ): string[] {
   if (Array.isArray(license)) {
     return license.flatMap(parseLicense).filter(isDefined);
-  } else if (typeof license === 'object') {
+  }
+  if (typeof license === 'object') {
     license = license.type;
   }
 

@@ -18,7 +18,7 @@ export function flash(wat: unknown, bg = '#f80') {
     }
   } else if (wat instanceof Element || wat instanceof DocumentFragment) {
     el.append(wat);
-  } else if (typeof wat == 'string') {
+  } else if (typeof wat === 'string') {
     el.innerText = wat;
   } else {
     el.innerText = JSON.stringify(wat, null, 2);

@@ -2,7 +2,6 @@ export function cn(...args: (string | object | undefined)[]) {
   const classes = new Set();
   for (const arg of args) {
     if (!arg) {
-      continue;
     } else if (typeof arg === 'string') {
       for (const cn of arg.split(/\s+/g)) {
         classes.add(cn);
