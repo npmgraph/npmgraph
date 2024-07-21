@@ -81,8 +81,8 @@
     "release": "standard-version",
     "start": "parcel serve index.html",
     "lint": "eslint .",
-    "format:check": "prettier -c .",
-    "format:fix": "prettier -w .",
+    "format:check": "prettier -c . && biome check",
+    "format:fix": "prettier -w . && biome check --write .",
     "types": "tsc --noEmit",
     "test": "npm run format:check && npm run lint && npm run types"
   }

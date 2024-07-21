@@ -1,1 +1,5 @@
-CHANGELOG.md
+*.*
+
+# Until https://github.com/biomejs/biome/issues/1285
+!*.css
+!*.scss
