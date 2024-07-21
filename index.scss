@@ -17,6 +17,7 @@
 
   --text: #020303;
   --text-dim: #999;
+  --bg-root: #fff;
   --bg0: #f1f4f4;
   --bg1: #bbb;
   --bg2: #ddd;
@@ -65,10 +66,9 @@
       --grey#{(10-$i) * 10}: hsl(0, 0%, #{$i * 10%});
     }
 
-    background-color: #111;
-
     --text: #f3f3f3;
     --text-dim: #766;
+    --bg-root: #111;
     --bg0: #262222;
     --bg1: #696666;
     --bg2: #333;
@@ -83,6 +83,7 @@
 }
 
 html {
+  background: var(--bg-root);
   font-size: 10pt;
   font-family:
     system-ui,
