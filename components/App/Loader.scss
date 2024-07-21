@@ -1,17 +1,20 @@
 .loader {
   position: absolute;
-  right: 0;
+  left: 0;
   z-index: 99;
   box-sizing: border-box;
-  background: var(--tabs-bg) var(--bg-gradient);
-  padding-left: 0.5em;
-  width: var(--inspector-size);
+  background: var(--root-bg);
+  box-shadow: 2px 2px 10px 5px var(--root-bg);
+  padding: 0.5em;
+  max-width: var(--inspector-size);
+  border-bottom-right-radius: 1em;
+
   overflow: hidden;
   color: var(--tabs-text);
   font-weight: 600;
-  line-height: var(--tabs-height);
   text-overflow: ellipsis;
   white-space: nowrap;
+  pointer-events: none;
 
   @keyframes MOVE-BG {
     from {
@@ -22,22 +25,24 @@
     }
   }
 
-  .bg {
-    position: absolute;
-    bottom: 0;
-    z-index: -1;
-    animation-duration: 1.6s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-name: MOVE-BG;
-    background: repeating-linear-gradient(
-      -45deg,
-      white 0,
-      white 20px,
-      var(--highlight) 20px,
-      var(--highlight) 40px
-    );
-    width: calc(100% + 57px);
-    height: 2pt;
-  }
+}
+
+.progress-bar {
+  position: absolute;
+  inset: 0;
+  width: calc(100% + 57px);
+  height: 2pt;
+  z-index: 9999;
+
+  animation-duration: 1.6s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-name: MOVE-BG;
+  background: repeating-linear-gradient(
+    -45deg,
+    white 0,
+    white 20px,
+    var(--highlight) 20px,
+    var(--highlight) 40px
+  );
 }

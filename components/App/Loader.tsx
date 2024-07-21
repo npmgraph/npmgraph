@@ -7,9 +7,11 @@ export function Loader({
   activity,
 }: { activity: LoadActivity } & HTMLProps<HTMLDivElement>) {
   return (
+    <>
+    <div className="progress-bar" />
     <div className="loader">
-      <div className="bg" />
       {activity.title} ...
     </div>
+    </>
   );
 }
