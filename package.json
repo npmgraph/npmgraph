@@ -32,6 +32,7 @@
     "md5": "2.3.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "select-dom": "^9.0.0",
     "semver": "7.6.2",
     "simplur": "4.0.0"
   },
@@ -74,6 +75,7 @@
     "prettier-plugin-css-order": "2.1.2",
     "process": "0.11.10",
     "standard-version": "9.5.0",
+    "typed-query-selector": "^2.11.2",
     "typescript": "5.5.3"
   },
   "scripts": {
