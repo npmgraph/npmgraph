@@ -7,9 +7,7 @@ import { LicenseAnalysisState } from '../analyzeLicenses.js';
 import styles from './modulesAll.module.scss';
 
 export function licensesKeyword(keyword: OSIKeyword) {
-  return function ({
-    modulesByKeyword,
-  }: LicenseAnalysisState): RenderedAnalysis {
+  return ({ modulesByKeyword }: LicenseAnalysisState): RenderedAnalysis => {
     const modules = modulesByKeyword.get(keyword);
     if (!modules) return;
 

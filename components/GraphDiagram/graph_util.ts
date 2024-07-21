@@ -173,7 +173,7 @@ function dotEscape(str: string) {
  * E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
  */
 function vizStyle(obj: Record<string, string | number | boolean | undefined>) {
-  const pairs = Object.entries(obj).map(function ([key, value]) {
+  const pairs = Object.entries(obj).map(([key, value]) => {
     switch (typeof value) {
       case 'number':
         return `${key}=${value}`;
@@ -240,7 +240,7 @@ export function composeDOT({
   if (titleParts.length > MAX_PARTS) {
     titleParts.splice(
       MAX_PARTS,
-      Infinity,
+      Number.POSITIVE_INFINITY,
       simplur` and ${titleParts.length - MAX_PARTS} other module[|s]`,
     );
   }

@@ -61,7 +61,7 @@ window.addEventListener('unhandledrejection', err => {
   flash(err.reason);
 });
 
-window.onload = function () {
+window.onload = () => {
   const unsupported = detectFeatures();
   if (unsupported.length > 0) {
     createRoot(document.querySelector('body')!).render(

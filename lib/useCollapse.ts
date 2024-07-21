@@ -16,7 +16,7 @@ export default function useCollapse() {
 
   return [
     excludes,
-    function (excludes: string[]) {
+    (excludes: string[]) => {
       setVal(excludes.sort().join(','));
     },
   ] as const;

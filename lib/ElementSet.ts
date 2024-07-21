@@ -6,7 +6,7 @@ export default class ElementSet<T extends Element> extends Array<T> {
       el.addEventListener(...args);
     }
 
-    return function () {
+    return () => {
       for (const el of els) {
         el.removeEventListener(...args);
       }

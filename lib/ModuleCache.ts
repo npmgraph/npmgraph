@@ -33,7 +33,7 @@ type ModuleCacheEntry = PromiseWithResolversType<Module> & {
 
 function selectVersion(
   packument: Packument,
-  targetVersion: string = 'latest',
+  targetVersion = 'latest',
 ): PackumentVersion | undefined {
   let selectedVersion: string | undefined;
 

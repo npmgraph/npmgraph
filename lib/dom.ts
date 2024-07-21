@@ -19,10 +19,10 @@ export default function $<T extends Element>(
 }
 
 // Create a new DOM element
-$.create = function <T extends Element>(
+$.create = <T extends Element>(
   name: string,
   atts?: { [key: string]: unknown },
-): T {
+): T => {
   const el = document.createElement(name);
   if (atts) {
     for (const k in atts) el.setAttribute(k, String(atts[k]));
@@ -31,10 +31,10 @@ $.create = function <T extends Element>(
 };
 
 // Find parent or self matching selector (or test function)
-$.up = function <T extends Element>(
+$.up = <T extends Element>(
   el: Element,
   sel?: string | ((el: Element) => boolean),
-) {
+) => {
   let trace: Element | null = el;
   if (typeof sel === 'string') {
     while (trace && !trace.matches(sel)) trace = trace.parentElement;

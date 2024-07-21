@@ -46,15 +46,15 @@ function downloadPng() {
   }
 
   const canvas = $.create<HTMLCanvasElement>('canvas');
-  canvas.width = parseInt(vb[2]);
-  canvas.height = parseInt(vb[3]);
+  canvas.width = Number.parseInt(vb[2]);
+  canvas.height = Number.parseInt(vb[3]);
   const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
   const DOMURL = window.URL || window.webkitURL;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
   const url = DOMURL.createObjectURL(svgBlob);
 
-  img.onload = function () {
+  img.onload = () => {
     ctx.drawImage(img, 0, 0);
     DOMURL.revokeObjectURL(url);
     const pngImg = canvas.toDataURL('image/png');

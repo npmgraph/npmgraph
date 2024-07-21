@@ -167,7 +167,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const finish = activity.start('Rendering');
 
     // Render SVG markup (async)
-    (async function () {
+    (async () => {
       if (!graphviz) return;
 
       if (signal.aborted) return; // Check after all async stuff

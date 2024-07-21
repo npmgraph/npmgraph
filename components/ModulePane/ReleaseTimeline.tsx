@@ -12,7 +12,7 @@ function timestring(t: number) {
 }
 
 function createScale(in0: number, in1: number, out0: number, out1: number) {
-  return function (v: number) {
+  return (v: number) => {
     if (in1 === in0) return (out1 + out0) / 2;
     return ((v - in0) / (in1 - in0)) * (out1 - out0) + out0;
   };
