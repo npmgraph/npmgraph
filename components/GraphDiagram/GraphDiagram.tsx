@@ -73,10 +73,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
 
-  async function handleGraphClick(event: React.MouseEvent<HTMLElement>) {
-    const target = event.currentTarget;
+  async function handleGraphClick(event: React.MouseEvent) {
+    const target = event.target as Element;
 
-    if ($('#graph-controls')!.contains(target)) return;
+    if (target.closest('#graph-controls')) return;
 
     const el = target.closest('g.node');
 
