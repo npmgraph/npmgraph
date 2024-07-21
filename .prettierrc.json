@@ -1,5 +1,0 @@
-{
-  "plugins": ["prettier-plugin-css-order"],
-  "arrowParens": "avoid",
-  "singleQuote": true
-}
