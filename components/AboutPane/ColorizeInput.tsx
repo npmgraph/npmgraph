@@ -24,7 +24,7 @@ export default function ColorizeInput() {
 
   return (
     <>
-    <hr />
+      <hr />
       <label
         id="colorize-ui"
         style={{ display: 'flex', alignItems: 'baseline' }}

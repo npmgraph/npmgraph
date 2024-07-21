@@ -2,13 +2,8 @@ import React, { HTMLProps } from 'react';
 import simplur from 'simplur';
 import { DependencyKey } from '../GraphDiagram/graph_util.js';
 import ColorizeInput from './ColorizeInput.js';
-import { ExternalLink } from '../ExternalLink.js';
-import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import './AboutPane.scss';
-import { CommitList } from './CommitList.js';
-import GithubSponsorButton from './GithubSponsorButton.js';
-import { version as VERSION } from '../../package.json';
 import { Toggle } from '../Toggle.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.js';
@@ -62,24 +57,6 @@ export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
           <span>(Shift-click modules in graph to expand/collapse)</span>
         )}
       </div>
-      <hr />
-      <h3>About npmgraph</h3>
-      <p>
-        {'\xa9'} npmgraph Contributors &mdash; v{VERSION} &mdash; <ExternalLink
-          href="https://github.com/npmgraph/npmgraph"
-          icon={GithubIcon}
-        >
-          GitHub repo
-        </ExternalLink>
-      </p>
-
-      <p>
-        <GithubSponsorButton username="broofa"/>
-      </p>
-
-      <hr />
-
-      <CommitList />
     </Pane>
   );
 }
