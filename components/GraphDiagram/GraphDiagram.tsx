@@ -365,11 +365,8 @@ export function updateSelection(
   }
 
   // Set selection classes for edge elements
-  for (const titleEl of $$('svg g.edge')) {
-    const edgeTitle = $('title', titleEl)?.textContent ?? '';
-    const edge = titleEl.closest('path.edge');
-    if (!edge) continue;
-
+  for (const edge of $$('svg g.edge')) {
+    const edgeTitle = $('title', edge)?.textContent ?? '';
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
     const isDownstream = si.downstreamEdgeKeys.has(edgeTitle);
     edge.classList.toggle('upstream', isSelection && isUpstream);
