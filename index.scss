@@ -109,6 +109,12 @@ h2 {
   font-size: 14pt;
 }
 
+hr {
+  border: none;
+  border-top: solid 1px var(--bg1);
+  margin-block: 1em;
+}
+
 kbd {
   border: 1px solid currentcolor;
   border-radius: 0.3em;

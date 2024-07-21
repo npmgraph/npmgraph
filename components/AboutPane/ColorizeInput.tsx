@@ -1,7 +1,7 @@
 import React from 'react';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import useHashParam from '../../lib/useHashParam.js';
-import colorizers, { getColorizer } from './colorizers/index.js';
+import colorizers, { getColorizer } from '../GraphPane/colorizers/index.js';
 
 import './ColorizeInput.scss';
 
@@ -24,6 +24,7 @@ export default function ColorizeInput() {
 
   return (
     <>
+    <hr />
       <label
         id="colorize-ui"
         style={{ display: 'flex', alignItems: 'baseline' }}
