@@ -3,7 +3,6 @@
   flex: 0 0;
   flex-direction: column;
   transition: flex-basis 0.5s;
-  box-shadow: 0px 7px 3px var(--inset-shadow-color, rgba(214, 214, 214, 0.467));
   height: 100vh;
   overflow: hidden;
   color: var(--text);
@@ -69,7 +68,7 @@ label {
 
     &.active {
       border-color: transparent;
-      background: var(--highlight);
+      background: var(--accent);
     }
   }
 }
@@ -83,8 +82,9 @@ label {
   overflow-x: hidden;
   overflow-y: auto;
   color: var(--text);
+  box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
 
   a {
-    color: var(--highlight);
+    color: var(--accent);
   }
 }

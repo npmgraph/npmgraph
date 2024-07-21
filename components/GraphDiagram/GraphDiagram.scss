@@ -52,7 +52,8 @@
     line-height: 1em;
 
     &.selected {
-      background-color: var(--highlight);
+      background-color: var(--accent);
+      color: var(--text-on-accent);
     }
   }
 }
@@ -95,20 +96,24 @@ g.node {
 
   &.selected {
     & > path {
-      stroke-width: 3;
-      stroke: var(--highlight) !important;
+      fill: var(--accent) !important;
+      stroke: var(--accent) !important;
+      stroke-width: 5;
+    }
+    & > text {
+      fill: var(--text-on-accent);
     }
   }
 
   &.upstream {
     & > path {
-      stroke: var(--stroke-blue);
+      stroke: var(--accent-100);
     }
   }
 
   &.downstream {
     & > path {
-      stroke: var(--stroke-violet);
+      stroke: var(--accent);
     }
   }
 
@@ -140,25 +145,25 @@ g.edge {
 
   &.upstream {
     & > path {
-      stroke: var(--stroke-blue);
+      stroke: var(--accent-100);
       stroke-width: var(--selected-edge-width);
     }
 
     & > polygon {
-      stroke: var(--stroke-blue);
-      fill: var(--stroke-blue);
+      stroke: var(--accent-100);
+      fill: var(--accent-100);
     }
   }
 
   &.downstream {
     & > path {
-      stroke: var(--stroke-violet);
+      stroke: var(--accent);
       stroke-width: var(--selected-edge-width);
     }
 
     & > polygon {
-      stroke: var(--stroke-violet);
-      fill: var(--stroke-violet);
+      stroke: var(--accent);
+      fill: var(--accent);
     }
   }
 
