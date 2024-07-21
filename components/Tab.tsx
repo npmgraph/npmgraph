@@ -11,11 +11,11 @@ export function Tab({
   badge?: string | number | boolean;
 }) {
   return (
-    <div className={cn('tab bright-hover', { active })} {...props}>
-      {children}
-      {badge ? (
-        <span className="badge">{badge === true ? ' ' : badge}</span>
-      ) : null}
+    <div className={cn('tab', { active })} {...props}>
+      <button className="bright-hover">
+        {children}
+        {badge && <span className="badge">{badge === true ? ' ' : badge}</span>}
+      </button>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 :root {
-  color-scheme: light dark;
   accent-color: var(--accent);
+  color-scheme: light dark;
 
   @for $i from 0 through 10 {
     --grey#{($i) * 10}: hsl(0, 0%, #{$i * 10%});
@@ -25,6 +25,7 @@
 
   --tabs-bg: #7e7e7d;
   --tabs-text: #fff;
+  --tabs-border: rgba(203, 203, 203, 0.796);
   --accent: #da6200;
   --accent-100: color-mix(in srgb, var(--accent) 60%, var(--bg0));
   --text-on-accent: #fff;
@@ -64,6 +65,8 @@
   --bg-darkred: hsl(0, var(--bg-dark-S), var(--bg-dark-L));
   --bg-darkviolet: hsl(300, var(--bg-dark-S), var(--bg-dark-L));
   --bg-darkyellow: hsl(60, var(--bg-dark-S), var(--bg-dark-L));
+
+  --transition-duration: 0.5s;
 }
 
 @media (prefers-color-scheme: dark) {

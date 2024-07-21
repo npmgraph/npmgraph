@@ -3,10 +3,13 @@
   top: 0;
   right: 0;
   z-index: 1;
-  cursor: pointer;
+  transition: border-radius var(--transition-duration);
+  cursor: default;
   background: var(--tabs-bg) var(--bg-gradient);
+  padding: 0 10px;
   height: 24pt;
   color: var(--tabs-text);
+  direction: rtl; // Move border to the left
   user-select: none;
   text-align: center;
   #inspector:not(.open) & {
