@@ -12,8 +12,7 @@
     "indentWidth": 2,
     "lineEnding": "lf",
     "lineWidth": 80,
-    "attributePosition": "auto",
-    "ignore": ["**/CHANGELOG.md"]
+    "attributePosition": "auto"
   },
   "linter": {
     "enabled": false,
