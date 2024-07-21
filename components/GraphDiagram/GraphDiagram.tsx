@@ -73,18 +73,16 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
 
-  async function handleGraphClick(event: React.MouseEvent) {
-    const target = event.target as Element;
+  async function handleGraphClick({ target, shiftKey }: React.MouseEvent) {
+    if (!(target instanceof Element) || target.closest('#graph-controls'))
+      return;
 
-    if (target.closest('#graph-controls')) return;
-
-    const el = target.closest('g.node');
-
-    const moduleKey = el ? $('title', el)?.textContent?.trim() : '';
+    const node = target.closest('g.node');
+    const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
     const module = moduleKey ? getCachedModule(moduleKey) : undefined;
 
     // Toggle exclude filter?
-    if (el && event.shiftKey) {
+    if (node && shiftKey) {
       if (module) {
         const isIncluded = collapse.includes(module.name);
         if (isIncluded) {
@@ -97,7 +95,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       return;
     }
 
-    if (el) setZenMode('');
+    if (node) setZenMode('');
 
     setGraphSelection('exact', moduleKey);
     setPane(moduleKey ? PANE.MODULE : PANE.GRAPH);
