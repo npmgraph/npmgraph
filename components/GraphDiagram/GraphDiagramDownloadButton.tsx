@@ -1,6 +1,6 @@
 import React from 'react';
-import { report } from '../../lib/bugsnag.js';
 import { $ } from 'select-dom';
+import { report } from '../../lib/bugsnag.js';
 import { DownloadIcon } from '../Icons.js';
 import { getDiagramElement } from './GraphDiagram.js';
 
@@ -46,8 +46,8 @@ function downloadPng() {
   }
 
   const canvas = document.createElement('canvas');
-  canvas.width = parseInt(vb[2]);
-  canvas.height = parseInt(vb[3]);
+  canvas.width = Number.parseInt(vb[2]);
+  canvas.height = Number.parseInt(vb[3]);
   const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
   const DOMURL = window.URL || window.webkitURL;
   const img = new Image();
