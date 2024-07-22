@@ -74,7 +74,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [domSignal, setDomSignal] = useState(0);
 
   async function handleGraphClick(event: React.MouseEvent) {
-    if (!(event.target instanceof Element) || event.target.closest('#graph-controls'))
+    if (
+      !(event.target instanceof Element) ||
+      event.target.closest('#graph-controls')
+    )
       return;
 
     if (event.metaKey) {
