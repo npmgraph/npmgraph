@@ -23,7 +23,11 @@ export function ExternalLink({
       {...props}
     >
       {children}
-      <IconComponent style={{ marginLeft: '0.2rem' }} />
+      <IconComponent
+        style={{ marginLeft: '0.3rem', verticalAlign: '-0.1em' }}
+        width={12}
+        height={12}
+      />
     </a>
   );
 }

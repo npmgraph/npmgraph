@@ -9,7 +9,7 @@ import useHashParam from '../../lib/useHashParam.js';
 import { ExternalLink } from '../ExternalLink.js';
 import { foreachDownstream } from '../GraphDiagram/graph_util.js';
 import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.js';
-import { GithubIcon } from '../Icons.js';
+import { GithubIcon, NpmIcon, Package } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
 import { Section } from '../Section.js';
@@ -91,45 +91,19 @@ export default function ModulePane({
 
   const maintainers = module.maintainers;
 
-  const projectUrl = getProjectUrlForModule(module);
-  let projectLink = null;
-  if (projectUrl) {
-    if (/github.com/i.test(projectUrl)) {
-      projectLink = (
-        <ExternalLink href={projectUrl} icon={GithubIcon}>
-          GitHub
-        </ExternalLink>
-      );
-    } else {
-      projectLink = <ExternalLink href={projectUrl}>Project Page</ExternalLink>;
-    }
-  }
-
   const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
-
   const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
+  const repoUrl = getRepoUrlForModule(module);
+  const homepageUrl =
+    module.package.homepage &&
+    !module.package.homepage.startsWith('https://github.com/')
+      ? module.package.homepage
+      : null;
 
   return (
     <Pane {...props}>
-      <div
-        style={{
-          display: 'flex',
-          padding: '0.5rem 0',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          alignItems: 'baseline',
-        }}
-      >
-        <h2
-          style={{
-            flexGrow: 0,
-            whiteSpace: 'nowrap',
-            margin: 0,
-          }}
-        >
-          <QueryLink query={module.key} />
-        </h2>
-
+      <div style={{ marginBlock: '1em 0.5em' }}>
+        <h2 style={{ display: 'inline' }}>{module.key}</h2>
         {!colorize || colorize === OutdatedColorizer.name ? (
           <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
         ) : null}
@@ -145,12 +119,30 @@ export default function ModulePane({
         </div>
       ) : null}
 
-      <p>{pkg?.description}</p>
+      <p style={{ marginTop: 0 }}>{pkg?.description}</p>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <ExternalLink href={npmUrl}>npmjs.org</ExternalLink>
-        {projectLink}
-        <ExternalLink href={packageUrl}>package.json</ExternalLink>
+        <QueryLink
+          className="bright-hover"
+          query={module.key}
+          style={{ textDecoration: 'none' }}
+        >
+          ⬅ View
+        </QueryLink>
+        <ExternalLink href={npmUrl} icon={NpmIcon}>
+          npm
+        </ExternalLink>
+        {repoUrl && (
+          <ExternalLink href={repoUrl} icon={GithubIcon}>
+            GitHub
+          </ExternalLink>
+        )}
+        <ExternalLink href={packageUrl} icon={Package}>
+          package.json
+        </ExternalLink>
+        {homepageUrl && (
+          <ExternalLink href={homepageUrl}>Homepage</ExternalLink>
+        )}
       </div>
 
       <ReleaseTimeline module={module} />
@@ -204,10 +196,8 @@ export default function ModulePane({
   );
 }
 
-function getProjectUrlForModule(module: Module) {
+function getRepoUrlForModule(module: Module) {
   const { homepage, bugs, repository } = module.package;
-
-  if (homepage) return homepage;
 
   // Look to repository and bugs fields for a github URL
   let repo;
