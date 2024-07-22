@@ -94,20 +94,20 @@ g.node {
   }
 
   &.selected {
-    & > path {
+    path {
       stroke-width: 3;
       stroke: var(--highlight) !important;
     }
   }
 
   &.upstream {
-    & > path {
+    path {
       stroke: var(--stroke-blue);
     }
   }
 
   &.downstream {
-    & > path {
+    path {
       stroke: var(--stroke-violet);
     }
   }
