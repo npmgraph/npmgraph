@@ -90,7 +90,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       // Don't navigate to link
       event.preventDefault();
     }
-    
+
     const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
     const module = moduleKey ? getCachedModule(moduleKey) : undefined;
 
