@@ -247,7 +247,7 @@ export function composeDOT({
     );
   }
 
-  const x = [
+  return [
     'digraph {',
     'rankdir="LR"',
     'labelloc="t"',
@@ -270,8 +270,6 @@ export function composeDOT({
     )
     .concat('}')
     .join('\n');
-  console.log(x);
-  return x;
 }
 
 export function foreachUpstream(
