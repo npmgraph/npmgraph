@@ -103,13 +103,13 @@ g.node {
 
   &.upstream {
     path {
-      stroke: green;
+      stroke: var(--accent-negative);
     }
   }
 
   &.downstream {
     path {
-      stroke: var(--accent-red);
+      stroke: var(--accent);
     }
   }
 
@@ -141,25 +141,25 @@ g.edge {
 
   &.upstream {
     & > path {
-      stroke: var(--accent-green);
+      stroke: var(--accent-negative);
       stroke-width: var(--selected-edge-width);
     }
 
     & > polygon {
-      stroke: var(--accent-green);
-      fill: var(--accent-green);
+      stroke: var(--accent-negative);
+      fill: var(--accent-negative);
     }
   }
 
   &.downstream {
     & > path {
-      stroke: var(--accent-red);
+      stroke: var(--accent);
       stroke-width: var(--selected-edge-width);
     }
 
     & > polygon {
-      stroke: var(--accent-red);
-      fill: var(--accent-red);
+      stroke: var(--accent);
+      fill: var(--accent);
     }
   }
 
