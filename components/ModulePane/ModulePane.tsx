@@ -96,31 +96,14 @@ export default function ModulePane({
   const repoUrl = getRepoUrlForModule(module);
   const homepageUrl =
     module.package.homepage &&
-    !module.package.homepage?.startsWith('https://github.com/')
+    !module.package.homepage.startsWith('https://github.com/')
       ? module.package.homepage
       : null;
 
   return (
     <Pane {...props}>
-      <div
-        style={{
-          display: 'flex',
-          padding: '0.5rem 0',
-          gap: '1rem',
-          flexWrap: 'wrap',
-          alignItems: 'baseline',
-        }}
-      >
-        <h2
-          style={{
-            flexGrow: 0,
-            whiteSpace: 'nowrap',
-            margin: 0,
-          }}
-        >
-          {module.key}
-        </h2>
-
+      <div style={{marginBlock: '1em 0.5em'}}>
+        <h2 style={{display: 'inline'}}>{module.key}</h2>
         {!colorize || colorize === OutdatedColorizer.name ? (
           <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
         ) : null}
@@ -146,9 +129,6 @@ export default function ModulePane({
         >
           ⬅ View
         </QueryLink>
-        <ExternalLink href={packageUrl} icon={Package}>
-          package.json
-        </ExternalLink>
         <ExternalLink href={npmUrl} icon={NpmIcon}>
           npm
         </ExternalLink>
@@ -157,6 +137,9 @@ export default function ModulePane({
             GitHub
           </ExternalLink>
         )}
+        <ExternalLink href={packageUrl} icon={Package}>
+          package.json
+        </ExternalLink>
         {homepageUrl && (
           <ExternalLink href={homepageUrl}>Homepage</ExternalLink>
         )}

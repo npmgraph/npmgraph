@@ -80,12 +80,12 @@ export function ModuleVersionInfo({
   }
 
   return (
-    <div
+    <p
       id="module-version"
       className={cn(className, props.className)}
       {...props}
     >
       {content}
-    </div>
+    </p>
   );
 }
