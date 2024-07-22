@@ -102,8 +102,8 @@ export default function ModulePane({
 
   return (
     <Pane {...props}>
-      <div style={{marginBlock: '1em 0.5em'}}>
-        <h2 style={{display: 'inline'}}>{module.key}</h2>
+      <div style={{ marginBlock: '1em 0.5em' }}>
+        <h2 style={{ display: 'inline' }}>{module.key}</h2>
         {!colorize || colorize === OutdatedColorizer.name ? (
           <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
         ) : null}
