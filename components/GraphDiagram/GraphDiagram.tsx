@@ -86,6 +86,11 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     }
 
     const node = event.target.closest('g.node');
+    if (node) {
+      // Don't navigate to link
+      event.preventDefault();
+    }
+    
     const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
     const module = moduleKey ? getCachedModule(moduleKey) : undefined;
 
@@ -100,7 +105,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         }
       }
 
-      event.preventDefault();
       return;
     }
 
