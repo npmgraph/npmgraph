@@ -95,24 +95,24 @@ g.node {
   }
 
   &.selected {
-    & > path {
+    path {
       fill: var(--accent) !important;
       stroke: var(--accent) !important;
       stroke-width: 5;
     }
-    & > text {
+    text {
       fill: var(--text-on-accent);
     }
   }
 
   &.upstream {
-    & > path {
+    path {
       stroke: var(--accent-100);
     }
   }
 
   &.downstream {
-    & > path {
+    path {
       stroke: var(--accent);
     }
   }

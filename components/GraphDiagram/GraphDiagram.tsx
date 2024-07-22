@@ -73,16 +73,29 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Signal for when Graph DOM changes
   const [domSignal, setDomSignal] = useState(0);
 
-  async function handleGraphClick({ target, shiftKey }: React.MouseEvent) {
-    if (!(target instanceof Element) || target.closest('#graph-controls'))
+  async function handleGraphClick(event: React.MouseEvent) {
+    if (
+      !(event.target instanceof Element) ||
+      event.target.closest('#graph-controls')
+    )
       return;
 
-    const node = target.closest('g.node');
+    if (event.metaKey) {
+      // Allow opening the link in a new tab
+      return;
+    }
+
+    const node = event.target.closest('g.node');
+    if (node) {
+      // Don't navigate to link
+      event.preventDefault();
+    }
+
     const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
     const module = moduleKey ? getCachedModule(moduleKey) : undefined;
 
     // Toggle exclude filter?
-    if (node && shiftKey) {
+    if (node && event.shiftKey) {
       if (module) {
         const isIncluded = collapse.includes(module.name);
         if (isIncluded) {
