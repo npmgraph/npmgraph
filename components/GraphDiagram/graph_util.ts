@@ -218,7 +218,9 @@ export function composeDOT({
       fontsize *= Math.max(1, Math.log10(unpackedSize) - 2);
     }
 
-    const vs = { root: level == 0, fontsize };
+    const link = new URL(location.origin);
+    link.searchParams.append('q', module.key);
+    const vs = { root: level == 0, fontsize, href: link.href };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
@@ -245,7 +247,7 @@ export function composeDOT({
     );
   }
 
-  return [
+  const x= [
     'digraph {',
     'rankdir="LR"',
     'labelloc="t"',
@@ -268,6 +270,8 @@ export function composeDOT({
     )
     .concat('}')
     .join('\n');
+    console.log(x)
+    return x;
 }
 
 export function foreachUpstream(
