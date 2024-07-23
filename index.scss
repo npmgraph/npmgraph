@@ -28,13 +28,10 @@
   --tabs-text: #fff;
   --tabs-border: rgba(203, 203, 203, 0.796);
 
-  // Additional accents generated with https://mycolor.space/?hex=%23DA6200&sub=1
   --accent: #da6200;
-  --accent-negative: #39beab;
-
   --text-on-accent: #fff;
 
-  // Shadows colors depend on the background color
+  // Shadow colors depend on the background color
   --bg0-shadow-color: color-mix(in hsl, var(--bg0) 90%, black);
 
   // Named stroke colors (for borders and lines that should contrast well with background colors)
