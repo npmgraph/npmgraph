@@ -1,10 +1,12 @@
 :root {
+  accent-color: var(--accent);
   color-scheme: light dark;
 
   @for $i from 0 through 10 {
     --grey#{($i) * 10}: hsl(0, 0%, #{$i * 10%});
   }
 
+  --root-color: white; // Don't change, it's used to mix colors on light/dark schemes
   --rad_sm: 5px;
   --rad_lg: 10px;
   --inspector-size: 32em;
@@ -24,7 +26,13 @@
 
   --tabs-bg: #7e7e7d;
   --tabs-text: #fff;
-  --highlight: #e65c00;
+  --tabs-border: rgba(203, 203, 203, 0.796);
+
+  --accent: #e65c00;
+  --text-on-accent: #fff;
+
+  // Shadow colors depend on the background color
+  --bg0-shadow-color: color-mix(in hsl, var(--bg0) 90%, black);
 
   // Named stroke colors (for borders and lines that should contrast well with background colors)
   --stroke-L: 40%;
@@ -58,6 +66,8 @@
   --bg-darkred: hsl(0, var(--bg-dark-S), var(--bg-dark-L));
   --bg-darkviolet: hsl(300, var(--bg-dark-S), var(--bg-dark-L));
   --bg-darkyellow: hsl(60, var(--bg-dark-S), var(--bg-dark-L));
+
+  --transition-duration: 0.5s;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -66,6 +76,7 @@
       --grey#{(10-$i) * 10}: hsl(0, 0%, #{$i * 10%});
     }
 
+    --root-color: black; // Don't change, it's used to mix colors on light/dark schemes
     --text: #f3f3f3;
     --text-dim: #766;
     --bg-root: #111;
@@ -76,9 +87,6 @@
     --stroke-L: 60%;
     --bg-L: 30%;
     --bg-dark-L: 40%;
-
-    --highlight: #ff761a;
-    --inset-shadow-color: black;
   }
 }
 

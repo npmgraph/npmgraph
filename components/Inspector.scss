@@ -2,8 +2,9 @@
   display: flex;
   flex: 0 0;
   flex-direction: column;
-  transition: flex-basis 0.5s;
-  box-shadow: 0px 7px 3px var(--inset-shadow-color, rgba(214, 214, 214, 0.467));
+  transition: flex-basis var(--transition-duration);
+  border-top-left-radius: var(--rad_lg);
+  border-bottom-left-radius: var(--rad_lg);
   height: 100vh;
   overflow: hidden;
   color: var(--text);
@@ -52,40 +53,28 @@ label {
   flex-shrink: 0;
   flex-basis: auto;
   background: var(--tabs-bg) var(--bg-gradient);
+  width: var(--inspector-size);
   color: var(--tabs-text);
   user-select: none;
 
   > * {
     line-height: var(--tabs-height);
   }
-
-  .tab {
-    cursor: pointer;
-    border-left: solid 1px #888;
-    background: var(--tabs-bg) var(--bg-gradient);
-    padding: 0 10px;
-    font-weight: 600;
-    font-size: 12pt;
-
-    &.active {
-      border-color: transparent;
-      background: var(--highlight);
-    }
-  }
 }
 
 .pane {
   flex-grow: 1;
   box-sizing: border-box;
+  box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
   background-color: var(--bg0);
   padding: 0 1em;
-  width: 32em;
+  width: var(--inspector-size);
   overflow-x: hidden;
   overflow-y: auto;
   color: var(--text);
 
   a {
-    color: var(--highlight);
+    color: var(--accent);
   }
 }
 

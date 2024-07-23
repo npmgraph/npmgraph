@@ -2,6 +2,9 @@ import React from 'react';
 
 import './Splitter.scss';
 
+const blackRightPointingTriangle = '\u{25b6}';
+const blackLeftPointingTriangle = '\u{25c0}';
+
 export function Splitter({
   onClick,
   isOpen,
@@ -11,7 +14,7 @@ export function Splitter({
 }) {
   return (
     <div id="splitter" className="bright-hover tab" onClick={onClick}>
-      {isOpen ? '✗' : '\u{25c0}'}
+      {isOpen ? blackRightPointingTriangle : blackLeftPointingTriangle}
     </div>
   );
 }

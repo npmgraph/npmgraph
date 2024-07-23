@@ -1,17 +1,20 @@
 .tab {
-  display: flex;
   position: relative;
-  align-items: center;
-  cursor: pointer;
-  border-left: solid 1px #888;
-  background: var(--tabs-bg) var(--bg-gradient);
-  padding: 0 10px;
+  // Logical property to allow border flip on toggle button
+  border-inline-end: solid 1px var(--tabs-border);
   font-weight: 600;
   font-size: 12pt;
 
-  &.active {
-    border-color: transparent;
-    background: var(--highlight);
+  button {
+    all: unset;
+    display: flex;
+    align-items: center;
+    background: var(--tabs-bg) var(--bg-gradient);
+    padding: 0 10px;
+  }
+
+  &.active button {
+    background: var(--accent);
   }
 
   & .badge {
