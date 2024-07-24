@@ -56,7 +56,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
           Start <kbd>/</kbd>
         </Tab>
         <Tab active={pane == PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
-          Graph
+          Report
         </Tab>
         <Tab active={pane == PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
           Module
@@ -66,7 +66,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
           onClick={() => setPane(PANE.ABOUT)}
           badge={newCommitsCount > 0}
         >
-          About
+          View
         </Tab>
         <Splitter
           isOpen={hide === null}
