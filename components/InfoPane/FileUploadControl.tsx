@@ -1,4 +1,4 @@
-import { PackageJson, PackumentVersion } from '@npm/types';
+import { PackageJSON, PackumentVersion } from '@npm/types';
 import React, { HTMLProps } from 'react';
 import {
   cacheLocalPackage,
@@ -60,7 +60,7 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     });
 
     // Parse module and insert into cache
-    let pkg: PackageJson;
+    let pkg: PackageJSON;
     try {
       pkg = JSON.parse(content);
     } catch (err) {

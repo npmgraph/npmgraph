@@ -1,5 +1,4 @@
-import { Maintainer } from '@npm/types';
-import Module from '../../../lib/Module.js';
+import Module, { Maintainer } from '../../../lib/Module.js';
 import { report } from '../../../lib/bugsnag.js';
 import { GraphState } from '../../GraphDiagram/graph_util.js';
 

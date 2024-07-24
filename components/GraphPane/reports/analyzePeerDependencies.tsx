@@ -4,7 +4,7 @@ import { GraphState } from '../../GraphDiagram/graph_util.js';
 
 export type PeerDependencyInfo = {
   name: string;
-  optional: true | undefined;
+  optional: boolean | undefined;
   versionRange: string;
   source: Module;
   destination: Module | undefined;
