@@ -126,7 +126,7 @@ export default function ModulePane({
           query={module.key}
           style={{ textDecoration: 'none' }}
         >
-          ⬅ View
+          ← Go
         </QueryLink>
         <ExternalLink href={npmUrl} icon={NpmIcon}>
           npm
