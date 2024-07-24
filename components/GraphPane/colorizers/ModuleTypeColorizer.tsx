@@ -1,5 +1,4 @@
-import { PackageJson } from '@npm/types';
-import React from 'react';
+import { PackageJSON } from '@npm/types';
 import Module from '../../../lib/Module.js';
 import { LegendColor } from './LegendColor.js';
 
@@ -20,7 +19,7 @@ export default {
   },
 
   async colorForModule(module: Module) {
-    const pkg = module.package as PackageJson;
+    const pkg = module.package as PackageJSON;
     return pkg.type === 'module' ? COLORIZE_MODULE_ESM : COLORIZE_MODULE_CJS;
   },
 };

@@ -1,4 +1,4 @@
-import { PackageJson, Packument, PackumentVersion } from '@npm/types';
+import { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { gt, satisfies } from 'semver';
 import HttpError from './HttpError.js';
 import Module from './Module.js';
@@ -84,7 +84,7 @@ async function fetchModuleFromURL(urlString: string) {
     url.host = 'raw.githubusercontent.com';
     url.pathname = url.pathname.replace('/blob', '');
   }
-  const pkg: PackageJson = await fetchJSON<PackageJson>(url);
+  const pkg: PackageJSON = await fetchJSON<PackageJSON>(url);
 
   if (!pkg.name) pkg.name = url.toString();
 
@@ -200,7 +200,7 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
   return results;
 }
 
-const PACKAGE_WHITELIST: (keyof PackageJson)[] = [
+const PACKAGE_WHITELIST: (keyof PackageJSON)[] = [
   'author',
   'dependencies',
   'devDependencies',
@@ -211,8 +211,8 @@ const PACKAGE_WHITELIST: (keyof PackageJson)[] = [
   'version',
 ];
 
-export function sanitizePackageKeys(pkg: PackageJson) {
-  const sanitized: PackageJson = {} as PackageJson;
+export function sanitizePackageKeys(pkg: PackageJSON) {
+  const sanitized: PackageJSON = {} as PackageJSON;
 
   for (const key of PACKAGE_WHITELIST) {
     if (key in pkg) (sanitized[key] as unknown) = pkg[key];
@@ -235,7 +235,7 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
         created: new Date().toISOString(),
       },
       license: pkg.license ?? 'UNLICENSED',
-    };
+    } as unknown as Packument;
 
     // Put it into the packument cache
     cachePackument(pkg.name, packument);
@@ -266,7 +266,7 @@ export function syncPackagesHash() {
 
   if (!packagesJson) return;
 
-  let packages: PackageJson[];
+  let packages: PackageJSON[];
   try {
     packages = JSON.parse(packagesJson);
   } catch (err) {
