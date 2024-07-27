@@ -1,5 +1,4 @@
 import React, { HTMLProps, useState } from 'react';
-import { useGlobalState } from '../../lib/GlobalStore.js';
 import { UNNAMED_PACKAGE } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import { searchSet } from '../../lib/url_util.js';
