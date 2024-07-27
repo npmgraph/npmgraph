@@ -1,10 +1,8 @@
 import filterAlteredClicks from 'filter-altered-clicks';
 import React, { HTMLProps } from 'react';
-import { useGlobalState } from '../lib/GlobalStore.js';
 import { PARAM_QUERY } from '../lib/constants.js';
 import { urlPatch } from '../lib/url_util.js';
 import { patchLocation } from '../lib/useLocation.js';
-import { PANE } from './Inspector.js';
 
 export function QueryLink({
   query,
@@ -15,8 +13,6 @@ export function QueryLink({
   reset?: boolean;
   query: string | string[];
 }) {
-  const [, setPane] = useGlobalState('pane');
-
   const queries = Array.isArray(query) ? query : [query];
 
   const search = query.length ? `${PARAM_QUERY}=${queries.join(',')}` : '';
