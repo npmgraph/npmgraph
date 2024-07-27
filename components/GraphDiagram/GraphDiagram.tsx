@@ -111,7 +111,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (node) setZenMode('');
 
     setGraphSelection('exact', moduleKey);
-    setPane(moduleKey ? PANE.MODULE : PANE.GRAPH);
+    if (moduleKey) {
+      setPane(PANE.MODULE);
+    }
   }
 
   function applyZoom() {

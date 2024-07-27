@@ -25,7 +25,6 @@ export function QueryLink({
 
   function onClick(e: React.MouseEvent) {
     e.preventDefault();
-    setPane(PANE.GRAPH);
     patchLocation({ search, hash }, false);
   }
 

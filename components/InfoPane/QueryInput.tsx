@@ -6,13 +6,10 @@ import { searchSet } from '../../lib/url_util.js';
 import { patchLocation } from '../../lib/useLocation.js';
 import { useQuery } from '../../lib/useQuery.js';
 import { ExternalLink } from '../ExternalLink.js';
-import { PANE } from '../Inspector.js';
 import './QueryInput.scss';
 
 export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   const [query] = useQuery();
-  const [, setPane] = useGlobalState('pane');
-
   const initialValue = query.join(', ');
 
   const [value, setValue] = useState(
@@ -43,8 +40,6 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
       },
       false,
     );
-
-    setPane(PANE.GRAPH);
   }
 
   return (
