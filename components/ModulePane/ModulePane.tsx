@@ -88,6 +88,9 @@ export default function ModulePane({
     });
   }
 
+  const isSingleEntryModule =
+    graph.entryModules.size === 1 &&
+    [...graph.entryModules][0].key === module.key;
   const maintainers = module.maintainers;
 
   const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
@@ -121,13 +124,15 @@ export default function ModulePane({
       <p style={{ marginTop: 0 }}>{pkg?.description}</p>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <QueryLink
-          className="bright-hover"
-          query={module.key}
-          style={{ textDecoration: 'none' }}
-        >
-          ← Go
-        </QueryLink>
+        {isSingleEntryModule ? null : (
+          <QueryLink
+            className="bright-hover"
+            query={module.key}
+            style={{ textDecoration: 'none' }}
+          >
+            ← Go
+          </QueryLink>
+        )}
         <ExternalLink href={npmUrl} icon={NpmIcon}>
           npm
         </ExternalLink>
