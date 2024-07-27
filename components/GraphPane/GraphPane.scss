@@ -17,3 +17,11 @@
 #colorize-key {
   margin-top: 1rem;
 }
+
+#report-section {
+  // Hide empty sections
+  h3:has(+ h3),
+  h3:last-child {
+    display: none;
+  }
+}
