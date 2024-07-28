@@ -15,13 +15,15 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
 
       <ul>
         <li>
-          A npm module name: <QueryLink query={['express']}/>
+          A npm module name: <QueryLink query={['express']} />
         </li>
         <li>
-            Multiple, versioned module names: <QueryLink query={['cross-env@6', 'rimraf']}/>
+          Multiple, versioned module names:{' '}
+          <QueryLink query={['cross-env@6', 'rimraf']} />
         </li>
         <li>
-          A URL to a <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
+          A URL to a{' '}
+          <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
             package.json file
           </QueryLink>
         </li>
