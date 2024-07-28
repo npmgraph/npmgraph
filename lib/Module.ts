@@ -10,10 +10,10 @@ export type Maintainers = PackumentVersion['maintainers'];
 export type Maintainer = Exclude<Maintainers, undefined>[0];
 export type Dependencies = PackumentVersion['dependencies'];
 
-interface DeprecatedLicense {
+type DeprecatedLicense = {
   type: string;
   url: string;
-}
+};
 
 export default class Module {
   package: PackumentVersion;

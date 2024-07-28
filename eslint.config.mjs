@@ -18,5 +18,6 @@ export default antfu({
     'style/quotes': 'off',
     'style/semi': 'off',
     'style/type-generic-spacing': 'off',
+    'ts/consistent-type-definitions': ['error', 'type'],
   },
 });

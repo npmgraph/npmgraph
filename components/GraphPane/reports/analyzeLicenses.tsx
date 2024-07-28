@@ -3,11 +3,11 @@ import type { OSIKeyword } from '../../../lib/licenses.js';
 import { LICENSES } from '../../../lib/licenses.js';
 import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
-export interface LicenseAnalysisState {
+export type LicenseAnalysisState = {
   modulesByLicense: Map<string, Module[]>;
   unlicensedModules: Module[];
   modulesByKeyword: Map<OSIKeyword, Module[]>;
-}
+};
 
 export function analyzeLicenses({ moduleInfos }: GraphState) {
   const modulesByLicense: Map<string, Module[]> = new Map();

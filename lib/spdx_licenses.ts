@@ -4,13 +4,13 @@
 // "reference url" is https://spdx.org/licenses/${licenseId}.html
 // "details url" is https://spdx.org/licenses/${licenseId}.json
 
-export interface SpdxLicenseId {
+export type SpdxLicenseId = {
   name: string;
   licenseId: string;
   isOsiApproved?: boolean;
   isFsfLibre?: boolean;
   isDeprecatedLicenseId?: boolean;
-}
+};
 
 const spdxLicenses: SpdxLicenseId[] = [
   {

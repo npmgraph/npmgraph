@@ -2,17 +2,17 @@ import { satisfies } from 'semver';
 import type Module from '../../../lib/Module.js';
 import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
-export interface PeerDependencyInfo {
+export type PeerDependencyInfo = {
   name: string;
   optional: boolean | undefined;
   versionRange: string;
   source: Module;
   destination: Module | undefined;
-}
+};
 
-export interface PeerDependenciesState {
+export type PeerDependenciesState = {
   peerDependencyInfos: PeerDependencyInfo[];
-}
+};
 
 export function analyzePeerDependencies({
   moduleInfos,

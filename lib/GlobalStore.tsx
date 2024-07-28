@@ -5,7 +5,7 @@ import type Module from './Module.js';
 import type { GithubCommit } from './fetch_types.js';
 import { hashGet, searchGet } from './url_util.js';
 
-interface GlobalState {
+type GlobalState = {
   colorize?: string;
   graph: GraphState;
   lastVisit: number;
@@ -13,7 +13,7 @@ interface GlobalState {
   pane: PANE;
   selectedModules?: Map<string, Module>;
   commits: GithubCommit[];
-}
+};
 
 function _getInitialPane() {
   if (!searchGet('q')) {

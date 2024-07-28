@@ -1,4 +1,4 @@
-export interface NPMSIOData {
+export type NPMSIOData = {
   analyzedAt: string;
   collected: {
     metadata: {
@@ -112,9 +112,9 @@ export interface NPMSIOData {
       maintenance: number;
     };
   };
-}
+};
 
-export interface BundlePhobiaData {
+export type BundlePhobiaData = {
   assets: {
     gzip: number;
     name: string;
@@ -137,10 +137,10 @@ export interface BundlePhobiaData {
   scoped: boolean;
   size: number;
   version: string;
-}
+};
 
 // Commits types in Github rest API
-export interface GithubCommit {
+export type GithubCommit = {
   isNew?: boolean; // We add this
   ccType?: string; // We add this
   ccMessage?: string; // Message w/out ccType prefix
@@ -221,4 +221,4 @@ export interface GithubCommit {
       html_url: string;
     },
   ];
-}
+};

@@ -38,30 +38,30 @@ export type DependencyKey =
   | 'devDependencies'
   | 'optionalDependencies';
 
-interface DependencyEntry {
+type DependencyEntry = {
   name: string;
   version: string;
   type: DependencyKey;
-}
+};
 
-interface Dependency {
+type Dependency = {
   module: Module;
   type: DependencyKey;
-}
+};
 
-export interface GraphModuleInfo {
+export type GraphModuleInfo = {
   module: Module;
   level: number;
   upstream: Set<Dependency>;
   downstream: Set<Dependency>;
-}
+};
 
-export interface GraphState {
+export type GraphState = {
   // Map of module key -> module info
   moduleInfos: Map<string, GraphModuleInfo>;
 
   entryModules: Set<Module>;
-}
+};
 
 const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
 
