@@ -1,14 +1,16 @@
-import React, { HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
+import React from 'react';
 import { cn } from '../lib/dom.js';
 import './Tab.scss';
+
 export function Tab({
   active,
   badge,
   children,
   ...props
 }: HTMLProps<HTMLDivElement> & {
-  active: boolean;
-  badge?: string | number | boolean;
+  active: boolean
+  badge?: string | number | boolean
 }) {
   return (
     <div className={cn('tab', { active })} {...props}>

@@ -1,5 +1,5 @@
-import { HTMLProps } from 'react';
-import { QueryType } from '../lib/ModuleCache.js';
+import type { HTMLProps } from 'react';
+import type { QueryType } from '../lib/ModuleCache.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 
 import { cn } from '../lib/dom.js';
@@ -12,9 +12,9 @@ export function Selectable({
   className,
   ...props
 }: {
-  type: QueryType;
-  value: string;
-  label?: string;
+  type: QueryType
+  value: string
+  label?: string
 } & HTMLProps<HTMLSpanElement>) {
   const [, , setGraphSelection] = useGraphSelection();
   const title = label || value;

@@ -4,13 +4,13 @@
 // "reference url" is https://spdx.org/licenses/${licenseId}.html
 // "details url" is https://spdx.org/licenses/${licenseId}.json
 
-export type SpdxLicenseId = {
-  name: string;
-  licenseId: string;
-  isOsiApproved?: boolean;
-  isFsfLibre?: boolean;
-  isDeprecatedLicenseId?: boolean;
-};
+export interface SpdxLicenseId {
+  name: string
+  licenseId: string
+  isOsiApproved?: boolean
+  isFsfLibre?: boolean
+  isDeprecatedLicenseId?: boolean
+}
 
 const spdxLicenses: SpdxLicenseId[] = [
   {
@@ -123,7 +123,7 @@ const spdxLicenses: SpdxLicenseId[] = [
     licenseId: 'Aladdin',
   },
   {
-    name: "AMD's plpa_map.c License",
+    name: 'AMD\'s plpa_map.c License',
     licenseId: 'AMDPLPA',
   },
   {

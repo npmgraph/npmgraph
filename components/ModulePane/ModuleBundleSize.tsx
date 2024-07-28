@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.js';
 import fetchJSON from '../../lib/fetchJSON.js';
-import { BundlePhobiaData } from '../../lib/fetch_types.js';
+import type { BundlePhobiaData } from '../../lib/fetch_types.js';
 import { ExternalLink } from '../ExternalLink.js';
 import { ModuleBundleStats } from './ModuleBundleStats.js';
 import { ModuleTreeMap } from './ModuleTreeMap.js';
@@ -16,11 +16,13 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
   const bpApiUrl = `https://bundlephobia.com/api/size?package=${pn}`;
 
   useEffect(() => {
-    if (module.isLocal) return;
+    if (module.isLocal)
+      return;
 
     setBundleInfo(undefined);
 
-    if (!pkg) return;
+    if (!pkg)
+      return;
 
     fetchJSON<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
       .then(data => setBundleInfo(data))
@@ -29,20 +31,26 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
 
   return (
     <>
-      {!bundleInfo ? (
-        'Loading ...'
-      ) : bundleInfo instanceof Error ? (
-        'Bundle size not currently available'
-      ) : (
-        <>
-          <ModuleBundleStats bundleInfo={bundleInfo} />
-          <ModuleTreeMap
-            style={{ height: '150px', margin: '1em' }}
-            data={bundleInfo}
-          />
-          Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
-        </>
-      )}
+      {!bundleInfo
+        ? (
+            'Loading ...'
+          )
+        : bundleInfo instanceof Error
+          ? (
+              'Bundle size not currently available'
+            )
+          : (
+              <>
+                <ModuleBundleStats bundleInfo={bundleInfo} />
+                <ModuleTreeMap
+                  style={{ height: '150px', margin: '1em' }}
+                  data={bundleInfo}
+                />
+                Data source:
+                {' '}
+                <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
+              </>
+            )}
     </>
   );
 }

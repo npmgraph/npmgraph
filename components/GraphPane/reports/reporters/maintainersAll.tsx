@@ -2,8 +2,8 @@ import md5 from 'md5';
 import simplur from 'simplur';
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
-import { RenderedAnalysis } from '../Analyzer.js';
-import { MaintainerAnalysisState } from '../analyzeMaintainers.js';
+import type { RenderedAnalysis } from '../Analyzer.js';
+import type { MaintainerAnalysisState } from '../analyzeMaintainers.js';
 import styles from './maintainersAll.module.scss';
 
 export function maintainersAll({
@@ -40,7 +40,8 @@ export function maintainersAll({
       );
     });
 
-  if (details.length <= 0) return;
+  if (details.length <= 0)
+    return;
 
   const summary = simplur`All maintainers (${details.length})`;
   return { type: 'info', summary, details };

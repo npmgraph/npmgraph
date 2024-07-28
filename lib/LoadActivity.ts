@@ -18,14 +18,16 @@ export default class LoadActivity {
   }
 
   start(title: string): () => void {
-    if (title) this.title = title;
+    if (title)
+      this.title = title;
     this.total++;
     this.active++;
     this.onChange?.(this);
 
     let _finished = false;
     return () => {
-      if (_finished) return;
+      if (_finished)
+        return;
       _finished = true;
       this.active--;
       if (!this.active) {

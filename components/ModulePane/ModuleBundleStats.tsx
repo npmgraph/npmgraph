@@ -1,11 +1,11 @@
 import React from 'react';
-import { BundlePhobiaData } from '../../lib/fetch_types.js';
+import type { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';
 
 export function ModuleBundleStats({
   bundleInfo,
 }: {
-  bundleInfo: BundlePhobiaData;
+  bundleInfo: BundlePhobiaData
 }) {
   return (
     <div

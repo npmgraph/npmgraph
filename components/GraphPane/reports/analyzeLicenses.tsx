@@ -1,12 +1,13 @@
-import Module from '../../../lib/Module.js';
-import { LICENSES, OSIKeyword } from '../../../lib/licenses.js';
-import { GraphState } from '../../GraphDiagram/graph_util.js';
+import type Module from '../../../lib/Module.js';
+import type { OSIKeyword } from '../../../lib/licenses.js';
+import { LICENSES } from '../../../lib/licenses.js';
+import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
-export type LicenseAnalysisState = {
-  modulesByLicense: Map<string, Module[]>;
-  unlicensedModules: Module[];
-  modulesByKeyword: Map<OSIKeyword, Module[]>;
-};
+export interface LicenseAnalysisState {
+  modulesByLicense: Map<string, Module[]>
+  unlicensedModules: Module[]
+  modulesByKeyword: Map<OSIKeyword, Module[]>
+}
 
 export function analyzeLicenses({ moduleInfos }: GraphState) {
   const modulesByLicense: Map<string, Module[]> = new Map();
@@ -15,7 +16,8 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
   for (const { module } of moduleInfos.values()) {
     // Stub and private modules are not included in the license analysis
-    if (module.isStub || module.package.private) continue;
+    if (module.isStub || module.package.private)
+      continue;
 
     const licenses = module.getLicenses();
 
@@ -24,7 +26,8 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
       unlicensedModules.push(module);
     }
 
-    if (!licenses.length) continue;
+    if (!licenses.length)
+      continue;
 
     for (let license of licenses) {
       // licensesRenderAll
@@ -36,7 +39,8 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
       // licensesRenderKeywords
       const keywords = LICENSES[license]?.keywords;
-      if (!keywords) continue;
+      if (!keywords)
+        continue;
       for (const keyword of keywords) {
         if (!modulesByKeyword.has(keyword)) {
           modulesByKeyword.set(keyword, []);

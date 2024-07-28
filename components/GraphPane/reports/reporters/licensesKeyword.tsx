@@ -1,9 +1,9 @@
 import simplur from 'simplur';
 import { cn } from '../../../../lib/dom.js';
-import { OSIKeyword } from '../../../../lib/licenses.js';
+import type { OSIKeyword } from '../../../../lib/licenses.js';
 import { Selectable } from '../../../Selectable.js';
-import { RenderedAnalysis } from '../Analyzer.js';
-import { LicenseAnalysisState } from '../analyzeLicenses.js';
+import type { RenderedAnalysis } from '../Analyzer.js';
+import type { LicenseAnalysisState } from '../analyzeLicenses.js';
 import styles from './modulesAll.module.scss';
 
 export function licensesKeyword(keyword: OSIKeyword) {
@@ -11,7 +11,8 @@ export function licensesKeyword(keyword: OSIKeyword) {
     modulesByKeyword,
   }: LicenseAnalysisState): RenderedAnalysis {
     const modules = modulesByKeyword.get(keyword);
-    if (!modules) return;
+    if (!modules)
+      return;
 
     const summary = simplur`Modules with "${keyword}" license (${modules.length})`;
 

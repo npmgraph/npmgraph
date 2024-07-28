@@ -1,6 +1,6 @@
 import { setGlobalState, useGlobalState } from './GlobalStore.js';
 import fetchJSON from './fetchJSON.js';
-import { GithubCommit } from './fetch_types.js';
+import type { GithubCommit } from './fetch_types.js';
 
 export async function fetchCommits() {
   const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -21,12 +21,16 @@ export async function fetchCommits() {
       if (ccType) {
         message = message.slice(ccType.length + 1);
       }
-      message = message.replace(/\n[\S\s]*/m, '').trim();
+      message = message.replace(/\n[\s\S]*/, '').trim();
 
-      if (ccType.startsWith('break')) ccType = 'breaking';
-      else if (ccType.startsWith('feat')) ccType = 'feat';
-      else if (ccType.startsWith('fix')) ccType = 'fix';
-      else if (ccType.startsWith('doc')) ccType = 'docs';
+      if (ccType.startsWith('break'))
+        ccType = 'breaking';
+      else if (ccType.startsWith('feat'))
+        ccType = 'feat';
+      else if (ccType.startsWith('fix'))
+        ccType = 'fix';
+      else if (ccType.startsWith('doc'))
+        ccType = 'docs';
       else ccType = '';
 
       commit.ccType = ccType;
@@ -37,7 +41,8 @@ export async function fetchCommits() {
     commits = commits.filter(commit => Boolean(commit.ccType));
 
     setGlobalState('commits', commits);
-  } catch (err) {
+  }
+  catch {
     // This is non-essential so don't cmoplain too loudly
     console.warn('Request for project commits failed');
   }
@@ -55,7 +60,7 @@ export default function useCommits() {
   let newCount = 0;
   for (const commit of commits) {
     const date = Date.parse(commit.commit.author.date);
-    commit.isNew = !isNaN(date) && date > lastVisit;
+    commit.isNew = !Number.isNaN(date) && date > lastVisit;
     newCount += commit.isNew ? 1 : 0;
   }
 

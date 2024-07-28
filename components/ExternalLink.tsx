@@ -1,6 +1,8 @@
-import React, { HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
+import React from 'react';
 import { cn } from '../lib/dom.js';
-import { IconProps, OffsiteLinkIcon } from './Icons.js';
+import type { IconProps } from './Icons.js';
+import { OffsiteLinkIcon } from './Icons.js';
 
 import './ExternalLink.scss';
 
@@ -12,8 +14,8 @@ export function ExternalLink({
   className,
   ...props
 }: HTMLProps<HTMLAnchorElement> & {
-  className?: string;
-  icon?: (props: IconProps) => React.JSX.Element;
+  className?: string
+  icon?: (props: IconProps) => React.JSX.Element
 }) {
   return (
     <a

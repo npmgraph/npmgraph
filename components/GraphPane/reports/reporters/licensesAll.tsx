@@ -2,8 +2,8 @@ import simplur from 'simplur';
 import { cn } from '../../../../lib/dom.js';
 import { LICENSES } from '../../../../lib/licenses.js';
 import { Selectable } from '../../../Selectable.js';
-import { RenderedAnalysis } from '../Analyzer.js';
-import { LicenseAnalysisState } from '../analyzeLicenses.js';
+import type { RenderedAnalysis } from '../Analyzer.js';
+import type { LicenseAnalysisState } from '../analyzeLicenses.js';
 import styles from './licensesAll.module.scss';
 
 export function licensesAll({
@@ -22,15 +22,17 @@ export function licensesAll({
               value={license}
               label={license || '(unlicensed)'}
             />
-            {keywords ? (
-              <div className={styles.keywords}>
-                {keywords.map(k => (
-                  <span className={styles.keyword} key={k}>
-                    {k}
-                  </span>
-                ))}
-              </div>
-            ) : null}
+            {keywords
+              ? (
+                  <div className={styles.keywords}>
+                    {keywords.map(k => (
+                      <span className={styles.keyword} key={k}>
+                        {k}
+                      </span>
+                    ))}
+                  </div>
+                )
+              : null}
           </div>
 
           <div className={styles.modules}>
@@ -42,7 +44,8 @@ export function licensesAll({
       );
     });
 
-  if (details.length <= 0) return;
+  if (details.length <= 0)
+    return;
 
   const summary = simplur`All licenses (${details.length})`;
   return { type: 'info', summary, details };

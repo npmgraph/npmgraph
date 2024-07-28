@@ -2,8 +2,10 @@ import { quantize } from 'd3-interpolate';
 import { scaleOrdinal } from 'd3-scale';
 import { interpolateSpectral } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
-import { PieArcDatum, arc, pie } from 'd3-shape';
-import React, { HTMLProps, useEffect, useRef } from 'react';
+import type { PieArcDatum } from 'd3-shape';
+import { arc, pie } from 'd3-shape';
+import type { HTMLProps } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 type PieDatum = [string, number];
 
@@ -15,16 +17,18 @@ export function PieGraph({
   useEffect(() => {
     // Chart code from https://observablehq.com/@d3/pie-chart
     const svgElement = svgEl.current;
-    if (!svgElement) return;
+    if (!svgElement)
+      return;
 
     const svg = select(svgElement);
     const svgNode = svg.node();
-    if (!svgNode) return;
+    if (!svgNode)
+      return;
 
     // Align SVG view box to actual element dimensions
     const { width, height } = svgNode.getBoundingClientRect();
-    const w2 = width / 2,
-      h2 = height / 2;
+    const w2 = width / 2;
+    const h2 = height / 2;
     const radius = Math.min(w2, h2);
     svg.attr('viewBox', `${-w2} ${-h2} ${width} ${height}`);
 

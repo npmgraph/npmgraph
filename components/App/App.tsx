@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import LoadActivity from '../../lib/LoadActivity.js';
+import type LoadActivity from '../../lib/LoadActivity.js';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.js';
 import Inspector from '../Inspector.js';
 import './App.scss';
@@ -23,7 +23,8 @@ export function setActivityForApp(ack: LoadActivity) {
 
 export function useActivity() {
   const [bool, setBool] = useState(true);
-  if (!activity) throw new Error('Activity not set');
+  if (!activity)
+    throw new Error('Activity not set');
   activity.onChange = () => setBool(!bool);
   return activity;
 }

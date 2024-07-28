@@ -1,7 +1,6 @@
-import LoadActivity from '../../lib/LoadActivity.js';
+import React, { type HTMLProps } from 'react';
+import type LoadActivity from '../../lib/LoadActivity.js';
 import './Loader.scss';
-
-import React, { HTMLProps } from 'react';
 
 export function Loader({
   activity,
@@ -9,7 +8,11 @@ export function Loader({
   return (
     <>
       <div className="progress-bar" />
-      <div className="loader">{activity.title} ...</div>
+      <div className="loader">
+        {activity.title}
+        {' '}
+        ...
+      </div>
     </>
   );
 }

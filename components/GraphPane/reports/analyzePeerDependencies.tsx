@@ -1,18 +1,18 @@
 import { satisfies } from 'semver';
-import Module from '../../../lib/Module.js';
-import { GraphState } from '../../GraphDiagram/graph_util.js';
+import type Module from '../../../lib/Module.js';
+import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
-export type PeerDependencyInfo = {
-  name: string;
-  optional: boolean | undefined;
-  versionRange: string;
-  source: Module;
-  destination: Module | undefined;
-};
+export interface PeerDependencyInfo {
+  name: string
+  optional: boolean | undefined
+  versionRange: string
+  source: Module
+  destination: Module | undefined
+}
 
-export type PeerDependenciesState = {
-  peerDependencyInfos: PeerDependencyInfo[];
-};
+export interface PeerDependenciesState {
+  peerDependencyInfos: PeerDependencyInfo[]
+}
 
 export function analyzePeerDependencies({
   moduleInfos,
@@ -21,12 +21,13 @@ export function analyzePeerDependencies({
 
   for (const { module } of moduleInfos.values()) {
     const { peerDependencies, peerDependenciesMeta } = module.package;
-    if (!peerDependencies) continue;
+    if (!peerDependencies)
+      continue;
 
     for (const [name, versionRange] of Object.entries(peerDependencies)) {
       const pdi: PeerDependencyInfo = {
         name,
-        versionRange: versionRange,
+        versionRange,
         source: module,
         optional: peerDependenciesMeta?.[name]?.optional,
         destination: undefined,

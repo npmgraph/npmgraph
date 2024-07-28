@@ -1,6 +1,7 @@
 import md5 from 'md5';
-import React, { HTMLProps } from 'react';
-import { QueryType } from '../lib/ModuleCache.js';
+import type { HTMLProps } from 'react';
+import React from 'react';
+import type { QueryType } from '../lib/ModuleCache.js';
 import { cn } from '../lib/dom.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 
@@ -11,14 +12,15 @@ export function Tag({
   gravatar,
   className,
 }: {
-  type: QueryType;
-  value: string;
-  count?: number;
-  gravatar?: string;
+  type: QueryType
+  value: string
+  count?: number
+  gravatar?: string
 } & HTMLProps<HTMLDivElement>) {
   const [, , setGraphSelection] = useGraphSelection();
   let title = value;
-  if (count > 1) title += ` (${count})`;
+  if (count > 1)
+    title += ` (${count})`;
 
   let img = null;
   if (gravatar) {

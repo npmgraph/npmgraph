@@ -1,8 +1,8 @@
 import simplur from 'simplur';
 import { getModuleKey } from '../../../../lib/module_util.js';
 import { Selectable } from '../../../Selectable.js';
-import { RenderedAnalysis } from '../Analyzer.js';
-import { ModuleAnalysisState } from '../analyzeModules.js';
+import type { RenderedAnalysis } from '../Analyzer.js';
+import type { ModuleAnalysisState } from '../analyzeModules.js';
 import styles from './modulesRepeated.module.scss';
 
 export function modulesRepeated({
@@ -36,7 +36,8 @@ export function modulesRepeated({
       );
     });
 
-  if (details.length <= 0) return;
+  if (details.length <= 0)
+    return;
 
   const summary = simplur`Modules with multiple versions (${details.length})`;
 

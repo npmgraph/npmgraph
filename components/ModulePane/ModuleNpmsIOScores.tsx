@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.js';
 import fetchJSON from '../../lib/fetchJSON.js';
-import { NPMSIOData } from '../../lib/fetch_types.js';
+import type { NPMSIOData } from '../../lib/fetch_types.js';
 import { ModuleScoreBar } from './ModuleScoreBar.js';
 
 export default function ModuleNpmsIOScores({ module }: { module: Module }) {
   const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
 
   useEffect(() => {
-    if (module.isLocal) return;
+    if (module.isLocal)
+      return;
 
     setNpmsData(undefined);
 
@@ -22,7 +23,8 @@ export default function ModuleNpmsIOScores({ module }: { module: Module }) {
 
   if (!npmsData) {
     return 'Loading ...';
-  } else if (npmsData instanceof Error) {
+  }
+  else if (npmsData instanceof Error) {
     return 'Score not currently available';
   }
 

@@ -1,4 +1,4 @@
-import { Packument, PackumentVersion } from '@npm/types';
+import type { Packument, PackumentVersion } from '@npm/types';
 import { isDefined } from './guards.js';
 import {
   getModuleKey,
@@ -10,10 +10,10 @@ export type Maintainers = PackumentVersion['maintainers'];
 export type Maintainer = Exclude<Maintainers, undefined>[0];
 export type Dependencies = PackumentVersion['dependencies'];
 
-type DeprecatedLicense = {
-  type: string;
-  url: string;
-};
+interface DeprecatedLicense {
+  type: string
+  url: string
+}
 
 export default class Module {
   package: PackumentVersion;
@@ -92,7 +92,8 @@ export default class Module {
   get repository() {
     // TODO: Handle non-github repositories
     const { repository } = this.package;
-    if (typeof repository == 'string') return repository;
+    if (typeof repository == 'string')
+      return repository;
     return repository?.url;
   }
 
@@ -106,7 +107,8 @@ export default class Module {
 
   getLatestVersion() {
     const latestVersion = this.packument?.['dist-tags'].latest;
-    if (!latestVersion) return;
+    if (!latestVersion)
+      return;
     return this.packument?.versions[latestVersion];
   }
 
@@ -137,19 +139,19 @@ function parseLicense(
 ): string[] {
   if (Array.isArray(license)) {
     return license.flatMap(parseLicense).filter(isDefined);
-  } else if (typeof license === 'object') {
+  }
+  else if (typeof license === 'object') {
     license = license.type;
   }
 
   license = license?.trim().toLowerCase();
 
-  if (!license) return [];
+  if (!license)
+    return [];
 
   return license.replace(/^\(|\)$/g, '').split(/\s+or\s+/);
 }
 
 function parseGithubPath(s: string) {
-  const match = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
-  if (!match) return undefined;
-  return match?.replace?.(/\.git$/, '');
+  return s.match(/github.com\/[^/]+\/[^/?#]+/)?.[0]?.replace(/\.git$/, '');
 }

@@ -6,7 +6,7 @@ import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useCollapse from '../../lib/useCollapse.js';
 import { ExternalLink } from '../ExternalLink.js';
-import { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
+import type { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
 import { Toggle } from '../Toggle.js';
 import ColorizeInput from './ColorizeInput.js';
@@ -42,7 +42,8 @@ export default function GraphPane({
   ).filter(isDefined);
 
   const includeDev = dependencyTypes.includes('devDependencies');
-  if (!graph?.moduleInfos) return <div>Loading</div>;
+  if (!graph?.moduleInfos)
+    return <div>Loading</div>;
 
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
@@ -76,14 +77,16 @@ export default function GraphPane({
           marginTop: '1em',
         }}
       >
-        {collapse.length ? (
-          <span>
-            {simplur`${collapse.length} module[|s] collapsed `}
-            <button onClick={() => setCollapse([])}>Expand All</button>
-          </span>
-        ) : (
-          <span>(Shift-click modules in graph to expand/collapse)</span>
-        )}
+        {collapse.length
+          ? (
+              <span>
+                {simplur`${collapse.length} module[|s] collapsed `}
+                <button onClick={() => setCollapse([])}>Expand All</button>
+              </span>
+            )
+          : (
+              <span>(Shift-click modules in graph to expand/collapse)</span>
+            )}
       </div>
 
       <div id="report-section">
@@ -93,8 +96,16 @@ export default function GraphPane({
 
         <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
           Module repetition is a result of incompatible version constraints, and
-          may lead to increased bundle and <code>node_modules</code> directory
-          size. Consider asking <em>upstream</em> module owners to update to the
+          may lead to increased bundle and
+          {' '}
+          <code>node_modules</code>
+          {' '}
+          directory
+          size. Consider asking
+          {' '}
+          <em>upstream</em>
+          {' '}
+          module owners to update to the
           latest version or loosen the version constraint.
         </ReportItem>
 
@@ -120,7 +131,8 @@ export default function GraphPane({
 
         <ReportItem data={maintainersAnalysis} reporter={maintainersSolo}>
           Modules with a single maintainer are at risk of "unplanned
-          abandonment". See{' '}
+          abandonment". See
+          {' '}
           <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
             Bus factor
           </ExternalLink>
@@ -146,7 +158,8 @@ export default function GraphPane({
           data={licensesAnalysis}
           reporter={licensesKeyword('discouraged')}
         >
-          "Discouraged" licenses typically have a more popular alternative. See{' '}
+          "Discouraged" licenses typically have a more popular alternative. See
+          {' '}
           <ExternalLink href="https://opensource.org/licenses/">
             OSI Licenses
           </ExternalLink>
@@ -159,7 +172,8 @@ export default function GraphPane({
           reporter={licensesKeyword('obsolete')}
         >
           "Obsolete" licenses have a newer version available. Consider asking
-          the module owner to update to a more recent version. See{' '}
+          the module owner to update to a more recent version. See
+          {' '}
           <ExternalLink href="https://opensource.org/licenses/">
             OSI Licenses
           </ExternalLink>

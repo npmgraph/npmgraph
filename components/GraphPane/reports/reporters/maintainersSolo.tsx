@@ -1,6 +1,6 @@
 import simplur from 'simplur';
-import { RenderedAnalysis } from '../Analyzer.js';
-import { MaintainerAnalysisState } from '../analyzeMaintainers.js';
+import type { RenderedAnalysis } from '../Analyzer.js';
+import type { MaintainerAnalysisState } from '../analyzeMaintainers.js';
 import { maintainersAll } from './maintainersAll.js';
 
 export function maintainersSolo({
@@ -16,7 +16,8 @@ export function maintainersSolo({
     emailByMaintainer,
   });
 
-  if (!results) return;
+  if (!results)
+    return;
 
   return {
     type: 'warn',

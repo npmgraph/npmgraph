@@ -1,19 +1,19 @@
 import { useSyncExternalStore } from 'react';
-import { GraphState } from '../components/GraphDiagram/graph_util.js';
+import type { GraphState } from '../components/GraphDiagram/graph_util.js';
 import { PANE } from '../components/Inspector.js';
-import Module from './Module.js';
-import { GithubCommit } from './fetch_types.js';
+import type Module from './Module.js';
+import type { GithubCommit } from './fetch_types.js';
 import { hashGet, searchGet } from './url_util.js';
 
-type GlobalState = {
-  colorize?: string;
-  graph: GraphState;
-  lastVisit: number;
-  location: URL;
-  pane: PANE;
-  selectedModules?: Map<string, Module>;
-  commits: GithubCommit[];
-};
+interface GlobalState {
+  colorize?: string
+  graph: GraphState
+  lastVisit: number
+  location: URL
+  pane: PANE
+  selectedModules?: Map<string, Module>
+  commits: GithubCommit[]
+}
 
 function _getInitialPane() {
   if (!searchGet('q')) {
@@ -55,7 +55,8 @@ export function setGlobalState<T extends keyof GlobalState>(
     if (String(value) === String(current)) {
       return;
     }
-  } else if (globalState[key] === value) {
+  }
+  else if (globalState[key] === value) {
     return;
   }
 

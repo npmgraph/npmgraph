@@ -1,21 +1,21 @@
-import Module from '../../../lib/Module.js';
+import type Module from '../../../lib/Module.js';
 import BusFactorColorizer from './BusFactorColorizer.js';
 import ModuleTypeColorizer from './ModuleTypeColorizer.js';
 import { NPMSOverallColorizer } from './NPMSColorizer.js';
 import OutdatedColorizer from './OutdatedColorizer.js';
 
 interface Colorizer {
-  title: string;
-  name: string;
-  legend(): React.JSX.Element;
+  title: string
+  name: string
+  legend: () => React.JSX.Element
 }
 
 export interface SimpleColorizer extends Colorizer {
-  colorForModule: (module: Module) => Promise<string>;
+  colorForModule: (module: Module) => Promise<string>
 }
 
 export interface BulkColorizer extends Colorizer {
-  colorsForModules: (modules: Module[]) => Promise<Map<Module, string>>;
+  colorsForModules: (modules: Module[]) => Promise<Map<Module, string>>
 }
 
 const colorizers: (SimpleColorizer | BulkColorizer)[] = [

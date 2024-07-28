@@ -1,13 +1,14 @@
-import Module, { Maintainer } from '../../../lib/Module.js';
+import type { Maintainer } from '../../../lib/Module.js';
+import type Module from '../../../lib/Module.js';
 import { report } from '../../../lib/bugsnag.js';
-import { GraphState } from '../../GraphDiagram/graph_util.js';
+import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
-export type MaintainerAnalysisState = {
-  modulesByMaintainer: Map<string, Set<Module>>;
-  soloModulesByMaintainer: Map<string, Set<Module>>;
-  soloModulesCount: number;
-  emailByMaintainer: Map<string, string>;
-};
+export interface MaintainerAnalysisState {
+  modulesByMaintainer: Map<string, Set<Module>>
+  soloModulesByMaintainer: Map<string, Set<Module>>
+  soloModulesCount: number
+  emailByMaintainer: Map<string, string>
+}
 
 function normalizeMaintainer(
   maintainer: Maintainer | string,
@@ -28,7 +29,7 @@ export function analyzeMaintainers({
 
   // Find modules that have a single maintainer, group by maintainer
   //
-  // @ts-ignore TODO: unignore once Map.groupBy lands in TS types
+  // @ts-expect-error  TODO: unignore once Map.groupBy lands in TS types
   const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
     modules,
     (module: Module) => {
@@ -47,7 +48,8 @@ export function analyzeMaintainers({
   soloModulesByMaintainer.delete('');
 
   for (const { module } of moduleInfos.values()) {
-    if (module.isStub) continue;
+    if (module.isStub)
+      continue;
 
     const { maintainers } = module;
 

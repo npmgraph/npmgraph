@@ -1,6 +1,6 @@
 import React from 'react';
 import { diff } from 'semver';
-import Module from '../../../lib/Module.js';
+import type Module from '../../../lib/Module.js';
 import { getNPMPackument } from '../../../lib/PackumentCache.js';
 import { COLORIZE_COLORS } from '../../../lib/constants.js';
 import { LegendColor } from './LegendColor.js';
@@ -21,7 +21,8 @@ export default {
   },
 
   async colorForModule(module: Module) {
-    if (module.isLocal || module.isStub) return '';
+    if (module.isLocal || module.isStub)
+      return '';
 
     const manifest = await getNPMPackument(module.name);
 
@@ -30,7 +31,8 @@ export default {
     let outdated;
     try {
       outdated = diff(module.version, latestVersion);
-    } catch (err) {
+    }
+    catch (err) {
       console.error(err);
       return '';
     }

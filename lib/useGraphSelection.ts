@@ -1,4 +1,4 @@
-import { QueryType } from './ModuleCache.js';
+import type { QueryType } from './ModuleCache.js';
 import { PARAM_SELECTION } from './constants.js';
 import useHashParam from './useHashParam.js';
 
@@ -12,7 +12,8 @@ export default function useGraphSelection() {
     selectType,
     selectValue,
     function setGraphSelection(queryType?: QueryType, queryValue?: string) {
-      if (!queryType || !queryValue) return setSel('');
+      if (!queryType || !queryValue)
+        return setSel('');
       setSel(`${queryType}:${queryValue}`);
     },
   ] as const;

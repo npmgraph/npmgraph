@@ -1,20 +1,25 @@
-import React, { HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
+import React from 'react';
 import { ExternalLink } from '../ExternalLink.js';
 import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import './AboutPane.scss';
+import { version as VERSION } from '../../package.json';
 import { CommitList } from './CommitList.js';
 import GithubSponsorButton from './GithubSponsorButton.js';
-import { version as VERSION } from '../../package.json';
 
 export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
       <p>
-        {'\xa9'} npmgraph Contributors &mdash; v{VERSION}
+        {'\xA9'}
+        {' '}
+        npmgraph Contributors &mdash; v
+        {VERSION}
       </p>
       <p style={{ lineHeight: '1.5rem' }}>
-        Questions or comments? Visit the{' '}
+        Questions or comments? Visit the
+        {' '}
         <ExternalLink
           href="https://github.com/npmgraph/npmgraph"
           icon={GithubIcon}
