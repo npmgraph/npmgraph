@@ -1,6 +1,6 @@
 import { setGlobalState, useGlobalState } from './GlobalStore.js';
 import fetchJSON from './fetchJSON.js';
-import type { GithubCommit } from './fetch_types.js';
+import { GithubCommit } from './fetch_types.js';
 
 export async function fetchCommits() {
   const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);

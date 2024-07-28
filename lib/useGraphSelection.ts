@@ -1,4 +1,4 @@
-import type { QueryType } from './ModuleCache.js';
+import { QueryType } from './ModuleCache.js';
 import { PARAM_SELECTION } from './constants.js';
 import useHashParam from './useHashParam.js';
 

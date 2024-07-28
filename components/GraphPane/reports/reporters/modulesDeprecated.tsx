@@ -1,8 +1,8 @@
 import simplur from 'simplur';
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { ModuleAnalysisState } from '../analyzeModules.js';
+import { RenderedAnalysis } from '../Analyzer.js';
+import { ModuleAnalysisState } from '../analyzeModules.js';
 import styles from './modulesDeprecated.module.scss';
 
 export function modulesDeprecated({
@@ -18,9 +18,7 @@ export function modulesDeprecated({
           <Selectable type="exact" value={module.key} />
           {': '}
           <span className={styles.body}>
-            &rdquo;
-            {module.package.deprecated}
-            &ldquo;
+            &rdquo;{module.package.deprecated}&ldquo;
           </span>
         </div>
       );

@@ -1,4 +1,4 @@
-import type Module from '../../../lib/Module.js';
+import Module from '../../../lib/Module.js';
 import BusFactorColorizer from './BusFactorColorizer.js';
 import ModuleTypeColorizer from './ModuleTypeColorizer.js';
 import { NPMSOverallColorizer } from './NPMSColorizer.js';

@@ -1,5 +1,5 @@
 import HttpError from './HttpError.js';
-import type LoadActivity from './LoadActivity.js';
+import LoadActivity from './LoadActivity.js';
 
 const requestCache = new Map<string, Promise<unknown>>();
 

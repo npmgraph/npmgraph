@@ -1,6 +1,6 @@
 import React from 'react';
 import { diff } from 'semver';
-import type Module from '../../../lib/Module.js';
+import Module from '../../../lib/Module.js';
 import { getNPMPackument } from '../../../lib/PackumentCache.js';
 import { COLORIZE_COLORS } from '../../../lib/constants.js';
 import { LegendColor } from './LegendColor.js';

@@ -1,5 +1,5 @@
-import type { PackageJSON } from '@npm/types';
-import type Module from '../../../lib/Module.js';
+import { PackageJSON } from '@npm/types';
+import Module from '../../../lib/Module.js';
 import { LegendColor } from './LegendColor.js';
 
 export const COLORIZE_MODULE_CJS = 'var(--bg-orange)';

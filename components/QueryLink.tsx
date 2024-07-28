@@ -1,6 +1,5 @@
 import filterAlteredClicks from 'filter-altered-clicks';
-import type { HTMLProps } from 'react';
-import React from 'react';
+import React, { HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.js';
 import { PARAM_QUERY } from '../lib/constants.js';
 import { urlPatch } from '../lib/url_util.js';

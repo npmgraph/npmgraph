@@ -1,5 +1,4 @@
-import type { HTMLProps } from 'react';
-import React from 'react';
+import React, { HTMLProps } from 'react';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
 import FileUploadControl from './FileUploadControl.js';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { parse } from 'semver';
 import simplur from 'simplur';
-import type Module from '../../lib/Module.js';
+import Module from '../../lib/Module.js';
 
 import { cn } from '../../lib/dom.js';
 import './ModuleVersionInfo.scss';

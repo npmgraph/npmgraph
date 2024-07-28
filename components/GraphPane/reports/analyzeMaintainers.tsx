@@ -1,7 +1,6 @@
-import type { Maintainer } from '../../../lib/Module.js';
-import type Module from '../../../lib/Module.js';
+import Module, { Maintainer } from '../../../lib/Module.js';
 import { report } from '../../../lib/bugsnag.js';
-import type { GraphState } from '../../GraphDiagram/graph_util.js';
+import { GraphState } from '../../GraphDiagram/graph_util.js';
 
 export type MaintainerAnalysisState = {
   modulesByMaintainer: Map<string, Set<Module>>;
@@ -29,7 +28,7 @@ export function analyzeMaintainers({
 
   // Find modules that have a single maintainer, group by maintainer
   //
-  // @ts-expect-error  TODO: unignore once Map.groupBy lands in TS types
+  // @ts-expect-error TODO: unignore once Map.groupBy lands in TS types
   const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
     modules,
     (module: Module) => {

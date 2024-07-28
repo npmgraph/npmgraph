@@ -1,6 +1,6 @@
 import { satisfies } from 'semver';
-import type Module from '../../../lib/Module.js';
-import type { GraphState } from '../../GraphDiagram/graph_util.js';
+import Module from '../../../lib/Module.js';
+import { GraphState } from '../../GraphDiagram/graph_util.js';
 
 export type PeerDependencyInfo = {
   name: string;

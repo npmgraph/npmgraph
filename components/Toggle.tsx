@@ -1,5 +1,4 @@
-import type { HTMLProps } from 'react';
-import React from 'react';
+import React, { HTMLProps } from 'react';
 import { cn } from '../lib/dom.js';
 import './Toggle.scss';
 

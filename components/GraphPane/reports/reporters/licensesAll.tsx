@@ -2,8 +2,8 @@ import simplur from 'simplur';
 import { cn } from '../../../../lib/dom.js';
 import { LICENSES } from '../../../../lib/licenses.js';
 import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { LicenseAnalysisState } from '../analyzeLicenses.js';
+import { RenderedAnalysis } from '../Analyzer.js';
+import { LicenseAnalysisState } from '../analyzeLicenses.js';
 import styles from './licensesAll.module.scss';
 
 export function licensesAll({

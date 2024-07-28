@@ -3,7 +3,6 @@ import './bugsnag.js'; // Initialize ASAP!
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { $ } from 'select-dom';
 import App, { setActivityForApp } from '../components/App/App.js';
 import { Unsupported } from '../components/Unsupported.js';
 import { DiagramTitle } from './DiagramTitle.js';
@@ -12,6 +11,7 @@ import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
 import { fetchCommits } from './useCommits.js';
+import { $ } from 'select-dom';
 
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
@@ -22,7 +22,7 @@ function detectFeatures() {
   // API checks
   const features = {
     'AbortSignal.timeout': window.AbortSignal?.timeout,
-    // @ts-expect-error  remove this ignore once VSCode knows about groupBy
+    // @ts-expect-error remove this ignore once VSCode knows about groupBy
     'Map.groupBy': window.Map?.groupBy,
     fetch: window.fetch,
     Promise: window.Promise,
@@ -87,8 +87,9 @@ window.onload = function () {
   );
 
   // A little component for managing the title
-  createRoot($('title')!).render(
-    <DiagramTitle defaultTitle={document.title} />,
+  const titleEl = $('title')!;
+  createRoot(titleEl).render(
+    <DiagramTitle defaultTitle={titleEl.textContent} />,
   );
 
   // Lazily fetch information about commits to the npmgraph repo

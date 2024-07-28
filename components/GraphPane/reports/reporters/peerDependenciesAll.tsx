@@ -1,7 +1,7 @@
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type {
+import { RenderedAnalysis } from '../Analyzer.js';
+import {
   PeerDependenciesState,
   PeerDependencyInfo,
 } from '../analyzePeerDependencies.js';
@@ -12,7 +12,7 @@ export function peerDependenciesAll({
 }: PeerDependenciesState): RenderedAnalysis {
   if (!peerDependencyInfos.length) return;
 
-  // @ts-expect-error  Unignore once TS types know about Map.groupBy()
+  // @ts-expect-error Unignore once TS types know about Map.groupBy()
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
     peerDependencyInfos,
     (pdi: PeerDependencyInfo) => pdi.source.key,

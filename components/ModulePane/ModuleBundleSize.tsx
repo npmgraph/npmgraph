@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import type Module from '../../lib/Module.js';
+import Module from '../../lib/Module.js';
 import fetchJSON from '../../lib/fetchJSON.js';
-import type { BundlePhobiaData } from '../../lib/fetch_types.js';
+import { BundlePhobiaData } from '../../lib/fetch_types.js';
 import { ExternalLink } from '../ExternalLink.js';
 import { ModuleBundleStats } from './ModuleBundleStats.js';
 import { ModuleTreeMap } from './ModuleTreeMap.js';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type LoadActivity from '../../lib/LoadActivity.js';
+import LoadActivity from '../../lib/LoadActivity.js';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.js';
 import Inspector from '../Inspector.js';
 import './App.scss';

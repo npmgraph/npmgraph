@@ -1,5 +1,4 @@
-import type { HTMLProps } from 'react';
-import React, { useState } from 'react';
+import React, { HTMLProps, useState } from 'react';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import { UNNAMED_PACKAGE } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';

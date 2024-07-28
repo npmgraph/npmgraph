@@ -1,5 +1,5 @@
-import type { PackumentVersion } from '@npm/types';
-import type { Dependencies } from './Module.js';
+import { PackumentVersion } from '@npm/types';
+import { Dependencies } from './Module.js';
 
 export function isHttpModule(moduleKey: string) {
   return /^https?:\/\//.test(moduleKey);

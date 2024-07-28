@@ -1,4 +1,4 @@
-import type { HTMLProps } from 'react';
+import { HTMLProps } from 'react';
 import { cn } from '../lib/dom.js';
 
 import styles from './Section.module.scss';

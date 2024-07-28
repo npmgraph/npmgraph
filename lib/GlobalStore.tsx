@@ -1,8 +1,8 @@
 import { useSyncExternalStore } from 'react';
-import type { GraphState } from '../components/GraphDiagram/graph_util.js';
+import { GraphState } from '../components/GraphDiagram/graph_util.js';
 import { PANE } from '../components/Inspector.js';
-import type Module from './Module.js';
-import type { GithubCommit } from './fetch_types.js';
+import Module from './Module.js';
+import { GithubCommit } from './fetch_types.js';
 import { hashGet, searchGet } from './url_util.js';
 
 type GlobalState = {

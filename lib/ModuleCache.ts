@@ -1,4 +1,4 @@
-import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
+import { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { gt, satisfies } from 'semver';
 import HttpError from './HttpError.js';
 import Module from './Module.js';
@@ -7,8 +7,9 @@ import {
   getCachedPackument,
   getNPMPackument,
 } from './PackumentCache.js';
-import type { PromiseWithResolversType } from './PromiseWithResolvers.js';
-import PromiseWithResolvers from './PromiseWithResolvers.js';
+import PromiseWithResolvers, {
+  PromiseWithResolversType,
+} from './PromiseWithResolvers.js';
 import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
 import { flash } from './flash.js';

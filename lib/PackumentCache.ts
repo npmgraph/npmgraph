@@ -1,7 +1,8 @@
-import type { Packument } from '@npm/types';
+import { Packument } from '@npm/types';
 import { REGISTRY_BASE_URL } from './ModuleCache.js';
-import type { PromiseWithResolversType } from './PromiseWithResolvers.js';
-import PromiseWithResolvers from './PromiseWithResolvers.js';
+import PromiseWithResolvers, {
+  PromiseWithResolversType,
+} from './PromiseWithResolvers.js';
 import fetchJSON from './fetchJSON.js';
 
 const packumentCache = new Map<string, PackumentCacheEntry>();

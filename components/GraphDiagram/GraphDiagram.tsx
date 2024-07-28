@@ -1,12 +1,14 @@
 import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
-import { $, $$ } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.js';
-import type LoadActivity from '../../lib/LoadActivity.js';
-import type Module from '../../lib/Module.js';
-import type { QueryType } from '../../lib/ModuleCache.js';
-import { getCachedModule, queryModuleCache } from '../../lib/ModuleCache.js';
+import LoadActivity from '../../lib/LoadActivity.js';
+import Module from '../../lib/Module.js';
+import {
+  QueryType,
+  getCachedModule,
+  queryModuleCache,
+} from '../../lib/ModuleCache.js';
 import { report } from '../../lib/bugsnag.js';
 import {
   PARAM_COLORIZE,
@@ -19,6 +21,7 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
+import { $, $$ } from 'select-dom';
 import { flash } from '../../lib/flash.js';
 import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
@@ -32,8 +35,9 @@ import { PANE } from '../Inspector.js';
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
-import type { DependencyKey, GraphState } from './graph_util.js';
 import {
+  DependencyKey,
+  GraphState,
   composeDOT,
   gatherSelectionInfo,
   getGraphForQuery,

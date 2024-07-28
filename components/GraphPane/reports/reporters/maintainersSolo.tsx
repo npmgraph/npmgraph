@@ -1,6 +1,6 @@
 import simplur from 'simplur';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { MaintainerAnalysisState } from '../analyzeMaintainers.js';
+import { RenderedAnalysis } from '../Analyzer.js';
+import { MaintainerAnalysisState } from '../analyzeMaintainers.js';
 import { maintainersAll } from './maintainersAll.js';
 
 export function maintainersSolo({
