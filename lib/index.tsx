@@ -87,9 +87,8 @@ window.onload = function () {
   );
 
   // A little component for managing the title
-  const titleEl = $('title')!;
-  createRoot(titleEl).render(
-    <DiagramTitle defaultTitle={titleEl.textContent} />,
+  createRoot($('title')!).render(
+    <DiagramTitle defaultTitle={document.title} />,
   );
 
   // Lazily fetch information about commits to the npmgraph repo
