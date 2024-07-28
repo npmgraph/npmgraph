@@ -1,7 +1,10 @@
 name: PR
 
 on:
-  - pull_request
+  pull_request:
+    types:
+      - opened
+      - edited
 
 jobs:
   title:
