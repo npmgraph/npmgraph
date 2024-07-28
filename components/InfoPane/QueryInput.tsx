@@ -52,6 +52,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
       <input
         type="text"
         id="search-field"
+        placeholder="Search…"
         value={value}
         onKeyDown={handleKeyDown}
         onChange={e => setValue(e.target.value)}
