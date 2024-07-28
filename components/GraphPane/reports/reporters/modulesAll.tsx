@@ -9,6 +9,10 @@ export function modulesAll({
   moduleInfos,
   entryModules,
 }: ModuleAnalysisState): RenderedAnalysis {
+  if (moduleInfos.size === 0) {
+    return;
+  }
+
   const details = Array.from(moduleInfos.values())
     .sort((a, b) => a.module.key.localeCompare(b.module.key))
     .map(({ module }) => {

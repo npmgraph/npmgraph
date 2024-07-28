@@ -1,0 +1,15 @@
+name: PR
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+
+jobs:
+  title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Validate: ${{github.event.pull_request.title}}'
+        if: ${{ !startsWith(github.event.pull_request.title, 'fix:') && !startsWith(github.event.pull_request.title, 'feat:') && !startsWith(github.event.pull_request.title, 'chore:') }}
+        run: exit 1
