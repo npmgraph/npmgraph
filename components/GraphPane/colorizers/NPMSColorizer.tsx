@@ -31,12 +31,14 @@ class NPMSColorizer implements BulkColorizer {
     return (
       <div style={{ display: 'flex' }}>
         <span>0%&nbsp;</span>
-        {Array.from({ length: 20 }).fill(0).map((_, i) => (
-          <span
-            key={i}
-            style={{ flexGrow: '1', backgroundColor: hslFor(i / 19) }}
-          />
-        ))}
+        {Array.from({ length: 20 })
+          .fill(0)
+          .map((_, i) => (
+            <span
+              key={i}
+              style={{ flexGrow: '1', backgroundColor: hslFor(i / 19) }}
+            />
+          ))}
         <span>&nbsp;100%</span>
       </div>
     );
@@ -72,8 +74,7 @@ class NPMSColorizer implements BulkColorizer {
     for (const result of results) {
       if (result.status == 'rejected') {
         rejected++;
-      }
-      else {
+      } else {
         Object.assign(combinedResults, result.value);
       }
     }
@@ -87,8 +88,7 @@ class NPMSColorizer implements BulkColorizer {
     // Colorize nodes
     for (const m of modules) {
       const score = combinedResults[m.name]?.score;
-      if (!score)
-        continue;
+      if (!score) continue;
       let color: string | undefined;
       switch (this.name) {
         case COLORIZE_OVERALL:

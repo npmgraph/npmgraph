@@ -17,10 +17,7 @@ export default function GithubSponsorButton({
       {...props}
     >
       <SponsorIcon />
-      <span>
-        Sponsor @
-        {username}
-      </span>
+      <span>Sponsor @{username}</span>
     </a>
   );
 }

@@ -16,16 +16,14 @@ export function ReportItem<T>({
   children,
   ...props
 }: {
-  data?: T
-  reporter: (state: T) => RenderedAnalysis
-  type?: 'info' | 'warn' | 'error'
+  data?: T;
+  reporter: (state: T) => RenderedAnalysis;
+  type?: 'info' | 'warn' | 'error';
 } & React.HTMLAttributes<HTMLDetailsElement>) {
-  if (!data)
-    return null;
+  if (!data) return null;
 
   const rendered = renderer(data);
-  if (!rendered)
-    return null;
+  if (!rendered) return null;
 
   const { type, summary, details } = rendered;
 

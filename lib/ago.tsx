@@ -15,8 +15,7 @@ export function ago(date: Date | number) {
   let when = 'just now';
 
   for (const [v, unit] of UNITS) {
-    if (since < v)
-      break;
+    if (since < v) break;
     since /= v;
 
     when = simplur`${Math.floor(since)} ${unit}[|s] ago`;

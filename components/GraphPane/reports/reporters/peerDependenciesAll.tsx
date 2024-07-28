@@ -10,8 +10,7 @@ import styles from './peerDependenciesAll.module.scss';
 export function peerDependenciesAll({
   peerDependencyInfos,
 }: PeerDependenciesState): RenderedAnalysis {
-  if (!peerDependencyInfos.length)
-    return;
+  if (!peerDependencyInfos.length) return;
 
   // @ts-expect-error  Unignore once TS types know about Map.groupBy()
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
@@ -21,15 +20,14 @@ export function peerDependenciesAll({
 
   const details = Array.from(peerDepsBySource.keys())
     .sort()
-    .map((sourceName) => {
+    .map(sourceName => {
       const pdis = peerDepsBySource.get(sourceName)!;
 
       return (
         <div key={sourceName}>
           <div className={styles.header}>
             <span>
-              <Selectable type="exact" value={sourceName} />
-              {' '}
+              <Selectable type="exact" value={sourceName} />{' '}
             </span>
           </div>
           <div className={styles.section}>
@@ -38,7 +36,7 @@ export function peerDependenciesAll({
               <span className={styles.gets}>Gets</span>
             </div>
 
-            {pdis.map((pdi) => {
+            {pdis.map(pdi => {
               const { name, optional, versionRange, destination } = pdi;
               return (
                 <div
@@ -46,23 +44,19 @@ export function peerDependenciesAll({
                   key={`${pdi.name}${pdi.versionRange}`}
                 >
                   <span className={styles.wants}>
-                    {name}
-                    @
-                    {versionRange}
+                    {name}@{versionRange}
                     {optional ? <i>(optional)</i> : ''}
                   </span>
                   <span className={styles.gets}>
-                    {destination
-                      ? (
-                          <Selectable
-                            type="exact"
-                            label={destination.version}
-                            value={destination.key}
-                          />
-                        )
-                      : (
-                          <i>{optional ? '—' : 'missing'}</i>
-                        )}
+                    {destination ? (
+                      <Selectable
+                        type="exact"
+                        label={destination.version}
+                        value={destination.key}
+                      />
+                    ) : (
+                      <i>{optional ? '—' : 'missing'}</i>
+                    )}
                   </span>
                 </div>
               );
@@ -84,8 +78,7 @@ export function peerDependenciesMissing({
     pdi => !pdi.destination && !pdi.optional,
   );
   const result = peerDependenciesAll({ peerDependencyInfos: missingInfos });
-  if (!result)
-    return;
+  if (!result) return;
 
   return {
     type: 'warn',

@@ -53,9 +53,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     <div id="inspector" className={hide !== null ? '' : 'open'} {...props}>
       <div id="tabs">
         <Tab active={pane == PANE.INFO} onClick={() => setPane(PANE.INFO)}>
-          Start
-          {' '}
-          <kbd>/</kbd>
+          Start <kbd>/</kbd>
         </Tab>
         <Tab active={pane == PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
           Graph

@@ -11,8 +11,8 @@ export function Toggle({
   className,
   ...props
 }: HTMLProps<HTMLLabelElement> & {
-  checked?: boolean
-  onChange: () => void
+  checked?: boolean;
+  onChange: () => void;
 }) {
   return (
     <label

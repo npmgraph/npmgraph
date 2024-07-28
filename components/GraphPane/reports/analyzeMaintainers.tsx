@@ -4,10 +4,10 @@ import { report } from '../../../lib/bugsnag.js';
 import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
 export interface MaintainerAnalysisState {
-  modulesByMaintainer: Map<string, Set<Module>>
-  soloModulesByMaintainer: Map<string, Set<Module>>
-  soloModulesCount: number
-  emailByMaintainer: Map<string, string>
+  modulesByMaintainer: Map<string, Set<Module>>;
+  soloModulesByMaintainer: Map<string, Set<Module>>;
+  soloModulesCount: number;
+  emailByMaintainer: Map<string, string>;
 }
 
 function normalizeMaintainer(
@@ -48,8 +48,7 @@ export function analyzeMaintainers({
   soloModulesByMaintainer.delete('');
 
   for (const { module } of moduleInfos.values()) {
-    if (module.isStub)
-      continue;
+    if (module.isStub) continue;
 
     const { maintainers } = module;
 

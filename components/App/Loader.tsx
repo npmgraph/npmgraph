@@ -8,11 +8,7 @@ export function Loader({
   return (
     <>
       <div className="progress-bar" />
-      <div className="loader">
-        {activity.title}
-        {' '}
-        ...
-      </div>
+      <div className="loader">{activity.title} ...</div>
     </>
   );
 }

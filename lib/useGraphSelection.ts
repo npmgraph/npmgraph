@@ -12,8 +12,7 @@ export default function useGraphSelection() {
     selectType,
     selectValue,
     function setGraphSelection(queryType?: QueryType, queryValue?: string) {
-      if (!queryType || !queryValue)
-        return setSel('');
+      if (!queryType || !queryValue) return setSel('');
       setSel(`${queryType}:${queryValue}`);
     },
   ] as const;

@@ -8,19 +8,15 @@ export default function useHashParam(paramName: string) {
     val: string | boolean | number | null | undefined,
     replace = true,
   ) => {
-    if (val === param)
-      return;
+    if (val === param) return;
 
-    if (typeof val === 'number')
-      val = String(val);
+    if (typeof val === 'number') val = String(val);
 
     if (!val) {
       params.delete(paramName);
-    }
-    else if (val === true) {
+    } else if (val === true) {
       params.set(paramName, '');
-    }
-    else {
+    } else {
       params.set(paramName, val);
     }
 

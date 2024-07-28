@@ -20,8 +20,7 @@ export default function human(v: number, suffix = '', sig = 0) {
   let exp = floor(log10(v) / log10(base));
   const unit = UNITS.find(([n]) => n <= exp);
 
-  if (!unit)
-    return `0 ${suffix}`;
+  if (!unit) return `0 ${suffix}`;
 
   v /= base ** unit[0];
   exp = floor(log10(v)) + 1;

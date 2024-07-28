@@ -14,8 +14,8 @@ export function ExternalLink({
   className,
   ...props
 }: HTMLProps<HTMLAnchorElement> & {
-  className?: string
-  icon?: (props: IconProps) => React.JSX.Element
+  className?: string;
+  icon?: (props: IconProps) => React.JSX.Element;
 }) {
   return (
     <a

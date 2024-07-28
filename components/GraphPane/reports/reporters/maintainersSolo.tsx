@@ -16,8 +16,7 @@ export function maintainersSolo({
     emailByMaintainer,
   });
 
-  if (!results)
-    return;
+  if (!results) return;
 
   return {
     type: 'warn',

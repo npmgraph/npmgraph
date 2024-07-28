@@ -22,17 +22,15 @@ export function licensesAll({
               value={license}
               label={license || '(unlicensed)'}
             />
-            {keywords
-              ? (
-                  <div className={styles.keywords}>
-                    {keywords.map(k => (
-                      <span className={styles.keyword} key={k}>
-                        {k}
-                      </span>
-                    ))}
-                  </div>
-                )
-              : null}
+            {keywords ? (
+              <div className={styles.keywords}>
+                {keywords.map(k => (
+                  <span className={styles.keyword} key={k}>
+                    {k}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className={styles.modules}>
@@ -44,8 +42,7 @@ export function licensesAll({
       );
     });
 
-  if (details.length <= 0)
-    return;
+  if (details.length <= 0) return;
 
   const summary = simplur`All licenses (${details.length})`;
   return { type: 'info', summary, details };

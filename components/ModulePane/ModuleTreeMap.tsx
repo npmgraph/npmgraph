@@ -12,8 +12,8 @@ export function ModuleTreeMap({
   style,
   ...props
 }: {
-  data: BundlePhobiaData
-  style?: React.CSSProperties
+  data: BundlePhobiaData;
+  style?: React.CSSProperties;
 }) {
   const [leaves, setLeaves] = useState<JSX.Element[]>([]);
 
@@ -67,9 +67,7 @@ export function ModuleTreeMap({
             backgroundColor: `hsl(${30 + (i / a.length) * 180}, 50%, 50%)`,
           }}
         >
-          {d.data.name}
-          {' '}
-          <span>{size}</span>
+          {d.data.name} <span>{size}</span>
         </div>
       );
     });

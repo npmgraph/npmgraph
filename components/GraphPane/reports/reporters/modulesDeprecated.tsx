@@ -8,12 +8,11 @@ import styles from './modulesDeprecated.module.scss';
 export function modulesDeprecated({
   deprecated,
 }: ModuleAnalysisState): RenderedAnalysis {
-  if (deprecated.length <= 0)
-    return;
+  if (deprecated.length <= 0) return;
 
   const details = deprecated
     .sort((a, b) => a.name.localeCompare(b.name))
-    .map((module) => {
+    .map(module => {
       return (
         <div className={cn(styles.root, 'zebra-row')} key={module.key}>
           <Selectable type="exact" value={module.key} />

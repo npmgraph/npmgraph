@@ -3,15 +3,15 @@ import type Module from '../../../lib/Module.js';
 import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
 export interface PeerDependencyInfo {
-  name: string
-  optional: boolean | undefined
-  versionRange: string
-  source: Module
-  destination: Module | undefined
+  name: string;
+  optional: boolean | undefined;
+  versionRange: string;
+  source: Module;
+  destination: Module | undefined;
 }
 
 export interface PeerDependenciesState {
-  peerDependencyInfos: PeerDependencyInfo[]
+  peerDependencyInfos: PeerDependencyInfo[];
 }
 
 export function analyzePeerDependencies({
@@ -21,8 +21,7 @@ export function analyzePeerDependencies({
 
   for (const { module } of moduleInfos.values()) {
     const { peerDependencies, peerDependenciesMeta } = module.package;
-    if (!peerDependencies)
-      continue;
+    if (!peerDependencies) continue;
 
     for (const [name, versionRange] of Object.entries(peerDependencies)) {
       const pdi: PeerDependencyInfo = {

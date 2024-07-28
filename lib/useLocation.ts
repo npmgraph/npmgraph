@@ -17,8 +17,7 @@ export function patchLocation(urlParts: Partial<URL>, replace: boolean) {
   // Assign url directly to the location field
   if (replace) {
     window.history.replaceState({}, '', url);
-  }
-  else {
+  } else {
     window.history.pushState({}, '', url);
   }
 

@@ -39,28 +39,28 @@ export type DependencyKey =
   | 'optionalDependencies';
 
 interface DependencyEntry {
-  name: string
-  version: string
-  type: DependencyKey
+  name: string;
+  version: string;
+  type: DependencyKey;
 }
 
 interface Dependency {
-  module: Module
-  type: DependencyKey
+  module: Module;
+  type: DependencyKey;
 }
 
 export interface GraphModuleInfo {
-  module: Module
-  level: number
-  upstream: Set<Dependency>
-  downstream: Set<Dependency>
+  module: Module;
+  level: number;
+  upstream: Set<Dependency>;
+  downstream: Set<Dependency>;
 }
 
 export interface GraphState {
   // Map of module key -> module info
-  moduleInfos: Map<string, GraphModuleInfo>
+  moduleInfos: Map<string, GraphModuleInfo>;
 
-  entryModules: Set<Module>
+  entryModules: Set<Module>;
 }
 
 const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
@@ -71,18 +71,15 @@ function getDependencyEntries(
   level = 0,
 ) {
   // We only add non-"dependencies" at the top-level.
-  if (level > 0)
-    dependencyTypes = DEPENDENCIES_ONLY;
+  if (level > 0) dependencyTypes = DEPENDENCIES_ONLY;
 
   const depEntries = new Set<DependencyEntry>();
   for (const type of dependencyTypes) {
     const deps = module.package[type];
-    if (!deps)
-      continue;
+    if (!deps) continue;
 
     // Only do one level for non-"dependencies"
-    if (level > 0 && type != 'dependencies')
-      continue;
+    if (level > 0 && type != 'dependencies') continue;
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
@@ -110,8 +107,7 @@ export async function getGraphForQuery(
     module: Module[] | Module,
     level = 0,
   ): Promise<GraphModuleInfo | void> {
-    if (!module)
-      return Promise.reject(new Error('Undefined module'));
+    if (!module) return Promise.reject(new Error('Undefined module'));
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
@@ -157,7 +153,7 @@ export async function getGraphForQuery(
 
   // deep-resolve all modules in query
   await Promise.allSettled(
-    query.map(async (moduleKey) => {
+    query.map(async moduleKey => {
       const m = await getModule(moduleKey);
       graphState.entryModules.add(m);
       return m && _visit(m);
@@ -199,16 +195,15 @@ export function composeDOT({
   graph,
   sizing,
 }: {
-  graph: GraphState
-  sizing?: boolean
+  graph: GraphState;
+  sizing?: boolean;
 }) {
   // Sort modules by [level, key]
   const entries = [...graph.moduleInfos.entries()];
   entries.sort(([aKey, a], [bKey, b]) => {
     if (a.level != b.level) {
       return a.level - b.level;
-    }
-    else {
+    } else {
       return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
     }
   });
@@ -229,8 +224,7 @@ export function composeDOT({
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
-    if (!downstream)
-      continue;
+    if (!downstream) continue;
     for (const { module: dependency, type } of downstream) {
       edges.push(
         `"${dotEscape(module.key)}" -> "${dependency}" ${
@@ -285,8 +279,7 @@ export function foreachUpstream(
   seen: Set<Module> = new Set(),
 ) {
   const info = graph.moduleInfos.get(module.key);
-  if (!info || seen.has(module))
-    return;
+  if (!info || seen.has(module)) return;
   seen.add(module);
 
   for (const { module } of info.upstream) {
@@ -302,8 +295,7 @@ export function foreachDownstream(
   seen: Set<Module> = new Set(),
 ) {
   const info = graph.moduleInfos.get(module.key);
-  if (!info || seen.has(module))
-    return;
+  if (!info || seen.has(module)) return;
   seen.add(module);
 
   for (const { module } of info.downstream) {
@@ -325,13 +317,11 @@ export function gatherSelectionInfo(
   const downstreamModuleKeys = new Set<string>();
 
   function _visitUpstream(fromModule: Module, visited = new Set<Module>()) {
-    if (visited.has(fromModule))
-      return;
+    if (visited.has(fromModule)) return;
     visited.add(fromModule);
 
     const info = graphState.moduleInfos.get(fromModule.key);
-    if (!info)
-      return;
+    if (!info) return;
 
     for (const { module } of info.upstream) {
       upstreamModuleKeys.add(module.key);
@@ -341,13 +331,11 @@ export function gatherSelectionInfo(
   }
 
   function _visitDownstream(fromModule: Module, visited = new Set<Module>()) {
-    if (visited.has(fromModule))
-      return;
+    if (visited.has(fromModule)) return;
     visited.add(fromModule);
 
     const info = graphState.moduleInfos.get(fromModule.key);
-    if (!info)
-      return;
+    if (!info) return;
 
     for (const { module } of info.downstream) {
       downstreamModuleKeys.add(module.key);

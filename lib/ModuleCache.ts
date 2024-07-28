@@ -7,9 +7,7 @@ import {
   getCachedPackument,
   getNPMPackument,
 } from './PackumentCache.js';
-import type {
-  PromiseWithResolversType,
-} from './PromiseWithResolvers.js';
+import type { PromiseWithResolversType } from './PromiseWithResolvers.js';
 import PromiseWithResolvers from './PromiseWithResolvers.js';
 import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
@@ -29,7 +27,7 @@ const moduleCache = new Map<string, ModuleCacheEntry>();
 export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
 
 type ModuleCacheEntry = PromiseWithResolversType<Module> & {
-  module?: Module // Set once module is loaded
+  module?: Module; // Set once module is loaded
 };
 
 function selectVersion(
@@ -42,12 +40,10 @@ function selectVersion(
   const distVersion = packument['dist-tags']?.[targetVersion];
   if (distVersion) {
     selectedVersion = distVersion;
-  }
-  else {
+  } else {
     // Find highest matching version
     for (const version of Object.keys(packument.versions)) {
-      if (!satisfies(version, targetVersion))
-        continue;
+      if (!satisfies(version, targetVersion)) continue;
       if (!selectedVersion || gt(version, selectedVersion)) {
         selectedVersion = version;
       }
@@ -89,8 +85,7 @@ async function fetchModuleFromURL(urlString: string) {
   }
   const pkg: PackageJSON = await fetchJSON<PackageJSON>(url);
 
-  if (!pkg.name)
-    pkg.name = url.toString();
+  if (!pkg.name) pkg.name = url.toString();
 
   return new Module(pkg as PackumentVersion);
 }
@@ -98,8 +93,7 @@ async function fetchModuleFromURL(urlString: string) {
 // Note: This method should not throw!  Errors should be returned as part of a
 // stub module
 export async function getModule(moduleKey: string): Promise<Module> {
-  if (!moduleKey)
-    throw new Error('Undefined module name');
+  if (!moduleKey) throw new Error('Undefined module name');
 
   let [name, version] = parseModuleKey(moduleKey);
 
@@ -107,8 +101,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
     name = moduleKey;
     version = '';
     // unchanged
-  }
-  else {
+  } else {
     [name, version] = resolveModule(name, version);
   }
 
@@ -130,19 +123,18 @@ export async function getModule(moduleKey: string): Promise<Module> {
   // Fetch module based on type
   if (isHttpModule(moduleKey)) {
     promise = fetchModuleFromURL(moduleKey);
-  }
-  else {
+  } else {
     promise = fetchModuleFromNPM(name, version);
   }
   promise
-    .catch((err) => {
+    .catch(err => {
       if (err instanceof HttpError) {
         err.message = `Fetch failed for ${moduleKey} (code = ${err.code})`;
       }
 
       return Module.stub(moduleKey, err);
     })
-    .then((module) => {
+    .then(module => {
       cacheEntry.module = module;
 
       // Add cache entry for module's computed key
@@ -165,8 +157,7 @@ export function cacheModule(module: Module) {
 
   if (entry) {
     entry.resolve(module);
-  }
-  else {
+  } else {
     moduleCache.set(moduleKey, {
       promise: Promise.resolve(module),
       module,
@@ -182,21 +173,17 @@ export function cacheModule(module: Module) {
 export function queryModuleCache(queryType: QueryType, queryValue: string) {
   const results = new Map<string, Module>();
 
-  if (!queryType || !queryValue)
-    return results;
+  if (!queryType || !queryValue) return results;
 
   for (const { module } of moduleCache.values()) {
-    if (!module)
-      continue;
+    if (!module) continue;
 
     switch (queryType) {
       case 'exact':
-        if (module.key === queryValue)
-          results.set(module.key, module);
+        if (module.key === queryValue) results.set(module.key, module);
         break;
       case 'name':
-        if (module.name === queryValue)
-          results.set(module.key, module);
+        if (module.name === queryValue) results.set(module.key, module);
         break;
       case 'license':
         if (module.getLicenses().includes(queryValue.toLowerCase()))
@@ -227,8 +214,7 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
   const sanitized: PackageJSON = {} as PackageJSON;
 
   for (const key of PACKAGE_WHITELIST) {
-    if (key in pkg)
-      (sanitized[key] as unknown) = pkg[key];
+    if (key in pkg) (sanitized[key] as unknown) = pkg[key];
   }
 
   return sanitized;
@@ -239,15 +225,15 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
   if (!packument) {
     // Create a stub packument
     packument = {
-      'name': pkg.name,
-      'versions': {},
+      name: pkg.name,
+      versions: {},
       'dist-tags': {},
-      'maintainers': [],
-      'time': {
+      maintainers: [],
+      time: {
         modified: new Date().toISOString(),
         created: new Date().toISOString(),
       },
-      'license': pkg.license ?? 'UNLICENSED',
+      license: pkg.license ?? 'UNLICENSED',
     } as unknown as Packument;
 
     // Put it into the packument cache
@@ -274,18 +260,15 @@ export function syncPackagesHash() {
   const packagesJson = hashGet(PARAM_PACKAGES);
 
   // If the hash param hasn't changed, there's nothing to do
-  if (lastPackagesVal === packagesJson)
-    return;
+  if (lastPackagesVal === packagesJson) return;
   lastPackagesVal = packagesJson;
 
-  if (!packagesJson)
-    return;
+  if (!packagesJson) return;
 
   let packages: PackageJSON[];
   try {
     packages = JSON.parse(packagesJson);
-  }
-  catch {
+  } catch {
     flash('"packages" hash param is not valid JSON');
     return;
   }

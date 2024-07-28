@@ -2,8 +2,8 @@ import type Module from '../../../lib/Module.js';
 import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
 export type ModuleAnalysisState = GraphState & {
-  versionsByName: Record<string, Module[]>
-  deprecated: Module[]
+  versionsByName: Record<string, Module[]>;
+  deprecated: Module[];
 };
 
 export function analyzeModules({ moduleInfos, entryModules }: GraphState) {

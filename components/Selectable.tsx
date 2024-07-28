@@ -12,9 +12,9 @@ export function Selectable({
   className,
   ...props
 }: {
-  type: QueryType
-  value: string
-  label?: string
+  type: QueryType;
+  value: string;
+  label?: string;
 } & HTMLProps<HTMLSpanElement>) {
   const [, , setGraphSelection] = useGraphSelection();
   const title = label || value;

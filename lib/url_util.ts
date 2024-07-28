@@ -19,8 +19,7 @@ export function hashSet(
   const params = new URLSearchParams(location.hash.slice(1));
   if (value) {
     params.set(key, value);
-  }
-  else {
+  } else {
     params.delete(key);
   }
   return params.toString();
@@ -42,8 +41,7 @@ export function searchSet(
   const params = new URLSearchParams(location.search);
   if (value) {
     params.set(key, value);
-  }
-  else {
+  } else {
     params.delete(key);
   }
   return params.toString();

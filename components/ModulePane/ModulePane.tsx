@@ -25,7 +25,7 @@ export default function ModulePane({
   selectedModules,
   ...props
 }: {
-  selectedModules: Map<string, Module>
+  selectedModules: Map<string, Module>;
 } & React.HTMLAttributes<HTMLDivElement>) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const nSelected = selectedModules.size;
@@ -43,8 +43,7 @@ export default function ModulePane({
         No modules selected.
       </Pane>
     );
-  }
-  else if (nSelected > 1) {
+  } else if (nSelected > 1) {
     return (
       <Pane>
         Multiple modules selected. Click a single module in the graph to see
@@ -85,22 +84,22 @@ export default function ModulePane({
 
   let downstreamUnpackedSize = 0;
   if (graph) {
-    foreachDownstream(module, graph, (m) => {
+    foreachDownstream(module, graph, m => {
       downstreamUnpackedSize += m.unpackedSize ?? 0;
     });
   }
 
-  const isSingleEntryModule
-    = graph.entryModules.size === 1
-    && [...graph.entryModules][0].key === module.key;
+  const isSingleEntryModule =
+    graph.entryModules.size === 1 &&
+    [...graph.entryModules][0].key === module.key;
   const maintainers = module.maintainers;
 
   const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
   const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
   const repoUrl = getRepoUrlForModule(module);
-  const homepageUrl
-    = module.package.homepage
-    && !module.package.homepage.startsWith('https://github.com/')
+  const homepageUrl =
+    module.package.homepage &&
+    !module.package.homepage.startsWith('https://github.com/')
       ? module.package.homepage
       : null;
 
@@ -108,39 +107,33 @@ export default function ModulePane({
     <Pane {...props}>
       <div style={{ marginBlock: '1em 0.5em' }}>
         <h2 style={{ display: 'inline' }}>{module.key}</h2>
-        {!colorize || colorize === OutdatedColorizer.name
-          ? (
-              <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
-            )
-          : null}
+        {!colorize || colorize === OutdatedColorizer.name ? (
+          <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
+        ) : null}
       </div>
 
-      {pkg.deprecated
-        ? (
-            <div
-              className="warning"
-              style={{ padding: '.5em', borderRadius: '.5em' }}
-            >
-              <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
-              {pkg.deprecated}
-            </div>
-          )
-        : null}
+      {pkg.deprecated ? (
+        <div
+          className="warning"
+          style={{ padding: '.5em', borderRadius: '.5em' }}
+        >
+          <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
+          {pkg.deprecated}
+        </div>
+      ) : null}
 
       <p style={{ marginTop: 0 }}>{pkg?.description}</p>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        {isSingleEntryModule
-          ? null
-          : (
-              <QueryLink
-                className="bright-hover"
-                query={module.key}
-                style={{ textDecoration: 'none' }}
-              >
-                ← Go
-              </QueryLink>
-            )}
+        {isSingleEntryModule ? null : (
+          <QueryLink
+            className="bright-hover"
+            query={module.key}
+            style={{ textDecoration: 'none' }}
+          >
+            ← Go
+          </QueryLink>
+        )}
         <ExternalLink href={npmUrl} icon={NpmIcon}>
           npm
         </ExternalLink>
@@ -168,21 +161,17 @@ export default function ModulePane({
           }}
         >
           <span>Unpacked Size (module only):</span>
-          {unpackedSize
-            ? (
-                <strong>{human(unpackedSize, 'B')}</strong>
-              )
-            : (
-                <i>not available</i>
-              )}
+          {unpackedSize ? (
+            <strong>{human(unpackedSize, 'B')}</strong>
+          ) : (
+            <i>not available</i>
+          )}
           <span>Unpacked Size (module + dependencies):</span>
-          {unpackedSize
-            ? (
-                <strong>{human(unpackedSize + downstreamUnpackedSize, 'B')}</strong>
-              )
-            : (
-                <i>not available</i>
-              )}
+          {unpackedSize ? (
+            <strong>{human(unpackedSize + downstreamUnpackedSize, 'B')}</strong>
+          ) : (
+            <i>not available</i>
+          )}
         </div>
         <hr />
         <ModuleBundleSize module={module} />
@@ -220,22 +209,18 @@ function getRepoUrlForModule(module: Module) {
   if (repository) {
     if (typeof repository === 'string') {
       repo = repository;
-    }
-    else {
+    } else {
       repo = repository.url;
     }
-  }
-  else if (homepage) {
+  } else if (homepage) {
     repo = homepage;
-  }
-  else if (bugs) {
+  } else if (bugs) {
     repo = bugs.url;
   }
 
   // Extract github project path from URL
   const match = repo?.match(/github.com\/([^/]+\/[^/?#]+)?/);
-  if (!match)
-    return undefined;
+  if (!match) return undefined;
 
   repo = match[1].replace(/\.git$/, '');
 

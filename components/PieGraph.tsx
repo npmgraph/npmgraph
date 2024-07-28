@@ -17,13 +17,11 @@ export function PieGraph({
   useEffect(() => {
     // Chart code from https://observablehq.com/@d3/pie-chart
     const svgElement = svgEl.current;
-    if (!svgElement)
-      return;
+    if (!svgElement) return;
 
     const svg = select(svgElement);
     const svgNode = svg.node();
-    if (!svgNode)
-      return;
+    if (!svgNode) return;
 
     // Align SVG view box to actual element dimensions
     const { width, height } = svgNode.getBoundingClientRect();

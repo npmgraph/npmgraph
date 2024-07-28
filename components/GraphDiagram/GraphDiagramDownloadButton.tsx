@@ -33,8 +33,7 @@ function download(type: DownloadExtension) {
 function downloadPng() {
   const svg = getDiagramElement();
 
-  if (!svg)
-    return;
+  if (!svg) return;
 
   const data = svg.outerHTML;
   const vb = svg.getAttribute('viewBox')?.split(' ');
@@ -65,15 +64,13 @@ function downloadPng() {
 function downloadSvg() {
   // Get svg DOM (cloned, so we can tweak as needed for SVG export)
   const svg = getDiagramElement()?.cloneNode(true) as SVGSVGElement | undefined;
-  if (!svg)
-    return;
+  if (!svg) return;
 
   // Add link(s) to font files
   document
     .querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
-    .forEach((link) => {
-      if (!link.href.includes('fonts.googleapis.com'))
-        return;
+    .forEach(link => {
+      if (!link.href.includes('fonts.googleapis.com')) return;
 
       const fontEl = document.createElement('defs');
       fontEl.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;

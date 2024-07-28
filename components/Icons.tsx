@@ -8,12 +8,12 @@ import './Icons.scss';
 // here.  The path should fit w/in a 16x16 box (with a ~0.5px margin).  The paths provided by octicons work pretty well for this, but may need to be scaled.
 
 export type IconProps = {
-  name?: string
-  strokePath?: string
-  fillPath?: string
+  name?: string;
+  strokePath?: string;
+  fillPath?: string;
 
-  width?: number | string
-  height?: number | string
+  width?: number | string;
+  height?: number | string;
 } & HTMLProps<SVGSVGElement>;
 
 // General SVG-based icon component path.
@@ -35,11 +35,9 @@ export default function Icon({
       {...props}
     >
       {fillPath ? <path d={fillPath} className="icon-path-fill"></path> : null}
-      {strokePath
-        ? (
-            <path d={strokePath} className="icon-path-stroke"></path>
-          )
-        : null}
+      {strokePath ? (
+        <path d={strokePath} className="icon-path-stroke"></path>
+      ) : null}
     </svg>
   );
 }

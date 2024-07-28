@@ -6,13 +6,13 @@ import type { GithubCommit } from './fetch_types.js';
 import { hashGet, searchGet } from './url_util.js';
 
 interface GlobalState {
-  colorize?: string
-  graph: GraphState
-  lastVisit: number
-  location: URL
-  pane: PANE
-  selectedModules?: Map<string, Module>
-  commits: GithubCommit[]
+  colorize?: string;
+  graph: GraphState;
+  lastVisit: number;
+  location: URL;
+  pane: PANE;
+  selectedModules?: Map<string, Module>;
+  commits: GithubCommit[];
 }
 
 function _getInitialPane() {
@@ -55,8 +55,7 @@ export function setGlobalState<T extends keyof GlobalState>(
     if (String(value) === String(current)) {
       return;
     }
-  }
-  else if (globalState[key] === value) {
+  } else if (globalState[key] === value) {
     return;
   }
 

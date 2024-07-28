@@ -14,16 +14,14 @@ function timestring(t: number) {
 
 function createScale(in0: number, in1: number, out0: number, out1: number) {
   return function (v: number) {
-    if (in1 === in0)
-      return (out1 + out0) / 2;
+    if (in1 === in0) return (out1 + out0) / 2;
     return ((v - in0) / (in1 - in0)) * (out1 - out0) + out0;
   };
 }
 
 export function ReleaseTimeline({ module }: { module: Module }) {
   const [ref, { width: w, height: h }] = useMeasure<SVGSVGElement>();
-  if (!module.packument?.versions)
-    return;
+  if (!module.packument?.versions) return;
 
   const { time, versions } = module.packument;
 
@@ -36,8 +34,8 @@ export function ReleaseTimeline({ module }: { module: Module }) {
           time: Date.parse(time[key]),
           semver: parse(key),
         } as PackumentVersion & {
-          time: number
-          semver: SemVer
+          time: number;
+          semver: SemVer;
         },
       ] as const;
     })
@@ -86,8 +84,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
   for (const [key, version] of byTime) {
     const { time, semver } = version;
 
-    if (!semver)
-      continue;
+    if (!semver) continue;
 
     const x = xScale(time);
     const title = `${key} published ${timestring(time)}`;
@@ -99,24 +96,20 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     if (semver.prerelease.length) {
       layer = 'prerelease';
       r *= 0.4;
-    }
-    else if (semver.patch) {
+    } else if (semver.patch) {
       layer = 'patch';
       r *= 0.4;
-    }
-    else if (semver.minor) {
+    } else if (semver.minor) {
       layer = 'minor';
       r *= 0.4;
-    }
-    else if (semver.major) {
+    } else if (semver.major) {
       layer = 'major';
 
       // Add major-version grid line
       // layers.grid.push(
       //   <line x1={x} y1={y} x2={w} y2={y} key={`version-${version.version}`} />,
       // );
-    }
-    else {
+    } else {
       continue;
     }
 
@@ -126,23 +119,21 @@ export function ReleaseTimeline({ module }: { module: Module }) {
         <circle cx={x} cy={y} r={r} />
         {
           // Major dots get a label
-          layer === 'major'
-            ? (
-                <>
-                  <title>{title}</title>
+          layer === 'major' ? (
+            <>
+              <title>{title}</title>
 
-                  <text
-                    x={x}
-                    y={y}
-                    textAnchor="middle"
-                    alignmentBaseline="middle"
-                    fill="white"
-                  >
-                    {semver.major}
-                  </text>
-                </>
-              )
-            : null
+              <text
+                x={x}
+                y={y}
+                textAnchor="middle"
+                alignmentBaseline="middle"
+                fill="white"
+              >
+                {semver.major}
+              </text>
+            </>
+          ) : null
         }
       </g>,
     );
@@ -174,24 +165,16 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
       <div className={styles.legend}>
         <span>
-          <span className={cn(styles.dotKey, styles.dotKeyMajor)} />
-          {' '}
-          = major
+          <span className={cn(styles.dotKey, styles.dotKeyMajor)} /> = major
         </span>
         <span>
-          <span className={cn(styles.dotKey, styles.dotKeyMinor)} />
-          {' '}
-          = minor
+          <span className={cn(styles.dotKey, styles.dotKeyMinor)} /> = minor
         </span>
         <span>
-          <span className={cn(styles.dotKey, styles.dotKeyPatch)} />
-          {' '}
-          = patch
+          <span className={cn(styles.dotKey, styles.dotKeyPatch)} /> = patch
         </span>
         <span>
-          <span className={cn(styles.dotKey, styles.dotKeyPrerelease)} />
-          {' '}
-          =
+          <span className={cn(styles.dotKey, styles.dotKeyPrerelease)} /> =
           prerelease
         </span>
       </div>

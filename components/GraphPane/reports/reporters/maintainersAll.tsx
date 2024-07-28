@@ -40,8 +40,7 @@ export function maintainersAll({
       );
     });
 
-  if (details.length <= 0)
-    return;
+  if (details.length <= 0) return;
 
   const summary = simplur`All maintainers (${details.length})`;
   return { type: 'info', summary, details };

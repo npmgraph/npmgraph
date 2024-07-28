@@ -11,8 +11,7 @@ export function licensesKeyword(keyword: OSIKeyword) {
     modulesByKeyword,
   }: LicenseAnalysisState): RenderedAnalysis {
     const modules = modulesByKeyword.get(keyword);
-    if (!modules)
-      return;
+    if (!modules) return;
 
     const summary = simplur`Modules with "${keyword}" license (${modules.length})`;
 

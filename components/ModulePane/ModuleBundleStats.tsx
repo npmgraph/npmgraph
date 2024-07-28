@@ -5,7 +5,7 @@ import human from '../../lib/human.js';
 export function ModuleBundleStats({
   bundleInfo,
 }: {
-  bundleInfo: BundlePhobiaData
+  bundleInfo: BundlePhobiaData;
 }) {
   return (
     <div

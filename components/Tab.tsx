@@ -9,8 +9,8 @@ export function Tab({
   children,
   ...props
 }: HTMLProps<HTMLDivElement> & {
-  active: boolean
-  badge?: string | number | boolean
+  active: boolean;
+  badge?: string | number | boolean;
 }) {
   return (
     <div className={cn('tab', { active })} {...props}>

@@ -5,13 +5,8 @@ import { $, $$ } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import type LoadActivity from '../../lib/LoadActivity.js';
 import type Module from '../../lib/Module.js';
-import type {
-  QueryType,
-} from '../../lib/ModuleCache.js';
-import {
-  getCachedModule,
-  queryModuleCache,
-} from '../../lib/ModuleCache.js';
+import type { QueryType } from '../../lib/ModuleCache.js';
+import { getCachedModule, queryModuleCache } from '../../lib/ModuleCache.js';
 import { report } from '../../lib/bugsnag.js';
 import {
   PARAM_COLORIZE,
@@ -37,10 +32,7 @@ import { PANE } from '../Inspector.js';
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
-import type {
-  DependencyKey,
-  GraphState,
-} from './graph_util.js';
+import type { DependencyKey, GraphState } from './graph_util.js';
 import {
   composeDOT,
   gatherSelectionInfo,
@@ -79,8 +71,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   async function handleGraphClick(event: React.MouseEvent) {
     if (
-      !(event.target instanceof Element)
-      || event.target.closest('#graph-controls')
+      !(event.target instanceof Element) ||
+      event.target.closest('#graph-controls')
     ) {
       return;
     }
@@ -105,8 +97,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         const isIncluded = collapse.includes(module.name);
         if (isIncluded) {
           setCollapse(collapse.filter(n => n !== module.name));
-        }
-        else {
+        } else {
           setCollapse([...collapse, module.name]);
         }
       }
@@ -114,8 +105,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       return;
     }
 
-    if (node)
-      setZenMode('');
+    if (node) setZenMode('');
 
     setGraphSelection('exact', moduleKey);
     setPane(moduleKey ? PANE.MODULE : PANE.GRAPH);
@@ -124,14 +114,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   function applyZoom() {
     const graphEl = $('div#graph')!;
     const svg = getDiagramElement();
-    if (!svg)
-      return;
+    if (!svg) return;
 
     // Note: Not using svg.getBBox() here because (for some reason???) it's
     // smaller than the actual bounding box
     const vb = svg.getAttribute('viewBox')?.split(' ').map(Number);
-    if (!vb)
-      return;
+    if (!vb) return;
 
     const [, , w, h] = vb;
     graphEl.classList.toggle(
@@ -169,9 +157,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   useEffect(() => {
     const { signal, abort } = createAbortable();
 
-    getGraphForQuery(query, dependencyTypes, moduleFilter).then((newGraph) => {
-      if (signal.aborted)
-        return; // Check after async
+    getGraphForQuery(query, dependencyTypes, moduleFilter).then(newGraph => {
+      if (signal.aborted) return; // Check after async
 
       setRootScrolling(true);
       setGraph(newGraph);
@@ -189,11 +176,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     // Render SVG markup (async)
     (async function () {
-      if (!graphviz)
-        return;
+      if (!graphviz) return;
 
-      if (signal.aborted)
-        return; // Check after all async stuff
+      if (signal.aborted) return; // Check after all async stuff
 
       // Compose SVG markup
       let svgMarkup = '<svg />';
@@ -204,14 +189,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           svgMarkup = graph?.moduleInfos.size
             ? await graphviz.dot(dotDoc, 'svg')
             : '<svg />';
-        }
-        catch (err) {
+        } catch (err) {
           console.error(err);
           flash('Error while rendering graph');
         }
       }
-      if (signal.aborted)
-        return; // Check after all async stuff
+      if (signal.aborted) return; // Check after all async stuff
 
       // Parse markup
       const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
@@ -243,13 +226,11 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       for (const el of $$('#graph g.node')) {
         // Find module this node represents
         const key = $('text', el)!.textContent;
-        if (!key)
-          continue;
+        if (!key) continue;
 
         const m = getCachedModule(key);
 
-        if (!m)
-          continue;
+        if (!m) continue;
 
         if (m?.package.deprecated) {
           el.classList.add('warning');
@@ -257,8 +238,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
         if (m.name) {
           el.dataset.module = m.key;
-        }
-        else {
+        } else {
           report.warn(new Error(`Bad replace: ${key}`));
         }
 
@@ -295,8 +275,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Colorize nodes
   useEffect(() => {
     const svg = getDiagramElement();
-    if (!svg)
-      return;
+    if (!svg) return;
     colorizeGraph(svg, colorize ?? '');
   }, [colorize, domSignal]);
 
@@ -347,7 +326,7 @@ function useGraphviz() {
 
   useEffect(() => {
     Graphviz.load()
-      .catch((err) => {
+      .catch(err => {
         console.error('Graphviz failed to load', err);
         return undefined;
       })
@@ -364,8 +343,7 @@ export function updateSelection(
   queryType: QueryType,
   queryValue: string,
 ) {
-  if (!graph)
-    return;
+  if (!graph) return;
 
   const modules = queryModuleCache(queryType, queryValue);
 
@@ -450,23 +428,21 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       // Colorize it (async)
       colorizer
         .colorForModule(m)
-        .catch((err) => {
+        .catch(err => {
           console.warn(`Error colorizing ${m.name}: ${err.message}`);
           return null;
         })
-        .then((color) => {
+        .then(color => {
           elPath.style.fill = color ?? '';
         });
     }
-  }
-  else {
+  } else {
     // Bundle up modules
     const modules: Module[] = [];
     for (const el of moduleEls) {
       const moduleKey = el.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      if (m)
-        modules.push(m);
+      if (m) modules.push(m);
     }
 
     // Get colors for all modules

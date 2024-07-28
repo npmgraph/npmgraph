@@ -12,14 +12,10 @@ export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
       <p>
-        {'\xA9'}
-        {' '}
-        npmgraph Contributors &mdash; v
-        {VERSION}
+        {'\xA9'} npmgraph Contributors &mdash; v{VERSION}
       </p>
       <p style={{ lineHeight: '1.5rem' }}>
-        Questions or comments? Visit the
-        {' '}
+        Questions or comments? Visit the{' '}
         <ExternalLink
           href="https://github.com/npmgraph/npmgraph"
           icon={GithubIcon}

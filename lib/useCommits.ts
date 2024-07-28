@@ -23,14 +23,10 @@ export async function fetchCommits() {
       }
       message = message.replace(/\n[\s\S]*/, '').trim();
 
-      if (ccType.startsWith('break'))
-        ccType = 'breaking';
-      else if (ccType.startsWith('feat'))
-        ccType = 'feat';
-      else if (ccType.startsWith('fix'))
-        ccType = 'fix';
-      else if (ccType.startsWith('doc'))
-        ccType = 'docs';
+      if (ccType.startsWith('break')) ccType = 'breaking';
+      else if (ccType.startsWith('feat')) ccType = 'feat';
+      else if (ccType.startsWith('fix')) ccType = 'fix';
+      else if (ccType.startsWith('doc')) ccType = 'docs';
       else ccType = '';
 
       commit.ccType = ccType;
@@ -41,8 +37,7 @@ export async function fetchCommits() {
     commits = commits.filter(commit => Boolean(commit.ccType));
 
     setGlobalState('commits', commits);
-  }
-  catch {
+  } catch {
     // This is non-essential so don't cmoplain too loudly
     console.warn('Request for project commits failed');
   }

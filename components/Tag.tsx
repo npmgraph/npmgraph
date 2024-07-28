@@ -12,15 +12,14 @@ export function Tag({
   gravatar,
   className,
 }: {
-  type: QueryType
-  value: string
-  count?: number
-  gravatar?: string
+  type: QueryType;
+  value: string;
+  count?: number;
+  gravatar?: string;
 } & HTMLProps<HTMLDivElement>) {
   const [, , setGraphSelection] = useGraphSelection();
   let title = value;
-  if (count > 1)
-    title += ` (${count})`;
+  if (count > 1) title += ` (${count})`;
 
   let img = null;
   if (gravatar) {

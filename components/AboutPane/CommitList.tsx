@@ -15,8 +15,7 @@ export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
   // Reset new commit
   useEffect(() => {
     // Only reset lastVisit time if there are new commits
-    if (newCount > 0)
-      return reset;
+    if (newCount > 0) return reset;
   }, [reset]);
 
   const commitEls = commits.map((commit, i) => {
@@ -30,16 +29,12 @@ export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
         <div className="commit-top">
           {commit.isNew ? <div className="new-dot" /> : null}
           <span className="message">{ccMessage}</span>
-          {ccType
-            ? (
-                <span className={cn('cc-pill', ccClasses)}>{ccType}</span>
-              )
-            : null}
+          {ccType ? (
+            <span className={cn('cc-pill', ccClasses)}>{ccType}</span>
+          ) : null}
         </div>
         <div>
-          &mdash;
-          {' '}
-          <span className="when">{ago(date)}</span>
+          &mdash; <span className="when">{ago(date)}</span>
           <span className="info">
             {' by '}
             <span className="author">{commit.author.login}</span>

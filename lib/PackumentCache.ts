@@ -1,8 +1,6 @@
 import type { Packument } from '@npm/types';
 import { REGISTRY_BASE_URL } from './ModuleCache.js';
-import type {
-  PromiseWithResolversType,
-} from './PromiseWithResolvers.js';
+import type { PromiseWithResolversType } from './PromiseWithResolvers.js';
 import PromiseWithResolvers from './PromiseWithResolvers.js';
 import fetchJSON from './fetchJSON.js';
 
@@ -11,7 +9,7 @@ const packumentCache = new Map<string, PackumentCacheEntry>();
 export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
 
 type PackumentCacheEntry = PromiseWithResolversType<Packument | undefined> & {
-  packument?: Packument // Set once packument is loaded
+  packument?: Packument; // Set once packument is loaded
 };
 
 export async function getNPMPackument(
@@ -36,7 +34,7 @@ export async function getNPMPackument(
       // requests.
       headers: { Accept: 'application/json' },
     })
-      .catch((err) => {
+      .catch(err => {
         console.warn(
           `Failed to fetch packument for ${moduleName}`,
           err.message,

@@ -8,8 +8,7 @@ import styles from './licensesAll.module.scss';
 export function licensesMissing({
   unlicensedModules,
 }: LicenseAnalysisState): RenderedAnalysis {
-  if (!unlicensedModules.length)
-    return;
+  if (!unlicensedModules.length) return;
 
   const summary = simplur`Unlicensed modules (${unlicensedModules.length})`;
 

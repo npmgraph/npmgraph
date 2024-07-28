@@ -13,8 +13,8 @@ export function QueryLink({
   children,
   ...props
 }: HTMLProps<HTMLAnchorElement> & {
-  reset?: boolean
-  query: string | string[]
+  reset?: boolean;
+  query: string | string[];
 }) {
   const [, setPane] = useGlobalState('pane');
 

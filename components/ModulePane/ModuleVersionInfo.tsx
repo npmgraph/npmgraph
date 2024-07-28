@@ -47,45 +47,34 @@ export function ModuleVersionInfo({
     className = 'dist-tag';
     content = (
       <>
-        (
-        <code>{distTag}</code>
-        )
+        (<code>{distTag}</code>)
       </>
     );
-  }
-  else if (majorDiff !== 0 || minorDiff !== 0 || patchDiff !== 0) {
+  } else if (majorDiff !== 0 || minorDiff !== 0 || patchDiff !== 0) {
     let message;
     if (majorDiff !== 0) {
       className = majorDiff > 0 ? 'major-updates' : '';
-      message
-        = majorDiff > 0
+      message =
+        majorDiff > 0
           ? simplur`${majorDiff} major version[|s] behind`
           : simplur`${-majorDiff} major version[|s] ahead of`;
-    }
-    else if (minorDiff !== 0) {
+    } else if (minorDiff !== 0) {
       className = minorDiff > 0 ? 'minor-updates' : '';
-      message
-        = minorDiff > 0
+      message =
+        minorDiff > 0
           ? simplur`${minorDiff} minor version[|s] behind`
           : simplur`${-minorDiff} minor version[|s] ahead of`;
-    }
-    else if (patchDiff !== 0) {
+    } else if (patchDiff !== 0) {
       className = patchDiff > 0 ? 'patch-updates' : '';
-      message
-        = patchDiff > 0
+      message =
+        patchDiff > 0
           ? simplur`${patchDiff} patch version[|s] behind`
           : simplur`${-patchDiff} patch version[|s] ahead of`;
     }
 
     content = (
       <>
-        {message}
-        {' '}
-        <code>latest</code>
-        {' '}
-        (
-        {latestVersion}
-        )
+        {message} <code>latest</code> ({latestVersion})
       </>
     );
   }

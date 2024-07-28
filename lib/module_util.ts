@@ -9,8 +9,7 @@ export function resolveModule(name: string, version?: string) {
   if (!version) {
     // Parse versioned-names (e.g. "less@1.2.3")
     [name, version] = parseModuleKey(name);
-  }
-  else {
+  } else {
     // Remove "git...#" repo URIs from version strings
     const gitless = version?.replace(/git.*#(.*)/, '');
     if (version && gitless !== version) {
@@ -29,8 +28,7 @@ export function getModuleKey(name: string, version: string) {
 
 export function parseModuleKey(moduleKey: string): string[] {
   const parts = moduleKey.match(/(.+)@(.*)/);
-  if (!parts)
-    return [moduleKey];
+  if (!parts) return [moduleKey];
 
   parts.shift(); // remove full match
   return parts; // [name, version]
@@ -47,8 +45,7 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
     const deps = pkg[depType as keyof PackumentVersion] as Dependencies;
     if (!deps) {
       continue;
-    }
-    else if (deps.constructor !== Object) {
+    } else if (deps.constructor !== Object) {
       console.warn(
         `Unexpected value for ${pkg.name}@${pkg.version}#${depType}`,
         typeof deps,

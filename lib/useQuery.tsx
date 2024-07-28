@@ -11,12 +11,11 @@ export function useQuery() {
     moduleKeys,
     function setQuery(moduleKeys: string[] = [], replace = false) {
       // Clean up keys
-      moduleKeys = moduleKeys.filter(Boolean).map((key) => {
+      moduleKeys = moduleKeys.filter(Boolean).map(key => {
         key = key.trim();
 
         // Don't lowercase URLs
-        if (/https?:\/\//i.test(key))
-          return key;
+        if (/https?:\/\//i.test(key)) return key;
 
         return key.toLowerCase();
       });

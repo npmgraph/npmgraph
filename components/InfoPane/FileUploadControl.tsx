@@ -37,8 +37,7 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     const dt = ev.dataTransfer;
     if (!dt.items)
       return alert('Sorry, file dropping is not supported by this browser');
-    if (dt.items.length != 1)
-      return alert('You must drop exactly one file');
+    if (dt.items.length != 1) return alert('You must drop exactly one file');
 
     const item = dt.items[0];
     if (item.type && item.type != 'application/json')
@@ -57,7 +56,7 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
   async function readFile(file: File) {
     const reader = new FileReader();
 
-    const content: string = await new Promise((resolve) => {
+    const content: string = await new Promise(resolve => {
       reader.onload = () => resolve(reader.result as string);
       reader.readAsText(file);
     });
@@ -66,8 +65,7 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     let pkg: PackageJSON;
     try {
       pkg = JSON.parse(content);
-    }
-    catch {
+    } catch {
       flash(`${file.name} is not a valid JSON file`);
       return;
     }
@@ -118,15 +116,8 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
         onDragLeave={onDragLeave}
         {...props}
       >
-        Alternatively,
-        {' '}
-        <button type="button">select</button>
-        {' '}
-        or drop a
-        {' '}
-        <code>package.json</code>
-        {' '}
-        file here
+        Alternatively, <button type="button">select</button> or drop a{' '}
+        <code>package.json</code> file here
       </label>
     </>
   );

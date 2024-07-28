@@ -23,14 +23,12 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
 
   try {
     valueAsURL = new URL(value.trim());
-  }
-  catch {
+  } catch {
     // ignore
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key !== 'Enter' && e.key !== 'Tab')
-      return;
+    if (e.key !== 'Enter' && e.key !== 'Tab') return;
 
     let moduleKeys = e.currentTarget.value
       .split(',')
@@ -61,40 +59,27 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
         autoFocus
         {...props}
       />
-      {isGithubUrl(valueAsURL)
-        ? (
-            <div className="tip">
-              Note: URLs that refer to private GitHub repos or gists should use the
-              URL shown when
-              {' '}
-              <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
-                viewing the "Raw" file
-              </ExternalLink>
-              .
-            </div>
-          )
-        : null}
-      {valueAsURL
-        ? (
-            <div className="tip">
-              Note:
-              {' '}
-              {valueAsURL.host}
-              {' '}
-              must allow CORS requests from the
-              {' '}
-              {location.host}
-              {' '}
-              domain for this to work
-            </div>
-          )
-        : null}
+      {isGithubUrl(valueAsURL) ? (
+        <div className="tip">
+          Note: URLs that refer to private GitHub repos or gists should use the
+          URL shown when{' '}
+          <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
+            viewing the "Raw" file
+          </ExternalLink>
+          .
+        </div>
+      ) : null}
+      {valueAsURL ? (
+        <div className="tip">
+          Note: {valueAsURL.host} must allow CORS requests from the{' '}
+          {location.host} domain for this to work
+        </div>
+      ) : null}
     </>
   );
 }
 
 function isGithubUrl(url?: URL) {
-  if (!url)
-    return false;
+  if (!url) return false;
   return /^github.com$|\.github.com$/.test(url?.host ?? '');
 }
