@@ -83,6 +83,7 @@
     "release": "standard-version",
     "start": "parcel serve index.html",
     "lint": "eslint .",
+    "fix": "eslint --fix . && npm run format:fix",
     "format:check": "prettier -c .",
     "format:fix": "prettier -w .",
     "types": "tsc --noEmit",

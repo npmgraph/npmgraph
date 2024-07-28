@@ -1,5 +1,5 @@
 import { PackageJSON, PackumentVersion } from '@npm/types';
-import React, { HTMLProps } from 'react';
+import React, { HTMLProps, useEffect } from 'react';
 import {
   cacheLocalPackage,
   sanitizePackageKeys,
@@ -51,20 +51,13 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     readFile(file);
   }
 
-  async function readFile(file: File) {
-    const reader = new FileReader();
-
-    const content: string = await new Promise(resolve => {
-      reader.onload = () => resolve(reader.result as string);
-      reader.readAsText(file);
-    });
-
+  function loadJson(json: string, filename = 'Pasted content'): void {
     // Parse module and insert into cache
     let pkg: PackageJSON;
     try {
-      pkg = JSON.parse(content);
+      pkg = JSON.parse(json);
     } catch (err) {
-      flash(`${file.name} is not a valid JSON file`);
+      flash(`${filename} is not a valid JSON file`);
       return;
     }
 
@@ -84,6 +77,32 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     patchLocation({ hash, search }, false);
   }
 
+  function onPaste(ev: ClipboardEvent) {
+    const items = ev.clipboardData?.items;
+    if (!items) return;
+
+    // Exclude pastes in input fields
+    if (document.activeElement?.tagName === 'INPUT') return;
+
+    for (const item of items) {
+      if (item.type === 'text/plain') {
+        item.getAsString(content => {
+          loadJson(content, 'Pasted content');
+        });
+      }
+    }
+  }
+
+  async function readFile(file: File) {
+    const content = await new Promise<string>(resolve => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsText(file);
+    });
+
+    loadJson(content, file.name);
+  }
+
   function onDragOver(ev: React.DragEvent<HTMLElement>) {
     const target = ev.currentTarget;
     target.classList.add('drag');
@@ -95,6 +114,14 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     currentTarget.classList.remove('drag');
     ev.preventDefault();
   }
+
+  useEffect(() => {
+    document.addEventListener('paste', onPaste);
+
+    return () => {
+      document.removeEventListener('paste', onPaste);
+    };
+  }, []);
 
   return (
     <>
