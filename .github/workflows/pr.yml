@@ -7,6 +7,5 @@ jobs:
   title:
     runs-on: ubuntu-latest
     steps:
-      - name: Does it follow the conventional commit format?
-        if: ${{ !startsWith(github.event.pull_request.title, 'fix:') && !startsWith(github.event.pull_request.title, 'feat:') && !startsWith(github.event.pull_request.title, 'chore:') }}
-        run: exit 1
+      - name: Does it follow the conventional commit format? ${{github.event.pull_request.title}}
+        run: exit ${{ (startsWith(github.event.pull_request.title, 'fix:') || startsWith(github.event.pull_request.title, 'feat:') || startsWith(github.event.pull_request.title, 'chore:')) && 0 || 1 }}
