@@ -43,10 +43,10 @@
 
   button {
     display: inline-block;
-    border: solid 1px var(--bg1);
-    background: var(--bg0);
+    border: 0;
+    background: var(--tabs-bg) var(--bg-gradient);
     padding: var(--padding);
-    color: var(--text);
+    color: var(--text-on-accent);
 
     svg {
       display: block;
@@ -60,6 +60,11 @@
 }
 #zoom-buttons {
   display: flex;
+  border-radius: var(--rad_sm);
+}
+
+#zoom-none {
+  border-inline: solid 1px white !important;
 }
 
 #zoom-fit-width,
@@ -76,12 +81,9 @@
   padding-right: calc(var(--padding) + 1px);
 }
 
-#download-svg {
-}
-
 #zoom-buttons,
 #download-svg {
-  box-shadow: 2px 2px 10px var(--bg0-shadow-color);
+  box-shadow: 2px 2px 6px var(--bg0-shadow-color);
 }
 
 svg#graph-diagram {
