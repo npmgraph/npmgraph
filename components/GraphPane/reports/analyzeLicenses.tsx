@@ -1,6 +1,6 @@
-import Module from '../../../lib/Module.js';
-import { LICENSES, OSIKeyword } from '../../../lib/licenses.js';
-import { GraphState } from '../../GraphDiagram/graph_util.js';
+import type Module from '../../../lib/Module.js';
+import { LICENSES, type OSIKeyword } from '../../../lib/licenses.js';
+import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
 export type LicenseAnalysisState = {
   modulesByLicense: Map<string, Module[]>;

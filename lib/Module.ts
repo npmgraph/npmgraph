@@ -1,4 +1,4 @@
-import { Packument, PackumentVersion } from '@npm/types';
+import type { Packument, PackumentVersion } from '@npm/types';
 import { isDefined } from './guards.js';
 import {
   getModuleKey,

@@ -6,7 +6,7 @@ import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useCollapse from '../../lib/useCollapse.js';
 import { ExternalLink } from '../ExternalLink.js';
-import { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
+import type { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
 import { Toggle } from '../Toggle.js';
 import ColorizeInput from './ColorizeInput.js';

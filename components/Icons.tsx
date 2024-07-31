@@ -1,4 +1,4 @@
-import React, { HTMLProps, SVGProps } from 'react';
+import React, { type HTMLProps, type SVGProps } from 'react';
 import { cn } from '../lib/dom.js';
 
 import './Icons.scss';

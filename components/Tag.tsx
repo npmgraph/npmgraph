@@ -1,6 +1,6 @@
 import md5 from 'md5';
-import React, { HTMLProps } from 'react';
-import { QueryType } from '../lib/ModuleCache.js';
+import React, { type HTMLProps } from 'react';
+import type { QueryType } from '../lib/ModuleCache.js';
 import { cn } from '../lib/dom.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 

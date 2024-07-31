@@ -18,10 +18,15 @@ export default antfu({
     'style/quotes': 'off',
     'style/semi': 'off',
     'style/type-generic-spacing': 'off',
-    'ts/consistent-type-imports': 'off',
     'ts/consistent-type-definitions': ['error', 'type'],
 
     // Prettier conflicts
     'style/jsx-one-expression-per-line': 'off',
+  },
+}, {
+  // https://github.com/antfu/eslint-config/issues/570
+  files: ['**/*.ts', '**/*.tsx'],
+  rules: {
+    'ts/consistent-type-imports': ['error', { fixStyle: 'inline-type-imports' }],
   },
 });

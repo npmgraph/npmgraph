@@ -2,10 +2,10 @@ import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
 import { useGlobalState } from '../../lib/GlobalStore.js';
-import LoadActivity from '../../lib/LoadActivity.js';
-import Module from '../../lib/Module.js';
+import type LoadActivity from '../../lib/LoadActivity.js';
+import type Module from '../../lib/Module.js';
 import {
-  QueryType,
+  type QueryType,
   getCachedModule,
   queryModuleCache,
 } from '../../lib/ModuleCache.js';
@@ -36,8 +36,8 @@ import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import {
-  DependencyKey,
-  GraphState,
+  type DependencyKey,
+  type GraphState,
   composeDOT,
   gatherSelectionInfo,
   getGraphForQuery,

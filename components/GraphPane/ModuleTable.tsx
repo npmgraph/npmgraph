@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { Selectable } from '../Selectable.js';
 
-import Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.js';
 import styles from './ModuleTable.module.scss';
 
 export type ModuleTableData = Map<string, Module[]>;

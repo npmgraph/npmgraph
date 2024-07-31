@@ -2,8 +2,8 @@ import { quantize } from 'd3-interpolate';
 import { scaleOrdinal } from 'd3-scale';
 import { interpolateSpectral } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
-import { PieArcDatum, arc, pie } from 'd3-shape';
-import React, { HTMLProps, useEffect, useRef } from 'react';
+import { type PieArcDatum, arc, pie } from 'd3-shape';
+import React, { type HTMLProps, useEffect, useRef } from 'react';
 
 type PieDatum = [string, number];
 
