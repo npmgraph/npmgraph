@@ -1,8 +1,6 @@
 #graph {
   position: relative;
-
   flex-grow: 1;
-  height: 100vh;
   overflow: auto;
   user-select: none;
   -webkit-user-select: none;
@@ -36,10 +34,13 @@
 #graph-controls {
   display: flex;
   position: fixed;
-  bottom: 1em;
-  left: 1em;
   gap: 1em;
+  inset: auto auto 1em 1em;
   --padding: 6px;
+
+  @media (max-aspect-ratio: 2/3) {
+    inset: 1em 1em auto auto;
+  }
 
   button {
     display: inline-block;
