@@ -18,8 +18,8 @@ export function ModuleTreeMap({
 
   // Render contents as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {
-    const { clientWidth: w, clientHeight: h } = $('#treemap')!,
-      m = 1;
+    const { clientWidth: w, clientHeight: h } = $('#treemap')!;
+    const m = 1;
 
     // Note: dependencySizes is *sometimes* undefined.  E.g.
     // https://bundlephobia.com/api/size?package=string_decoder%401.1.1

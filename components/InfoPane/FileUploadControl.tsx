@@ -52,10 +52,11 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
       return alert('File must have a ".json" extension');
 
     const file = item.getAsFile();
-    if (!file)
+    if (!file) {
       return alert(
         'Please drop a file, not... well... whatever else it was you dropped',
       );
+    }
 
     readFile(file);
   }
@@ -65,7 +66,7 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     let pkg: PackageJSON;
     try {
       pkg = JSON.parse(json);
-    } catch (err) {
+    } catch {
       flash(`${filename ?? 'Pasted content'} is not a valid JSON file`);
       return;
     }

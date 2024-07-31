@@ -23,8 +23,8 @@ export function PieGraph({
 
     // Align SVG view box to actual element dimensions
     const { width, height } = svgNode.getBoundingClientRect();
-    const w2 = width / 2,
-      h2 = height / 2;
+    const w2 = width / 2;
+    const h2 = height / 2;
     const radius = Math.min(w2, h2);
     svg.attr('viewBox', `${-w2} ${-h2} ${width} ${height}`);
 

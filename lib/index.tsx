@@ -22,7 +22,7 @@ function detectFeatures() {
   // API checks
   const features = {
     'AbortSignal.timeout': window.AbortSignal?.timeout,
-    // @ts-ignore remove this ignore once VSCode knows about groupBy
+    // @ts-expect-error remove this ignore once VSCode knows about groupBy
     'Map.groupBy': window.Map?.groupBy,
     fetch: window.fetch,
     Promise: window.Promise,
@@ -42,7 +42,7 @@ function detectFeatures() {
   try {
     window.localStorage.setItem('test', 'test');
     window.localStorage.removeItem('test');
-  } catch (err) {
+  } catch {
     unsupported.push(
       <>
         <code>localStorage</code> is not supported
@@ -87,8 +87,9 @@ window.onload = function () {
   );
 
   // A little component for managing the title
-  const titleEl = $('title')!;
-  createRoot(titleEl).render(<DiagramTitle defaultTitle={titleEl.innerText} />);
+  createRoot($('title')!).render(
+    <DiagramTitle defaultTitle={document.title} />,
+  );
 
   // Lazily fetch information about commits to the npmgraph repo
   setTimeout(fetchCommits, 1000);

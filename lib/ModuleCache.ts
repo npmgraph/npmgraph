@@ -94,7 +94,7 @@ async function fetchModuleFromURL(urlString: string) {
 // Note: This method should not throw!  Errors should be returned as part of a
 // stub module
 export async function getModule(moduleKey: string): Promise<Module> {
-  if (!moduleKey) throw Error('Undefined module name');
+  if (!moduleKey) throw new Error('Undefined module name');
 
   let [name, version] = parseModuleKey(moduleKey);
 
@@ -269,7 +269,7 @@ export function syncPackagesHash() {
   let packages: PackageJSON[];
   try {
     packages = JSON.parse(packagesJson);
-  } catch (err) {
+  } catch {
     flash('"packages" hash param is not valid JSON');
     return;
   }

@@ -21,7 +21,7 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
-import { $$, $ } from 'select-dom';
+import { $, $$ } from 'select-dom';
 import { flash } from '../../lib/flash.js';
 import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
@@ -77,8 +77,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (
       !(event.target instanceof Element) ||
       event.target.closest('#graph-controls')
-    )
+    ) {
       return;
+    }
 
     if (event.metaKey) {
       // Allow opening the link in a new tab
@@ -242,7 +243,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (m.name) {
           el.dataset.module = m.key;
         } else {
-          report.warn(Error(`Bad replace: ${key}`));
+          report.warn(new Error(`Bad replace: ${key}`));
         }
 
         if (!moduleFilter(m)) {
@@ -459,8 +460,6 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       elPath.style.fill = (m && colors.get(m)) ?? '';
     }
   }
-
-  return;
 }
 
 export function getDiagramElement() {

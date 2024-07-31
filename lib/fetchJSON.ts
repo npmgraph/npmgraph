@@ -26,6 +26,7 @@ export default function fetchJSON<T>(
     init.signal = AbortSignal?.timeout(init.timeout);
   }
 
+  // eslint-disable-next-line unicorn/error-message
   const traceError = new Error();
 
   const finish = init.silent

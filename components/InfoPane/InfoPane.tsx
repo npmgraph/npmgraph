@@ -1,7 +1,7 @@
 import React, { HTMLProps } from 'react';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
-import { default as FileUploadControl } from './FileUploadControl.js';
+import FileUploadControl from './FileUploadControl.js';
 import QueryInput from './QueryInput.js';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {

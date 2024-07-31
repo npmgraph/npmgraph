@@ -26,7 +26,7 @@ export function analyzePeerDependencies({
     for (const [name, versionRange] of Object.entries(peerDependencies)) {
       const pdi: PeerDependencyInfo = {
         name,
-        versionRange: versionRange,
+        versionRange,
         source: module,
         optional: peerDependenciesMeta?.[name]?.optional,
         destination: undefined,
