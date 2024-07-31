@@ -1,7 +1,8 @@
 import React from 'react';
 import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.js';
-import Module, { Maintainer } from '../../lib/Module.js';
+import type { Maintainer } from '../../lib/Module.js';
+import type Module from '../../lib/Module.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import human from '../../lib/human.js';
 import useHashParam from '../../lib/useHashParam.js';
@@ -30,7 +31,7 @@ export default function ModulePane({
   const nSelected = selectedModules.size;
   const [graph] = useGlobalState('graph');
 
-  if (nSelected == 0) {
+  if (nSelected === 0) {
     return (
       <Pane
         style={{

@@ -1,7 +1,7 @@
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
-import { RenderedAnalysis } from '../Analyzer.js';
-import {
+import type { RenderedAnalysis } from '../Analyzer.js';
+import type {
   PeerDependenciesState,
   PeerDependencyInfo,
 } from '../analyzePeerDependencies.js';
