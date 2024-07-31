@@ -31,7 +31,7 @@ export default function ModulePane({
   const nSelected = selectedModules.size;
   const [graph] = useGlobalState('graph');
 
-  if (nSelected == 0) {
+  if (nSelected === 0) {
     return (
       <Pane
         style={{

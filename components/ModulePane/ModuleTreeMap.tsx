@@ -37,7 +37,7 @@ export function ModuleTreeMap({
 
     const root = stratify<BundlePhobiaData['dependencySizes'][number]>()
       .id(d => d.name)
-      .parentId(node => (node.name == '__root' ? '' : '__root'))(nodes)
+      .parentId(node => (node.name === '__root' ? '' : '__root'))(nodes)
       .sum(d => (d.approximateSize * size) / sum)
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
