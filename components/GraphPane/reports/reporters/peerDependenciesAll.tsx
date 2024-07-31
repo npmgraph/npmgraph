@@ -12,7 +12,7 @@ export function peerDependenciesAll({
 }: PeerDependenciesState): RenderedAnalysis {
   if (!peerDependencyInfos.length) return;
 
-  // @ts-ignore Unignore once TS types know about Map.groupBy()
+  // @ts-expect-error Unignore once TS types know about Map.groupBy()
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
     peerDependencyInfos,
     (pdi: PeerDependencyInfo) => pdi.source.key,

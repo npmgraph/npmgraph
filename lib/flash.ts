@@ -10,7 +10,7 @@ export function flash(wat: unknown, bg = '#f80') {
 
   if (wat instanceof Error) {
     el.classList.add('error');
-    el.innerText = wat.message;
+    el.textContent = wat.message;
   } else if (wat instanceof Document) {
     const body = $('body', wat);
     if (body) {
@@ -19,9 +19,9 @@ export function flash(wat: unknown, bg = '#f80') {
   } else if (wat instanceof Element || wat instanceof DocumentFragment) {
     el.append(wat);
   } else if (typeof wat == 'string') {
-    el.innerText = wat;
+    el.textContent = wat;
   } else {
-    el.innerText = JSON.stringify(wat, null, 2);
+    el.textContent = JSON.stringify(wat, null, 2);
   }
 
   document.body.appendChild(el);

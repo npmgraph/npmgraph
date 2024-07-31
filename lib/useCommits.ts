@@ -21,7 +21,7 @@ export async function fetchCommits() {
       if (ccType) {
         message = message.slice(ccType.length + 1);
       }
-      message = message.replace(/\n[\S\s]*/m, '').trim();
+      message = message.replace(/\n[\s\S]*/, '').trim();
 
       if (ccType.startsWith('break')) ccType = 'breaking';
       else if (ccType.startsWith('feat')) ccType = 'feat';
@@ -37,7 +37,7 @@ export async function fetchCommits() {
     commits = commits.filter(commit => Boolean(commit.ccType));
 
     setGlobalState('commits', commits);
-  } catch (err) {
+  } catch {
     // This is non-essential so don't cmoplain too loudly
     console.warn('Request for project commits failed');
   }
@@ -55,7 +55,7 @@ export default function useCommits() {
   let newCount = 0;
   for (const commit of commits) {
     const date = Date.parse(commit.commit.author.date);
-    commit.isNew = !isNaN(date) && date > lastVisit;
+    commit.isNew = !Number.isNaN(date) && date > lastVisit;
     newCount += commit.isNew ? 1 : 0;
   }
 

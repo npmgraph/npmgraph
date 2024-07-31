@@ -28,7 +28,7 @@ export function analyzeMaintainers({
 
   // Find modules that have a single maintainer, group by maintainer
   //
-  // @ts-ignore TODO: unignore once Map.groupBy lands in TS types
+  // @ts-expect-error TODO: unignore once Map.groupBy lands in TS types
   const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
     modules,
     (module: Module) => {

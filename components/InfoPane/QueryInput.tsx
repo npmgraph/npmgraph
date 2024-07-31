@@ -18,11 +18,11 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   const [value, setValue] = useState(
     initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue,
   );
-  let valueAsURL: URL | undefined = undefined;
+  let valueAsURL: URL | undefined;
 
   try {
     valueAsURL = new URL(value.trim());
-  } catch (err) {
+  } catch {
     // ignore
   }
 

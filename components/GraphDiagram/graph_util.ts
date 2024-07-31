@@ -107,7 +107,7 @@ export async function getGraphForQuery(
     module: Module[] | Module,
     level = 0,
   ): Promise<GraphModuleInfo | void> {
-    if (!module) return Promise.reject(Error('Undefined module'));
+    if (!module) return Promise.reject(new Error('Undefined module'));
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
@@ -173,7 +173,7 @@ function dotEscape(str: string) {
  * E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
  */
 function vizStyle(obj: Record<string, string | number | boolean | undefined>) {
-  const pairs = Object.entries(obj).map(function ([key, value]) {
+  const pairs = Object.entries(obj).map(([key, value]) => {
     switch (typeof value) {
       case 'number':
         return `${key}=${value}`;

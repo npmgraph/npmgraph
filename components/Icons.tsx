@@ -27,7 +27,7 @@ export default function Icon({
 }: IconProps & SVGProps<SVGSVGElement>) {
   return (
     <svg
-      viewBox={`0 0 16 16`}
+      viewBox="0 0 16 16"
       width={width}
       height={height}
       className={cn('icon', { [`icon-${name}`]: name }, className)}

@@ -31,12 +31,14 @@ class NPMSColorizer implements BulkColorizer {
     return (
       <div style={{ display: 'flex' }}>
         <span>0%&nbsp;</span>
-        {new Array(20).fill(0).map((_, i) => (
-          <span
-            key={i}
-            style={{ flexGrow: '1', backgroundColor: hslFor(i / 19) }}
-          />
-        ))}
+        {Array.from({ length: 20 })
+          .fill(0)
+          .map((_, i) => (
+            <span
+              key={i}
+              style={{ flexGrow: '1', backgroundColor: hslFor(i / 19) }}
+            />
+          ))}
         <span>&nbsp;100%</span>
       </div>
     );

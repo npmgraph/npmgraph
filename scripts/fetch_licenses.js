@@ -79,7 +79,6 @@ await fs.writeFile(
   `${content.slice(0, idx + AUTOGENERATE_TOKEN.length)}
 // See ${path.relative(path.dirname(LICENSE_FILE), __filename)}
 
-// eslint-disable-next-line prettier/prettier
 export const LICENSES: Record<string, License> = ${JSON.stringify(
     Object.fromEntries(licenses.entries()),
   )};
