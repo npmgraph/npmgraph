@@ -36,26 +36,52 @@
 #graph-controls {
   display: flex;
   position: fixed;
+  gap: 1em;
   bottom: 1em;
   left: 1em;
-  cursor: default;
+  --padding: 6px;
 
   button {
     display: inline-block;
-    margin: 0;
-    outline: 0;
     border: solid 1px var(--bg1);
-    border-radius: var(--rad_sm);
     background: var(--bg0);
+    padding: var(--padding);
     color: var(--text);
-    font-size: 1.8em;
-    line-height: 1em;
+
+    svg {
+      display: block;
+    }
 
     &.selected {
       background-color: var(--accent);
       color: var(--text-on-accent);
     }
   }
+}
+#zoom-buttons {
+  display: flex;
+}
+
+#zoom-fit-width,
+#download-svg {
+  border-top-left-radius: var(--rad_sm);
+  border-bottom-left-radius: var(--rad_sm);
+  padding-left: calc(var(--padding) + 1px);
+}
+
+#zoom-fit-height,
+#download-svg {
+  border-top-right-radius: var(--rad_sm);
+  border-bottom-right-radius: var(--rad_sm);
+  padding-right: calc(var(--padding) + 1px);
+}
+
+#download-svg {
+}
+
+#zoom-buttons,
+#download-svg {
+  box-shadow: 2px 2px 10px var(--bg0-shadow-color);
 }
 
 svg#graph-diagram {

@@ -103,10 +103,12 @@ html {
     Segoe UI Emoji;
 }
 
-html,
-body {
+body,
+#app {
+  display: flex;
   margin: 0;
-  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
 p {
@@ -131,13 +133,4 @@ kbd {
   color: color-mix(in srgb, currentcolor 30%, transparent);
   line-height: 1;
   white-space: nowrap;
-}
-
-#app {
-  display: flex;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
 }
