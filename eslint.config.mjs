@@ -7,7 +7,6 @@ export default antfu(
       'no-alert': 'off',
       'no-console': 'off',
       'antfu/if-newline': 'off',
-      'import/order': 'off',
       'style/indent-binary-ops': 'off',
       'ts/consistent-type-definitions': ['error', 'type'],
 

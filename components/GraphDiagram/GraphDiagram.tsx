@@ -1,6 +1,7 @@
 import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
+import { $, $$ } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import type LoadActivity from '../../lib/LoadActivity.js';
 import type Module from '../../lib/Module.js';
@@ -21,7 +22,6 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
-import { $, $$ } from 'select-dom';
 import { flash } from '../../lib/flash.js';
 import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';

@@ -10,7 +10,10 @@
  * can generate state that is used by more than one renderer
  */
 
-import type { GraphModuleInfo, GraphState } from '../../GraphDiagram/graph_util.js';
+import type {
+  GraphModuleInfo,
+  GraphState,
+} from '../../GraphDiagram/graph_util.js';
 
 export type Analyzer2 = (graph: GraphState) => unknown;
 

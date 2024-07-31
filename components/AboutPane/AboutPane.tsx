@@ -3,9 +3,9 @@ import { ExternalLink } from '../ExternalLink.js';
 import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import './AboutPane.scss';
+import { version as VERSION } from '../../package.json';
 import { CommitList } from './CommitList.js';
 import GithubSponsorButton from './GithubSponsorButton.js';
-import { version as VERSION } from '../../package.json';
 
 export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
   return (
