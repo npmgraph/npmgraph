@@ -17,14 +17,14 @@ export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
     if (newCount > 0) return reset;
   }, [reset]);
 
-  const commitEls = commits.map((commit, i) => {
+  const commitEls = commits.map(commit => {
     const date = new Date(commit.commit.author.date);
     const { ccType, ccMessage } = commit;
 
     const ccClasses = cn({ cc: Boolean(ccType), [`cc-${ccType}`]: ccType });
 
     return (
-      <div className={cn('commit-item', ccClasses)} key={i}>
+      <div className={cn('commit-item', ccClasses)} key={commit.node_id}>
         <div className="commit-top">
           {commit.isNew ? <div className="new-dot" /> : null}
           <span className="message">{ccMessage}</span>

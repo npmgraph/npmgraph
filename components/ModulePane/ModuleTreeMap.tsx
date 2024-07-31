@@ -54,7 +54,7 @@ export function ModuleTreeMap({
       const frac = ((rd.x1 - rd.x0) * (rd.y1 - rd.y0)) / (w * h);
       return (
         <div
-          key={i}
+          key={d.data.name}
           title={`${d.data.name} (${size})`}
           className={styles.root}
           style={{
