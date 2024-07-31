@@ -25,7 +25,7 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
     fetchJSON<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
       .then(data => setBundleInfo(data))
       .catch(err => setBundleInfo(err));
-  }, [pkg]);
+  }, [pkg, module.isLocal, bpApiUrl]);
 
   return (
     <>

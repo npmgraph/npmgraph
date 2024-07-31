@@ -15,7 +15,7 @@ export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
   useEffect(() => {
     // Only reset lastVisit time if there are new commits
     if (newCount > 0) return reset;
-  }, [reset]);
+  }, [reset, newCount]);
 
   const commitEls = commits.map((commit, i) => {
     const date = new Date(commit.commit.author.date);

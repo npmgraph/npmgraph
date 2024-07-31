@@ -20,6 +20,7 @@ export enum PANE {
   INFO = 'info',
   ABOUT = 'about',
 }
+
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = useGlobalState('pane');
   const [queryType, queryValue] = useGraphSelection();

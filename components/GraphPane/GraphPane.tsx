@@ -79,7 +79,9 @@ export default function GraphPane({
         {collapse.length ? (
           <span>
             {simplur`${collapse.length} module[|s] collapsed `}
-            <button onClick={() => setCollapse([])}>Expand All</button>
+            <button onClick={() => setCollapse([])} type="button">
+              Expand All
+            </button>
           </span>
         ) : (
           <span>(Shift-click modules in graph to expand/collapse)</span>
