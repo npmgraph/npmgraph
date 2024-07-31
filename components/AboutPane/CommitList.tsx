@@ -46,7 +46,8 @@ export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
   return (
     <div id="commit-list">
       <div id="commit-list-header">
-        Recent changes{newCount > 0 ? simplur` (${newCount} new)` : null}
+        Recent changes
+        {newCount > 0 ? simplur` (${newCount} new)` : null}
       </div>
 
       <div className={cn('commit-list', className)} {...props}>

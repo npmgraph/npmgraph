@@ -11,7 +11,6 @@ export default antfu({
     'style/brace-style': 'off',
     'style/indent-binary-ops': 'off',
     'style/indent': 'off',
-    'style/jsx-one-expression-per-line': 'off',
     'style/member-delimiter-style': 'off',
     'style/multiline-ternary': 'off',
     'style/operator-linebreak': 'off',
@@ -21,5 +20,8 @@ export default antfu({
     'style/type-generic-spacing': 'off',
     'ts/consistent-type-imports': 'off',
     'ts/consistent-type-definitions': ['error', 'type'],
+
+    // Prettier conflicts
+    'style/jsx-one-expression-per-line': 'off',
   },
 });
