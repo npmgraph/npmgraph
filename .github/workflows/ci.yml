@@ -24,3 +24,13 @@ jobs:
       - uses: actions/checkout@v4
       - run: npm ci
       - run: npm run types
+
+  # Adapted from https://github.com/fregante/ghatemplates/blob/main/is-dist-up-to-date/is-dist-up-to-date.yml
+  licenses:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npm run fetch-licenses
+      - name: If this fails, you should run `npm run fetch-licenses` locally and commit the changes
+        run: git diff --exit-code
