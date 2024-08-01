@@ -1,4 +1,4 @@
-import React, { HTMLProps, useEffect } from 'react';
+import React, { type HTMLProps, useEffect } from 'react';
 import simplur from 'simplur';
 import { ago } from '../../lib/ago.js';
 import { cn } from '../../lib/dom.js';
@@ -46,7 +46,8 @@ export function CommitList({ className, ...props }: HTMLProps<HTMLDivElement>) {
   return (
     <div id="commit-list">
       <div id="commit-list-header">
-        Recent changes{newCount > 0 ? simplur` (${newCount} new)` : null}
+        Recent changes
+        {newCount > 0 ? simplur` (${newCount} new)` : null}
       </div>
 
       <div className={cn('commit-list', className)} {...props}>
