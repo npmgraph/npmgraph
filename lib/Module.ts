@@ -1,4 +1,4 @@
-import { Packument, PackumentVersion } from '@npm/types';
+import type { Packument, PackumentVersion } from '@npm/types';
 import { isDefined } from './guards.js';
 import {
   getModuleKey,
@@ -149,7 +149,5 @@ function parseLicense(
 }
 
 function parseGithubPath(s: string) {
-  const match = /github.com\/([^/]+\/[^/?#]+)?/.test(s) && RegExp.$1;
-  if (!match) return undefined;
-  return match?.replace?.(/\.git$/, '');
+  return s.match(/github.com\/[^/]+\/[^/?#]+/)?.[0]?.replace(/\.git$/, '');
 }

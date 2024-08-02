@@ -1,6 +1,6 @@
 import { satisfies } from 'semver';
-import Module from '../../../lib/Module.js';
-import { GraphState } from '../../GraphDiagram/graph_util.js';
+import type Module from '../../../lib/Module.js';
+import type { GraphState } from '../../GraphDiagram/graph_util.js';
 
 export type PeerDependencyInfo = {
   name: string;
@@ -26,7 +26,7 @@ export function analyzePeerDependencies({
     for (const [name, versionRange] of Object.entries(peerDependencies)) {
       const pdi: PeerDependencyInfo = {
         name,
-        versionRange: versionRange,
+        versionRange,
         source: module,
         optional: peerDependenciesMeta?.[name]?.optional,
         destination: undefined,

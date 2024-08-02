@@ -14,7 +14,7 @@ export function GraphDiagramZoomButtons() {
   return (
     <>
       <button
-        className={cn({ selected: zoom == ZOOM_FIT_WIDTH })}
+        className={cn({ selected: zoom === ZOOM_FIT_WIDTH })}
         onClick={() => setZoom(ZOOM_FIT_WIDTH)}
         title="zoom (fit width)"
         style={{ borderRadius: '3px 0 0 3px' }}
@@ -22,7 +22,7 @@ export function GraphDiagramZoomButtons() {
         <ZoomHorizontalIcon />
       </button>
       <button
-        className={cn({ selected: zoom == ZOOM_NONE })}
+        className={cn({ selected: zoom === ZOOM_NONE })}
         onClick={() => setZoom(ZOOM_NONE)}
         title="zoom (1:1)"
         style={{
@@ -36,7 +36,7 @@ export function GraphDiagramZoomButtons() {
         1:1
       </button>
       <button
-        className={cn({ selected: zoom == ZOOM_FIT_HEIGHT })}
+        className={cn({ selected: zoom === ZOOM_FIT_HEIGHT })}
         onClick={() => setZoom(ZOOM_FIT_HEIGHT)}
         title="zoom (fit height)"
         style={{ borderRadius: '0 3px 3px 0' }}

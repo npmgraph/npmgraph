@@ -1,13 +1,13 @@
 import React from 'react';
 
 import { cn } from '../../../lib/dom.js';
-import { RenderedAnalysis } from './Analyzer.js';
+import type { RenderedAnalysis } from './Analyzer.js';
 import styles from './ReportItem.module.scss';
 
 const SYMBOLS = {
   info: null,
-  warn: '\u{26a0}',
-  error: '\u{1f6ab}',
+  warn: '\u{26A0}',
+  error: '\u{1F6AB}',
 };
 
 export function ReportItem<T>({

@@ -1,4 +1,4 @@
-import React, { HTMLProps, useState } from 'react';
+import React, { type HTMLProps, useState } from 'react';
 import { UNNAMED_PACKAGE } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import { searchSet } from '../../lib/url_util.js';
@@ -14,11 +14,11 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   const [value, setValue] = useState(
     initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue,
   );
-  let valueAsURL: URL | undefined = undefined;
+  let valueAsURL: URL | undefined;
 
   try {
     valueAsURL = new URL(value.trim());
-  } catch (err) {
+  } catch {
     // ignore
   }
 

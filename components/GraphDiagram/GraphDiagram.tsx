@@ -1,11 +1,12 @@
 import { Graphviz } from '@hpcc-js/wasm/graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
+import { $, $$ } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.js';
-import LoadActivity from '../../lib/LoadActivity.js';
-import Module from '../../lib/Module.js';
+import type LoadActivity from '../../lib/LoadActivity.js';
+import type Module from '../../lib/Module.js';
 import {
-  QueryType,
+  type QueryType,
   getCachedModule,
   queryModuleCache,
 } from '../../lib/ModuleCache.js';
@@ -21,7 +22,6 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
-import { $$, $ } from 'select-dom';
 import { flash } from '../../lib/flash.js';
 import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
@@ -36,8 +36,8 @@ import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
 import {
-  DependencyKey,
-  GraphState,
+  type DependencyKey,
+  type GraphState,
   composeDOT,
   gatherSelectionInfo,
   getGraphForQuery,
@@ -77,8 +77,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (
       !(event.target instanceof Element) ||
       event.target.closest('#graph-controls')
-    )
+    ) {
       return;
+    }
 
     if (event.metaKey) {
       // Allow opening the link in a new tab
@@ -244,7 +245,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (m.name) {
           el.dataset.module = m.key;
         } else {
-          report.warn(Error(`Bad replace: ${key}`));
+          report.warn(new Error(`Bad replace: ${key}`));
         }
 
         if (!moduleFilter(m)) {
@@ -461,8 +462,6 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       elPath.style.fill = (m && colors.get(m)) ?? '';
     }
   }
-
-  return;
 }
 
 export function getDiagramElement() {

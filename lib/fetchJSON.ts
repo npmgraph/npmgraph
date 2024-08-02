@@ -1,5 +1,5 @@
 import HttpError from './HttpError.js';
-import LoadActivity from './LoadActivity.js';
+import type LoadActivity from './LoadActivity.js';
 
 const requestCache = new Map<string, Promise<unknown>>();
 
@@ -26,6 +26,7 @@ export default function fetchJSON<T>(
     init.signal = AbortSignal?.timeout(init.timeout);
   }
 
+  // eslint-disable-next-line unicorn/error-message
   const traceError = new Error();
 
   const finish = init.silent

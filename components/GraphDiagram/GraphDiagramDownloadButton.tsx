@@ -1,11 +1,9 @@
 import React from 'react';
-import { report } from '../../lib/bugsnag.js';
-import { $ } from 'select-dom';
-import { DownloadIcon } from '../Icons.js';
-import { getDiagramElement } from './GraphDiagram.js';
-
 import indexStyles from 'bundle-text:../../index.scss';
 import diagramStyles from 'bundle-text:./GraphDiagram.scss';
+import { report } from '../../lib/bugsnag.js';
+import { DownloadIcon } from '../Icons.js';
+import { getDiagramElement } from './GraphDiagram.js';
 
 type DownloadExtension = 'svg' | 'png';
 
@@ -41,13 +39,13 @@ function downloadPng() {
   const vb = svg.getAttribute('viewBox')?.split(' ');
 
   if (!vb) {
-    report.error(Error('No viewBox'));
+    report.error(new Error('No viewBox'));
     return;
   }
 
   const canvas = document.createElement('canvas');
-  canvas.width = parseInt(vb[2]);
-  canvas.height = parseInt(vb[3]);
+  canvas.width = Number.parseInt(vb[2]);
+  canvas.height = Number.parseInt(vb[3]);
   const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
   const DOMURL = window.URL || window.webkitURL;
   const img = new Image();
@@ -93,7 +91,7 @@ function downloadSvg() {
 }
 
 function generateLinkToDownload(extension: DownloadExtension, link: string) {
-  const name = $('title')!.innerText.replace(/.*- /, '').replace(/\W+/g, '_');
+  const name = document.title.replace(/.*- /, '').replace(/\W+/g, '_');
   const downloadLink = document.createElement('a');
   downloadLink.href = link;
   downloadLink.download = `${name}_dependencies.${extension}`;

@@ -1,5 +1,5 @@
 import simplur from 'simplur';
-import Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.js';
 import { getModule } from '../../lib/ModuleCache.js';
 import { getModuleKey } from '../../lib/module_util.js';
 
@@ -79,7 +79,7 @@ function getDependencyEntries(
     if (!deps) continue;
 
     // Only do one level for non-"dependencies"
-    if (level > 0 && type != 'dependencies') continue;
+    if (level > 0 && type !== 'dependencies') continue;
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
@@ -107,7 +107,7 @@ export async function getGraphForQuery(
     module: Module[] | Module,
     level = 0,
   ): Promise<GraphModuleInfo | void> {
-    if (!module) return Promise.reject(Error('Undefined module'));
+    if (!module) return Promise.reject(new Error('Undefined module'));
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
@@ -173,7 +173,7 @@ function dotEscape(str: string) {
  * E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
  */
 function vizStyle(obj: Record<string, string | number | boolean | undefined>) {
-  const pairs = Object.entries(obj).map(function ([key, value]) {
+  const pairs = Object.entries(obj).map(([key, value]) => {
     switch (typeof value) {
       case 'number':
         return `${key}=${value}`;
@@ -201,7 +201,7 @@ export function composeDOT({
   // Sort modules by [level, key]
   const entries = [...graph.moduleInfos.entries()];
   entries.sort(([aKey, a], [bKey, b]) => {
-    if (a.level != b.level) {
+    if (a.level !== b.level) {
       return a.level - b.level;
     } else {
       return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
@@ -220,7 +220,7 @@ export function composeDOT({
 
     const link = new URL(location.origin);
     link.searchParams.append('q', module.key);
-    const vs = { root: level == 0, fontsize, href: link.href };
+    const vs = { root: level === 0, fontsize, href: link.href };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
@@ -235,7 +235,7 @@ export function composeDOT({
   }
 
   const titleParts = entries
-    .filter(([, m]) => m.level == 0)
+    .filter(([, m]) => m.level === 0)
     .map(([, m]) => dotEscape(m.module.name));
 
   const MAX_PARTS = 3;
@@ -263,7 +263,7 @@ export function composeDOT({
     .concat(
       graph.moduleInfos.size > 1
         ? `{rank=same; ${[...graph.moduleInfos.values()]
-            .filter(info => info.level == 0)
+            .filter(info => info.level === 0)
             .map(info => `"${info.module}"`)
             .join('; ')};}`
         : '',

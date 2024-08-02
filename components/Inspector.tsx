@@ -1,4 +1,4 @@
-import { HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.js';
 import { queryModuleCache } from '../lib/ModuleCache.js';
 import { PARAM_HIDE } from '../lib/constants.js';
@@ -52,17 +52,17 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   return (
     <div id="inspector" className={hide !== null ? '' : 'open'} {...props}>
       <div id="tabs">
-        <Tab active={pane == PANE.INFO} onClick={() => setPane(PANE.INFO)}>
+        <Tab active={pane === PANE.INFO} onClick={() => setPane(PANE.INFO)}>
           Start <kbd>/</kbd>
         </Tab>
-        <Tab active={pane == PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
+        <Tab active={pane === PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
           Graph
         </Tab>
-        <Tab active={pane == PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
+        <Tab active={pane === PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
           Module
         </Tab>
         <Tab
-          active={pane == PANE.ABOUT}
+          active={pane === PANE.ABOUT}
           onClick={() => setPane(PANE.ABOUT)}
           badge={newCommitsCount > 0}
         >

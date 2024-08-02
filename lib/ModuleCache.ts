@@ -1,4 +1,4 @@
-import { PackageJSON, Packument, PackumentVersion } from '@npm/types';
+import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { gt, satisfies } from 'semver';
 import HttpError from './HttpError.js';
 import Module from './Module.js';
@@ -8,7 +8,7 @@ import {
   getNPMPackument,
 } from './PackumentCache.js';
 import PromiseWithResolvers, {
-  PromiseWithResolversType,
+  type PromiseWithResolversType,
 } from './PromiseWithResolvers.js';
 import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
@@ -94,7 +94,7 @@ async function fetchModuleFromURL(urlString: string) {
 // Note: This method should not throw!  Errors should be returned as part of a
 // stub module
 export async function getModule(moduleKey: string): Promise<Module> {
-  if (!moduleKey) throw Error('Undefined module name');
+  if (!moduleKey) throw new Error('Undefined module name');
 
   let [name, version] = parseModuleKey(moduleKey);
 
@@ -269,7 +269,7 @@ export function syncPackagesHash() {
   let packages: PackageJSON[];
   try {
     packages = JSON.parse(packagesJson);
-  } catch (err) {
+  } catch {
     flash('"packages" hash param is not valid JSON');
     return;
   }

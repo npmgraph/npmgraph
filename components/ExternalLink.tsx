@@ -1,6 +1,6 @@
-import React, { HTMLProps } from 'react';
+import React, { type HTMLProps } from 'react';
 import { cn } from '../lib/dom.js';
-import { IconProps, OffsiteLinkIcon } from './Icons.js';
+import { type IconProps, OffsiteLinkIcon } from './Icons.js';
 
 import './ExternalLink.scss';
 

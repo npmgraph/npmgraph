@@ -1,7 +1,7 @@
-import { Packument } from '@npm/types';
+import type { Packument } from '@npm/types';
 import { REGISTRY_BASE_URL } from './ModuleCache.js';
 import PromiseWithResolvers, {
-  PromiseWithResolversType,
+  type PromiseWithResolversType,
 } from './PromiseWithResolvers.js';
 import fetchJSON from './fetchJSON.js';
 

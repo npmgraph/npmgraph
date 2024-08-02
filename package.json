@@ -1,7 +1,8 @@
 {
   "name": "npmgraph",
-  "version": "3.1.1",
   "type": "module",
+  "version": "3.1.1",
+  "description": "Visualize npm dependency graphs (public and private!)",
   "author": {
     "name": "Robert Kieffer",
     "url": "http://github.com/broofa",
@@ -15,6 +16,28 @@
     "https://github.com/sponsors/broofa",
     "https://github.com/sponsors/fregante"
   ],
+  "repository": {
+    "url": "https://github.com/npmgraph/npmgraph.git",
+    "type": "git"
+  },
+  "keywords": [
+    "npm",
+    "dependencies",
+    "dependency",
+    "graph",
+    "module"
+  ],
+  "scripts": {
+    "build": "parcel build index.html",
+    "release": "standard-version",
+    "start": "parcel serve index.html",
+    "lint": "eslint .",
+    "fix": "run-p 'lint -- --fix' format:fix",
+    "format:check": "prettier -c .",
+    "format:fix": "prettier -w .",
+    "types": "tsc --noEmit",
+    "test": "run-p format:check lint types build"
+  },
   "dependencies": {
     "@bugsnag/js": "7.25.0",
     "@hpcc-js/wasm": "2.18.0",
@@ -36,23 +59,12 @@
     "semver": "7.6.2",
     "simplur": "4.0.0"
   },
-  "description": "Visualize npm dependency graphs (public and private!)",
-  "keywords": [
-    "npm",
-    "dependencies",
-    "dependency",
-    "graph",
-    "module"
-  ],
-  "repository": {
-    "url": "https://github.com/npmgraph/npmgraph.git",
-    "type": "git"
-  },
   "@parcel/resolver-default": {
     "packageExports": true,
     "packageExports-why": "added this because new graphviz uses exports in package.json"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^2.24.0",
     "@npm/types": "https://github.com/broofa/npm_types.git#missing_fields",
     "@parcel/runtime-react-refresh": "^2.12.0",
     "@parcel/transformer-inline-string": "2.12.0",
@@ -63,11 +75,7 @@
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
     "@types/semver": "^7.5.8",
-    "@typescript-eslint/eslint-plugin": "7.16.0",
-    "@typescript-eslint/parser": "7.16.0",
-    "eslint": "8.57.0",
-    "eslint-config-prettier": "9.1.0",
-    "eslint-plugin-prettier": "5.1.3",
+    "eslint": "^9.8.0",
     "npm-run-all2": "^6.2.2",
     "parcel": "^2.12.0",
     "postcss": "8.4.39",
@@ -78,16 +86,5 @@
     "standard-version": "9.5.0",
     "typed-query-selector": "^2.11.2",
     "typescript": "5.5.3"
-  },
-  "scripts": {
-    "build": "parcel build index.html",
-    "release": "standard-version",
-    "start": "parcel serve index.html",
-    "lint": "eslint .",
-    "fix": "run-p 'lint -- --fix' format:fix",
-    "format:check": "prettier -c .",
-    "format:fix": "prettier -w .",
-    "types": "tsc --noEmit",
-    "test": "run-p format:check lint types build"
   }
 }

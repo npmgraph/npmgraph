@@ -1,5 +1,5 @@
-import { HTMLProps } from 'react';
-import { QueryType } from '../lib/ModuleCache.js';
+import type { HTMLProps } from 'react';
+import type { QueryType } from '../lib/ModuleCache.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 
 import { cn } from '../lib/dom.js';

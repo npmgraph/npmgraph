@@ -1,11 +1,11 @@
 import React from 'react';
-import Module from '../../../lib/Module.js';
+import type Module from '../../../lib/Module.js';
 import PromiseWithResolvers from '../../../lib/PromiseWithResolvers.js';
 import fetchJSON from '../../../lib/fetchJSON.js';
-import { NPMSIOData } from '../../../lib/fetch_types.js';
+import type { NPMSIOData } from '../../../lib/fetch_types.js';
 import { flash } from '../../../lib/flash.js';
 import { hslFor } from '../../GraphDiagram/graph_util.js';
-import { BulkColorizer } from './index.js';
+import type { BulkColorizer } from './index.js';
 
 // Max number of module names allowed per NPMS request
 const NPMS_BULK_LIMIT = 250;
@@ -31,12 +31,14 @@ class NPMSColorizer implements BulkColorizer {
     return (
       <div style={{ display: 'flex' }}>
         <span>0%&nbsp;</span>
-        {new Array(20).fill(0).map((_, i) => (
-          <span
-            key={i}
-            style={{ flexGrow: '1', backgroundColor: hslFor(i / 19) }}
-          />
-        ))}
+        {Array.from({ length: 20 })
+          .fill(0)
+          .map((_, i) => (
+            <span
+              key={i}
+              style={{ flexGrow: '1', backgroundColor: hslFor(i / 19) }}
+            />
+          ))}
         <span>&nbsp;100%</span>
       </div>
     );
@@ -70,7 +72,7 @@ class NPMSColorizer implements BulkColorizer {
     const combinedResults: { [key: string]: NPMSIOData } = {};
     let rejected = 0;
     for (const result of results) {
-      if (result.status == 'rejected') {
+      if (result.status === 'rejected') {
         rejected++;
       } else {
         Object.assign(combinedResults, result.value);
