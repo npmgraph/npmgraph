@@ -16,10 +16,8 @@
   margin-top: 1rem;
 }
 
-#report-section {
-  // Hide empty sections
-  h3:has(+ h3),
-  h3:last-child {
-    display: none;
-  }
+// Hide empty sections
+.report-section hr:nth-last-child(2),
+.report-section h3:nth-last-child(1) {
+  display: none;
 }
