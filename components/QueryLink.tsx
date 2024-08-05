@@ -27,7 +27,7 @@ export function QueryLink({
   if (!children) {
     return (
       <a href={url.href} onClick={filterAlteredClicks(onClick)} {...props}>
-        {queries.join(',')}
+        {queries.join(', ')}
       </a>
     );
   }
