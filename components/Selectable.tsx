@@ -3,7 +3,7 @@ import type { QueryType } from '../lib/ModuleCache.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 
 import { cn } from '../lib/dom.js';
-import styles from './Selectable.module.scss';
+import * as styles from './Selectable.module.scss';
 
 export function Selectable({
   type,

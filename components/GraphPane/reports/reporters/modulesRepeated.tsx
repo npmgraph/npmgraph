@@ -3,7 +3,7 @@ import { getModuleKey } from '../../../../lib/module_util.js';
 import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
 import type { ModuleAnalysisState } from '../analyzeModules.js';
-import styles from './modulesRepeated.module.scss';
+import * as styles from './modulesRepeated.module.scss';
 
 export function modulesRepeated({
   moduleInfos,
