@@ -3,6 +3,7 @@ name: PR
 on:
   pull_request:
     types:
+      - synchronize # GitHub requires this workflow to run on the latest commit
       - opened
       - edited
 
