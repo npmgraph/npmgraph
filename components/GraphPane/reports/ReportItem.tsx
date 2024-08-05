@@ -2,7 +2,7 @@ import React from 'react';
 
 import { cn } from '../../../lib/dom.js';
 import type { RenderedAnalysis } from './Analyzer.js';
-import styles from './ReportItem.module.scss';
+import * as styles from './ReportItem.module.scss';
 
 const SYMBOLS = {
   info: null,
