@@ -1,16 +1,7 @@
-#commit-list {
-  margin-top: 1rem;
-  border: solid 1px var(--bg1);
-  border-width: 1px 0px;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  padding-top: 1rem;
-
-  #commit-list-header {
-    margin-bottom: 1rem;
-    font-weight: bold;
-    font-size: 1.15rem;
-  }
+#commit-list-header {
+  margin-bottom: 1rem;
+  font-weight: bold;
+  font-size: 1.15rem;
 }
 
 .commit-item {

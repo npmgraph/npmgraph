@@ -37,7 +37,7 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
         <>
           <ModuleBundleStats bundleInfo={bundleInfo} />
           <ModuleTreeMap
-            style={{ height: '150px', margin: '1em' }}
+            style={{ height: '150px', marginBlock: '1em' }}
             data={bundleInfo}
           />
           Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>

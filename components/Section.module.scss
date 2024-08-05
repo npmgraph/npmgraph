@@ -1,7 +1,28 @@
 .root {
+  line-height: 1.7;
+
   & > summary {
-    margin-block-start: 1rem;
-    margin-block-end: 0.5rem;
-    font-size: 1.3rem;
+    display: flex;
+    justify-content: space-between;
+    margin-block-start: 0;
+    margin-block-end: 1em;
+
+    // Match native H3 style
+    font-weight: bold;
+    font-size: 1.17em;
+
+    // Reset line-height to match the spacing of native H3
+    line-height: normal;
+  }
+
+  // Move triangle to the right
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary::after {
+    content: '◀';
+  }
+  &[open] summary:after {
+    content: '▼';
   }
 }
