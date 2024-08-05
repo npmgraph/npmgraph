@@ -12,7 +12,7 @@ export function ModuleBundleStats({
       style={{
         display: 'grid',
         gridTemplateColumns: 'auto 1fr',
-        gap: '.3em 1em',
+        gap: '0 1em',
       }}
     >
       <span>Bundle size (minified):</span>

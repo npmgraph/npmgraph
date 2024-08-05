@@ -67,6 +67,8 @@ export default function GraphPane({
         Size modules by unpacked size
       </Toggle>
 
+      <hr />
+
       <ColorizeInput />
 
       <div
@@ -85,6 +87,8 @@ export default function GraphPane({
           <span>(Shift-click modules in graph to expand/collapse)</span>
         )}
       </div>
+
+      <hr />
 
       <div id="report-section">
         <h3>Modules</h3>
@@ -114,6 +118,8 @@ export default function GraphPane({
           reporter={peerDependenciesMissing}
         />
 
+        <hr />
+
         <h3>Maintainers</h3>
 
         <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
@@ -126,6 +132,8 @@ export default function GraphPane({
           </ExternalLink>
           .
         </ReportItem>
+
+        <hr />
 
         <h3>Licenses</h3>
 
