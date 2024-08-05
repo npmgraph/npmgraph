@@ -4,7 +4,7 @@ import type { OSIKeyword } from '../../../../lib/licenses.js';
 import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
 import type { LicenseAnalysisState } from '../analyzeLicenses.js';
-import styles from './modulesAll.module.scss';
+import * as styles from './modulesAll.module.scss';
 
 export function licensesKeyword(keyword: OSIKeyword) {
   return function ({

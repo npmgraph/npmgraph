@@ -5,7 +5,7 @@ import type Module from '../../lib/Module.js';
 import { cn } from '../../lib/dom.js';
 import useMeasure from '../../lib/useMeasure.js';
 import { Section } from '../Section.js';
-import styles from './ReleaseTimeline.module.scss';
+import * as styles from './ReleaseTimeline.module.scss';
 
 function timestring(t: number) {
   return new Date(t).toISOString().replace(/T.*/, '');

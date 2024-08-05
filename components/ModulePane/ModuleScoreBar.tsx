@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './ModuleScoreBar.module.scss';
+import * as styles from './ModuleScoreBar.module.scss';
 
 export function ModuleScoreBar({
   title,

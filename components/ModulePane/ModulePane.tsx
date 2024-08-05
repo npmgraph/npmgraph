@@ -17,7 +17,7 @@ import { Tag } from '../Tag.js';
 import { Tags } from '../Tags.js';
 import ModuleBundleSize from './ModuleBundleSize.js';
 import ModuleNpmsIOScores from './ModuleNpmsIOScores.js';
-import styles from './ModulePane.module.scss';
+import * as styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.js';
 import { ReleaseTimeline } from './ReleaseTimeline.js';
 

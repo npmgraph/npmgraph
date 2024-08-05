@@ -28,10 +28,10 @@
     "module"
   ],
   "scripts": {
-    "build": "parcel build index.html",
+    "build": "parcel build index.html --no-cache",
     "fetch-licenses": "node scripts/fetch_licenses.js",
     "release": "standard-version",
-    "start": "parcel serve index.html",
+    "start": "parcel serve index.html --no-cache",
     "lint": "eslint .",
     "fix": "run-p 'lint -- --fix' format:fix",
     "format:check": "prettier -c .",

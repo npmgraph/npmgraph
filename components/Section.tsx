@@ -1,7 +1,7 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../lib/dom.js';
 
-import styles from './Section.module.scss';
+import * as styles from './Section.module.scss';
 
 export function Section({
   title,

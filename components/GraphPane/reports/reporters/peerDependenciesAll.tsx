@@ -5,7 +5,7 @@ import type {
   PeerDependenciesState,
   PeerDependencyInfo,
 } from '../analyzePeerDependencies.js';
-import styles from './peerDependenciesAll.module.scss';
+import * as styles from './peerDependenciesAll.module.scss';
 
 export function peerDependenciesAll({
   peerDependencyInfos,
