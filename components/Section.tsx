@@ -1,7 +1,7 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../lib/dom.js';
 
-import styles from './Section.module.scss';
+import * as styles from './Section.module.scss';
 
 export function Section({
   title,
@@ -11,9 +11,14 @@ export function Section({
   ...props
 }: { title: string; open?: boolean } & HTMLProps<HTMLDetailsElement>) {
   return (
-    <details open={open} {...props} className={cn(className, styles.root)}>
-      <summary>{title || 'Untitled'}</summary>
-      {children}
-    </details>
+    <>
+      <hr />
+      <details open={open} {...props} className={cn(className, styles.root)}>
+        <summary>
+          <span>{title || 'Untitled'}</span>
+        </summary>
+        {children}
+      </details>
+    </>
   );
 }

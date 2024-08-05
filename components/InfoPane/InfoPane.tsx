@@ -6,7 +6,7 @@ import QueryInput from './QueryInput.js';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
-    <Pane style={{ display: 'flex', flexDirection: 'column' }} {...props}>
+    <Pane {...props}>
       <h3>
         NPM name(s) or <code>package.json</code> URL
       </h3>

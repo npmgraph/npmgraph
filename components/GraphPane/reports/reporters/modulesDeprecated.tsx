@@ -3,7 +3,7 @@ import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
 import type { ModuleAnalysisState } from '../analyzeModules.js';
-import styles from './modulesDeprecated.module.scss';
+import * as styles from './modulesDeprecated.module.scss';
 
 export function modulesDeprecated({
   deprecated,

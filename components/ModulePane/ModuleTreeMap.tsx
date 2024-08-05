@@ -4,7 +4,7 @@ import { $ } from 'select-dom';
 import type { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';
 
-import styles from './ModuleTreeMap.module.scss';
+import * as styles from './ModuleTreeMap.module.scss';
 
 export function ModuleTreeMap({
   data,

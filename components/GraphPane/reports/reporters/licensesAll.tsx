@@ -4,7 +4,7 @@ import { LICENSES } from '../../../../lib/licenses.js';
 import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
 import type { LicenseAnalysisState } from '../analyzeLicenses.js';
-import styles from './licensesAll.module.scss';
+import * as styles from './licensesAll.module.scss';
 
 export function licensesAll({
   modulesByLicense,

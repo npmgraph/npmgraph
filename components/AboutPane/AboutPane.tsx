@@ -28,6 +28,7 @@ export default function AboutPane(props: HTMLProps<HTMLDivElement>) {
         <GithubSponsorButton username="broofa" style={{ marginLeft: '1rem' }} />
       </p>
 
+      <hr />
       <CommitList />
     </Pane>
   );

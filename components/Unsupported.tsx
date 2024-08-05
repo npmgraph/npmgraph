@@ -1,7 +1,7 @@
 import { ExternalLink } from './ExternalLink.js';
 import { GithubIcon } from './Icons.js';
 
-import styles from './Unsupported.module.scss';
+import * as styles from './Unsupported.module.scss';
 
 const imageUrl = new URL('../images/sad_kilroy.png', import.meta.url);
 
