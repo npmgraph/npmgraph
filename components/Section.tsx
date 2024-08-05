@@ -11,9 +11,14 @@ export function Section({
   ...props
 }: { title: string; open?: boolean } & HTMLProps<HTMLDetailsElement>) {
   return (
-    <details open={open} {...props} className={cn(className, styles.root)}>
-      <summary>{title || 'Untitled'}</summary>
-      {children}
-    </details>
+    <>
+      <hr />
+      <details open={open} {...props} className={cn(className, styles.root)}>
+        <summary>
+          <span>{title || 'Untitled'}</span>
+        </summary>
+        {children}
+      </details>
+    </>
   );
 }

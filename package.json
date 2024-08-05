@@ -29,6 +29,7 @@
   ],
   "scripts": {
     "build": "parcel build index.html",
+    "fetch-licenses": "node scripts/fetch_licenses.js",
     "release": "standard-version",
     "start": "parcel serve index.html",
     "lint": "eslint .",

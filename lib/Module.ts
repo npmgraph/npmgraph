@@ -52,8 +52,11 @@ export default class Module {
   }
 
   get maintainers() {
-    const pkg = this.getLatestVersion() ?? this.package;
-    let maintainers = pkg.maintainers ?? [];
+    let maintainers =
+      this.packument?.maintainers ??
+      this.getLatestVersion()?.maintainers ??
+      this.package?.maintainers ??
+      [];
 
     if (!Array.isArray(maintainers)) {
       console.warn(
