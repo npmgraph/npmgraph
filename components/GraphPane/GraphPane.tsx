@@ -88,6 +88,8 @@ export default function GraphPane({
         )}
       </div>
 
+      <hr />
+
       <div id="report-section">
         <h3>Modules</h3>
 
@@ -116,6 +118,8 @@ export default function GraphPane({
           reporter={peerDependenciesMissing}
         />
 
+        <hr />
+
         <h3>Maintainers</h3>
 
         <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
@@ -128,6 +132,8 @@ export default function GraphPane({
           </ExternalLink>
           .
         </ReportItem>
+
+        <hr />
 
         <h3>Licenses</h3>
 
