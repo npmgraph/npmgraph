@@ -44,10 +44,10 @@
 
   button {
     display: inline-block;
-    border: 0;
-    background: var(--tabs-bg) var(--bg-gradient);
+    border: solid 1px var(--bg1);
+    background: var(--bg0);
     padding: var(--padding);
-    color: var(--text-on-accent);
+    color: var(--text);
 
     svg {
       display: block;
@@ -61,11 +61,6 @@
 }
 #zoom-buttons {
   display: flex;
-  border-radius: var(--rad_sm);
-}
-
-#zoom-none {
-  border-inline: solid 1px white !important;
 }
 
 #zoom-fit-width,
