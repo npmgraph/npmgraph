@@ -17,7 +17,7 @@ import { Tag } from '../Tag.js';
 import { Tags } from '../Tags.js';
 import ModuleBundleSize from './ModuleBundleSize.js';
 import ModuleNpmsIOScores from './ModuleNpmsIOScores.js';
-import styles from './ModulePane.module.scss';
+import * as styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.js';
 import { ReleaseTimeline } from './ReleaseTimeline.js';
 
@@ -157,7 +157,7 @@ export default function ModulePane({
           style={{
             display: 'grid',
             gridTemplateColumns: 'auto 1fr',
-            gap: '.3em 1em',
+            gap: '0 1em',
           }}
         >
           <span>Unpacked Size (module only):</span>
@@ -173,7 +173,6 @@ export default function ModulePane({
             <i>not available</i>
           )}
         </div>
-        <hr />
         <ModuleBundleSize module={module} />
       </Section>
 

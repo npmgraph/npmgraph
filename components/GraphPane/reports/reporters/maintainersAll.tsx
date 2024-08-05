@@ -4,7 +4,7 @@ import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
 import type { MaintainerAnalysisState } from '../analyzeMaintainers.js';
-import styles from './maintainersAll.module.scss';
+import * as styles from './maintainersAll.module.scss';
 
 export function maintainersAll({
   modulesByMaintainer,

@@ -29,6 +29,16 @@ import {
   peerDependenciesMissing,
 } from './reports/reporters/peerDependenciesAll.js';
 
+function ReportSection({ title, children }: { title: string; children: any }) {
+  return (
+    <div className="report-section">
+      <hr />
+      <h3>{title}</h3>
+      {children}
+    </div>
+  );
+}
+
 export default function GraphPane({
   graph,
   ...props
@@ -67,6 +77,8 @@ export default function GraphPane({
         Size modules by unpacked size
       </Toggle>
 
+      <hr />
+
       <ColorizeInput />
 
       <div
@@ -86,9 +98,7 @@ export default function GraphPane({
         )}
       </div>
 
-      <div id="report-section">
-        <h3>Modules</h3>
-
+      <ReportSection title="Modules">
         <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
         <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
@@ -113,9 +123,9 @@ export default function GraphPane({
           data={peerDependencyAnalysis}
           reporter={peerDependenciesMissing}
         />
+      </ReportSection>
 
-        <h3>Maintainers</h3>
-
+      <ReportSection title="Maintainers">
         <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
 
         <ReportItem data={maintainersAnalysis} reporter={maintainersSolo}>
@@ -126,9 +136,8 @@ export default function GraphPane({
           </ExternalLink>
           .
         </ReportItem>
-
-        <h3>Licenses</h3>
-
+      </ReportSection>
+      <ReportSection title="Licenses">
         <ReportItem data={licensesAnalysis} reporter={licensesAll} />
 
         <ReportItem
@@ -165,7 +174,7 @@ export default function GraphPane({
           </ExternalLink>
           .
         </ReportItem>
-      </div>
+      </ReportSection>
     </Pane>
   );
 }

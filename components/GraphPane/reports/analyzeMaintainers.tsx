@@ -55,8 +55,9 @@ export function analyzeMaintainers({
     for (const m of maintainers) {
       const maintainer = normalizeMaintainer(m);
 
-      // Combine information the maintainer across multiple modules (increases
-      // the odds of us having an email to generate gravatar image from)
+      // Combine information maintainer info from across multiple modules
+      // (increases the odds of us having an email to generate gravatar image
+      // from)
       if (maintainer.email && maintainer.name) {
         emailByMaintainer.set(maintainer.name, maintainer.email);
       }
