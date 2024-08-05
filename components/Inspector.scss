@@ -76,6 +76,10 @@ label {
   a {
     color: var(--accent);
   }
+
+  hr {
+    margin-inline: -1em;
+  }
 }
 
 .dist-tag {

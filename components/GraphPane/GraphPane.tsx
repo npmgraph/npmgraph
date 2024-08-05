@@ -67,6 +67,8 @@ export default function GraphPane({
         Size modules by unpacked size
       </Toggle>
 
+      <hr />
+
       <ColorizeInput />
 
       <div
