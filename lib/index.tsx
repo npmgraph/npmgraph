@@ -15,7 +15,9 @@ import { fetchCommits } from './useCommits.js';
 
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
-  const unsupported = new Map<string, JSX.Element>();
+  const unsupported: JSX.Element[] = [];
+
+  unsupported.push();
 
   // API checks
   const features = {
@@ -29,8 +31,7 @@ function detectFeatures() {
   for (const [k, v] of Object.entries(features)) {
     if (v) continue;
 
-    unsupported.set(
-      k,
+    unsupported.push(
       <>
         <code>{k}</code> is not supported
       </>,
@@ -42,8 +43,7 @@ function detectFeatures() {
     window.localStorage.setItem('test', 'test');
     window.localStorage.removeItem('test');
   } catch {
-    unsupported.set(
-      'localStorage',
+    unsupported.push(
       <>
         <code>localStorage</code> is not supported
       </>,
@@ -65,7 +65,7 @@ window.addEventListener('unhandledrejection', err => {
 
 window.onload = function () {
   const unsupported = detectFeatures();
-  if (unsupported.size > 0) {
+  if (unsupported.length > 0) {
     createRoot($('body')!).render(<Unsupported unsupported={unsupported} />);
     return;
   }

@@ -8,9 +8,7 @@ const imageUrl = new URL('../images/sad_kilroy.png', import.meta.url);
 export function Unsupported({
   unsupported,
   ...props
-}: {
-  unsupported: Map<string, JSX.Element>;
-} & React.HTMLAttributes<HTMLDivElement>) {
+}: { unsupported: JSX.Element[] } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={styles.root} {...props}>
       <h1>Unsupported Features</h1>
@@ -19,8 +17,8 @@ export function Unsupported({
         Specifically, the following features appear to be missing or disabled:
       </p>
       <ul>
-        {[...unsupported.entries()].map(([name, jsx]) => (
-          <li key={name}>{jsx}</li>
+        {unsupported.map((feature, i) => (
+          <li key={i}>{feature}</li>
         ))}
       </ul>
       <p>
