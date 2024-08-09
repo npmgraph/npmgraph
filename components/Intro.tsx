@@ -11,7 +11,7 @@ export default function Intro() {
       <h1>
         <Logo />
       </h1>
-      <h2>A tool for exploring npm modules and dependencies</h2>
+      <h2>Explore npm modules and dependencies</h2>
       <QueryInput />
       <InputHelp />
       <GitHubCorner />
