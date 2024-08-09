@@ -112,7 +112,7 @@ body {
 #app {
   display: flex;
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
 }
 
 @include tight-screen {
@@ -120,7 +120,7 @@ body {
   body,
   #app {
     height: auto;
-    min-height: 100vh;
+    min-height: 100svh;
   }
   #app {
     flex-direction: column;
