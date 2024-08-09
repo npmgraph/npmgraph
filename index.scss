@@ -1,3 +1,5 @@
+@import 'lib/root.scss';
+
 :root {
   accent-color: var(--accent);
   color-scheme: light dark;
@@ -103,10 +105,27 @@ html {
     Segoe UI Emoji;
 }
 
-html,
 body {
   margin: 0;
-  padding: 0;
+}
+
+#app {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+@include tight-screen {
+  html,
+  body,
+  #app {
+    height: auto;
+    min-height: 100vh;
+  }
+  #app {
+    flex-direction: column;
+    --inspector-size: auto;
+  }
 }
 
 p {
@@ -131,15 +150,6 @@ kbd {
   color: color-mix(in srgb, currentcolor 30%, transparent);
   line-height: 1;
   white-space: nowrap;
-}
-
-#app {
-  display: flex;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
 }
 
 .link {

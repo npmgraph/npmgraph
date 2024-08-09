@@ -40,7 +40,7 @@ export default function ModulePane({
           justifyContent: 'center',
         }}
       >
-        No modules selected.
+        <p>No modules selected.</p>
       </Pane>
     );
   } else if (nSelected > 1) {

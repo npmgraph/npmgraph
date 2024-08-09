@@ -1,0 +1,5 @@
+@mixin tight-screen {
+  @media (max-aspect-ratio: 2/3), (max-width: 700px) {
+    @content;
+  }
+}
