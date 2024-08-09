@@ -1,8 +1,8 @@
+@import 'lib/root.scss';
+
 #graph {
   position: relative;
-
   flex-grow: 1;
-  height: 100vh;
   overflow: auto;
   user-select: none;
   -webkit-user-select: none;
@@ -24,6 +24,10 @@
   &.graphviz-failed {
     color: var(--stroke-red);
   }
+
+  @include tight-screen {
+    min-height: 80vh;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -36,26 +40,52 @@
 #graph-controls {
   display: flex;
   position: fixed;
-  bottom: 1em;
-  left: 1em;
-  cursor: default;
+  gap: 1em;
+  inset: auto auto 1em 1em;
+  --padding: 6px;
+
+  @include tight-screen {
+    inset: 1em 1em auto auto;
+  }
 
   button {
     display: inline-block;
-    margin: 0;
-    outline: 0;
     border: solid 1px var(--bg1);
-    border-radius: var(--rad_sm);
     background: var(--bg0);
+    padding: var(--padding);
     color: var(--text);
-    font-size: 1.8em;
-    line-height: 1em;
+
+    svg {
+      display: block;
+    }
 
     &.selected {
       background-color: var(--accent);
       color: var(--text-on-accent);
     }
   }
+}
+#zoom-buttons {
+  display: flex;
+}
+
+#zoom-fit-width,
+#download-svg {
+  border-top-left-radius: var(--rad_sm);
+  border-bottom-left-radius: var(--rad_sm);
+  padding-left: calc(var(--padding) + 1px);
+}
+
+#zoom-fit-height,
+#download-svg {
+  border-top-right-radius: var(--rad_sm);
+  border-bottom-right-radius: var(--rad_sm);
+  padding-right: calc(var(--padding) + 1px);
+}
+
+#zoom-buttons,
+#download-svg {
+  box-shadow: 2px 2px 6px var(--bg0-shadow-color);
 }
 
 svg#graph-diagram {

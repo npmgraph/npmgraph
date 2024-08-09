@@ -1,5 +1,6 @@
 .bright-hover {
   transition: filter 0.2s;
+  will-change: filter;
 
   &:hover {
     filter: brightness(125%);

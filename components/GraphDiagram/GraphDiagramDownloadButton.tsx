@@ -10,9 +10,9 @@ type DownloadExtension = 'svg' | 'png';
 export default function GraphDiagramDownloadButton() {
   return (
     <button
+      id="download-svg"
       onClick={() => download('svg')}
-      title="download as SVG"
-      style={{ marginLeft: '0.5em' }}
+      title="Download as SVG"
       type="button"
     >
       <DownloadIcon />

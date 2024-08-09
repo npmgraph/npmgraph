@@ -1,6 +1,7 @@
+@import '../lib/root.scss';
+
 #splitter {
   position: absolute;
-  top: 0;
   right: 0;
   z-index: 1;
   transition: border-radius var(--transition-duration);
@@ -15,5 +16,9 @@
   #inspector:not(.open) & {
     border-top-left-radius: var(--rad_lg);
     border-bottom-left-radius: var(--rad_lg);
+  }
+
+  @include tight-screen {
+    display: none;
   }
 }
