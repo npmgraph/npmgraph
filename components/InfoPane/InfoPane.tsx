@@ -32,8 +32,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       <p>It also accepts package.json:</p>
       <ul>
         <li>Drag and drop a file anywhere on the page</li>
-        <li>Paste package.json (copied as text)</li>
-        <li>Paste package.json (copied as file)</li>
+        <li>Paste package.json (file or text)</li>
         <li>
           <FilePicker label="Choose file" /> from your computer
         </li>
