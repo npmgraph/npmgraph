@@ -13,6 +13,7 @@ import ModulePane from './ModulePane/ModulePane.js';
 import { Splitter } from './Splitter.js';
 import { Tab } from './Tab.js';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts.js';
+import useExternalInput from './useExternalInput.js';
 
 export enum PANE {
   MODULE = 'module',
@@ -31,6 +32,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const selectedModules = queryModuleCache(queryType, queryValue);
 
   useKeyboardShortcuts();
+  useExternalInput();
 
   let paneComponent;
   switch (pane) {
