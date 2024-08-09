@@ -1,0 +1,42 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  background: radial-gradient(
+    light-dark(var(--bg1), var(--bg0)),
+    var(--bg-root)
+  );
+  padding: 1em;
+  width: 100%;
+  height: 100svh;
+
+  h1 {
+    margin-block: 0;
+    font-size: 4em;
+    font-family: Monaco, monospace;
+    svg {
+      max-width: 300px;
+      max-height: 55px;
+    }
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  input {
+    margin-block: 0.8em;
+    max-width: 20em;
+    font-size: 2em !important;
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  ul {
+    margin: 0;
+  }
+}

@@ -112,7 +112,7 @@ body {
 #app {
   display: flex;
   width: 100vw;
-  height: 100vh;
+  height: 100svh;
 }
 
 @include tight-screen {
@@ -120,7 +120,7 @@ body {
   body,
   #app {
     height: auto;
-    min-height: 100vh;
+    min-height: 100svh;
   }
   #app {
     flex-direction: column;
@@ -150,4 +150,9 @@ kbd {
   color: color-mix(in srgb, currentcolor 30%, transparent);
   line-height: 1;
   white-space: nowrap;
+}
+
+.link {
+  color: var(--accent);
+  text-decoration: underline;
 }
