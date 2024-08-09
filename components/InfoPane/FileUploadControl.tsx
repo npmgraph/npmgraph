@@ -71,8 +71,6 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
       return;
     }
 
-    flash(`Loading ${filename ?? 'pasted content'}...`);
-
     // Sanitize package contents *immediately*, so we don't risk propagating
     // possibly-sensitive fields user may have in their package.json
     pkg = sanitizePackageKeys(pkg);
