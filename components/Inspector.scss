@@ -1,4 +1,4 @@
-@import "../lib/root.scss";
+@import '../lib/root.scss';
 
 #inspector {
   display: flex;
@@ -17,7 +17,7 @@
 
   @include tight-screen {
     flex-basis: var(--inspector-size);
-    border-radius: var(--rad_lg);;
+    border-radius: var(--rad_lg);
   }
 
   .description {
