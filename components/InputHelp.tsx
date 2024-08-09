@@ -20,7 +20,6 @@ export default function InputHelp() {
             package.json file
           </QueryLink>
         </li>
-        <li>package.json pastes (copied as text or file)</li>
       </ul>
     </>
   );
