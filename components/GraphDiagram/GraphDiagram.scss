@@ -1,3 +1,5 @@
+@import "lib/root.scss";
+
 #graph {
   position: relative;
   flex-grow: 1;
@@ -22,6 +24,10 @@
   &.graphviz-failed {
     color: var(--stroke-red);
   }
+
+  @include tight-screen {
+    min-height: 80vh;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -38,7 +44,7 @@
   inset: auto auto 1em 1em;
   --padding: 6px;
 
-  @media (max-aspect-ratio: 2/3) {
+  @include tight-screen {
     inset: 1em 1em auto auto;
   }
 

@@ -1,3 +1,5 @@
+@import "../lib/root.scss";
+
 #inspector {
   display: flex;
   flex-shrink: 0;
@@ -11,6 +13,11 @@
 
   &.open {
     flex-basis: var(--inspector-size);
+  }
+
+  @include tight-screen {
+    flex-basis: var(--inspector-size);
+    border-radius: var(--rad_lg);;
   }
 
   .description {
@@ -84,6 +91,11 @@ label {
 
   hr {
     margin-inline: -1em;
+  }
+
+  @include tight-screen {
+    padding-bottom: 1em;
+    min-height: 200px;
   }
 }
 
