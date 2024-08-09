@@ -5,7 +5,7 @@ import * as styles from './useExternalInput.module.scss';
 let dragEnterCounter = 0;
 
 function updateDragOverlay() {
-  document.documentElement.classList.toggle(styles.root, dragEnterCounter);
+  document.documentElement.classList.toggle(styles.root, dragEnterCounter > 0);
 }
 
 function onDrop(ev: DragEvent) {
