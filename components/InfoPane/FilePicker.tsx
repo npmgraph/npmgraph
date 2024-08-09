@@ -1,7 +1,6 @@
 import React from 'react';
 import { readFile } from '../../lib/read_file.js';
 
-// Handle file selection via input
 function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {
   const file = ev.target.files?.item(0);
   if (file) {
