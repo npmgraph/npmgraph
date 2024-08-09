@@ -1,5 +1,5 @@
 import type { PackageJSON, PackumentVersion } from '@npm/types';
-import React, { type HTMLProps } from 'react';
+import React, { type HTMLProps, useEffect } from 'react';
 import {
   cacheLocalPackage,
   sanitizePackageKeys,
@@ -13,6 +13,15 @@ import { flash } from '../../lib/flash.js';
 import { hashSet, searchSet } from '../../lib/url_util.js';
 import { patchLocation } from '../../lib/useLocation.js';
 import './FileUploadControl.scss';
+
+function isValidJson(text: string): boolean {
+  try {
+    JSON.parse(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
   // Handle file selection via input
@@ -52,20 +61,13 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     readFile(file);
   }
 
-  async function readFile(file: File) {
-    const reader = new FileReader();
-
-    const content: string = await new Promise(resolve => {
-      reader.onload = () => resolve(reader.result as string);
-      reader.readAsText(file);
-    });
-
+  function loadPackageJson(json: string, filename?: string): void {
     // Parse module and insert into cache
     let pkg: PackageJSON;
     try {
-      pkg = JSON.parse(content);
+      pkg = JSON.parse(json);
     } catch {
-      flash(`${file.name} is not a valid JSON file`);
+      flash(`${filename ?? 'Pasted content'} is not a valid JSON file`);
       return;
     }
 
@@ -85,6 +87,40 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     patchLocation({ hash, search }, false);
   }
 
+  async function onPaste(ev: ClipboardEvent) {
+    const firstItem = ev.clipboardData?.items[0];
+    if (firstItem?.kind === 'file') {
+      readFile(firstItem.getAsFile()!);
+      ev.preventDefault();
+      return;
+    }
+
+    const text = ev.clipboardData?.getData('text');
+    if (!text) return;
+
+    // Ignore pastes in fields, unless the field is the search field and the paste is a JSON file
+    if (
+      ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '') &&
+      (document.activeElement?.id !== 'search-field' || !isValidJson(text))
+    ) {
+      return;
+    }
+
+    // Let invalid JSON text through when outside the field, so the user can see the error message
+    ev.preventDefault();
+    loadPackageJson(text);
+  }
+
+  async function readFile(file: File) {
+    const content = await new Promise<string>(resolve => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.readAsText(file);
+    });
+
+    loadPackageJson(content, file.name);
+  }
+
   function onDragOver(ev: React.DragEvent<HTMLElement>) {
     const target = ev.currentTarget;
     target.classList.add('drag');
@@ -96,6 +132,14 @@ export default function FileUploadControl(props: HTMLProps<HTMLLabelElement>) {
     currentTarget.classList.remove('drag');
     ev.preventDefault();
   }
+
+  useEffect(() => {
+    document.addEventListener('paste', onPaste);
+
+    return () => {
+      document.removeEventListener('paste', onPaste);
+    };
+  }, []);
 
   return (
     <>

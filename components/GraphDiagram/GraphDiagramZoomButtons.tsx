@@ -33,6 +33,7 @@ export function GraphDiagramZoomButtons() {
           width: 'fit-content',
           borderWidth: '1px 0px',
         }}
+        type="button"
       >
         1:1
       </button>

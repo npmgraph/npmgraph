@@ -13,7 +13,7 @@ export function Tab({
 }) {
   return (
     <div className={cn('tab', { active })} {...props}>
-      <button className="bright-hover">
+      <button type="button" className="bright-hover">
         {children}
         {badge && <span className="badge">{badge === true ? ' ' : badge}</span>}
       </button>

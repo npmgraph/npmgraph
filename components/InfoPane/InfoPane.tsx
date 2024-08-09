@@ -7,24 +7,28 @@ import QueryInput from './QueryInput.js';
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <h3>
-        NPM name(s) or <code>package.json</code> URL
-      </h3>
+      <h3>Generate npmgraph:</h3>
 
       <QueryInput />
 
-      <p>
-        For example, try{' '}
-        <QueryLink query="express">&quot;express&quot;</QueryLink>,{' '}
-        <QueryLink query={['minimatch', 'cross-env', 'rimraf']}>
-          &quot;minimatch, cross-env, rimraf&quot;
-        </QueryLink>
-        , or{' '}
-        <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
-          npmgraph's package.json on GitHub
-        </QueryLink>
-        .
-      </p>
+      <p>For example:</p>
+
+      <ul>
+        <li>
+          A npm module name: <QueryLink query={['express']} />
+        </li>
+        <li>
+          Multiple, versioned module names:{' '}
+          <QueryLink query={['cross-env@6', 'rimraf']} />
+        </li>
+        <li>
+          A URL to a{' '}
+          <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
+            package.json file
+          </QueryLink>
+        </li>
+        <li>package.json pastes (copied as text or file)</li>
+      </ul>
 
       <FileUploadControl />
     </Pane>
