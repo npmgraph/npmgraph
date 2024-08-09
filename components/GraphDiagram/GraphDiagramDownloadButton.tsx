@@ -13,6 +13,7 @@ export default function GraphDiagramDownloadButton() {
       onClick={() => download('svg')}
       title="download as SVG"
       style={{ marginLeft: '0.5em' }}
+      type="button"
     >
       <DownloadIcon />
     </button>

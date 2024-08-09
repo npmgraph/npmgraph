@@ -18,6 +18,7 @@ export function GraphDiagramZoomButtons() {
         onClick={() => setZoom(ZOOM_FIT_WIDTH)}
         title="zoom (fit width)"
         style={{ borderRadius: '3px 0 0 3px' }}
+        type="button"
       >
         <ZoomHorizontalIcon />
       </button>
@@ -32,6 +33,7 @@ export function GraphDiagramZoomButtons() {
           borderWidth: '1px 0px',
           borderRadius: 0,
         }}
+        type="button"
       >
         1:1
       </button>
@@ -40,6 +42,7 @@ export function GraphDiagramZoomButtons() {
         onClick={() => setZoom(ZOOM_FIT_HEIGHT)}
         title="zoom (fit height)"
         style={{ borderRadius: '0 3px 3px 0' }}
+        type="button"
       >
         <ZoomVerticalIcon />
       </button>
