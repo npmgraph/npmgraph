@@ -1,7 +1,7 @@
 import React, { type HTMLProps } from 'react';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
-import FileUploadControl from './FileUploadControl.js';
+import FilePicker from './FilePicker.js';
 import QueryInput from './QueryInput.js';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
@@ -27,10 +27,17 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             package.json file
           </QueryLink>
         </li>
-        <li>package.json pastes (copied as text or file)</li>
       </ul>
 
-      <FileUploadControl />
+      <p>It also accepts package.json:</p>
+      <ul>
+        <li>Drag and drop a file anywhere on the page</li>
+        <li>Paste package.json (copied as text)</li>
+        <li>Paste package.json (copied as file)</li>
+        <li>
+          <FilePicker label="Choose file" /> from your computer
+        </li>
+      </ul>
     </Pane>
   );
 }

@@ -1,0 +1,28 @@
+.dragover::after,
+.dragover::before {
+  position: fixed;
+  z-index: 1000000;
+  animation: fade-in 0.1s;
+  inset: 0;
+  pointer-events: none;
+}
+.dragover::before {
+  background-color: var(--bg2);
+  content: '';
+}
+.dragover::after {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  inset: 10px;
+  border: dashed 5px var(--text-dim);
+  border-radius: var(--rad_lg);
+  content: 'Drop to parse dependencies';
+  font-size: 2em;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
