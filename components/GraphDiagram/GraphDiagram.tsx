@@ -285,10 +285,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     colorizeGraph(svg, colorize ?? '');
   }, [colorize, domSignal]);
 
+  const hidden = query.length === 0;
+
   if (!graphviz) {
     if (graphvizLoading) {
       return (
-        <div id="graph" className="graphviz-loading">
+        <div id="graph" className="graphviz-loading" hidden={hidden}>
           {graphvizLoading
             ? 'Loading layout package...'
             : 'Layout package failed to load.'}
@@ -298,7 +300,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }
 
   return (
-    <div id="graph" onClick={handleGraphClick}>
+    <div id="graph" onClick={handleGraphClick} hidden={hidden}>
       <div id="graph-controls">
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />
