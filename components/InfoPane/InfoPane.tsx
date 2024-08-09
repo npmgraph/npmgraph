@@ -27,6 +27,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             package.json file
           </QueryLink>
         </li>
+        <li>package.json pastes (copied as text or file)</li>
       </ul>
 
       <FileUploadControl />
