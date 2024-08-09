@@ -1,11 +1,11 @@
-import './useExternalInput.scss';
 import { isValidJson, loadPackageJson, readFile } from '../lib/read_file.js';
 import useEventListener from '../lib/useEventListener.js';
+import * as styles from './useExternalInput.module.scss';
 
 let dragEnterCounter = 0;
 
 function updateDragOverlay() {
-  document.documentElement.classList.toggle('dragover', dragEnterCounter > 0);
+  document.documentElement.classList.toggle(styles.root, dragEnterCounter);
 }
 
 function onDrop(ev: DragEvent) {
@@ -68,7 +68,8 @@ export default function useExternalInput() {
     event.preventDefault();
   });
 
-  // Show overlay. `dragenter` is fired for any random element that we glide over, not just on `globalThis`
+  // Show overlay. `dragenter` is fired repeatedly for any random element that we glide over,
+  // not just on `globalThis`, so we need to keep track of how many nested elements we're inside
   useEventListener(globalThis, 'dragenter', () => {
     dragEnterCounter++;
     updateDragOverlay();

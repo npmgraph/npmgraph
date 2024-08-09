@@ -1,16 +1,16 @@
-.dragover::after,
-.dragover::before {
+.root::after,
+.root::before {
   position: fixed;
   z-index: 1000000;
   animation: fade-in 0.1s;
   inset: 0;
   pointer-events: none;
 }
-.dragover::before {
+.root::before {
   background-color: var(--bg2);
   content: '';
 }
-.dragover::after {
+.root::after {
   display: flex;
   justify-content: center;
   align-items: center;
