@@ -1,11 +1,7 @@
 .root {
   @for $i from 4 through 8 {
     path:nth-child(#{$i}) {
-      fill: color-mix(
-        in srgb,
-        var(--text),
-        var(--accent) calc(12% * $i)
-      );
+      fill: color-mix(in srgb, var(--text), var(--accent) calc(12% * $i));
     }
   }
 }
