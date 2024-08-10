@@ -1,4 +1,4 @@
-import React, { type HTMLProps, useState } from 'react';
+import React, { type HTMLProps, useRef, useState } from 'react';
 import { UNNAMED_PACKAGE } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import { searchSet } from '../../lib/url_util.js';
@@ -7,7 +7,11 @@ import { useQuery } from '../../lib/useQuery.js';
 import { ExternalLink } from '../ExternalLink.js';
 import './QueryInput.scss';
 
+// No better detection for this :(
+const hasSoftKeyboard = 'ontouchstart' in document.documentElement;
+
 export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
   const initialValue = query.join(', ');
 
@@ -22,11 +26,10 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     // ignore
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key !== 'Enter' && e.key !== 'Tab') return;
-
-    let moduleKeys = e.currentTarget.value
-      .split(',')
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    let moduleKeys = inputRef
+      .current!.value.split(',')
       .map(v => v.trim())
       .filter(isDefined);
 
@@ -43,16 +46,25 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
 
   return (
     <>
-      <input
-        type="text"
-        id="search-field"
-        placeholder="Search…"
-        value={value}
-        onKeyDown={handleKeyDown}
-        onChange={e => setValue(e.target.value)}
-        autoFocus
-        {...props}
-      />
+      <form action="/" onSubmit={handleSubmit}>
+        <input
+          type="search"
+          name="q"
+          ref={inputRef}
+          id="search-field"
+          placeholder="Search…"
+          value={value}
+          autoCapitalize="off"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting
+          autoFocus={!hasSoftKeyboard}
+          onChange={e => setValue(e.target.value)}
+          {...props}
+        />
+      </form>
+
       {isGithubUrl(valueAsURL) ? (
         <div className="tip">
           Note: URLs that refer to private GitHub repos or gists should use the
