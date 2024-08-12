@@ -2172,7 +2172,8 @@
   },
   "net-snmp": {
     "id": "Net-SNMP",
-    "name": "Net-SNMP License"
+    "name": "Net-SNMP License",
+    "isDeprecatedLicenseId": true
   },
   "netcdf": {
     "id": "NetCDF",
@@ -3032,7 +3033,8 @@
   },
   "w3c-20150513": {
     "id": "W3C-20150513",
-    "name": "W3C Software Notice and Document License (2015-05-13)"
+    "name": "W3C Software Notice and Document License (2015-05-13)",
+    "isOsiApproved": true
   },
   "w3m": {
     "id": "w3m",
