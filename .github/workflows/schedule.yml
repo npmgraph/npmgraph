@@ -14,6 +14,7 @@ jobs:
       - run: npm run fetch-licenses
       - uses: peter-evans/create-pull-request@v6
         with:
+          token: ${{ secrets.NPMGRAPH_COMMIT_PAT }}
           title: 'chore: update licenses'
           branch: dependency/extension
           delete-branch: true
