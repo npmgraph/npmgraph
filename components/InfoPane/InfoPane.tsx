@@ -41,8 +41,6 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       <hr />
       <footer>
         <p>
-          npmgraph
-          {' | '}
           <a
             href="https://github.com/npmgraph/npmgraph"
             target="_blank"
