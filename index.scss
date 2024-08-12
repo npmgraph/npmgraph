@@ -152,6 +152,11 @@ kbd {
   white-space: nowrap;
 }
 
+footer {
+  color: var(--text-dim);
+  text-align: center;
+}
+
 .link {
   color: var(--accent);
   text-decoration: underline;

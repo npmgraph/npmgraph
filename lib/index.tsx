@@ -11,7 +11,6 @@ import LoadActivity from './LoadActivity.js';
 import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
-import { fetchCommits } from './useCommits.js';
 
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
@@ -90,7 +89,4 @@ window.onload = function () {
   createRoot($('title')!).render(
     <DiagramTitle defaultTitle={document.title} />,
   );
-
-  // Lazily fetch information about commits to the npmgraph repo
-  setTimeout(fetchCommits, 1000);
 };
