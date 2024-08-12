@@ -1,9 +1,6 @@
 import React, { type HTMLProps } from 'react';
-import { ExternalLink } from '../ExternalLink.js';
-import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
-import GithubSponsorButton from '../GithubSponsorButton.js';
 import FilePicker from './FilePicker.js';
 import QueryInput from './QueryInput.js';
 
@@ -42,15 +39,38 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       </ul>
 
       <hr />
-      <p style={{ textAlign: 'center' }}>
-        <ExternalLink
-          href="https://github.com/npmgraph/npmgraph"
-          icon={GithubIcon}
-        >
-          GitHub repo
-        </ExternalLink>
-        <GithubSponsorButton username="broofa" />
-      </p>
+      <footer>
+        <p>
+          npmgraph
+          {' | '}
+          <a
+            href="https://github.com/npmgraph/npmgraph"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bright-hover external-link"
+          >
+            GitHub repo
+          </a>
+          {' | '}
+          <a
+            href="https://github.com/sponsors/broofa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bright-hover external-link"
+          >
+            Sponsor
+          </a>
+          {' | '}
+          <a
+            href="https://github.com/npmgraph/npmgraph/commits/main"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bright-hover external-link"
+          >
+            Recent changes
+          </a>
+        </p>
+      </footer>
     </Pane>
   );
 }

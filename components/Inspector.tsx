@@ -4,7 +4,6 @@ import { queryModuleCache } from '../lib/ModuleCache.js';
 import { PARAM_HIDE } from '../lib/constants.js';
 import useGraphSelection from '../lib/useGraphSelection.js';
 import useHashParam from '../lib/useHashParam.js';
-import AboutPane from './AboutPane/AboutPane.js';
 import GraphPane from './GraphPane/GraphPane.js';
 import InfoPane from './InfoPane/InfoPane.js';
 import './Inspector.scss';

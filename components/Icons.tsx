@@ -113,13 +113,3 @@ export function OffsiteLinkIcon(props: IconProps) {
     />
   );
 }
-
-export function SponsorIcon(props: IconProps) {
-  return (
-    <Icon
-      name="sponsor"
-      {...props}
-      strokePath="M 8,4 C 13,-1 20,6 8,14 -4,6 3,-1 8,4 Z"
-    />
-  );
-}
