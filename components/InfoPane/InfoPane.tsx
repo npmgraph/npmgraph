@@ -37,6 +37,29 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
           <FilePicker label="Choose file" /> from your computer
         </li>
       </ul>
+
+      <hr />
+      <footer>
+        <p>
+          <a
+            href="https://github.com/npmgraph/npmgraph"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bright-hover external-link"
+          >
+            GitHub repo
+          </a>
+          {' | '}
+          <a
+            href="https://github.com/sponsors/broofa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bright-hover external-link"
+          >
+            Sponsor
+          </a>
+        </p>
+      </footer>
     </Pane>
   );
 }
