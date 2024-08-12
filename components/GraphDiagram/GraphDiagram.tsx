@@ -1,4 +1,4 @@
-import { Graphviz } from '@hpcc-js/wasm/graphviz';
+import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import React, { useEffect, useState } from 'react';
 import { $, $$ } from 'select-dom';
