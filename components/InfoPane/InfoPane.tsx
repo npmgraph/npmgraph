@@ -60,15 +60,6 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
           >
             Sponsor
           </a>
-          {' | '}
-          <a
-            href="https://github.com/npmgraph/npmgraph/commits/main"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bright-hover external-link"
-          >
-            Recent changes
-          </a>
         </p>
       </footer>
     </Pane>
