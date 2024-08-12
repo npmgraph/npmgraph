@@ -1,6 +1,9 @@
 import React, { type HTMLProps } from 'react';
+import { ExternalLink } from '../ExternalLink.js';
+import { GithubIcon } from '../Icons.js';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
+import GithubSponsorButton from '../GithubSponsorButton.js';
 import FilePicker from './FilePicker.js';
 import QueryInput from './QueryInput.js';
 
@@ -37,6 +40,17 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
           <FilePicker label="Choose file" /> from your computer
         </li>
       </ul>
+
+      <hr />
+      <p style={{ textAlign: 'center' }}>
+        <ExternalLink
+          href="https://github.com/npmgraph/npmgraph"
+          icon={GithubIcon}
+        >
+          GitHub repo
+        </ExternalLink>
+        <GithubSponsorButton username="broofa" />
+      </p>
     </Pane>
   );
 }

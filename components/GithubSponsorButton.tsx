@@ -1,6 +1,6 @@
 import React, { type HTMLProps } from 'react';
-import { cn } from '../../lib/dom.js';
-import { SponsorIcon } from '../Icons.js';
+import { cn } from '../lib/dom.js';
+import { SponsorIcon } from './Icons.js';
 import './GithubSponsorButton.scss';
 
 export default function GithubSponsorButton({

@@ -69,7 +69,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
           onClick={() => setPane(PANE.ABOUT)}
           badge={newCommitsCount > 0}
         >
-          About
+          News
         </Tab>
         <Splitter
           isOpen={hide === null}
