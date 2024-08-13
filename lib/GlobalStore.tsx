@@ -2,7 +2,6 @@ import { useSyncExternalStore } from 'react';
 import type { GraphState } from '../components/GraphDiagram/graph_util.js';
 import { PANE } from '../components/Inspector.js';
 import type Module from './Module.js';
-import type { GithubCommit } from './fetch_types.js';
 import { hashGet, searchGet } from './url_util.js';
 
 type GlobalState = {
@@ -12,7 +11,6 @@ type GlobalState = {
   location: URL;
   pane: PANE;
   selectedModules?: Map<string, Module>;
-  commits: GithubCommit[];
 };
 
 function _getInitialPane() {
@@ -24,7 +22,6 @@ function _getInitialPane() {
 }
 
 let globalState: GlobalState = {
-  commits: [],
   graph: {
     moduleInfos: new Map(),
     entryModules: new Set(),
