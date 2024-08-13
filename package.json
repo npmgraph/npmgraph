@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@bugsnag/js": "7.25.0",
-    "@hpcc-js/wasm": "2.18.0",
+    "@hpcc-js/wasm-graphviz": "^1.0.3",
     "@types/d3-interpolate": "3.0.4",
     "@types/d3-scale": "4.0.8",
     "@types/d3-scale-chromatic": "3.0.3",
