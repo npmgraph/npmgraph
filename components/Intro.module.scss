@@ -4,7 +4,10 @@
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  background: radial-gradient(var(--bg-root), color-mix(in lab, var(--accent) 10%, var(--bg-root)));
+  background: radial-gradient(
+    var(--bg-root),
+    color-mix(in lab, var(--accent) 10%, var(--bg-root))
+  );
   padding: 1em;
   width: 100%;
   height: 100svh;
