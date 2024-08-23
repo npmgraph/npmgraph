@@ -5,6 +5,7 @@ import type Module from '../../lib/Module.js';
 
 import { cn } from '../../lib/dom.js';
 import './ModuleVersionInfo.scss';
+import { QueryLink } from '../QueryLink.js';
 
 export function ModuleVersionInfo({
   module,
@@ -21,7 +22,7 @@ export function ModuleVersionInfo({
 
   const latestVersion = module.packument['dist-tags'].latest;
   const latestParts = parse(latestVersion);
-  if (!latestParts) {
+  if (!latestVersion || !latestParts) {
     return null;
   }
 
@@ -72,9 +73,14 @@ export function ModuleVersionInfo({
           : simplur`${-patchDiff} patch version[|s] ahead of`;
     }
 
+    const latestLink = (
+      <QueryLink query={`${module.packument.name}@${latestVersion}`}>
+        {latestVersion}
+      </QueryLink>
+    );
     content = (
       <>
-        {message} <code>latest</code> ({latestVersion})
+        {message} <code>latest</code> ({latestLink})
       </>
     );
   }
