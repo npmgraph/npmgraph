@@ -74,9 +74,7 @@ export function ModuleVersionInfo({
     }
 
     const latestLink = (
-      <QueryLink query={module.packument.name}>
-        {latestVersion}
-      </QueryLink>
+      <QueryLink query={module.packument.name}>{latestVersion}</QueryLink>
     );
     content = (
       <>
