@@ -34,7 +34,6 @@ function detectFeatures() {
     'Map.groupBy': window.Map?.groupBy,
     fetch: window.fetch,
     globalThis: window.globalThis,
-    'String#replaceAll': String.prototype.replaceAll,
     Promise: window.Promise,
   };
 
