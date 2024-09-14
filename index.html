@@ -7,7 +7,10 @@
     <meta
       http-equiv="Content-Security-Policy"
       content="
-      default-src 'self' 'unsafe-inline' 'unsafe-eval'
+      ; default-src
+      'self'
+      'unsafe-inline'
+      'unsafe-eval'
       blob:
       fonts.googleapis.com
       fonts.gstatic.com
@@ -15,15 +18,18 @@
       sessions.bugsnag.com
       www.google-analytics.com
       www.googletagmanager.com
-      ;
-      img-src 'self'
+      vercel.live
+
+      ; img-src
+      'self'
       www.gravatar.com
       avatars.githubusercontent.com
       github.com
       www.googletagmanager.com
       www.google-analytics.com
-      ;
-      connect-src *
+
+      ; connect-src
+      *
       "
     />
     <meta name="description" content="Graph / visualize of npm dependencies" />
