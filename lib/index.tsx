@@ -12,12 +12,23 @@ import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
 
+function isValidJS(src: string) {
+  try {
+    // eslint-disable-next-line no-new-func, no-new
+    new Function(src);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
   const unsupported = new Map<string, JSX.Element>();
 
   // API checks
   const features = {
+    '||= (Logical Or)': isValidJS('a ||= 123'),
     'AbortSignal.timeout': window.AbortSignal?.timeout,
     // @ts-expect-error remove this ignore once VSCode knows about groupBy
     'Map.groupBy': window.Map?.groupBy,
