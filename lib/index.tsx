@@ -22,6 +22,7 @@ function detectFeatures() {
     // @ts-expect-error remove this ignore once VSCode knows about groupBy
     'Map.groupBy': window.Map?.groupBy,
     fetch: window.fetch,
+    globalThis: window.globalThis,
     Promise: window.Promise,
   };
 
