@@ -44,6 +44,9 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       return a.time < b.time ? -1 : 0;
     });
 
+  // No releases to display?
+  if (byTime.length === 0) return;
+
   const majorMax = byTime.reduce(
     (acc, [, v]) => Math.max(acc, v.semver.major),
     byTime[0][1].semver.major,
