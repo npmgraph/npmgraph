@@ -48,6 +48,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     );
   }
 
+  // Add cmd-enter support to search in a new tab
   function handleCmdEnter(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter' && e.metaKey) {
       window.open(`/?${getSearchParams()}`, '_blank');
