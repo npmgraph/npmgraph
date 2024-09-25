@@ -3,7 +3,7 @@
   <ShortName>npmgraph</ShortName>
   <Description>Explore NPM modules and dependencies</Description>
   <Url type="text/html" template="http://npmgraph.js.org/?q={searchTerms}"/>
-  <Image height="16" width="16" type="image/x-icon">http://npmgraph.js.org/favicon.ico</Image>
+  <Image height="16" width="16" type="image/png">http://npmgraph.js.org/favicon.png</Image>
   <Query role="example" searchTerms="eslint"/>
   <Developer>npmgraph contributors</Developer>
   <SyndicationRight>open</SyndicationRight>
