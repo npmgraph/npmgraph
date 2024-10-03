@@ -26,22 +26,34 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     // ignore
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  function getSearchParams() {
     let moduleKeys = inputRef
       .current!.value.split(',')
       .map(v => v.trim())
       .filter(isDefined);
 
     moduleKeys = [...new Set(moduleKeys)]; // De-dupe
+    return searchSet('q', moduleKeys.join(', '));
+  }
+
+  function handleSubmit(e?: React.FormEvent<HTMLFormElement>) {
+    e?.preventDefault();
 
     patchLocation(
       {
-        search: searchSet('q', moduleKeys.join(', ')),
+        search: getSearchParams(),
         hash: '',
       },
       false,
     );
+  }
+
+  // Add cmd-enter support to search in a new tab
+  function handleCmdEnter(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter' && e.metaKey) {
+      window.open(`/?${getSearchParams()}`, '_blank');
+      e.preventDefault();
+    }
   }
 
   return (
@@ -61,6 +73,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
           // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting
           autoFocus={!hasSoftKeyboard}
           onChange={e => setValue(e.target.value)}
+          onKeyDown={handleCmdEnter}
           {...props}
         />
       </form>
