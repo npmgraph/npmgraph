@@ -304,6 +304,10 @@
     "id": "Boehm-GC",
     "name": "Boehm-Demers-Weiser GC License"
   },
+  "boehm-gc-without-fee": {
+    "id": "Boehm-GC-without-fee",
+    "name": "Boehm-Demers-Weiser GC License (without fee)"
+  },
   "borceux": {
     "id": "Borceux",
     "name": "Borceux license"
@@ -968,6 +972,18 @@
   "doc": {
     "id": "DOC",
     "name": "DOC License"
+  },
+  "docbook-schema": {
+    "id": "DocBook-Schema",
+    "name": "DocBook Schema License"
+  },
+  "docbook-stylesheet": {
+    "id": "DocBook-Stylesheet",
+    "name": "DocBook Stylesheet License"
+  },
+  "docbook-xml": {
+    "id": "DocBook-XML",
+    "name": "DocBook XML License"
   },
   "dotseqn": {
     "id": "Dotseqn",
@@ -1968,6 +1984,10 @@
     "id": "MIT-advertising",
     "name": "Enlightenment License (e16)"
   },
+  "mit-click": {
+    "id": "MIT-Click",
+    "name": "MIT Click License"
+  },
   "mit-cmu": {
     "id": "MIT-CMU",
     "name": "CMU License"
@@ -2723,6 +2743,10 @@
     "id": "Sendmail-8.23",
     "name": "Sendmail License 8.23"
   },
+  "sendmail-open-source-1.1": {
+    "id": "Sendmail-Open-Source-1.1",
+    "name": "Sendmail Open Source License v1.1"
+  },
   "sgi-b-1.0": {
     "id": "SGI-B-1.0",
     "name": "SGI Free Software License B v1.0"
@@ -2930,6 +2954,10 @@
     "id": "TPL-1.0",
     "name": "THOR Public License 1.0"
   },
+  "trustedqsl": {
+    "id": "TrustedQSL",
+    "name": "TrustedQSL License"
+  },
   "ttwl": {
     "id": "TTWL",
     "name": "Text-Tabs+Wrap License"
@@ -2945,6 +2973,10 @@
   "tu-berlin-2.0": {
     "id": "TU-Berlin-2.0",
     "name": "Technische Universitaet Berlin License 2.0"
+  },
+  "ubuntu-font-1.0": {
+    "id": "Ubuntu-font-1.0",
+    "name": "Ubuntu Font Licence v1.0"
   },
   "ucar": {
     "id": "UCAR",
