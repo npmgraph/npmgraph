@@ -26,6 +26,7 @@ export default antfu({
     'style/quotes': 'off',
     'style/semi': 'off',
     'style/type-generic-spacing': 'off',
+    'antfu/consistent-chaining': 'off',
   },
   typescript: {
     overrides: {
