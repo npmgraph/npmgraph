@@ -203,8 +203,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       if (signal.aborted) return; // Check after all async stuff
 
       // Parse markup
-      const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
-        .children[0] as SVGSVGElement;
+      const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml').children[0] as SVGSVGElement;
       svgDom.remove();
 
       // Remove background element so page background shows thru

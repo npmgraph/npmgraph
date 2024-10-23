@@ -28,9 +28,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
 
   function getSearchParams() {
     let moduleKeys = inputRef
-      .current!.value.split(',')
-      .map(v => v.trim())
-      .filter(isDefined);
+      .current!.value.split(',').map(v => v.trim()).filter(isDefined);
 
     moduleKeys = [...new Set(moduleKeys)]; // De-dupe
     return searchSet('q', moduleKeys.join(', '));
