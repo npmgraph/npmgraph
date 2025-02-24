@@ -142,9 +142,10 @@ export async function getGraphForQuery(
         const downstreamModule = await getModule(getModuleKey(name, version));
 
         const moduleInfo = await _visit(downstreamModule, level + 1);
+        if (!moduleInfo) return;
 
-        moduleInfo?.upstream.add({ module, type });
-        info?.downstream.add({ module: downstreamModule, type });
+        moduleInfo.upstream.add({ module, type });
+        info.downstream.add({ module: moduleInfo.module, type });
       }),
     );
 
@@ -278,11 +279,12 @@ export function foreachUpstream(
   callback: (module: Module) => void,
   seen: Set<Module> = new Set(),
 ) {
-  const info = graph.moduleInfos.get(module.key);
-  if (!info || seen.has(module)) return;
   seen.add(module);
+  const info = graph.moduleInfos.get(module.key);
+  if (!info) return;
 
   for (const { module } of info.upstream) {
+    if (seen.has(module)) continue;
     callback(module);
     foreachUpstream(module, graph, callback, seen);
   }
@@ -294,11 +296,12 @@ export function foreachDownstream(
   callback: (module: Module) => void,
   seen: Set<Module> = new Set(),
 ) {
-  const info = graph.moduleInfos.get(module.key);
-  if (!info || seen.has(module)) return;
   seen.add(module);
+  const info = graph.moduleInfos.get(module.key);
+  if (!info) return;
 
   for (const { module } of info.downstream) {
+    if (seen.has(module)) continue;
     callback(module);
     foreachDownstream(module, graph, callback, seen);
   }
