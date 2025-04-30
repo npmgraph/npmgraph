@@ -1,16 +1,20 @@
-name: PR
+name: "Lint PR"
 
 on:
-  pull_request:
+  pull_request_target:
     types:
-      - synchronize # GitHub requires this workflow to run on the latest commit
       - opened
       - edited
+      - synchronize
+      - reopened
 
 jobs:
-  title:
+  main:
+    name: Validate PR title
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     steps:
-      - name: 'Validate: ${{github.event.pull_request.title}}'
-        if: ${{ !startsWith(github.event.pull_request.title, 'fix:') && !startsWith(github.event.pull_request.title, 'feat:') && !startsWith(github.event.pull_request.title, 'chore:') }}
-        run: exit 1
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
