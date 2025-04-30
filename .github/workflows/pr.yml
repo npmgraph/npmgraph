@@ -11,7 +11,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  main:
+  title:
     name: Validate PR title
     runs-on: ubuntu-latest
     permissions:
