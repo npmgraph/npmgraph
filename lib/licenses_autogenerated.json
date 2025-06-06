@@ -148,6 +148,10 @@
     "id": "any-OSI",
     "name": "Any OSI License"
   },
+  "any-osi-perl-modules": {
+    "id": "any-OSI-perl-modules",
+    "name": "Any OSI License - Perl Modules"
+  },
   "apache-1.0": {
     "id": "Apache-1.0",
     "name": "Apache License 1.0"
@@ -247,6 +251,14 @@
       "osi-approved"
     ]
   },
+  "artistic-dist": {
+    "id": "Artistic-dist",
+    "name": "Artistic License 1.0 (dist)"
+  },
+  "aspell-ru": {
+    "id": "Aspell-RU",
+    "name": "Aspell Russian License"
+  },
   "aswf-digital-assets-1.0": {
     "id": "ASWF-Digital-Assets-1.0",
     "name": "ASWF Digital Assets License version 1.0"
@@ -304,6 +316,10 @@
     "id": "Boehm-GC",
     "name": "Boehm-Demers-Weiser GC License"
   },
+  "boehm-gc-without-fee": {
+    "id": "Boehm-GC-without-fee",
+    "name": "Boehm-Demers-Weiser GC License (without fee)"
+  },
   "borceux": {
     "id": "Borceux",
     "name": "Borceux license"
@@ -353,6 +369,10 @@
     "id": "BSD-2-Clause-Patent",
     "name": "BSD-2-Clause Plus Patent License",
     "isOsiApproved": true
+  },
+  "bsd-2-clause-pkgconf-disclaimer": {
+    "id": "BSD-2-Clause-pkgconf-disclaimer",
+    "name": "BSD 2-Clause pkgconf disclaimer variant"
   },
   "bsd-2-clause-views": {
     "id": "BSD-2-Clause-Views",
@@ -738,6 +758,14 @@
     "id": "CC-PDDC",
     "name": "Creative Commons Public Domain Dedication and Certification"
   },
+  "cc-pdm-1.0": {
+    "id": "CC-PDM-1.0",
+    "name": "Creative    Commons Public Domain Mark 1.0 Universal"
+  },
+  "cc-sa-1.0": {
+    "id": "CC-SA-1.0",
+    "name": "Creative Commons Share Alike 1.0 Generic"
+  },
   "cc0-1.0": {
     "id": "CC0-1.0",
     "name": "Creative Commons Zero v1.0 Universal"
@@ -919,6 +947,10 @@
     "id": "Crossword",
     "name": "Crossword License"
   },
+  "cryptoswift": {
+    "id": "CryptoSwift",
+    "name": "CryptoSwift License"
+  },
   "crystalstacker": {
     "id": "CrystalStacker",
     "name": "CrystalStacker License"
@@ -968,6 +1000,22 @@
   "doc": {
     "id": "DOC",
     "name": "DOC License"
+  },
+  "docbook-dtd": {
+    "id": "DocBook-DTD",
+    "name": "DocBook DTD License"
+  },
+  "docbook-schema": {
+    "id": "DocBook-Schema",
+    "name": "DocBook Schema License"
+  },
+  "docbook-stylesheet": {
+    "id": "DocBook-Stylesheet",
+    "name": "DocBook Stylesheet License"
+  },
+  "docbook-xml": {
+    "id": "DocBook-XML",
+    "name": "DocBook XML License"
   },
   "dotseqn": {
     "id": "Dotseqn",
@@ -1168,9 +1216,21 @@
     "id": "FSFULLR",
     "name": "FSF Unlimited License (with License Retention)"
   },
+  "fsfullrsd": {
+    "id": "FSFULLRSD",
+    "name": "FSF Unlimited License (with License Retention and Short Disclaimer)"
+  },
   "fsfullrwd": {
     "id": "FSFULLRWD",
     "name": "FSF Unlimited License (With License Retention and Warranty Disclaimer)"
+  },
+  "fsl-1.1-alv2": {
+    "id": "FSL-1.1-ALv2",
+    "name": "Functional Source License, Version 1.1, ALv2 Future License"
+  },
+  "fsl-1.1-mit": {
+    "id": "FSL-1.1-MIT",
+    "name": "Functional Source License, Version 1.1, MIT Future License"
   },
   "ftl": {
     "id": "FTL",
@@ -1184,6 +1244,10 @@
     "id": "fwlw",
     "name": "fwlw License"
   },
+  "game-programming-gems": {
+    "id": "Game-Programming-Gems",
+    "name": "Game Programming Gems License"
+  },
   "gcr-docs": {
     "id": "GCR-docs",
     "name": "Gnome GCR Documentation License"
@@ -1191,6 +1255,10 @@
   "gd": {
     "id": "GD",
     "name": "GD License"
+  },
+  "generic-xts": {
+    "id": "generic-xts",
+    "name": "Generic XTS License"
   },
   "gfdl-1.1": {
     "id": "GFDL-1.1",
@@ -1431,6 +1499,10 @@
     "id": "HaskellReport",
     "name": "Haskell Language Report License"
   },
+  "hdf5": {
+    "id": "HDF5",
+    "name": "HDF5 License"
+  },
   "hdparm": {
     "id": "hdparm",
     "name": "hdparm License"
@@ -1598,6 +1670,10 @@
     "id": "Inner-Net-2.0",
     "name": "Inner Net License v2.0"
   },
+  "innosetup": {
+    "id": "InnoSetup",
+    "name": "Inno Setup License"
+  },
   "intel": {
     "id": "Intel",
     "name": "Intel Open Source License",
@@ -1655,6 +1731,10 @@
   "jasper-2.0": {
     "id": "JasPer-2.0",
     "name": "JasPer License"
+  },
+  "jove": {
+    "id": "jove",
+    "name": "Jove License"
   },
   "jpl-image": {
     "id": "JPL-image",
@@ -1783,6 +1863,10 @@
   "libpng": {
     "id": "Libpng",
     "name": "libpng License"
+  },
+  "libpng-1.6.35": {
+    "id": "libpng-1.6.35",
+    "name": "PNG Reference Library License v1 (for libpng 0.5 through 1.6.35"
   },
   "libpng-2.0": {
     "id": "libpng-2.0",
@@ -1925,6 +2009,10 @@
     "id": "MakeIndex",
     "name": "MakeIndex License"
   },
+  "man2html": {
+    "id": "man2html",
+    "name": "man2html License"
+  },
   "martin-birgmeier": {
     "id": "Martin-Birgmeier",
     "name": "Martin Birgmeier License"
@@ -1940,6 +2028,10 @@
   "minpack": {
     "id": "Minpack",
     "name": "Minpack License"
+  },
+  "mips": {
+    "id": "MIPS",
+    "name": "MIPS License"
   },
   "miros": {
     "id": "MirOS",
@@ -1967,6 +2059,10 @@
   "mit-advertising": {
     "id": "MIT-advertising",
     "name": "Enlightenment License (e16)"
+  },
+  "mit-click": {
+    "id": "MIT-Click",
+    "name": "MIT Click License"
   },
   "mit-cmu": {
     "id": "MIT-CMU",
@@ -2193,6 +2289,10 @@
       "osi-approved"
     ]
   },
+  "ngrep": {
+    "id": "ngrep",
+    "name": "ngrep License"
+  },
   "nicta-1.0": {
     "id": "NICTA-1.0",
     "name": "NICTA Public Software License, Version 1.0"
@@ -2258,6 +2358,10 @@
   "nrl": {
     "id": "NRL",
     "name": "NRL License"
+  },
+  "ntia-pd": {
+    "id": "NTIA-PD",
+    "name": "NTIA Public Domain Notice"
   },
   "ntp": {
     "id": "NTP",
@@ -2723,6 +2827,10 @@
     "id": "Sendmail-8.23",
     "name": "Sendmail License 8.23"
   },
+  "sendmail-open-source-1.1": {
+    "id": "Sendmail-Open-Source-1.1",
+    "name": "Sendmail Open Source License v1.1"
+  },
   "sgi-b-1.0": {
     "id": "SGI-B-1.0",
     "name": "SGI Free Software License B v1.0"
@@ -2787,6 +2895,10 @@
       "osi-approved"
     ]
   },
+  "smail-gpl": {
+    "id": "SMAIL-GPL",
+    "name": "SMAIL General Public License"
+  },
   "smlnj": {
     "id": "SMLNJ",
     "name": "Standard ML of New Jersey License"
@@ -2802,6 +2914,10 @@
   "snprintf": {
     "id": "snprintf",
     "name": "snprintf License"
+  },
+  "sofa": {
+    "id": "SOFA",
+    "name": "SOFA Software License"
   },
   "softsurfer": {
     "id": "softSurfer",
@@ -2906,6 +3022,10 @@
     "id": "TGPPL-1.0",
     "name": "Transitive Grace Period Public Licence 1.0"
   },
+  "thirdeye": {
+    "id": "ThirdEye",
+    "name": "ThirdEye License"
+  },
   "threeparttable": {
     "id": "threeparttable",
     "name": "threeparttable License"
@@ -2930,6 +3050,10 @@
     "id": "TPL-1.0",
     "name": "THOR Public License 1.0"
   },
+  "trustedqsl": {
+    "id": "TrustedQSL",
+    "name": "TrustedQSL License"
+  },
   "ttwl": {
     "id": "TTWL",
     "name": "Text-Tabs+Wrap License"
@@ -2945,6 +3069,10 @@
   "tu-berlin-2.0": {
     "id": "TU-Berlin-2.0",
     "name": "Technische Universitaet Berlin License 2.0"
+  },
+  "ubuntu-font-1.0": {
+    "id": "Ubuntu-font-1.0",
+    "name": "Ubuntu Font Licence v1.0"
   },
   "ucar": {
     "id": "UCAR",
@@ -2989,6 +3117,14 @@
     "id": "Unlicense",
     "name": "The Unlicense",
     "isOsiApproved": true
+  },
+  "unlicense-libtelnet": {
+    "id": "Unlicense-libtelnet",
+    "name": "Unlicense - libtelnet variant"
+  },
+  "unlicense-libwhirlpool": {
+    "id": "Unlicense-libwhirlpool",
+    "name": "Unlicense - libwhirlpool variant"
   },
   "upl-1.0": {
     "id": "UPL-1.0",
@@ -3061,6 +3197,10 @@
   "wtfpl": {
     "id": "WTFPL",
     "name": "Do What The F*ck You Want To Public License"
+  },
+  "wwl": {
+    "id": "wwl",
+    "name": "WWL License"
   },
   "wxwindows": {
     "id": "wxWindows",
