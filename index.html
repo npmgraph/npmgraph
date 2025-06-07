@@ -2,6 +2,21 @@
 
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-0FPWJCJM5R"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'G-0FPWJCJM5R');
+    </script>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
@@ -33,6 +48,16 @@
       *
       "
     />
+    <link
+      rel="search"
+      type="application/opensearchdescription+xml"
+      title="npmgraph"
+      href="/opensearch.xml"
+    />
+    <meta
+      name="google-site-verification"
+      content="3ngFL3Bcx_jMvyD6oTFDYNk8fmF-wxk5ykjZg7wW624"
+    />
     <meta name="description" content="Graph / visualize of npm dependencies" />
     <meta
       name="keywords"
@@ -54,21 +79,6 @@
 
     <title>npmgraph - NPM Dependency Diagrams</title>
   </head>
-
-  <!-- Google tag (gtag.js) -->
-  <script
-    async
-    src="https://www.googletagmanager.com/gtag/js?id=G-0FPWJCJM5R"
-  ></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-
-    gtag('config', 'G-0FPWJCJM5R');
-  </script>
 
   <body>
     <div id="app" />

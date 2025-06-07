@@ -10,8 +10,11 @@ export default antfu({
     'antfu/if-newline': 'off',
     'style/indent-binary-ops': 'off',
     'ts/consistent-type-definitions': ['error', 'type'],
+    'perfectionist/sort-imports': 'off',
+    'perfectionist/sort-named-imports': 'off',
 
     // Prettier conflicts
+    // TODO: Update after https://github.com/antfu/eslint-config/issues/615
     'style/arrow-parens': 'off',
     'style/brace-style': 'off',
     'style/indent': 'off',
@@ -23,6 +26,7 @@ export default antfu({
     'style/quotes': 'off',
     'style/semi': 'off',
     'style/type-generic-spacing': 'off',
+    'antfu/consistent-chaining': 'off',
   },
   typescript: {
     overrides: {
