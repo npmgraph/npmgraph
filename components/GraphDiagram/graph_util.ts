@@ -273,37 +273,20 @@ export function composeDOT({
     .join('\n');
 }
 
-export function foreachUpstream(
-  module: Module,
-  graph: GraphState,
-  callback: (module: Module) => void,
-  seen: Set<Module> = new Set(),
-) {
-  seen.add(module);
-  const info = graph.moduleInfos.get(module.key);
-  if (!info) return;
-
-  for (const { module } of info.upstream) {
-    if (seen.has(module)) continue;
-    callback(module);
-    foreachUpstream(module, graph, callback, seen);
-  }
-}
-
 export function foreachDownstream(
   module: Module,
   graph: GraphState,
   callback: (module: Module) => void,
   seen: Set<Module> = new Set(),
 ) {
-  seen.add(module);
   const info = graph.moduleInfos.get(module.key);
   if (!info) return;
+  seen.add(module);
 
-  for (const { module } of info.downstream) {
-    if (seen.has(module)) continue;
-    callback(module);
-    foreachDownstream(module, graph, callback, seen);
+  for (const { module: downstreamModule } of info.downstream) {
+    if (seen.has(downstreamModule)) continue;
+    callback(downstreamModule);
+    foreachDownstream(downstreamModule, graph, callback, seen);
   }
 }
 
