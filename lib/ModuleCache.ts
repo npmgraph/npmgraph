@@ -61,7 +61,7 @@ function newCachedModule(...args: ConstructorParameters<typeof Module>) {
   if (cachedEntry) {
     return cachedEntry.promise;
   }
-console.log('NEW MODULE', moduleKey, pv.name, pv.version);
+
   // Create cache entry ASAP
   const cacheEntry = PromiseWithResolvers() as ModuleCacheEntry;
   moduleCache.set(moduleKey, cacheEntry);
