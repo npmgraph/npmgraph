@@ -261,7 +261,6 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
 
   // Add version to packument
   packument.versions[pkg.version] = pkg;
-console.log('NEW MODULE2', pkg.name, pkg.version, packument.versions[pkg.version]);
 
   const module = new Module(pkg);
 
