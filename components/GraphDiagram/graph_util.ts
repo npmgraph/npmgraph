@@ -271,20 +271,21 @@ export function composeDOT({
     .join('\n');
 }
 
+// Invoke callback once for each [unique] downstream module
 export function foreachDownstream(
   module: Module,
   graph: GraphState,
   callback: (module: Module) => void,
-  seen: Set<Module> = new Set(),
+  _seen: Set<Module> = new Set(),
 ) {
   const info = graph.moduleInfos.get(module.key);
   if (!info) return;
-  seen.add(module);
 
   for (const { module: downstreamModule } of info.downstream) {
-    if (seen.has(downstreamModule)) continue;
+    if (_seen.has(downstreamModule)) continue;
+    _seen.add(downstreamModule);
     callback(downstreamModule);
-    foreachDownstream(downstreamModule, graph, callback, seen);
+    foreachDownstream(downstreamModule, graph, callback, _seen);
   }
 }
 
