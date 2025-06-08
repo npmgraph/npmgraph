@@ -143,7 +143,7 @@ export async function getGraphForQuery(
 
         const moduleInfo = await _visit(downstreamModule, level + 1);
         moduleInfo?.upstream.add({ module, type });
-        info.downstream.add({ module: downstreamModule, type });
+        info?.downstream.add({ module: downstreamModule, type });
       }),
     );
 
