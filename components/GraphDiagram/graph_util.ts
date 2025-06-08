@@ -142,9 +142,8 @@ export async function getGraphForQuery(
         const downstreamModule = await getModule(getModuleKey(name, version));
 
         const moduleInfo = await _visit(downstreamModule, level + 1);
-
         moduleInfo?.upstream.add({ module, type });
-        info?.downstream.add({ module: downstreamModule, type });
+        info.downstream.add({ module: downstreamModule, type });
       }),
     );
 
@@ -272,35 +271,21 @@ export function composeDOT({
     .join('\n');
 }
 
-export function foreachUpstream(
-  module: Module,
-  graph: GraphState,
-  callback: (module: Module) => void,
-  seen: Set<Module> = new Set(),
-) {
-  const info = graph.moduleInfos.get(module.key);
-  if (!info || seen.has(module)) return;
-  seen.add(module);
-
-  for (const { module } of info.upstream) {
-    callback(module);
-    foreachUpstream(module, graph, callback, seen);
-  }
-}
-
+// Invoke callback once for each [unique] downstream module
 export function foreachDownstream(
   module: Module,
   graph: GraphState,
   callback: (module: Module) => void,
-  seen: Set<Module> = new Set(),
+  _seen: Set<Module> = new Set(),
 ) {
   const info = graph.moduleInfos.get(module.key);
-  if (!info || seen.has(module)) return;
-  seen.add(module);
+  if (!info) return;
 
-  for (const { module } of info.downstream) {
-    callback(module);
-    foreachDownstream(module, graph, callback, seen);
+  for (const { module: downstreamModule } of info.downstream) {
+    if (_seen.has(downstreamModule)) continue;
+    _seen.add(downstreamModule);
+    callback(downstreamModule);
+    foreachDownstream(downstreamModule, graph, callback, _seen);
   }
 }
 
