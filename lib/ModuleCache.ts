@@ -54,24 +54,6 @@ function selectVersion(
   return packument.versions[selectedVersion ?? ''];
 }
 
-function newCachedModule(...args: ConstructorParameters<typeof Module>) {
-  const [pv] = args;
-  const moduleKey = getModuleKey(pv.name, pv.version);
-  const cachedEntry = moduleCache.get(moduleKey);
-  if (cachedEntry) {
-    return cachedEntry.promise;
-  }
-
-  // Create cache entry ASAP
-  const cacheEntry = PromiseWithResolvers() as ModuleCacheEntry;
-  moduleCache.set(moduleKey, cacheEntry);
-
-  cacheEntry.module = new Module(...args);
-  cacheEntry.resolve(cacheEntry.module);
-
-  return cacheEntry.promise;
-}
-
 async function fetchModuleFromNPM(
   moduleName: string,
   version?: string,
@@ -89,7 +71,7 @@ async function fetchModuleFromNPM(
     throw new Error(`${moduleName} does not have a version ${version}`);
   }
 
-  return newCachedModule(packumentVersion, packument);
+  return new Module(packumentVersion, packument);
 }
 
 async function fetchModuleFromURL(urlString: string) {
@@ -106,7 +88,7 @@ async function fetchModuleFromURL(urlString: string) {
 
   if (!pkg.name) pkg.name = url.toString();
 
-  return newCachedModule(pkg as PackumentVersion);
+  return new Module(pkg as PackumentVersion);
 }
 
 // Note: This method should not throw!  Errors should be returned as part of a
