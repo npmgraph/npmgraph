@@ -37,7 +37,7 @@ export default {
 
 // Examine a package.json#exports object to see if it might have ESM exports
 function hasEsmExports(exports: unknown): boolean {
-  if (Array.isArray(exports)) return exports.some(e => hasEsmExports(e));
+  if (Array.isArray(exports)) return exports.some(hasEsmExports);
   if (!exports || typeof exports !== 'object') return false;
 
   for (const [k, v] of Object.entries(exports)) {
@@ -54,7 +54,7 @@ function hasEsmExports(exports: unknown): boolean {
 
 // Examine a package.json#exports object to see if it looks might have CJS exports
 function hasCjsExports(exports: unknown): boolean {
-  if (Array.isArray(exports)) return exports.some(e => hasCjsExports(e));
+  if (Array.isArray(exports)) return exports.some(hasCjsExports);
   if (!exports || typeof exports !== 'object') return false;
 
   for (const [k, v] of Object.entries(exports)) {
