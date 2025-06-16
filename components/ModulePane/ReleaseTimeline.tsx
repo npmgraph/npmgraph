@@ -137,7 +137,6 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const xpad = w * 0.1;
   const ypad = h * 0.1;
-  console.log('STYLES', styles);
   return (
     <Section title="Release Timeline">
       <svg
