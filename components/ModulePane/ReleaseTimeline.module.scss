@@ -1,7 +1,6 @@
 .root {
-  border: solid 1px var(--grey70);
-  border-radius: 0.3rem;
-  background-color: var(--grey90);
+  border: solid 1px var(--grey90);
+  background-color: var(--grey100);
 
   width: 100%;
   height: 8rem;
@@ -16,20 +15,22 @@
     display: inline-block;
     vertical-align: middle;
     border-radius: 50%;
-    background-color: red;
     width: 0.7em;
     height: 0.7em;
   }
   .dotKeyMajor {
-    background-color: var(--bg-red);
+    background-color: var(--grey100);
+    border: solid 1px var(--grey20);
     width: 1em;
     height: 1em;
   }
   .dotKeyMinor {
     background-color: var(--bg-orange);
+    width: 0.8em;
+    height: 0.8em;
   }
   .dotKeyPatch {
-    background-color: var(--bg-yellow);
+    background-color: var(--bg-green);
   }
   .dotKeyPrerelease {
     background-color: var(--bg-blue);
@@ -39,18 +40,30 @@
 svg {
   cursor: default;
 
+  .dot > text {
+    fill: var(--text);
+  }
+
   > .layer-grid {
-    stroke: var(--grey20);
+    stroke: var(--grey60);
   }
 
   .layer-major {
-    fill: var(--bg-red);
+    circle {
+      stroke: var(--grey20);
+      stroke-width: 0.1em;
+      fill: var(--grey100);
+    }
+    text {
+      fill: var(--text);
+    }
   }
+
   .layer-minor {
     fill: var(--bg-orange);
   }
   .layer-patch {
-    fill: var(--bg-yellow);
+    fill: var(--bg-green);
   }
   .layer-prerelease {
     fill: var(--bg-blue);

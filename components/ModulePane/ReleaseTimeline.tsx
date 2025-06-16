@@ -103,7 +103,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       r *= 0.4;
     } else if (semver.minor) {
       layer = 'minor';
-      r *= 0.4;
+      r *= 0.5;
     } else if (semver.major) {
       layer = 'major';
 
@@ -116,7 +116,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     }
 
     layers[layer].push(
-      <g key={`dot=${key}`} className="dot">
+      <g key={`dot=${key}`} className={styles.dot}>
         <title>{title}</title>
         <circle cx={x} cy={y} r={r} />
         {
@@ -125,13 +125,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
             <>
               <title>{title}</title>
 
-              <text
-                x={x}
-                y={y}
-                textAnchor="middle"
-                alignmentBaseline="middle"
-                fill="white"
-              >
+              <text x={x} y={y} textAnchor="middle" alignmentBaseline="central">
                 {semver.major}
               </text>
             </>
@@ -143,7 +137,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const xpad = w * 0.1;
   const ypad = h * 0.1;
-
+  console.log('STYLES', styles);
   return (
     <Section title="Release Timeline">
       <svg
@@ -153,6 +147,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       >
         {Object.entries(layers).map(([k, layer]) => {
           return (
+            // @ts-expect-error scss imports aren't getting typed correctly
             <g key={`layer-${k}`} className={styles[`layer-${k}`]}>
               {layer}
             </g>

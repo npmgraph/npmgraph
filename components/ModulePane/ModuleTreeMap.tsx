@@ -63,7 +63,7 @@ export function ModuleTreeMap({
             width: `${rd.x1 - rd.x0 - m}px`,
             height: `${rd.y1 - rd.y0 - m}px`,
             fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
-            backgroundColor: `hsl(${30 + (i / a.length) * 180}, 50%, 50%)`,
+            backgroundColor: `hsl(${30 + (i / a.length) * 300}, 50%, 50%)`,
           }}
         >
           {d.data.name} <span>{size}</span>

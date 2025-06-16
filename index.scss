@@ -5,7 +5,7 @@
   color-scheme: light dark;
 
   @for $i from 0 through 10 {
-    --grey#{($i) * 10}: hsl(0, 0%, #{$i * 10%});
+    --grey#{($i) * 10}: oklch(#{$i * 10%} 0 0);
   }
 
   --root-color: white; // Don't change, it's used to mix colors on light/dark schemes
@@ -37,37 +37,37 @@
   --bg0-shadow-color: color-mix(in hsl, var(--bg0) 90%, black);
 
   // Named stroke colors (for borders and lines that should contrast well with background colors)
-  --stroke-L: 40%;
-  --stroke-S: 100%;
-  --stroke-blue: hsl(180, var(--stroke-S), var(--stroke-L));
-  --stroke-orange: hsl(30, var(--stroke-S), var(--stroke-L));
-  --stroke-green: hsl(120, var(--stroke-S), var(--stroke-L));
-  --stroke-indigo: hsl(240, var(--stroke-S), var(--stroke-L));
-  --stroke-red: hsl(0, var(--stroke-S), var(--stroke-L));
-  --stroke-violet: hsl(300, var(--stroke-S), var(--stroke-L));
-  --stroke-yellow: hsl(60, var(--stroke-S), var(--stroke-L));
+  --stroke-L: 70%;
+  --stroke-C: 50%;
+  --stroke-red: oklch(var(--stroke-L) var(--stroke-C) 20);
+  --stroke-orange: oklch(var(--stroke-L) var(--stroke-C) 60);
+  --stroke-yellow: oklch(var(--stroke-L) var(--stroke-C) 90);
+  --stroke-green: oklch(var(--stroke-L) var(--stroke-C) 150);
+  --stroke-blue: oklch(var(--stroke-L) var(--stroke-C) 220);
+  --stroke-indigo: oklch(var(--stroke-L) var(--stroke-C) 250);
+  --stroke-violet: oklch(var(--stroke-L) var(--stroke-C) 280);
 
   // Named background colors (should contrast well with text color)
-  --bg-L: 70%; // Background intensity
-  --bg-S: 100%; // Background saturation
-  --bg-dark-L: 50%; // Dark bg intensity
-  --bg-dark-S: 60%; // Dark bg saturation
+  --bg-L: 70%; // Background lightness
+  --bg-C: 50%; // Background chroma
+  --bg-dark-L: 40%; // Dark bg lightness
+  --bg-dark-C: 50%; // Dark bg chroma
 
-  --bg-blue: hsl(180, var(--bg-S), var(--bg-L));
-  --bg-green: hsl(120, var(--bg-S), var(--bg-L));
-  --bg-indigo: hsl(240, var(--bg-S), var(--bg-L));
-  --bg-orange: hsl(30, var(--bg-S), var(--bg-L));
-  --bg-red: hsl(0, var(--bg-S), var(--bg-L));
-  --bg-violet: hsl(300, var(--bg-S), var(--bg-L));
-  --bg-yellow: hsl(60, var(--bg-S), var(--bg-L));
+  --bg-red: oklch(var(--bg-L) var(--bg-C) 20);
+  --bg-orange: oklch(var(--bg-L) var(--bg-C) 60);
+  --bg-yellow: oklch(var(--bg-L) var(--bg-C) 90);
+  --bg-green: oklch(var(--bg-L) var(--bg-C) 150);
+  --bg-blue: oklch(var(--bg-L) var(--bg-C) 220);
+  --bg-indigo: oklch(var(--bg-L) var(--bg-C) 250);
+  --bg-violet: oklch(var(--bg-L) var(--bg-C) 280);
 
-  --bg-darkblue: hsl(180, var(--bg-dark-S), var(--bg-dark-L));
-  --bg-darkgreen: hsl(120, var(--bg-dark-S), var(--bg-dark-L));
-  --bg-darkindigo: hsl(240, var(--bg-dark-S), var(--bg-dark-L));
-  --bg-darkorange: hsl(30, var(--bg-dark-S), var(--bg-dark-L));
-  --bg-darkred: hsl(0, var(--bg-dark-S), var(--bg-dark-L));
-  --bg-darkviolet: hsl(300, var(--bg-dark-S), var(--bg-dark-L));
-  --bg-darkyellow: hsl(60, var(--bg-dark-S), var(--bg-dark-L));
+  --bg-dark-red: oklch(var(--bg-dark-L) var(--bg-dark-C) 20);
+  --bg-dark-orange: oklch(var(--bg-dark-L) var(--bg-dark-C) 60);
+  --bg-dark-yellow: oklch(var(--bg-dark-L) var(--bg-dark-C) 90);
+  --bg-dark-green: oklch(var(--bg-dark-L) var(--bg-dark-C) 150);
+  --bg-dark-blue: oklch(var(--bg-dark-L) var(--bg-dark-C) 220);
+  --bg-dark-indigo: oklch(var(--bg-dark-L) var(--bg-dark-C) 250);
+  --bg-dark-violet: oklch(var(--bg-dark-L) var(--bg-dark-C) 280);
 
   --transition-duration: 0.5s;
 }
@@ -75,7 +75,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     @for $i from 0 through 10 {
-      --grey#{(10-$i) * 10}: hsl(0, 0%, #{$i * 10%});
+      --grey#{(10-$i) * 10}: oklch(#{$i * 10%} 0 0);
     }
 
     --root-color: black; // Don't change, it's used to mix colors on light/dark schemes
@@ -86,9 +86,10 @@
     --bg1: #696666;
     --bg2: #333;
 
-    --stroke-L: 60%;
-    --bg-L: 30%;
-    --bg-dark-L: 40%;
+    --stroke-L: 50%;
+    --bg-L: 50%;
+    --bg-C: 50%;
+    --bg-dark-L: 30%;
   }
 }
 
