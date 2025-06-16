@@ -9,13 +9,6 @@ declare module 'bundle-text:*' {
 // reason TS types the exports as `any`, despite the default export provided
 // below.
 
-declare module '*.module.css' {
-  const styles: Record<string, string>;
-  export default styles;
-}
-declare module '*.module.scss' {
-  const styles: Record<string, string>;
-  export default styles;
-}
-
+declare module '*.module.css';
+declare module '*.module.scss';
 declare module 'jsx:*';

@@ -146,7 +146,6 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       >
         {Object.entries(layers).map(([k, layer]) => {
           return (
-            // @ts-expect-error scss imports aren't getting typed correctly
             <g key={`layer-${k}`} className={styles[`layer-${k}`]}>
               {layer}
             </g>
