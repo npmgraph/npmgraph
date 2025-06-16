@@ -1,4 +1,5 @@
 import React from 'react';
+import { percent } from '../../lib/dom.js';
 import { scoreColor } from '../GraphPane/colorizers/NPMSColorizer.js';
 import * as styles from './ModuleScoreBar.module.scss';
 
@@ -11,7 +12,7 @@ export function ModuleScoreBar({
   score: number;
   style?: React.CSSProperties;
 }) {
-  const perc = `${(score * 100).toFixed(0)}%`;
+  const perc = percent(score);
 
   return (
     <>
@@ -22,7 +23,7 @@ export function ModuleScoreBar({
         <div
           className={styles.inner}
           style={{
-            width: perc,
+            width: percent(score),
             backgroundColor: scoreColor(score),
             ...style,
           }}

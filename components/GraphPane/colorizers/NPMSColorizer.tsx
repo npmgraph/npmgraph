@@ -1,5 +1,6 @@
 import type Module from '../../../lib/Module.js';
 import PromiseWithResolvers from '../../../lib/PromiseWithResolvers.js';
+import { percent } from '../../../lib/dom.js';
 import fetchJSON from '../../../lib/fetchJSON.js';
 import type { NPMSIOData } from '../../../lib/fetch_types.js';
 import { flash } from '../../../lib/flash.js';
@@ -32,8 +33,7 @@ class NPMSColorizer implements BulkColorizer {
         <span
           style={{
             flexGrow: 1,
-            background:
-              `linear-gradient(90deg, ${scoreColor(0)} 0, ${scoreColor(1)} 100%)`,
+            background: `linear-gradient(in oklch increasing hue 90deg, ${scoreColor(0)} 0, ${scoreColor(1)} 100%)`,
           }}
         />
         <span>&nbsp;100%</span>
@@ -111,7 +111,7 @@ class NPMSColorizer implements BulkColorizer {
 }
 
 export function scoreColor(score: number) {
-  return `oklch(var(--bg-L) var(--bg-C) ${Math.round(20 + score * 130)})`;
+  return `color-mix(in oklch increasing hue, var(--bg-red), var(--bg-green) ${percent(score)})`;
 }
 
 export const NPMSOverallColorizer = new NPMSColorizer(
