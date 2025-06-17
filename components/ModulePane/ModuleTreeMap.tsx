@@ -4,6 +4,7 @@ import { $ } from 'select-dom';
 import type { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';
 
+import { percent } from '../../lib/dom.js';
 import * as styles from './ModuleTreeMap.module.scss';
 
 export function ModuleTreeMap({
@@ -52,6 +53,8 @@ export function ModuleTreeMap({
       >;
       const size = human(d.value ?? 0, 'B');
       const frac = ((rd.x1 - rd.x0) * (rd.y1 - rd.y0)) / (w * h);
+      const backgroundColor = `color-mix(in oklch increasing hue, var(--bg-red), var(--bg-violet) ${percent(i / (a.length - 1))})`;
+
       return (
         <div
           key={d.data.name}
@@ -63,7 +66,7 @@ export function ModuleTreeMap({
             width: `${rd.x1 - rd.x0 - m}px`,
             height: `${rd.y1 - rd.y0 - m}px`,
             fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
-            backgroundColor: `hsl(${30 + (i / a.length) * 180}, 50%, 50%)`,
+            backgroundColor,
           }}
         >
           {d.data.name} <span>{size}</span>
