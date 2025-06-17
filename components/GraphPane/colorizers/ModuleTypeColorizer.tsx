@@ -1,6 +1,7 @@
 import type { PackageJSON } from '@npm/types';
 import type Module from '../../../lib/Module.js';
 import { LegendColor } from './LegendColor.js';
+import type { SimpleColorizer } from './index.js';
 
 export const COLORIZE_MODULE_CJS = 'var(--bg-red)';
 export const COLORIZE_MODULE_DUAL = 'var(--bg-yellow)';
@@ -42,8 +43,10 @@ export default {
     if (pkgType.types) {
       return COLORIZE_MODULE_TYPES;
     }
+
+    return '';
   },
-};
+} as SimpleColorizer;
 
 // Package-type detection logic
 //
