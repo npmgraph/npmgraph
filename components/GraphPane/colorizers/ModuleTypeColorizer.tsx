@@ -50,9 +50,6 @@ export default {
 
 // Package-type detection logic
 //
-// Logic to look at a PackageJSON object and determine if it is an ESM or CJS
-// package, with some other convenience logic thrown in for good measure.
-//
 // Ref:
 // https://github.com/npmgraph/npmgraph/pull/326#issuecomment-2972640439
 
@@ -71,7 +68,7 @@ function isCJSFile(file?: string) {
 }
 
 function detectPackageType(pkg: PackageJSON) {
-  // If the package name starts with @types/, then it's TS-types only
+  // @types/* packages are TS-types (not CJS or ESM)
   if (pkg.name.startsWith?.('@types/')) {
     return { esm: false, cjs: false, types: true };
   }
