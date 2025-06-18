@@ -2,6 +2,7 @@ import type { PackumentVersion } from '@npm/types';
 import { type SemVer, parse } from 'semver';
 import type Module from '../../lib/Module.js';
 
+import type { ReactElement } from 'react';
 import { cn } from '../../lib/dom.js';
 import useMeasure from '../../lib/useMeasure.js';
 import { Section } from '../Section.js';
@@ -61,12 +62,12 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const layers = {
     // Note: order here controls layering in SVG
-    grid: [] as JSX.Element[],
-    prerelease: [] as JSX.Element[],
-    patch: [] as JSX.Element[],
-    minor: [] as JSX.Element[],
-    major: [] as JSX.Element[],
-    text: [] as JSX.Element[],
+    grid: [] as ReactElement[],
+    prerelease: [] as ReactElement[],
+    patch: [] as ReactElement[],
+    minor: [] as ReactElement[],
+    major: [] as ReactElement[],
+    text: [] as ReactElement[],
   };
 
   const xScale = createScale(tmin, tmax, 0, w);
