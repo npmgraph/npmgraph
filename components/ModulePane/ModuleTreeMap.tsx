@@ -1,5 +1,5 @@
 import { type HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
-import React, { useEffect, useState } from 'react';
+import React, { type ReactElement, useEffect, useState } from 'react';
 import { $ } from 'select-dom';
 import type { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';
@@ -15,7 +15,7 @@ export function ModuleTreeMap({
   data: BundlePhobiaData;
   style?: React.CSSProperties;
 }) {
-  const [leaves, setLeaves] = useState<JSX.Element[]>([]);
+  const [leaves, setLeaves] = useState<ReactElement[]>([]);
 
   // Render contents as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {

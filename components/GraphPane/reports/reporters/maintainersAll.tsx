@@ -1,4 +1,5 @@
 import md5 from 'md5';
+import type { ReactElement } from 'react';
 import simplur from 'simplur';
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
@@ -14,7 +15,7 @@ export function maintainersAll({
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([name, modules]) => {
       const email = emailByMaintainer.get(name);
-      let img: JSX.Element | null = null;
+      let img: ReactElement | null = null;
       if (email) {
         img = (
           <img
