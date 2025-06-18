@@ -1,9 +1,9 @@
-import React from 'react';
 import { diff } from 'semver';
 import type Module from '../../../lib/Module.js';
 import { getNPMPackument } from '../../../lib/PackumentCache.js';
 import { COLORIZE_COLORS } from '../../../lib/constants.js';
 import { LegendColor } from './LegendColor.js';
+import type { SimpleColorizer } from './index.js';
 
 export default {
   title: 'Outdated Level',
@@ -48,4 +48,4 @@ export default {
         return '';
     }
   },
-};
+} as SimpleColorizer;
