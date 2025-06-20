@@ -117,15 +117,8 @@ function _detectExports(exports: unknown, pkgType: PackageModuleType) {
     if (importVal || (defaultVal && requireVal)) pkgType.esm = true;
     if (requireVal || (defaultVal && importVal)) pkgType.cjs = true;
 
-    // Walk through the exports object
-    for (const [k, v] of Object.entries(exports)) {
-      if (typeof v === 'string') {
-        _detectExports(v, pkgType);
-      }
-
-      // Recurse into "." exports
-      if (k === '.') _detectExports(v, pkgType);
-    }
+    // Drill down into object values
+    Object.values(exports).forEach(v => _detectExports(v, pkgType));
   }
 
   return pkgType;
