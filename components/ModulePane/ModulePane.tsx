@@ -1,8 +1,8 @@
 import React from 'react';
 import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.js';
-import type { Maintainer } from '../../lib/Module.js';
 import type Module from '../../lib/Module.js';
+import type { Maintainer } from '../../lib/Module.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import human from '../../lib/human.js';
 import useHashParam from '../../lib/useHashParam.js';
@@ -219,7 +219,7 @@ function getRepoUrlForModule(module: Module) {
 
   // Extract github project path from URL
   const match = repo?.match(/github.com\/([^/]+\/[^/?#]+)?/);
-  if (!match) return undefined;
+  if (!match?.[1]) return undefined;
 
   repo = match[1].replace(/\.git$/, '');
 
