@@ -36,10 +36,7 @@ export default function RegistryInput() {
   useEffect(() => {
     const controller = new AbortController();
     setStatus(RegistryStatus.PENDING);
-    const timer = setTimeout(
-      () => checkRegistryStatus(value, controller.signal),
-      1000,
-    );
+    setTimeout(() => checkRegistryStatus(value, controller.signal), 1000);
     return () => controller.abort();
   }, [value]);
 
