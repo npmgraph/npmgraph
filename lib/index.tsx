@@ -1,7 +1,7 @@
 import 'typed-query-selector';
 import './bugsnag.js'; // Initialize ASAP!
 
-import { StrictMode } from 'react';
+import { type ReactElement, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App, { setActivityForApp } from '../components/App/App.js';
@@ -24,7 +24,7 @@ function isValidJS(src: string) {
 
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
-  const unsupported = new Map<string, JSX.Element>();
+  const unsupported = new Map<string, ReactElement>();
 
   // API checks
   const features = {

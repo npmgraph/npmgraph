@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { ExternalLink } from './ExternalLink.js';
 import { GithubIcon } from './Icons.js';
 
@@ -9,7 +10,7 @@ export function Unsupported({
   unsupported,
   ...props
 }: {
-  unsupported: Map<string, JSX.Element>;
+  unsupported: Map<string, ReactElement>;
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div className={styles.root} {...props}>

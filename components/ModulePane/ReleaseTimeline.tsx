@@ -2,6 +2,7 @@ import type { PackumentVersion } from '@npm/types';
 import { type SemVer, parse } from 'semver';
 import type Module from '../../lib/Module.js';
 
+import type { ReactElement } from 'react';
 import { cn } from '../../lib/dom.js';
 import useMeasure from '../../lib/useMeasure.js';
 import { Section } from '../Section.js';
@@ -61,12 +62,12 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const layers = {
     // Note: order here controls layering in SVG
-    grid: [] as JSX.Element[],
-    prerelease: [] as JSX.Element[],
-    patch: [] as JSX.Element[],
-    minor: [] as JSX.Element[],
-    major: [] as JSX.Element[],
-    text: [] as JSX.Element[],
+    grid: [] as ReactElement[],
+    prerelease: [] as ReactElement[],
+    patch: [] as ReactElement[],
+    minor: [] as ReactElement[],
+    major: [] as ReactElement[],
+    text: [] as ReactElement[],
   };
 
   const xScale = createScale(tmin, tmax, 0, w);
@@ -103,7 +104,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       r *= 0.4;
     } else if (semver.minor) {
       layer = 'minor';
-      r *= 0.4;
+      r *= 0.5;
     } else if (semver.major) {
       layer = 'major';
 
@@ -116,7 +117,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     }
 
     layers[layer].push(
-      <g key={`dot=${key}`} className="dot">
+      <g key={`dot=${key}`} className={styles.dot}>
         <title>{title}</title>
         <circle cx={x} cy={y} r={r} />
         {
@@ -125,13 +126,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
             <>
               <title>{title}</title>
 
-              <text
-                x={x}
-                y={y}
-                textAnchor="middle"
-                alignmentBaseline="middle"
-                fill="white"
-              >
+              <text x={x} y={y} textAnchor="middle" alignmentBaseline="central">
                 {semver.major}
               </text>
             </>
@@ -143,7 +138,6 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const xpad = w * 0.1;
   const ypad = h * 0.1;
-
   return (
     <Section title="Release Timeline">
       <svg

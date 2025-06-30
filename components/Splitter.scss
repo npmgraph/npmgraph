@@ -1,4 +1,4 @@
-@import '../lib/root.scss';
+@use '../lib/root.scss' as *;
 
 #splitter {
   position: absolute;

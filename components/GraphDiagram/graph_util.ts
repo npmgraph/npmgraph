@@ -358,8 +358,3 @@ export function gatherSelectionInfo(
     downstreamModuleKeys,
   };
 }
-
-// Use color-mix to blend two colors in HSL space
-export function hslFor(perc: number) {
-  return `hsl(${Math.round(perc * 120)}, 80%, var(--bg-L))`;
-}
