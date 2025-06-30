@@ -5,8 +5,8 @@ import styles from './RegistryInput.module.scss';
 
 enum RegistryStatus {
   PENDING = 'pending',
-  CONNECTED = 'connected',
-  ERROR = 'error',
+  ONLINE = 'online',
+  OFFLINE = 'offlinegs',
 }
 
 export default function RegistryInput() {
@@ -27,10 +27,10 @@ export default function RegistryInput() {
 
     fetch(`${registry}/_`, { method: 'HEAD', signal })
       .then(() => {
-        setStatus(RegistryStatus.CONNECTED);
+        setStatus(RegistryStatus.ONLINE);
         setRegistry(registry);
       })
-      .catch(() => setStatus(RegistryStatus.ERROR));
+      .catch(() => setStatus(RegistryStatus.OFFLINE));
   }
 
   useEffect(() => {
@@ -41,9 +41,9 @@ export default function RegistryInput() {
   }, [value]);
 
   const statusText =
-    status === RegistryStatus.CONNECTED
+    status === RegistryStatus.ONLINE
       ? '✅ Online'
-      : status === RegistryStatus.ERROR
+      : status === RegistryStatus.OFFLINE
         ? '❌ Offline'
         : 'Checking...';
 
