@@ -22,7 +22,7 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.js';
 import { createAbortable } from '../../lib/createAbortable.js';
-import { flash } from '../../lib/flash.js';
+import { celebrate, flash } from '../../lib/flash.js';
 import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
 import useHashParam from '../../lib/useHashParam.js';
@@ -165,6 +165,11 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     getGraphForQuery(query, dependencyTypes, moduleFilter).then(newGraph => {
       if (signal.aborted) return; // Check after async
+
+      const firstInfo = newGraph.moduleInfos.values().next().value;
+      if (newGraph?.moduleInfos.size === 1 && !firstInfo?.module.isStub) {
+        celebrate('Zero dependencies for the win!');
+      }
 
       setRootScrolling(true);
       setGraph(newGraph);

@@ -18,12 +18,18 @@
   );
 }
 
-@media print {
-  #inspector {
-    display: none;
-  }
+#confetti {
+  position: fixed;
+  z-index: 1000000;
+  inset: 30%;
+  border: solid 5px red;
+  pointer-events: none;
+}
 
-  #splitter {
+@media print {
+  #inspector,
+  #splitter,
+  canvas {
     display: none;
   }
 }

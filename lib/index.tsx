@@ -74,36 +74,6 @@ window.addEventListener('unhandledrejection', err => {
   flash(err.reason);
 });
 
-function loadConfetti() {
-  // Parcel's import() function doesn't work with absolute URLs, so we have use
-  // a bit of trickery to access the native import()
-  //
-  // eslint-disable-next-line no-new-func
-  const dynamicImport = new Function('a', 'b', 'return import(a, b);');
-  try {
-    dynamicImport('https://esm.sh/canvas-confetti@1.9.3')
-      .then(
-        ({
-          default: confetti,
-        }: {
-          default: (opts: { [key: string]: unknown }) => void;
-        }) => {
-          confetti({
-            particleCount: 100,
-            origin: { x: 0.5, y: 1 },
-          });
-        },
-      )
-      .catch((err: Error) => {
-        console.error('Failed to load confetti', err);
-      });
-  } catch (err) {
-    console.error('Blarg', err);
-  }
-}
-
-loadConfetti();
-
 window.onload = function () {
   const unsupported = detectFeatures();
   if (unsupported.size > 0) {

@@ -1,3 +1,4 @@
+import confetti from 'canvas-confetti';
 import { $ } from 'select-dom';
 import './flash.scss';
 
@@ -43,4 +44,15 @@ export function flash(wat: unknown, bg = '#f80') {
       el.style.left = `${-el.offsetWidth - SPACE}px`;
     }, 5000);
   }, 0);
+}
+
+export function celebrate(msg: string) {
+  flash(`🎉 ${msg} 🎉`, 'var(--bg-green');
+
+  confetti({
+    particleCount: 100,
+    spread: 90,
+    angle: -25,
+    origin: { x: 0, y: 0 },
+  });
 }
