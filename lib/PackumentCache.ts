@@ -1,9 +1,9 @@
 import type { Packument } from '@npm/types';
-import { REGISTRY_BASE_URL } from './ModuleCache.js';
 import PromiseWithResolvers, {
   type PromiseWithResolversType,
 } from './PromiseWithResolvers.js';
 import fetchJSON from './fetchJSON.js';
+import { getRegistry } from './useRegistry.js';
 
 const packumentCache = new Map<string, PackumentCacheEntry>();
 
@@ -16,12 +16,15 @@ type PackumentCacheEntry = PromiseWithResolversType<Packument | undefined> & {
 export async function getNPMPackument(
   moduleName: string,
 ): PackumentCacheEntry['promise'] {
-  let cacheEntry = packumentCache.get(moduleName);
+  const registry = getRegistry();
+  const url = `${registry}/${moduleName}`;
+
+  let cacheEntry = packumentCache.get(url);
   if (!cacheEntry) {
     cacheEntry = PromiseWithResolvers() as PackumentCacheEntry;
     packumentCache.set(moduleName, cacheEntry);
 
-    await fetchJSON<Packument>(`${REGISTRY_BASE_URL}/${moduleName}`, {
+    await fetchJSON<Packument>(`${registry}/${moduleName}`, {
       // Per
       // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
       // we should arguably be using the 'Accept:
@@ -53,7 +56,9 @@ export function getCachedPackument(moduleName: string): Packument | undefined {
 }
 
 export function cachePackument(moduleName: string, packument: Packument): void {
-  let cacheEntry = packumentCache.get(moduleName);
+  const url = `${getRegistry()}/${moduleName}`;
+
+  let cacheEntry = packumentCache.get(url);
   if (!cacheEntry) {
     cacheEntry = PromiseWithResolvers() as PackumentCacheEntry;
     packumentCache.set(moduleName, cacheEntry);

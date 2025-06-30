@@ -27,6 +27,7 @@ import useCollapse from '../../lib/useCollapse.js';
 import useGraphSelection from '../../lib/useGraphSelection.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { useQuery } from '../../lib/useQuery.js';
+import useRegistry from '../../lib/useRegistry.js';
 import {
   getColorizer,
   isSimpleColorizer,
@@ -56,6 +57,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGlobalState('graph');
+  const [registry] = useRegistry();
 
   const [collapse, setCollapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
@@ -162,16 +164,21 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useEffect(() => {
     const { signal, abort } = createAbortable();
-
     getGraphForQuery(query, dependencyTypes, moduleFilter).then(newGraph => {
       if (signal.aborted) return; // Check after async
 
       setRootScrolling(true);
       setGraph(newGraph);
+      console.log('GraphDiagram: getGraphForQuery', registry, newGraph);
     });
 
     return abort;
-  }, [[...query].sort().join(), [...dependencyTypes].join(), collapse]);
+  }, [
+    [...query].sort().join(),
+    [...dependencyTypes].join(),
+    collapse,
+    registry,
+  ]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {

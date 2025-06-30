@@ -2,6 +2,7 @@ import simplur from 'simplur';
 import type Module from '../../lib/Module.js';
 import { getModule } from '../../lib/ModuleCache.js';
 import { getModuleKey } from '../../lib/module_util.js';
+import { PARAM_QUERY } from '../../lib/constants.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -219,7 +220,7 @@ export function composeDOT({
     }
 
     const link = new URL(location.origin);
-    link.searchParams.append('q', module.key);
+    link.searchParams.append(PARAM_QUERY, module.key);
     const vs = { root: level === 0, fontsize, href: link.href };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
