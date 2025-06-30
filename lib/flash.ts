@@ -47,12 +47,13 @@ export function flash(wat: unknown, bg = '#f80') {
 }
 
 export function celebrate(msg: string) {
-  flash(`🎉 ${msg} 🎉`, 'var(--bg-green');
+  flash(`🎉 ${msg} 🎉`, 'transparent');
 
   confetti({
     particleCount: 100,
+    ticks: 100,
     spread: 90,
-    angle: -25,
+    angle: -20,
     origin: { x: 0, y: 0 },
   });
 }
