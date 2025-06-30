@@ -25,7 +25,6 @@ export default function RegistryInput() {
   function checkRegistryStatus(registry: string, signal: AbortSignal) {
     if (signal.aborted) return;
 
-    // registry.npmjs.org 
     fetch(`${registry}/_`, { method: 'HEAD', signal })
       .then(() => {
         setStatus(RegistryStatus.CONNECTED);
