@@ -23,8 +23,7 @@ export type RenderedAnalysis =
       type: 'info' | 'warn' | 'error';
       summary: string;
       details: ReactElement[];
-    }
-  | undefined;
+    };
 
 export abstract class Analyzer {
   constructor(public graph: GraphState) {}

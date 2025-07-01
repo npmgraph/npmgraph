@@ -7,7 +7,7 @@ import * as styles from './modulesDeprecated.module.scss';
 
 export function modulesDeprecated({
   deprecated,
-}: ModuleAnalysisState): RenderedAnalysis {
+}: ModuleAnalysisState) {
   if (deprecated.length <= 0) return;
 
   const details = deprecated
@@ -25,5 +25,5 @@ export function modulesDeprecated({
     });
 
   const summary = simplur`Deprecated modules (${deprecated.length})`;
-  return { type: 'warn', summary, details };
+  return { type: 'warn', summary, details } as RenderedAnalysis;
 }

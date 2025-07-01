@@ -21,6 +21,7 @@ import { licensesKeyword } from './reports/reporters/licensesKeyword.js';
 import { licensesMissing } from './reports/reporters/licensesMissing.js';
 import { maintainersAll } from './reports/reporters/maintainersAll.js';
 import { maintainersSolo } from './reports/reporters/maintainersSolo.js';
+import { moduleReplacementsNative } from './reports/reporters/moduleReplacements.js';
 import { modulesAll } from './reports/reporters/modulesAll.js';
 import { modulesDeprecated } from './reports/reporters/modulesDeprecated.js';
 import { modulesRepeated } from './reports/reporters/modulesRepeated.js';
@@ -102,6 +103,14 @@ export default function GraphPane({
 
       <ReportSection title="Modules">
         <ReportItem data={moduleAnalysis} reporter={modulesAll} />
+
+        <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
+          From the{' '}
+          <ExternalLink href="https://github.com/es-tooling/module-replacements">
+            module-replacements
+          </ExternalLink>{' '}
+          project, these modules can be removed or replaced with more modern, streamlined alternatives
+        </ReportItem>
 
         <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
           Module repetition is a result of incompatible version constraints, and

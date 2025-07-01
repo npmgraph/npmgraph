@@ -10,7 +10,7 @@ import * as styles from './maintainersAll.module.scss';
 export function maintainersAll({
   modulesByMaintainer,
   emailByMaintainer,
-}: MaintainerAnalysisState): RenderedAnalysis {
+}: MaintainerAnalysisState) {
   const details = Array.from(modulesByMaintainer.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([name, modules]) => {
@@ -44,5 +44,5 @@ export function maintainersAll({
   if (details.length <= 0) return;
 
   const summary = simplur`All maintainers (${details.length})`;
-  return { type: 'info', summary, details };
+  return { type: 'info', summary, details } as RenderedAnalysis;
 }

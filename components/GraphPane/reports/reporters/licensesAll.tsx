@@ -8,7 +8,7 @@ import * as styles from './licensesAll.module.scss';
 
 export function licensesAll({
   modulesByLicense,
-}: LicenseAnalysisState): RenderedAnalysis {
+}: LicenseAnalysisState) {
   const details = Array.from(modulesByLicense.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([license, modules]) => {
@@ -45,5 +45,5 @@ export function licensesAll({
   if (details.length <= 0) return;
 
   const summary = simplur`All licenses (${details.length})`;
-  return { type: 'info', summary, details };
+  return { type: 'info', summary, details } as RenderedAnalysis;
 }
