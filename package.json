@@ -45,10 +45,12 @@
   "dependencies": {
     "@bugsnag/js": "8.2.0",
     "@hpcc-js/wasm-graphviz": "^1.8.0",
+    "@types/canvas-confetti": "1.9.0",
     "@types/d3-interpolate": "3.0.4",
     "@types/d3-scale": "4.0.9",
     "@types/d3-scale-chromatic": "3.1.0",
     "@types/d3-shape": "3.1.7",
+    "canvas-confetti": "1.9.3",
     "d3-hierarchy": "3.1.2",
     "d3-interpolate": "3.0.1",
     "d3-scale": "4.0.2",
