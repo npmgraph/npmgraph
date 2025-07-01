@@ -251,7 +251,8 @@ export function composeDOT({
     'digraph {',
     'rankdir="LR"',
     'labelloc="t"',
-    `label="${titleParts.join(', ')}"`,
+    // Uncomment to include title (which we don't per #289)
+    // `label="${titleParts.join(', ')}"`,
     '// Default styles',
     `graph ${DEFAULT_STYLES.GRAPH}`,
     `node ${DEFAULT_STYLES.NODE}`,
