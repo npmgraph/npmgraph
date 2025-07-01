@@ -1,5 +1,5 @@
 import React, { type HTMLProps, useRef, useState } from 'react';
-import { UNNAMED_PACKAGE } from '../../lib/constants.js';
+import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import { searchSet } from '../../lib/url_util.js';
 import { patchLocation } from '../../lib/useLocation.js';
@@ -33,7 +33,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
       .filter(isDefined);
 
     moduleKeys = [...new Set(moduleKeys)]; // De-dupe
-    return searchSet('q', moduleKeys.join(', '));
+    return searchSet(PARAM_QUERY, moduleKeys.join(', '));
   }
 
   function handleSubmit(e?: React.FormEvent<HTMLFormElement>) {
