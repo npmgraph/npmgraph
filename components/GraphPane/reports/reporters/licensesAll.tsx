@@ -6,9 +6,7 @@ import type { RenderedAnalysis } from '../Analyzer.js';
 import type { LicenseAnalysisState } from '../analyzeLicenses.js';
 import * as styles from './licensesAll.module.scss';
 
-export function licensesAll({
-  modulesByLicense,
-}: LicenseAnalysisState) {
+export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
   const details = Array.from(modulesByLicense.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([license, modules]) => {

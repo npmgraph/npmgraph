@@ -18,12 +18,11 @@ import type {
 
 export type Analyzer2 = (graph: GraphState) => unknown;
 
-export type RenderedAnalysis =
-  | {
-      type: 'info' | 'warn' | 'error';
-      summary: string;
-      details: ReactElement[];
-    };
+export type RenderedAnalysis = {
+  type: 'info' | 'warn' | 'error';
+  summary: string;
+  details: ReactElement[];
+};
 
 export abstract class Analyzer {
   constructor(public graph: GraphState) {}

@@ -109,7 +109,8 @@ export default function GraphPane({
           <ExternalLink href="https://github.com/es-tooling/module-replacements">
             module-replacements
           </ExternalLink>{' '}
-          project, these modules can be removed or replaced with more modern, streamlined alternatives
+          project, these modules can be removed or replaced with more modern,
+          streamlined alternatives
         </ReportItem>
 
         <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>

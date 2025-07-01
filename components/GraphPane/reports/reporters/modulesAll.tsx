@@ -5,10 +5,7 @@ import type { RenderedAnalysis } from '../Analyzer.js';
 import type { ModuleAnalysisState } from '../analyzeModules.js';
 import * as styles from './modulesAll.module.scss';
 
-export function modulesAll({
-  moduleInfos,
-  entryModules,
-}: ModuleAnalysisState) {
+export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
   if (moduleInfos.size === 0) {
     return;
   }
