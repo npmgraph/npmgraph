@@ -5,10 +5,7 @@ import type { RenderedAnalysis } from '../Analyzer.js';
 import type { ModuleAnalysisState } from '../analyzeModules.js';
 import * as styles from './modulesAll.module.scss';
 
-export function modulesAll({
-  moduleInfos,
-  entryModules,
-}: ModuleAnalysisState): RenderedAnalysis {
+export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
   if (moduleInfos.size === 0) {
     return;
   }
@@ -33,5 +30,5 @@ export function modulesAll({
     moduleInfos.size - entryModules.size
   } dependenc[y|ies])`;
 
-  return { type: 'info', summary, details };
+  return { type: 'info', summary, details } as RenderedAnalysis;
 }
