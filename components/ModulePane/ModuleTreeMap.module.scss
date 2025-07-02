@@ -5,11 +5,17 @@
   cursor: default;
   box-sizing: border-box;
   border-radius: var(--rad_sm);
-  background-color: var(--bg1);
   overflow: hidden;
   text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 
   & > span {
-    color: var(--bg0);
+    opacity: 0.6;
+    overflow: hidden;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
