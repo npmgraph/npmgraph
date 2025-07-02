@@ -104,15 +104,6 @@ export default function GraphPane({
       <ReportSection title="Modules">
         <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
-        <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
-          From the{' '}
-          <ExternalLink href="https://github.com/es-tooling/module-replacements">
-            module-replacements
-          </ExternalLink>{' '}
-          project, these modules can be removed or replaced with more modern,
-          streamlined alternatives
-        </ReportItem>
-
         <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
           Module repetition is a result of incompatible version constraints, and
           may lead to increased bundle and <code>node_modules</code> directory
@@ -124,6 +115,15 @@ export default function GraphPane({
           Deprecated modules are unsupported and may have unpatched security
           vulnerabilities. See the deprecation notes below for module-specific
           instructions.
+        </ReportItem>
+
+        <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
+          From the{' '}
+          <ExternalLink href="https://github.com/es-tooling/module-replacements">
+            module-replacements
+          </ExternalLink>{' '}
+          project, these modules can be removed or replaced with more modern,
+          streamlined alternatives
         </ReportItem>
 
         <ReportItem
