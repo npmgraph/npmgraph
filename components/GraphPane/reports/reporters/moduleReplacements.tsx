@@ -27,10 +27,6 @@ for (const { moduleReplacements } of [native, microUtilities, preferred]) {
   }
 }
 
-for (const r of REPLACEMENTS.values()) {
-  console.log(r.category, r.type);
-}
-
 export function moduleReplacementsNative({
   moduleInfos,
   // entryModules,
