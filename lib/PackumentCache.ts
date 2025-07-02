@@ -7,21 +7,25 @@ import { getRegistry } from './useRegistry.js';
 
 const packumentCache = new Map<string, PackumentCacheEntry>();
 
-export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
-
 type PackumentCacheEntry = PromiseWithResolversType<Packument | undefined> & {
   packument?: Packument; // Set once packument is loaded
+  registry?: string; // NPM_REGISTRY url
 };
 
 export async function getNPMPackument(
   moduleName: string,
 ): PackumentCacheEntry['promise'] {
   const registry = getRegistry();
-  const url = `${registry}/${moduleName}`;
 
-  let cacheEntry = packumentCache.get(url);
+  let cacheEntry = packumentCache.get(moduleName);
+  // Invalidate cache if registry has changed
+  if (cacheEntry?.registry && cacheEntry.registry !== registry) {
+    cacheEntry = undefined;
+  }
+
   if (!cacheEntry) {
     cacheEntry = PromiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
 
     await fetchJSON<Packument>(`${registry}/${moduleName}`, {
@@ -56,9 +60,7 @@ export function getCachedPackument(moduleName: string): Packument | undefined {
 }
 
 export function cachePackument(moduleName: string, packument: Packument): void {
-  const url = `${getRegistry()}/${moduleName}`;
-
-  let cacheEntry = packumentCache.get(url);
+  let cacheEntry = packumentCache.get(moduleName);
   if (!cacheEntry) {
     cacheEntry = PromiseWithResolvers() as PackumentCacheEntry;
     packumentCache.set(moduleName, cacheEntry);
