@@ -227,6 +227,7 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
 export function cacheLocalPackage(pkg: PackumentVersion) {
   let packument = getCachedPackument(pkg.name);
   if (!packument) {
+    const now = new Date().toISOString();
     // Create a stub packument
     packument = {
       name: pkg.name,
@@ -234,8 +235,9 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
       'dist-tags': {},
       maintainers: [],
       time: {
-        modified: new Date().toISOString(),
-        created: new Date().toISOString(),
+        modified: now,
+        created: now,
+        [pkg.version]: now,
       },
       license: pkg.license ?? 'UNLICENSED',
     } as unknown as Packument;
