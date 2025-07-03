@@ -44,7 +44,7 @@ export function ModuleTreeMap({
 
     treemap<BundlePhobiaData['dependencySizes'][number]>()
       .size([w, h])
-      .padding(0)(root);
+      .padding(2)(root);
 
     const newLeaves = root.leaves().map((d, i, a) => {
       // Cast to rectangular node so we can get dimensions,
