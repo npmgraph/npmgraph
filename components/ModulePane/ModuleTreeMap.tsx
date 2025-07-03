@@ -54,9 +54,9 @@ export function ModuleTreeMap({
       const size = human(d.value ?? 0, 'B');
       const frac = ((rd.x1 - rd.x0) * (rd.y1 - rd.y0)) / (w * h);
       const backgroundColor = `
-            color-mix(in srgb, color-mix(in oklch increasing hue, var(--bg-green),
-            var(--bg-violet)
-       ${percent(i ? i / (a.length - 1) : 0)}), var(--grey100) 50%)`;
+            color-mix(in srgb, color-mix(in oklch increasing hue, var(--bg-orange),
+            var(--bg-red)
+       ${percent(i ? i / (a.length - 1) : 0)}), var(--root-color) 25%)`;
 
       return (
         <div

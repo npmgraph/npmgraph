@@ -27,22 +27,26 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
       .catch(err => setBundleInfo(err));
   }, [pkg, module.isLocal, bpApiUrl]);
 
+  if (!bundleInfo) {
+    return 'Loading ...';
+  }
+
+  if (bundleInfo instanceof Error) {
+    return 'Bundle size not available';
+  }
+
   return (
     <>
-      {!bundleInfo ? (
-        'Loading ...'
-      ) : bundleInfo instanceof Error ? (
-        'Bundle size not currently available'
-      ) : (
+      <ModuleBundleStats bundleInfo={bundleInfo} />
+      {bundleInfo.dependencyCount > 0 ? (
         <>
-          <ModuleBundleStats bundleInfo={bundleInfo} />
           <ModuleTreeMap
             style={{ height: '150px', marginBlock: '1em' }}
             data={bundleInfo}
           />
           Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
         </>
-      )}
+      ) : null}
     </>
   );
 }
