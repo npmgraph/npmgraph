@@ -4,10 +4,12 @@
 
 .bar {
   border: 1px solid rgb(204, 204, 204);
+  border-radius: var(--rad_sm);
   width: 200px;
 
   & > .inner {
-    color: var(--bg0);
+    border-radius: var(--rad_sm) 0 0 var(--rad_sm);
+    color: var(--text);
     text-align: right;
   }
 }

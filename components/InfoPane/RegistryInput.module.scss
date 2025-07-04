@@ -1,0 +1,28 @@
+.root {
+  align-items: center;
+  margin-top: 1.5rem;
+
+  > span {
+    display: inline-block;
+    flex-grow: 0;
+    margin-right: 0.5rem;
+  }
+
+  > input {
+    flex-grow: 1;
+    box-sizing: border-box;
+    border: solid 1px var(--text-dim);
+    field-sizing: content;
+    outline: none;
+    border-radius: 1em;
+    padding: 0.3em 0.7em;
+    font: inherit;
+  }
+}
+
+.status {
+  display: inline-block;
+  flex-grow: 0;
+  margin-left: 0.5rem;
+  color: var(--text-dim);
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { cn } from '../../../lib/dom.js';
 import type { RenderedAnalysis } from './Analyzer.js';
@@ -12,20 +12,39 @@ const SYMBOLS = {
 
 export function ReportItem<T>({
   data,
-  reporter: renderer,
+  reporter,
   children,
   ...props
 }: {
   data?: T;
-  reporter: (state: T) => RenderedAnalysis;
+  reporter: (
+    state: T,
+  ) => Promise<RenderedAnalysis | undefined> | RenderedAnalysis | undefined;
   type?: 'info' | 'warn' | 'error';
 } & React.HTMLAttributes<HTMLDetailsElement>) {
-  if (!data) return null;
+  const [analysis, setAnalysis] = React.useState<RenderedAnalysis>();
 
-  const rendered = renderer(data);
-  if (!rendered) return null;
+  useEffect(() => {
+    if (!data) return;
 
-  const { type, summary, details } = rendered;
+    const report = reporter(data);
+
+    if (!report) {
+      // Do nothing
+    } else if (report instanceof Promise) {
+      //     } else if (report instanceof Promise) {
+      report.then(setAnalysis).catch(error => {
+        console.error('Error in reporter:', error);
+      });
+    } else {
+      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+      setAnalysis(report);
+    }
+  }, [data, reporter]);
+
+  if (!analysis) return null;
+
+  const { type, summary, details } = analysis;
 
   return (
     <details className={cn(styles.root, styles[type])} {...props}>
@@ -34,7 +53,7 @@ export function ReportItem<T>({
         {summary}
       </summary>
       {children ? <div className={styles.description}>{children}</div> : null}
-      <div className={styles.body}>{details}</div>
+      <div className={styles.root}>{details}</div>
     </details>
   );
 }

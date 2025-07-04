@@ -1,9 +1,10 @@
 import { type HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
-import React, { useEffect, useState } from 'react';
+import React, { type ReactElement, useEffect, useState } from 'react';
 import { $ } from 'select-dom';
 import type { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';
 
+import { percent } from '../../lib/dom.js';
 import * as styles from './ModuleTreeMap.module.scss';
 
 export function ModuleTreeMap({
@@ -14,7 +15,7 @@ export function ModuleTreeMap({
   data: BundlePhobiaData;
   style?: React.CSSProperties;
 }) {
-  const [leaves, setLeaves] = useState<JSX.Element[]>([]);
+  const [leaves, setLeaves] = useState<ReactElement[]>([]);
 
   // Render contents as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {
@@ -43,7 +44,7 @@ export function ModuleTreeMap({
 
     treemap<BundlePhobiaData['dependencySizes'][number]>()
       .size([w, h])
-      .padding(0)(root);
+      .padding(2)(root);
 
     const newLeaves = root.leaves().map((d, i, a) => {
       // Cast to rectangular node so we can get dimensions,
@@ -52,6 +53,11 @@ export function ModuleTreeMap({
       >;
       const size = human(d.value ?? 0, 'B');
       const frac = ((rd.x1 - rd.x0) * (rd.y1 - rd.y0)) / (w * h);
+      const backgroundColor = `
+            color-mix(in srgb, color-mix(in oklch increasing hue, var(--bg-orange),
+            var(--bg-red)
+       ${percent(i ? i / (a.length - 1) : 0)}), var(--root-color) 25%)`;
+
       return (
         <div
           key={d.data.name}
@@ -63,7 +69,7 @@ export function ModuleTreeMap({
             width: `${rd.x1 - rd.x0 - m}px`,
             height: `${rd.y1 - rd.y0 - m}px`,
             fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
-            backgroundColor: `hsl(${30 + (i / a.length) * 180}, 50%, 50%)`,
+            backgroundColor,
           }}
         >
           {d.data.name} <span>{size}</span>

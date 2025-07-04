@@ -20,15 +20,15 @@ import {
   resolveModule,
 } from './module_util.js';
 import { hashGet } from './url_util.js';
-
-export const REGISTRY_BASE_URL = 'https://registry.npmjs.org';
+import { getRegistry } from './useRegistry.js';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 
 export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
 
 type ModuleCacheEntry = PromiseWithResolversType<Module> & {
-  module?: Module; // Set once module is loaded
+  module: Module; // Set once module is loaded
+  registry?: string; // NPM_REGISTRY url
 };
 
 function selectVersion(
@@ -79,7 +79,7 @@ async function fetchModuleFromURL(urlString: string) {
 
   // TODO: We should probably be fetching github content via their REST API, but
   // that makes this code much more github-specific.  So, for now, we just do
-  // some URL-messaging to pull from the "raw" URL
+  // some URL-massaging to pull from the "raw" URL
   if (/\.?github.com$/.test(url.host)) {
     url.host = 'raw.githubusercontent.com';
     url.pathname = url.pathname.replace('/blob', '');
@@ -109,7 +109,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   moduleKey = getModuleKey(name, version);
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(moduleKey);
-  if (cachedEntry) {
+  if (cachedEntry && cachedEntry.registry === getRegistry()) {
     return cachedEntry.promise;
   }
 
@@ -125,6 +125,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   if (isHttpModule(moduleKey)) {
     promise = fetchModuleFromURL(moduleKey);
   } else {
+    cacheEntry.registry = getRegistry();
     promise = fetchModuleFromNPM(name, version);
   }
   promise
@@ -149,19 +150,21 @@ export async function getModule(moduleKey: string): Promise<Module> {
 }
 
 export function getCachedModule(key: string) {
-  return moduleCache.get(key)?.module;
+  const entry = moduleCache.get(key);
+  return entry && entry.registry === getRegistry() ? entry.module : undefined;
 }
 
-export function cacheModule(module: Module) {
+export function cacheModule(module: Module, registry?: string) {
   const moduleKey = module.key;
   const entry = moduleCache.get(moduleKey);
 
-  if (entry) {
+  if (entry && entry?.registry === registry) {
     entry.resolve(module);
   } else {
     moduleCache.set(moduleKey, {
       promise: Promise.resolve(module),
       module,
+      registry,
       resolve() {},
       reject() {},
     });
@@ -224,6 +227,7 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
 export function cacheLocalPackage(pkg: PackumentVersion) {
   let packument = getCachedPackument(pkg.name);
   if (!packument) {
+    const now = new Date().toISOString();
     // Create a stub packument
     packument = {
       name: pkg.name,
@@ -231,8 +235,9 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
       'dist-tags': {},
       maintainers: [],
       time: {
-        modified: new Date().toISOString(),
-        created: new Date().toISOString(),
+        modified: now,
+        created: now,
+        [pkg.version]: now,
       },
       license: pkg.license ?? 'UNLICENSED',
     } as unknown as Packument;

@@ -10,6 +10,7 @@
  * can generate state that is used by more than one renderer
  */
 
+import type { ReactElement } from 'react';
 import type {
   GraphModuleInfo,
   GraphState,
@@ -17,13 +18,11 @@ import type {
 
 export type Analyzer2 = (graph: GraphState) => unknown;
 
-export type RenderedAnalysis =
-  | {
-      type: 'info' | 'warn' | 'error';
-      summary: string;
-      details: JSX.Element[];
-    }
-  | undefined;
+export type RenderedAnalysis = {
+  type: 'info' | 'warn' | 'error';
+  summary: string;
+  details: ReactElement[];
+};
 
 export abstract class Analyzer {
   constructor(public graph: GraphState) {}

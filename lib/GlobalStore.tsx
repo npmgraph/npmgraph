@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import type { GraphState } from '../components/GraphDiagram/graph_util.js';
 import { PANE } from '../components/Inspector.js';
+import { PARAM_QUERY } from './constants.js';
 import type Module from './Module.js';
 import { hashGet, searchGet } from './url_util.js';
 
@@ -14,7 +15,7 @@ type GlobalState = {
 };
 
 function _getInitialPane() {
-  if (!searchGet('q')) {
+  if (!searchGet(PARAM_QUERY)) {
     return PANE.INFO;
   }
   const select = hashGet('select')?.split(/[, ]+/);
@@ -41,6 +42,12 @@ function subscribe(listener: () => void) {
 
 function getSnapshot() {
   return globalState;
+}
+
+export function getGlobalState<T extends keyof GlobalState>(
+  key: T,
+): GlobalState[T] {
+  return globalState[key];
 }
 
 export function setGlobalState<T extends keyof GlobalState>(

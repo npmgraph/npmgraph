@@ -19,11 +19,9 @@
 }
 
 @media print {
-  #inspector {
-    display: none;
-  }
-
-  #splitter {
+  #inspector,
+  #splitter,
+  canvas {
     display: none;
   }
 }

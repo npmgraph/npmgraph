@@ -2,6 +2,7 @@ import simplur from 'simplur';
 import type Module from '../../lib/Module.js';
 import { getModule } from '../../lib/ModuleCache.js';
 import { getModuleKey } from '../../lib/module_util.js';
+import { PARAM_QUERY } from '../../lib/constants.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -219,7 +220,7 @@ export function composeDOT({
     }
 
     const link = new URL(location.origin);
-    link.searchParams.append('q', module.key);
+    link.searchParams.append(PARAM_QUERY, module.key);
     const vs = { root: level === 0, fontsize, href: link.href };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
@@ -251,7 +252,8 @@ export function composeDOT({
     'digraph {',
     'rankdir="LR"',
     'labelloc="t"',
-    `label="${titleParts.join(', ')}"`,
+    // Uncomment to include title (which we don't per #289)
+    // `label="${titleParts.join(', ')}"`,
     '// Default styles',
     `graph ${DEFAULT_STYLES.GRAPH}`,
     `node ${DEFAULT_STYLES.NODE}`,
@@ -357,9 +359,4 @@ export function gatherSelectionInfo(
     downstreamEdgeKeys,
     downstreamModuleKeys,
   };
-}
-
-// Use color-mix to blend two colors in HSL space
-export function hslFor(perc: number) {
-  return `hsl(${Math.round(perc * 120)}, 80%, var(--bg-L))`;
 }
