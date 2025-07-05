@@ -18,6 +18,14 @@ Comma-separated list of module names or URLs.
 
 https://npmgraph.js.org/?q=send
 
+### `collapse` (hash param)
+
+Comma-separated list of modules to collapse
+
+** Example**: Graph `send, collapsing the `debug`and`http-errors` subtrees
+
+https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
+
 ### `color` (hash param)
 
 "Colorization" mode (a.k.a "Colorize by..." field in UI). Currently supports the following values:
@@ -43,24 +51,46 @@ Comma-separated list of the _types_ dependencies to include for modules at the t
 
 https://npmgraph.js.org/?q=send#deps=devDependencies
 
+### `hide` (hash param)
+
+If defined (e.g. `...#hide`), hides the inspector.
+
+**Example**: Graph `send`, close the inspector
+
+https://npmgraph.js.org/?q=send@0.18.0#view=closed
+
 ### `packages` (hash param, **JSON-encoded**)
 
-JSON-encoded array of user-supplied `package.json` contents.
+JSON-encoded array of `package.json` contents for any custom / proprietary modules included in the graph.
 
-To graph a custom package.json module, provide the package contents here (in the `packages` param), and set the module "name@version" in the `q` param.
+**Example**: Graph that includes custom "foo" and "bar" modules, with "foo" as the root module.
 
-**Example**: Graph a custom "my_package@0.0.1" module
+https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D
 
-https://npmgraph.js.org/?q=my_package%400.0.1#packages=%5B%7B%22name%22%3A%22my_package%22%2C%22version%22%3A%220.0.1%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%7D%7D%5D
+Generated with:
 
 ```js
-`https://npmgraph.js.org/` +
-'?' + new URLSearchParams({ q: `${packageJson.name}@${packageJson.version}` }).toString() +
-'#' + new URLSearchParams({ packages: JSON.stringify([packageJson]) }).toString();
-```
+const fooPackage = {
+  // package.json for "foo"
+  name: 'foo',
+  version: '1.2.3',
+  dependencies: { send: '0.18.0', bar: '3.2.1' },
+};
+const barPackage = {
+  // package.json for "bar"
+  name: 'bar',
+  version: '3.2.1',
+  dependencies: { debug: '2.6.9' },
+};
 
-> [!IMPORTANT]
-> The name provided in `q` must match the `name` and `version` in the package.json, at least until [#195](https://github.com/npmgraph/npmgraph/issues/195) is resolved.
+const url = new URL('https://npmgraph.js.org');
+url.hash = new URLSearchParams({
+  packages: JSON.stringify([fooPackage, barPackage]),
+});
+url.searchParams.set('q', `${fooPackage.name}@${fooPackage.version}`);
+
+url.toString() // Returns the above URL
+```
 
 ### `select` (hash param)
 
@@ -78,13 +108,13 @@ Values should have one of the following forms:
 
 https://npmgraph.js.org/?q=send@0.18.0#select=exact%3Afresh%400.5.2
 
-### `hide` (hash param)
+### `sizing` (hash param)
 
-If defined (e.g. `...#hide`), hides the inspector.
+If present, modules will be scaled to reflect their unpacked size
 
-**Example**: Graph `send`, close the inspector
+**Example**: Graph `send`, selecting `fresh@0.5.2`
 
-https://npmgraph.js.org/?q=send@0.18.0#view=closed
+https://npmgraph.js.org/?q=send#sizing
 
 ### `zoom` (hash param)
 
