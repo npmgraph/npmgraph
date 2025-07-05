@@ -89,7 +89,7 @@ url.hash = new URLSearchParams({
 });
 url.searchParams.set('q', `${fooPackage.name}@${fooPackage.version}`);
 
-url.toString() // Returns the above URL
+url.toString(); // Returns the above URL
 ```
 
 ### `select` (hash param)
