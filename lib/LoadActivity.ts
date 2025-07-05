@@ -13,10 +13,6 @@ export default class LoadActivity {
   active = 0;
   onChange: LoadActivityFn | null = null;
 
-  get percent() {
-    return `${(1 - this.active / this.total) * 100}%`;
-  }
-
   start(title: string): () => void {
     if (title) this.title = title;
     this.total++;

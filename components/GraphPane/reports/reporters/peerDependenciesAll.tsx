@@ -9,7 +9,7 @@ import * as styles from './peerDependenciesAll.module.scss';
 
 export function peerDependenciesAll({
   peerDependencyInfos,
-}: PeerDependenciesState): RenderedAnalysis {
+}: PeerDependenciesState) {
   if (!peerDependencyInfos.length) return;
 
   // @ts-expect-error Unignore once TS types know about Map.groupBy()
@@ -68,12 +68,12 @@ export function peerDependenciesAll({
 
   const summary = `All peer dependencies (${peerDependencyInfos.length})`;
 
-  return { type: 'info', summary, details };
+  return { type: 'info', summary, details } as RenderedAnalysis;
 }
 
 export function peerDependenciesMissing({
   peerDependencyInfos,
-}: PeerDependenciesState): RenderedAnalysis {
+}: PeerDependenciesState) {
   const missingInfos = peerDependencyInfos.filter(
     pdi => !pdi.destination && !pdi.optional,
   );
@@ -84,5 +84,5 @@ export function peerDependenciesMissing({
     type: 'warn',
     summary: `Missing peer dependencies (${missingInfos.length})`,
     details: result?.details,
-  };
+  } as RenderedAnalysis;
 }

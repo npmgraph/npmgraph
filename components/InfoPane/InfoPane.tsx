@@ -1,8 +1,9 @@
-import React, { type HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 import { Pane } from '../Pane.js';
 import { QueryLink } from '../QueryLink.js';
 import FilePicker from './FilePicker.js';
 import QueryInput from './QueryInput.js';
+import RegistryInput from './RegistryInput.js';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
@@ -37,6 +38,8 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
           <FilePicker label="Choose file" /> from your computer
         </li>
       </ul>
+
+      <RegistryInput />
 
       <hr />
       <footer>

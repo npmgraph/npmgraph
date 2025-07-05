@@ -20,3 +20,7 @@ export function cn(...args: (string | object | undefined)[]) {
 
   return Array.from(classes).join(' ');
 }
+
+export function percent(n: number, precision = 3) {
+  return `${(n * 100).toPrecision(precision)}%`;
+}

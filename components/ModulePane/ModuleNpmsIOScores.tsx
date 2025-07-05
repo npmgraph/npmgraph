@@ -23,7 +23,7 @@ export default function ModuleNpmsIOScores({ module }: { module: Module }) {
   if (!npmsData) {
     return 'Loading ...';
   } else if (npmsData instanceof Error) {
-    return 'Score not currently available';
+    return 'Score not available';
   }
 
   const scores: NPMSIOData['score'] = npmsData.score;
