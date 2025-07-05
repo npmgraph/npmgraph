@@ -5,9 +5,7 @@ import type { RenderedAnalysis } from '../Analyzer.js';
 import type { ModuleAnalysisState } from '../analyzeModules.js';
 import * as styles from './modulesDeprecated.module.scss';
 
-export function modulesDeprecated({
-  deprecated,
-}: ModuleAnalysisState): RenderedAnalysis {
+export function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
   if (deprecated.length <= 0) return;
 
   const details = deprecated
@@ -25,5 +23,5 @@ export function modulesDeprecated({
     });
 
   const summary = simplur`Deprecated modules (${deprecated.length})`;
-  return { type: 'warn', summary, details };
+  return { type: 'warn', summary, details } as RenderedAnalysis;
 }

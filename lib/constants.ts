@@ -1,3 +1,5 @@
+export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
+
 export const COLORIZE_BUS = 'bus';
 export const COLORIZE_COLORS = [
   'var(--bg-red)',
@@ -12,6 +14,7 @@ export const PARAM_DEPENDENCIES = 'deps';
 export const PARAM_HIDE = 'hide';
 export const PARAM_PACKAGES = 'packages';
 export const PARAM_QUERY = 'q';
+export const PARAM_REGISTRY = 'registry';
 export const PARAM_SELECTION = 'select';
 export const PARAM_SIZING = 'sizing';
 export const PARAM_ZOOM = 'zoom';

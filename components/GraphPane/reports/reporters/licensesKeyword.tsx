@@ -7,11 +7,9 @@ import type { LicenseAnalysisState } from '../analyzeLicenses.js';
 import * as styles from './modulesAll.module.scss';
 
 export function licensesKeyword(keyword: OSIKeyword) {
-  return function ({
-    modulesByKeyword,
-  }: LicenseAnalysisState): RenderedAnalysis {
+  return function ({ modulesByKeyword }: LicenseAnalysisState) {
     const modules = modulesByKeyword.get(keyword);
-    if (!modules) return;
+    if (!modules) return undefined;
 
     const summary = simplur`Modules with "${keyword}" license (${modules.length})`;
 
@@ -27,6 +25,6 @@ export function licensesKeyword(keyword: OSIKeyword) {
         </div>
       ));
 
-    return { type: 'warn', summary, details };
+    return { type: 'warn', summary, details } as RenderedAnalysis;
   };
 }

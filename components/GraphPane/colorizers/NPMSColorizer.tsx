@@ -1,10 +1,9 @@
-import React from 'react';
 import type Module from '../../../lib/Module.js';
 import PromiseWithResolvers from '../../../lib/PromiseWithResolvers.js';
+import { percent } from '../../../lib/dom.js';
 import fetchJSON from '../../../lib/fetchJSON.js';
 import type { NPMSIOData } from '../../../lib/fetch_types.js';
 import { flash } from '../../../lib/flash.js';
-import { hslFor } from '../../GraphDiagram/graph_util.js';
 import type { BulkColorizer } from './index.js';
 
 // Max number of module names allowed per NPMS request
@@ -31,14 +30,12 @@ class NPMSColorizer implements BulkColorizer {
     return (
       <div style={{ display: 'flex' }}>
         <span>0%&nbsp;</span>
-        {Array.from({ length: 20 })
-          .fill(0)
-          .map((_, i) => (
-            <span
-              key={i}
-              style={{ flexGrow: '1', backgroundColor: hslFor(i / 19) }}
-            />
-          ))}
+        <span
+          style={{
+            flexGrow: 1,
+            background: `linear-gradient(in oklch increasing hue 90deg, ${scoreColor(0)} 0, ${scoreColor(1)} 100%)`,
+          }}
+        />
         <span>&nbsp;100%</span>
       </div>
     );
@@ -92,16 +89,16 @@ class NPMSColorizer implements BulkColorizer {
       let color: string | undefined;
       switch (this.name) {
         case COLORIZE_OVERALL:
-          color = hslFor(score.final);
+          color = scoreColor(score.final);
           break;
         case COLORIZE_QUALITY:
-          color = hslFor(score.detail.quality);
+          color = scoreColor(score.detail.quality);
           break;
         case COLORIZE_POPULARITY:
-          color = hslFor(score.detail.popularity);
+          color = scoreColor(score.detail.popularity);
           break;
         case COLORIZE_MAINTENANCE:
-          color = hslFor(score.detail.maintenance);
+          color = scoreColor(score.detail.maintenance);
           break;
       }
       if (color) {
@@ -111,6 +108,10 @@ class NPMSColorizer implements BulkColorizer {
 
     return colors;
   }
+}
+
+export function scoreColor(score: number) {
+  return `color-mix(in oklch increasing hue, var(--bg-red), var(--bg-green) ${percent(score)})`;
 }
 
 export const NPMSOverallColorizer = new NPMSColorizer(

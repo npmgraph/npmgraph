@@ -1,4 +1,3 @@
-import React from 'react';
 import indexStyles from 'bundle-text:../../index.scss';
 import diagramStyles from 'bundle-text:./GraphDiagram.scss';
 import { report } from '../../lib/bugsnag.js';

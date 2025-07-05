@@ -5,9 +5,7 @@ import type { RenderedAnalysis } from '../Analyzer.js';
 import type { ModuleAnalysisState } from '../analyzeModules.js';
 import * as styles from './modulesRepeated.module.scss';
 
-export function modulesRepeated({
-  moduleInfos,
-}: ModuleAnalysisState): RenderedAnalysis {
+export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
   const versionsByName: Record<string, string[]> = {};
 
   moduleInfos.forEach(({ module }) => {
@@ -40,5 +38,5 @@ export function modulesRepeated({
 
   const summary = simplur`Modules with multiple versions (${details.length})`;
 
-  return { type: 'warn', summary, details };
+  return { type: 'warn', summary, details } as RenderedAnalysis;
 }

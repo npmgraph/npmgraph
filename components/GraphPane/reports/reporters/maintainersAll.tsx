@@ -1,4 +1,5 @@
 import md5 from 'md5';
+import type { ReactElement } from 'react';
 import simplur from 'simplur';
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
@@ -9,12 +10,12 @@ import * as styles from './maintainersAll.module.scss';
 export function maintainersAll({
   modulesByMaintainer,
   emailByMaintainer,
-}: MaintainerAnalysisState): RenderedAnalysis {
+}: MaintainerAnalysisState) {
   const details = Array.from(modulesByMaintainer.entries())
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([name, modules]) => {
       const email = emailByMaintainer.get(name);
-      let img: JSX.Element | null = null;
+      let img: ReactElement | null = null;
       if (email) {
         img = (
           <img
@@ -43,5 +44,5 @@ export function maintainersAll({
   if (details.length <= 0) return;
 
   const summary = simplur`All maintainers (${details.length})`;
-  return { type: 'info', summary, details };
+  return { type: 'info', summary, details } as RenderedAnalysis;
 }

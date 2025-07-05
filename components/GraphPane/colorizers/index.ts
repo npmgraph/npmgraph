@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import type Module from '../../../lib/Module.js';
 import BusFactorColorizer from './BusFactorColorizer.js';
 import ModuleTypeColorizer from './ModuleTypeColorizer.js';
@@ -7,7 +8,7 @@ import OutdatedColorizer from './OutdatedColorizer.js';
 type Colorizer = {
   title: string;
   name: string;
-  legend: () => React.JSX.Element;
+  legend: () => ReactElement;
 };
 
 export type SimpleColorizer = {

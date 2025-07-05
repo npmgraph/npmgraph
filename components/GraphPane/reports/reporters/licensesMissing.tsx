@@ -3,9 +3,7 @@ import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
 import type { LicenseAnalysisState } from '../analyzeLicenses.js';
 
-export function licensesMissing({
-  unlicensedModules,
-}: LicenseAnalysisState): RenderedAnalysis {
+export function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
   if (!unlicensedModules.length) return;
 
   const summary = simplur`Unlicensed modules (${unlicensedModules.length})`;
@@ -18,5 +16,5 @@ export function licensesMissing({
       </div>
     ));
 
-  return { type: 'warn', summary, details };
+  return { type: 'warn', summary, details } as RenderedAnalysis;
 }
