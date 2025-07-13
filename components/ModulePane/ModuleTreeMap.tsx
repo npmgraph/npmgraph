@@ -1,5 +1,7 @@
-import { type HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
-import React, { type ReactElement, useEffect, useState } from 'react';
+import type { HierarchyRectangularNode } from 'd3-hierarchy';
+import { stratify, treemap } from 'd3-hierarchy';
+import type { ReactElement } from 'react';
+import { useEffect, useState } from 'react';
 import { $ } from 'select-dom';
 import type { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';

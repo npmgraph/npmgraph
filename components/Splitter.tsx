@@ -1,5 +1,3 @@
-import React from 'react';
-
 import './Splitter.scss';
 
 const blackRightPointingTriangle = '\u{25B6}';

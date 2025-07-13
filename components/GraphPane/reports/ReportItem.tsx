@@ -1,14 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { cn } from '../../../lib/dom.js';
 import type { RenderedAnalysis } from './Analyzer.js';
 import * as styles from './ReportItem.module.scss';
 
-const SYMBOLS = {
-  info: null,
-  warn: '\u{26A0}',
-  error: '\u{1F6AB}',
-};
+const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
 
 export function ReportItem<T>({
   data,
@@ -22,7 +18,7 @@ export function ReportItem<T>({
   ) => Promise<RenderedAnalysis | undefined> | RenderedAnalysis | undefined;
   type?: 'info' | 'warn' | 'error';
 } & React.HTMLAttributes<HTMLDetailsElement>) {
-  const [analysis, setAnalysis] = React.useState<RenderedAnalysis>();
+  const [analysis, setAnalysis] = useState<RenderedAnalysis>();
 
   useEffect(() => {
     if (!data) return;

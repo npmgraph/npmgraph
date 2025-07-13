@@ -1,4 +1,3 @@
-import React from 'react';
 import simplur from 'simplur';
 import useHashParam from '../../lib/useHashParam.js';
 
@@ -83,11 +82,7 @@ export default function GraphPane({
       <ColorizeInput />
 
       <div
-        style={{
-          fontSize: '90%',
-          color: 'var(--text-dim)',
-          marginTop: '1em',
-        }}
+        style={{ fontSize: '90%', color: 'var(--text-dim)', marginTop: '1em' }}
       >
         {collapse.length ? (
           <span>

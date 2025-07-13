@@ -1,4 +1,3 @@
-import React from 'react';
 import type { BundlePhobiaData } from '../../lib/fetch_types.js';
 import human from '../../lib/human.js';
 
@@ -9,11 +8,7 @@ export function ModuleBundleStats({
 }) {
   return (
     <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'auto 1fr',
-        gap: '0 1em',
-      }}
+      style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '0 1em' }}
     >
       <span>Bundle size (minified):</span>
       <strong>{human(bundleInfo.size, 'B')}</strong>

@@ -1,8 +1,7 @@
-import React from 'react';
-import * as styles from './Intro.module.scss';
+import GitHubCorner from './GitHubCorner.js';
 import QueryInput from './InfoPane/QueryInput.js';
 import InputHelp from './InputHelp.js';
-import GitHubCorner from './GitHubCorner.js';
+import * as styles from './Intro.module.scss';
 import Logo from './Logo.js';
 
 export default function Intro() {

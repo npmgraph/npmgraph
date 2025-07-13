@@ -1,4 +1,4 @@
-import React, { type HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 import { cn } from '../lib/dom.js';
 import './Toggle.scss';
 
@@ -9,10 +9,7 @@ export function Toggle({
   children,
   className,
   ...props
-}: HTMLProps<HTMLLabelElement> & {
-  checked?: boolean;
-  onChange: () => void;
-}) {
+}: HTMLProps<HTMLLabelElement> & { checked?: boolean; onChange: () => void }) {
   return (
     <label
       className={cn('toggle', { checked }, className)}

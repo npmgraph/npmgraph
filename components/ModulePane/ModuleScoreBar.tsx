@@ -1,4 +1,3 @@
-import React from 'react';
 import { percent } from '../../lib/dom.js';
 import { scoreColor } from '../GraphPane/colorizers/NPMSColorizer.js';
 import * as styles from './ModuleScoreBar.module.scss';

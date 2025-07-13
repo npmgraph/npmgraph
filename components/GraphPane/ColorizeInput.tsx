@@ -1,4 +1,3 @@
-import React from 'react';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import useHashParam from '../../lib/useHashParam.js';
 import colorizers, { getColorizer } from './colorizers/index.js';

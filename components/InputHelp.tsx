@@ -1,4 +1,3 @@
-import React from 'react';
 import { QueryLink } from './QueryLink.js';
 
 export default function InputHelp() {

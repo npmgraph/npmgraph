@@ -1,4 +1,4 @@
-import React, { type HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 
 export function Tags({ children, style, ...props }: HTMLProps<HTMLDivElement>) {
   return (

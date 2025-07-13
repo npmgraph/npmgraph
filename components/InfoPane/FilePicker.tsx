@@ -1,4 +1,3 @@
-import React from 'react';
 import { readFile } from '../../lib/read_file.js';
 
 function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {

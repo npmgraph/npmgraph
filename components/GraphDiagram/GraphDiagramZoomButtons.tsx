@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,

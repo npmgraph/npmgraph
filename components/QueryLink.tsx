@@ -1,5 +1,5 @@
 import filterAlteredClicks from 'filter-altered-clicks';
-import React, { type HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 import { PARAM_QUERY } from '../lib/constants.js';
 import { urlPatch } from '../lib/url_util.js';
 import { patchLocation } from '../lib/useLocation.js';

@@ -1,4 +1,5 @@
-import React, { type HTMLProps, useRef, useState } from 'react';
+import type { HTMLProps } from 'react';
+import { useRef, useState } from 'react';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import { searchSet } from '../../lib/url_util.js';
@@ -39,13 +40,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   function handleSubmit(e?: React.FormEvent<HTMLFormElement>) {
     e?.preventDefault();
 
-    patchLocation(
-      {
-        search: getSearchParams(),
-        hash: '',
-      },
-      false,
-    );
+    patchLocation({ search: getSearchParams(), hash: '' }, false);
   }
 
   // Add cmd-enter support to search in a new tab

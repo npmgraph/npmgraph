@@ -1,15 +1,12 @@
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { $, $$ } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import type LoadActivity from '../../lib/LoadActivity.js';
 import type Module from '../../lib/Module.js';
-import {
-  type QueryType,
-  getCachedModule,
-  queryModuleCache,
-} from '../../lib/ModuleCache.js';
+import type { QueryType } from '../../lib/ModuleCache.js';
+import { getCachedModule, queryModuleCache } from '../../lib/ModuleCache.js';
 import { report } from '../../lib/bugsnag.js';
 import {
   PARAM_COLORIZE,
@@ -36,9 +33,8 @@ import { PANE } from '../Inspector.js';
 import './GraphDiagram.scss';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
+import type { DependencyKey, GraphState } from './graph_util.js';
 import {
-  type DependencyKey,
-  type GraphState,
   composeDOT,
   gatherSelectionInfo,
   getGraphForQuery,

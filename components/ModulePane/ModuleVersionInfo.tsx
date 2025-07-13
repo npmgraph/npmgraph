@@ -1,11 +1,10 @@
-import React from 'react';
 import { parse } from 'semver';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.js';
 
 import { cn } from '../../lib/dom.js';
-import './ModuleVersionInfo.scss';
 import { QueryLink } from '../QueryLink.js';
+import './ModuleVersionInfo.scss';
 
 export function ModuleVersionInfo({
   module,

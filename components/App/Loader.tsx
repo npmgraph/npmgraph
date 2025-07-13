@@ -1,4 +1,4 @@
-import React, { type HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 import type LoadActivity from '../../lib/LoadActivity.js';
 import './Loader.scss';
 

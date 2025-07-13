@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import { Selectable } from '../Selectable.js';
 
 import type Module from '../../lib/Module.js';

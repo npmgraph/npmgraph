@@ -1,4 +1,4 @@
-import React, { type HTMLProps } from 'react';
+import type { HTMLProps } from 'react';
 
 export function Pane({ children, ...props }: HTMLProps<HTMLDivElement>) {
   return (

@@ -1,4 +1,3 @@
-import React from 'react';
 import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import type Module from '../../lib/Module.js';
