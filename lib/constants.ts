@@ -24,3 +24,9 @@ export const UNNAMED_PACKAGE = 'Unnamed package';
 export const ZOOM_FIT_HEIGHT = 'h';
 export const ZOOM_FIT_WIDTH = 'w';
 export const ZOOM_NONE = null;
+
+export enum PANE {
+  MODULE = 'module',
+  GRAPH = 'graph',
+  INFO = 'info',
+}

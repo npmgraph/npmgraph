@@ -1,7 +1,6 @@
 import type { Packument } from '@npm/types';
-import PromiseWithResolvers, {
-  type PromiseWithResolversType,
-} from './PromiseWithResolvers.js';
+import PromiseWithResolvers from './PromiseWithResolvers.js';
+import type { PromiseWithResolversType } from './PromiseWithResolvers.js';
 import fetchJSON from './fetchJSON.js';
 import { getRegistry } from './useRegistry.js';
 

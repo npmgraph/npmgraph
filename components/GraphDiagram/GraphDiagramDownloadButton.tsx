@@ -2,7 +2,7 @@ import indexStyles from 'bundle-text:../../index.scss';
 import diagramStyles from 'bundle-text:./GraphDiagram.scss';
 import { report } from '../../lib/bugsnag.js';
 import { DownloadIcon } from '../Icons.js';
-import { getDiagramElement } from './GraphDiagram.js';
+import { getDiagramElement } from './graph_util.js';
 
 type DownloadExtension = 'svg' | 'png';
 

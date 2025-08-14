@@ -1,20 +1,21 @@
 import type Module from '../../../lib/Module.js';
 import PromiseWithResolvers from '../../../lib/PromiseWithResolvers.js';
-import { percent } from '../../../lib/dom.js';
 import fetchJSON from '../../../lib/fetchJSON.js';
 import type { NPMSIOData } from '../../../lib/fetch_types.js';
 import { flash } from '../../../lib/flash.js';
+import {
+  COLORIZE_MAINTENANCE,
+  COLORIZE_OVERALL,
+  COLORIZE_POPULARITY,
+  COLORIZE_QUALITY,
+  scoreColor,
+} from './colorizer_util.js';
 import type { BulkColorizer } from './index.js';
 
 // Max number of module names allowed per NPMS request
 const NPMS_BULK_LIMIT = 250;
 
-const COLORIZE_OVERALL = 'overall';
-const COLORIZE_QUALITY = 'quality';
-const COLORIZE_POPULARITY = 'popularity';
-const COLORIZE_MAINTENANCE = 'maintenance';
-
-class NPMSColorizer implements BulkColorizer {
+export class NPMSColorizer implements BulkColorizer {
   title: string;
   name: string;
 
@@ -108,10 +109,6 @@ class NPMSColorizer implements BulkColorizer {
 
     return colors;
   }
-}
-
-export function scoreColor(score: number) {
-  return `color-mix(in oklch increasing hue, var(--bg-red), var(--bg-green) ${percent(score)})`;
 }
 
 export const NPMSOverallColorizer = new NPMSColorizer(
