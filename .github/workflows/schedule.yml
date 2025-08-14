@@ -8,13 +8,15 @@ on:
 jobs:
   licenses:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - run: npm ci
       - run: npm run fetch-licenses
       - uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.NPMGRAPH_COMMIT_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           title: 'chore: update licenses'
           branch: dependency/extension
           delete-branch: true
