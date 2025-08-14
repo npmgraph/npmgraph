@@ -1,8 +1,9 @@
+import { $ } from 'select-dom';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.js';
 import { getModule } from '../../lib/ModuleCache.js';
-import { getModuleKey } from '../../lib/module_util.js';
 import { PARAM_QUERY } from '../../lib/constants.js';
+import { getModuleKey } from '../../lib/module_util.js';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -359,4 +360,8 @@ export function gatherSelectionInfo(
     downstreamEdgeKeys,
     downstreamModuleKeys,
   };
+}
+
+export function getDiagramElement() {
+  return $<SVGSVGElement>('#graph svg#graph-diagram');
 }

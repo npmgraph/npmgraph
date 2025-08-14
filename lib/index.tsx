@@ -1,16 +1,17 @@
 import 'typed-query-selector';
 import './bugsnag.js'; // Initialize ASAP!
 
-import { type ReactElement, StrictMode } from 'react';
+import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
-import App, { setActivityForApp } from '../components/App/App.js';
+import App from '../components/App/App.js';
 import { Unsupported } from '../components/Unsupported.js';
 import { DiagramTitle } from './DiagramTitle.js';
 import LoadActivity from './LoadActivity.js';
 import { syncPackagesHash } from './ModuleCache.js';
 import { setActivityForRequestCache } from './fetchJSON.js';
 import { flash } from './flash.js';
+import { setActivityForApp } from './useActivity.js';
 
 function isValidJS(src: string) {
   try {
@@ -92,9 +93,9 @@ window.onload = function () {
   // Main app component
   const appEl = $('#app')!;
   createRoot(appEl).render(
-    <StrictMode>
-      <App />
-    </StrictMode>,
+    // <StrictMode>
+    <App />,
+    // </StrictMode>,
   );
 
   // A little component for managing the title

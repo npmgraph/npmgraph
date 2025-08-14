@@ -1,5 +1,5 @@
 import { percent } from '../../lib/dom.js';
-import { scoreColor } from '../GraphPane/colorizers/NPMSColorizer.js';
+import { scoreColor } from '../GraphPane/colorizers/colorizer_util.js';
 import * as styles from './ModuleScoreBar.module.scss';
 
 export function ModuleScoreBar({

@@ -7,15 +7,15 @@ export default function useRegistry() {
   const [location] = useLocation();
   const registry = searchGet(PARAM_REGISTRY, location);
 
-  function setRegistry(registry: string) {
-    const search = searchSet(
-      PARAM_REGISTRY,
-      registry === DEFAULT_NPM_REGISTRY ? '' : registry,
-    );
-    patchLocation({ search }, true);
-  }
-
   return [registry, setRegistry] as const;
+}
+
+function setRegistry(registry: string) {
+  const search = searchSet(
+    PARAM_REGISTRY,
+    registry === DEFAULT_NPM_REGISTRY ? '' : registry,
+  );
+  patchLocation({ search }, true);
 }
 
 export function getRegistry() {

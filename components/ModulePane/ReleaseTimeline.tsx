@@ -1,5 +1,6 @@
 import type { PackumentVersion } from '@npm/types';
-import { type SemVer, parse } from 'semver';
+import type { SemVer } from 'semver';
+import { parse } from 'semver';
 import type Module from '../../lib/Module.js';
 
 import type { ReactElement } from 'react';
@@ -147,7 +148,10 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       >
         {Object.entries(layers).map(([k, layer]) => {
           return (
-            <g key={`layer-${k}`} className={styles[`layer-${k}`]}>
+            <g
+              key={`layer-${k}`}
+              className={styles[`layer-${k}` as keyof typeof styles] as string}
+            >
               {layer}
             </g>
           );

@@ -1,5 +1,5 @@
+import { useEffect } from 'react';
 import { isValidJson, loadPackageJson, readFile } from '../lib/read_file.js';
-import useEventListener from '../lib/useEventListener.js';
 import * as styles from './useExternalInput.module.scss';
 
 let dragEnterCounter = 0;
@@ -59,28 +59,45 @@ async function onPaste(ev: ClipboardEvent) {
 }
 
 export default function useExternalInput() {
-  useEventListener(globalThis, 'paste', onPaste);
-  useEventListener(document.documentElement, 'drop', onDrop);
-
-  useEventListener(globalThis, 'dragover', event => {
+  useEffect(() => {
     // Must inform the browser that we'll handle the `drop` event
     // https://stackoverflow.com/a/21341021
-    event.preventDefault();
-  });
+    const onDragOver = (event: DragEvent) => {
+      event.preventDefault();
+    };
 
-  // Show overlay. `dragenter` is fired repeatedly for any random element that we glide over,
-  // not just on `globalThis`, so we need to keep track of how many nested elements we're inside
-  useEventListener(globalThis, 'dragenter', () => {
-    dragEnterCounter++;
-    updateDragOverlay();
-  });
-  useEventListener(globalThis, 'dragleave', () => {
-    dragEnterCounter--;
-    updateDragOverlay();
-  });
-  useEventListener(globalThis, 'click', () => {
-    // Fail safe in case the browser skips some `dragleave` events
-    dragEnterCounter = 0;
-    updateDragOverlay();
-  });
+    // Show overlay. `dragenter` is fired repeatedly for any random element that we glide over,
+    // not just on `globalThis`, so we need to keep track of how many nested elements we're inside
+    const onDragEnter = () => {
+      dragEnterCounter++;
+      updateDragOverlay();
+    };
+
+    const onDragLeave = () => {
+      dragEnterCounter--;
+      updateDragOverlay();
+    };
+
+    const onClick = () => {
+      // Fail safe in case the browser skips some `dragleave` events
+      dragEnterCounter = 0;
+      updateDragOverlay();
+    };
+
+    globalThis.addEventListener('paste', onPaste);
+    document.documentElement.addEventListener('drop', onDrop);
+    globalThis.addEventListener('dragover', onDragOver);
+    globalThis.addEventListener('dragenter', onDragEnter);
+    globalThis.addEventListener('dragleave', onDragLeave);
+    globalThis.addEventListener('click', onClick);
+
+    return () => {
+      globalThis.removeEventListener('paste', onPaste);
+      document.documentElement.removeEventListener('drop', onDrop);
+      globalThis.removeEventListener('dragover', onDragOver);
+      globalThis.removeEventListener('dragenter', onDragEnter);
+      globalThis.removeEventListener('dragleave', onDragLeave);
+      globalThis.removeEventListener('click', onClick);
+    };
+  }, []);
 }

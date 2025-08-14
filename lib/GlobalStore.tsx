@@ -1,6 +1,6 @@
-import { useSyncExternalStore } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 import type { GraphState } from '../components/GraphDiagram/graph_util.js';
-import { PANE } from '../components/Inspector.js';
+import { PANE } from '../lib/constants.js';
 import { PARAM_QUERY } from './constants.js';
 import type Module from './Module.js';
 import { hashGet, searchGet } from './url_util.js';
@@ -74,9 +74,10 @@ export function useGlobalState<T extends keyof GlobalState>(
 ): [GlobalState[T], (value: GlobalState[T]) => void] {
   const globalState = useSyncExternalStore(subscribe, getSnapshot);
 
-  function setValue(value: GlobalState[T]) {
-    setGlobalState(key, value);
-  }
+  const setValue = useCallback(
+    (value: GlobalState[T]) => setGlobalState(key, value),
+    [key],
+  );
 
   return [globalState[key], setValue];
 }

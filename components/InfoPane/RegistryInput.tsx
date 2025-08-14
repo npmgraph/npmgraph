@@ -22,23 +22,30 @@ export default function RegistryInput() {
     setRegistry(value);
   }
 
-  function checkRegistryStatus(registry: string, signal: AbortSignal) {
-    if (signal.aborted) return;
-
-    fetch(`${registry}/_`, { method: 'HEAD', signal })
-      .then(() => {
-        setStatus(RegistryStatus.ONLINE);
-        setRegistry(registry);
-      })
-      .catch(() => setStatus(RegistryStatus.OFFLINE));
-  }
-
   useEffect(() => {
+    function checkRegistryStatus(registry: string, signal: AbortSignal) {
+      if (signal.aborted) return;
+
+      fetch(`${registry}/_`, { method: 'HEAD', signal })
+        .then(() => {
+          setStatus(RegistryStatus.ONLINE);
+          setRegistry(registry);
+        })
+        .catch(() => setStatus(RegistryStatus.OFFLINE));
+    }
+
     const controller = new AbortController();
+    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
     setStatus(RegistryStatus.PENDING);
-    setTimeout(() => checkRegistryStatus(value, controller.signal), 1000);
-    return () => controller.abort();
-  }, [value]);
+    const timer = setTimeout(
+      () => checkRegistryStatus(value, controller.signal),
+      1000,
+    );
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [setRegistry, value]);
 
   const statusText =
     status === RegistryStatus.ONLINE
