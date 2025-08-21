@@ -1,10 +1,11 @@
-import type { PackumentVersion } from '@npm/types';
 import type { SemVer } from 'semver';
 import { parse } from 'semver';
 import type Module from '../../lib/Module.js';
 
+import type { PackumentVersion } from '@npm/types';
 import type { ReactElement } from 'react';
 import { cn } from '../../lib/dom.js';
+import { isDefined } from '../../lib/guards.js';
 import useMeasure from '../../lib/useMeasure.js';
 import { Section } from '../Section.js';
 import * as styles from './ReleaseTimeline.module.scss';
@@ -28,20 +29,17 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const byTime = Object.entries(versions)
     .map(([key, version]) => {
-      return [
-        key,
-        {
-          ...version,
-          time: Date.parse(time[key]),
-          semver: parse(key),
-        } as PackumentVersion & {
-          time: number;
-          semver: SemVer;
-        },
-      ] as const;
+      const semver = parse(key);
+      if (!semver) return undefined;
+      // "0.0.0" isn't a valid version (e.g. you can't npm publish it)
+      if (semver.version === '0.0.0') return undefined;
+      const pv: PackumentVersion & {
+        time: number;
+        semver: SemVer;
+      } = { ...version, time: Date.parse(time[key]), semver };
+      return [key, pv] as const;
     })
-    // "0.0.0" isn't a valid version (e.g. you can't npm publish it)
-    .filter(([, { semver }]) => semver.version !== '0.0.0')
+    .filter(isDefined)
     .sort(([, a], [, b]) => {
       return a.time < b.time ? -1 : 0;
     });
