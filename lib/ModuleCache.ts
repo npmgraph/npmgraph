@@ -7,8 +7,8 @@ import {
   getCachedPackument,
   getNPMPackument,
 } from './PackumentCache.js';
-import PromiseWithResolvers from './PromiseWithResolvers.js';
 import type { PromiseWithResolversType } from './PromiseWithResolvers.js';
+import PromiseWithResolvers from './PromiseWithResolvers.js';
 import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
 import { flash } from './flash.js';
@@ -50,7 +50,7 @@ function selectVersion(
     }
   }
 
-  return packument.versions[selectedVersion ?? ''];
+  return packument.versions[selectedVersion ?? 'undefined'];
 }
 
 async function fetchModuleFromNPM(
