@@ -441,6 +441,10 @@
     "id": "BSD-3-Clause-Sun",
     "name": "BSD 3-Clause Sun Microsystems"
   },
+  "bsd-3-clause-tso": {
+    "id": "BSD-3-Clause-Tso",
+    "name": "BSD 3-Clause Tso variant"
+  },
   "bsd-4-clause": {
     "id": "BSD-4-Clause",
     "name": "BSD 4-Clause \"Original\" or \"Old\" License"
@@ -1124,6 +1128,10 @@
   "erlpl-1.1": {
     "id": "ErlPL-1.1",
     "name": "Erlang Public License v1.1"
+  },
+  "esa-pl-weak-copyleft-2.4": {
+    "id": "ESA-PL-weak-copyleft-2.4",
+    "name": "European Space Agency Public License – v2.4 – Weak Copyleft (Type 2)"
   },
   "etalab-2.0": {
     "id": "etalab-2.0",
@@ -3202,6 +3210,10 @@
   "wsuipa": {
     "id": "Wsuipa",
     "name": "Wsuipa License"
+  },
+  "wtfnmfpl": {
+    "id": "WTFNMFPL",
+    "name": "Do What The F*ck You Want To But It's Not My Fault Public License"
   },
   "wtfpl": {
     "id": "WTFPL",
