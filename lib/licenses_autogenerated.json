@@ -46,6 +46,10 @@
     "id": "ADSL",
     "name": "Amazon Digital Services License"
   },
+  "advanced-cryptics-dictionary": {
+    "id": "Advanced-Cryptics-Dictionary",
+    "name": "Advanced Cryptics Dictionary License"
+  },
   "afl-1.1": {
     "id": "AFL-1.1",
     "name": "Academic Free License v1.1",
@@ -435,7 +439,8 @@
   },
   "bsd-3-clause-open-mpi": {
     "id": "BSD-3-Clause-Open-MPI",
-    "name": "BSD 3-Clause Open MPI variant"
+    "name": "BSD 3-Clause Open MPI variant",
+    "isOsiApproved": true
   },
   "bsd-3-clause-sun": {
     "id": "BSD-3-Clause-Sun",
@@ -476,6 +481,10 @@
   "bsd-inferno-nettverk": {
     "id": "BSD-Inferno-Nettverk",
     "name": "BSD-Inferno-Nettverk"
+  },
+  "bsd-mark-modifications": {
+    "id": "BSD-Mark-Modifications",
+    "name": "BSD Mark Modifications License"
   },
   "bsd-protection": {
     "id": "BSD-Protection",
@@ -1128,6 +1137,10 @@
   "erlpl-1.1": {
     "id": "ErlPL-1.1",
     "name": "Erlang Public License v1.1"
+  },
+  "esa-pl-permissive-2.4": {
+    "id": "ESA-PL-permissive-2.4",
+    "name": "European Space Agency Public License – v2.4 – Permissive (Type 3)"
   },
   "esa-pl-weak-copyleft-2.4": {
     "id": "ESA-PL-weak-copyleft-2.4",
