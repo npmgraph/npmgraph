@@ -15,6 +15,13 @@ type GlobalState = {
 };
 
 function _getInitialPane() {
+  // Check if we're restoring a pane after a reload (e.g., from min/max version toggle)
+  const restorePane = sessionStorage.getItem('restorePane');
+  if (restorePane) {
+    sessionStorage.removeItem('restorePane');
+    return restorePane as PANE;
+  }
+
   if (!searchGet(PARAM_QUERY)) {
     return PANE.INFO;
   }
