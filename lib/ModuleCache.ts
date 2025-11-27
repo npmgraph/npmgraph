@@ -1,5 +1,5 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
-import { gt, satisfies, minVersion } from 'semver';
+import { gt, satisfies } from 'semver';
 import HttpError from './HttpError.js';
 import Module from './Module.js';
 import {
@@ -9,7 +9,7 @@ import {
 } from './PackumentCache.js';
 import type { PromiseWithResolversType } from './PromiseWithResolvers.js';
 import PromiseWithResolvers from './PromiseWithResolvers.js';
-import { PARAM_PACKAGES, PARAM_MIN_VERSIONS } from './constants.js';
+import { PARAM_PACKAGES } from './constants.js';
 import fetchJSON from './fetchJSON.js';
 import { flash } from './flash.js';
 import {
@@ -23,10 +23,6 @@ import { getRegistry } from './useRegistry.js';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 
-export function clearModuleCache() {
-  moduleCache.clear();
-}
-
 export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
 
 type ModuleCacheEntry = PromiseWithResolversType<Module> & {
@@ -37,7 +33,6 @@ type ModuleCacheEntry = PromiseWithResolversType<Module> & {
 function selectVersion(
   packument: Packument,
   targetVersion: string = 'latest',
-  useMinVersions: boolean = false,
 ): PackumentVersion | undefined {
   let selectedVersion: string | undefined;
 
@@ -45,22 +40,6 @@ function selectVersion(
   const distVersion = packument['dist-tags']?.[targetVersion];
   if (distVersion) {
     selectedVersion = distVersion;
-  } else if (useMinVersions) {
-    // Find minimum matching version
-    const minVer = minVersion(targetVersion);
-    if (minVer) {
-      selectedVersion = minVer.version;
-      // Verify the minimum version actually exists in the packument
-      if (!packument.versions[selectedVersion]) {
-        // If exact minimum doesn't exist, find the lowest matching version
-        for (const version of Object.keys(packument.versions)) {
-          if (!satisfies(version, targetVersion)) continue;
-          if (!selectedVersion || gt(selectedVersion, version)) {
-            selectedVersion = version;
-          }
-        }
-      }
-    }
   } else {
     // Find highest matching version
     for (const version of Object.keys(packument.versions)) {
@@ -84,12 +63,8 @@ async function fetchModuleFromNPM(
     throw new Error(`Could not find ${moduleName} module`);
   }
 
-  // Check if we should use minimum versions
-  const useMinVersions = hashGet(PARAM_MIN_VERSIONS) !== null;
-
   // Match best version from manifest
-  const packumentVersion =
-    packument && selectVersion(packument, version, useMinVersions);
+  const packumentVersion = packument && selectVersion(packument, version);
 
   if (!packumentVersion) {
     throw new Error(`${moduleName} does not have a version ${version}`);

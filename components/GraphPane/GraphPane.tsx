@@ -1,15 +1,9 @@
 import simplur from 'simplur';
 import useHashParam from '../../lib/useHashParam.js';
 
-import {
-  PARAM_DEPENDENCIES,
-  PARAM_SIZING,
-  PARAM_MIN_VERSIONS,
-} from '../../lib/constants.js';
+import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.js';
 import { isDefined } from '../../lib/guards.js';
 import useCollapse from '../../lib/useCollapse.js';
-import { clearModuleCache } from '../../lib/ModuleCache.js';
-import { getGlobalState } from '../../lib/GlobalStore.js';
 import { ExternalLink } from '../ExternalLink.js';
 import type { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
 import { Pane } from '../Pane.js';
@@ -53,7 +47,6 @@ export default function GraphPane({
   const [collapse, setCollapse] = useCollapse();
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [sizing, setSizing] = useHashParam(PARAM_SIZING);
-  const [minVersions, setMinVersions] = useHashParam(PARAM_MIN_VERSIONS);
 
   const dependencyTypes = (
     (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
@@ -83,27 +76,6 @@ export default function GraphPane({
         onChange={() => setSizing(sizing === null)}
       >
         Size modules by unpacked size
-      </Toggle>
-
-      <Toggle
-        checked={minVersions !== null}
-        style={{ marginTop: '1rem' }}
-        onChange={() => {
-          // Save current pane to restore after reload
-          const currentPane = getGlobalState('pane');
-          sessionStorage.setItem('restorePane', currentPane);
-
-          // Clear the module cache so dependencies are re-fetched
-          clearModuleCache();
-
-          // Toggle the parameter (use true to set empty value, null to delete)
-          setMinVersions(minVersions === null ? true : null);
-
-          // Reload the page to re-fetch with new version strategy
-          setTimeout(() => window.location.reload(), 100);
-        }}
-      >
-        Use minimum versions
       </Toggle>
 
       <hr />

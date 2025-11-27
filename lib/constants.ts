@@ -17,7 +17,6 @@ export const PARAM_QUERY = 'q';
 export const PARAM_REGISTRY = 'registry';
 export const PARAM_SELECTION = 'select';
 export const PARAM_SIZING = 'sizing';
-export const PARAM_MIN_VERSIONS = 'minVersions';
 export const PARAM_ZOOM = 'zoom';
 
 export const UNNAMED_PACKAGE = 'Unnamed package';
