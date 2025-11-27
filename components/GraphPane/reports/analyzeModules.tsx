@@ -32,8 +32,9 @@ export function analyzeModules({ moduleInfos, entryModules }: GraphState) {
 
     // For modulesAge reporter
     let publishDate: number | null = null;
-    if (module.packument?.time && module.version) {
-      const timeStr = module.packument.time[module.version];
+    if (module.packument?.time) {
+      // Use 'created' field for package age (when package was first published)
+      const timeStr = module.packument.time.created;
       if (timeStr) {
         publishDate = Date.parse(timeStr);
       }

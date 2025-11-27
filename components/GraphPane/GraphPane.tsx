@@ -129,7 +129,7 @@ export default function GraphPane({
         <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
         <ReportItem data={moduleAnalysis} reporter={modulesAge}>
-          Shows when each module version was published to npm. Older modules may
+          Shows when each package was first created on npm. Older packages may
           have security vulnerabilities or lack modern features.
         </ReportItem>
 
