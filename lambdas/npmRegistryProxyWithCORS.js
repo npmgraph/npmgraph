@@ -1,9 +1,8 @@
 // Lambda for proxying npm registry requests and adding CORS headers for the
 // npmgraph.js.org origin
 //
-// This is hosted on @broofa's AWS account
+// This is hosted on @broofa's personal AWS account (for now)
 const NPM_REGISTRY_URL = 'https://registry.npmjs.org';
-const ALLOWED_ORIGINS = ['https://npmgraph.js.org', 'http://localhost:1234'];
 
 export async function handler(event) {
   const req = event.requestContext.http;
@@ -16,7 +15,7 @@ export async function handler(event) {
   };
 
   try {
-    if (!ALLOWED_ORIGINS.includes(origin)) {
+    if (!isOriginAllowed(origin)) {
       return {
         statusCode: 403,
         headers: CORS_HEADERS,
@@ -59,4 +58,22 @@ export async function handler(event) {
       }),
     };
   }
+}
+
+function isOriginAllowed(origin) {
+  const url = new URL(origin);
+
+  if (url.hostname === 'localhost') {
+    return true;
+  }
+
+  if (url.hostname === 'npmgraph.js.org') {
+    return true;
+  }
+
+  if (/npmgraph-git-\w+-broofas-projects.vercel.app/.test(url.hostname)) {
+    return true;
+  }
+
+  return false;
 }
