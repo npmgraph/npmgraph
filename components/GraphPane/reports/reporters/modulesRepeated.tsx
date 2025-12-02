@@ -1,5 +1,4 @@
 import simplur from 'simplur';
-import { QueryType } from '../../../../lib/ModuleCache.js';
 import { getModuleKey } from '../../../../lib/module_util.js';
 import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
@@ -20,10 +19,7 @@ export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
     .map(([name, versions]) => {
       return (
         <div className={styles.row} key={name}>
-          <Selectable
-            className={styles.name}
-            value={name}
-          />
+          <Selectable className={styles.name} value={name} />
 
           {versions.map(version => (
             <Selectable

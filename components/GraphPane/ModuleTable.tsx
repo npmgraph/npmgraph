@@ -26,10 +26,7 @@ export function ModuleTable({ data }: { data: ModuleTableData }) {
     ) : (
       <Fragment key={name}>
         <div className={styles.rootRow}>
-          <Selectable
-            className={styles.rootName}
-            value={modules[0].name}
-          />
+          <Selectable className={styles.rootName} value={modules[0].name} />
 
           {modules.map(m => (
             <Selectable

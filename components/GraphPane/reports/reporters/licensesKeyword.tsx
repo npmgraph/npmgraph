@@ -18,10 +18,7 @@ export function licensesKeyword(keyword: OSIKeyword) {
       .sort((a, b) => a.key.localeCompare(b.key))
       .map(module => (
         <div className={cn(styles.row, 'zebra-row')} key={module.key}>
-          <Selectable
-            className={cn(styles.name)}
-            value={module.key}
-          />
+          <Selectable className={cn(styles.name)} value={module.key} />
         </div>
       ));
 
