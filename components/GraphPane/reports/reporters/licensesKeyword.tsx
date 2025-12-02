@@ -1,5 +1,4 @@
 import simplur from 'simplur';
-import { QueryType } from '../../../../lib/ModuleCache.js';
 import { cn } from '../../../../lib/dom.js';
 import type { OSIKeyword } from '../../../../lib/licenses.js';
 import { Selectable } from '../../../Selectable.js';

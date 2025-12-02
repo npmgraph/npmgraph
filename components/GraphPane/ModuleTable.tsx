@@ -2,7 +2,6 @@ import { Fragment } from 'react';
 import { Selectable } from '../Selectable.js';
 
 import type Module from '../../lib/Module.js';
-import { QueryType } from '../../lib/ModuleCache.js';
 import * as styles from './ModuleTable.module.scss';
 
 export type ModuleTableData = Map<string, Module[]>;
