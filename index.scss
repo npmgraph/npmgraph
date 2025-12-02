@@ -9,8 +9,8 @@
   }
 
   --root-color: white; // Don't change, it's used to mix colors on light/dark schemes
-  --rad_sm: 5px;
-  --rad_lg: 10px;
+  --rad-sm: 5px;
+  -rad-lg: 10px;
   --inspector-size: 32em;
   --tabs-height: 24pt;
   --bg-gradient: linear-gradient(
@@ -134,7 +134,7 @@ p {
 }
 
 h2 {
-  border-radius: var(--rad_sm);
+  border-radius: var(--rad-sm);
   font-size: 14pt;
 }
 

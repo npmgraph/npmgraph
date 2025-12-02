@@ -106,7 +106,7 @@ Values should have one of the following forms:
 
 **Example**: Graph `send`, selecting `fresh@0.5.2`
 
-https://npmgraph.js.org/?q=send@0.18.0#select=exact%3Afresh%400.5.2
+https://npmgraph.js.org/?q=send@0.18.0#select=fresh%400.5.2
 
 ### `sizing` (hash param)
 

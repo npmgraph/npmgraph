@@ -1,4 +1,5 @@
 import simplur from 'simplur';
+import { QueryType } from '../../../../lib/ModuleCache.js';
 import { cn } from '../../../../lib/dom.js';
 import type { OSIKeyword } from '../../../../lib/licenses.js';
 import { Selectable } from '../../../Selectable.js';
@@ -19,7 +20,6 @@ export function licensesKeyword(keyword: OSIKeyword) {
         <div className={cn(styles.row, 'zebra-row')} key={module.key}>
           <Selectable
             className={cn(styles.name)}
-            type="exact"
             value={module.key}
           />
         </div>

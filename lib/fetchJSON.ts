@@ -7,6 +7,8 @@ let activity: LoadActivity;
 export function setActivityForRequestCache(act: LoadActivity) {
   activity = act;
 }
+
+// `fetch()` wrapper that returns parsed JSON and caches requests
 export default function fetchJSON<T>(
   input: RequestInfo | URL,
   init?: RequestInit & { silent?: boolean; timeout?: number },

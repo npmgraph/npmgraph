@@ -1,19 +1,31 @@
-import type { QueryType } from './ModuleCache.js';
+import { QueryType } from './ModuleCache.js';
 import { PARAM_SELECTION } from './constants.js';
 import useHashParam from './useHashParam.js';
 
 export default function useGraphSelection() {
   const [sel, setSel] = useHashParam(PARAM_SELECTION);
-  const i = (sel ?? '').indexOf(':');
-  const selectType = (sel && i > 0 ? sel?.slice(0, i) : '') as QueryType;
-  const selectValue = sel && i > 0 ? sel?.slice(i + 1) : '';
+  const parts = sel ? sel.split(':') : [];
+  const selectType =
+    parts.length > 1 ? (parts[0] as QueryType) : QueryType.Default;
+  const selectValue = (parts.length > 1 ? parts[1] : parts[0]) ?? '';
 
   return [
     selectType,
     selectValue,
-    function setGraphSelection(queryType?: QueryType, queryValue?: string) {
-      if (!queryType || !queryValue) return setSel('');
-      setSel(`${queryType}:${queryValue}`);
+    function setGraphSelection(
+      queryType = QueryType.Default,
+      queryValue?: string,
+    ) {
+      if (!queryType && !queryValue) return setSel('');
+      if (
+        queryType === QueryType.Default ||
+        queryType === QueryType.Name ||
+        queryType === QueryType.Exact
+      ) {
+        setSel(queryValue);
+      } else {
+        setSel(`${queryType}:${queryValue}`);
+      }
     },
   ] as const;
 }

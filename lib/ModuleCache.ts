@@ -23,7 +23,13 @@ import { getRegistry } from './useRegistry.js';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 
-export type QueryType = 'exact' | 'name' | 'license' | 'maintainer';
+export enum QueryType {
+  Default = '',
+  Exact = 'exact', // deprecated - use Default
+  Name = 'name', // deprecated - use Default
+  License = 'license',
+  Maintainer = 'maintainer',
+}
 
 type ModuleCacheEntry = PromiseWithResolversType<Module> & {
   module: Module; // Set once module is loaded
@@ -176,23 +182,34 @@ export function cacheModule(module: Module, registry?: string) {
 export function queryModuleCache(queryType: QueryType, queryValue: string) {
   const results = new Map<string, Module>();
 
-  if (!queryType || !queryValue) return results;
+  if (!queryType && !queryValue) return results;
+
+  // 'exact' and 'name' query deprecated in favor of Default
+  if (queryType === QueryType.Exact) {
+    queryType = QueryType.Default;
+  } else if (queryType === QueryType.Name) {
+    queryType = QueryType.Default;
+  }
 
   for (const { module } of moduleCache.values()) {
     if (!module) continue;
 
     switch (queryType) {
-      case 'exact':
-        if (module.key === queryValue) results.set(module.key, module);
+      case QueryType.Default: {
+        const [name, version] = parseModuleKey(queryValue);
+        if (
+          module.name === name &&
+          (!version || satisfies(module.version, version))
+        ) {
+          results.set(module.key, module);
+        }
         break;
-      case 'name':
-        if (module.name === queryValue) results.set(module.key, module);
-        break;
-      case 'license':
+      }
+      case QueryType.License:
         if (module.getLicenses().includes(queryValue.toLowerCase()))
           results.set(module.key, module);
         break;
-      case 'maintainer':
+      case QueryType.Maintainer:
         if (module.maintainers.find(({ name }) => name === queryValue))
           results.set(module.key, module);
         break;

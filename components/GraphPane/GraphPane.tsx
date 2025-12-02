@@ -21,6 +21,7 @@ import { licensesMissing } from './reports/reporters/licensesMissing.js';
 import { maintainersAll } from './reports/reporters/maintainersAll.js';
 import { maintainersSolo } from './reports/reporters/maintainersSolo.js';
 import { moduleReplacementsNative } from './reports/reporters/moduleReplacements.js';
+import { moduleVulnerabilities } from './reports/reporters/moduleVulnerabilities.js';
 import { modulesAll } from './reports/reporters/modulesAll.js';
 import { modulesDeprecated } from './reports/reporters/modulesDeprecated.js';
 import { modulesRepeated } from './reports/reporters/modulesRepeated.js';
@@ -98,6 +99,14 @@ export default function GraphPane({
 
       <ReportSection title="Modules">
         <ReportItem data={moduleAnalysis} reporter={modulesAll} />
+
+        <ReportItem data={moduleAnalysis} reporter={moduleVulnerabilities}>
+          Security advisories per <code>npm audit</code>. Data sourced from the
+          npm registry. See{' '}
+          <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">
+            npm audit documentation
+          </ExternalLink>
+        </ReportItem>
 
         <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
           Module repetition is a result of incompatible version constraints, and
