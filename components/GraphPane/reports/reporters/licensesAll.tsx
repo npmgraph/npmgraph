@@ -1,4 +1,5 @@
 import simplur from 'simplur';
+import { QueryType } from '../../../../lib/ModuleCache.js';
 import { cn } from '../../../../lib/dom.js';
 import { LICENSES } from '../../../../lib/licenses.js';
 import { Selectable } from '../../../Selectable.js';
@@ -16,7 +17,7 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
         <div className={cn(styles.root, 'zebra-row')} key={license}>
           <div className={styles.license}>
             <Selectable
-              type="license"
+              type={QueryType.License}
               value={license}
               label={license || '(unlicensed)'}
             />
@@ -33,7 +34,7 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
 
           <div className={styles.modules}>
             {modules.map(m => (
-              <Selectable type="exact" value={m.key} key={m.key} />
+              <Selectable value={m.key} key={m.key} />
             ))}
           </div>
         </div>

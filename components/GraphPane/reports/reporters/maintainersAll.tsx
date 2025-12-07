@@ -1,6 +1,7 @@
 import md5 from 'md5';
 import type { ReactElement } from 'react';
 import simplur from 'simplur';
+import { QueryType } from '../../../../lib/ModuleCache.js';
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
@@ -29,12 +30,12 @@ export function maintainersAll({
         <div className={cn(styles.root, 'zebra-row')} key={name}>
           <div className={styles.maintainer}>
             {img}
-            <Selectable type="maintainer" value={name} />
+            <Selectable type={QueryType.Maintainer} value={name} />
           </div>
 
           <div className={styles.modules}>
             {[...modules.values()].map(m => (
-              <Selectable type="exact" value={m.key} key={m.key} />
+              <Selectable value={m.key} key={m.key} />
             ))}
           </div>
         </div>

@@ -17,7 +17,6 @@ export function ModuleTable({ data }: { data: ModuleTableData }) {
       <div className={styles.rootRow} key={name}>
         <Selectable
           className={styles.rootName}
-          type="exact"
           value={modules[0].key}
           label={modules[0].name}
         />
@@ -26,16 +25,11 @@ export function ModuleTable({ data }: { data: ModuleTableData }) {
     ) : (
       <Fragment key={name}>
         <div className={styles.rootRow}>
-          <Selectable
-            className={styles.rootName}
-            type="name"
-            value={modules[0].name}
-          />
+          <Selectable className={styles.rootName} value={modules[0].name} />
 
           {modules.map(m => (
             <Selectable
               className={styles.rootVersion}
-              type="exact"
               label={`@${m.version}`}
               key={m.version}
               value={m.key}

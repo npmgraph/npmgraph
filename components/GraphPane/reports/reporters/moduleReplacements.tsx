@@ -79,7 +79,7 @@ export function moduleReplacementsNative({
 
       return (
         <div className={cn(styles.root, 'zebra-row')} key={module.key}>
-          <Selectable type="exact" value={module.key} />
+          <Selectable value={module.key} />
           {': '}
           <span className={styles.body}>{detail}</span>
         </div>

@@ -2,6 +2,7 @@ import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import type Module from '../../lib/Module.js';
 import type { Maintainer } from '../../lib/Module.js';
+import { QueryType } from '../../lib/ModuleCache.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import human from '../../lib/human.js';
 import useHashParam from '../../lib/useHashParam.js';
@@ -187,7 +188,7 @@ export default function ModulePane({
             ({ name = 'Unknown', email }: Exclude<Maintainer, string>) => (
               <Tag
                 key={name + email}
-                type="maintainer"
+                type={QueryType.Maintainer}
                 value={name}
                 gravatar={email}
               />

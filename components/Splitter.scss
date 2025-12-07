@@ -14,8 +14,8 @@
   user-select: none;
   text-align: center;
   #inspector:not(.open) & {
-    border-top-left-radius: var(--rad_lg);
-    border-bottom-left-radius: var(--rad_lg);
+    border-top-left-radius: var(--rad-lg);
+    border-bottom-left-radius: var(--rad-lg);
   }
 
   @include tight-screen {

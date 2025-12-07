@@ -19,13 +19,12 @@ export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
     .map(([name, versions]) => {
       return (
         <div className={styles.row} key={name}>
-          <Selectable className={styles.name} type="name" value={name} />
+          <Selectable className={styles.name} value={name} />
 
           {versions.map(version => (
             <Selectable
               key={version}
               className={styles.version}
-              type="exact"
               label={version}
               value={getModuleKey(name, version)}
             />

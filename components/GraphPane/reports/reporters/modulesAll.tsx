@@ -19,7 +19,6 @@ export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
             className={cn(styles.name, {
               [styles.entry]: entryModules.has(module),
             })}
-            type="exact"
             value={module.key}
           />
         </div>

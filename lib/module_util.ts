@@ -58,7 +58,7 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
       const match = ALIAS_RE.exec(version);
       if (match) {
         console.log(
-          `Dereferencing alias ${name} -> ${match.groups!.name}@${match.groups!.semver}`,
+          `Resolving alias ${name} -> ${match.groups!.name}@${match.groups!.semver}`,
         );
         delete deps[name];
         deps[match.groups!.name] = match.groups!.semver;

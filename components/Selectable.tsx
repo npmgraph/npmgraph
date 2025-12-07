@@ -12,7 +12,7 @@ export function Selectable({
   className,
   ...props
 }: {
-  type: QueryType;
+  type?: QueryType;
   value: string;
   label?: string;
 } & HTMLProps<HTMLSpanElement>) {

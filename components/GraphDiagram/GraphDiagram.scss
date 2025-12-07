@@ -71,15 +71,15 @@
 
 #zoom-fit-width,
 #download-svg {
-  border-top-left-radius: var(--rad_sm);
-  border-bottom-left-radius: var(--rad_sm);
+  border-top-left-radius: var(--rad-sm);
+  border-bottom-left-radius: var(--rad-sm);
   padding-left: calc(var(--padding) + 1px);
 }
 
 #zoom-fit-height,
 #download-svg {
-  border-top-right-radius: var(--rad_sm);
-  border-bottom-right-radius: var(--rad_sm);
+  border-top-right-radius: var(--rad-sm);
+  border-bottom-right-radius: var(--rad-sm);
   padding-right: calc(var(--padding) + 1px);
 }
 

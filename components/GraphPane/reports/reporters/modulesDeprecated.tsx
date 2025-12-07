@@ -13,7 +13,7 @@ export function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
     .map(module => {
       return (
         <div className={cn(styles.root, 'zebra-row')} key={module.key}>
-          <Selectable type="exact" value={module.key} />
+          <Selectable value={module.key} />
           {': '}
           <span className={styles.body}>
             &rdquo;{module.package.deprecated}&ldquo;

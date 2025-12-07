@@ -1,3 +1,4 @@
+import { QueryType } from '../../../../lib/ModuleCache.js';
 import { cn } from '../../../../lib/dom.js';
 import { Selectable } from '../../../Selectable.js';
 import type { RenderedAnalysis } from '../Analyzer.js';
@@ -27,7 +28,7 @@ export function peerDependenciesAll({
         <div key={sourceName}>
           <div className={styles.header}>
             <span>
-              <Selectable type="exact" value={sourceName} />{' '}
+              <Selectable value={sourceName} />{' '}
             </span>
           </div>
           <div className={styles.section}>
@@ -50,7 +51,7 @@ export function peerDependenciesAll({
                   <span className={styles.gets}>
                     {destination ? (
                       <Selectable
-                        type="exact"
+                        type={QueryType.Default}
                         label={destination.version}
                         value={destination.key}
                       />

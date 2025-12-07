@@ -6,8 +6,8 @@
   flex-basis: 0;
   flex-direction: column;
   transition: flex-basis var(--transition-duration);
-  border-top-left-radius: var(--rad_lg);
-  border-bottom-left-radius: var(--rad_lg);
+  border-top-left-radius: var(--rad-lg);
+  border-bottom-left-radius: var(--rad-lg);
   overflow: hidden;
   color: var(--text);
 
@@ -17,7 +17,7 @@
 
   @include tight-screen {
     flex-basis: var(--inspector-size);
-    border-radius: var(--rad_lg);
+    border-radius: var(--rad-lg);
   }
 
   .description {
@@ -30,7 +30,7 @@
 
   .tag {
     cursor: pointer;
-    border-radius: var(--rad_lg);
+    border-radius: var(--rad-lg);
     background-color: var(--bg1);
     padding: 2px 8px;
     overflow: hidden;

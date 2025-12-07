@@ -5,7 +5,11 @@ import { $, $$ } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import type LoadActivity from '../../lib/LoadActivity.js';
 import type Module from '../../lib/Module.js';
-import { getCachedModule, queryModuleCache } from '../../lib/ModuleCache.js';
+import {
+  getCachedModule,
+  queryModuleCache,
+  QueryType,
+} from '../../lib/ModuleCache.js';
 import { report } from '../../lib/bugsnag.js';
 import {
   PANE,
@@ -115,7 +119,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     if (node) setZenMode('');
 
-    setGraphSelection('exact', moduleKey);
+    setGraphSelection(QueryType.Default, moduleKey);
     if (moduleKey) {
       setPane(PANE.MODULE);
     }
@@ -285,7 +289,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     return queryModuleCache(selectType, selectValue);
   }, [graph, selectType, selectValue]);
   const previousSelection = usePrevious(selectedModules);
-
   // Effect: render graph selection
   useEffect(() => {
     if (!graph) return;
