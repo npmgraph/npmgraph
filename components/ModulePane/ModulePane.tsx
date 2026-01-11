@@ -212,7 +212,10 @@ function getRepoUrlForModule(module: Module) {
     if (info) return info.browse();
 
     // Fallback: strip path suffixes and try again
-    const baseUrl = url.replace(/\/(issues|pulls|wiki|tree|blob|commit|releases).*$/, '');
+    const baseUrl = url.replace(
+      /\/(issues|pulls|wiki|tree|blob|commit|releases).*$/,
+      '',
+    );
     if (baseUrl !== url) {
       return hostedGitInfo.fromUrl(baseUrl)?.browse();
     }
@@ -220,7 +223,9 @@ function getRepoUrlForModule(module: Module) {
     return undefined;
   };
 
-  return parse(typeof repository === 'string' ? repository : repository?.url)
-    ?? parse(homepage)
-    ?? parse(typeof bugs === 'string' ? bugs : bugs?.url);
+  return (
+    parse(typeof repository === 'string' ? repository : repository?.url) ??
+    parse(homepage) ??
+    parse(typeof bugs === 'string' ? bugs : bugs?.url)
+  );
 }
