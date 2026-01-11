@@ -204,31 +204,23 @@ export default function ModulePane({
 function getRepoUrlForModule(module: Module) {
   const { homepage, bugs, repository } = module.package;
 
-  // Try to extract repository URL from various package.json fields
-  const candidates = [
-    typeof repository === 'string' ? repository : repository?.url,
-    homepage,
-    typeof bugs === 'string' ? bugs : bugs?.url,
-  ].filter((url): url is string => Boolean(url));
+  const parse = (url?: string) => {
+    if (!url) return undefined;
 
-  // Use hosted-git-info to parse and normalize repository URLs
-  for (const candidate of candidates) {
-    const info = hostedGitInfo.fromUrl(candidate);
-    if (info) {
-      return info.browse();
+    // Try parsing the URL directly
+    const info = hostedGitInfo.fromUrl(url);
+    if (info) return info.browse();
+
+    // Fallback: strip path suffixes and try again
+    const baseUrl = url.replace(/\/(issues|pulls|wiki|tree|blob|commit|releases).*$/, '');
+    if (baseUrl !== url) {
+      return hostedGitInfo.fromUrl(baseUrl)?.browse();
     }
-  }
 
-  // Fallback: try to extract base repo URL from GitHub/GitLab URLs with paths (e.g., issues, pulls)
-  for (const candidate of candidates) {
-    const baseUrl = candidate.replace(/\/(issues|pulls|wiki|tree|blob|commit|releases).*$/, '');
-    if (baseUrl !== candidate) {
-      const info = hostedGitInfo.fromUrl(baseUrl);
-      if (info) {
-        return info.browse();
-      }
-    }
-  }
+    return undefined;
+  };
 
-  return undefined;
+  return parse(typeof repository === 'string' ? repository : repository?.url)
+    ?? parse(homepage)
+    ?? parse(typeof bugs === 'string' ? bugs : bugs?.url);
 }
