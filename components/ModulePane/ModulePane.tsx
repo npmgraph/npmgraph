@@ -1,3 +1,4 @@
+import hostedGitInfo from 'hosted-git-info';
 import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import type Module from '../../lib/Module.js';
@@ -203,25 +204,28 @@ export default function ModulePane({
 function getRepoUrlForModule(module: Module) {
   const { homepage, bugs, repository } = module.package;
 
-  // Look to repository and bugs fields for a github URL
-  let repo;
-  if (repository) {
-    if (typeof repository === 'string') {
-      repo = repository;
-    } else {
-      repo = repository.url;
+  const parse = (url?: string) => {
+    if (!url) return undefined;
+
+    // Try parsing the URL directly
+    const info = hostedGitInfo.fromUrl(url);
+    if (info) return info.browse();
+
+    // Fallback: strip path suffixes and try again
+    const baseUrl = url.replace(
+      /\/(issues|pulls|wiki|tree|blob|commit|releases).*$/,
+      '',
+    );
+    if (baseUrl !== url) {
+      return hostedGitInfo.fromUrl(baseUrl)?.browse();
     }
-  } else if (homepage) {
-    repo = homepage;
-  } else if (bugs) {
-    repo = bugs.url;
-  }
 
-  // Extract github project path from URL
-  const match = repo?.match(/github.com\/([^/]+\/[^/?#]+)?/);
-  if (!match?.[1]) return undefined;
+    return undefined;
+  };
 
-  repo = match[1].replace(/\.git$/, '');
-
-  return `https://www.github.com/${repo}`;
+  return (
+    parse(typeof repository === 'string' ? repository : repository?.url) ??
+    parse(homepage) ??
+    parse(typeof bugs === 'string' ? bugs : bugs?.url)
+  );
 }
