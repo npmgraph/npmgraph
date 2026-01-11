@@ -219,5 +219,16 @@ function getRepoUrlForModule(module: Module) {
     }
   }
 
+  // Fallback: try to extract base repo URL from GitHub/GitLab URLs with paths (e.g., issues, pulls)
+  for (const candidate of candidates) {
+    const baseUrl = candidate.replace(/\/(issues|pulls|wiki|tree|blob|commit|releases).*$/, '');
+    if (baseUrl !== candidate) {
+      const info = hostedGitInfo.fromUrl(baseUrl);
+      if (info) {
+        return info.browse();
+      }
+    }
+  }
+
   return undefined;
 }
