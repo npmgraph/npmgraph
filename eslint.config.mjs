@@ -12,6 +12,7 @@ export default antfu({
     'ts/consistent-type-definitions': ['error', 'type'],
     'perfectionist/sort-imports': 'off',
     'perfectionist/sort-named-imports': 'off',
+    'test/no-import-node-test': 'off',
 
     // Prettier conflicts
     // TODO: Update after https://github.com/antfu/eslint-config/issues/615

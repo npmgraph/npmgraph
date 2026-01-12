@@ -1,4 +1,3 @@
-import hostedGitInfo from 'hosted-git-info';
 import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.js';
 import type Module from '../../lib/Module.js';
@@ -6,6 +5,7 @@ import type { Maintainer } from '../../lib/Module.js';
 import { QueryType } from '../../lib/ModuleCache.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import human from '../../lib/human.js';
+import { getRepoUrlForModule } from '../../lib/repo_util.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { ExternalLink } from '../ExternalLink.js';
 import { foreachDownstream } from '../GraphDiagram/graph_util.js';
@@ -198,34 +198,5 @@ export default function ModulePane({
         </Tags>
       </Section>
     </Pane>
-  );
-}
-
-function getRepoUrlForModule(module: Module) {
-  const { homepage, bugs, repository } = module.package;
-
-  const parse = (url?: string) => {
-    if (!url) return undefined;
-
-    // Try parsing the URL directly
-    const info = hostedGitInfo.fromUrl(url);
-    if (info) return info.browse();
-
-    // Fallback: strip path suffixes and try again
-    const baseUrl = url.replace(
-      /\/(issues|pulls|wiki|tree|blob|commit|releases).*$/,
-      '',
-    );
-    if (baseUrl !== url) {
-      return hostedGitInfo.fromUrl(baseUrl)?.browse();
-    }
-
-    return undefined;
-  };
-
-  return (
-    parse(typeof repository === 'string' ? repository : repository?.url) ??
-    parse(homepage) ??
-    parse(typeof bugs === 'string' ? bugs : bugs?.url)
   );
 }
