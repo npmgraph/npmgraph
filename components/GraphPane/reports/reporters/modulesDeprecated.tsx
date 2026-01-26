@@ -1,8 +1,8 @@
 import simplur from 'simplur';
-import { cn } from '../../../../lib/dom.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { ModuleAnalysisState } from '../analyzeModules.js';
+import { cn } from '../../../../lib/dom.ts';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { ModuleAnalysisState } from '../analyzeModules.ts';
 import * as styles from './modulesDeprecated.module.scss';
 
 export function modulesDeprecated({ deprecated }: ModuleAnalysisState) {

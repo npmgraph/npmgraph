@@ -1,6 +1,6 @@
-import { PARAM_COLORIZE } from '../../lib/constants.js';
-import useHashParam from '../../lib/useHashParam.js';
-import colorizers, { getColorizer } from './colorizers/index.js';
+import { PARAM_COLORIZE } from '../../lib/constants.ts';
+import useHashParam from '../../lib/useHashParam.ts';
+import colorizers, { getColorizer } from './colorizers/index.ts';
 
 import './ColorizeInput.scss';
 

@@ -1,34 +1,34 @@
 import simplur from 'simplur';
-import useHashParam from '../../lib/useHashParam.js';
+import useHashParam from '../../lib/useHashParam.ts';
 
-import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.js';
-import { isDefined } from '../../lib/guards.js';
-import useCollapse from '../../lib/useCollapse.js';
-import { ExternalLink } from '../ExternalLink.js';
-import type { DependencyKey, GraphState } from '../GraphDiagram/graph_util.js';
-import { Pane } from '../Pane.js';
-import { Toggle } from '../Toggle.js';
-import ColorizeInput from './ColorizeInput.js';
+import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
+import { isDefined } from '../../lib/guards.ts';
+import useCollapse from '../../lib/useCollapse.ts';
+import { ExternalLink } from '../ExternalLink.tsx';
+import type { DependencyKey, GraphState } from '../GraphDiagram/graph_util.ts';
+import { Pane } from '../Pane.tsx';
+import { Toggle } from '../Toggle.tsx';
+import ColorizeInput from './ColorizeInput.tsx';
 import './GraphPane.scss';
-import { ReportItem } from './reports/ReportItem.js';
-import { analyzeLicenses } from './reports/analyzeLicenses.js';
-import { analyzeMaintainers } from './reports/analyzeMaintainers.js';
-import { analyzeModules } from './reports/analyzeModules.js';
-import { analyzePeerDependencies } from './reports/analyzePeerDependencies.js';
-import { licensesAll } from './reports/reporters/licensesAll.js';
-import { licensesKeyword } from './reports/reporters/licensesKeyword.js';
-import { licensesMissing } from './reports/reporters/licensesMissing.js';
-import { maintainersAll } from './reports/reporters/maintainersAll.js';
-import { maintainersSolo } from './reports/reporters/maintainersSolo.js';
-import { moduleReplacementsNative } from './reports/reporters/moduleReplacements.js';
-import { moduleVulnerabilities } from './reports/reporters/moduleVulnerabilities.js';
-import { modulesAll } from './reports/reporters/modulesAll.js';
-import { modulesDeprecated } from './reports/reporters/modulesDeprecated.js';
-import { modulesRepeated } from './reports/reporters/modulesRepeated.js';
+import { ReportItem } from './reports/ReportItem.tsx';
+import { analyzeLicenses } from './reports/analyzeLicenses.ts';
+import { analyzeMaintainers } from './reports/analyzeMaintainers.tsx';
+import { analyzeModules } from './reports/analyzeModules.ts';
+import { analyzePeerDependencies } from './reports/analyzePeerDependencies.tsx';
+import { licensesAll } from './reports/reporters/licensesAll.tsx';
+import { licensesKeyword } from './reports/reporters/licensesKeyword.tsx';
+import { licensesMissing } from './reports/reporters/licensesMissing.tsx';
+import { maintainersAll } from './reports/reporters/maintainersAll.tsx';
+import { maintainersSolo } from './reports/reporters/maintainersSolo.tsx';
+import { moduleReplacementsNative } from './reports/reporters/moduleReplacements.tsx';
+import { moduleVulnerabilities } from './reports/reporters/moduleVulnerabilities.tsx';
+import { modulesAll } from './reports/reporters/modulesAll.tsx';
+import { modulesDeprecated } from './reports/reporters/modulesDeprecated.tsx';
+import { modulesRepeated } from './reports/reporters/modulesRepeated.tsx';
 import {
   peerDependenciesAll,
   peerDependenciesMissing,
-} from './reports/reporters/peerDependenciesAll.js';
+} from './reports/reporters/peerDependenciesAll.tsx';
 
 function ReportSection({ title, children }: { title: string; children: any }) {
   return (

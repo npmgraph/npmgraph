@@ -1,17 +1,17 @@
 import 'typed-query-selector';
-import './bugsnag.js'; // Initialize ASAP!
+import './bugsnag.ts'; // Initialize ASAP!
 
 import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
-import App from '../components/App/App.js';
-import { Unsupported } from '../components/Unsupported.js';
-import { DiagramTitle } from './DiagramTitle.js';
-import LoadActivity from './LoadActivity.js';
-import { syncPackagesHash } from './ModuleCache.js';
-import { setActivityForRequestCache } from './fetchJSON.js';
-import { flash } from './flash.js';
-import { setActivityForApp } from './useActivity.js';
+import App from '../components/App/App.tsx';
+import { Unsupported } from '../components/Unsupported.tsx';
+import { DiagramTitle } from './DiagramTitle.tsx';
+import LoadActivity from './LoadActivity.ts';
+import { syncPackagesHash } from './ModuleCache.ts';
+import { setActivityForRequestCache } from './fetchJSON.ts';
+import { flash } from './flash.ts';
+import { setActivityForApp } from './useActivity.ts';
 
 function isValidJS(src: string) {
   try {

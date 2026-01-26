@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react';
-import type Module from '../../../lib/Module.js';
-import BusFactorColorizer from './BusFactorColorizer.js';
-import ModuleTypeColorizer from './ModuleTypeColorizer.js';
-import { NPMSOverallColorizer } from './NPMSColorizer.js';
-import OutdatedColorizer from './OutdatedColorizer.js';
+import type Module from '../../../lib/Module.ts';
+import BusFactorColorizer from './BusFactorColorizer.tsx';
+import ModuleTypeColorizer from './ModuleTypeColorizer.tsx';
+import { NPMSOverallColorizer } from './NPMSColorizer.tsx';
+import OutdatedColorizer from './OutdatedColorizer.tsx';
 
 type Colorizer = {
   title: string;

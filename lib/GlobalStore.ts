@@ -1,9 +1,8 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import type { GraphState } from '../components/GraphDiagram/graph_util.js';
-import { PANE } from '../lib/constants.js';
-import { PARAM_QUERY } from './constants.js';
-import type Module from './Module.js';
-import { hashGet, searchGet } from './url_util.js';
+import type { GraphState } from '../components/GraphDiagram/graph_util.ts';
+import { PANE, PARAM_QUERY } from './constants.ts';
+import type Module from './module.ts';
+import { hashGet, searchGet } from './url_util.ts';
 
 type GlobalState = {
   colorize?: string;

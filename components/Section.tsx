@@ -1,5 +1,5 @@
 import type { HTMLProps } from 'react';
-import { cn } from '../lib/dom.js';
+import { cn } from '../lib/dom.ts';
 
 import * as styles from './Section.module.scss';
 

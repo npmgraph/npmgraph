@@ -1,9 +1,9 @@
 import { diff } from 'semver';
-import type Module from '../../../lib/Module.js';
-import { getNPMPackument } from '../../../lib/PackumentCache.js';
-import { COLORIZE_COLORS } from '../../../lib/constants.js';
-import { LegendColor } from './LegendColor.js';
-import type { SimpleColorizer } from './index.js';
+import type Module from '../../../lib/Module.ts';
+import { getNPMPackument } from '../../../lib/PackumentCache.ts';
+import { COLORIZE_COLORS } from '../../../lib/constants.ts';
+import { LegendColor } from './LegendColor.tsx';
+import type { SimpleColorizer } from './index.ts';
 
 export default {
   title: 'Outdated Level',

@@ -1,9 +1,9 @@
 import simplur from 'simplur';
-import { cn } from '../../../../lib/dom.js';
-import type { OSIKeyword } from '../../../../lib/licenses.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { LicenseAnalysisState } from '../analyzeLicenses.js';
+import { cn } from '../../../../lib/dom.ts';
+import type { OSIKeyword } from '../../../../lib/licenses.ts';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { LicenseAnalysisState } from '../analyzeLicenses.ts';
 import * as styles from './modulesAll.module.scss';
 
 export function licensesKeyword(keyword: OSIKeyword) {

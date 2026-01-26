@@ -1,4 +1,4 @@
-import { percent } from '../../../lib/dom.js';
+import { percent } from '../../../lib/dom.ts';
 
 export const COLORIZE_OVERALL = 'overall';
 export const COLORIZE_QUALITY = 'quality';

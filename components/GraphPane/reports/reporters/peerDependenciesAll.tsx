@@ -1,11 +1,11 @@
-import { QueryType } from '../../../../lib/ModuleCache.js';
-import { cn } from '../../../../lib/dom.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
+import { QueryType } from '../../../../lib/ModuleCache.ts';
+import { cn } from '../../../../lib/dom.ts';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type {
   PeerDependenciesState,
   PeerDependencyInfo,
-} from '../analyzePeerDependencies.js';
+} from '../analyzePeerDependencies.tsx';
 import * as styles from './peerDependenciesAll.module.scss';
 
 export function peerDependenciesAll({

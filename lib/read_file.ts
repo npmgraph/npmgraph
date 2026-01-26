@@ -1,9 +1,9 @@
 import type { PackageJSON, PackumentVersion } from '@npm/types';
-import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.js';
-import { PARAM_PACKAGES, PARAM_QUERY, UNNAMED_PACKAGE } from './constants.js';
-import { flash } from './flash.js';
-import { hashSet, searchSet } from './url_util.js';
-import { patchLocation } from './useLocation.js';
+import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.ts';
+import { PARAM_PACKAGES, PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
+import { flash } from './flash.ts';
+import { hashSet, searchSet } from './url_util.ts';
+import { patchLocation } from './useLocation.ts';
 
 export function isValidJson(text: string): boolean {
   try {

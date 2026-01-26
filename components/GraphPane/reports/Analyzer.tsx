@@ -14,7 +14,7 @@ import type { ReactElement } from 'react';
 import type {
   GraphModuleInfo,
   GraphState,
-} from '../../GraphDiagram/graph_util.js';
+} from '../../GraphDiagram/graph_util.ts';
 
 export type Analyzer2 = (graph: GraphState) => unknown;
 

@@ -1,7 +1,7 @@
-import { DEFAULT_NPM_REGISTRY, PARAM_REGISTRY } from './constants.js';
-import { getGlobalState } from './GlobalStore.js';
-import { searchGet, searchSet } from './url_util.js';
-import useLocation, { patchLocation } from './useLocation.js';
+import { DEFAULT_NPM_REGISTRY, PARAM_REGISTRY } from './constants.ts';
+import { getGlobalState } from './GlobalStore.ts';
+import { searchGet, searchSet } from './url_util.ts';
+import useLocation, { patchLocation } from './useLocation.ts';
 
 export default function useRegistry() {
   const [location] = useLocation();

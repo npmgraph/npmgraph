@@ -1,5 +1,5 @@
 import type { HTMLProps } from 'react';
-import { COLORIZE_COLORS } from '../../../lib/constants.js';
+import { COLORIZE_COLORS } from '../../../lib/constants.ts';
 
 export function LegendColor({
   color,

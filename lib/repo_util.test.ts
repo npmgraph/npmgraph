@@ -1,8 +1,8 @@
+import type { PackumentVersion } from '@npm/types';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-import type { PackumentVersion } from '@npm/types';
-import Module from './Module.js';
-import { getRepoUrlForModule } from './repo_util.js';
+import Module from './module.ts';
+import { getRepoUrlForModule } from './repo_util.ts';
 
 describe('getRepoUrlForModule', () => {
   it('should extract GitHub URL from repository.url field', () => {

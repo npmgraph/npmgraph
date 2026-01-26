@@ -1,4 +1,4 @@
-import { readFile } from '../../lib/read_file.js';
+import { readFile } from '../../lib/read_file.ts';
 
 function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {
   const file = ev.target.files?.item(0);

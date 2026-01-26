@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isValidJson, loadPackageJson, readFile } from '../lib/read_file.js';
+import { isValidJson, loadPackageJson, readFile } from '../lib/read_file.ts';
 import * as styles from './useExternalInput.module.scss';
 
 let dragEnterCounter = 0;

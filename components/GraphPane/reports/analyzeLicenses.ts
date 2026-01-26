@@ -1,7 +1,7 @@
-import type Module from '../../../lib/Module.js';
-import { LICENSES } from '../../../lib/licenses.js';
-import type { OSIKeyword } from '../../../lib/licenses.js';
-import type { GraphState } from '../../GraphDiagram/graph_util.js';
+import type Module from '../../../lib/Module.ts';
+import type { OSIKeyword } from '../../../lib/licenses.ts';
+import { LICENSES } from '../../../lib/licenses.ts';
+import type { GraphState } from '../../GraphDiagram/graph_util.ts';
 
 export type LicenseAnalysisState = {
   modulesByLicense: Map<string, Module[]>;

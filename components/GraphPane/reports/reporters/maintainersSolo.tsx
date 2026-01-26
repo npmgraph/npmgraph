@@ -1,7 +1,7 @@
 import simplur from 'simplur';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { MaintainerAnalysisState } from '../analyzeMaintainers.js';
-import { maintainersAll } from './maintainersAll.js';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { MaintainerAnalysisState } from '../analyzeMaintainers.tsx';
+import { maintainersAll } from './maintainersAll.tsx';
 
 export function maintainersSolo({
   soloModulesByMaintainer,

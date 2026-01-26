@@ -1,26 +1,26 @@
 import simplur from 'simplur';
-import { useGlobalState } from '../../lib/GlobalStore.js';
-import type Module from '../../lib/Module.js';
-import type { Maintainer } from '../../lib/Module.js';
-import { QueryType } from '../../lib/ModuleCache.js';
-import { PARAM_COLORIZE } from '../../lib/constants.js';
-import human from '../../lib/human.js';
-import { getRepoUrlForModule } from '../../lib/repo_util.js';
-import useHashParam from '../../lib/useHashParam.js';
-import { ExternalLink } from '../ExternalLink.js';
-import { foreachDownstream } from '../GraphDiagram/graph_util.js';
-import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.js';
-import { GithubIcon, NpmIcon, Package } from '../Icons.js';
-import { Pane } from '../Pane.js';
-import { QueryLink } from '../QueryLink.js';
-import { Section } from '../Section.js';
-import { Tag } from '../Tag.js';
-import { Tags } from '../Tags.js';
-import ModuleBundleSize from './ModuleBundleSize.js';
-import ModuleNpmsIOScores from './ModuleNpmsIOScores.js';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
+import type Module from '../../lib/Module.ts';
+import type { Maintainer } from '../../lib/Module.ts';
+import { QueryType } from '../../lib/ModuleCache.ts';
+import { PARAM_COLORIZE } from '../../lib/constants.ts';
+import human from '../../lib/human.ts';
+import { getRepoUrlForModule } from '../../lib/repo_util.ts';
+import useHashParam from '../../lib/useHashParam.ts';
+import { ExternalLink } from '../ExternalLink.tsx';
+import { foreachDownstream } from '../GraphDiagram/graph_util.ts';
+import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.tsx';
+import { GithubIcon, NpmIcon, Package } from '../Icons.tsx';
+import { Pane } from '../Pane.tsx';
+import { QueryLink } from '../QueryLink.tsx';
+import { Section } from '../Section.tsx';
+import { Tag } from '../Tag.tsx';
+import { Tags } from '../Tags.tsx';
+import ModuleBundleSize from './ModuleBundleSize.tsx';
+import ModuleNpmsIOScores from './ModuleNpmsIOScores.tsx';
 import * as styles from './ModulePane.module.scss';
-import { ModuleVersionInfo } from './ModuleVersionInfo.js';
-import { ReleaseTimeline } from './ReleaseTimeline.js';
+import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
+import { ReleaseTimeline } from './ReleaseTimeline.tsx';
 
 export default function ModulePane({
   selectedModules,

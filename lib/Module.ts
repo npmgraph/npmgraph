@@ -1,10 +1,10 @@
 import type { Packument, PackumentVersion } from '@npm/types';
-import { isDefined } from './guards.js';
+import { isDefined } from './guards.ts';
 import {
   getModuleKey,
   parseModuleKey,
   resolveDependencyAliases,
-} from './module_util.js';
+} from './module_util.ts';
 
 export type Maintainers = PackumentVersion['maintainers'];
 export type Maintainer = Exclude<Maintainers, undefined>[0];

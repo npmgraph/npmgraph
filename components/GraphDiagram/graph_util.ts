@@ -1,9 +1,9 @@
 import { $ } from 'select-dom';
 import simplur from 'simplur';
-import type Module from '../../lib/Module.js';
-import { getModule } from '../../lib/ModuleCache.js';
-import { PARAM_QUERY } from '../../lib/constants.js';
-import { getModuleKey } from '../../lib/module_util.js';
+import type Module from '../../lib/Module.ts';
+import { getModule } from '../../lib/ModuleCache.ts';
+import { PARAM_QUERY } from '../../lib/constants.ts';
+import { getModuleKey } from '../../lib/module_util.ts';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
