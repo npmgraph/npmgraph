@@ -105,8 +105,8 @@ g .stub {
   opacity: 0.6;
 
   > path {
-    stroke-dasharray: 4, 4;
     stroke: var(--stub);
+    stroke-dasharray: 4, 4;
   }
 }
 
@@ -116,8 +116,8 @@ g.node {
   }
 
   path {
-    stroke: var(--text);
     fill: var(--bg0);
+    stroke: var(--text);
   }
 
   &.collapsed {
@@ -159,8 +159,8 @@ g.edge {
   }
 
   > polygon {
-    stroke: var(--text);
     fill: var(--text);
+    stroke: var(--text);
   }
 
   &.downstream {
@@ -170,8 +170,8 @@ g.edge {
     }
 
     & > polygon {
-      stroke: var(--accent);
       fill: var(--accent);
+      stroke: var(--accent);
     }
   }
 

@@ -51,9 +51,9 @@ svg {
 
   .layer-major {
     circle {
+      fill: var(--grey100);
       stroke: var(--grey20);
       stroke-width: 0.1em;
-      fill: var(--grey100);
     }
     text {
       fill: var(--text);
