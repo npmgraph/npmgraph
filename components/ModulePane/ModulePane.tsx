@@ -5,6 +5,7 @@ import type { Maintainer } from '../../lib/Module.js';
 import { QueryType } from '../../lib/ModuleCache.js';
 import { PARAM_COLORIZE } from '../../lib/constants.js';
 import human from '../../lib/human.js';
+import { getRepoUrlForModule } from '../../lib/repo_util.js';
 import useHashParam from '../../lib/useHashParam.js';
 import { ExternalLink } from '../ExternalLink.js';
 import { foreachDownstream } from '../GraphDiagram/graph_util.js';
@@ -198,30 +199,4 @@ export default function ModulePane({
       </Section>
     </Pane>
   );
-}
-
-function getRepoUrlForModule(module: Module) {
-  const { homepage, bugs, repository } = module.package;
-
-  // Look to repository and bugs fields for a github URL
-  let repo;
-  if (repository) {
-    if (typeof repository === 'string') {
-      repo = repository;
-    } else {
-      repo = repository.url;
-    }
-  } else if (homepage) {
-    repo = homepage;
-  } else if (bugs) {
-    repo = bugs.url;
-  }
-
-  // Extract github project path from URL
-  const match = repo?.match(/github.com\/([^/]+\/[^/?#]+)?/);
-  if (!match?.[1]) return undefined;
-
-  repo = match[1].replace(/\.git$/, '');
-
-  return `https://www.github.com/${repo}`;
 }

@@ -40,7 +40,8 @@
     "format:check": "prettier -c .",
     "format:fix": "prettier -w .",
     "types": "tsc --noEmit",
-    "test": "run-p format:check lint types build"
+    "test:unit": "tsx --test lib/repo_util.test.ts",
+    "test": "run-p format:check lint types test:unit build"
   },
   "dependencies": {
     "@bugsnag/js": "8.4.0",
@@ -58,6 +59,7 @@
     "d3-selection": "3.0.0",
     "d3-shape": "3.2.0",
     "filter-altered-clicks": "2.1.1",
+    "hosted-git-info": "^9.0.2",
     "md5": "2.3.0",
     "module-replacements": "2.8.0",
     "react": "19.1.0",
@@ -82,7 +84,9 @@
     "@parcel/transformer-xml": "^2.15.4",
     "@types/d3-hierarchy": "3.1.7",
     "@types/d3-selection": "3.0.11",
+    "@types/hosted-git-info": "^3.0.5",
     "@types/md5": "2.3.5",
+    "@types/node": "^25.0.6",
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "@types/semver": "^7.7.0",
@@ -99,6 +103,7 @@
     "process": "0.11.10",
     "standard-version": "9.5.0",
     "svgo": "4.0.0",
+    "tsx": "^4.21.0",
     "typed-query-selector": "^2.12.0",
     "typescript": "5.8.3",
     "typescript-plugin-css-modules": "^5.1.0",
