@@ -2,16 +2,16 @@
   display: inline-block;
 }
 .icon-path-stroke {
+  fill: none;
   stroke: currentColor;
-  stroke-width: 1.5px;
   stroke-linecap: round;
   stroke-linejoin: round;
-  fill: none;
+  stroke-width: 1.5px;
 }
 
 .icon-path-fill {
-  stroke: none;
   fill: currentColor;
+  stroke: none;
 }
 
 .icon-sponsor {
