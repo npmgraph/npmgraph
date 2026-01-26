@@ -9,10 +9,10 @@ export default antfu({
     'no-console': 'off',
     'antfu/if-newline': 'off',
     'style/indent-binary-ops': 'off',
+    'test/no-import-node-test': 'off',
     'ts/consistent-type-definitions': ['error', 'type'],
     'perfectionist/sort-imports': 'off',
     'perfectionist/sort-named-imports': 'off',
-    'test/no-import-node-test': 'off',
 
     // Prettier conflicts
     // TODO: Update after https://github.com/antfu/eslint-config/issues/615

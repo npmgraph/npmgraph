@@ -13,7 +13,6 @@ export function peerDependenciesAll({
 }: PeerDependenciesState) {
   if (!peerDependencyInfos.length) return;
 
-  // @ts-expect-error Unignore once TS types know about Map.groupBy()
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
     peerDependencyInfos,
     (pdi: PeerDependencyInfo) => pdi.source.key,

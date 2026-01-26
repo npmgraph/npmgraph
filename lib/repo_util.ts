@@ -1,5 +1,5 @@
 import hostedGitInfo from 'hosted-git-info';
-import type Module from './module.ts';
+import type Module from './Module.ts';
 
 /**
  * Extracts and normalizes repository URL from a module's package.json metadata.

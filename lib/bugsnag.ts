@@ -2,12 +2,16 @@ import Bugsnag from '@bugsnag/js';
 import pkg from '../package.json' with { type: 'json' };
 import HttpError from './HttpError.ts';
 
-const bugsnag = Bugsnag.default.start({
-  appVersion: pkg.version,
+// eslint-disable-next-line node/prefer-global/process
+const apiKey = process.env.BUGSNAG_KEY;
 
-  // @ts-expect-error See https://github.com/parcel-bundler/parcel/issues/9643
-  // eslint-disable-next-line node/prefer-global/process
-  apiKey: process.env.BUGSNAG_KEY,
+if (!apiKey) {
+  throw new Error('BUGSNAG_KEY environment variable is not set');
+}
+
+const bugsnag = Bugsnag.start({
+  appVersion: pkg.version,
+  apiKey,
   releaseStage: /npmgraph/.test(window.location.hostname)
     ? 'production'
     : 'development',

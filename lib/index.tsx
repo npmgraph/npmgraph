@@ -31,7 +31,6 @@ function detectFeatures() {
   const features = {
     '||= (Logical Or)': isValidJS('a ||= 123'),
     'AbortSignal.timeout': window.AbortSignal?.timeout,
-    // @ts-expect-error remove this ignore once VSCode knows about groupBy
     'Map.groupBy': window.Map?.groupBy,
     fetch: window.fetch,
     globalThis: window.globalThis,

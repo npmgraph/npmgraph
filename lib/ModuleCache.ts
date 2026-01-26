@@ -1,7 +1,7 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { gt, satisfies } from 'semver';
 import HttpError from './HttpError.ts';
-import Module from './module.ts';
+import Module from './Module.ts';
 import {
   cachePackument,
   getCachedPackument,

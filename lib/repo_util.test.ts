@@ -1,7 +1,7 @@
 import type { PackumentVersion } from '@npm/types';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-import Module from './module.ts';
+import Module from './Module.ts';
 import { getRepoUrlForModule } from './repo_util.ts';
 
 describe('getRepoUrlForModule', () => {
