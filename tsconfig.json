@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "esnext",
     "jsx": "react-jsx",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
     "strict": true,
+    "noEmit": true,
     "skipLibCheck": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   }

@@ -1,7 +1,7 @@
 import simplur from 'simplur';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { LicenseAnalysisState } from '../analyzeLicenses.js';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { LicenseAnalysisState } from '../analyzeLicenses.ts';
 
 export function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
   if (!unlicensedModules.length) return;

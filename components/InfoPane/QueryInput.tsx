@@ -1,11 +1,11 @@
 import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
-import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.js';
-import { isDefined } from '../../lib/guards.js';
-import { searchSet } from '../../lib/url_util.js';
-import { patchLocation } from '../../lib/useLocation.js';
-import { useQuery } from '../../lib/useQuery.js';
-import { ExternalLink } from '../ExternalLink.js';
+import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
+import { isDefined } from '../../lib/guards.ts';
+import { searchSet } from '../../lib/url_util.ts';
+import { patchLocation } from '../../lib/useLocation.ts';
+import { useQuery } from '../../lib/useQuery.ts';
+import { ExternalLink } from '../ExternalLink.tsx';
 import './QueryInput.scss';
 
 // No better detection for this :(

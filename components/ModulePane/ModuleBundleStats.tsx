@@ -1,5 +1,5 @@
-import type { BundlePhobiaData } from '../../lib/fetch_types.js';
-import human from '../../lib/human.js';
+import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
+import human from '../../lib/human.ts';
 
 export function ModuleBundleStats({
   bundleInfo,

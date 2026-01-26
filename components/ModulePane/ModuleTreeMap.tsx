@@ -3,10 +3,10 @@ import { stratify, treemap } from 'd3-hierarchy';
 import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 import { $ } from 'select-dom';
-import type { BundlePhobiaData } from '../../lib/fetch_types.js';
-import human from '../../lib/human.js';
+import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
+import human from '../../lib/human.ts';
 
-import { percent } from '../../lib/dom.js';
+import { percent } from '../../lib/dom.ts';
 import * as styles from './ModuleTreeMap.module.scss';
 
 export function ModuleTreeMap({

@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
-import { useGlobalState } from './GlobalStore.js';
-import { PARAM_QUERY } from './constants.js';
-import { searchGet, searchSet } from './url_util.js';
-import { patchLocation } from './useLocation.js';
+import { useGlobalState } from './GlobalStore.ts';
+import { PARAM_QUERY } from './constants.ts';
+import { searchGet, searchSet } from './url_util.ts';
+import { patchLocation } from './useLocation.ts';
 
 function setQuery(moduleKeys: string[] = [], replace = false) {
   // Clean up keys

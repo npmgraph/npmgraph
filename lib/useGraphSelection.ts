@@ -1,6 +1,6 @@
-import { QueryType } from './ModuleCache.js';
-import { PARAM_SELECTION } from './constants.js';
-import useHashParam from './useHashParam.js';
+import { QueryType } from './ModuleCache.ts';
+import { PARAM_SELECTION } from './constants.ts';
+import useHashParam from './useHashParam.ts';
 
 export default function useGraphSelection() {
   const [sel, setSel] = useHashParam(PARAM_SELECTION);

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import type Module from '../../lib/Module.js';
-import fetchJSON from '../../lib/fetchJSON.js';
-import type { BundlePhobiaData } from '../../lib/fetch_types.js';
-import { ExternalLink } from '../ExternalLink.js';
-import { ModuleBundleStats } from './ModuleBundleStats.js';
-import { ModuleTreeMap } from './ModuleTreeMap.js';
+import type Module from '../../lib/Module.ts';
+import fetchJSON from '../../lib/fetchJSON.ts';
+import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
+import { ExternalLink } from '../ExternalLink.tsx';
+import { ModuleBundleStats } from './ModuleBundleStats.tsx';
+import { ModuleTreeMap } from './ModuleTreeMap.tsx';
 
 export default function ModuleBundleSize({ module }: { module: Module }) {
   const pkg = module.package;

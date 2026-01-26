@@ -1,6 +1,6 @@
-import { setGlobalState, useGlobalState } from './GlobalStore.js';
-import { syncPackagesHash } from './ModuleCache.js';
-import { urlPatch } from './url_util.js';
+import { setGlobalState, useGlobalState } from './GlobalStore.ts';
+import { syncPackagesHash } from './ModuleCache.ts';
+import { urlPatch } from './url_util.ts';
 
 function handleLocationUpdate() {
   syncPackagesHash();

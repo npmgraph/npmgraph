@@ -1,8 +1,8 @@
 import simplur from 'simplur';
-import { getModuleKey } from '../../../../lib/module_util.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { ModuleAnalysisState } from '../analyzeModules.js';
+import { getModuleKey } from '../../../../lib/module_util.ts';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { ModuleAnalysisState } from '../analyzeModules.ts';
 import * as styles from './modulesRepeated.module.scss';
 
 export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {

@@ -1,25 +1,25 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { gt, satisfies } from 'semver';
-import HttpError from './HttpError.js';
-import Module from './Module.js';
+import HttpError from './HttpError.ts';
+import Module from './Module.ts';
 import {
   cachePackument,
   getCachedPackument,
   getNPMPackument,
-} from './PackumentCache.js';
-import type { PromiseWithResolversType } from './PromiseWithResolvers.js';
-import PromiseWithResolvers from './PromiseWithResolvers.js';
-import { PARAM_PACKAGES } from './constants.js';
-import fetchJSON from './fetchJSON.js';
-import { flash } from './flash.js';
+} from './PackumentCache.ts';
+import type { PromiseWithResolversType } from './PromiseWithResolvers.ts';
+import PromiseWithResolvers from './PromiseWithResolvers.ts';
+import { PARAM_PACKAGES } from './constants.ts';
+import fetchJSON from './fetchJSON.ts';
+import { flash } from './flash.ts';
 import {
   getModuleKey,
   isHttpModule,
   parseModuleKey,
   resolveModule,
-} from './module_util.js';
-import { hashGet } from './url_util.js';
-import { getRegistry } from './useRegistry.js';
+} from './module_util.ts';
+import { hashGet } from './url_util.ts';
+import { getRegistry } from './useRegistry.ts';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 

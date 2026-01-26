@@ -1,11 +1,11 @@
 import md5 from 'md5';
 import type { ReactElement } from 'react';
 import simplur from 'simplur';
-import { QueryType } from '../../../../lib/ModuleCache.js';
-import { cn } from '../../../../lib/dom.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { MaintainerAnalysisState } from '../analyzeMaintainers.js';
+import { QueryType } from '../../../../lib/ModuleCache.ts';
+import { cn } from '../../../../lib/dom.ts';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { MaintainerAnalysisState } from '../analyzeMaintainers.tsx';
 import * as styles from './maintainersAll.module.scss';
 
 export function maintainersAll({

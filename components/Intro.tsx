@@ -1,8 +1,8 @@
-import GitHubCorner from './GitHubCorner.js';
-import QueryInput from './InfoPane/QueryInput.js';
-import InputHelp from './InputHelp.js';
+import GitHubCorner from './GitHubCorner.tsx';
+import QueryInput from './InfoPane/QueryInput.tsx';
+import InputHelp from './InputHelp.tsx';
 import * as styles from './Intro.module.scss';
-import Logo from './Logo.js';
+import Logo from './Logo.tsx';
 
 export default function Intro() {
   return (

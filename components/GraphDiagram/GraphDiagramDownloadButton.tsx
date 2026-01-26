@@ -1,8 +1,8 @@
 import indexStyles from 'bundle-text:../../index.scss';
 import diagramStyles from 'bundle-text:./GraphDiagram.scss';
-import { report } from '../../lib/bugsnag.js';
-import { DownloadIcon } from '../Icons.js';
-import { getDiagramElement } from './graph_util.js';
+import { report } from '../../lib/bugsnag.ts';
+import { DownloadIcon } from '../Icons.tsx';
+import { getDiagramElement } from './graph_util.ts';
 
 type DownloadExtension = 'svg' | 'png';
 

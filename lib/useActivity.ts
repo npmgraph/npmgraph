@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type LoadActivity from './LoadActivity.js';
+import type LoadActivity from './LoadActivity.ts';
 
 let activity: LoadActivity;
 export function setActivityForApp(ack: LoadActivity) {

@@ -1,16 +1,16 @@
-import type Module from '../../../lib/Module.js';
-import PromiseWithResolvers from '../../../lib/PromiseWithResolvers.js';
-import fetchJSON from '../../../lib/fetchJSON.js';
-import type { NPMSIOData } from '../../../lib/fetch_types.js';
-import { flash } from '../../../lib/flash.js';
+import type Module from '../../../lib/Module.ts';
+import PromiseWithResolvers from '../../../lib/PromiseWithResolvers.ts';
+import fetchJSON from '../../../lib/fetchJSON.ts';
+import type { NPMSIOData } from '../../../lib/fetch_types.ts';
+import { flash } from '../../../lib/flash.ts';
 import {
   COLORIZE_MAINTENANCE,
   COLORIZE_OVERALL,
   COLORIZE_POPULARITY,
   COLORIZE_QUALITY,
   scoreColor,
-} from './colorizer_util.js';
-import type { BulkColorizer } from './index.js';
+} from './colorizer_util.ts';
+import type { BulkColorizer } from './index.ts';
 
 // Max number of module names allowed per NPMS request
 const NPMS_BULK_LIMIT = 250;

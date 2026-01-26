@@ -1,10 +1,10 @@
-import { useActivity } from '../../lib/useActivity.js';
-import { useQuery } from '../../lib/useQuery.js';
-import GraphDiagram from '../GraphDiagram/GraphDiagram.js';
-import Inspector from '../Inspector.js';
-import Intro from '../Intro.js';
+import { useActivity } from '../../lib/useActivity.ts';
+import { useQuery } from '../../lib/useQuery.ts';
+import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
+import Inspector from '../Inspector.tsx';
+import Intro from '../Intro.tsx';
 import './App.scss';
-import { Loader } from './Loader.js';
+import { Loader } from './Loader.tsx';
 
 export default function App() {
   const activity = useActivity();

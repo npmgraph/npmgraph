@@ -1,17 +1,17 @@
 import type { HTMLProps } from 'react';
-import { useGlobalState } from '../lib/GlobalStore.js';
-import { queryModuleCache } from '../lib/ModuleCache.js';
-import { PANE, PARAM_HIDE } from '../lib/constants.js';
-import useGraphSelection from '../lib/useGraphSelection.js';
-import useHashParam from '../lib/useHashParam.js';
-import GraphPane from './GraphPane/GraphPane.js';
-import InfoPane from './InfoPane/InfoPane.js';
+import { useGlobalState } from '../lib/GlobalStore.ts';
+import { queryModuleCache } from '../lib/ModuleCache.ts';
+import { PANE, PARAM_HIDE } from '../lib/constants.ts';
+import useGraphSelection from '../lib/useGraphSelection.ts';
+import useHashParam from '../lib/useHashParam.ts';
+import GraphPane from './GraphPane/GraphPane.tsx';
+import InfoPane from './InfoPane/InfoPane.tsx';
 import './Inspector.scss';
-import ModulePane from './ModulePane/ModulePane.js';
-import { Splitter } from './Splitter.js';
-import { Tab } from './Tab.js';
-import useExternalInput from './useExternalInput.js';
-import { useKeyboardShortcuts } from './useKeyboardShortcuts.js';
+import ModulePane from './ModulePane/ModulePane.tsx';
+import { Splitter } from './Splitter.tsx';
+import { Tab } from './Tab.tsx';
+import useExternalInput from './useExternalInput.ts';
+import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane, setPane] = useGlobalState('pane');

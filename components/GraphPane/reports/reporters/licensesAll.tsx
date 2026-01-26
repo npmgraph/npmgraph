@@ -1,10 +1,10 @@
 import simplur from 'simplur';
-import { QueryType } from '../../../../lib/ModuleCache.js';
-import { cn } from '../../../../lib/dom.js';
-import { LICENSES } from '../../../../lib/licenses.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { LicenseAnalysisState } from '../analyzeLicenses.js';
+import { QueryType } from '../../../../lib/ModuleCache.ts';
+import { cn } from '../../../../lib/dom.ts';
+import { LICENSES } from '../../../../lib/licenses.ts';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { LicenseAnalysisState } from '../analyzeLicenses.ts';
 import * as styles from './licensesAll.module.scss';
 
 export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {

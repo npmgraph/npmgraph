@@ -1,13 +1,13 @@
 import type { SemVer } from 'semver';
 import { parse } from 'semver';
-import type Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.ts';
 
 import type { PackumentVersion } from '@npm/types';
 import type { ReactElement } from 'react';
-import { cn } from '../../lib/dom.js';
-import { isDefined } from '../../lib/guards.js';
-import useMeasure from '../../lib/useMeasure.js';
-import { Section } from '../Section.js';
+import { cn } from '../../lib/dom.ts';
+import { isDefined } from '../../lib/guards.ts';
+import useMeasure from '../../lib/useMeasure.ts';
+import { Section } from '../Section.tsx';
 import * as styles from './ReleaseTimeline.module.scss';
 
 function timestring(t: number) {

@@ -1,9 +1,9 @@
 import type { HTMLProps } from 'react';
-import { Pane } from '../Pane.js';
-import { QueryLink } from '../QueryLink.js';
-import FilePicker from './FilePicker.js';
-import QueryInput from './QueryInput.js';
-import RegistryInput from './RegistryInput.js';
+import { Pane } from '../Pane.tsx';
+import { QueryLink } from '../QueryLink.tsx';
+import FilePicker from './FilePicker.tsx';
+import QueryInput from './QueryInput.tsx';
+import RegistryInput from './RegistryInput.tsx';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (

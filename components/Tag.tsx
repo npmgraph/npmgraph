@@ -1,8 +1,8 @@
 import md5 from 'md5';
 import type { HTMLProps } from 'react';
-import type { QueryType } from '../lib/ModuleCache.js';
-import { cn } from '../lib/dom.js';
-import useGraphSelection from '../lib/useGraphSelection.js';
+import type { QueryType } from '../lib/ModuleCache.ts';
+import { cn } from '../lib/dom.ts';
+import useGraphSelection from '../lib/useGraphSelection.ts';
 
 export function Tag({
   type,

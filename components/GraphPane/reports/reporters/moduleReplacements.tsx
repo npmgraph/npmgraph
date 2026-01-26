@@ -2,11 +2,11 @@ import type { ModuleReplacement } from 'module-replacements';
 import microUtilities from 'module-replacements/manifests/micro-utilities.json' with { type: 'json' };
 import native from 'module-replacements/manifests/native.json' with { type: 'json' };
 import preferred from 'module-replacements/manifests/preferred.json' with { type: 'json' };
-import { cn } from '../../../../lib/dom.js';
-import { ExternalLink } from '../../../ExternalLink.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { ModuleAnalysisState } from '../analyzeModules.js';
+import { cn } from '../../../../lib/dom.ts';
+import { ExternalLink } from '../../../ExternalLink.tsx';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { ModuleAnalysisState } from '../analyzeModules.ts';
 import * as styles from './moduleReplacements.module.scss';
 
 const REPLACEMENTS = new Map<string, ModuleReplacement>();

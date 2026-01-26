@@ -1,8 +1,20 @@
 {
   "extends": "@parcel/config-default",
-  "namers": ["./scripts/favicon-namer.parcel.js", "..."],
+  "resolvers": [
+    "./parcel-ts-resolver.js",
+    "..."
+  ],
+  "namers": [
+    "./scripts/favicon-namer.parcel.js",
+    "..."
+  ],
   "transformers": {
-    "jsx:*.svg": ["...", "@parcel/transformer-svg-react"],
-    "jsx:*": ["..."]
+    "jsx:*.svg": [
+      "...",
+      "@parcel/transformer-svg-react"
+    ],
+    "jsx:*": [
+      "..."
+    ]
   }
 }

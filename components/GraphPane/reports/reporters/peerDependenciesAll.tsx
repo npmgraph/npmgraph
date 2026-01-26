@@ -1,11 +1,11 @@
-import { QueryType } from '../../../../lib/ModuleCache.js';
-import { cn } from '../../../../lib/dom.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
+import { QueryType } from '../../../../lib/ModuleCache.ts';
+import { cn } from '../../../../lib/dom.ts';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type {
   PeerDependenciesState,
   PeerDependencyInfo,
-} from '../analyzePeerDependencies.js';
+} from '../analyzePeerDependencies.tsx';
 import * as styles from './peerDependenciesAll.module.scss';
 
 export function peerDependenciesAll({
@@ -13,7 +13,6 @@ export function peerDependenciesAll({
 }: PeerDependenciesState) {
   if (!peerDependencyInfos.length) return;
 
-  // @ts-expect-error Unignore once TS types know about Map.groupBy()
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
     peerDependencyInfos,
     (pdi: PeerDependencyInfo) => pdi.source.key,

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { cn } from '../../../lib/dom.js';
-import type { RenderedAnalysis } from './Analyzer.js';
+import { cn } from '../../../lib/dom.ts';
+import type { RenderedAnalysis } from './Analyzer.tsx';
 import * as styles from './ReportItem.module.scss';
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };

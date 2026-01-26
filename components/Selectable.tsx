@@ -1,8 +1,8 @@
 import type { HTMLProps } from 'react';
-import type { QueryType } from '../lib/ModuleCache.js';
-import useGraphSelection from '../lib/useGraphSelection.js';
+import type { QueryType } from '../lib/ModuleCache.ts';
+import useGraphSelection from '../lib/useGraphSelection.ts';
 
-import { cn } from '../lib/dom.js';
+import { cn } from '../lib/dom.ts';
 import * as styles from './Selectable.module.scss';
 
 export function Selectable({

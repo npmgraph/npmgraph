@@ -1,4 +1,4 @@
-import { patchLocation } from './useLocation.js';
+import { patchLocation } from './useLocation.ts';
 
 // eslint-disable-next-line react-hooks-extra/no-unnecessary-use-prefix
 export default function useHashParam(paramName: string) {

@@ -1,9 +1,9 @@
 import { parse } from 'semver';
 import simplur from 'simplur';
-import type Module from '../../lib/Module.js';
+import type Module from '../../lib/Module.ts';
 
-import { cn } from '../../lib/dom.js';
-import { QueryLink } from '../QueryLink.js';
+import { cn } from '../../lib/dom.ts';
+import { QueryLink } from '../QueryLink.tsx';
 import './ModuleVersionInfo.scss';
 
 export function ModuleVersionInfo({

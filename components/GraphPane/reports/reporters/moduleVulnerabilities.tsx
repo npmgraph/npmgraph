@@ -1,11 +1,11 @@
 import simplur from 'simplur';
-import { QueryType } from '../../../../lib/ModuleCache.js';
-import { cn } from '../../../../lib/dom.js';
-import fetchJSON from '../../../../lib/fetchJSON.js';
-import { ExternalLink } from '../../../ExternalLink.js';
-import { Selectable } from '../../../Selectable.js';
-import type { RenderedAnalysis } from '../Analyzer.js';
-import type { ModuleAnalysisState } from '../analyzeModules.js';
+import { QueryType } from '../../../../lib/ModuleCache.ts';
+import { cn } from '../../../../lib/dom.ts';
+import fetchJSON from '../../../../lib/fetchJSON.ts';
+import { ExternalLink } from '../../../ExternalLink.tsx';
+import { Selectable } from '../../../Selectable.tsx';
+import type { RenderedAnalysis } from '../Analyzer.tsx';
+import type { ModuleAnalysisState } from '../analyzeModules.ts';
 import * as styles from './moduleVulnerabilities.module.scss';
 
 type Advisory = {

@@ -2,15 +2,15 @@ import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { $, $$ } from 'select-dom';
-import { useGlobalState } from '../../lib/GlobalStore.js';
-import type LoadActivity from '../../lib/LoadActivity.js';
-import type Module from '../../lib/Module.js';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
+import type LoadActivity from '../../lib/LoadActivity.ts';
+import type Module from '../../lib/Module.ts';
 import {
   getCachedModule,
   queryModuleCache,
   QueryType,
-} from '../../lib/ModuleCache.js';
-import { report } from '../../lib/bugsnag.js';
+} from '../../lib/ModuleCache.ts';
+import { report } from '../../lib/bugsnag.ts';
 import {
   PANE,
   PARAM_COLORIZE,
@@ -21,28 +21,28 @@ import {
   ZOOM_FIT_HEIGHT,
   ZOOM_FIT_WIDTH,
   ZOOM_NONE,
-} from '../../lib/constants.js';
-import { createAbortable } from '../../lib/createAbortable.js';
-import { celebrate, flash } from '../../lib/flash.js';
-import useCollapse from '../../lib/useCollapse.js';
-import useGraphSelection from '../../lib/useGraphSelection.js';
-import useHashParam from '../../lib/useHashParam.js';
-import usePrevious from '../../lib/usePrevious.js';
-import { useQuery } from '../../lib/useQuery.js';
+} from '../../lib/constants.ts';
+import { createAbortable } from '../../lib/createAbortable.ts';
+import { celebrate, flash } from '../../lib/flash.ts';
+import useCollapse from '../../lib/useCollapse.ts';
+import useGraphSelection from '../../lib/useGraphSelection.ts';
+import useHashParam from '../../lib/useHashParam.ts';
+import usePrevious from '../../lib/usePrevious.ts';
+import { useQuery } from '../../lib/useQuery.ts';
 import {
   getColorizer,
   isSimpleColorizer,
-} from '../GraphPane/colorizers/index.js';
+} from '../GraphPane/colorizers/index.ts';
 import './GraphDiagram.scss';
-import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.js';
-import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.js';
-import type { DependencyKey, GraphState } from './graph_util.js';
+import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
+import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import type { DependencyKey, GraphState } from './graph_util.ts';
 import {
   composeDOT,
   gatherSelectionInfo,
   getDiagramElement,
   getGraphForQuery,
-} from './graph_util.js';
+} from './graph_util.ts';
 
 export type ZoomOption =
   | typeof ZOOM_NONE

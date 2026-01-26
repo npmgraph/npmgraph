@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
-import { ExternalLink } from './ExternalLink.js';
-import { GithubIcon } from './Icons.js';
+import { ExternalLink } from './ExternalLink.tsx';
+import { GithubIcon } from './Icons.tsx';
 
 import * as styles from './Unsupported.module.scss';
 

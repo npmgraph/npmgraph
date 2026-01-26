@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import { useGlobalState } from '../lib/GlobalStore.js';
-import { PANE, PARAM_HIDE } from '../lib/constants.js';
-import useHashParam from '../lib/useHashParam.js';
+import { useGlobalState } from '../lib/GlobalStore.ts';
+import { PANE, PARAM_HIDE } from '../lib/constants.ts';
+import useHashParam from '../lib/useHashParam.ts';
 
 // Ad-hoc code for handling keyboard shortcuts. If/when we need something more sophisticated, we should consider using a library like `mousetrap`.
 export function useKeyboardShortcuts() {
