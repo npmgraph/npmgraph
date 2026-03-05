@@ -13,10 +13,10 @@ export function PieGraph({
   entries,
   ...props
 }: { entries: PieDatum[] } & HTMLProps<SVGSVGElement>) {
-  const svgEl = useRef<SVGSVGElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   useEffect(() => {
     // Chart code from https://observablehq.com/@d3/pie-chart
-    const svgElement = svgEl.current;
+    const svgElement = svgRef.current;
     if (!svgElement) return;
 
     const svg = select(svgElement);
@@ -96,5 +96,5 @@ export function PieGraph({
       );
   });
 
-  return <svg ref={svgEl} {...props} />;
+  return <svg ref={svgRef} {...props} />;
 }

@@ -22,7 +22,7 @@ https://npmgraph.js.org/?q=send
 
 Comma-separated list of modules to collapse
 
-** Example**: Graph `send, collapsing the `debug`and`http-errors` subtrees
+**Example**: Graph `send, collapsing the `debug`and`http-errors` subtrees
 
 https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
 
