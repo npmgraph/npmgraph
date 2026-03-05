@@ -109,7 +109,7 @@
     "prettier-plugin-css-order": "2.2.0",
     "process": "0.11.10",
     "standard-version": "9.5.0",
-    "svgo": "4.0.0",
+    "svgo": "4.0.1",
     "typed-query-selector": "^2.12.0",
     "typescript": "5.9.3",
     "typescript-plugin-css-modules": "^5.2.0",
