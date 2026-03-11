@@ -9,6 +9,9 @@
     "..."
   ],
   "transformers": {
+    "*.txt": [
+      "@parcel/transformer-raw"
+    ],
     "jsx:*.svg": [
       "...",
       "@parcel/transformer-svg-react"
