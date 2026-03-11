@@ -1,5 +1,5 @@
-import indexStyles from 'bundle-text:../../index.scss';
-import diagramStyles from 'bundle-text:./GraphDiagram.scss';
+import * as indexStyles from 'bundle-text:../../index.scss';
+import * as diagramStyles from 'bundle-text:./GraphDiagram.scss';
 import { report } from '../../lib/bugsnag.ts';
 import { DownloadIcon } from '../Icons.tsx';
 import { getDiagramElement } from './graph_util.ts';
@@ -80,7 +80,7 @@ function downloadSvg() {
   // Inline app stylesheets (we can't just link to these since they change as the app changes)
   for (const styles of [indexStyles, diagramStyles]) {
     const styleEl = document.createElement('style');
-    styleEl.innerHTML = styles;
+    styleEl.innerHTML = styles as unknown as string;
     svg.appendChild(styleEl);
   }
 
