@@ -1,8 +1,22 @@
 import type { PackumentVersion } from '@npm/types';
+import hostedGitInfo from 'hosted-git-info';
 import type { Dependencies } from './Module.ts';
 
 export function isHttpModule(moduleKey: string) {
   return /^https?:\/\//.test(moduleKey);
+}
+
+/**
+ * Resolves a GitHub shorthand (e.g. "user/repo") to its raw package.json URL,
+ * matching the behavior of `npm install user/repo`. Returns undefined if the
+ * key is not a recognized hosted-git shorthand.
+ */
+export function resolveGitHubShorthand(moduleKey: string): string | undefined {
+  // Skip URLs and scoped npm packages
+  if (isHttpModule(moduleKey) || moduleKey.startsWith('@')) return undefined;
+  const info = hostedGitInfo.fromUrl(moduleKey);
+  if (!info) return undefined;
+  return info.file('package.json');
 }
 
 export function resolveModule(name: string, version?: string) {

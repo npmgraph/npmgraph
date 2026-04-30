@@ -40,7 +40,7 @@
     "format:check": "prettier -c .",
     "format:fix": "prettier -w .",
     "types": "tsc --noEmit",
-    "test:unit": "node --test lib/repo_util.test.ts",
+    "test:unit": "node --test lib/repo_util.test.ts lib/module_util.test.ts",
     "test": "run-p format:check lint types test:unit build"
   },
   "dependencies": {
