@@ -10,7 +10,6 @@ import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.tsx';
 import { Splitter } from './Splitter.tsx';
 import { Tab } from './Tab.tsx';
-import useExternalInput from './useExternalInput.ts';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
@@ -22,7 +21,6 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const selectedModules = queryModuleCache(queryType, queryValue);
 
   useKeyboardShortcuts();
-  useExternalInput();
 
   let paneComponent;
   switch (pane) {
