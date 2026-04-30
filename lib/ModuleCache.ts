@@ -16,7 +16,6 @@ import {
   getModuleKey,
   isHttpModule,
   parseModuleKey,
-  resolveGitHubShorthand,
   resolveModule,
 } from './module_util.ts';
 import { hashGet } from './url_util.ts';
@@ -109,13 +108,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
     version = '';
     // unchanged
   } else {
-    const gitHubUrl = resolveGitHubShorthand(moduleKey);
-    if (gitHubUrl) {
-      name = gitHubUrl;
-      version = '';
-    } else {
-      [name, version] = resolveModule(name, version);
-    }
+    [name, version] = resolveModule(name, version);
   }
 
   moduleKey = getModuleKey(name, version);

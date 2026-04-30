@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useGlobalState } from './GlobalStore.ts';
 import { PARAM_QUERY } from './constants.ts';
+import { resolveGitHubShorthand } from './module_util.ts';
 import { searchGet, searchSet } from './url_util.ts';
 import { patchLocation } from './useLocation.ts';
 
@@ -23,7 +24,11 @@ export function useQuery() {
   const [location] = useGlobalState('location');
   const queryString = searchGet(PARAM_QUERY, location) ?? '';
   const parsedQuery = useMemo(
-    () => queryString.split(/\s*,\s*/).filter(Boolean),
+    () =>
+      queryString
+        .split(/\s*,\s*/)
+        .filter(Boolean)
+        .map(key => resolveGitHubShorthand(key) ?? key),
     [queryString],
   );
   return [parsedQuery, setQuery] as const;
