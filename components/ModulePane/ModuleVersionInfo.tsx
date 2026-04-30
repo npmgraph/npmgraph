@@ -1,4 +1,4 @@
-import { parse } from 'semver';
+import { gt, parse } from 'semver';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 
@@ -41,35 +41,27 @@ export function ModuleVersionInfo({
     }
   }
 
+  // Use semver.gt for the outdated check so prerelease versions are handled
+  // correctly (e.g. 1.0.0-rc.12 < 1.0.0 even though major/minor/patch are all 0).
+  const isOutdated = gt(latestVersion, module.version);
+
   let content = null;
   let className = '';
-  if (distTag) {
-    className = 'dist-tag';
-    content = (
-      <>
-        (<code>{distTag}</code>)
-      </>
-    );
-  } else if (majorDiff !== 0 || minorDiff !== 0 || patchDiff !== 0) {
+  if (isOutdated) {
     let message;
-    if (majorDiff !== 0) {
-      className = majorDiff > 0 ? 'major-updates' : '';
-      message =
-        majorDiff > 0
-          ? simplur`${majorDiff} major version[|s] behind`
-          : simplur`${-majorDiff} major version[|s] ahead of`;
-    } else if (minorDiff !== 0) {
-      className = minorDiff > 0 ? 'minor-updates' : '';
-      message =
-        minorDiff > 0
-          ? simplur`${minorDiff} minor version[|s] behind`
-          : simplur`${-minorDiff} minor version[|s] ahead of`;
-    } else if (patchDiff !== 0) {
-      className = patchDiff > 0 ? 'patch-updates' : '';
-      message =
-        patchDiff > 0
-          ? simplur`${patchDiff} patch version[|s] behind`
-          : simplur`${-patchDiff} patch version[|s] ahead of`;
+    if (majorDiff > 0) {
+      className = 'major-updates';
+      message = simplur`${majorDiff} major version[|s] behind`;
+    } else if (minorDiff > 0) {
+      className = 'minor-updates';
+      message = simplur`${minorDiff} minor version[|s] behind`;
+    } else if (patchDiff > 0) {
+      className = 'patch-updates';
+      message = simplur`${patchDiff} patch version[|s] behind`;
+    } else {
+      // prerelease behind the stable release of the same version
+      className = 'patch-updates';
+      message = 'prerelease, behind';
     }
 
     const latestLink = (
@@ -78,6 +70,14 @@ export function ModuleVersionInfo({
     content = (
       <>
         {message} <code>latest</code> ({latestLink})
+      </>
+    );
+  } else if (distTag) {
+    // Not outdated – show the dist-tag the version is pinned to (e.g. "latest")
+    className = 'dist-tag';
+    content = (
+      <>
+        (<code>{distTag}</code>)
       </>
     );
   }
