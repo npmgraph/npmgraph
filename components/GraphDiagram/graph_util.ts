@@ -63,6 +63,9 @@ export type GraphState = {
   moduleInfos: Map<string, GraphModuleInfo>;
 
   entryModules: Set<Module>;
+
+  // Map of module key -> error for entry modules that failed to load
+  failedEntryModules: Map<string, Error>;
 };
 
 const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
@@ -103,6 +106,7 @@ export async function getGraphForQuery(
   const graphState: GraphState = {
     moduleInfos: new Map(),
     entryModules: new Set(),
+    failedEntryModules: new Map(),
   };
 
   async function _visit(
@@ -157,8 +161,12 @@ export async function getGraphForQuery(
   await Promise.allSettled(
     query.map(async moduleKey => {
       const m = await getModule(moduleKey);
-      graphState.entryModules.add(m);
-      return m && _visit(m);
+      if (m.isStub) {
+        graphState.failedEntryModules.set(moduleKey, m.stubError!);
+      } else {
+        graphState.entryModules.add(m);
+        return _visit(m);
+      }
     }),
   );
 
