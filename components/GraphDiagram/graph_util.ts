@@ -162,7 +162,10 @@ export async function getGraphForQuery(
     query.map(async moduleKey => {
       const m = await getModule(moduleKey);
       if (m.isStub) {
-        graphState.failedEntryModules.set(moduleKey, m.stubError!);
+        graphState.failedEntryModules.set(
+          moduleKey,
+          m.stubError ?? new Error(`Failed to load ${moduleKey}`),
+        );
       } else {
         graphState.entryModules.add(m);
         return _visit(m);
