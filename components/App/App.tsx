@@ -3,12 +3,14 @@ import { useQuery } from '../../lib/useQuery.ts';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
 import Inspector from '../Inspector.tsx';
 import Intro from '../Intro.tsx';
+import useExternalInput from '../useExternalInput.ts';
 import './App.scss';
 import { Loader } from './Loader.tsx';
 
 export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
+  useExternalInput();
   if (query.length === 0) {
     return <Intro />;
   }
