@@ -4,6 +4,7 @@ import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PANE, PARAM_HIDE } from '../lib/constants.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
 import useHashParam from '../lib/useHashParam.ts';
+import AppHeader from './AppHeader.tsx';
 import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import './Inspector.scss';
@@ -39,9 +40,10 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   return (
     <div id="inspector" className={hide !== null ? '' : 'open'} {...props}>
+      <AppHeader />
       <div id="tabs">
         <Tab active={pane === PANE.INFO} onClick={() => setPane(PANE.INFO)}>
-          Start <kbd>/</kbd>
+          Start
         </Tab>
         <Tab active={pane === PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
           Graph
