@@ -1,6 +1,6 @@
 import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
-import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
+import { PARAM_QUERY, SEARCH_FIELD_ID, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { searchSet } from '../../lib/url_util.ts';
 import { patchLocation } from '../../lib/useLocation.ts';
@@ -58,7 +58,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
           type="search"
           name="q"
           ref={inputRef}
-          id="search-field"
+          id={SEARCH_FIELD_ID}
           placeholder="Search…"
           value={value}
           autoCapitalize="off"
