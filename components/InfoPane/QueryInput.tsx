@@ -1,6 +1,10 @@
 import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
-import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
+import {
+  GRAPH_RESET_DELAY_MS,
+  PARAM_QUERY,
+  UNNAMED_PACKAGE,
+} from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { resetGraph } from '../../lib/GlobalStore.ts';
 import { searchSet } from '../../lib/url_util.ts';
@@ -45,7 +49,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     resetGraph();
     setTimeout(() => {
       patchLocation({ search, hash: '' }, false);
-    }, 100);
+    }, GRAPH_RESET_DELAY_MS);
   }
 
   // Add cmd-enter support to search in a new tab

@@ -20,6 +20,7 @@ export const PARAM_SIZING = 'sizing';
 export const PARAM_ZOOM = 'zoom';
 
 export const UNNAMED_PACKAGE = 'Unnamed package';
+export const GRAPH_RESET_DELAY_MS = 100;
 
 export const ZOOM_FIT_HEIGHT = 'h';
 export const ZOOM_FIT_WIDTH = 'w';

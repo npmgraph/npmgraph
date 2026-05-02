@@ -1,6 +1,11 @@
 import type { PackageJSON, PackumentVersion } from '@npm/types';
 import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.ts';
-import { PARAM_PACKAGES, PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
+import {
+  GRAPH_RESET_DELAY_MS,
+  PARAM_PACKAGES,
+  PARAM_QUERY,
+  UNNAMED_PACKAGE,
+} from './constants.ts';
 import { flash } from './flash.ts';
 import { resetGraph } from './GlobalStore.ts';
 import { hashSet, searchSet } from './url_util.ts';
@@ -44,7 +49,7 @@ export function loadPackageJson(json: string, filename?: string): void {
   const search = searchSet(PARAM_QUERY, module.key, url);
   setTimeout(() => {
     patchLocation({ hash, search }, false);
-  }, 100);
+  }, GRAPH_RESET_DELAY_MS);
 }
 
 export async function readFile(file: File) {
