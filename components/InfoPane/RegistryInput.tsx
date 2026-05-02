@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
 import useRegistry from '../../lib/useRegistry.ts';
-import styles from './RegistryInput.module.scss';
+import * as styles from './RegistryInput.module.scss';
 
 enum RegistryStatus {
   PENDING = 'pending',
