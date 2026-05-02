@@ -8,7 +8,6 @@ type GlobalState = {
   colorize?: string;
   graph: GraphState;
   lastVisit: number;
-  loadKey: number;
   location: URL;
   pane: PANE;
   selectedModules?: Map<string, Module>;
@@ -28,7 +27,6 @@ let globalState: GlobalState = {
     entryModules: new Set(),
   },
   lastVisit: 0,
-  loadKey: 0,
   location: new URL(location.href),
   pane: _getInitialPane(),
   selectedModules: new Map(),

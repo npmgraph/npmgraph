@@ -66,8 +66,7 @@
     "react-dom": "19.2.4",
     "select-dom": "^9.5.0",
     "semver": "7.7.4",
-    "simplur": "4.1.0",
-    "spin-delay": "^2.0.1"
+    "simplur": "4.1.0"
   },
   "@parcel/resolver-default": {
     "extensions": [

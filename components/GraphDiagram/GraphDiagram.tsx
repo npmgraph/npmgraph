@@ -58,7 +58,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGlobalState('graph');
-  const [loadKey] = useGlobalState('loadKey');
   const [diagramElement, setDiagramElement] = useState<
     SVGSVGElement | undefined
   >(getDiagramElement);
@@ -184,7 +183,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     );
 
     return abort;
-  }, [sortedQuery, dependencyTypes, collapse, loadKey, moduleFilter, setGraph]);
+  }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {
