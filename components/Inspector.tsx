@@ -50,14 +50,14 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
         <Tab active={pane === PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
           Explore
         </Tab>
+        <Tab active={pane === PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
+          Module
+        </Tab>
         <Tab
           active={pane === PANE.SETTINGS}
           onClick={() => setPane(PANE.SETTINGS)}
         >
           Settings
-        </Tab>
-        <Tab active={pane === PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
-          Module
         </Tab>
         <Splitter
           isOpen={hide === null}
