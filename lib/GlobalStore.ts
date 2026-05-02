@@ -8,6 +8,7 @@ type GlobalState = {
   colorize?: string;
   graph: GraphState;
   lastVisit: number;
+  loadKey: number;
   location: URL;
   pane: PANE;
   selectedModules?: Map<string, Module>;
@@ -27,6 +28,7 @@ let globalState: GlobalState = {
     entryModules: new Set(),
   },
   lastVisit: 0,
+  loadKey: 0,
   location: new URL(location.href),
   pane: _getInitialPane(),
   selectedModules: new Map(),
@@ -79,4 +81,13 @@ export function useGlobalState<T extends keyof GlobalState>(
   );
 
   return [globalState[key], setValue];
+}
+
+/**
+ * Reset the graph to empty and increment loadKey so that the graph-fetch
+ * effect always re-runs, even when the URL query hasn't changed.
+ */
+export function resetGraph() {
+  setGlobalState('graph', { moduleInfos: new Map(), entryModules: new Set() });
+  setGlobalState('loadKey', globalState.loadKey + 1);
 }
