@@ -243,7 +243,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       // Decorate DOM nodes with appropriate classname
       for (const el of $$('#graph g.node')) {
         // Find module this node represents
-        const key = $('title', el)?.textContent?.trim();
+        const key = $(':scope > title', el)?.textContent?.trim();
         if (!key) continue;
 
         const m = getCachedModule(key);
