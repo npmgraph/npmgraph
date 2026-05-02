@@ -178,10 +178,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           celebrate('Zero dependencies for the win!');
         }
 
-        for (const error of newGraph.failedEntryModules.values()) {
-          flash(error);
-        }
-
         setGraph(newGraph);
       },
     );
