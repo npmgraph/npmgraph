@@ -24,7 +24,7 @@
     min-width: 0;
   }
 
-  // Use :global to beat the #id specificity from QueryInput.scss
+  // ID must match SEARCH_FIELD_ID constant in lib/constants.ts
   :global(#search-field) {
     box-sizing: border-box;
     border: solid 1px rgba(255, 255, 255, 0.3);
