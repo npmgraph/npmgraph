@@ -2,12 +2,12 @@
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 0.5em;
-  background: var(--tabs-bg);
-  border-bottom: solid 1px var(--tabs-border);
-  padding: 0.4em 0.6em;
-  width: var(--inspector-size);
+  align-items: center;
+  gap: 1.2em;
   box-sizing: border-box;
+  background: var(--bg0);
+  padding: 0.8em;
+  width: var(--inspector-size);
   color: var(--tabs-text);
 
   // Override --text so the Logo's color-mix renders in light colors on the dark header
@@ -15,8 +15,8 @@
 
   svg {
     flex-shrink: 0;
-    height: 1.6em;
     width: auto;
+    height: 1.6em;
   }
 
   form {

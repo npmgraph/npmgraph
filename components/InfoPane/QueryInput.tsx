@@ -1,6 +1,10 @@
 import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
-import { PARAM_QUERY, SEARCH_FIELD_ID, UNNAMED_PACKAGE } from '../../lib/constants.ts';
+import {
+  PARAM_QUERY,
+  SEARCH_FIELD_ID,
+  UNNAMED_PACKAGE,
+} from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { cn } from '../../lib/dom.ts';
 import { searchSet } from '../../lib/url_util.ts';
@@ -12,7 +16,10 @@ import * as styles from './QueryInput.module.scss';
 // No better detection for this :(
 const hasSoftKeyboard = 'ontouchstart' in document.documentElement;
 
-export default function QueryInput({ className, ...props }: HTMLProps<HTMLInputElement>) {
+export default function QueryInput({
+  className,
+  ...props
+}: HTMLProps<HTMLInputElement>) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
   const initialValue = query.join(', ');
