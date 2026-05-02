@@ -7,38 +7,7 @@
   height: 8rem;
 }
 
-.legend {
-  display: flex;
-  justify-content: space-between;
-  margin-block-start: 0.5rem;
-
-  & .dotKey {
-    display: inline-block;
-    vertical-align: middle;
-    border-radius: 50%;
-    width: 0.7em;
-    height: 0.7em;
-  }
-  .dotKeyMajor {
-    border: solid 1px var(--grey20);
-    background-color: var(--root-color);
-    width: 1em;
-    height: 1em;
-  }
-  .dotKeyMinor {
-    background-color: var(--bg-orange);
-    width: 0.8em;
-    height: 0.8em;
-  }
-  .dotKeyPatch {
-    background-color: var(--bg-green);
-  }
-  .dotKeyPrerelease {
-    background-color: var(--bg-blue);
-  }
-}
-
-svg {
+.root {
   cursor: default;
 
   .dot > text {
@@ -68,6 +37,37 @@ svg {
   }
   .layer-prerelease {
     fill: var(--bg-blue);
+  }
+}
+
+.legend {
+  display: flex;
+  justify-content: space-between;
+  margin-block-start: 0.5rem;
+
+  & .dotKey {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    width: 0.7em;
+    height: 0.7em;
+  }
+  .dotKeyMajor {
+    border: solid 1px var(--grey20);
+    background-color: var(--root-color);
+    width: 1em;
+    height: 1em;
+  }
+  .dotKeyMinor {
+    background-color: var(--bg-orange);
+    width: 0.8em;
+    height: 0.8em;
+  }
+  .dotKeyPatch {
+    background-color: var(--bg-green);
+  }
+  .dotKeyPrerelease {
+    background-color: var(--bg-blue);
   }
 }
 
