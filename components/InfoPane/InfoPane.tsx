@@ -12,9 +12,9 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [graph] = useGlobalState('graph');
   const [query] = useQuery();
 
-  const errors = [...graph.failedEntryModules.entries()]
-    .filter(([key]) => query.includes(key))
-    .map(([, error]) => error.message);
+  const errors = [...graph.failedEntryModules.entries()].filter(([key]) =>
+    query.includes(key),
+  );
 
   return (
     <Pane {...props}>
@@ -22,9 +22,9 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
 
       <QueryInput />
 
-      {errors.map(msg => (
-        <p key={msg} className="query-error">
-          {msg}
+      {errors.map(([key, error]) => (
+        <p key={key} className="query-error">
+          {error.message}
         </p>
       ))}
 
