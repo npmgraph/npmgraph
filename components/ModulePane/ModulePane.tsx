@@ -61,7 +61,9 @@ export default function ModulePane({
     return (
       <Pane>
         <h2>
-          <QueryLink query={module.key} reset={false} />
+          <QueryLink query={module.key} reset={false}>
+            {module.isUnnamed ? module.displayName : module.key}
+          </QueryLink>
         </h2>
         <p>
           This is a locally-defined module. Additional information is not

@@ -2,7 +2,7 @@ import { $ } from 'select-dom';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
-import { PARAM_QUERY } from '../../lib/constants.ts';
+import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { getModuleKey } from '../../lib/module_util.ts';
 
 const FONT = 'Roboto Condensed, sans-serif';
@@ -222,7 +222,8 @@ export function composeDOT({
 
     const link = new URL(location.origin);
     link.searchParams.append(PARAM_QUERY, module.key);
-    const vs = { root: level === 0, fontsize, href: link.href };
+    const label = module.isUnnamed ? UNNAMED_PACKAGE : undefined;
+    const vs = { root: level === 0, fontsize, href: link.href, label };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
