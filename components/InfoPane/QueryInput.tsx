@@ -41,8 +41,11 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   function handleSubmit(e?: React.FormEvent<HTMLFormElement>) {
     e?.preventDefault();
 
+    const search = getSearchParams();
     resetGraph();
-    patchLocation({ search: getSearchParams(), hash: '' }, false);
+    setTimeout(() => {
+      patchLocation({ search, hash: '' }, false);
+    }, 0);
   }
 
   // Add cmd-enter support to search in a new tab

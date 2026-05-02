@@ -42,7 +42,9 @@ export function loadPackageJson(json: string, filename?: string): void {
   url.hash = '';
   const hash = hashSet(PARAM_PACKAGES, JSON.stringify([pkg]), url);
   const search = searchSet(PARAM_QUERY, module.key, url);
-  patchLocation({ hash, search }, false);
+  setTimeout(() => {
+    patchLocation({ hash, search }, false);
+  }, 0);
 }
 
 export async function readFile(file: File) {
