@@ -1,6 +1,4 @@
 import type { HTMLProps } from 'react';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { useQuery } from '../../lib/useQuery.ts';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import FilePicker from './FilePicker.tsx';
@@ -9,24 +7,11 @@ import QueryInput from './QueryInput.tsx';
 import RegistryInput from './RegistryInput.tsx';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
-  const [graph] = useGlobalState('graph');
-  const [query] = useQuery();
-
-  const errors = [...graph.failedEntryModules.entries()].filter(([key]) =>
-    query.includes(key),
-  );
-
   return (
     <Pane {...props}>
       <h3>Generate npmgraph:</h3>
 
       <QueryInput />
-
-      {errors.map(([key, error]) => (
-        <p key={key} className="query-error">
-          {error.message}
-        </p>
-      ))}
 
       <p>For example:</p>
 

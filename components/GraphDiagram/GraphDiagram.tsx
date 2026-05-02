@@ -179,11 +179,18 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         }
 
         setGraph(newGraph);
+
+        if (
+          newGraph.entryModules.size === 0 &&
+          newGraph.failedEntryModules.size > 0
+        ) {
+          setPane(PANE.INFO);
+        }
       },
     );
 
     return abort;
-  }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph]);
+  }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph, setPane]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {
