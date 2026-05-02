@@ -7,7 +7,6 @@ import { Pane } from '../Pane.tsx';
 import { Toggle } from '../Toggle.tsx';
 import ColorizeInput from '../GraphPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
-import './SettingsPane.scss';
 
 export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);

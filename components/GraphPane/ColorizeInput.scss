@@ -1,7 +1,10 @@
-#colorize-ui {
-  select {
-    border: solid 0.1rem var(--bg1);
-    border-radius: 0.3rem;
-    padding: 0.3rem;
-  }
+#colorize-ui select {
+  margin-left: 0.5em;
+  border: solid 0.1rem var(--bg1);
+  border-radius: 0.3rem;
+  padding: 0.3rem;
+}
+
+#colorize-key {
+  margin-top: 1rem;
 }
