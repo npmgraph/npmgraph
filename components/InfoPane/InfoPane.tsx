@@ -7,8 +7,6 @@ import RegistryInput from './RegistryInput.tsx';
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <h3>Generate npmgraph:</h3>
-
       <p>For example:</p>
 
       <ul>

@@ -3,7 +3,7 @@
   flex-shrink: 0;
   align-items: center;
   gap: 0.5em;
-  background: var(--tabs-bg) var(--bg-gradient);
+  background: var(--tabs-bg);
   border-bottom: solid 1px var(--tabs-border);
   padding: 0.4em 0.6em;
   width: var(--inspector-size);
@@ -23,26 +23,22 @@
     flex-grow: 1;
     min-width: 0;
   }
+}
 
-  // ID must match SEARCH_FIELD_ID constant in lib/constants.ts
-  :global(#search-field) {
-    box-sizing: border-box;
-    border: solid 1px rgba(255, 255, 255, 0.3);
-    border-radius: 1em;
-    background: rgba(255, 255, 255, 0.15);
-    padding: 0.25em 0.6em;
-    width: 100%;
-    color: var(--tabs-text);
-    font: inherit;
-    font-size: 13px;
+.input {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-radius: 1em;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.25em 0.6em;
+  color: var(--tabs-text);
+  font-size: 13px;
 
-    &::placeholder {
-      color: rgba(255, 255, 255, 0.5);
-    }
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
 
-    &:focus {
-      border-color: rgba(255, 255, 255, 0.7);
-      background: rgba(255, 255, 255, 0.25);
-    }
+  &:focus {
+    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.25);
   }
 }

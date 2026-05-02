@@ -43,7 +43,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       <AppHeader />
       <div id="tabs">
         <Tab active={pane === PANE.INFO} onClick={() => setPane(PANE.INFO)}>
-          Start
+          Info
         </Tab>
         <Tab active={pane === PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
           Graph

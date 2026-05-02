@@ -6,7 +6,7 @@ export default function AppHeader() {
   return (
     <div className={styles.root}>
       <Logo />
-      <QueryInput />
+      <QueryInput className={styles.input} />
     </div>
   );
 }
