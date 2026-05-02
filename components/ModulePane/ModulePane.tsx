@@ -33,17 +33,19 @@ export default function ModulePane({
   const [graph] = useGlobalState('graph');
 
   if (nSelected === 0) {
-    return (
-      <Pane
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <p>No modules selected.</p>
-      </Pane>
-    );
+    if (!graph || graph.entryModules.size !== 1) {
+      return (
+        <Pane
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <p>No modules selected.</p>
+        </Pane>
+      );
+    }
   } else if (nSelected > 1) {
     return (
       <Pane>
@@ -53,7 +55,11 @@ export default function ModulePane({
     );
   }
 
-  const module = selectedModules?.values().next().value as Module;
+  const module = (
+    nSelected === 0
+      ? [...graph.entryModules][0]
+      : selectedModules?.values().next().value
+  ) as Module;
 
   const pkg = module.package;
 
