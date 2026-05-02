@@ -19,7 +19,8 @@ export const PARAM_SELECTION = 'select';
 export const PARAM_SIZING = 'sizing';
 export const PARAM_ZOOM = 'zoom';
 
-export const UNNAMED_PACKAGE = 'Unnamed package';
+export const UNNAMED_PACKAGE = 'unnamed module';
+export const UNNAMED_PACKAGE_PREFIX = 'unnamed-package-';
 
 export const ZOOM_FIT_HEIGHT = 'h';
 export const ZOOM_FIT_WIDTH = 'w';
