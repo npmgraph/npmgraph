@@ -1,0 +1,2965 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>npmgraph 2.0 — Design Mockup</title>
+    <style>
+      /* ─── Reset & base ─── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --font: 'Inter', system-ui, -apple-system, sans-serif;
+        --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+        /* Palette */
+        --bg: #0d1117;
+        --bg1: #161b22;
+        --bg2: #21262d;
+        --bg3: #30363d;
+        --border: #30363d;
+        --text: #e6edf3;
+        --text-dim: #8b949e;
+        --text-xdim: #484f58;
+
+        --accent: #f78166;
+        --accent2: #58a6ff;
+        --green: #3fb950;
+        --yellow: #d29922;
+        --red: #f85149;
+        --purple: #bc8cff;
+
+        --panel-w: 360px;
+        --topbar-h: 52px;
+        --radius: 8px;
+        --radius-sm: 4px;
+
+        --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      html,
+      body {
+        height: 100%;
+        font-family: var(--font);
+        font-size: 13px;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      /* ─── Layout shell ─── */
+      #shell {
+        display: grid;
+        grid-template-rows: var(--topbar-h) 1fr;
+        grid-template-columns: 1fr;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      /* ─── Top bar ─── */
+      #topbar {
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 16px;
+        background: var(--bg1);
+        border-bottom: 1px solid var(--border);
+        z-index: 20;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--accent);
+        letter-spacing: -0.3px;
+        flex-shrink: 0;
+        user-select: none;
+      }
+      .logo svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .divider-v {
+        width: 1px;
+        height: 20px;
+        background: var(--border);
+        flex-shrink: 0;
+      }
+
+      /* Query pills row */
+      #query-pills {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 3px 10px 3px 9px;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        cursor: default;
+        color: var(--text);
+        transition: border-color 0.15s;
+      }
+      .pill:hover {
+        border-color: var(--text-dim);
+      }
+      .pill .pkg-name {
+        color: var(--accent2);
+      }
+      .pill .pkg-version {
+        color: var(--text-dim);
+        font-size: 11px;
+      }
+      .pill .close-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: var(--bg3);
+        color: var(--text-dim);
+        font-size: 10px;
+        line-height: 1;
+        cursor: pointer;
+        transition:
+          background 0.1s,
+          color 0.1s;
+      }
+      .pill .close-pill:hover {
+        background: var(--red);
+        color: #fff;
+      }
+
+      .add-pkg-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: transparent;
+        border: 1px dashed var(--border);
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 12px;
+        color: var(--text-dim);
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+        white-space: nowrap;
+      }
+      .add-pkg-btn:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+      .add-pkg-btn .shortcut {
+        background: var(--bg3);
+        border-radius: 3px;
+        padding: 1px 4px;
+        font-size: 10px;
+        font-family: var(--mono);
+      }
+
+      /* Right cluster in topbar */
+      #topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .icon-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius-sm);
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--text-dim);
+        cursor: pointer;
+        transition:
+          background 0.1s,
+          color 0.1s,
+          border-color 0.1s;
+      }
+      .icon-btn:hover {
+        background: var(--bg2);
+        color: var(--text);
+        border-color: var(--border);
+      }
+      .icon-btn.active {
+        background: var(--bg2);
+        color: var(--accent);
+        border-color: var(--border);
+      }
+      .icon-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .share-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 5px 10px;
+        font-size: 12px;
+        color: var(--text);
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+      }
+      .share-btn:hover {
+        border-color: var(--text-dim);
+        color: var(--text);
+      }
+      .share-btn svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      /* ─── Main area ─── */
+      #main {
+        grid-row: 2;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+      }
+
+      /* ─── Graph canvas ─── */
+      #graph-canvas {
+        flex: 1;
+        overflow: hidden;
+        position: relative;
+        background:
+          radial-gradient(
+            ellipse at 30% 40%,
+            rgba(88, 166, 255, 0.04) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse at 70% 70%,
+            rgba(247, 129, 102, 0.04) 0%,
+            transparent 55%
+          ),
+          var(--bg);
+      }
+
+      #graph-canvas svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Graph controls: floating bottom-left */
+      #graph-controls {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        gap: 8px;
+        z-index: 10;
+      }
+
+      .ctrl-group {
+        display: flex;
+        background: var(--bg1);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+      }
+      .ctrl-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        background: transparent;
+        border: none;
+        color: var(--text-dim);
+        cursor: pointer;
+        font-size: 12px;
+        transition:
+          background 0.1s,
+          color 0.1s;
+      }
+      .ctrl-btn + .ctrl-btn {
+        border-left: 1px solid var(--border);
+      }
+      .ctrl-btn:hover {
+        background: var(--bg2);
+        color: var(--text);
+      }
+      .ctrl-btn.active {
+        color: var(--accent);
+      }
+      .ctrl-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      /* Minimap */
+      #minimap {
+        position: absolute;
+        bottom: 20px;
+        right: calc(var(--panel-w) + 28px);
+        width: 140px;
+        height: 96px;
+        background: var(--bg1);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        opacity: 0.85;
+        transition:
+          right 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          opacity 0.2s;
+      }
+      #minimap.panel-hidden {
+        right: 20px;
+      }
+
+      /* ─── Stats strip (bottom-center) ─── */
+      #stats-strip {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 1px;
+        background: var(--bg1);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+        z-index: 10;
+      }
+      .stat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 12px;
+        font-size: 11.5px;
+        color: var(--text-dim);
+        cursor: pointer;
+        transition:
+          background 0.1s,
+          color 0.1s;
+        border: none;
+        background: transparent;
+      }
+      .stat-chip:hover {
+        background: var(--bg2);
+        color: var(--text);
+      }
+      .stat-chip + .stat-chip {
+        border-left: 1px solid var(--border);
+      }
+      .stat-chip .count {
+        font-weight: 600;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+      }
+      .stat-chip .warn {
+        color: var(--yellow);
+      }
+      .stat-chip .danger {
+        color: var(--red);
+      }
+
+      /* ─── Right panel ─── */
+      #panel {
+        width: var(--panel-w);
+        background: var(--bg1);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        transition:
+          transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+          width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 15;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+      #panel.hidden {
+        transform: translateX(var(--panel-w));
+        width: 0;
+        border-left-width: 0;
+      }
+
+      /* Panel header */
+      #panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px;
+        height: 44px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .panel-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+      }
+      .panel-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        color: var(--text-dim);
+        transition:
+          background 0.1s,
+          color 0.1s;
+        border: none;
+        background: transparent;
+      }
+      .panel-close:hover {
+        background: var(--bg2);
+        color: var(--text);
+      }
+
+      /* Panel body */
+      #panel-body {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        scrollbar-color: var(--bg3) transparent;
+      }
+      #panel-body::-webkit-scrollbar {
+        width: 4px;
+      }
+      #panel-body::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      #panel-body::-webkit-scrollbar-thumb {
+        background: var(--bg3);
+        border-radius: 2px;
+      }
+
+      /* ─── Panel views ─── */
+      .panel-view {
+        display: none;
+        padding: 16px;
+      }
+      .panel-view.active {
+        display: block;
+      }
+
+      /* Module detail view */
+      .module-name {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text);
+        word-break: break-all;
+      }
+      .module-version {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 4px;
+      }
+      .version-badge {
+        font-size: 11px;
+        font-family: var(--mono);
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 2px 6px;
+        color: var(--text-dim);
+      }
+      .version-badge.latest {
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .update-hint {
+        font-size: 11px;
+        color: var(--yellow);
+      }
+      .module-desc {
+        font-size: 12.5px;
+        color: var(--text-dim);
+        line-height: 1.6;
+        margin: 10px 0 16px;
+      }
+      .module-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 16px;
+      }
+      .mlink {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11.5px;
+        padding: 4px 9px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text-dim);
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          border-color 0.1s,
+          color 0.1s;
+      }
+      .mlink:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+      .mlink svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      /* Section blocks inside panel */
+      .section {
+        margin-bottom: 18px;
+      }
+      .section-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--text-xdim);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .section-title::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      /* Key-value pairs */
+      .kv-grid {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 5px 12px;
+        font-size: 12px;
+      }
+      .kv-key {
+        color: var(--text-dim);
+      }
+      .kv-val {
+        font-weight: 500;
+        font-family: var(--mono);
+        font-size: 11.5px;
+      }
+
+      /* Release timeline */
+      .timeline {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+      .tl-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--bg3);
+        cursor: pointer;
+        transition:
+          background 0.1s,
+          transform 0.1s;
+      }
+      .tl-dot:hover,
+      .tl-dot.current {
+        background: var(--accent);
+        transform: scale(1.4);
+      }
+      .tl-dot.old {
+        background: var(--bg3);
+        opacity: 0.5;
+      }
+
+      /* Maintainers */
+      .maintainers {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .maintainer {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--bg2);
+        border-radius: 20px;
+        padding: 3px 8px 3px 3px;
+        font-size: 11.5px;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        transition: border-color 0.1s;
+      }
+      .maintainer:hover {
+        border-color: var(--text-dim);
+      }
+      .maintainer img {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+      }
+      .maintainer span {
+        color: var(--text-dim);
+      }
+
+      /* Score bars */
+      .score-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 11.5px;
+        margin-bottom: 5px;
+      }
+      .score-label {
+        color: var(--text-dim);
+        width: 80px;
+        flex-shrink: 0;
+      }
+      .score-bar-wrap {
+        flex: 1;
+        height: 5px;
+        background: var(--bg3);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .score-bar {
+        height: 100%;
+        border-radius: 3px;
+        background: linear-gradient(90deg, var(--accent2), var(--purple));
+        transition: width 0.5s ease;
+      }
+      .score-num {
+        font-variant-numeric: tabular-nums;
+        color: var(--text-dim);
+        width: 28px;
+        text-align: right;
+        font-size: 11px;
+      }
+
+      /* ─── Graph overview panel ─── */
+      .overview-summary {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+      .ov-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 10px 12px;
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .ov-card:hover {
+        border-color: var(--text-dim);
+      }
+      .ov-num {
+        font-size: 22px;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        color: var(--text);
+        line-height: 1;
+      }
+      .ov-label {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-top: 3px;
+      }
+      .ov-num.warn {
+        color: var(--yellow);
+      }
+      .ov-num.danger {
+        color: var(--red);
+      }
+
+      /* Filter / colorize row */
+      .controls-row {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .select-ctrl {
+        flex: 1;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 5px 8px;
+        color: var(--text);
+        font-size: 12px;
+        cursor: pointer;
+        outline: none;
+        min-width: 0;
+      }
+      .toggle-ctrl {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 5px 9px;
+        color: var(--text-dim);
+        font-size: 12px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition:
+          border-color 0.1s,
+          color 0.1s;
+        user-select: none;
+      }
+      .toggle-ctrl.on {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+      .toggle-ctrl:hover {
+        border-color: var(--text-dim);
+        color: var(--text);
+      }
+
+      /* Report list */
+      .report-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 12px;
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .report-row:last-child {
+        border-bottom: none;
+      }
+      .report-row:hover {
+        color: var(--accent2);
+      }
+      .report-badge {
+        min-width: 26px;
+        height: 18px;
+        border-radius: 9px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10.5px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        background: var(--bg3);
+        color: var(--text-dim);
+        padding: 0 6px;
+        flex-shrink: 0;
+      }
+      .report-badge.warn {
+        background: rgba(210, 153, 34, 0.18);
+        color: var(--yellow);
+      }
+      .report-badge.danger {
+        background: rgba(248, 81, 73, 0.15);
+        color: var(--red);
+      }
+      .report-badge.ok {
+        background: rgba(63, 185, 80, 0.12);
+        color: var(--green);
+      }
+      .report-row-label {
+        flex: 1;
+        color: var(--text-dim);
+      }
+      .report-row:hover .report-row-label {
+        color: inherit;
+      }
+      .report-chevron {
+        color: var(--text-xdim);
+        font-size: 10px;
+      }
+
+      /* License piechart placeholder */
+      .license-pie-wrap {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .license-legend {
+        flex: 1;
+      }
+      .legend-row {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11.5px;
+        margin-bottom: 4px;
+        color: var(--text-dim);
+      }
+      .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      /* ─── Command palette overlay ─── */
+      #palette-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        z-index: 100;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding-top: 14vh;
+        backdrop-filter: blur(3px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      #palette-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #palette {
+        width: 540px;
+        max-width: 92vw;
+        background: var(--bg1);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow:
+          0 20px 60px rgba(0, 0, 0, 0.6),
+          0 0 0 1px rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        transform: translateY(-8px) scale(0.98);
+        transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      #palette-overlay.open #palette {
+        transform: none;
+      }
+      .palette-input-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      .palette-icon {
+        color: var(--text-dim);
+        flex-shrink: 0;
+      }
+      .palette-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+      #palette-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 15px;
+        color: var(--text);
+        font-family: var(--font);
+        caret-color: var(--accent);
+      }
+      #palette-input::placeholder {
+        color: var(--text-xdim);
+      }
+      .palette-esc {
+        font-size: 11px;
+        font-family: var(--mono);
+        background: var(--bg3);
+        border-radius: 3px;
+        padding: 2px 5px;
+        color: var(--text-xdim);
+        flex-shrink: 0;
+      }
+      .palette-suggestions {
+        padding: 6px;
+        max-height: 340px;
+        overflow-y: auto;
+      }
+      .palette-group-label {
+        font-size: 10.5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--text-xdim);
+        padding: 6px 10px 4px;
+      }
+      .palette-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .palette-item:hover,
+      .palette-item.selected {
+        background: var(--bg2);
+      }
+      .palette-item-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius-sm);
+        background: var(--bg3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 14px;
+      }
+      .palette-item-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .palette-item-name {
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+      }
+      .palette-item-name mark {
+        background: transparent;
+        color: var(--accent);
+      }
+      .palette-item-desc {
+        font-size: 11.5px;
+        color: var(--text-dim);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 1px;
+      }
+      .palette-item-meta {
+        font-size: 11px;
+        color: var(--text-xdim);
+        font-family: var(--mono);
+        flex-shrink: 0;
+      }
+      .palette-footer {
+        display: flex;
+        gap: 12px;
+        padding: 8px 16px;
+        border-top: 1px solid var(--border);
+        background: var(--bg);
+      }
+      .palette-hint {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 11px;
+        color: var(--text-xdim);
+      }
+      .palette-hint kbd {
+        background: var(--bg3);
+        border-radius: 3px;
+        padding: 1px 4px;
+        font-family: var(--mono);
+        font-size: 10px;
+      }
+
+      /* ─── Context menu ─── */
+      #ctx-menu {
+        position: fixed;
+        background: var(--bg1);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 4px;
+        min-width: 160px;
+        box-shadow: var(--shadow);
+        z-index: 200;
+        display: none;
+      }
+      .ctx-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: var(--radius-sm);
+        font-size: 12.5px;
+        color: var(--text-dim);
+        cursor: pointer;
+        transition:
+          background 0.1s,
+          color 0.1s;
+      }
+      .ctx-item:hover {
+        background: var(--bg2);
+        color: var(--text);
+      }
+      .ctx-item svg {
+        width: 14px;
+        height: 14px;
+        color: var(--text-xdim);
+      }
+      .ctx-sep {
+        height: 1px;
+        background: var(--border);
+        margin: 3px 0;
+      }
+
+      /* ─── Intro / welcome screen ─── */
+      #intro {
+        display: none;
+        position: absolute;
+        inset: 0;
+        background: var(--bg);
+        z-index: 50;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+      #intro.active {
+        display: flex;
+      }
+      .intro-logo {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--accent);
+        letter-spacing: -1px;
+        margin-bottom: 6px;
+      }
+      .intro-tagline {
+        color: var(--text-dim);
+        font-size: 14px;
+        margin-bottom: 36px;
+      }
+      .intro-search {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 460px;
+        background: var(--bg1);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s;
+      }
+      .intro-search:focus-within {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(247, 129, 102, 0.15);
+      }
+      .intro-search input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 15px;
+        color: var(--text);
+        font-family: var(--font);
+        caret-color: var(--accent);
+      }
+      .intro-search input::placeholder {
+        color: var(--text-xdim);
+      }
+      .intro-go-btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: var(--radius-sm);
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: filter 0.15s;
+      }
+      .intro-go-btn:hover {
+        filter: brightness(1.1);
+      }
+      .intro-examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        max-width: 480px;
+        margin-bottom: 30px;
+      }
+      .example-chip {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 12px;
+        font-family: var(--mono);
+        color: var(--text-dim);
+        cursor: pointer;
+        transition:
+          border-color 0.1s,
+          color 0.1s;
+      }
+      .example-chip:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+      .intro-also {
+        font-size: 12px;
+        color: var(--text-xdim);
+        text-align: center;
+        line-height: 2;
+      }
+      .intro-also a {
+        color: var(--text-dim);
+        text-decoration: none;
+        transition: color 0.1s;
+      }
+      .intro-also a:hover {
+        color: var(--accent2);
+      }
+
+      /* ─── Demo banner ─── */
+      #demo-banner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: linear-gradient(135deg, #1c2128, #161b22);
+        border-bottom: 1px solid var(--border);
+        padding: 7px 16px;
+        font-size: 12px;
+        color: var(--text-dim);
+        flex-shrink: 0;
+      }
+      #demo-banner strong {
+        color: var(--accent);
+      }
+      #demo-banner .view-btn {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 3px 10px;
+        font-size: 11.5px;
+        color: var(--text);
+        cursor: pointer;
+        transition: border-color 0.1s;
+      }
+      #demo-banner .view-btn:hover {
+        border-color: var(--text-dim);
+      }
+      .demo-sep {
+        color: var(--border);
+      }
+
+      /* Full page wrapper so banner+shell stack vertically */
+      #page {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+      }
+      #shell {
+        flex: 1;
+        min-height: 0;
+      }
+
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--bg3) transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <!-- ─── Demo banner ─── -->
+      <div id="demo-banner">
+        <strong>npmgraph 2.0</strong>
+        <span class="demo-sep">·</span>
+        Design mockup — not a functional build
+        <span class="demo-sep">·</span>
+        <button class="view-btn" onclick="toggleIntro()">Toggle intro</button>
+        <button class="view-btn" onclick="togglePanel()">Toggle panel</button>
+        <button class="view-btn" onclick="togglePalette()">
+          Open search palette
+        </button>
+      </div>
+
+      <!-- ─── Intro / landing ─── -->
+      <div id="intro">
+        <div class="intro-logo">
+          npm<span style="color: var(--text-dim)">graph</span>
+        </div>
+        <div class="intro-tagline">
+          Explore and visualize npm package dependencies
+        </div>
+
+        <div class="intro-search">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+            color="var(--text-xdim)"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21l-4.35-4.35" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Package name, URL, or paste package.json…"
+            autofocus
+            value="express"
+          />
+          <button class="intro-go-btn" onclick="showGraph()">Graph it →</button>
+        </div>
+
+        <div class="intro-examples">
+          <span class="example-chip" onclick="showGraph()">express</span>
+          <span class="example-chip" onclick="showGraph()">react@18</span>
+          <span class="example-chip" onclick="showGraph()">webpack@5</span>
+          <span class="example-chip" onclick="showGraph()">eslint</span>
+          <span class="example-chip" onclick="showGraph()">next</span>
+          <span class="example-chip" onclick="showGraph()">vite</span>
+        </div>
+
+        <div class="intro-also">
+          Also accepts: drag &amp; drop
+          <code style="color: var(--text-dim)">package.json</code> · paste file
+          contents<br />
+          · URL to a <a href="#">raw GitHub package.json</a>
+        </div>
+      </div>
+
+      <!-- ─── Shell ─── -->
+      <div id="shell">
+        <!-- top bar -->
+        <header id="topbar">
+          <div class="logo">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+            >
+              <circle cx="5" cy="5" r="2.5" />
+              <circle cx="19" cy="5" r="2.5" />
+              <circle cx="5" cy="19" r="2.5" />
+              <circle cx="12" cy="12" r="2.5" />
+              <line x1="7.5" y1="5" x2="16.5" y2="5" />
+              <line x1="5" y1="7.5" x2="5" y2="16.5" />
+              <line x1="7.2" y1="7.2" x2="10.2" y2="10.2" />
+              <line x1="13.8" y1="13.8" x2="16.8" y2="7.2" />
+            </svg>
+            npmgraph
+          </div>
+
+          <div class="divider-v"></div>
+
+          <!-- Query pills -->
+          <div id="query-pills">
+            <div class="pill">
+              <span class="pkg-name">express</span>
+              <span class="pkg-version">4.18.2</span>
+              <span class="close-pill">×</span>
+            </div>
+            <div class="pill">
+              <span class="pkg-name">debug</span>
+              <span class="pkg-version">2.6.9</span>
+              <span class="close-pill">×</span>
+            </div>
+
+            <button class="add-pkg-btn" onclick="togglePalette()">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M12 5v14M5 12h14" />
+              </svg>
+              Add package <span class="shortcut">/</span>
+            </button>
+          </div>
+
+          <div id="topbar-right">
+            <select
+              class="select-ctrl"
+              style="width: auto; padding: 4px 8px; font-size: 11.5px"
+              title="Colorize by…"
+            >
+              <option>No color</option>
+              <option>Module type</option>
+              <option>Bus factor</option>
+              <option>Outdated-ness</option>
+              <option>npms.io score</option>
+            </select>
+
+            <button class="icon-btn" title="Include devDependencies">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+              </svg>
+            </button>
+
+            <div class="divider-v"></div>
+
+            <button class="share-btn">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+              </svg>
+              Share
+            </button>
+
+            <button class="icon-btn" title="Download SVG">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+            </button>
+
+            <button
+              class="icon-btn active"
+              id="panel-toggle-btn"
+              title="Toggle side panel"
+              onclick="togglePanel()"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <line x1="15" y1="3" x2="15" y2="21" />
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- main -->
+        <div id="main">
+          <!-- graph canvas -->
+          <div id="graph-canvas">
+            <svg
+              id="graph-svg"
+              viewBox="0 0 900 620"
+              xmlns="http://www.w3.org/2000/svg"
+              style="position: absolute; inset: 0; width: 100%; height: 100%"
+            >
+              <defs>
+                <marker
+                  id="arr"
+                  markerWidth="10"
+                  markerHeight="7"
+                  refX="9"
+                  refY="3.5"
+                  orient="auto"
+                >
+                  <polygon points="0 0, 10 3.5, 0 7" fill="#484f58" />
+                </marker>
+                <marker
+                  id="arr-sel"
+                  markerWidth="10"
+                  markerHeight="7"
+                  refX="9"
+                  refY="3.5"
+                  orient="auto"
+                >
+                  <polygon points="0 0, 10 3.5, 0 7" fill="#f78166" />
+                </marker>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- edges -->
+              <g
+                stroke="#30363d"
+                stroke-width="1.3"
+                fill="none"
+                marker-end="url(#arr)"
+                opacity="0.7"
+              >
+                <path d="M220,130 C220,175 320,175 320,220" />
+                <path d="M220,130 C220,175 480,220 480,260" />
+                <path d="M220,130 C220,175 640,200 640,240" />
+                <path d="M320,265 C320,310 200,340 200,380" />
+                <path d="M320,265 C320,310 320,350 320,390" />
+                <path d="M480,305 C480,350 420,370 420,410" />
+                <path d="M480,305 C480,350 540,370 540,410" />
+                <path d="M640,285 C640,330 600,360 600,400" />
+                <path d="M640,285 C640,330 700,360 700,400" />
+                <path d="M200,425 C200,470 160,490 160,530" />
+                <path d="M320,435 C320,480 290,500 290,540" />
+                <path d="M320,435 C320,480 350,500 350,540" />
+                <path d="M540,455 C540,495 510,510 510,545" />
+                <path d="M540,455 C540,495 570,510 570,545" />
+              </g>
+
+              <!-- selected-path edges -->
+              <g
+                stroke="#f78166"
+                stroke-width="2"
+                fill="none"
+                marker-end="url(#arr-sel)"
+                opacity="0.9"
+              >
+                <path d="M220,130 C220,175 480,220 480,260" />
+                <path d="M480,305 C480,350 540,370 540,410" />
+                <path d="M540,455 C540,495 570,510 570,545" />
+              </g>
+
+              <!-- express (root, selected) -->
+              <g
+                class="graph-node selected-node"
+                onclick="selectModule('express')"
+                style="cursor: pointer"
+                filter="url(#glow)"
+              >
+                <rect
+                  x="155"
+                  y="105"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#1c2128"
+                  stroke="#f78166"
+                  stroke-width="2.5"
+                />
+                <text
+                  x="220"
+                  y="132"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="13"
+                  font-weight="700"
+                  fill="#f78166"
+                >
+                  express
+                </text>
+                <text
+                  x="220"
+                  y="148"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  4.18.2
+                </text>
+              </g>
+
+              <!-- serve-static -->
+              <g
+                class="graph-node"
+                onclick="selectModule('serve-static')"
+                style="cursor: pointer"
+              >
+                <rect
+                  x="255"
+                  y="240"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="320"
+                  y="267"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  serve-static
+                </text>
+                <text
+                  x="320"
+                  y="281"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  1.15.0
+                </text>
+              </g>
+
+              <!-- send (downstream highlight) -->
+              <g
+                class="graph-node"
+                onclick="selectModule('send')"
+                style="cursor: pointer"
+              >
+                <rect
+                  x="415"
+                  y="260"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#f78166"
+                  stroke-width="1.8"
+                  opacity="0.9"
+                />
+                <text
+                  x="480"
+                  y="287"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  send
+                </text>
+                <text
+                  x="480"
+                  y="301"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  0.18.0
+                </text>
+              </g>
+
+              <!-- router -->
+              <g
+                class="graph-node"
+                onclick="selectModule('router')"
+                style="cursor: pointer"
+                opacity="0.5"
+              >
+                <rect
+                  x="575"
+                  y="215"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="640"
+                  y="242"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  router
+                </text>
+                <text
+                  x="640"
+                  y="256"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  1.3.8
+                </text>
+              </g>
+
+              <!-- body-parser -->
+              <g
+                class="graph-node"
+                onclick="selectModule('body-parser')"
+                style="cursor: pointer"
+                opacity="0.5"
+              >
+                <rect
+                  x="135"
+                  y="355"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="200"
+                  y="382"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  body-parser
+                </text>
+                <text
+                  x="200"
+                  y="396"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  1.20.1
+                </text>
+              </g>
+
+              <!-- etag -->
+              <g
+                class="graph-node"
+                onclick="selectModule('etag')"
+                style="cursor: pointer"
+                opacity="0.5"
+              >
+                <rect
+                  x="255"
+                  y="365"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="320"
+                  y="392"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  etag
+                </text>
+                <text
+                  x="320"
+                  y="406"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  1.8.1
+                </text>
+              </g>
+
+              <!-- mime -->
+              <g
+                class="graph-node"
+                onclick="selectModule('mime')"
+                style="cursor: pointer"
+                opacity="0.5"
+              >
+                <rect
+                  x="355"
+                  y="385"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="420"
+                  y="412"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  mime
+                </text>
+                <text
+                  x="420"
+                  y="426"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  1.6.0
+                </text>
+              </g>
+
+              <!-- ms (downstream) -->
+              <g
+                class="graph-node"
+                onclick="selectModule('ms')"
+                style="cursor: pointer"
+              >
+                <rect
+                  x="475"
+                  y="385"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#f78166"
+                  stroke-width="1.8"
+                  opacity="0.9"
+                />
+                <text
+                  x="540"
+                  y="412"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  ms
+                </text>
+                <text
+                  x="540"
+                  y="426"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  2.1.3
+                </text>
+              </g>
+
+              <!-- http-errors -->
+              <g
+                class="graph-node"
+                onclick="selectModule('http-errors')"
+                style="cursor: pointer"
+                opacity="0.5"
+              >
+                <rect
+                  x="535"
+                  y="375"
+                  width="130"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="600"
+                  y="402"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  http-errors
+                </text>
+                <text
+                  x="600"
+                  y="416"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  2.0.0
+                </text>
+              </g>
+
+              <!-- path-to-regexp -->
+              <g
+                class="graph-node"
+                onclick="selectModule('path-to-regexp')"
+                style="cursor: pointer"
+                opacity="0.5"
+              >
+                <rect
+                  x="635"
+                  y="375"
+                  width="140"
+                  height="50"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1.5"
+                />
+                <text
+                  x="705"
+                  y="400"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="12"
+                  fill="#e6edf3"
+                >
+                  path-to-regexp
+                </text>
+                <text
+                  x="705"
+                  y="414"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="10"
+                  fill="#8b949e"
+                >
+                  0.1.7
+                </text>
+              </g>
+
+              <!-- leaf nodes -->
+              <g opacity="0.4">
+                <rect
+                  x="95"
+                  y="505"
+                  width="130"
+                  height="44"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1"
+                />
+                <text
+                  x="160"
+                  y="528"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="11"
+                  fill="#8b949e"
+                >
+                  raw-body
+                </text>
+                <text
+                  x="160"
+                  y="541"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="9.5"
+                  fill="#484f58"
+                >
+                  2.5.1
+                </text>
+              </g>
+              <g opacity="0.4">
+                <rect
+                  x="225"
+                  y="515"
+                  width="130"
+                  height="44"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1"
+                />
+                <text
+                  x="290"
+                  y="538"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="11"
+                  fill="#8b949e"
+                >
+                  bytes
+                </text>
+                <text
+                  x="290"
+                  y="551"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="9.5"
+                  fill="#484f58"
+                >
+                  3.1.2
+                </text>
+              </g>
+              <g opacity="0.4">
+                <rect
+                  x="325"
+                  y="515"
+                  width="130"
+                  height="44"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1"
+                />
+                <text
+                  x="390"
+                  y="538"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="11"
+                  fill="#8b949e"
+                >
+                  depd
+                </text>
+                <text
+                  x="390"
+                  y="551"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="9.5"
+                  fill="#484f58"
+                >
+                  2.0.0
+                </text>
+              </g>
+
+              <!-- debug (downstream, highlighted) -->
+              <g onclick="selectModule('debug')" style="cursor: pointer">
+                <rect
+                  x="505"
+                  y="519"
+                  width="130"
+                  height="44"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#f78166"
+                  stroke-width="1.8"
+                  opacity="0.9"
+                />
+                <text
+                  x="570"
+                  y="542"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="11"
+                  fill="#e6edf3"
+                >
+                  debug
+                </text>
+                <text
+                  x="570"
+                  y="555"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="9.5"
+                  fill="#8b949e"
+                >
+                  2.6.9
+                </text>
+              </g>
+
+              <!-- Collapse indicator -->
+              <g style="cursor: pointer" opacity="0.6">
+                <rect
+                  x="635"
+                  y="515"
+                  width="130"
+                  height="44"
+                  rx="8"
+                  fill="#161b22"
+                  stroke="#30363d"
+                  stroke-width="1"
+                  stroke-dasharray="5,3"
+                />
+                <text
+                  x="700"
+                  y="535"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="11"
+                  fill="#8b949e"
+                >
+                  inherits
+                </text>
+                <text
+                  x="700"
+                  y="549"
+                  text-anchor="middle"
+                  font-family="Inter,system-ui,sans-serif"
+                  font-size="9.5"
+                  fill="#484f58"
+                >
+                  + 3 collapsed
+                </text>
+              </g>
+            </svg>
+
+            <!-- Graph controls -->
+            <div id="graph-controls">
+              <div class="ctrl-group">
+                <button class="ctrl-btn" title="Zoom in">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    <line x1="11" y1="8" x2="11" y2="14" />
+                    <line x1="8" y1="11" x2="14" y2="11" />
+                  </svg>
+                </button>
+                <button class="ctrl-btn" title="Zoom out">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                    <line x1="8" y1="11" x2="14" y2="11" />
+                  </svg>
+                </button>
+                <button
+                  class="ctrl-btn active"
+                  title="Fit width"
+                  style="font-size: 11px; font-weight: 600; width: 36px"
+                >
+                  W
+                </button>
+                <button
+                  class="ctrl-btn"
+                  title="Fit height"
+                  style="font-size: 11px; font-weight: 600; width: 36px"
+                >
+                  H
+                </button>
+              </div>
+            </div>
+
+            <!-- Minimap -->
+            <div id="minimap">
+              <svg
+                viewBox="0 0 180 120"
+                xmlns="http://www.w3.org/2000/svg"
+                width="100%"
+                height="100%"
+              >
+                <g fill="#30363d">
+                  <rect x="60" y="8" width="28" height="10" rx="2" />
+                  <rect
+                    x="40"
+                    y="26"
+                    width="24"
+                    height="9"
+                    rx="2"
+                    opacity=".7"
+                  />
+                  <rect
+                    x="80"
+                    y="26"
+                    width="24"
+                    height="9"
+                    rx="2"
+                    opacity=".7"
+                  />
+                  <rect
+                    x="108"
+                    y="22"
+                    width="24"
+                    height="9"
+                    rx="2"
+                    opacity=".5"
+                  />
+                  <rect
+                    x="24"
+                    y="46"
+                    width="22"
+                    height="8"
+                    rx="2"
+                    opacity=".5"
+                  />
+                  <rect
+                    x="52"
+                    y="46"
+                    width="22"
+                    height="8"
+                    rx="2"
+                    opacity=".5"
+                  />
+                  <rect
+                    x="76"
+                    y="50"
+                    width="22"
+                    height="8"
+                    rx="2"
+                    opacity=".5"
+                  />
+                  <rect
+                    x="100"
+                    y="48"
+                    width="22"
+                    height="8"
+                    rx="2"
+                    opacity=".4"
+                  />
+                  <rect
+                    x="124"
+                    y="46"
+                    width="22"
+                    height="8"
+                    rx="2"
+                    opacity=".4"
+                  />
+                  <rect
+                    x="14"
+                    y="66"
+                    width="20"
+                    height="7"
+                    rx="2"
+                    opacity=".3"
+                  />
+                  <rect
+                    x="46"
+                    y="68"
+                    width="20"
+                    height="7"
+                    rx="2"
+                    opacity=".3"
+                  />
+                  <rect
+                    x="68"
+                    y="66"
+                    width="20"
+                    height="7"
+                    rx="2"
+                    opacity=".3"
+                  />
+                  <rect
+                    x="92"
+                    y="66"
+                    width="20"
+                    height="7"
+                    rx="2"
+                    opacity=".3"
+                  />
+                  <rect
+                    x="118"
+                    y="66"
+                    width="20"
+                    height="7"
+                    rx="2"
+                    opacity=".25"
+                  />
+                </g>
+                <g fill="#f78166" opacity=".8">
+                  <rect x="60" y="8" width="28" height="10" rx="2" />
+                  <rect x="80" y="26" width="24" height="9" rx="2" />
+                  <rect x="100" y="48" width="22" height="8" rx="2" />
+                  <rect x="92" y="66" width="20" height="7" rx="2" />
+                </g>
+                <rect
+                  x="0"
+                  y="0"
+                  width="180"
+                  height="120"
+                  fill="none"
+                  stroke="#58a6ff"
+                  stroke-width="1.5"
+                  rx="2"
+                  opacity=".4"
+                />
+              </svg>
+            </div>
+
+            <!-- stats strip -->
+            <div id="stats-strip">
+              <button class="stat-chip">
+                <span class="count">28</span> modules
+              </button>
+              <button class="stat-chip">
+                <span class="count warn">3</span> deprecated
+              </button>
+              <button class="stat-chip">
+                <span class="count danger">1</span> vulnerability
+              </button>
+              <button class="stat-chip">
+                <span class="count">12</span> maintainers
+              </button>
+              <button class="stat-chip">
+                <span class="count">5</span> licenses
+              </button>
+            </div>
+          </div>
+
+          <!-- ─── Right panel ─── -->
+          <div id="panel">
+            <div id="panel-header">
+              <span class="panel-title" id="panel-title">Module</span>
+              <button class="panel-close" onclick="togglePanel()">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  width="14"
+                  height="14"
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div id="panel-body">
+              <!-- Module detail view -->
+              <div class="panel-view active" id="view-module">
+                <div style="margin-bottom: 16px">
+                  <div class="module-name" id="mod-name">express</div>
+                  <div class="module-version">
+                    <span class="version-badge latest">4.18.2 · latest</span>
+                    <span class="update-hint">⚠ 5.0.0 available</span>
+                  </div>
+                </div>
+
+                <p class="module-desc" id="mod-desc">
+                  Fast, unopinionated, minimalist web framework for Node.js
+                </p>
+
+                <div class="module-links">
+                  <a class="mlink" href="#" onclick="return false">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      width="12"
+                      height="12"
+                    >
+                      <rect
+                        x="3"
+                        y="3"
+                        width="18"
+                        height="18"
+                        rx="2"
+                        fill="currentColor"
+                        stroke="none"
+                        opacity=".2"
+                      />
+                    </svg>
+                    npm
+                  </a>
+                  <a class="mlink" href="#" onclick="return false">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      width="12"
+                      height="12"
+                    >
+                      <path
+                        d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.084 1.84 1.236 1.84 1.236 1.07 1.835 2.807 1.305 3.492.998.108-.776.42-1.305.763-1.605-2.665-.3-5.467-1.332-5.467-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.605-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
+                      />
+                    </svg>
+                    GitHub
+                  </a>
+                  <a class="mlink" href="#" onclick="return false">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      width="12"
+                      height="12"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                      />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    package.json
+                  </a>
+                  <a class="mlink" href="#" onclick="return false">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      width="12"
+                      height="12"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="2" y1="12" x2="22" y2="12" />
+                      <path
+                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                      />
+                    </svg>
+                    expressjs.com
+                  </a>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Release history</div>
+                  <div
+                    style="
+                      font-size: 11px;
+                      color: var(--text-dim);
+                      margin-bottom: 5px;
+                    "
+                  >
+                    Hover for version. Click to open on npm.
+                  </div>
+                  <div class="timeline">
+                    <div class="tl-dot old" title="3.0.0"></div>
+                    <div class="tl-dot old" title="3.1.0"></div>
+                    <div class="tl-dot old" title="3.2.0"></div>
+                    <div class="tl-dot old" title="4.0.0"></div>
+                    <div class="tl-dot old" title="4.1.0"></div>
+                    <div class="tl-dot old" title="4.2.0"></div>
+                    <div class="tl-dot old" title="4.3.0"></div>
+                    <div class="tl-dot old" title="4.4.0"></div>
+                    <div class="tl-dot old" title="4.5.0"></div>
+                    <div class="tl-dot old" title="4.6.0"></div>
+                    <div class="tl-dot old" title="4.7.0"></div>
+                    <div class="tl-dot old" title="4.8.0"></div>
+                    <div class="tl-dot old" title="4.9.0"></div>
+                    <div class="tl-dot old" title="4.10.0"></div>
+                    <div class="tl-dot old" title="4.11.0"></div>
+                    <div class="tl-dot old" title="4.12.0"></div>
+                    <div class="tl-dot old" title="4.13.0"></div>
+                    <div class="tl-dot old" title="4.14.0"></div>
+                    <div class="tl-dot old" title="4.15.0"></div>
+                    <div class="tl-dot old" title="4.16.0"></div>
+                    <div class="tl-dot old" title="4.17.0"></div>
+                    <div class="tl-dot current" title="4.18.2 (current)"></div>
+                    <div
+                      class="tl-dot"
+                      title="5.0.0 (latest)"
+                      style="background: var(--yellow)"
+                    ></div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Size</div>
+                  <div class="kv-grid">
+                    <span class="kv-key">Unpacked (self)</span
+                    ><span class="kv-val">208 kB</span>
+                    <span class="kv-key">+ dependencies</span
+                    ><span class="kv-val">2.4 MB</span>
+                    <span class="kv-key">Bundle (min+gz)</span
+                    ><span class="kv-val">~57 kB</span>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">npms.io score</div>
+                  <div class="score-row">
+                    <span class="score-label">Quality</span>
+                    <div class="score-bar-wrap">
+                      <div class="score-bar" style="width: 92%"></div>
+                    </div>
+                    <span class="score-num">0.92</span>
+                  </div>
+                  <div class="score-row">
+                    <span class="score-label">Popularity</span>
+                    <div class="score-bar-wrap">
+                      <div class="score-bar" style="width: 99%"></div>
+                    </div>
+                    <span class="score-num">0.99</span>
+                  </div>
+                  <div class="score-row">
+                    <span class="score-label">Maintenance</span>
+                    <div class="score-bar-wrap">
+                      <div class="score-bar" style="width: 75%"></div>
+                    </div>
+                    <span class="score-num">0.75</span>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">3 Maintainers</div>
+                  <div class="maintainers">
+                    <div class="maintainer">
+                      <img
+                        src="https://avatars.githubusercontent.com/u/117072"
+                        alt="dougwilson"
+                      /><span>dougwilson</span>
+                    </div>
+                    <div class="maintainer">
+                      <img
+                        src="https://avatars.githubusercontent.com/u/90302"
+                        alt="jonathanong"
+                      /><span>jonathanong</span>
+                    </div>
+                    <div class="maintainer">
+                      <img
+                        src="https://avatars.githubusercontent.com/u/22820903"
+                        alt="wesleytodd"
+                        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22%3E%3Crect width=%2220%22 height=%2220%22 fill=%22%2321262d%22/%3E%3C/svg%3E'"
+                      /><span>wesleytodd</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Graph actions</div>
+                  <div style="display: flex; flex-direction: column; gap: 6px">
+                    <button
+                      class="mlink"
+                      style="
+                        width: 100%;
+                        justify-content: center;
+                        padding: 7px 0;
+                      "
+                    >
+                      ← Graph only express (isolate)
+                    </button>
+                    <button
+                      class="mlink"
+                      style="
+                        width: 100%;
+                        justify-content: center;
+                        padding: 7px 0;
+                      "
+                    >
+                      Collapse subtree (Shift+click)
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Graph overview view -->
+              <div class="panel-view" id="view-graph">
+                <div class="section" style="margin-top: 4px">
+                  <div class="overview-summary">
+                    <div class="ov-card">
+                      <div class="ov-num">28</div>
+                      <div class="ov-label">Modules</div>
+                    </div>
+                    <div class="ov-card">
+                      <div class="ov-num warn">3</div>
+                      <div class="ov-label">Deprecated</div>
+                    </div>
+                    <div class="ov-card">
+                      <div class="ov-num danger">1</div>
+                      <div class="ov-label">Vulnerability</div>
+                    </div>
+                    <div class="ov-card">
+                      <div class="ov-num">12</div>
+                      <div class="ov-label">Maintainers</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">View options</div>
+                  <div class="controls-row">
+                    <select class="select-ctrl">
+                      <option>Colorize by…</option>
+                      <option>Module type</option>
+                      <option>Bus factor</option>
+                    </select>
+                  </div>
+                  <div class="controls-row">
+                    <button class="toggle-ctrl on">✓ Include devDeps</button>
+                    <button class="toggle-ctrl">Size by unpacked</button>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Modules</div>
+                  <div class="report-row">
+                    <span class="report-badge ok">28</span
+                    ><span class="report-row-label">All modules</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-badge danger">1</span
+                    ><span class="report-row-label">Vulnerabilities</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-badge warn">3</span
+                    ><span class="report-row-label">Deprecated</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-badge warn">2</span
+                    ><span class="report-row-label">Repeated modules</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-badge">6</span
+                    ><span class="report-row-label">Native replacements</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-badge">14</span
+                    ><span class="report-row-label">Peer dependencies</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Maintainers</div>
+                  <div class="report-row">
+                    <span class="report-badge ok">12</span
+                    ><span class="report-row-label">All maintainers</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-badge warn">4</span
+                    ><span class="report-row-label">Solo-maintained</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">Licenses</div>
+                  <div class="license-pie-wrap">
+                    <svg width="72" height="72" viewBox="0 0 36 36">
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="15.915"
+                        fill="none"
+                        stroke="#21262d"
+                        stroke-width="3.5"
+                      />
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="15.915"
+                        fill="none"
+                        stroke="#58a6ff"
+                        stroke-width="3.5"
+                        stroke-dasharray="55 45"
+                        stroke-dashoffset="25"
+                      />
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="15.915"
+                        fill="none"
+                        stroke="#3fb950"
+                        stroke-width="3.5"
+                        stroke-dasharray="28 72"
+                        stroke-dashoffset="-30"
+                      />
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="15.915"
+                        fill="none"
+                        stroke="#bc8cff"
+                        stroke-width="3.5"
+                        stroke-dasharray="10 90"
+                        stroke-dashoffset="-58"
+                      />
+                      <circle
+                        cx="18"
+                        cy="18"
+                        r="15.915"
+                        fill="none"
+                        stroke="#d29922"
+                        stroke-width="3.5"
+                        stroke-dasharray="7 93"
+                        stroke-dashoffset="-68"
+                      />
+                    </svg>
+                    <div class="license-legend">
+                      <div class="legend-row">
+                        <div
+                          class="legend-dot"
+                          style="background: #58a6ff"
+                        ></div>
+                        MIT (55%)
+                      </div>
+                      <div class="legend-row">
+                        <div
+                          class="legend-dot"
+                          style="background: #3fb950"
+                        ></div>
+                        ISC (28%)
+                      </div>
+                      <div class="legend-row">
+                        <div
+                          class="legend-dot"
+                          style="background: #bc8cff"
+                        ></div>
+                        BSD-3 (10%)
+                      </div>
+                      <div class="legend-row">
+                        <div
+                          class="legend-dot"
+                          style="background: #d29922"
+                        ></div>
+                        Apache-2 (7%)
+                      </div>
+                    </div>
+                  </div>
+                  <div class="report-row">
+                    <span class="report-badge warn">2</span
+                    ><span class="report-row-label">Missing license</span
+                    ><span class="report-chevron">›</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel tab switcher -->
+            <div style="display: flex; border-top: 1px solid var(--border); flex-shrink: 0">
+              <button
+                onclick="switchView('module')"
+                id="tab-module"
+                style="flex: 1; padding: 9px 0; background: transparent; border: none; font-size: 11.5px; color: var(--accent); font-weight: 600; cursor: pointer; border-top: 2px solid var(--accent); margin-top: -1px"
+              >
+                Module
+              </button>
+              <button
+                onclick="switchView('graph')"
+                id="tab-graph"
+                style="flex: 1; padding: 9px 0; background: transparent; border: none; font-size: 11.5px; color: var(--text-dim); cursor: pointer; border-top: 2px solid transparent; margin-top: -1px; transition: color .1s"
+              >
+                Graph
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Command palette overlay ─── -->
+    <div id="palette-overlay" onclick="handleOverlayClick(event)">
+      <div id="palette">
+        <div class="palette-input-row">
+          <div class="palette-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="palette-input"
+            placeholder="Search npm packages…"
+          />
+          <span class="palette-esc">ESC</span>
+        </div>
+        <div class="palette-suggestions">
+          <div class="palette-group-label">Recent</div>
+          <div class="palette-item selected" onclick="closePalette()">
+            <div class="palette-item-icon">⚛</div>
+            <div class="palette-item-body">
+              <div class="palette-item-name">react</div>
+              <div class="palette-item-desc">
+                A JavaScript library for building user interfaces
+              </div>
+            </div>
+            <div class="palette-item-meta">18.2.0</div>
+          </div>
+          <div class="palette-item" onclick="closePalette()">
+            <div class="palette-item-icon">📦</div>
+            <div class="palette-item-body">
+              <div class="palette-item-name">webpack</div>
+              <div class="palette-item-desc">
+                Packs CommonJs/AMD modules for the browser
+              </div>
+            </div>
+            <div class="palette-item-meta">5.90.0</div>
+          </div>
+          <div class="palette-group-label">Popular</div>
+          <div class="palette-item" onclick="closePalette()">
+            <div class="palette-item-icon">🔧</div>
+            <div class="palette-item-body">
+              <div class="palette-item-name">lodash</div>
+              <div class="palette-item-desc">Lodash modular utilities</div>
+            </div>
+            <div class="palette-item-meta">4.17.21</div>
+          </div>
+          <div class="palette-item" onclick="closePalette()">
+            <div class="palette-item-icon">🌐</div>
+            <div class="palette-item-body">
+              <div class="palette-item-name">axios</div>
+              <div class="palette-item-desc">
+                Promise based HTTP client for browser and node.js
+              </div>
+            </div>
+            <div class="palette-item-meta">1.6.7</div>
+          </div>
+          <div class="palette-item" onclick="closePalette()">
+            <div class="palette-item-icon">🔷</div>
+            <div class="palette-item-body">
+              <div class="palette-item-name">typescript</div>
+              <div class="palette-item-desc">
+                TypeScript is a language for application scale JavaScript
+                development
+              </div>
+            </div>
+            <div class="palette-item-meta">5.4.2</div>
+          </div>
+        </div>
+        <div class="palette-footer">
+          <span class="palette-hint"><kbd>↵</kbd> Add to graph</span>
+          <span class="palette-hint"><kbd>↑↓</kbd> Navigate</span>
+          <span class="palette-hint"><kbd>ESC</kbd> Close</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Context menu -->
+    <div id="ctx-menu">
+      <div class="ctx-item">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"
+          />
+        </svg>
+        Graph only this module
+      </div>
+      <div class="ctx-item">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M19 9l-7 7-7-7" />
+        </svg>
+        Collapse subtree
+      </div>
+      <div class="ctx-item">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="18" cy="5" r="3" />
+          <circle cx="6" cy="12" r="3" />
+          <circle cx="18" cy="19" r="3" />
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+        </svg>
+        Open on npm
+      </div>
+      <div class="ctx-sep"></div>
+      <div class="ctx-item">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+        Select all downstream
+      </div>
+    </div>
+
+    <script>
+      // Panel toggle
+      let panelOpen = true;
+      function togglePanel() {
+        panelOpen = !panelOpen;
+        document.getElementById('panel').classList.toggle('hidden', !panelOpen);
+        document
+          .getElementById('minimap')
+          .classList.toggle('panel-hidden', !panelOpen);
+        document
+          .getElementById('panel-toggle-btn')
+          .classList.toggle('active', panelOpen);
+      }
+
+      // Intro toggle
+      function toggleIntro() {
+        document.getElementById('intro').classList.toggle('active');
+      }
+
+      // Show graph (from intro)
+      function showGraph() {
+        document.getElementById('intro').classList.remove('active');
+      }
+
+      // Command palette
+      let paletteOpen = false;
+      function togglePalette() {
+        paletteOpen = !paletteOpen;
+        document
+          .getElementById('palette-overlay')
+          .classList.toggle('open', paletteOpen);
+        if (paletteOpen) {
+          setTimeout(
+            () => document.getElementById('palette-input').focus(),
+            50,
+          );
+        }
+      }
+      function closePalette() {
+        paletteOpen = false;
+        document.getElementById('palette-overlay').classList.remove('open');
+      }
+      function handleOverlayClick(e) {
+        if (e.target === document.getElementById('palette-overlay'))
+          closePalette();
+      }
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (paletteOpen) {
+            closePalette();
+            return;
+          }
+        }
+        if (
+          e.key === '/' &&
+          !paletteOpen &&
+          !e.target.matches('input,textarea')
+        ) {
+          e.preventDefault();
+          togglePalette();
+        }
+      });
+
+      // Panel tab switching
+      function switchView(view) {
+        document
+          .querySelectorAll('.panel-view')
+          .forEach((v) => v.classList.remove('active'));
+        document.getElementById('view-' + view).classList.add('active');
+        document.getElementById('panel-title').textContent =
+          view === 'module' ? 'Module' : 'Graph';
+        ['module', 'graph'].forEach((v) => {
+          const btn = document.getElementById('tab-' + v);
+          const isActive = v === view;
+          btn.style.color = isActive ? 'var(--accent)' : 'var(--text-dim)';
+          btn.style.fontWeight = isActive ? '600' : '400';
+          btn.style.borderTopColor = isActive
+            ? 'var(--accent)'
+            : 'transparent';
+        });
+      }
+
+      // Module selection in graph
+      const moduleData = {
+        express: {
+          name: 'express',
+          desc: 'Fast, unopinionated, minimalist web framework for Node.js',
+        },
+        send: {
+          name: 'send',
+          desc: 'Better streaming static file server with Range and conditional-GET support',
+        },
+        debug: { name: 'debug', desc: 'Small debugging utility' },
+        ms: { name: 'ms', desc: 'Tiny millisecond conversion utility' },
+        'serve-static': {
+          name: 'serve-static',
+          desc: 'Serve static files',
+        },
+        router: { name: 'router', desc: 'Simple middleware-style router' },
+        'body-parser': {
+          name: 'body-parser',
+          desc: 'Node.js body parsing middleware',
+        },
+        etag: { name: 'etag', desc: 'Create simple HTTP ETags' },
+        mime: {
+          name: 'mime',
+          desc: 'A comprehensive library for mime-type mapping',
+        },
+        'http-errors': {
+          name: 'http-errors',
+          desc: 'Create HTTP error objects',
+        },
+        'path-to-regexp': {
+          name: 'path-to-regexp',
+          desc: 'Express-style path to regexp',
+        },
+      };
+
+      function selectModule(name) {
+        const m = moduleData[name] || { name, desc: '' };
+        document.getElementById('mod-name').textContent = m.name;
+        document.getElementById('mod-desc').textContent = m.desc;
+        if (!document.getElementById('view-module').classList.contains('active')) {
+          switchView('module');
+        }
+        if (!panelOpen) {
+          panelOpen = true;
+          document.getElementById('panel').classList.remove('hidden');
+          document
+            .getElementById('minimap')
+            .classList.remove('panel-hidden');
+          document
+            .getElementById('panel-toggle-btn')
+            .classList.add('active');
+        }
+      }
+
+      // Right-click context menu
+      const ctxMenu = document.getElementById('ctx-menu');
+      document
+        .getElementById('graph-canvas')
+        .addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          ctxMenu.style.display = 'block';
+          ctxMenu.style.left = e.clientX + 'px';
+          ctxMenu.style.top = e.clientY + 'px';
+        });
+      document.addEventListener('click', () => {
+        ctxMenu.style.display = 'none';
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') ctxMenu.style.display = 'none';
+      });
+    </script>
+  </body>
+</html>
