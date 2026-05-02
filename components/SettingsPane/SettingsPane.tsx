@@ -20,10 +20,6 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
 
   return (
     <Pane {...props}>
-      <RegistryInput />
-
-      <hr />
-
       <Toggle
         checked={includeDev}
         style={{ marginTop: '1rem' }}
@@ -39,6 +35,10 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
       >
         Size modules by unpacked size
       </Toggle>
+
+      <hr />
+
+      <RegistryInput />
 
       <hr />
 
