@@ -16,12 +16,10 @@
 
 .query-error {
   margin-top: 2px;
-  padding: 0.3em 0.8em;
-  border-radius: 1em;
-  background: color-mix(in oklch, var(--stroke-red) 15%, transparent);
-  color: var(--stroke-red);
+  padding: 0.3em 1em;
+  color: var(--accent);
+  font-weight: bold;
   font-size: 0.8em;
-  line-height: 1.4em;
 }
 
 .tip {

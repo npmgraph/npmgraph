@@ -80,9 +80,9 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
       </form>
 
       {errors.map(([key, error]) => (
-        <p key={key} className="query-error">
+        <div key={key} className="query-error">
           {error.message}
-        </p>
+        </div>
       ))}
       {isGithubUrl(valueAsURL) ? (
         <div className="tip">
