@@ -2,6 +2,7 @@ import type { PackageJSON, PackumentVersion } from '@npm/types';
 import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.ts';
 import { PARAM_PACKAGES, PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
 import { flash } from './flash.ts';
+import { getGlobalState, setGlobalState } from './GlobalStore.ts';
 import { hashSet, searchSet } from './url_util.ts';
 import { patchLocation } from './useLocation.ts';
 
@@ -31,6 +32,10 @@ export function loadPackageJson(json: string, filename?: string): void {
   pkg.name ??= UNNAMED_PACKAGE;
 
   const module = cacheLocalPackage(pkg as PackumentVersion);
+
+  // Increment loadKey to force the graph to reload even when the URL doesn't
+  // change (e.g. when the same package.json is pasted twice in a row)
+  setGlobalState('loadKey', getGlobalState('loadKey') + 1);
 
   // Set query, and attach package contents in hash
   const url = new URL(location.href);
