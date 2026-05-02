@@ -1,3 +1,4 @@
+import { useSpinDelay } from 'spin-delay';
 import { useActivity } from '../../lib/useActivity.ts';
 import { useQuery } from '../../lib/useQuery.ts';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
@@ -11,13 +12,17 @@ export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
   useExternalInput();
+  const showLoader = useSpinDelay(activity.total > 0, {
+    delay: 0,
+    minDuration: 300,
+  });
   if (query.length === 0) {
     return <Intro />;
   }
 
   return (
     <>
-      {activity.total > 0 ? <Loader activity={activity} /> : null}
+      {showLoader ? <Loader activity={activity} /> : null}
       <GraphDiagram activity={activity} />
       <Inspector />
     </>
