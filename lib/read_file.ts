@@ -44,7 +44,7 @@ export function loadPackageJson(json: string, filename?: string): void {
   const search = searchSet(PARAM_QUERY, module.key, url);
   setTimeout(() => {
     patchLocation({ hash, search }, false);
-  }, 0);
+  }, 100);
 }
 
 export async function readFile(file: File) {

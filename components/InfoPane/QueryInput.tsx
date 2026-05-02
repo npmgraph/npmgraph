@@ -45,7 +45,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     resetGraph();
     setTimeout(() => {
       patchLocation({ search, hash: '' }, false);
-    }, 0);
+    }, 100);
   }
 
   // Add cmd-enter support to search in a new tab
