@@ -108,6 +108,34 @@ describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/user/repo');
   });
 
+  it('should handle http GitHub repository URLs with .git suffix', () => {
+    const module = new Module({
+      name: 'test',
+      version: '1.0.0',
+      repository: {
+        type: 'git',
+        url: 'http://github.com/drewyoung1/armyjs.git',
+      },
+    } as PackumentVersion);
+
+    const result = getRepoUrlForModule(module);
+    assert.equal(result, 'https://github.com/drewyoung1/armyjs');
+  });
+
+  it('should handle https GitHub repository URLs with .git suffix', () => {
+    const module = new Module({
+      name: 'test',
+      version: '1.0.0',
+      repository: {
+        type: 'git',
+        url: 'https://github.com/uuidjs/uuid.git',
+      },
+    } as PackumentVersion);
+
+    const result = getRepoUrlForModule(module);
+    assert.equal(result, 'https://github.com/uuidjs/uuid');
+  });
+
   it('should handle Bitbucket repositories', () => {
     const module = new Module({
       name: 'test',
