@@ -1,5 +1,6 @@
 import type { Packument, PackumentVersion } from '@npm/types';
 import { isDefined } from './guards.ts';
+import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
 import {
   getModuleKey,
   parseModuleKey,
@@ -45,6 +46,16 @@ export default class Module {
 
   get name() {
     return this.package.name;
+  }
+
+  /** True if this module was loaded from a package.json that had no `name` field */
+  get isUnnamed() {
+    return this.name.startsWith(UNNAMED_PACKAGE_PREFIX);
+  }
+
+  /** User-facing display name. Returns 'unnamed module' for unnamed packages */
+  get displayName() {
+    return this.isUnnamed ? UNNAMED_PACKAGE : this.name;
   }
 
   get isStub() {
