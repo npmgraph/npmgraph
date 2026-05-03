@@ -19,6 +19,7 @@ export const PARAM_SELECTION = 'select';
 export const PARAM_SIZING = 'sizing';
 export const PARAM_ZOOM = 'zoom';
 
+export const SEARCH_FIELD_ID = 'search-field';
 export const UNNAMED_PACKAGE = 'unnamed module';
 export const UNNAMED_PACKAGE_PREFIX = 'unnamed-package-';
 

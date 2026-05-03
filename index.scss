@@ -12,7 +12,7 @@
   --rad-sm: 5px;
   -rad-lg: 10px;
   --inspector-size: 32em;
-  --tabs-height: 24pt;
+  --header-height: 50px;
   --bg-gradient: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.2),
@@ -26,7 +26,7 @@
   --bg1: #bbb;
   --bg2: #ddd;
 
-  --tabs-bg: #7e7e7d;
+  --tabs-bg: rgb(90, 83, 79);
   --tabs-text: #fff;
   --tabs-border: rgba(203, 203, 203, 0.796);
 
@@ -161,4 +161,32 @@ footer {
 .link {
   color: var(--accent);
   text-decoration: underline;
+}
+
+.bright-hover {
+  transition: filter 0.2s;
+  will-change: filter;
+
+  &:hover {
+    filter: brightness(125%);
+    transition-duration: 0.1s;
+  }
+}
+
+.warning {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(128, 128, 0, 0.1),
+    rgba(128, 128, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.1) 20px
+  );
+}
+
+@media print {
+  #inspector,
+  #splitter,
+  canvas {
+    display: none;
+  }
 }

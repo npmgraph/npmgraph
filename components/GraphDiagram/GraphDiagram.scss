@@ -6,6 +6,8 @@
   overflow: auto;
   user-select: none;
   -webkit-user-select: none;
+  width: calc(100% - var(--inspector-size));
+  flex-basis: calc(100% - var(--header-height));
 
   --warning0: #f6f6e0;
   --warning1: #d9d9d9;
@@ -14,6 +16,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    justify-self: center;
   }
 
   &.graphviz-loading,

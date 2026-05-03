@@ -38,10 +38,10 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   }
 
   return (
-    <div id="inspector" className={hide !== null ? '' : 'open'} {...props}>
+    <>
       <div id="tabs">
         <Tab active={pane === PANE.INFO} onClick={() => setPane(PANE.INFO)}>
-          Start <kbd>/</kbd>
+          Info
         </Tab>
         <Tab active={pane === PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
           Graph
@@ -55,7 +55,9 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
         />
       </div>
 
-      {paneComponent}
-    </div>
+      <div id="inspector" hidden={Boolean(hide)} {...props}>
+        {paneComponent}
+      </div>
+    </>
   );
 }

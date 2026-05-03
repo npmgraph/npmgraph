@@ -1,21 +1,17 @@
 @use '../lib/root.scss' as *;
 
 #splitter {
-  position: absolute;
-  right: 0;
-  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: border-radius var(--transition-duration);
   cursor: default;
   background: var(--tabs-bg) var(--bg-gradient);
   padding: 0 10px;
-  height: 24pt;
   color: var(--tabs-text);
-  direction: rtl; // Move border to the left
   user-select: none;
-  text-align: center;
-  #inspector:not(.open) & {
-    border-top-left-radius: var(--rad-lg);
-    border-bottom-left-radius: var(--rad-lg);
+  &[hidden] {
+    visibility: hidden;
   }
 
   @include tight-screen {

@@ -2,16 +2,11 @@ import type { HTMLProps } from 'react';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import FilePicker from './FilePicker.tsx';
-import QueryInput from './QueryInput.tsx';
 import RegistryInput from './RegistryInput.tsx';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <h3>Generate npmgraph:</h3>
-
-      <QueryInput />
-
       <p>For example:</p>
 
       <ul>

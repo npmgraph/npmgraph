@@ -1,0 +1,19 @@
+.root {
+  flex-grow: 1;
+  display: grid;
+  grid-template: auto var(--inspector-size);
+  grid-template-areas:
+    "header tabs"
+    "graph inspector";
+}
+
+.header {
+  grid-area: header;
+}
+.graph {
+  grid-area: graph;
+  width: -webkit-fill-available;
+}
+.inspector {
+  grid-area: inspector;
+}

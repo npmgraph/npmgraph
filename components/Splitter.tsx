@@ -11,8 +11,8 @@ export function Splitter({
   isOpen: boolean;
 }) {
   return (
-    <div id="splitter" className="bright-hover tab" onClick={onClick}>
-      {isOpen ? blackRightPointingTriangle : blackLeftPointingTriangle}
+    <div id="splitter" className="bright-hover tab" onClick={onClick} hidden={!isOpen}>
+      {blackRightPointingTriangle}
     </div>
   );
 }
