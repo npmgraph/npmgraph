@@ -58,6 +58,7 @@
     "d3-scale-chromatic": "3.1.0",
     "d3-selection": "3.0.0",
     "d3-shape": "3.2.0",
+    "eslint-config-prettier": "^10.1.8",
     "filter-altered-clicks": "2.1.1",
     "hosted-git-info": "^9.0.2",
     "md5": "2.3.0",
