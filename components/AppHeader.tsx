@@ -3,21 +3,18 @@ import Logo from './Logo.tsx';
 import * as styles from './AppHeader.module.scss';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import useHashParam from '../lib/useHashParam.ts';
-import type { HTMLProps } from 'react';
 import { PANE, PARAM_HIDE } from '../lib/constants.ts';
 
 import { Splitter } from './Splitter.tsx';
 import { Tab } from './Tab.tsx';
 
-export default function AppHeader({
-  className = '',
-}: HTMLProps<HTMLAnchorElement>) {
+export default function AppHeader() {
   const [pane, setPane] = useGlobalState('pane');
   const [hide, setHide] = useHashParam(PARAM_HIDE);
 
   const inspector = hide === null;
   return (
-    <div className={[styles.root, className].join(' ')}>
+    <div className={styles.root}>
       <Logo />
       <QueryInput className={styles.input} />
 

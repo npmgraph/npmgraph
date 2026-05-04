@@ -19,7 +19,7 @@ export default function App() {
 
   return (
     <div className={styles.root}>
-      <AppHeader className={styles.header} />
+      <AppHeader />
       {activity.total > 0 ? <Loader activity={activity} /> : null}
       <div className={styles.content}>
         <GraphDiagram activity={activity} />

@@ -2,11 +2,11 @@
 
 #splitter {
   display: flex;
-  border-right: none;
   justify-content: center;
   align-items: center;
   transition: border-radius var(--transition-duration);
   cursor: default;
+  border-right: none;
   background: var(--tabs-bg) var(--bg-gradient);
   padding: 0 10px;
   color: var(--tabs-text);
