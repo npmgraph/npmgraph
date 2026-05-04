@@ -372,7 +372,7 @@ function useGraphviz() {
   const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
-  useMemo(() => {
+  useEffect(() => {
     Graphviz.load()
       .catch(err => {
         console.error('Graphviz failed to load', err);
