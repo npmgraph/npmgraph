@@ -7,6 +7,7 @@ import {
 } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { cn } from '../../lib/dom.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { searchSet } from '../../lib/url_util.ts';
 import { patchLocation } from '../../lib/useLocation.ts';
 import { useQuery } from '../../lib/useQuery.ts';
@@ -22,6 +23,7 @@ export default function QueryInput({
 }: HTMLProps<HTMLInputElement>) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
+  const [graph] = useGlobalState('graph');
   const initialValue = query.join(', ');
 
   const [value, setValue] = useState(
@@ -59,6 +61,10 @@ export default function QueryInput({
     }
   }
 
+  const errors = [...graph.failedEntryModules.entries()].filter(([key]) =>
+    query.includes(key),
+  );
+
   return (
     <>
       <form action="/" onSubmit={handleSubmit}>
@@ -82,6 +88,11 @@ export default function QueryInput({
         />
       </form>
 
+      {errors.map(([key, error]) => (
+        <div key={key} className="query-error">
+          {error.message}
+        </div>
+      ))}
       {isGithubUrl(valueAsURL) ? (
         <div className={styles.tip}>
           Note: URLs that refer to private GitHub repos or gists should use the

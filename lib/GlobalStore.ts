@@ -25,6 +25,7 @@ let globalState: GlobalState = {
   graph: {
     moduleInfos: new Map(),
     entryModules: new Set(),
+    failedEntryModules: new Map(),
   },
   lastVisit: 0,
   location: new URL(location.href),
