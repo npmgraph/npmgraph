@@ -33,7 +33,6 @@ export function ReportItem<T>({
         console.error('Error in reporter:', error);
       });
     } else {
-      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
       setAnalysis(report);
     }
   }, [data, reporter]);
