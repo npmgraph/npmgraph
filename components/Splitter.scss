@@ -2,8 +2,9 @@
 
 #splitter {
   display: flex;
-  align-items: center;
+  border-right: none;
   justify-content: center;
+  align-items: center;
   transition: border-radius var(--transition-duration);
   cursor: default;
   background: var(--tabs-bg) var(--bg-gradient);
@@ -11,6 +12,8 @@
   color: var(--tabs-text);
   user-select: none;
   &[hidden] {
+    // Hide it by keep its place
+    display: block !important;
     visibility: hidden;
   }
 

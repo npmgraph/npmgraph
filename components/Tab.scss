@@ -1,9 +1,9 @@
 .tab {
+  display: flex;
   position: relative;
-  border-left: solid 1px var(--tabs-border);
+  border-right: solid 1px var(--tabs-border);
   font-weight: 600;
   font-size: 12pt;
-  display: flex;
 
   button {
     all: unset;

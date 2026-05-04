@@ -2,12 +2,11 @@
 
 #inspector {
   display: flex;
+  flex-shrink: 1;
   flex-direction: column;
-  overflow: hidden;
-  height: -webkit-fill-available;
-  overflow: hidden;
-  color: var(--text);
   width: var(--inspector-size);
+  overflow: auto;
+  color: var(--text);
 
   .description {
     font-weight: 600;
@@ -54,6 +53,7 @@ label {
   flex-shrink: 0;
   flex-basis: auto;
   justify-content: flex-end;
+  align-self: stretch;
   background: var(--tabs-bg) var(--bg-gradient);
   color: var(--tabs-text);
   user-select: none;

@@ -1,11 +1,11 @@
 .root {
   display: flex;
-  align-items: center;
   flex-shrink: 0;
+  align-items: center;
   gap: 1.2em;
   box-sizing: border-box;
   background: var(--tabs-bg) var(--bg-gradient);
-  padding: 0 0.8em;
+  padding-left: 0.8em;
   height: var(--header-height);
   color: var(--tabs-text);
 
@@ -42,4 +42,3 @@
     background: rgba(255, 255, 255, 0.25);
   }
 }
-

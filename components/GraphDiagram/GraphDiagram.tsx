@@ -34,7 +34,6 @@ import {
   isSimpleColorizer,
 } from '../GraphPane/colorizers/index.ts';
 import './GraphDiagram.scss';
-import type { HTMLProps } from 'react';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
@@ -53,7 +52,7 @@ export type ZoomOption =
 
 const idSeen = new Set<unknown>();
 
-export default function GraphDiagram({ activity, className = '' }: HTMLProps<HTMLElement> & { activity: LoadActivity }) {
+export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
   const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [, setPane] = useGlobalState('pane');
@@ -137,10 +136,7 @@ export default function GraphDiagram({ activity, className = '' }: HTMLProps<HTM
     if (!vb) return;
 
     const [, , w, h] = vb;
-    graphEl.classList.toggle(
-      'centered',
-      zoom === ZOOM_NONE && w < graphEl.clientWidth && h < graphEl.clientHeight,
-    );
+    graphEl.classList.remove('d-block');
 
     switch (zoom) {
       case ZOOM_NONE:
@@ -156,6 +152,7 @@ export default function GraphDiagram({ activity, className = '' }: HTMLProps<HTM
       case ZOOM_FIT_HEIGHT:
         diagramElement.removeAttribute('width');
         diagramElement.setAttribute('height', '100%');
+        graphEl.classList.add('d-block');
         break;
     }
   }
@@ -320,7 +317,7 @@ export default function GraphDiagram({ activity, className = '' }: HTMLProps<HTM
   }
 
   return (
-    <div id="graph" onClick={handleGraphClick} className={className}>
+    <div id="graph" onClick={handleGraphClick}>
       <div id="graph-controls">
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />

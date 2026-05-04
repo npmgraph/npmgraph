@@ -8,19 +8,21 @@ import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.tsx';
-import { Splitter } from './Splitter.tsx';
-import { Tab } from './Tab.tsx';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
-  const [pane, setPane] = useGlobalState('pane');
+  const [pane] = useGlobalState('pane');
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGlobalState('graph');
-  const [hide, setHide] = useHashParam(PARAM_HIDE);
+  const [hide] = useHashParam(PARAM_HIDE);
 
   const selectedModules = queryModuleCache(queryType, queryValue);
 
   useKeyboardShortcuts();
+
+  if (hide !== null) {
+    return;
+  }
 
   let paneComponent;
   switch (pane) {
@@ -38,26 +40,8 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   }
 
   return (
-    <>
-      <div id="tabs">
-        <Tab active={pane === PANE.INFO} onClick={() => setPane(PANE.INFO)}>
-          Info
-        </Tab>
-        <Tab active={pane === PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
-          Graph
-        </Tab>
-        <Tab active={pane === PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
-          Module
-        </Tab>
-        <Splitter
-          isOpen={hide === null}
-          onClick={() => setHide(hide === null)}
-        />
-      </div>
-
-      <div id="inspector" hidden={Boolean(hide)} {...props}>
-        {paneComponent}
-      </div>
-    </>
+    <div id="inspector" {...props}>
+      {paneComponent}
+    </div>
   );
 }

@@ -3,21 +3,16 @@
 #graph {
   position: relative;
   flex-grow: 1;
+  flex-basis: calc(100% - var(--inspector-size));
+  width: calc(100% - var(--inspector-size));
   overflow: auto;
   user-select: none;
   -webkit-user-select: none;
-  width: calc(100% - var(--inspector-size));
-  flex-basis: calc(100% - var(--header-height));
 
   --warning0: #f6f6e0;
   --warning1: #d9d9d9;
   --stub: #f00;
-  &.centered {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    justify-self: center;
-  }
+  display: flex;
 
   &.graphviz-loading,
   &.graphviz-failed {
@@ -93,6 +88,7 @@
 
 svg#graph-diagram {
   fill: var(--text);
+  margin: auto;
 }
 
 pattern#warning {

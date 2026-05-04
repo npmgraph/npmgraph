@@ -1,19 +1,27 @@
+@use '../../lib/root.scss' as *;
+
 .root {
+  display: flex;
   flex-grow: 1;
-  display: grid;
-  grid-template: auto var(--inspector-size);
-  grid-template-areas:
-    "header tabs"
-    "graph inspector";
+  flex-direction: column;
+  width: 100vw;
+  height: 100svh;
+}
+.content {
+  display: flex;
+  flex-grow: 1;
+  min-height: 0;
 }
 
-.header {
-  grid-area: header;
-}
-.graph {
-  grid-area: graph;
-  width: -webkit-fill-available;
-}
-.inspector {
-  grid-area: inspector;
+@include tight-screen {
+  html,
+  body,
+  .root {
+    height: auto;
+    min-height: 100svh;
+  }
+  .root {
+    flex-direction: column;
+    --inspector-size: auto;
+  }
 }
