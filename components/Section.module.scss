@@ -4,8 +4,9 @@
   & > summary {
     display: flex;
     justify-content: space-between;
-    margin-block-start: 0;
-    margin-block-end: 1em;
+    margin: -1em;
+    padding: 1em;
+    margin-block-end: 0;
 
     // Match native H3 style
     font-weight: bold;
