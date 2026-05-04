@@ -35,6 +35,7 @@ export default function RegistryInput() {
     }
 
     const controller = new AbortController();
+    // eslint-disable-next-line react/set-state-in-effect
     setStatus(RegistryStatus.PENDING);
     const timer = setTimeout(
       checkRegistryStatus,

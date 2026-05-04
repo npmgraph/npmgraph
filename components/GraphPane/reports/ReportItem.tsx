@@ -23,18 +23,9 @@ export function ReportItem<T>({
   useEffect(() => {
     if (!data) return;
 
-    const report = reporter(data);
-
-    if (!report) {
-      // Do nothing
-    } else if (report instanceof Promise) {
-      //     } else if (report instanceof Promise) {
-      report.then(setAnalysis).catch(error => {
-        console.error('Error in reporter:', error);
-      });
-    } else {
+    Promise.resolve(reporter(data)).then(report => {
       setAnalysis(report);
-    }
+    });
   }, [data, reporter]);
 
   if (!analysis) return null;
