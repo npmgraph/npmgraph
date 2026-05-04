@@ -108,7 +108,6 @@
     "postcss-modules": "6.0.1",
     "prettier": "^3.8.3",
     "prettier-plugin-css-order": "2.2.0",
-    "process": "0.11.10",
     "standard-version": "9.5.0",
     "svgo": "4.0.1",
     "typed-query-selector": "^2.12.1",
