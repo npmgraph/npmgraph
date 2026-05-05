@@ -1,7 +1,7 @@
 import type { HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
-import { PANE, PARAM_HIDE } from '../lib/constants.ts';
+import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
 import useHashParam from '../lib/useHashParam.ts';
 import GraphPane from './GraphPane/GraphPane.tsx';
@@ -25,18 +25,18 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   let paneComponent;
   switch (pane) {
-    case PANE.MODULE:
+    case PaneType.MODULE:
       paneComponent = (
         <ModulePane id="pane-module" selectedModules={selectedModules} />
       );
       break;
-    case PANE.GRAPH:
+    case PaneType.GRAPH:
       paneComponent = <GraphPane id="pane-graph" graph={graph} />;
       break;
-    case PANE.SETTINGS:
+    case PaneType.SETTINGS:
       paneComponent = <SettingsPane id="pane-settings" />;
       break;
-    case PANE.INFO:
+    case PaneType.INFO:
       paneComponent = <InfoPane id="pane-info" />;
       break;
   }

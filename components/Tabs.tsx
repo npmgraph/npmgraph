@@ -1,6 +1,6 @@
 import * as styles from './Tabs.module.scss';
 
-import { PANE, PARAM_HIDE } from '../lib/constants.ts';
+import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import useHashParam from '../lib/useHashParam.ts';
 
@@ -16,37 +16,37 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   return (
     <div className={[styles.root, className].join(' ')}>
       <Tab
-        active={inspector && pane === PANE.INFO}
+        active={inspector && pane === PaneType.INFO}
         onClick={() => {
           setHide(null);
-          setPane(PANE.INFO);
+          setPane(PaneType.INFO);
         }}
       >
         Info
       </Tab>
       <Tab
-        active={inspector && pane === PANE.GRAPH}
+        active={inspector && pane === PaneType.GRAPH}
         onClick={() => {
           setHide(null);
-          setPane(PANE.GRAPH);
+          setPane(PaneType.GRAPH);
         }}
       >
         Graph
       </Tab>
       <Tab
-        active={inspector && pane === PANE.MODULE}
+        active={inspector && pane === PaneType.MODULE}
         onClick={() => {
           setHide(null);
-          setPane(PANE.MODULE);
+          setPane(PaneType.MODULE);
         }}
       >
         Module
       </Tab>
       <Tab
-        active={inspector && pane === PANE.SETTINGS}
+        active={inspector && pane === PaneType.SETTINGS}
         onClick={() => {
           setHide(null);
-          setPane(PANE.SETTINGS);
+          setPane(PaneType.SETTINGS);
         }}
       >
         Settings
