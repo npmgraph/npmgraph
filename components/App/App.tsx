@@ -4,7 +4,7 @@ import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
 import Inspector from '../Inspector.tsx';
 import Intro from '../Intro.tsx';
 import useExternalInput from '../useExternalInput.ts';
-import './App.scss';
+import './App.module.scss';
 import { Loader } from './Loader.tsx';
 
 export default function App() {

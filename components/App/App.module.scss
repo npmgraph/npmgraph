@@ -1,0 +1,29 @@
+:global {
+  .bright-hover {
+    transition: filter 0.2s;
+    will-change: filter;
+
+    &:hover {
+      filter: brightness(125%);
+      transition-duration: 0.1s;
+    }
+  }
+
+  .warning {
+    background: repeating-linear-gradient(
+      -45deg,
+      rgba(128, 128, 0, 0.1),
+      rgba(128, 128, 0, 0.1) 10px,
+      rgba(0, 0, 0, 0.1) 10px,
+      rgba(0, 0, 0, 0.1) 20px
+    );
+  }
+
+  @media print {
+    #inspector,
+    #splitter,
+    canvas {
+      display: none;
+    }
+  }
+}
