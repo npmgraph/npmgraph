@@ -23,19 +23,9 @@ export function ReportItem<T>({
   useEffect(() => {
     if (!data) return;
 
-    const report = reporter(data);
-
-    if (!report) {
-      // Do nothing
-    } else if (report instanceof Promise) {
-      //     } else if (report instanceof Promise) {
-      report.then(setAnalysis).catch(error => {
-        console.error('Error in reporter:', error);
-      });
-    } else {
-      // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    Promise.resolve(reporter(data)).then(report => {
       setAnalysis(report);
-    }
+    });
   }, [data, reporter]);
 
   if (!analysis) return null;

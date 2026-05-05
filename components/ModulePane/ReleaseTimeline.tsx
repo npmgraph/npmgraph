@@ -4,6 +4,7 @@ import type Module from '../../lib/Module.ts';
 
 import type { PackumentVersion } from '@npm/types';
 import type { ReactElement } from 'react';
+import { useState } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useMeasure from '../../lib/useMeasure.ts';
@@ -12,6 +13,10 @@ import * as styles from './ReleaseTimeline.module.scss';
 
 function timestring(t: number) {
   return new Date(t).toISOString().replace(/T.*/, '');
+}
+
+function yearFromTimestamp(t: number) {
+  return new Date(t).getFullYear();
 }
 
 function createScale(in0: number, in1: number, out0: number, out1: number) {
@@ -23,6 +28,7 @@ function createScale(in0: number, in1: number, out0: number, out1: number) {
 
 export function ReleaseTimeline({ module }: { module: Module }) {
   const [ref, { width: w, height: h }] = useMeasure<SVGSVGElement>();
+  const [tmax] = useState(() => Date.now());
   if (!module.packument?.versions) return;
 
   const { time, versions } = module.packument;
@@ -57,7 +63,6 @@ export function ReleaseTimeline({ module }: { module: Module }) {
   );
 
   const tmin = byTime[0][1].time;
-  const tmax = Date.now(); // byTime[byTime.length - 1][1].time;
 
   const layers = {
     // Note: order here controls layering in SVG
@@ -74,8 +79,8 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   // Add grid lines for each year
   for (
-    let year = new Date(tmin).getFullYear() + 1;
-    year <= new Date(tmax).getFullYear();
+    let year = yearFromTimestamp(tmin) + 1;
+    year <= yearFromTimestamp(tmax);
     year++
   ) {
     const x = xScale(Date.parse(String(year)));
