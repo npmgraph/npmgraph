@@ -3,7 +3,6 @@ import { ExternalLink } from '../ExternalLink.tsx';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import FilePicker from './FilePicker.tsx';
-import './InfoPane.scss';
 import QueryInput from './QueryInput.tsx';
 import RegistryInput from './RegistryInput.tsx';
 
