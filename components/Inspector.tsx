@@ -8,6 +8,7 @@ import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.tsx';
+import SettingsPane from './SettingsPane/SettingsPane.tsx';
 import { Splitter } from './Splitter.tsx';
 import { Tab } from './Tab.tsx';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
@@ -32,6 +33,9 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     case PANE.GRAPH:
       paneComponent = <GraphPane id="pane-graph" graph={graph} />;
       break;
+    case PANE.SETTINGS:
+      paneComponent = <SettingsPane id="pane-settings" />;
+      break;
     case PANE.INFO:
       paneComponent = <InfoPane id="pane-info" />;
       break;
@@ -44,10 +48,16 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
           Start <kbd>/</kbd>
         </Tab>
         <Tab active={pane === PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
-          Graph
+          Explore
         </Tab>
         <Tab active={pane === PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
           Module
+        </Tab>
+        <Tab
+          active={pane === PANE.SETTINGS}
+          onClick={() => setPane(PANE.SETTINGS)}
+        >
+          Settings
         </Tab>
         <Splitter
           isOpen={hide === null}

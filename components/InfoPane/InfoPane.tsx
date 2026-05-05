@@ -4,7 +4,6 @@ import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import FilePicker from './FilePicker.tsx';
 import QueryInput from './QueryInput.tsx';
-import RegistryInput from './RegistryInput.tsx';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
@@ -39,8 +38,6 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
           <FilePicker label="Choose file" /> from your computer
         </li>
       </ul>
-
-      <RegistryInput />
 
       <hr />
       <footer>

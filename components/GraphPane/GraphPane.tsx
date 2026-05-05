@@ -1,14 +1,9 @@
 import simplur from 'simplur';
-import useHashParam from '../../lib/useHashParam.ts';
 
-import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
-import { isDefined } from '../../lib/guards.ts';
 import useCollapse from '../../lib/useCollapse.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
-import type { DependencyKey, GraphState } from '../GraphDiagram/graph_util.ts';
+import type { GraphState } from '../GraphDiagram/graph_util.ts';
 import { Pane } from '../Pane.tsx';
-import { Toggle } from '../Toggle.tsx';
-import ColorizeInput from './ColorizeInput.tsx';
 import * as styles from './GraphPane.module.scss';
 import { ReportItem } from './reports/ReportItem.tsx';
 import { analyzeLicenses } from './reports/analyzeLicenses.ts';
@@ -45,14 +40,7 @@ export default function GraphPane({
   ...props
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
   const [collapse, setCollapse] = useCollapse();
-  const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
-  const [sizing, setSizing] = useHashParam(PARAM_SIZING);
 
-  const dependencyTypes = (
-    (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
-  ).filter(isDefined);
-
-  const includeDev = dependencyTypes.includes('devDependencies');
   if (!graph?.moduleInfos) return <div>Loading</div>;
 
   const moduleAnalysis = analyzeModules(graph);
@@ -62,26 +50,6 @@ export default function GraphPane({
 
   return (
     <Pane {...props}>
-      <Toggle
-        checked={includeDev}
-        style={{ marginTop: '1rem' }}
-        onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
-      >
-        Include devDependencies
-      </Toggle>
-
-      <Toggle
-        checked={sizing === ''}
-        style={{ marginTop: '1rem' }}
-        onChange={() => setSizing(sizing === null)}
-      >
-        Size modules by unpacked size
-      </Toggle>
-
-      <hr />
-
-      <ColorizeInput />
-
       <div
         style={{ fontSize: '90%', color: 'var(--text-dim)', marginTop: '1em' }}
       >
