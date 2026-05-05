@@ -1,5 +1,5 @@
 import * as indexStyles from 'bundle-text:../../index.scss';
-import * as diagramStyles from 'bundle-text:./GraphDiagram.scss';
+import * as diagramStyles from 'bundle-text:./GraphDiagram.module.scss';
 import { report } from '../../lib/bugsnag.ts';
 import { DownloadIcon } from '../Icons.tsx';
 import { getDiagramElement } from './graph_util.ts';

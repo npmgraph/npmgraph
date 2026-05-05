@@ -33,7 +33,7 @@ import {
   getColorizer,
   isSimpleColorizer,
 } from '../GraphPane/colorizers/index.ts';
-import './GraphDiagram.scss';
+import './GraphDiagram.module.scss';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
