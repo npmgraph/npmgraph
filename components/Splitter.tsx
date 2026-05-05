@@ -1,7 +1,6 @@
 import './Splitter.scss';
 
 const blackRightPointingTriangle = '\u{25B6}';
-const blackLeftPointingTriangle = '\u{25C0}';
 
 export function Splitter({
   onClick,
@@ -11,8 +10,13 @@ export function Splitter({
   isOpen: boolean;
 }) {
   return (
-    <div id="splitter" className="bright-hover tab" onClick={onClick}>
-      {isOpen ? blackRightPointingTriangle : blackLeftPointingTriangle}
+    <div
+      id="splitter"
+      className="bright-hover tab"
+      onClick={onClick}
+      aria-hidden={!isOpen}
+    >
+      {blackRightPointingTriangle}
     </div>
   );
 }

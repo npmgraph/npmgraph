@@ -1,0 +1,10 @@
+.root {
+  display: flex;
+  flex-shrink: 0;
+  flex-basis: auto;
+  justify-content: flex-end;
+  align-self: stretch;
+  min-height: 50px;
+  color: var(--tabs-text);
+  user-select: none;
+}

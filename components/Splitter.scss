@@ -1,24 +1,23 @@
 @use '../lib/root.scss' as *;
 
 #splitter {
-  position: absolute;
-  right: 0;
-  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transition: border-radius var(--transition-duration);
   cursor: default;
+  margin-right: calc(-1 * var(--header-padding));
+  border-right: none;
   background: var(--tabs-bg) var(--bg-gradient);
   padding: 0 10px;
-  height: 24pt;
   color: var(--tabs-text);
-  direction: rtl; // Move border to the left
   user-select: none;
-  text-align: center;
-  #inspector:not(.open) & {
-    border-top-left-radius: var(--rad-lg);
-    border-bottom-left-radius: var(--rad-lg);
+  &[aria-hidden='true'] {
+    // Hide it but keep its place
+    visibility: hidden;
   }
 
   @include tight-screen {
-    display: none;
+    display: none !important;
   }
 }

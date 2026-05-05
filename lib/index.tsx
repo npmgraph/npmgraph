@@ -90,7 +90,7 @@ window.onload = function () {
   setActivityForApp(activity);
 
   // Main app component
-  const appEl = $('#app')!;
+  const appEl = $('body')!;
   createRoot(appEl).render(
     // <StrictMode>
     <App />,
