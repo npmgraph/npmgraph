@@ -8,7 +8,7 @@ import useHashParam from '../lib/useHashParam.ts';
 import * as graphPaneStyles from './GraphPane/GraphPane.module.scss';
 import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
-import styles from './Inspector.module.scss';
+import * as styles from './Inspector.module.scss';
 import ModulePane from './ModulePane/ModulePane.tsx';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
 

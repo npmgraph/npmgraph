@@ -2,7 +2,7 @@ import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import colorizers, { getColorizer } from './colorizers/index.ts';
 
-import styles from './ColorizeInput.module.scss';
+import * as styles from './ColorizeInput.module.scss';
 
 export default function ColorizeInput() {
   const [colorize, setColorize] = useHashParam(PARAM_COLORIZE);

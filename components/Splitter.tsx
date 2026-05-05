@@ -1,5 +1,5 @@
 import { cn } from '../lib/dom.ts';
-import styles from './Splitter.module.scss';
+import * as styles from './Splitter.module.scss';
 import tabStyles from './Tab.module.scss';
 
 const blackRightPointingTriangle = '\u{25B6}';

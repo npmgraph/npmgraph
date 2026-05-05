@@ -1,6 +1,6 @@
 import confetti from 'canvas-confetti';
 import { $ } from 'select-dom';
-import styles from './flash.module.scss';
+import * as styles from './flash.module.scss';
 
 export function flash(wat: unknown, bg = '#f80') {
   const SPACE = 10;

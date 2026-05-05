@@ -1,6 +1,6 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../lib/dom.ts';
-import styles from './Tab.module.scss';
+import * as styles from './Tab.module.scss';
 
 export function Tab({
   active,

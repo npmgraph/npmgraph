@@ -3,7 +3,7 @@ import { cn } from '../lib/dom.ts';
 import type { IconProps } from './Icons.tsx';
 import { OffsiteLinkIcon } from './Icons.tsx';
 
-import styles from './ExternalLink.module.scss';
+import * as styles from './ExternalLink.module.scss';
 
 export function ExternalLink({
   href,

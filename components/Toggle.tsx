@@ -1,6 +1,6 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../lib/dom.ts';
-import styles from './Toggle.module.scss';
+import * as styles from './Toggle.module.scss';
 
 export function Toggle({
   checked = false,

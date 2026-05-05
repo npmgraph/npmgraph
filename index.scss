@@ -1,4 +1,4 @@
-@use 'lib/root.scss' as *;
+@use 'lib/root.module.scss' as *;
 
 :root {
   accent-color: var(--accent);
@@ -10,7 +10,7 @@
 
   --root-color: white; // Don't change, it's used to mix colors on light/dark schemes
   --rad-sm: 5px;
-  -rad-lg: 10px;
+  --rad-lg: 10px;
   --inspector-size: 32em;
   --bg-gradient: linear-gradient(
     to bottom,
