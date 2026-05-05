@@ -210,7 +210,7 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
           results.set(module.key, module);
         break;
       case QueryType.Maintainer:
-        if (module.maintainers.find(({ name }) => name === queryValue))
+        if (module.maintainers.some(({ name }) => name === queryValue))
           results.set(module.key, module);
         break;
     }

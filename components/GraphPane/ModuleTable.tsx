@@ -18,14 +18,18 @@ export function ModuleTable({ data }: { data: ModuleTableData }) {
         <Selectable
           className={styles.rootName}
           value={modules[0].key}
-          label={modules[0].name}
+          label={modules[0].displayName}
         />
         <span></span>
       </div>
     ) : (
       <Fragment key={name}>
         <div className={styles.rootRow}>
-          <Selectable className={styles.rootName} value={modules[0].name} />
+          <Selectable
+            className={styles.rootName}
+            value={modules[0].name}
+            label={modules[0].displayName}
+          />
 
           {modules.map(m => (
             <Selectable

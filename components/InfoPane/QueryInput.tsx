@@ -2,6 +2,7 @@ import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { searchSet } from '../../lib/url_util.ts';
 import { patchLocation } from '../../lib/useLocation.ts';
 import { useQuery } from '../../lib/useQuery.ts';
@@ -14,6 +15,7 @@ const hasSoftKeyboard = 'ontouchstart' in document.documentElement;
 export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
+  const [graph] = useGlobalState('graph');
   const initialValue = query.join(', ');
 
   const [value, setValue] = useState(
@@ -51,6 +53,10 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     }
   }
 
+  const errors = [...graph.failedEntryModules.entries()].filter(([key]) =>
+    query.includes(key),
+  );
+
   return (
     <>
       <form action="/" onSubmit={handleSubmit}>
@@ -73,6 +79,11 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
         />
       </form>
 
+      {errors.map(([key, error]) => (
+        <div key={key} className="query-error">
+          {error.message}
+        </div>
+      ))}
       {isGithubUrl(valueAsURL) ? (
         <div className="tip">
           Note: URLs that refer to private GitHub repos or gists should use the

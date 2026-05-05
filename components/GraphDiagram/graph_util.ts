@@ -2,7 +2,7 @@ import { $ } from 'select-dom';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
-import { PARAM_QUERY } from '../../lib/constants.ts';
+import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { getModuleKey } from '../../lib/module_util.ts';
 
 const FONT = 'Roboto Condensed, sans-serif';
@@ -63,6 +63,9 @@ export type GraphState = {
   moduleInfos: Map<string, GraphModuleInfo>;
 
   entryModules: Set<Module>;
+
+  // Map of module key -> error for entry modules that failed to load
+  failedEntryModules: Map<string, Error>;
 };
 
 const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
@@ -103,6 +106,7 @@ export async function getGraphForQuery(
   const graphState: GraphState = {
     moduleInfos: new Map(),
     entryModules: new Set(),
+    failedEntryModules: new Map(),
   };
 
   async function _visit(
@@ -157,8 +161,15 @@ export async function getGraphForQuery(
   await Promise.allSettled(
     query.map(async moduleKey => {
       const m = await getModule(moduleKey);
-      graphState.entryModules.add(m);
-      return m && _visit(m);
+      if (m.isStub) {
+        graphState.failedEntryModules.set(
+          moduleKey,
+          m.stubError ?? new Error(`Failed to load ${moduleKey}`),
+        );
+      } else {
+        graphState.entryModules.add(m);
+        return _visit(m);
+      }
     }),
   );
 
@@ -222,7 +233,8 @@ export function composeDOT({
 
     const link = new URL(location.origin);
     link.searchParams.append(PARAM_QUERY, module.key);
-    const vs = { root: level === 0, fontsize, href: link.href };
+    const label = module.isUnnamed ? UNNAMED_PACKAGE : undefined;
+    const vs = { root: level === 0, fontsize, href: link.href, label };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 

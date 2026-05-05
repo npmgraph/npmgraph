@@ -1,6 +1,10 @@
 import type { PackageJSON, PackumentVersion } from '@npm/types';
 import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.ts';
-import { PARAM_PACKAGES, PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
+import {
+  PARAM_PACKAGES,
+  PARAM_QUERY,
+  UNNAMED_PACKAGE_PREFIX,
+} from './constants.ts';
 import { flash } from './flash.ts';
 import { hashSet, searchSet } from './url_util.ts';
 import { patchLocation } from './useLocation.ts';
@@ -28,7 +32,7 @@ export function loadPackageJson(json: string, filename?: string): void {
   // possibly-sensitive fields user may have in their package.json
   pkg = sanitizePackageKeys(pkg);
 
-  pkg.name ??= UNNAMED_PACKAGE;
+  pkg.name ??= `${UNNAMED_PACKAGE_PREFIX}${crypto.randomUUID()}`;
 
   const module = cacheLocalPackage(pkg as PackumentVersion);
 

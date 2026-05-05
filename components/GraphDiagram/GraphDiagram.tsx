@@ -179,11 +179,18 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         }
 
         setGraph(newGraph);
+
+        if (
+          newGraph.entryModules.size === 0 &&
+          newGraph.failedEntryModules.size > 0
+        ) {
+          setPane(PANE.INFO);
+        }
       },
     );
 
     return abort;
-  }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph]);
+  }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph, setPane]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {
@@ -243,7 +250,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       // Decorate DOM nodes with appropriate classname
       for (const el of $$('#graph g.node')) {
         // Find module this node represents
-        const key = $('text', el)!.textContent;
+        const key = $(':scope > title', el)?.textContent?.trim();
         if (!key) continue;
 
         const m = getCachedModule(key);
@@ -365,7 +372,7 @@ function useGraphviz() {
   const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
-  useMemo(() => {
+  useEffect(() => {
     Graphviz.load()
       .catch(err => {
         console.error('Graphviz failed to load', err);
