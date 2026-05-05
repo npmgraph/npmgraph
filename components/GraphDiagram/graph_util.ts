@@ -1,3 +1,4 @@
+import { satisfies } from 'semver';
 import { $ } from 'select-dom';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
@@ -31,6 +32,7 @@ const DEFAULT_STYLES = {
 const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=black]',
+  peerDependencies: '[color=black style=dashed]',
   optionalDependencies: '[color=black style=dashed]', // unused
   optionalDevDependencies: '[color=black style=dashed]', // unused
 };
@@ -38,6 +40,7 @@ const EDGE_ATTRIBUTES = {
 export type DependencyKey =
   | 'dependencies'
   | 'devDependencies'
+  | 'peerDependencies'
   | 'optionalDependencies';
 
 type DependencyEntry = {
@@ -172,6 +175,42 @@ export async function getGraphForQuery(
       }
     }),
   );
+
+  // Second pass: add peer dependency edges for modules already in the graph
+  // Build a name-indexed map for O(1) lookups
+  const modulesByName = new Map<string, Module[]>();
+  for (const [, { module }] of graphState.moduleInfos) {
+    let list = modulesByName.get(module.name);
+    if (!list) {
+      list = [];
+      modulesByName.set(module.name, list);
+    }
+    list.push(module);
+  }
+
+  for (const [, info] of graphState.moduleInfos) {
+    const { peerDependencies } = info.module.package;
+    if (!peerDependencies) continue;
+
+    for (const [name, versionRange] of Object.entries(peerDependencies)) {
+      const candidates = modulesByName.get(name);
+      if (!candidates) continue;
+
+      for (const peerModule of candidates) {
+        if (!peerModule.version) continue;
+        try {
+          if (!satisfies(peerModule.version, versionRange)) continue;
+        } catch {
+          continue;
+        }
+
+        info.downstream.add({ module: peerModule, type: 'peerDependencies' });
+        graphState.moduleInfos
+          .get(peerModule.key)
+          ?.upstream.add({ module: info.module, type: 'peerDependencies' });
+      }
+    }
+  }
 
   return graphState;
 }
