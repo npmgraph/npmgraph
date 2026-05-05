@@ -1,6 +1,5 @@
 .root {
   align-items: center;
-  margin-top: 1.5rem;
 
   > span {
     display: inline-block;
@@ -14,7 +13,7 @@
     border: solid 1px var(--text-dim);
     field-sizing: content;
     outline: none;
-    border-radius: 1em;
+    border-radius: 4px;
     padding: 0.3em 0.7em;
     font: inherit;
   }

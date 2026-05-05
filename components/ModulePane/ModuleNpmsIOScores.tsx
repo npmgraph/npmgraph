@@ -10,7 +10,7 @@ export default function ModuleNpmsIOScores({ module }: { module: Module }) {
   useEffect(() => {
     if (module.isLocal) return;
 
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
+    // eslint-disable-next-line react/set-state-in-effect
     setNpmsData(undefined);
 
     fetchJSON<NPMSIOData>(

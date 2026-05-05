@@ -21,6 +21,8 @@ export function ModuleTreeMap({
 
   // Render contents as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {
+    let cancelled = false;
+
     const { clientWidth: w, clientHeight: h } = $('#treemap')!;
     const m = 1;
 
@@ -79,8 +81,14 @@ export function ModuleTreeMap({
       );
     });
 
-    // eslint-disable-next-line react-hooks-extra/no-direct-set-state-in-use-effect
-    setLeaves(newLeaves);
+    queueMicrotask(() => {
+      if (cancelled) return;
+      setLeaves(newLeaves);
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [data]);
 
   return (

@@ -31,4 +31,5 @@ export enum PANE {
   MODULE = 'module',
   GRAPH = 'graph',
   INFO = 'info',
+  SETTINGS = 'settings',
 }

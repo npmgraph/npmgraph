@@ -34,6 +34,9 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     case PANE.GRAPH:
       paneComponent = <GraphPane id="pane-graph" graph={graph} />;
       break;
+    case PANE.SETTINGS:
+      paneComponent = <SettingsPane id="pane-settings" />;
+      break;
     case PANE.INFO:
       paneComponent = <InfoPane id="pane-info" />;
       break;
