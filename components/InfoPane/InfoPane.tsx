@@ -1,4 +1,5 @@
 import type { HTMLProps } from 'react';
+import { ExternalLink } from '../ExternalLink.tsx';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import FilePicker from './FilePicker.tsx';
@@ -45,23 +46,19 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       <hr />
       <footer>
         <p>
-          <a
+          <ExternalLink
             href="https://github.com/npmgraph/npmgraph"
-            target="_blank"
             rel="noopener noreferrer"
-            className="bright-hover external-link"
           >
             GitHub repo
-          </a>
+          </ExternalLink>
           {' | '}
-          <a
+          <ExternalLink
             href="https://github.com/sponsors/broofa"
-            target="_blank"
             rel="noopener noreferrer"
-            className="bright-hover external-link"
           >
             Sponsor
-          </a>
+          </ExternalLink>
         </p>
       </footer>
     </Pane>

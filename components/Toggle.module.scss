@@ -1,4 +1,4 @@
-.toggle {
+.root {
   & > div {
     display: inline-block;
     margin-right: 0.5em;
@@ -6,6 +6,7 @@
     background-color: var(--bg2);
     width: 4em;
   }
+
   & > div > div {
     transition: 0.15s;
     margin-left: 0;
@@ -14,7 +15,10 @@
     width: 3em;
     text-align: center;
   }
-  &.checked > div > div {
+}
+
+.checked {
+  & > div > div {
     margin-left: 1em;
     background-color: var(--bg-green);
   }

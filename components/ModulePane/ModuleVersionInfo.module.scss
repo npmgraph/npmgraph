@@ -1,0 +1,24 @@
+.root {
+  border: solid 1px;
+  border-radius: 0.3rem;
+  padding: 0.1rem 0;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.distTag {
+  border: none;
+  text-align: inherit;
+}
+
+.majorUpdates {
+  border-color: var(--stroke-red);
+}
+
+.minorUpdates {
+  border-color: var(--stroke-orange);
+}
+
+.patchUpdates {
+  border-color: var(--stroke-yellow);
+}
