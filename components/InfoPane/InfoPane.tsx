@@ -6,7 +6,7 @@ import FilePicker from './FilePicker.tsx';
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <p>For example:</p>
+      <p>npmgraph supports looking up:</p>
 
       <ul>
         <li>

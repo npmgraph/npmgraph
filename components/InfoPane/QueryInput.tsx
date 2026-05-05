@@ -1,6 +1,7 @@
 import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
 import {
+  PANE,
   PARAM_QUERY,
   SEARCH_FIELD_ID,
   UNNAMED_PACKAGE,
@@ -24,6 +25,7 @@ export default function QueryInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
   const [graph] = useGlobalState('graph');
+  const [, setPane] = useGlobalState('pane');
   const initialValue = query.join(', ');
 
   const [value, setValue] = useState(
@@ -61,6 +63,10 @@ export default function QueryInput({
     }
   }
 
+  function handleFocus() {
+    setPane(PANE.INFO);
+  }
+
   const errors = [...graph.failedEntryModules.entries()].filter(([key]) =>
     query.includes(key),
   );
@@ -84,6 +90,7 @@ export default function QueryInput({
           autoFocus={!hasSoftKeyboard}
           onChange={e => setValue(e.target.value)}
           onKeyDown={handleCmdEnter}
+          onFocus={handleFocus}
           {...props}
         />
       </form>
