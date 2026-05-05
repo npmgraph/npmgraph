@@ -3,16 +3,38 @@ import { ExternalLink } from '../ExternalLink.tsx';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import FilePicker from './FilePicker.tsx';
-import QueryInput from './QueryInput.tsx';
+import { useParsedQuery } from '../../lib/useQuery.ts';
+import * as styles from './InfoPane.module.scss';
+
+function isGithubUrl(url: URL | null) {
+  if (!url) return false;
+  return /^github.com$|\.github.com$/.test(url?.host ?? '');
+}
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
+  const [value] = useParsedQuery();
+  const valueAsURL = URL.parse(value.trim());
+
   return (
     <Pane {...props}>
-      <h3>Generate npmgraph:</h3>
+      {isGithubUrl(valueAsURL) ? (
+        <div className={styles.tip}>
+          Note: URLs that refer to private GitHub repos or gists should use the
+          URL shown when{' '}
+          <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
+            viewing the "Raw" file
+          </ExternalLink>
+          .
+        </div>
+      ) : null}
+      {valueAsURL ? (
+        <div className={styles.tip}>
+          Note: {valueAsURL.host} must allow CORS requests from the{' '}
+          {location.host} domain for this to work
+        </div>
+      ) : null}
 
-      <QueryInput />
-
-      <p>For example:</p>
+      <p>npmgraph supports looking up:</p>
 
       <ul>
         <li>

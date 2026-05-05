@@ -1,3 +1,5 @@
+@use '../../lib/root.scss' as *;
+
 :global {
   .bright-hover {
     transition: filter 0.2s;
@@ -25,5 +27,33 @@
     canvas {
       display: none;
     }
+  }
+}
+
+.root {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  height: 100svh;
+}
+.content {
+  display: flex;
+  position: relative;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+@include tight-screen {
+  html,
+  body,
+  .root {
+    height: auto;
+    min-height: 100svh;
+  }
+  .root {
+    --inspector-size: auto;
+  }
+  .content {
+    flex-direction: column;
   }
 }

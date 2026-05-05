@@ -1,13 +1,15 @@
 .root {
+  display: flex;
   position: relative;
-  // Logical property to allow border flip on toggle button
-  border-inline-end: solid 1px var(--tabs-border);
+  border-right: solid 1px var(--tabs-border);
   font-weight: 600;
   font-size: 12pt;
 
   button {
     all: unset;
     display: flex;
+    flex-grow: 1;
+    justify-content: center;
     align-items: center;
     background: var(--tabs-bg) var(--bg-gradient);
     padding: 0 10px;

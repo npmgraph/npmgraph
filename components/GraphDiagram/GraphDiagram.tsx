@@ -34,6 +34,7 @@ import {
   isSimpleColorizer,
 } from '../GraphPane/colorizers/index.ts';
 import './GraphDiagram.module.scss';
+
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import type { DependencyKey, GraphState } from './graph_util.ts';
@@ -135,10 +136,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (!vb) return;
 
     const [, , w, h] = vb;
-    graphEl.classList.toggle(
-      'centered',
-      zoom === ZOOM_NONE && w < graphEl.clientWidth && h < graphEl.clientHeight,
-    );
+    graphEl.classList.remove('d-block');
 
     switch (zoom) {
       case ZOOM_NONE:
@@ -154,6 +152,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       case ZOOM_FIT_HEIGHT:
         diagramElement.removeAttribute('width');
         diagramElement.setAttribute('height', '100%');
+        graphEl.classList.add('d-block');
         break;
     }
   }
@@ -325,12 +324,13 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }
 
   return (
-    <div id="graph" onClick={handleGraphClick}>
+    <>
       <div id="graph-controls">
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />
       </div>
-    </div>
+      <div id="graph" onClick={handleGraphClick}></div>
+    </>
   );
 }
 

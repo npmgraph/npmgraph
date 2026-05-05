@@ -1,33 +1,35 @@
 import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
-import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
+import {
+  PANE,
+  PARAM_QUERY,
+  SEARCH_FIELD_ID,
+  UNNAMED_PACKAGE,
+} from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
+import { cn } from '../../lib/dom.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { searchSet } from '../../lib/url_util.ts';
 import { patchLocation } from '../../lib/useLocation.ts';
 import { useQuery } from '../../lib/useQuery.ts';
-import { ExternalLink } from '../ExternalLink.tsx';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
 const hasSoftKeyboard = 'ontouchstart' in document.documentElement;
 
-export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
+export default function QueryInput({
+  className,
+  ...props
+}: HTMLProps<HTMLInputElement>) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
   const [graph] = useGlobalState('graph');
+  const [, setPane] = useGlobalState('pane');
   const initialValue = query.join(', ');
 
   const [value, setValue] = useState(
     initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue,
   );
-  let valueAsURL: URL | undefined;
-
-  try {
-    valueAsURL = new URL(value.trim());
-  } catch {
-    // ignore
-  }
 
   function getSearchParams() {
     let moduleKeys = inputRef
@@ -53,6 +55,10 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
     }
   }
 
+  function handleFocus() {
+    setPane(PANE.INFO);
+  }
+
   const errors = [...graph.failedEntryModules.entries()].filter(([key]) =>
     query.includes(key),
   );
@@ -64,8 +70,8 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
           type="search"
           name="q"
           ref={inputRef}
-          id="search-field"
-          className={styles.root}
+          id={SEARCH_FIELD_ID}
+          className={cn(styles.input, className)}
           placeholder="Search…"
           value={value}
           autoCapitalize="off"
@@ -76,6 +82,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
           autoFocus={!hasSoftKeyboard}
           onChange={e => setValue(e.target.value)}
           onKeyDown={handleCmdEnter}
+          onFocus={handleFocus}
           {...props}
         />
       </form>
@@ -85,27 +92,6 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
           {error.message}
         </div>
       ))}
-      {isGithubUrl(valueAsURL) ? (
-        <div className={styles.tip}>
-          Note: URLs that refer to private GitHub repos or gists should use the
-          URL shown when{' '}
-          <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
-            viewing the "Raw" file
-          </ExternalLink>
-          .
-        </div>
-      ) : null}
-      {valueAsURL ? (
-        <div className={styles.tip}>
-          Note: {valueAsURL.host} must allow CORS requests from the{' '}
-          {location.host} domain for this to work
-        </div>
-      ) : null}
     </>
   );
-}
-
-function isGithubUrl(url?: URL) {
-  if (!url) return false;
-  return /^github.com$|\.github.com$/.test(url?.host ?? '');
 }
