@@ -7,7 +7,7 @@
   gap: 0 1.2em;
   box-sizing: border-box;
   background: var(--tabs-bg) var(--bg-gradient);
-  padding-inline: 0.8em;
+  padding-inline: var(--header-padding);
   color: var(--tabs-text);
 
   // Override --text so the Logo's color-mix renders in light colors on the dark header
@@ -38,7 +38,6 @@
   padding: 0.25em 0.6em;
   max-width: 400px;
   color: var(--tabs-text);
-  font-size: 13px;
 
   &::placeholder {
     color: rgba(255, 255, 255, 0.5);

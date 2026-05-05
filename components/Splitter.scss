@@ -6,7 +6,7 @@
   align-items: center;
   transition: border-radius var(--transition-duration);
   cursor: default;
-  margin-right: -0.8em;
+  margin-right: calc(-1 * var(--header-padding));
   border-right: none;
   background: var(--tabs-bg) var(--bg-gradient);
   padding: 0 10px;
