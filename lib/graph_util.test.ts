@@ -1,6 +1,10 @@
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-import { getChildOverrides, getVersionOverride } from './overrides_util.ts';
+import {
+  getChildOverrides,
+  getVersionOverride,
+  isOverrides,
+} from './overrides_util.ts';
 import type { Overrides } from './overrides_util.ts';
 
 describe('getVersionOverride', () => {
@@ -75,5 +79,32 @@ describe('getChildOverrides', () => {
     // "package-a" has an object value so it's NOT a global override
     const result = getChildOverrides(rootOverrides, rootOverrides, 'package-x');
     assert.deepEqual(result, {});
+  });
+});
+
+describe('isOverrides', () => {
+  it('should return true for a flat string-valued overrides object', () => {
+    assert.equal(isOverrides({ foo: '1.0.0' }), true);
+  });
+
+  it('should return true for a nested overrides object', () => {
+    assert.equal(isOverrides({ 'package-a': { 'package-b': '1.0.0' } }), true);
+  });
+
+  it('should return true for an empty object', () => {
+    assert.equal(isOverrides({}), true);
+  });
+
+  it('should return false for null', () => {
+    assert.equal(isOverrides(null), false);
+  });
+
+  it('should return false for a non-object value', () => {
+    assert.equal(isOverrides('1.0.0'), false);
+    assert.equal(isOverrides(42), false);
+  });
+
+  it('should return false when a value is neither a string nor an object', () => {
+    assert.equal(isOverrides({ foo: 42 }), false);
   });
 });

@@ -8,6 +8,7 @@ import type { Overrides } from '../../lib/overrides_util.ts';
 import {
   getChildOverrides,
   getVersionOverride,
+  isOverrides,
 } from '../../lib/overrides_util.ts';
 
 const FONT = 'Roboto Condensed, sans-serif';
@@ -198,8 +199,8 @@ export async function getGraphForQuery(
       } else {
         graphState.entryModules.add(m);
         // Use overrides from the entry module's package.json, if present
-        const rootOverrides =
-          (m.package.overrides as Overrides | undefined) ?? {};
+        const rawOverrides = m.package.overrides;
+        const rootOverrides = isOverrides(rawOverrides) ? rawOverrides : {};
         return _visit(m, 0, rootOverrides, rootOverrides);
       }
     }),
