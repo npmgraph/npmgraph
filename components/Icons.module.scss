@@ -1,7 +1,7 @@
 .icon {
   display: inline-block;
 }
-.icon-path-stroke {
+.iconPathStroke {
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -9,12 +9,12 @@
   stroke-width: 1.5px;
 }
 
-.icon-path-fill {
+.iconPathFill {
   fill: currentColor;
   stroke: none;
 }
 
-.icon-sponsor {
+.iconSponsor {
   stroke: var(--bg-violet);
 }
 

@@ -2,7 +2,7 @@ import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import colorizers, { getColorizer } from './colorizers/index.ts';
 
-import './ColorizeInput.scss';
+import styles from './ColorizeInput.module.scss';
 
 export default function ColorizeInput() {
   const [colorize, setColorize] = useHashParam(PARAM_COLORIZE);
@@ -24,7 +24,7 @@ export default function ColorizeInput() {
   return (
     <>
       <label
-        id="colorize-ui"
+        className={styles.colorizeUi}
         style={{ display: 'flex', alignItems: 'baseline' }}
       >
         <span style={{ flexGrow: 0 }}>Colorize by:</span>
@@ -37,7 +37,7 @@ export default function ColorizeInput() {
         </select>
       </label>
 
-      {legend ? <div id="colorize-key">{legend}</div> : null}
+      {legend ? <div className={styles.colorizeKey}>{legend}</div> : null}
     </>
   );
 }

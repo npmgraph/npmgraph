@@ -1,22 +1,22 @@
-#module-version {
+.moduleVersion {
   border: solid 1px;
   border-radius: 0.3rem;
   padding: 0.1rem 0;
   font-size: 0.85rem;
   text-align: center;
 
-  &.dist-tag {
+  &.distTag {
     border: none;
     text-align: inherit;
   }
 
-  &.major-updates {
+  &.majorUpdates {
     border-color: var(--stroke-red);
   }
-  &.minor-updates {
+  &.minorUpdates {
     border-color: var(--stroke-orange);
   }
-  &.patch-updates {
+  &.patchUpdates {
     border-color: var(--stroke-yellow);
   }
 }

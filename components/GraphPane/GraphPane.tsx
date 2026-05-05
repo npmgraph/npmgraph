@@ -1,10 +1,11 @@
 import simplur from 'simplur';
 
+import { cn } from '../../lib/dom.ts';
 import useCollapse from '../../lib/useCollapse.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import type { GraphState } from '../GraphDiagram/graph_util.ts';
 import { Pane } from '../Pane.tsx';
-import './GraphPane.scss';
+import styles from './GraphPane.module.scss';
 import { ReportItem } from './reports/ReportItem.tsx';
 import { analyzeLicenses } from './reports/analyzeLicenses.ts';
 import { analyzeMaintainers } from './reports/analyzeMaintainers.tsx';
@@ -27,7 +28,7 @@ import {
 
 function ReportSection({ title, children }: { title: string; children: any }) {
   return (
-    <div className="report-section">
+    <div className={styles.reportSection}>
       <hr />
       <h3>{title}</h3>
       {children}
@@ -39,6 +40,7 @@ export default function GraphPane({
   graph,
   ...props
 }: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
+  const { className, ...restProps } = props;
   const [collapse, setCollapse] = useCollapse();
 
   if (!graph?.moduleInfos) return <div>Loading</div>;
@@ -49,7 +51,7 @@ export default function GraphPane({
   const licensesAnalysis = analyzeLicenses(graph);
 
   return (
-    <Pane {...props}>
+    <Pane className={cn(styles.paneGraph, className)} {...restProps}>
       <div
         style={{ fontSize: '90%', color: 'var(--text-dim)', marginTop: '1em' }}
       >

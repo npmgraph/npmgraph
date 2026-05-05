@@ -4,6 +4,7 @@ import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
 import useHashParam from '../lib/useHashParam.ts';
+import * as graphPaneStyles from './GraphPane/GraphPane.module.scss';
 import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import './Inspector.scss';
@@ -31,7 +32,13 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       );
       break;
     case PaneType.GRAPH:
-      paneComponent = <GraphPane id="pane-graph" graph={graph} />;
+      paneComponent = (
+        <GraphPane
+          id="pane-graph"
+          className={graphPaneStyles.paneGraph}
+          graph={graph}
+        />
+      );
       break;
     case PaneType.SETTINGS:
       paneComponent = <SettingsPane id="pane-settings" />;

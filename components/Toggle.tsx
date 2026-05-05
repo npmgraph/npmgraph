@@ -1,6 +1,6 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../lib/dom.ts';
-import './Toggle.scss';
+import styles from './Toggle.module.scss';
 
 export function Toggle({
   checked = false,
@@ -12,7 +12,7 @@ export function Toggle({
 }: HTMLProps<HTMLLabelElement> & { checked?: boolean; onChange: () => void }) {
   return (
     <label
-      className={cn('toggle', { checked }, className)}
+      className={cn(styles.toggle, { [styles.checked]: checked }, className)}
       style={style}
       {...props}
     >

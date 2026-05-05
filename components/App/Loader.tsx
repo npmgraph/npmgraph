@@ -1,14 +1,14 @@
 import type { HTMLProps } from 'react';
 import type LoadActivity from '../../lib/LoadActivity.ts';
-import './Loader.scss';
+import styles from './Loader.module.scss';
 
 export function Loader({
   activity,
 }: { activity: LoadActivity } & HTMLProps<HTMLDivElement>) {
   return (
     <>
-      <div className="progress-bar" />
-      <div className="loader">{activity.title} ...</div>
+      <div className={styles.progressBar} />
+      <div className={styles.loader}>{activity.title} ...</div>
     </>
   );
 }
