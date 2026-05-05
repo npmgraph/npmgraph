@@ -1,6 +1,6 @@
 @use '../lib/root.scss' as *;
 
-#splitter {
+.root {
   position: absolute;
   right: 0;
   z-index: 1;
@@ -10,10 +10,11 @@
   padding: 0 10px;
   height: 24pt;
   color: var(--tabs-text);
-  direction: rtl; // Move border to the left
+  direction: rtl;
   user-select: none;
   text-align: center;
-  #inspector:not(.open) & {
+
+  :global(#inspector:not(.open)) & {
     border-top-left-radius: var(--rad-lg);
     border-bottom-left-radius: var(--rad-lg);
   }
