@@ -9,7 +9,7 @@ import type { DependencyKey, GraphState } from '../GraphDiagram/graph_util.ts';
 import { Pane } from '../Pane.tsx';
 import { Toggle } from '../Toggle.tsx';
 import ColorizeInput from './ColorizeInput.tsx';
-import './GraphPane.scss';
+import * as styles from './GraphPane.module.scss';
 import { ReportItem } from './reports/ReportItem.tsx';
 import { analyzeLicenses } from './reports/analyzeLicenses.ts';
 import { analyzeMaintainers } from './reports/analyzeMaintainers.tsx';
@@ -32,7 +32,7 @@ import {
 
 function ReportSection({ title, children }: { title: string; children: any }) {
   return (
-    <div className="report-section">
+    <div className={styles.reportSection}>
       <hr />
       <h3>{title}</h3>
       {children}

@@ -1,0 +1,13 @@
+.reportSection {
+  // Hide empty sections
+  hr:nth-last-child(2),
+  h3:nth-last-child(1) {
+    display: none;
+  }
+}
+
+:global(#pane-graph) {
+  .collapsed {
+    opacity: 0.5;
+  }
+}
