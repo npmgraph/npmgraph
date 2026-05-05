@@ -1,0 +1,24 @@
+.icon {
+  display: inline-block;
+}
+
+.iconPathStroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5px;
+}
+
+.iconPathFill {
+  fill: currentColor;
+  stroke: none;
+}
+
+:global(a) .icon {
+  vertical-align: middle;
+}
+
+:global(button) .icon {
+  vertical-align: baseline;
+}
