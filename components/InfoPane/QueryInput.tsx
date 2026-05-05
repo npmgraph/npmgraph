@@ -1,7 +1,7 @@
 import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
 import {
-  PANE,
+  PaneType,
   PARAM_QUERY,
   SEARCH_FIELD_ID,
   UNNAMED_PACKAGE,
@@ -56,7 +56,7 @@ export default function QueryInput({
   }
 
   function handleFocus() {
-    setPane(PANE.INFO);
+    setPane(PaneType.INFO);
   }
 
   const errors = [...graph.failedEntryModules.entries()].filter(([key]) =>
