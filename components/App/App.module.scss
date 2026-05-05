@@ -9,6 +9,7 @@
 }
 .content {
   display: flex;
+  position: relative;
   flex-grow: 1;
   min-height: 0;
 }
@@ -21,7 +22,9 @@
     min-height: 100svh;
   }
   .root {
-    flex-direction: column;
     --inspector-size: auto;
+  }
+  .content {
+    flex-direction: column;
   }
 }

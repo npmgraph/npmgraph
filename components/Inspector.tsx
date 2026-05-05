@@ -9,15 +9,13 @@ import InfoPane from './InfoPane/InfoPane.tsx';
 import './Inspector.scss';
 import ModulePane from './ModulePane/ModulePane.tsx';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
-import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane] = useGlobalState('pane');
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGlobalState('graph');
-  const [hide] = useHashParam(PARAM_HIDE);
 
-  useKeyboardShortcuts();
+  const [hide] = useHashParam(PARAM_HIDE);
 
   if (hide !== null) {
     return null;
@@ -42,7 +40,6 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       paneComponent = <InfoPane id="pane-info" />;
       break;
   }
-
   return (
     <div id="inspector" {...props}>
       {paneComponent}

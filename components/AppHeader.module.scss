@@ -1,12 +1,13 @@
+@use '../lib/root.scss' as *;
+
 .root {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 1.2em;
+  gap: 0 1.2em;
   box-sizing: border-box;
   background: var(--tabs-bg) var(--bg-gradient);
-  padding-left: 0.8em;
-  height: var(--header-height);
+  padding-inline: 0.8em;
   color: var(--tabs-text);
 
   // Override --text so the Logo's color-mix renders in light colors on the dark header
@@ -21,6 +22,12 @@
   form {
     flex-grow: 1;
     min-width: 0;
+  }
+
+  @include tight-screen {
+    .tabs {
+      display: none;
+    }
   }
 }
 

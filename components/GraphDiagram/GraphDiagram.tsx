@@ -324,12 +324,13 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }
 
   return (
-    <div id="graph" onClick={handleGraphClick}>
+    <>
       <div id="graph-controls">
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />
       </div>
-    </div>
+      <div id="graph" onClick={handleGraphClick}></div>
+    </>
   );
 }
 

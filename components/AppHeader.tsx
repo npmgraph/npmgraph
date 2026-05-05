@@ -1,62 +1,17 @@
 import QueryInput from './InfoPane/QueryInput.tsx';
 import Logo from './Logo.tsx';
 import * as styles from './AppHeader.module.scss';
-import { useGlobalState } from '../lib/GlobalStore.ts';
-import useHashParam from '../lib/useHashParam.ts';
-import { PANE, PARAM_HIDE } from '../lib/constants.ts';
-
-import { Splitter } from './Splitter.tsx';
-import { Tab } from './Tab.tsx';
+import Tabs from './Tabs.tsx';
+import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
 
 export default function AppHeader() {
-  const [pane, setPane] = useGlobalState('pane');
-  const [hide, setHide] = useHashParam(PARAM_HIDE);
+  useKeyboardShortcuts();
 
-  const inspector = hide === null;
   return (
     <div className={styles.root}>
       <Logo />
       <QueryInput className={styles.input} />
-
-      <div id="tabs">
-        <Tab
-          active={inspector && pane === PANE.INFO}
-          onClick={() => {
-            setHide(null);
-            setPane(PANE.INFO);
-          }}
-        >
-          Info
-        </Tab>
-        <Tab
-          active={inspector && pane === PANE.GRAPH}
-          onClick={() => {
-            setHide(null);
-            setPane(PANE.GRAPH);
-          }}
-        >
-          Graph
-        </Tab>
-        <Tab
-          active={inspector && pane === PANE.MODULE}
-          onClick={() => {
-            setHide(null);
-            setPane(PANE.MODULE);
-          }}
-        >
-          Module
-        </Tab>
-        <Tab
-          active={inspector && pane === PANE.SETTINGS}
-          onClick={() => {
-            setHide(null);
-            setPane(PANE.SETTINGS);
-          }}
-        >
-          Settings
-        </Tab>
-        <Splitter isOpen={inspector} onClick={() => setHide(true)} />
-      </div>
+      <Tabs className={styles.tabs} />
     </div>
   );
 }

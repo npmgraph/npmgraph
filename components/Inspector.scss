@@ -48,17 +48,6 @@ label {
   margin: 0.3em 0;
 }
 
-#tabs {
-  display: flex;
-  flex-shrink: 0;
-  flex-basis: auto;
-  justify-content: flex-end;
-  align-self: stretch;
-  background: var(--tabs-bg) var(--bg-gradient);
-  color: var(--tabs-text);
-  user-select: none;
-}
-
 .pane {
   flex-grow: 1;
   box-sizing: border-box;
@@ -86,4 +75,15 @@ label {
 .dist-tag {
   display: inline;
   margin-left: 1em;
+}
+
+:root .mobile-tabs {
+  display: none;
+  @include tight-screen {
+    display: flex;
+    justify-content: stretch;
+    .tab {
+      flex-grow: 1;
+    }
+  }
 }

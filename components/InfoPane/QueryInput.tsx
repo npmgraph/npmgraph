@@ -12,7 +12,6 @@ import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { searchSet } from '../../lib/url_util.ts';
 import { patchLocation } from '../../lib/useLocation.ts';
 import { useQuery } from '../../lib/useQuery.ts';
-import { ExternalLink } from '../ExternalLink.tsx';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
@@ -31,13 +30,6 @@ export default function QueryInput({
   const [value, setValue] = useState(
     initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue,
   );
-  let valueAsURL: URL | undefined;
-
-  try {
-    valueAsURL = new URL(value.trim());
-  } catch {
-    // ignore
-  }
 
   function getSearchParams() {
     let moduleKeys = inputRef
@@ -100,27 +92,6 @@ export default function QueryInput({
           {error.message}
         </div>
       ))}
-      {isGithubUrl(valueAsURL) ? (
-        <div className={styles.tip}>
-          Note: URLs that refer to private GitHub repos or gists should use the
-          URL shown when{' '}
-          <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
-            viewing the "Raw" file
-          </ExternalLink>
-          .
-        </div>
-      ) : null}
-      {valueAsURL ? (
-        <div className={styles.tip}>
-          Note: {valueAsURL.host} must allow CORS requests from the{' '}
-          {location.host} domain for this to work
-        </div>
-      ) : null}
     </>
   );
-}
-
-function isGithubUrl(url?: URL) {
-  if (!url) return false;
-  return /^github.com$|\.github.com$/.test(url?.host ?? '');
 }

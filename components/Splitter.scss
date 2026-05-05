@@ -6,18 +6,18 @@
   align-items: center;
   transition: border-radius var(--transition-duration);
   cursor: default;
+  margin-right: -0.8em;
   border-right: none;
   background: var(--tabs-bg) var(--bg-gradient);
   padding: 0 10px;
   color: var(--tabs-text);
   user-select: none;
-  &[hidden] {
+  &[aria-hidden='true'] {
     // Hide it but keep its place
-    display: block !important;
     visibility: hidden;
   }
 
   @include tight-screen {
-    display: none;
+    display: none !important;
   }
 }

@@ -36,8 +36,9 @@
 
 #graph-controls {
   display: flex;
-  position: fixed;
+  position: absolute;
   gap: 1em;
+  z-index: 1;
   inset: auto auto 1em 1em;
   --padding: 6px;
 

@@ -14,7 +14,7 @@ export function Splitter({
       id="splitter"
       className="bright-hover tab"
       onClick={onClick}
-      hidden={!isOpen}
+      aria-hidden={!isOpen}
     >
       {blackRightPointingTriangle}
     </div>
