@@ -16,10 +16,10 @@
     background: radial-gradient(var(--bg0), var(--bg-root));
   }
 
-  h1 {
-    margin-block: 0;
-    font-size: 4em;
-    font-family: Monaco, monospace;
+  h1  svg {
+    display: block;
+    margin: auto;
+    max-width: 90%;
   }
 
   h2 {
@@ -39,4 +39,5 @@
   ul {
     margin: 0;
   }
+
 }
