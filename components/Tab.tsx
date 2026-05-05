@@ -1,6 +1,8 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../lib/dom.ts';
-import './Tab.scss';
+import styles from './Tab.module.scss';
+
+const tabStyles = styles as Record<string, string>;
 
 export function Tab({
   active,
@@ -12,10 +14,17 @@ export function Tab({
   badge?: string | number | boolean;
 }) {
   return (
-    <div className={cn('tab', { active })} {...props}>
+    <div
+      className={cn(tabStyles.root, { [tabStyles.active]: active })}
+      {...props}
+    >
       <button type="button" className="bright-hover">
         {children}
-        {badge && <span className="badge">{badge === true ? ' ' : badge}</span>}
+        {badge && (
+          <span className={tabStyles.badge}>
+            {badge === true ? ' ' : badge}
+          </span>
+        )}
       </button>
     </div>
   );

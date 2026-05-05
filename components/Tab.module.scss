@@ -1,4 +1,4 @@
-.tab {
+.root {
   position: relative;
   // Logical property to allow border flip on toggle button
   border-inline-end: solid 1px var(--tabs-border);
@@ -13,27 +13,29 @@
     padding: 0 10px;
   }
 
-  &.active button {
-    background: var(--accent);
-  }
-
-  & .badge {
-    display: inline-block;
-    position: absolute;
-    top: 0.2rem;
-    right: -0.1rem;
-    border-radius: 0.5rem;
-    background-color: var(--bg-darkred);
-    padding: 0.2rem;
-    min-width: 0.3rem;
-    min-height: 0.3rem;
-    font-weight: 600;
-    font-size: 0.7rem;
-    line-height: 0.7rem;
-  }
-
   kbd {
     margin-left: 0.7em;
     font-size: 0.8rem;
   }
+}
+
+.active {
+  button {
+    background: var(--accent);
+  }
+}
+
+.badge {
+  display: inline-block;
+  position: absolute;
+  top: 0.2rem;
+  right: -0.1rem;
+  border-radius: 0.5rem;
+  background-color: var(--bg-darkred);
+  padding: 0.2rem;
+  min-width: 0.3rem;
+  min-height: 0.3rem;
+  font-weight: 600;
+  font-size: 0.7rem;
+  line-height: 0.7rem;
 }
