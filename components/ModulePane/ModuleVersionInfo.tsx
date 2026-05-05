@@ -4,7 +4,7 @@ import type Module from '../../lib/Module.ts';
 
 import { cn } from '../../lib/dom.ts';
 import { QueryLink } from '../QueryLink.tsx';
-import './ModuleVersionInfo.scss';
+import './ModuleVersionInfo.module.scss';
 
 export function ModuleVersionInfo({
   module,

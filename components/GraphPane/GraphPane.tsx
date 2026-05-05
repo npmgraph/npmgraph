@@ -4,7 +4,7 @@ import useCollapse from '../../lib/useCollapse.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import type { GraphState } from '../GraphDiagram/graph_util.ts';
 import { Pane } from '../Pane.tsx';
-import './GraphPane.scss';
+import './GraphPane.module.scss';
 import { ReportItem } from './reports/ReportItem.tsx';
 import { analyzeLicenses } from './reports/analyzeLicenses.ts';
 import { analyzeMaintainers } from './reports/analyzeMaintainers.tsx';

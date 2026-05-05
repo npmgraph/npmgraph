@@ -1,4 +1,6 @@
-@use '../lib/root.scss' as *;
+@use '../lib/root.module.scss' as *;
+
+:global {
 
 #inspector {
   display: flex;
@@ -87,3 +89,5 @@ label {
     }
   }
 }
+
+} // end :global

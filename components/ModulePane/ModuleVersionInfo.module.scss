@@ -1,3 +1,5 @@
+:global {
+
 #module-version {
   border: solid 1px;
   border-radius: 0.3rem;
@@ -20,3 +22,5 @@
     border-color: var(--stroke-yellow);
   }
 }
+
+} // end :global

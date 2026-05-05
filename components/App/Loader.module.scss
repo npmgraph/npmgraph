@@ -13,18 +13,9 @@
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
-
-  @keyframes MOVE-BG {
-    from {
-      transform: translateX(-56.57px);
-    } // sqrt(2) * gradient_width
-    to {
-      transform: translateX(0);
-    }
-  }
 }
 
-.progress-bar {
+.progressBar {
   position: fixed;
   z-index: 9999;
 
@@ -42,4 +33,13 @@
   );
   width: calc(100% + 57px);
   height: 2pt;
+}
+
+@keyframes MOVE-BG {
+  from {
+    transform: translateX(-56.57px);
+  } // sqrt(2) * gradient_width
+  to {
+    transform: translateX(0);
+  }
 }

@@ -1,3 +1,5 @@
+:global {
+
 .icon {
   display: inline-block;
 }
@@ -25,3 +27,5 @@ a .icon {
 button .icon {
   vertical-align: baseline;
 }
+
+} // end :global

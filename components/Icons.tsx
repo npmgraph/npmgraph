@@ -1,7 +1,7 @@
 import type { HTMLProps, SVGProps } from 'react';
 import { cn } from '../lib/dom.ts';
 
-import './Icons.scss';
+import './Icons.module.scss';
 
 // SVG icons.  To create a new icon, get the icon's SVG `path` and copy-paste it
 // here.  The path should fit w/in a 16x16 box (with a ~0.5px margin).  The paths provided by octicons work pretty well for this, but may need to be scaled.

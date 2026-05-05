@@ -1,4 +1,4 @@
-import './Splitter.scss';
+import './Splitter.module.scss';
 
 const blackRightPointingTriangle = '\u{25B6}';
 

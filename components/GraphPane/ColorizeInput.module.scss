@@ -1,3 +1,5 @@
+:global {
+
 #colorize-ui select {
   margin-left: 0.5em;
   border: solid 0.1rem var(--bg1);
@@ -8,3 +10,5 @@
 #colorize-key {
   margin-top: 1rem;
 }
+
+} // end :global

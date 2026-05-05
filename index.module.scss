@@ -1,4 +1,6 @@
-@use 'lib/root.scss' as *;
+@use 'lib/root.module.scss' as *;
+
+:global {
 
 :root {
   accent-color: var(--accent);
@@ -179,3 +181,5 @@ footer {
     display: none;
   }
 }
+
+} // end :global

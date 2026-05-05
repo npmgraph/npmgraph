@@ -1,4 +1,6 @@
-@use '../lib/root.scss' as *;
+@use '../lib/root.module.scss' as *;
+
+:global {
 
 #splitter {
   display: flex;
@@ -21,3 +23,5 @@
     display: none !important;
   }
 }
+
+} // end :global

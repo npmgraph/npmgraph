@@ -1,12 +1,12 @@
 import confetti from 'canvas-confetti';
 import { $ } from 'select-dom';
-import './flash.scss';
+import * as styles from './flash.module.scss';
 
 export function flash(wat: unknown, bg = '#f80') {
   const SPACE = 10;
 
   const graph = $('#graph');
-  const prev = $('.flash:last-of-type');
+  const prev = $(`.${styles.flash}:last-of-type`);
   const el = document.createElement('div');
 
   if (wat instanceof Error) {
@@ -26,7 +26,7 @@ export function flash(wat: unknown, bg = '#f80') {
   }
 
   document.body.appendChild(el);
-  el.classList.add('flash');
+  el.classList.add(styles.flash);
   const prevBottom = prev ? prev.offsetTop + prev.offsetHeight : 0;
 
   const top =

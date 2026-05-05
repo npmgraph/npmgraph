@@ -1,3 +1,5 @@
+:global {
+
 #pane-graph {
   .collapsed {
     opacity: 0.5;
@@ -9,3 +11,5 @@
 .report-section h3:nth-last-child(1) {
   display: none;
 }
+
+} // end :global
