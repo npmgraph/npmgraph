@@ -1,13 +1,13 @@
 import type { HTMLProps } from 'react';
 import { useRef, useState } from 'react';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
-import { isDefined } from '../../lib/guards.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { isDefined } from '../../lib/guards.ts';
 import { searchSet } from '../../lib/url_util.ts';
 import { patchLocation } from '../../lib/useLocation.ts';
 import { useQuery } from '../../lib/useQuery.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
-import './QueryInput.scss';
+import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
 const hasSoftKeyboard = 'ontouchstart' in document.documentElement;
@@ -65,6 +65,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
           name="q"
           ref={inputRef}
           id="search-field"
+          className={styles.root}
           placeholder="Search…"
           value={value}
           autoCapitalize="off"
@@ -80,12 +81,12 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
       </form>
 
       {errors.map(([key, error]) => (
-        <div key={key} className="query-error">
+        <div key={key} className={styles.queryError}>
           {error.message}
         </div>
       ))}
       {isGithubUrl(valueAsURL) ? (
-        <div className="tip">
+        <div className={styles.tip}>
           Note: URLs that refer to private GitHub repos or gists should use the
           URL shown when{' '}
           <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
@@ -95,7 +96,7 @@ export default function QueryInput(props: HTMLProps<HTMLInputElement>) {
         </div>
       ) : null}
       {valueAsURL ? (
-        <div className="tip">
+        <div className={styles.tip}>
           Note: {valueAsURL.host} must allow CORS requests from the{' '}
           {location.host} domain for this to work
         </div>
