@@ -4,6 +4,11 @@ import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { getModuleKey } from '../../lib/module_util.ts';
+import type { Overrides } from '../../lib/overrides_util.ts';
+import {
+  getChildOverrides,
+  getVersionOverride,
+} from '../../lib/overrides_util.ts';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -39,6 +44,8 @@ export type DependencyKey =
   | 'dependencies'
   | 'devDependencies'
   | 'optionalDependencies';
+
+export type { Overrides } from '../../lib/overrides_util.ts';
 
 type DependencyEntry = {
   name: string;
@@ -112,12 +119,16 @@ export async function getGraphForQuery(
   async function _visit(
     module: Module[] | Module,
     level = 0,
+    currentOverrides: Overrides = {},
+    rootOverrides: Overrides = {},
   ): Promise<GraphModuleInfo | void> {
     if (!module) return Promise.reject(new Error('Undefined module'));
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
-      await Promise.all(module.map(m => _visit(m, level)));
+      await Promise.all(
+        module.map(m => _visit(m, level, currentOverrides, rootOverrides)),
+      );
       return;
     }
 
@@ -145,9 +156,27 @@ export async function getGraphForQuery(
     // Walk downstream dependencies
     await Promise.allSettled(
       [...downstreamEntries].map(async ({ name, version, type }) => {
-        const downstreamModule = await getModule(getModuleKey(name, version));
+        // Apply version override if one exists for this dependency name
+        const overriddenVersion =
+          getVersionOverride(currentOverrides, name) ?? version;
 
-        const moduleInfo = await _visit(downstreamModule, level + 1);
+        const downstreamModule = await getModule(
+          getModuleKey(name, overriddenVersion),
+        );
+
+        // Compute the overrides context to pass into this child's subtree
+        const childOverrides = getChildOverrides(
+          currentOverrides,
+          rootOverrides,
+          name,
+        );
+
+        const moduleInfo = await _visit(
+          downstreamModule,
+          level + 1,
+          childOverrides,
+          rootOverrides,
+        );
 
         moduleInfo?.upstream.add({ module, type });
         info?.downstream.add({ module: downstreamModule, type });
@@ -168,7 +197,10 @@ export async function getGraphForQuery(
         );
       } else {
         graphState.entryModules.add(m);
-        return _visit(m);
+        // Use overrides from the entry module's package.json, if present
+        const rootOverrides =
+          (m.package.overrides as Overrides | undefined) ?? {};
+        return _visit(m, 0, rootOverrides, rootOverrides);
       }
     }),
   );
