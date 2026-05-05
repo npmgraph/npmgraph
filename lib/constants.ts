@@ -27,9 +27,11 @@ export const ZOOM_FIT_HEIGHT = 'h';
 export const ZOOM_FIT_WIDTH = 'w';
 export const ZOOM_NONE = null;
 
-export enum PANE {
-  MODULE = 'module',
-  GRAPH = 'graph',
-  INFO = 'info',
-  SETTINGS = 'settings',
-}
+export const PaneType = {
+  MODULE: 'module',
+  GRAPH: 'graph',
+  INFO: 'info',
+  SETTINGS: 'settings',
+} as const;
+
+export type PaneTypes = (typeof PaneType)[keyof typeof PaneType];

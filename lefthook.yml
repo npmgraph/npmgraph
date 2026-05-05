@@ -1,0 +1,17 @@
+pre-commit:
+  commands:
+    format:
+      run: npm run format {staged_files}
+
+    lint:
+      glob: '**/*.{js,ts,jsx,tsx}'
+      run: npm run lint {staged_files}
+
+    test:
+      glob: '**/*.test.{js,ts,jsx,tsx}'
+      run: npm run test:unit {staged_files}
+
+commit-msg:
+  commands:
+    commitlint:
+      run: commitlint --edit {1}

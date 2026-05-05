@@ -12,7 +12,7 @@ import {
 } from '../../lib/ModuleCache.ts';
 import { report } from '../../lib/bugsnag.ts';
 import {
-  PANE,
+  PaneType,
   PARAM_COLORIZE,
   PARAM_DEPENDENCIES,
   PARAM_HIDE,
@@ -122,7 +122,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     setGraphSelection(QueryType.Default, moduleKey);
     if (moduleKey) {
-      setPane(PANE.MODULE);
+      setPane(PaneType.MODULE);
     }
   }
 
@@ -183,7 +183,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           newGraph.entryModules.size === 0 &&
           newGraph.failedEntryModules.size > 0
         ) {
-          setPane(PANE.INFO);
+          setPane(PaneType.INFO);
         }
       },
     );
