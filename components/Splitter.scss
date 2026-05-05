@@ -12,7 +12,7 @@
   color: var(--tabs-text);
   user-select: none;
   &[hidden] {
-    // Hide it by keep its place
+    // Hide it but keep its place
     display: block !important;
     visibility: hidden;
   }

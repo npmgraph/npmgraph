@@ -46,6 +46,15 @@ export default function AppHeader() {
         >
           Module
         </Tab>
+        <Tab
+          active={inspector && pane === PANE.SETTINGS}
+          onClick={() => {
+            setHide(null);
+            setPane(PANE.SETTINGS);
+          }}
+        >
+          Settings
+        </Tab>
         <Splitter isOpen={inspector} onClick={() => setHide(true)} />
       </div>
     </div>

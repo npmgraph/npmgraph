@@ -2,9 +2,8 @@
 
 #graph {
   position: relative;
-  flex-grow: 1;
-  flex-basis: calc(100% - var(--inspector-size));
-  width: calc(100% - var(--inspector-size));
+  flex: 1;
+  min-width: 0;
   overflow: auto;
   user-select: none;
   -webkit-user-select: none;
