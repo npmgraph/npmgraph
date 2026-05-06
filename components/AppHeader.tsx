@@ -9,7 +9,7 @@ export default function AppHeader() {
 
   return (
     <div className={styles.root}>
-      <Logo />
+      <a href="/"><Logo /></a>
       <QueryInput className={styles.input} />
       <Tabs className={styles.tabs} />
     </div>
