@@ -1,5 +1,4 @@
 import simplur from 'simplur';
-import * as indexStyles from '../../index.module.scss';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type Module from '../../lib/Module.ts';
 import type { Maintainer } from '../../lib/Module.ts';
@@ -122,7 +121,7 @@ export default function ModulePane({
       <div className={styles.moduleHeader}>
         {isSingleEntryModule ? null : (
           <QueryLink
-            className={indexStyles.brightHover}
+            className="bright-hover"
             query={module.key}
             style={{ textDecoration: 'none' }}
           >

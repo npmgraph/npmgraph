@@ -1,5 +1,4 @@
 import type { HTMLProps } from 'react';
-import * as indexStyles from '../../index.module.scss';
 import { cn } from '../../lib/dom.ts';
 import { useParsedQuery } from '../../lib/useQuery.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
@@ -70,7 +69,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             href="https://github.com/npmgraph/npmgraph"
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(indexStyles.brightHover, 'external-link')}
+            className={cn('bright-hover', 'external-link')}
           >
             GitHub repo
           </a>
@@ -79,7 +78,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             href="https://github.com/sponsors/broofa"
             target="_blank"
             rel="noopener noreferrer"
-            className={cn(indexStyles.brightHover, 'external-link')}
+            className={cn('bright-hover', 'external-link')}
           >
             Sponsor
           </a>

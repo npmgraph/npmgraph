@@ -2,7 +2,6 @@ import type { HTMLProps } from 'react';
 import type { QueryType } from '../lib/ModuleCache.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
 
-import * as indexStyles from '../index.module.scss';
 import { cn } from '../lib/dom.ts';
 import * as styles from './Selectable.module.scss';
 
@@ -22,7 +21,7 @@ export function Selectable({
 
   return (
     <span
-      className={cn(styles.root, indexStyles.brightHover, className)}
+      className={cn(styles.root, 'bright-hover', className)}
       title={title}
       onClick={() => setGraphSelection(type, value)}
       {...props}

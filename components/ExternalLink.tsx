@@ -3,7 +3,6 @@ import { cn } from '../lib/dom.ts';
 import type { IconProps } from './Icons.tsx';
 import { OffsiteLinkIcon } from './Icons.tsx';
 
-import * as indexStyles from '../index.module.scss';
 import * as styles from './ExternalLink.module.scss';
 
 export function ExternalLink({
@@ -20,7 +19,7 @@ export function ExternalLink({
   return (
     <a
       href={href}
-      className={cn(indexStyles.brightHover, styles.externalLink, className)}
+      className={cn('bright-hover', styles.externalLink, className)}
       target={target}
       {...props}
     >

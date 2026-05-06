@@ -1,4 +1,3 @@
-import * as indexStyles from '../../index.module.scss';
 import {
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
@@ -18,7 +17,7 @@ export function GraphDiagramZoomButtons() {
         className={cn(
           styles.zoomFitWidth,
           { selected: zoom === ZOOM_FIT_WIDTH },
-          indexStyles.brightHover,
+          'bright-hover',
         )}
         onClick={() => setZoom(ZOOM_FIT_WIDTH)}
         title="Zoom (fit width)"
@@ -30,7 +29,7 @@ export function GraphDiagramZoomButtons() {
         className={cn(
           styles.zoom11,
           { selected: zoom === ZOOM_NONE },
-          indexStyles.brightHover,
+          'bright-hover',
         )}
         onClick={() => setZoom(ZOOM_NONE)}
         title="Zoom (1:1)"
@@ -42,7 +41,7 @@ export function GraphDiagramZoomButtons() {
         className={cn(
           styles.zoomFitHeight,
           { selected: zoom === ZOOM_FIT_HEIGHT },
-          indexStyles.brightHover,
+          'bright-hover',
         )}
         onClick={() => setZoom(ZOOM_FIT_HEIGHT)}
         title="Zoom (fit height)"

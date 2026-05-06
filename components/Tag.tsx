@@ -1,6 +1,5 @@
 import md5 from 'md5';
 import type { HTMLProps } from 'react';
-import * as indexStyles from '../index.module.scss';
 import { QueryType } from '../lib/ModuleCache.ts';
 import { cn } from '../lib/dom.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
@@ -45,7 +44,7 @@ export function Tag({
       className={cn(
         styles.tag,
         type === QueryType.Maintainer && styles.maintainer,
-        indexStyles.brightHover,
+        'bright-hover',
         className,
       )}
       title={title}

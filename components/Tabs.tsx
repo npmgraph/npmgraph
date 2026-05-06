@@ -1,5 +1,4 @@
 import type { HTMLProps } from 'react';
-import * as indexStyles from '../index.module.scss';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { cn } from '../lib/dom.ts';
@@ -17,7 +16,7 @@ function Tab({
 }) {
   return (
     <div className={cn(styles.tab, { [styles.active]: active })} {...props}>
-      <button type="button" className={indexStyles.brightHover}>
+      <button type="button" className="bright-hover">
         {children}
       </button>
     </div>

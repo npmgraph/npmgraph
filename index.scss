@@ -134,7 +134,7 @@ footer {
   text-align: center;
 }
 
-.brightHover {
+.bright-hover {
   transition: filter 0.2s;
   will-change: filter;
 
@@ -147,4 +147,8 @@ footer {
 label {
   display: block;
   margin: 0.3em 0;
+}
+
+.d-block {
+  display: block !important;
 }

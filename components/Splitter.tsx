@@ -1,4 +1,3 @@
-import * as indexStyles from '../index.module.scss';
 import { cn } from '../lib/dom.ts';
 import * as styles from './Splitter.module.scss';
 import * as tabStyles from './Tabs.module.scss';
@@ -14,7 +13,7 @@ export function Splitter({
 }) {
   return (
     <div
-      className={cn(indexStyles.brightHover, tabStyles.tab, styles.splitter)}
+      className={cn('bright-hover', tabStyles.tab, styles.splitter)}
       onClick={onClick}
       aria-hidden={!isOpen}
     >

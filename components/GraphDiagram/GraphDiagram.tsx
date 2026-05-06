@@ -138,7 +138,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (!vb) return;
 
     const [, , w, h] = vb;
-    graphEl.classList.remove(styles.dBlock);
+    graphEl.classList.remove('d-block');
 
     switch (zoom) {
       case ZOOM_NONE:
@@ -154,7 +154,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       case ZOOM_FIT_HEIGHT:
         diagramElement.removeAttribute('width');
         diagramElement.setAttribute('height', '100%');
-        graphEl.classList.add(styles.dBlock);
+        graphEl.classList.add('d-block');
         break;
     }
   }
