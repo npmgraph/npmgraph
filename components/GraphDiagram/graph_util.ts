@@ -376,5 +376,5 @@ export function gatherSelectionInfo(
 }
 
 export function getDiagramElement() {
-  return $<SVGSVGElement>(`svg.${styles.graphDiagram}`);
+  return $<SVGSVGElement>(styles.graphDiagram);
 }
