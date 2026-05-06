@@ -68,13 +68,13 @@
   }
 }
 
-:global {
-  svg.graph-diagram {
-    fill: var(--text);
-    margin: auto;
-    min-width: fit-content;
-  }
+.graphDiagram {
+  fill: var(--text);
+  margin: auto;
+  min-width: fit-content;
+}
 
+:global {
   pattern#warning {
     .line0 {
       stroke: var(--warning0);

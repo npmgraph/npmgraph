@@ -4,6 +4,7 @@ import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { getModuleKey } from '../../lib/module_util.ts';
+import * as styles from './GraphDiagram.module.scss';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -374,8 +375,6 @@ export function gatherSelectionInfo(
   };
 }
 
-export const DIAGRAM_CLASS = 'graph-diagram';
-
 export function getDiagramElement() {
-  return $<SVGSVGElement>(`svg.${DIAGRAM_CLASS}`);
+  return $<SVGSVGElement>(`svg.${styles.graphDiagram}`);
 }

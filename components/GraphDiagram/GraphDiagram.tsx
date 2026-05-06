@@ -41,7 +41,6 @@ import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import type { DependencyKey, GraphState } from './graph_util.ts';
 import {
   composeDOT,
-  DIAGRAM_CLASS,
   gatherSelectionInfo,
   getDiagramElement,
   getGraphForQuery,
@@ -230,7 +229,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       // Remove background element so page background shows thru
       svgDom.querySelector('.graph > polygon')?.remove();
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svgDom.classList.add(DIAGRAM_CLASS);
+      svgDom.classList.add(styles.graphDiagram);
 
       // Inject into DOM
       const el = $(`.${styles.graph}`)!;
@@ -246,7 +245,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12"/>
         </pattern>`;
 
-      select(`.${styles.graph} svg`).insert('defs', ':first-child').html(PATTERN);
+      select(`.${styles.graph} svg`)
+        .insert('defs', ':first-child')
+        .html(PATTERN);
 
       // Decorate DOM nodes with appropriate classname
       for (const el of $$(`.${styles.graph} g.node`)) {
@@ -441,7 +442,9 @@ function updateSelection(
     } else if (!scrollEl) {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
-      scrollGraphIntoView(select(`.${styles.graph} svg .node`).node() as HTMLElement);
+      scrollGraphIntoView(
+        select(`.${styles.graph} svg .node`).node() as HTMLElement,
+      );
     }
   }
 }

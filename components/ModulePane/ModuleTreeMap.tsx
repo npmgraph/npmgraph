@@ -92,7 +92,11 @@ export function ModuleTreeMap({
   }, [data]);
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', ...style }} {...props}>
+    <div
+      ref={containerRef}
+      style={{ position: 'relative', ...style }}
+      {...props}
+    >
       {leaves}
     </div>
   );

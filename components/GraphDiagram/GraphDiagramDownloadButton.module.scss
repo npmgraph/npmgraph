@@ -1,9 +1,9 @@
 .root {
-  border-top-left-radius: var(--rad-sm);
-  border-bottom-left-radius: var(--rad-sm);
-  border-top-right-radius: var(--rad-sm);
-  border-bottom-right-radius: var(--rad-sm);
-  padding-left: calc(var(--padding) + 1px);
-  padding-right: calc(var(--padding) + 1px);
   box-shadow: 2px 2px 6px var(--bg0-shadow-color);
+  border-top-right-radius: var(--rad-sm);
+  border-top-left-radius: var(--rad-sm);
+  border-bottom-right-radius: var(--rad-sm);
+  border-bottom-left-radius: var(--rad-sm);
+  padding-right: calc(var(--padding) + 1px);
+  padding-left: calc(var(--padding) + 1px);
 }

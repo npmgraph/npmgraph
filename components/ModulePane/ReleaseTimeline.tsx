@@ -159,10 +159,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       >
         {Object.entries(layers).map(([k, layer]) => {
           return (
-            <g
-              key={`layer-${k}`}
-              className={layerClasses[k]}
-            >
+            <g key={`layer-${k}`} className={layerClasses[k]}>
               {layer}
             </g>
           );

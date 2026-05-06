@@ -29,16 +29,11 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   let paneComponent;
   switch (pane) {
     case PaneType.MODULE:
-      paneComponent = (
-        <ModulePane selectedModules={selectedModules} />
-      );
+      paneComponent = <ModulePane selectedModules={selectedModules} />;
       break;
     case PaneType.GRAPH:
       paneComponent = (
-        <GraphPane
-          className={graphPaneStyles.paneGraph}
-          graph={graph}
-        />
+        <GraphPane className={graphPaneStyles.paneGraph} graph={graph} />
       );
       break;
     case PaneType.SETTINGS:
@@ -49,10 +44,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       break;
   }
   return (
-    <div
-      className={cn(styles.inspector, className)}
-      {...restProps}
-    >
+    <div className={cn(styles.inspector, className)} {...restProps}>
       {paneComponent}
     </div>
   );
