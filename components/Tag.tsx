@@ -1,9 +1,21 @@
 import md5 from 'md5';
 import type { HTMLProps } from 'react';
-import * as indexStyles from '../index.module.scss';
-import type { QueryType } from '../lib/ModuleCache.ts';
+import { QueryType } from '../lib/ModuleCache.ts';
 import { cn } from '../lib/dom.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
+import * as styles from './Tag.module.scss';
+
+export function Tags({
+  children,
+  className,
+  ...props
+}: HTMLProps<HTMLDivElement>) {
+  return (
+    <div className={cn(styles.tags, className)} {...props}>
+      {children}
+    </div>
+  );
+}
 
 export function Tag({
   type,
@@ -29,7 +41,12 @@ export function Tag({
 
   return (
     <div
-      className={cn('tag', type, indexStyles.brightHover, className)}
+      className={cn(
+        styles.tag,
+        type === QueryType.Maintainer && styles.maintainer,
+        'bright-hover',
+        className,
+      )}
       title={title}
       onClick={() => setGraphSelection(type, value)}
     >

@@ -52,9 +52,7 @@ export default function GraphPane({
 
   return (
     <Pane className={cn(styles.paneGraph, className)} {...restProps}>
-      <div
-        style={{ fontSize: '90%', color: 'var(--text-dim)', marginTop: '1em' }}
-      >
+      <div className={styles.collapseInfo}>
         {collapse.length ? (
           <span>
             {simplur`${collapse.length} module[|s] collapsed `}

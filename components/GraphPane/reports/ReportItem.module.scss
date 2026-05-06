@@ -16,28 +16,25 @@
     border-color: var(--bg1);
   }
 
-  :global {
-    .zebra-row:nth-child(even) {
-      background-color: rgba(127, 127, 127, 0.05);
-    }
+  summary {
+    position: sticky;
+    top: 0;
+    border-radius: 0.3rem;
+    background-color: var(--bg0);
+    color: var(--accent);
+    font-weight: normal;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    list-style: none;
 
-    summary {
-      position: sticky;
-      top: 0;
-      border-radius: 0.3rem;
-      background-color: var(--bg0);
-      color: var(--accent);
-      font-weight: normal;
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
-
-    // TODO: There has to be a better way of removing the arrow marker on
-    // SUMMARY elements... right?!?
-    summary::marker {
-      font-size: 0;
+    &::marker {
+      display: none;
     }
   }
+}
+
+.zebraRow:nth-child(even) {
+  background-color: rgba(127, 127, 127, 0.05);
 }
 
 .symbol {
