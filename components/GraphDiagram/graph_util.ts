@@ -284,17 +284,25 @@ export function composeDOT({
   const nodes = ['\n// Nodes & per-node styling'];
   const edges = ['\n// Edges & per-edge styling'];
 
-  for (const [, { module, level, downstream }] of entries) {
+  for (const [, { module, level, upstream, downstream }] of entries) {
     let fontsize = 11;
     const { unpackedSize } = module;
     if (sizing && unpackedSize) {
       fontsize *= Math.max(1, Math.log10(unpackedSize) - 2);
     }
 
+    // A node is "peer-only" when it exists solely because of peer dependency
+    // edges (no regular dependency pulls it in).  Give it a dashed border to
+    // make it visually distinct from hard dependencies.
+    const isPeerOnly =
+      upstream.size > 0 &&
+      [...upstream].every(({ type }) => type === 'peerDependencies');
+
     const link = new URL(location.origin);
     link.searchParams.append(PARAM_QUERY, module.key);
     const label = module.isUnnamed ? UNNAMED_PACKAGE : undefined;
-    const vs = { root: level === 0, fontsize, href: link.href, label };
+    const style = isPeerOnly ? 'rounded,dashed' : undefined;
+    const vs = { root: level === 0, fontsize, href: link.href, label, style };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
