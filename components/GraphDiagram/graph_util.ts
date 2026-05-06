@@ -295,7 +295,10 @@ export function composeDOT({
     // A node is "peer-only" when it exists solely because of peer dependency
     // edges (no regular dependency pulls it in).  Give it a dashed border to
     // make it visually distinct from hard dependencies.
+    // Root nodes (level === 0) are always explicitly queried, so they never
+    // get a dashed border even if a peer dep edge also points to them.
     const isPeerOnly =
+      level !== 0 &&
       upstream.size > 0 &&
       [...upstream].every(({ type }) => type === 'peerDependencies');
 
