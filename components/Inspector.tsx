@@ -30,28 +30,26 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   switch (pane) {
     case PaneType.MODULE:
       paneComponent = (
-        <ModulePane id="pane-module" selectedModules={selectedModules} />
+        <ModulePane selectedModules={selectedModules} />
       );
       break;
     case PaneType.GRAPH:
       paneComponent = (
         <GraphPane
-          id="pane-graph"
           className={graphPaneStyles.paneGraph}
           graph={graph}
         />
       );
       break;
     case PaneType.SETTINGS:
-      paneComponent = <SettingsPane id="pane-settings" />;
+      paneComponent = <SettingsPane />;
       break;
     case PaneType.INFO:
-      paneComponent = <InfoPane id="pane-info" />;
+      paneComponent = <InfoPane />;
       break;
   }
   return (
     <div
-      id="inspector"
       className={cn(styles.inspector, className)}
       {...restProps}
     >

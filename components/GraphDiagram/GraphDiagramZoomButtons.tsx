@@ -8,14 +8,15 @@ import {
 import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import { ZoomHorizontalIcon, ZoomVerticalIcon } from '../Icons.tsx';
+import * as styles from './GraphDiagramZoomButtons.module.scss';
 
 export function GraphDiagramZoomButtons() {
   const [zoom, setZoom] = useHashParam(PARAM_ZOOM);
   return (
-    <div id="zoom-buttons">
+    <div className={styles.root}>
       <button
-        id="zoom-fit-width"
         className={cn(
+          styles.zoomFitWidth,
           { selected: zoom === ZOOM_FIT_WIDTH },
           indexStyles.brightHover,
         )}
@@ -26,7 +27,6 @@ export function GraphDiagramZoomButtons() {
         <ZoomHorizontalIcon />
       </button>
       <button
-        id="zoom-none"
         className={cn(
           { selected: zoom === ZOOM_NONE },
           indexStyles.brightHover,
@@ -44,8 +44,8 @@ export function GraphDiagramZoomButtons() {
         1:1
       </button>
       <button
-        id="zoom-fit-height"
         className={cn(
+          styles.zoomFitHeight,
           { selected: zoom === ZOOM_FIT_HEIGHT },
           indexStyles.brightHover,
         )}

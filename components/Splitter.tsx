@@ -14,7 +14,6 @@ export function Splitter({
 }) {
   return (
     <div
-      id="splitter"
       className={cn(indexStyles.brightHover, tabStyles.tab, styles.splitter)}
       onClick={onClick}
       aria-hidden={!isOpen}

@@ -74,6 +74,14 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     text: [] as ReactElement[],
   };
 
+  const layerClasses: Partial<Record<string, string>> = {
+    grid: styles.layerGrid,
+    major: styles.layerMajor,
+    minor: styles.layerMinor,
+    patch: styles.layerPatch,
+    prerelease: styles.layerPrerelease,
+  };
+
   const xScale = createScale(tmin, tmax, 0, w);
   const yScale = createScale(majorMax, majorMin, 0, h);
 
@@ -153,7 +161,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
           return (
             <g
               key={`layer-${k}`}
-              className={styles[`layer-${k}` as keyof typeof styles] as string}
+              className={layerClasses[k]}
             >
               {layer}
             </g>
