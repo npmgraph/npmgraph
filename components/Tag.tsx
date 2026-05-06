@@ -1,5 +1,6 @@
 import md5 from 'md5';
 import type { HTMLProps } from 'react';
+import * as indexStyles from '../index.module.scss';
 import type { QueryType } from '../lib/ModuleCache.ts';
 import { cn } from '../lib/dom.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
@@ -28,7 +29,7 @@ export function Tag({
 
   return (
     <div
-      className={cn('tag', type, 'bright-hover', className)}
+      className={cn('tag', type, indexStyles.brightHover, className)}
       title={title}
       onClick={() => setGraphSelection(type, value)}
     >

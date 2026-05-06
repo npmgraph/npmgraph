@@ -41,6 +41,10 @@
     margin-top: 0;
     padding-inline-start: 1em;
   }
+
+  @media print {
+    display: none;
+  }
 }
 
 :global(label) {

@@ -1,4 +1,5 @@
 import simplur from 'simplur';
+import * as indexStyles from '../../index.module.scss';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type Module from '../../lib/Module.ts';
 import type { Maintainer } from '../../lib/Module.ts';
@@ -117,7 +118,7 @@ export default function ModulePane({
 
       {pkg.deprecated ? (
         <div
-          className="warning"
+          className={styles.warning}
           style={{ padding: '.5em', borderRadius: '.5em' }}
         >
           <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
@@ -130,7 +131,7 @@ export default function ModulePane({
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         {isSingleEntryModule ? null : (
           <QueryLink
-            className="bright-hover"
+            className={indexStyles.brightHover}
             query={module.key}
             style={{ textDecoration: 'none' }}
           >

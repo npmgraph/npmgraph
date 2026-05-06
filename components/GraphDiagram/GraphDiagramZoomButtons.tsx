@@ -1,3 +1,4 @@
+import * as indexStyles from '../../index.module.scss';
 import {
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
@@ -14,7 +15,10 @@ export function GraphDiagramZoomButtons() {
     <div id="zoom-buttons">
       <button
         id="zoom-fit-width"
-        className={cn({ selected: zoom === ZOOM_FIT_WIDTH }, 'bright-hover')}
+        className={cn(
+          { selected: zoom === ZOOM_FIT_WIDTH },
+          indexStyles.brightHover,
+        )}
         onClick={() => setZoom(ZOOM_FIT_WIDTH)}
         title="Zoom (fit width)"
         type="button"
@@ -23,7 +27,10 @@ export function GraphDiagramZoomButtons() {
       </button>
       <button
         id="zoom-none"
-        className={cn({ selected: zoom === ZOOM_NONE }, 'bright-hover')}
+        className={cn(
+          { selected: zoom === ZOOM_NONE },
+          indexStyles.brightHover,
+        )}
         onClick={() => setZoom(ZOOM_NONE)}
         title="Zoom (1:1)"
         style={{
@@ -38,7 +45,10 @@ export function GraphDiagramZoomButtons() {
       </button>
       <button
         id="zoom-fit-height"
-        className={cn({ selected: zoom === ZOOM_FIT_HEIGHT }, 'bright-hover')}
+        className={cn(
+          { selected: zoom === ZOOM_FIT_HEIGHT },
+          indexStyles.brightHover,
+        )}
         onClick={() => setZoom(ZOOM_FIT_HEIGHT)}
         title="Zoom (fit height)"
         type="button"

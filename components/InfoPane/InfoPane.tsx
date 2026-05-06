@@ -1,9 +1,11 @@
 import type { HTMLProps } from 'react';
+import * as indexStyles from '../../index.module.scss';
+import { cn } from '../../lib/dom.ts';
+import { useParsedQuery } from '../../lib/useQuery.ts';
+import { ExternalLink } from '../ExternalLink.tsx';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import FilePicker from './FilePicker.tsx';
-import { ExternalLink } from '../ExternalLink.tsx';
-import { useParsedQuery } from '../../lib/useQuery.ts';
 import * as styles from './InfoPane.module.scss';
 
 function isGithubUrl(url: URL | null) {
@@ -68,7 +70,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             href="https://github.com/npmgraph/npmgraph"
             target="_blank"
             rel="noopener noreferrer"
-            className="bright-hover external-link"
+            className={cn(indexStyles.brightHover, 'external-link')}
           >
             GitHub repo
           </a>
@@ -77,7 +79,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             href="https://github.com/sponsors/broofa"
             target="_blank"
             rel="noopener noreferrer"
-            className="bright-hover external-link"
+            className={cn(indexStyles.brightHover, 'external-link')}
           >
             Sponsor
           </a>
