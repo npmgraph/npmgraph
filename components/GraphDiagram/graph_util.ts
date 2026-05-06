@@ -1,3 +1,4 @@
+import { satisfies } from 'semver';
 import { $ } from 'select-dom';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
@@ -80,18 +81,13 @@ function getDependencyEntries(
   // We only add non-"dependencies" at the top-level.
   if (level > 0) dependencyTypes = DEPENDENCIES_ONLY;
 
-  // peerDependencies are always traversed at all levels.
-  // They represent required runtime companions that must be shown in the graph
-  // regardless of user-selected dependency type filters.
-  const effectiveTypes = new Set([
-    ...dependencyTypes,
-    'peerDependencies' as DependencyKey,
-  ]);
-
   const depEntries = new Set<DependencyEntry>();
-  for (const type of effectiveTypes) {
+  for (const type of dependencyTypes) {
     const deps = module.package[type];
     if (!deps) continue;
+
+    // Only do one level for non-"dependencies"
+    if (level > 0 && type !== 'dependencies') continue;
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
@@ -176,6 +172,63 @@ export async function getGraphForQuery(
       } else {
         graphState.entryModules.add(m);
         return _visit(m);
+      }
+    }),
+  );
+
+  // Second pass: resolve peer dependencies.
+  // Build a name → Module[] index for O(1) lookups of already-present modules.
+  const modulesByName = new Map<string, Module[]>();
+  for (const { module } of graphState.moduleInfos.values()) {
+    let list = modulesByName.get(module.name);
+    if (!list) {
+      list = [];
+      modulesByName.set(module.name, list);
+    }
+    list.push(module);
+  }
+
+  await Promise.allSettled(
+    [...graphState.moduleInfos.values()].map(async info => {
+      const { peerDependencies } = info.module.package;
+      if (!peerDependencies) return;
+
+      for (const [name, versionRange] of Object.entries(
+        peerDependencies,
+      ) as [string, string][]) {
+        // Prefer an existing node that satisfies the range to avoid duplicates.
+        // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
+        let peerModule = modulesByName.get(name)?.find(m => {
+          if (!m.version) return false;
+          try {
+            return satisfies(m.version, versionRange);
+          } catch {
+            return false;
+          }
+        });
+
+        if (!peerModule) {
+          // Not yet in graph — fetch and traverse the resolved version.
+          try {
+            peerModule = await getModule(getModuleKey(name, versionRange));
+            if (peerModule.isStub) continue;
+            await _visit(peerModule, info.level + 1);
+            // Register in the name index so later iterations can find it.
+            let list = modulesByName.get(name);
+            if (!list) {
+              list = [];
+              modulesByName.set(name, list);
+            }
+            if (!list.includes(peerModule)) list.push(peerModule);
+          } catch {
+            continue;
+          }
+        }
+
+        info.downstream.add({ module: peerModule, type: 'peerDependencies' });
+        graphState.moduleInfos
+          .get(peerModule.key)
+          ?.upstream.add({ module: info.module, type: 'peerDependencies' });
       }
     }),
   );
