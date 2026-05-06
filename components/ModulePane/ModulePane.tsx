@@ -117,7 +117,7 @@ export default function ModulePane({
 
       {pkg.deprecated ? (
         <div
-          className="warning"
+          className={styles.warning}
           style={{ padding: '.5em', borderRadius: '.5em' }}
         >
           <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
