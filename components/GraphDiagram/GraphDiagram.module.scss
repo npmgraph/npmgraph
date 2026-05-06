@@ -1,193 +1,75 @@
 @use '../../lib/root.module.scss' as *;
 
-:global {
-  #graph {
-    position: relative;
-    flex: 1;
-    min-width: 0;
-    overflow: auto;
-    user-select: none;
-    -webkit-user-select: none;
+.graph {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  user-select: none;
+  -webkit-user-select: none;
 
-    --warning0: #f6f6e0;
-    --warning1: #d9d9d9;
-    --stub: #f00;
-    display: flex;
+  --warning0: #f6f6e0;
+  --warning1: #d9d9d9;
+  --stub: #f00;
+  display: flex;
 
-    &.graphviz-loading,
-    &.graphviz-failed {
-      margin-top: 20vh;
-      text-align: center;
-    }
-    &.graphviz-failed {
-      color: var(--stroke-red);
-    }
-
-    @include tight-screen {
-      min-height: 80vh;
-    }
+  &.graphvizLoading,
+  &.graphvizFailed {
+    margin-top: 20vh;
+    text-align: center;
+  }
+  &.graphvizFailed {
+    color: var(--stroke-red);
   }
 
-  @media (prefers-color-scheme: dark) {
-    #graph {
-      --warning0: #101010;
-      --warning1: #660;
-    }
+  @include tight-screen {
+    min-height: 80vh;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .graph {
+    --warning0: #101010;
+    --warning1: #660;
+  }
+}
+
+.graphControls {
+  display: flex;
+  position: absolute;
+  gap: 1em;
+  z-index: 1;
+  inset: auto auto 1em 1em;
+  --padding: 6px;
+
+  @include tight-screen {
+    inset: 1em 1em auto auto;
   }
 
-  #graph-controls {
-    display: flex;
-    position: absolute;
-    gap: 1em;
-    z-index: 1;
-    inset: auto auto 1em 1em;
-    --padding: 6px;
+  button {
+    display: inline-block;
+    border: solid 1px var(--bg1);
+    background: var(--bg0);
+    padding: var(--padding);
+    color: var(--text);
 
-    @include tight-screen {
-      inset: 1em 1em auto auto;
-    }
-
-    button {
-      display: inline-block;
-      border: solid 1px var(--bg1);
-      background: var(--bg0);
-      padding: var(--padding);
-      color: var(--text);
-
-      svg {
-        display: block;
-      }
-
-      &.selected {
-        background-color: var(--accent);
-        color: var(--text-on-accent);
-      }
-    }
-  }
-  #zoom-buttons {
-    display: flex;
-  }
-
-  #zoom-fit-width,
-  #download-svg {
-    border-top-left-radius: var(--rad-sm);
-    border-bottom-left-radius: var(--rad-sm);
-    padding-left: calc(var(--padding) + 1px);
-  }
-
-  #zoom-fit-height,
-  #download-svg {
-    border-top-right-radius: var(--rad-sm);
-    border-bottom-right-radius: var(--rad-sm);
-    padding-right: calc(var(--padding) + 1px);
-  }
-
-  #zoom-buttons,
-  #download-svg {
-    box-shadow: 2px 2px 6px var(--bg0-shadow-color);
-  }
-
-  svg#graph-diagram {
-    fill: var(--text);
-    margin: auto;
-    min-width: fit-content;
-  }
-
-  pattern#warning {
-    .line0 {
-      stroke: var(--warning0);
-    }
-    .line1 {
-      stroke: var(--warning1);
-    }
-  }
-
-  g .stub {
-    opacity: 0.6;
-
-    > path {
-      stroke: var(--stub);
-      stroke-dasharray: 4, 4;
-    }
-  }
-
-  g.node {
-    text {
-      fill: var(--text);
-    }
-
-    path {
-      fill: var(--bg0);
-      stroke: var(--text);
-    }
-
-    &.collapsed {
-      opacity: 0.5;
+    svg {
+      display: block;
     }
 
     &.selected {
-      path {
-        stroke: var(--accent) !important;
-        stroke-width: 3;
-      }
-    }
-
-    &.downstream {
-      path {
-        stroke: var(--accent);
-      }
-    }
-
-    &.unselected {
-      opacity: 0.35;
-    }
-
-    &.warning > path {
-      fill: url(#warning);
-    }
-
-    * {
-      cursor: pointer;
-    }
-  }
-
-  g.edge {
-    --selected-edge-width: 1;
-
-    > path {
-      // stylelint-disable-line no-descending-specificity
-      stroke: var(--text);
-    }
-
-    > polygon {
-      fill: var(--text);
-      stroke: var(--text);
-    }
-
-    &.downstream {
-      & > path {
-        stroke: var(--accent);
-        stroke-width: var(--selected-edge-width);
-      }
-
-      & > polygon {
-        fill: var(--accent);
-        stroke: var(--accent);
-      }
-    }
-
-    &.unselected {
-      opacity: 0.35;
+      background-color: var(--accent);
+      color: var(--text-on-accent);
     }
   }
 
   @media print {
-    #graph-controls {
-      display: none;
-    }
+    display: none;
   }
 }
 
-.dBlock {
-  display: block !important;
+.graphDiagram {
+  fill: var(--text);
+  margin: auto;
+  min-width: fit-content;
 }

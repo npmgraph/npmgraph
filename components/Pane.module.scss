@@ -1,0 +1,25 @@
+@use '../lib/root.module.scss' as *;
+
+.pane {
+  flex-grow: 1;
+  box-sizing: border-box;
+  box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
+  background-color: var(--bg0);
+  padding: 0 1em;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: var(--text);
+
+  a {
+    color: var(--accent);
+  }
+
+  hr {
+    margin-inline: -1em;
+  }
+
+  @include tight-screen {
+    padding-bottom: 1em;
+    min-height: 200px;
+  }
+}

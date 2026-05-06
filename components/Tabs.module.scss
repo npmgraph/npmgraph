@@ -8,3 +8,26 @@
   color: var(--tabs-text);
   user-select: none;
 }
+
+.tab {
+  display: flex;
+  position: relative;
+  flex-grow: 1;
+  border-right: solid 1px var(--tabs-border);
+  font-weight: 600;
+  font-size: 12pt;
+
+  button {
+    all: unset;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    background: var(--tabs-bg) var(--bg-gradient);
+    padding: 0 10px;
+  }
+
+  &.active button {
+    background: var(--accent);
+  }
+}

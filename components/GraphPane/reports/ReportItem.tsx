@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import * as indexStyles from '../../../index.module.scss';
 import { cn } from '../../../lib/dom.ts';
 import type { RenderedAnalysis } from './Analyzer.tsx';
 import * as styles from './ReportItem.module.scss';
@@ -35,7 +34,7 @@ export function ReportItem<T>({
 
   return (
     <details className={cn(styles.root, styles[type])} {...props}>
-      <summary className={indexStyles.brightHover}>
+      <summary className="bright-hover">
         <span className={styles.symbol}>{SYMBOLS[type]}</span>
         {summary}
       </summary>

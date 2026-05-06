@@ -3,6 +3,7 @@ import { cn } from '../../../../lib/dom.ts';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type { ModuleAnalysisState } from '../analyzeModules.ts';
+import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './modulesAll.module.scss';
 
 export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
@@ -14,7 +15,10 @@ export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
     .sort((a, b) => a.module.key.localeCompare(b.module.key))
     .map(({ module }) => {
       return (
-        <div className={cn(styles.row, 'zebra-row')} key={module.key}>
+        <div
+          className={cn(styles.row, reportItemStyles.zebraRow)}
+          key={module.key}
+        >
           <Selectable
             className={cn(styles.name, {
               [styles.entry]: entryModules.has(module),

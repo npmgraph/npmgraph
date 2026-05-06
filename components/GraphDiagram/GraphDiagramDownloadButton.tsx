@@ -1,5 +1,6 @@
 import { report } from '../../lib/bugsnag.ts';
 import { DownloadIcon } from '../Icons.tsx';
+import * as styles from './GraphDiagramDownloadButton.module.scss';
 import { getDiagramElement } from './graph_util.ts';
 
 type DownloadExtension = 'svg' | 'png';
@@ -7,7 +8,7 @@ type DownloadExtension = 'svg' | 'png';
 export default function GraphDiagramDownloadButton() {
   return (
     <button
-      id="download-svg"
+      className={styles.root}
       onClick={() => download('svg')}
       title="Download as SVG"
       type="button"

@@ -1,12 +1,27 @@
-import * as styles from './Tabs.module.scss';
-
+import type { HTMLProps } from 'react';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
+import { cn } from '../lib/dom.ts';
 import useHashParam from '../lib/useHashParam.ts';
 
 import { Splitter } from './Splitter.tsx';
-import { Tab } from './Tab.tsx';
-import type { HTMLProps } from 'react';
+import * as styles from './Tabs.module.scss';
+
+function Tab({
+  active,
+  children,
+  ...props
+}: HTMLProps<HTMLDivElement> & {
+  active: boolean;
+}) {
+  return (
+    <div className={cn(styles.tab, { [styles.active]: active })} {...props}>
+      <button type="button" className="bright-hover">
+        {children}
+      </button>
+    </div>
+  );
+}
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [pane, setPane] = useGlobalState('pane');

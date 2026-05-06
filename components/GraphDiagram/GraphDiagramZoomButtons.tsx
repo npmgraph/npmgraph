@@ -1,4 +1,3 @@
-import * as indexStyles from '../../index.module.scss';
 import {
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
@@ -8,16 +7,17 @@ import {
 import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import { ZoomHorizontalIcon, ZoomVerticalIcon } from '../Icons.tsx';
+import * as styles from './GraphDiagramZoomButtons.module.scss';
 
 export function GraphDiagramZoomButtons() {
   const [zoom, setZoom] = useHashParam(PARAM_ZOOM);
   return (
-    <div id="zoom-buttons">
+    <div className={styles.root}>
       <button
-        id="zoom-fit-width"
         className={cn(
+          styles.zoomFitWidth,
           { selected: zoom === ZOOM_FIT_WIDTH },
-          indexStyles.brightHover,
+          'bright-hover',
         )}
         onClick={() => setZoom(ZOOM_FIT_WIDTH)}
         title="Zoom (fit width)"
@@ -26,28 +26,22 @@ export function GraphDiagramZoomButtons() {
         <ZoomHorizontalIcon />
       </button>
       <button
-        id="zoom-none"
         className={cn(
+          styles.zoom11,
           { selected: zoom === ZOOM_NONE },
-          indexStyles.brightHover,
+          'bright-hover',
         )}
         onClick={() => setZoom(ZOOM_NONE)}
         title="Zoom (1:1)"
-        style={{
-          fontSize: '1em',
-          padding: '0 .5em',
-          width: 'fit-content',
-          borderWidth: '1px 0px',
-        }}
         type="button"
       >
         1:1
       </button>
       <button
-        id="zoom-fit-height"
         className={cn(
+          styles.zoomFitHeight,
           { selected: zoom === ZOOM_FIT_HEIGHT },
-          indexStyles.brightHover,
+          'bright-hover',
         )}
         onClick={() => setZoom(ZOOM_FIT_HEIGHT)}
         title="Zoom (fit height)"

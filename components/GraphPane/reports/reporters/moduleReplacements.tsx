@@ -5,6 +5,7 @@ import { ExternalLink } from '../../../ExternalLink.tsx';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type { ModuleAnalysisState } from '../analyzeModules.ts';
+import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './moduleReplacements.module.scss';
 
 function getReplacements(moduleName: string) {
@@ -78,8 +79,11 @@ export function moduleReplacementsNative({
       const mappingURL = resolveDocUrl(mapping.url);
 
       return (
-        <div className={cn(styles.root, 'zebra-row')} key={module.key}>
-          <Selectable value={module.key} />
+        <div
+          className={cn(styles.root, reportItemStyles.zebraRow)}
+          key={module.key}
+        >
+          <Selectable value={module.key} className={styles.selectable} />
           {': '}
           <div className={styles.body}>
             {replacements.length === 1 ? (

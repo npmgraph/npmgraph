@@ -6,6 +6,7 @@ import type {
   PeerDependenciesState,
   PeerDependencyInfo,
 } from '../analyzePeerDependencies.tsx';
+import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './peerDependenciesAll.module.scss';
 
 export function peerDependenciesAll({
@@ -31,7 +32,7 @@ export function peerDependenciesAll({
             </span>
           </div>
           <div className={styles.section}>
-            <div className={styles.header_row}>
+            <div className={styles.headerRow}>
               <span className={styles.wants}>Wants</span>
               <span className={styles.gets}>Gets</span>
             </div>
@@ -40,7 +41,7 @@ export function peerDependenciesAll({
               const { name, optional, versionRange, destination } = pdi;
               return (
                 <div
-                  className={cn('zebra-row', styles.row)}
+                  className={cn(reportItemStyles.zebraRow, styles.row)}
                   key={`${pdi.name}${pdi.versionRange}`}
                 >
                   <span className={styles.wants}>
