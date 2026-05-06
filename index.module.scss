@@ -129,26 +129,12 @@ hr {
   border-top: solid 1px var(--bg1);
 }
 
-kbd {
-  border: 1px solid currentcolor;
-  border-radius: 0.3em;
-  padding: 0.2em 0.3em;
-  color: color-mix(in srgb, currentcolor 30%, transparent);
-  line-height: 1;
-  white-space: nowrap;
-}
-
 footer {
   color: var(--text-dim);
   text-align: center;
 }
 
-.link {
-  color: var(--accent);
-  text-decoration: underline;
-}
-
-.bright-hover {
+.brightHover {
   transition: filter 0.2s;
   will-change: filter;
 
@@ -158,24 +144,7 @@ footer {
   }
 }
 
-.warning {
-  background: repeating-linear-gradient(
-    -45deg,
-    rgba(128, 128, 0, 0.1),
-    rgba(128, 128, 0, 0.1) 10px,
-    rgba(0, 0, 0, 0.1) 10px,
-    rgba(0, 0, 0, 0.1) 20px
-  );
-}
-
-.d-block {
-  display: block !important;
-}
-
-@media print {
-  #inspector,
-  #splitter,
-  canvas {
-    display: none;
-  }
+label {
+  display: block;
+  margin: 0.3em 0;
 }

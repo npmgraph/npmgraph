@@ -31,7 +31,7 @@ export function peerDependenciesAll({
             </span>
           </div>
           <div className={styles.section}>
-            <div className={styles.header_row}>
+            <div className={styles.headerRow}>
               <span className={styles.wants}>Wants</span>
               <span className={styles.gets}>Gets</span>
             </div>

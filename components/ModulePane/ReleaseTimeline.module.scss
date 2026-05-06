@@ -14,11 +14,11 @@
     fill: var(--text);
   }
 
-  > .layer-grid {
+  > .layerGrid {
     stroke: var(--grey60);
   }
 
-  .layer-major {
+  .layerMajor {
     circle {
       fill: var(--grey100);
       stroke: var(--grey20);
@@ -29,13 +29,13 @@
     }
   }
 
-  .layer-minor {
+  .layerMinor {
     fill: var(--bg-orange);
   }
-  .layer-patch {
+  .layerPatch {
     fill: var(--bg-green);
   }
-  .layer-prerelease {
+  .layerPrerelease {
     fill: var(--bg-blue);
   }
 }
