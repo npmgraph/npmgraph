@@ -194,9 +194,10 @@ export async function getGraphForQuery(
       const { peerDependencies } = info.module.package;
       if (!peerDependencies) return;
 
-      for (const [name, versionRange] of Object.entries(
-        peerDependencies,
-      ) as [string, string][]) {
+      for (const [name, versionRange] of Object.entries(peerDependencies) as [
+        string,
+        string,
+      ][]) {
         // Prefer an existing node that satisfies the range to avoid duplicates.
         // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
         let peerModule = modulesByName.get(name)?.find(m => {
@@ -284,6 +285,11 @@ export function composeDOT({
 
   const nodes = ['\n// Nodes & per-node styling'];
   const edges = ['\n// Edges & per-edge styling'];
+  // Map from rank-group index → list of node IDs.
+  // Peer-dep-only nodes are placed in their parent's rank group (level - 1) so
+  // they appear in the same column as their peer parent rather than one column
+  // to the right.
+  const rankGroupMap = new Map<number, string[]>();
 
   for (const [, { module, level, upstream, downstream }] of entries) {
     let fontsize = 11;
@@ -318,6 +324,12 @@ export function composeDOT({
         }`,
       );
     }
+
+    // Peer-only nodes belong to their parent's rank group so they render in
+    // the same column (below the parent) rather than one column to the right.
+    const groupLevel = isPeerOnly ? level - 1 : level;
+    if (!rankGroupMap.has(groupLevel)) rankGroupMap.set(groupLevel, []);
+    rankGroupMap.get(groupLevel)!.push(`"${dotEscape(module.key)}"`);
   }
 
   const titleParts = entries
@@ -333,6 +345,17 @@ export function composeDOT({
     );
   }
 
+  // Emit rank=same constraints:
+  // - Always emit the level-0 group to anchor entry modules at the left column.
+  // - Emit deeper groups only when they contain >1 member (grouping matters).
+  const rankConstraints =
+    graph.moduleInfos.size > 1
+      ? [...rankGroupMap.entries()]
+          .sort(([a], [b]) => a - b)
+          .filter(([groupLevel, nodes]) => groupLevel === 0 || nodes.length > 1)
+          .map(([, nodes]) => `{rank=same; ${nodes.join('; ')}}`)
+      : [];
+
   return [
     'digraph {',
     'rankdir="LR"',
@@ -347,14 +370,7 @@ export function composeDOT({
   ]
     .concat(nodes)
     .concat(edges)
-    .concat(
-      graph.moduleInfos.size > 1
-        ? `{rank=same; ${[...graph.moduleInfos.values()]
-            .filter(info => info.level === 0)
-            .map(info => `"${info.module}"`)
-            .join('; ')};}`
-        : '',
-    )
+    .concat(rankConstraints)
     .concat('}')
     .join('\n');
 }
