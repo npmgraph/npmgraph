@@ -1,10 +1,11 @@
 import confetti from 'canvas-confetti';
 import { $ } from 'select-dom';
+import * as appHeaderStyles from '../components/AppHeader.module.scss';
 import * as styles from './flash.module.scss';
 
-export function flash(wat: unknown, bg = '#f80') {
-  const SPACE = 10;
+const FLASH_GAP = 10;
 
+export function flash(wat: unknown, bg = '#f80') {
   const graph = $('#graph');
   const flashes = document.getElementsByClassName(styles.flash);
   const prev =
@@ -29,33 +30,45 @@ export function flash(wat: unknown, bg = '#f80') {
 
   document.body.appendChild(el);
   el.classList.add(styles.flash);
-  const prevBottom = prev ? prev.offsetTop + prev.offsetHeight : 0;
 
-  const top =
-    prevBottom < window.innerHeight - el.offsetHeight ? prevBottom : 0;
-  el.style.top = `${top + SPACE / 2}px`;
-  el.style.left = `${-el.offsetWidth - SPACE}px`;
-  el.style.maxWidth = graph ? `${graph.offsetWidth - SPACE}px` : '100%';
+  let top = prev ? prev.offsetTop + prev.offsetHeight : 0;
+  if (top <= 0 || top >= window.innerHeight - el.offsetHeight) {
+    top = defaultTop();
+  }
+
+  el.style.top = `${top + FLASH_GAP / 2}px`;
+  el.style.left = `${-el.offsetWidth - FLASH_GAP}px`;
+  el.style.maxWidth = graph ? `${graph.offsetWidth - FLASH_GAP}px` : '100%';
   el.style.backgroundColor = bg;
 
   setTimeout(() => {
-    el.style.left = `${SPACE}px`;
+    el.style.left = `${FLASH_GAP}px`;
 
     setTimeout(() => {
       el.addEventListener('transitionend', () => el.remove());
-      el.style.left = `${-el.offsetWidth - SPACE}px`;
+      el.style.left = `${-el.offsetWidth - FLASH_GAP}px`;
     }, 5000);
   }, 0);
+  return el;
 }
 
 export function celebrate(msg: string) {
-  flash(`🎉 ${msg} 🎉`, 'transparent');
+  const el = flash(`🎉 ${msg} 🎉`, 'transparent');
+
+  const y = (el.clientTop + el.clientHeight / 2) / document.body.clientHeight;
 
   confetti({
     particleCount: 100,
     ticks: 100,
     spread: 90,
     angle: -20,
-    origin: { x: 0, y: 0 },
+    origin: { x: 0, y },
   });
+}
+
+function defaultTop() {
+  const appHeader = document.querySelector<HTMLElement>(
+    `.${appHeaderStyles.root}`,
+  );
+  return appHeader ? appHeader.offsetTop + appHeader.offsetHeight : 0;
 }
