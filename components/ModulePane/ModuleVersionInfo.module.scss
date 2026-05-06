@@ -6,6 +6,8 @@
   text-align: center;
 
   &.distTag {
+    display: inline;
+    margin-left: 1em;
     border: none;
     text-align: inherit;
   }

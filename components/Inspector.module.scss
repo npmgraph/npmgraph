@@ -71,19 +71,3 @@
     min-height: 200px;
   }
 }
-
-:global(.dist-tag) {
-  display: inline;
-  margin-left: 1em;
-}
-
-:global(:root .mobile-tabs) {
-  display: none;
-  @include tight-screen {
-    display: flex;
-    justify-content: stretch;
-    > :global(:not(#splitter)) {
-      flex-grow: 1;
-    }
-  }
-}

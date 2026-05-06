@@ -5,6 +5,15 @@
   flex-grow: 1;
   flex-direction: column;
   height: 100svh;
+
+  .mobileTabs {
+    display: none;
+    @include tight-screen {
+      display: flex;
+      flex-grow: 1;
+      justify-content: stretch;
+    }
+  }
 }
 .content {
   display: flex;
