@@ -440,7 +440,7 @@ function updateSelection(
     } else if (!scrollEl) {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
-      scrollGraphIntoView(select(`svg.graph-diagram .node`).node() as HTMLElement);
+      scrollGraphIntoView(select(`.${styles.graph} svg .node`).node() as HTMLElement);
     }
   }
 }
