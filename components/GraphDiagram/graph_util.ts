@@ -1,4 +1,3 @@
-import { satisfies } from 'semver';
 import { $ } from 'select-dom';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
@@ -32,7 +31,7 @@ const DEFAULT_STYLES = {
 const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=black]',
-  peerDependencies: '[color=black style=dashed]',
+  peerDependencies: '[color=black style=dashed label="peer"]',
   optionalDependencies: '[color=black style=dashed]', // unused
   optionalDevDependencies: '[color=black style=dashed]', // unused
 };
@@ -81,13 +80,18 @@ function getDependencyEntries(
   // We only add non-"dependencies" at the top-level.
   if (level > 0) dependencyTypes = DEPENDENCIES_ONLY;
 
+  // peerDependencies are always traversed at all levels.
+  // They represent required runtime companions that must be shown in the graph
+  // regardless of user-selected dependency type filters.
+  const effectiveTypes = new Set([
+    ...dependencyTypes,
+    'peerDependencies' as DependencyKey,
+  ]);
+
   const depEntries = new Set<DependencyEntry>();
-  for (const type of dependencyTypes) {
+  for (const type of effectiveTypes) {
     const deps = module.package[type];
     if (!deps) continue;
-
-    // Only do one level for non-"dependencies"
-    if (level > 0 && type !== 'dependencies') continue;
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
@@ -175,42 +179,6 @@ export async function getGraphForQuery(
       }
     }),
   );
-
-  // Second pass: add peer dependency edges for modules already in the graph
-  // Build a name-indexed map for O(1) lookups
-  const modulesByName = new Map<string, Module[]>();
-  for (const [, { module }] of graphState.moduleInfos) {
-    let list = modulesByName.get(module.name);
-    if (!list) {
-      list = [];
-      modulesByName.set(module.name, list);
-    }
-    list.push(module);
-  }
-
-  for (const [, info] of graphState.moduleInfos) {
-    const { peerDependencies } = info.module.package;
-    if (!peerDependencies) continue;
-
-    for (const [name, versionRange] of Object.entries(peerDependencies)) {
-      const candidates = modulesByName.get(name);
-      if (!candidates) continue;
-
-      for (const peerModule of candidates) {
-        if (!peerModule.version) continue;
-        try {
-          if (!satisfies(peerModule.version, versionRange)) continue;
-        } catch {
-          continue;
-        }
-
-        info.downstream.add({ module: peerModule, type: 'peerDependencies' });
-        graphState.moduleInfos
-          .get(peerModule.key)
-          ?.upstream.add({ module: info.module, type: 'peerDependencies' });
-      }
-    }
-  }
 
   return graphState;
 }
