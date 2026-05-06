@@ -22,12 +22,7 @@ export function Selectable({
 
   return (
     <span
-      className={cn(
-        styles.root,
-        'selectable',
-        indexStyles.brightHover,
-        className,
-      )}
+      className={cn(styles.root, indexStyles.brightHover, className)}
       title={title}
       onClick={() => setGraphSelection(type, value)}
       {...props}

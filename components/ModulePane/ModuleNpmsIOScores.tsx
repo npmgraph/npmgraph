@@ -3,6 +3,7 @@ import type Module from '../../lib/Module.ts';
 import fetchJSON from '../../lib/fetchJSON.ts';
 import type { NPMSIOData } from '../../lib/fetch_types.ts';
 import { ModuleScoreBar } from './ModuleScoreBar.tsx';
+import * as styles from './ModuleNpmsIOScores.module.scss';
 
 export default function ModuleNpmsIOScores({ module }: { module: Module }) {
   const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
@@ -30,14 +31,7 @@ export default function ModuleNpmsIOScores({ module }: { module: Module }) {
   const scores: NPMSIOData['score'] = npmsData.score;
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'auto 1fr',
-        marginTop: '1em',
-        rowGap: '1px',
-      }}
-    >
+    <div className={styles.scoreGrid}>
       <ModuleScoreBar
         style={{ fontWeight: 'bold' }}
         title="Overall"

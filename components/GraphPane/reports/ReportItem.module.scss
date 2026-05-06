@@ -16,30 +16,26 @@
     border-color: var(--bg1);
   }
 
-  // :global is required because .zebra-row is applied as a plain class string
-  // in JSX (not via a CSS module reference), making it a global class name.
-  :global {
-    .zebra-row:nth-child(even) {
-      background-color: rgba(127, 127, 127, 0.05);
-    }
-
-    summary {
-      position: sticky;
-      top: 0;
-      border-radius: 0.3rem;
-      background-color: var(--bg0);
-      color: var(--accent);
-      font-weight: normal;
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
-
-    // TODO: There has to be a better way of removing the arrow marker on
-    // SUMMARY elements... right?!?
-    summary::marker {
-      font-size: 0;
-    }
+  summary {
+    position: sticky;
+    top: 0;
+    border-radius: 0.3rem;
+    background-color: var(--bg0);
+    color: var(--accent);
+    font-weight: normal;
+    font-size: 1rem;
+    line-height: 1.5rem;
   }
+
+  // TODO: There has to be a better way of removing the arrow marker on
+  // SUMMARY elements... right?!?
+  summary::marker {
+    font-size: 0;
+  }
+}
+
+.zebraRow:nth-child(even) {
+  background-color: rgba(127, 127, 127, 0.05);
 }
 
 .symbol {

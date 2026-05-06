@@ -1,21 +1,18 @@
 import md5 from 'md5';
 import type { HTMLProps } from 'react';
 import * as indexStyles from '../index.module.scss';
-import type { QueryType } from '../lib/ModuleCache.ts';
+import { QueryType } from '../lib/ModuleCache.ts';
 import { cn } from '../lib/dom.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
+import * as styles from './Tag.module.scss';
 
-export function Tags({ children, style, ...props }: HTMLProps<HTMLDivElement>) {
+export function Tags({
+  children,
+  className,
+  ...props
+}: HTMLProps<HTMLDivElement>) {
   return (
-    <div
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '10px',
-        ...style,
-      }}
-      {...props}
-    >
+    <div className={cn(styles.tags, className)} {...props}>
       {children}
     </div>
   );
@@ -45,7 +42,12 @@ export function Tag({
 
   return (
     <div
-      className={cn('tag', type, indexStyles.brightHover, className)}
+      className={cn(
+        styles.tag,
+        type === QueryType.Maintainer && styles.maintainer,
+        indexStyles.brightHover,
+        className,
+      )}
       title={title}
       onClick={() => setGraphSelection(type, value)}
     >

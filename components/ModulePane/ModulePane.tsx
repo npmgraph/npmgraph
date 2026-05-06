@@ -5,6 +5,7 @@ import type Module from '../../lib/Module.ts';
 import type { Maintainer } from '../../lib/Module.ts';
 import { QueryType } from '../../lib/ModuleCache.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
 import human from '../../lib/human.ts';
 import { getRepoUrlForModule } from '../../lib/repo_util.ts';
 import useHashParam from '../../lib/useHashParam.ts';
@@ -34,13 +35,7 @@ export default function ModulePane({
 
   if (nSelected === 0) {
     return (
-      <Pane
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
+      <Pane className={styles.centered}>
         <p>No modules selected.</p>
       </Pane>
     );
@@ -116,18 +111,15 @@ export default function ModulePane({
       </div>
 
       {pkg.deprecated ? (
-        <div
-          className={styles.warning}
-          style={{ padding: '.5em', borderRadius: '.5em' }}
-        >
-          <h2 style={{ color: 'darkred', marginTop: 0 }}>Deprecated Module</h2>
+        <div className={cn(styles.warning, styles.deprecatedBox)}>
+          <h2 className={styles.deprecatedTitle}>Deprecated Module</h2>
           {pkg.deprecated}
         </div>
       ) : null}
 
       <p style={{ marginTop: 0 }}>{pkg?.description}</p>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div className={styles.moduleHeader}>
         {isSingleEntryModule ? null : (
           <QueryLink
             className={indexStyles.brightHover}
@@ -156,13 +148,7 @@ export default function ModulePane({
       <ReleaseTimeline module={module} />
 
       <Section title="Module Size">
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'auto 1fr',
-            gap: '0 1em',
-          }}
-        >
+        <div className={styles.sizeGrid}>
           <span>Unpacked Size (module only):</span>
           {unpackedSize ? (
             <strong>{human(unpackedSize, 'B')}</strong>

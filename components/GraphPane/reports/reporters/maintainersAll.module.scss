@@ -38,12 +38,8 @@
   font-size: 0.9rem;
   font-family: monospace;
 
-  // :global is required because .selectable is applied as a plain class string
-  // inside Selectable.tsx (not via a CSS module reference), making it global.
-  :global {
-    .selectable {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .selectable {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

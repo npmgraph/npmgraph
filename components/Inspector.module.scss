@@ -6,29 +6,6 @@
   overflow: auto;
   color: var(--text);
 
-  // :global is required because Tag.tsx applies 'tag' and the QueryType value
-  // as plain class strings (not via CSS module references), making them global.
-  :global(.tag) {
-    cursor: pointer;
-    border-radius: var(--rad-lg);
-    background-color: var(--bg1);
-    padding: 2px 8px;
-    overflow: hidden;
-    color: var(--text);
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  :global(.tag.maintainer) {
-    padding: 0;
-    height: 32px;
-
-    img {
-      vertical-align: middle;
-      margin-right: 4px;
-    }
-  }
-
   ul {
     margin-top: 0;
     padding-inline-start: 1em;

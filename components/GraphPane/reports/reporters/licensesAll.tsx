@@ -5,6 +5,7 @@ import { LICENSES } from '../../../../lib/licenses.ts';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type { LicenseAnalysisState } from '../analyzeLicenses.ts';
+import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './licensesAll.module.scss';
 
 export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
@@ -14,7 +15,10 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
       const keywords = LICENSES[license.toLowerCase()]?.keywords;
 
       return (
-        <div className={cn(styles.root, 'zebra-row')} key={license}>
+        <div
+          className={cn(styles.root, reportItemStyles.zebraRow)}
+          key={license}
+        >
           <div className={styles.license}>
             <Selectable
               type={QueryType.License}
@@ -34,7 +38,11 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
 
           <div className={styles.modules}>
             {modules.map(m => (
-              <Selectable value={m.key} key={m.key} />
+              <Selectable
+                value={m.key}
+                key={m.key}
+                className={styles.selectable}
+              />
             ))}
           </div>
         </div>

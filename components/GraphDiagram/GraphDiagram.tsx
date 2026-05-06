@@ -35,6 +35,7 @@ import {
   isSimpleColorizer,
 } from '../GraphPane/colorizers/index.ts';
 import * as styles from './GraphDiagram.module.scss';
+import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';

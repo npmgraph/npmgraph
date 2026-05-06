@@ -14,11 +14,7 @@
     font-weight: bold;
   }
 
-  // :global is required because .selectable is applied as a plain class string
-  // inside Selectable.tsx (not via a CSS module reference), making it global.
-  :global {
-    .selectable {
-      margin-inline-end: 0;
-    }
+  .selectable {
+    margin-inline-end: 0;
   }
 }

@@ -1,0 +1,6 @@
+.scoreGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  row-gap: 1px;
+  margin-top: 1em;
+}

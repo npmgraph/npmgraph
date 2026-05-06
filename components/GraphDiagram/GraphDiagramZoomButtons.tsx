@@ -28,17 +28,12 @@ export function GraphDiagramZoomButtons() {
       </button>
       <button
         className={cn(
+          styles.zoom11,
           { selected: zoom === ZOOM_NONE },
           indexStyles.brightHover,
         )}
         onClick={() => setZoom(ZOOM_NONE)}
         title="Zoom (1:1)"
-        style={{
-          fontSize: '1em',
-          padding: '0 .5em',
-          width: 'fit-content',
-          borderWidth: '1px 0px',
-        }}
         type="button"
       >
         1:1

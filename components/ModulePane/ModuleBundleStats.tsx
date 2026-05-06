@@ -1,5 +1,6 @@
 import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
 import human from '../../lib/human.ts';
+import * as styles from './ModuleBundleStats.module.scss';
 
 export function ModuleBundleStats({
   bundleInfo,
@@ -7,9 +8,7 @@ export function ModuleBundleStats({
   bundleInfo: BundlePhobiaData;
 }) {
   return (
-    <div
-      style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '0 1em' }}
-    >
+    <div className={styles.root}>
       <span>Bundle size (minified):</span>
       <strong>{human(bundleInfo.size, 'B')}</strong>
       <span>Bundle size (compressed):</span>

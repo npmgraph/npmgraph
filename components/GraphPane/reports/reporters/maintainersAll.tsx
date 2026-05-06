@@ -6,6 +6,7 @@ import { cn } from '../../../../lib/dom.ts';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type { MaintainerAnalysisState } from '../analyzeMaintainers.tsx';
+import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './maintainersAll.module.scss';
 
 export function maintainersAll({
@@ -27,7 +28,7 @@ export function maintainersAll({
       }
 
       return (
-        <div className={cn(styles.root, 'zebra-row')} key={name}>
+        <div className={cn(styles.root, reportItemStyles.zebraRow)} key={name}>
           <div className={styles.maintainer}>
             {img}
             <Selectable type={QueryType.Maintainer} value={name} />
@@ -35,7 +36,11 @@ export function maintainersAll({
 
           <div className={styles.modules}>
             {[...modules.values()].map(m => (
-              <Selectable value={m.key} key={m.key} />
+              <Selectable
+                value={m.key}
+                key={m.key}
+                className={styles.selectable}
+              />
             ))}
           </div>
         </div>

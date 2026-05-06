@@ -1,0 +1,93 @@
+/* Styles for SVG elements dynamically injected by Graphviz at runtime.
+ * These cannot use CSS module class names because they target generated SVG
+ * element/class selectors that are not rendered by React.
+ *
+ * The pattern#warning ID selector is necessary because SVG fill references
+ * use the syntax fill: url(#id), which requires matching by ID attribute. */
+
+pattern#warning {
+  .line0 {
+    stroke: var(--warning0);
+  }
+  .line1 {
+    stroke: var(--warning1);
+  }
+}
+
+g .stub {
+  opacity: 0.6;
+
+  > path {
+    stroke: var(--stub);
+    stroke-dasharray: 4, 4;
+  }
+}
+
+g.node {
+  text {
+    fill: var(--text);
+  }
+
+  path {
+    fill: var(--bg0);
+    stroke: var(--text);
+  }
+
+  &.collapsed {
+    opacity: 0.5;
+  }
+
+  &.selected {
+    path {
+      stroke: var(--accent) !important;
+      stroke-width: 3;
+    }
+  }
+
+  &.downstream {
+    path {
+      stroke: var(--accent);
+    }
+  }
+
+  &.unselected {
+    opacity: 0.35;
+  }
+
+  &.warning > path {
+    fill: url(#warning);
+  }
+
+  * {
+    cursor: pointer;
+  }
+}
+
+g.edge {
+  --selected-edge-width: 1;
+
+  > path {
+    stroke: var(--text);
+  }
+
+  > polygon {
+    fill: var(--text);
+    stroke: var(--text);
+  }
+
+  &.downstream {
+    & > path {
+      stroke: var(--accent);
+      stroke-width: var(--selected-edge-width);
+    }
+
+    & > polygon {
+      fill: var(--accent);
+      stroke: var(--accent);
+    }
+  }
+
+  &.unselected {
+    opacity: 0.35;
+  }
+}
