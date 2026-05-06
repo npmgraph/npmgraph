@@ -1,4 +1,4 @@
-@use 'lib/root.scss' as *;
+@use './lib/root.module.scss' as *;
 
 :root {
   accent-color: var(--accent);
@@ -10,9 +10,8 @@
 
   --root-color: white; // Don't change, it's used to mix colors on light/dark schemes
   --rad-sm: 5px;
-  -rad-lg: 10px;
+  --rad-lg: 10px;
   --inspector-size: 32em;
-  --tabs-height: 24pt;
   --bg-gradient: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.2),
@@ -26,7 +25,8 @@
   --bg1: #bbb;
   --bg2: #ddd;
 
-  --tabs-bg: #7e7e7d;
+  --header-padding: 12px;
+  --tabs-bg: rgb(90, 83, 79);
   --tabs-text: #fff;
   --tabs-border: rgba(203, 203, 203, 0.796);
 
@@ -93,6 +93,10 @@
   }
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html {
   background: var(--bg-root);
   font-size: 10pt;
@@ -108,25 +112,6 @@ html {
 
 body {
   margin: 0;
-}
-
-#app {
-  display: flex;
-  width: 100vw;
-  height: 100svh;
-}
-
-@include tight-screen {
-  html,
-  body,
-  #app {
-    height: auto;
-    min-height: 100svh;
-  }
-  #app {
-    flex-direction: column;
-    --inspector-size: auto;
-  }
 }
 
 p {
@@ -161,4 +146,36 @@ footer {
 .link {
   color: var(--accent);
   text-decoration: underline;
+}
+
+.bright-hover {
+  transition: filter 0.2s;
+  will-change: filter;
+
+  &:hover {
+    filter: brightness(125%);
+    transition-duration: 0.1s;
+  }
+}
+
+.warning {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(128, 128, 0, 0.1),
+    rgba(128, 128, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.1) 20px
+  );
+}
+
+.d-block {
+  display: block !important;
+}
+
+@media print {
+  #inspector,
+  #splitter,
+  canvas {
+    display: none;
+  }
 }

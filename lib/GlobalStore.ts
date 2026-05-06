@@ -1,6 +1,7 @@
 import { useCallback, useSyncExternalStore } from 'react';
 import type { GraphState } from '../components/GraphDiagram/graph_util.ts';
-import { PANE, PARAM_QUERY } from './constants.ts';
+import type { PaneTypes } from './constants.ts';
+import { PaneType, PARAM_QUERY } from './constants.ts';
 import type Module from './Module.ts';
 import { hashGet, searchGet } from './url_util.ts';
 
@@ -9,16 +10,16 @@ type GlobalState = {
   graph: GraphState;
   lastVisit: number;
   location: URL;
-  pane: PANE;
+  pane: PaneTypes;
   selectedModules?: Map<string, Module>;
 };
 
 function _getInitialPane() {
   if (!searchGet(PARAM_QUERY)) {
-    return PANE.INFO;
+    return PaneType.INFO;
   }
   const select = hashGet('select')?.split(/[, ]+/);
-  return select ? PANE.MODULE : PANE.GRAPH;
+  return select ? PaneType.MODULE : PaneType.GRAPH;
 }
 
 let globalState: GlobalState = {

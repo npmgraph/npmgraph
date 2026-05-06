@@ -1,0 +1,50 @@
+@use '../lib/root.module.scss' as *;
+
+.root {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0 1.2em;
+  box-sizing: border-box;
+  background: var(--tabs-bg) var(--bg-gradient);
+  padding-inline: var(--header-padding);
+  color: var(--tabs-text);
+
+  // Override --text so the Logo's color-mix renders in light colors on the dark header
+  --text: var(--tabs-text);
+
+  svg {
+    flex-shrink: 0;
+    width: auto;
+    height: 1.6em;
+  }
+
+  form {
+    flex-grow: 1;
+    min-width: 0;
+  }
+
+  @include tight-screen {
+    .tabs {
+      display: none;
+    }
+  }
+}
+
+.input {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-radius: 1000px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.25em 0.6em;
+  max-width: 400px;
+  color: var(--tabs-text);
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &:focus {
+    border-color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.25);
+  }
+}
