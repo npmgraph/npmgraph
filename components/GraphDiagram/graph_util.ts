@@ -374,6 +374,8 @@ export function gatherSelectionInfo(
   };
 }
 
+export const DIAGRAM_CLASS = 'graph-diagram';
+
 export function getDiagramElement() {
-  return $<SVGSVGElement>('svg.graph-diagram');
+  return $<SVGSVGElement>(`svg.${DIAGRAM_CLASS}`);
 }

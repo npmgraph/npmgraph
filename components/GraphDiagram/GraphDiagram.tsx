@@ -41,6 +41,7 @@ import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import type { DependencyKey, GraphState } from './graph_util.ts';
 import {
   composeDOT,
+  DIAGRAM_CLASS,
   gatherSelectionInfo,
   getDiagramElement,
   getGraphForQuery,
@@ -229,7 +230,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       // Remove background element so page background shows thru
       svgDom.querySelector('.graph > polygon')?.remove();
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svgDom.classList.add('graph-diagram');
+      svgDom.classList.add(DIAGRAM_CLASS);
 
       // Inject into DOM
       const el = $(`.${styles.graph}`)!;
