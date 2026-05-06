@@ -1,7 +1,7 @@
 import type { HTMLProps, SVGProps } from 'react';
 import { cn } from '../lib/dom.ts';
 
-import './Icons.scss';
+import * as styles from './Icons.module.scss';
 
 // SVG icons.  To create a new icon, get the icon's SVG `path` and copy-paste it
 // here.  The path should fit w/in a 16x16 box (with a ~0.5px margin).  The paths provided by octicons work pretty well for this, but may need to be scaled.
@@ -30,12 +30,18 @@ export default function Icon({
       viewBox="0 0 16 16"
       width={width}
       height={height}
-      className={cn('icon', { [`icon-${name}`]: name }, className)}
+      className={cn(
+        styles.icon,
+        { [styles.iconSponsor]: name === 'sponsor' },
+        className,
+      )}
       {...props}
     >
-      {fillPath ? <path d={fillPath} className="icon-path-fill"></path> : null}
+      {fillPath ? (
+        <path d={fillPath} className={styles.iconPathFill}></path>
+      ) : null}
       {strokePath ? (
-        <path d={strokePath} className="icon-path-stroke"></path>
+        <path d={strokePath} className={styles.iconPathStroke}></path>
       ) : null}
     </svg>
   );

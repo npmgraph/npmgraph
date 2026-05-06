@@ -4,7 +4,7 @@ import type Module from '../../lib/Module.ts';
 
 import { cn } from '../../lib/dom.ts';
 import { QueryLink } from '../QueryLink.tsx';
-import './ModuleVersionInfo.scss';
+import * as styles from './ModuleVersionInfo.module.scss';
 
 export function ModuleVersionInfo({
   module,
@@ -46,21 +46,21 @@ export function ModuleVersionInfo({
   const isOutdated = gt(latestVersion, module.version);
 
   let content = null;
-  let className = '';
+  let updateClassName = '';
   if (isOutdated) {
     let message;
     if (majorDiff > 0) {
-      className = 'major-updates';
+      updateClassName = styles.majorUpdates;
       message = simplur`${majorDiff} major version[|s] behind`;
     } else if (minorDiff > 0) {
-      className = 'minor-updates';
+      updateClassName = styles.minorUpdates;
       message = simplur`${minorDiff} minor version[|s] behind`;
     } else if (patchDiff > 0) {
-      className = 'patch-updates';
+      updateClassName = styles.patchUpdates;
       message = simplur`${patchDiff} patch version[|s] behind`;
     } else {
       // prerelease behind the stable release of the same version
-      className = 'patch-updates';
+      updateClassName = styles.patchUpdates;
       message = 'prerelease, behind';
     }
 
@@ -74,7 +74,7 @@ export function ModuleVersionInfo({
     );
   } else if (distTag) {
     // Not outdated – show the dist-tag the version is pinned to (e.g. "latest")
-    className = 'dist-tag';
+    updateClassName = styles.distTag;
     content = (
       <>
         (<code>{distTag}</code>)
@@ -84,8 +84,7 @@ export function ModuleVersionInfo({
 
   return (
     <p
-      id="module-version"
-      className={cn(className, props.className)}
+      className={cn(styles.moduleVersion, updateClassName, props.className)}
       {...props}
     >
       {content}

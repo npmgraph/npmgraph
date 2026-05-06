@@ -1,6 +1,6 @@
-@use '../lib/root.scss' as *;
+@use '../lib/root.module.scss' as *;
 
-#inspector {
+.inspector {
   display: flex;
   flex-shrink: 1;
   flex-direction: column;
@@ -8,15 +8,15 @@
   overflow: auto;
   color: var(--text);
 
-  .description {
+  :global(.description) {
     font-weight: 600;
   }
 
-  .module {
+  :global(.module) {
     white-space: nowrap;
   }
 
-  .tag {
+  :global(.tag) {
     cursor: pointer;
     border-radius: var(--rad-lg);
     background-color: var(--bg1);
@@ -25,15 +25,15 @@
     color: var(--text);
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
 
-    &.maintainer {
-      padding: 0;
-      height: 32px;
+  :global(.tag.maintainer) {
+    padding: 0;
+    height: 32px;
 
-      img {
-        vertical-align: middle;
-        margin-right: 4px;
-      }
+    img {
+      vertical-align: middle;
+      margin-right: 4px;
     }
   }
 
@@ -43,12 +43,12 @@
   }
 }
 
-label {
+:global(label) {
   display: block;
   margin: 0.3em 0;
 }
 
-.pane {
+:global(.pane) {
   flex-grow: 1;
   box-sizing: border-box;
   box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
@@ -69,21 +69,5 @@ label {
   @include tight-screen {
     padding-bottom: 1em;
     min-height: 200px;
-  }
-}
-
-.dist-tag {
-  display: inline;
-  margin-left: 1em;
-}
-
-:root .mobile-tabs {
-  display: none;
-  @include tight-screen {
-    display: flex;
-    justify-content: stretch;
-    .tab {
-      flex-grow: 1;
-    }
   }
 }

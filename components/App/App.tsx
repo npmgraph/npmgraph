@@ -24,7 +24,7 @@ export default function App() {
       {activity.total > 0 ? <Loader activity={activity} /> : null}
       <div className={styles.content}>
         <GraphDiagram activity={activity} />
-        <Tabs className="mobile-tabs" />
+        <Tabs className={styles.mobileTabs} />
         <Inspector />
       </div>
     </div>

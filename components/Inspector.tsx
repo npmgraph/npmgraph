@@ -2,15 +2,18 @@ import type { HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
+import { cn } from '../lib/dom.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
 import useHashParam from '../lib/useHashParam.ts';
+import * as graphPaneStyles from './GraphPane/GraphPane.module.scss';
 import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
-import './Inspector.scss';
+import * as styles from './Inspector.module.scss';
 import ModulePane from './ModulePane/ModulePane.tsx';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
+  const { className, ...restProps } = props;
   const [pane] = useGlobalState('pane');
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGlobalState('graph');
@@ -31,7 +34,13 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       );
       break;
     case PaneType.GRAPH:
-      paneComponent = <GraphPane id="pane-graph" graph={graph} />;
+      paneComponent = (
+        <GraphPane
+          id="pane-graph"
+          className={graphPaneStyles.paneGraph}
+          graph={graph}
+        />
+      );
       break;
     case PaneType.SETTINGS:
       paneComponent = <SettingsPane id="pane-settings" />;
@@ -41,7 +50,11 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       break;
   }
   return (
-    <div id="inspector" {...props}>
+    <div
+      id="inspector"
+      className={cn(styles.inspector, className)}
+      {...restProps}
+    >
       {paneComponent}
     </div>
   );

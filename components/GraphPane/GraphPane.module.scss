@@ -1,0 +1,11 @@
+.paneGraph {
+  .collapsed {
+    opacity: 0.5;
+  }
+}
+
+// Hide empty sections
+.reportSection hr:nth-last-child(2),
+.reportSection h3:nth-last-child(1) {
+  display: none;
+}
