@@ -1,0 +1,38 @@
+@use '../../lib/root.module.scss' as *;
+
+.root {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  height: 100svh;
+
+  .mobileTabs {
+    display: none;
+    @include tight-screen {
+      display: flex;
+      flex-grow: 1;
+      justify-content: stretch;
+    }
+  }
+}
+.content {
+  display: flex;
+  position: relative;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+@include tight-screen {
+  html,
+  body,
+  .root {
+    height: auto;
+    min-height: 100svh;
+  }
+  .root {
+    --inspector-size: auto;
+  }
+  .content {
+    flex-direction: column;
+  }
+}

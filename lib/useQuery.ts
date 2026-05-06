@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useGlobalState } from './GlobalStore.ts';
-import { PARAM_QUERY } from './constants.ts';
+import { PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
 import { searchGet, searchSet } from './url_util.ts';
 import { patchLocation } from './useLocation.ts';
 
@@ -27,4 +27,12 @@ export function useQuery() {
     [queryString],
   );
   return [parsedQuery, setQuery] as const;
+}
+
+export function useParsedQuery() {
+  const [query] = useQuery();
+  const initialValue = query.join(', ');
+
+  // eslint-disable-next-line react/use-state -- Done downstream
+  return useState(initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue);
 }

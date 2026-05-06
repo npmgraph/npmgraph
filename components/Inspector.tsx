@@ -1,70 +1,60 @@
 import type { HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
-import { PANE, PARAM_HIDE } from '../lib/constants.ts';
+import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
+import { cn } from '../lib/dom.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
 import useHashParam from '../lib/useHashParam.ts';
+import * as graphPaneStyles from './GraphPane/GraphPane.module.scss';
 import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
-import './Inspector.scss';
+import * as styles from './Inspector.module.scss';
 import ModulePane from './ModulePane/ModulePane.tsx';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
-import { Splitter } from './Splitter.tsx';
-import { Tab } from './Tab.tsx';
-import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
-  const [pane, setPane] = useGlobalState('pane');
+  const { className, ...restProps } = props;
+  const [pane] = useGlobalState('pane');
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGlobalState('graph');
-  const [hide, setHide] = useHashParam(PARAM_HIDE);
+
+  const [hide] = useHashParam(PARAM_HIDE);
+
+  if (hide !== null) {
+    return null;
+  }
 
   const selectedModules = queryModuleCache(queryType, queryValue);
 
-  useKeyboardShortcuts();
-
   let paneComponent;
   switch (pane) {
-    case PANE.MODULE:
+    case PaneType.MODULE:
       paneComponent = (
         <ModulePane id="pane-module" selectedModules={selectedModules} />
       );
       break;
-    case PANE.GRAPH:
-      paneComponent = <GraphPane id="pane-graph" graph={graph} />;
+    case PaneType.GRAPH:
+      paneComponent = (
+        <GraphPane
+          id="pane-graph"
+          className={graphPaneStyles.paneGraph}
+          graph={graph}
+        />
+      );
       break;
-    case PANE.SETTINGS:
+    case PaneType.SETTINGS:
       paneComponent = <SettingsPane id="pane-settings" />;
       break;
-    case PANE.INFO:
+    case PaneType.INFO:
       paneComponent = <InfoPane id="pane-info" />;
       break;
   }
-
   return (
-    <div id="inspector" className={hide !== null ? '' : 'open'} {...props}>
-      <div id="tabs">
-        <Tab active={pane === PANE.INFO} onClick={() => setPane(PANE.INFO)}>
-          Start <kbd>/</kbd>
-        </Tab>
-        <Tab active={pane === PANE.GRAPH} onClick={() => setPane(PANE.GRAPH)}>
-          Explore
-        </Tab>
-        <Tab active={pane === PANE.MODULE} onClick={() => setPane(PANE.MODULE)}>
-          Module
-        </Tab>
-        <Tab
-          active={pane === PANE.SETTINGS}
-          onClick={() => setPane(PANE.SETTINGS)}
-        >
-          Settings
-        </Tab>
-        <Splitter
-          isOpen={hide === null}
-          onClick={() => setHide(hide === null)}
-        />
-      </div>
-
+    <div
+      id="inspector"
+      className={cn(styles.inspector, className)}
+      {...restProps}
+    >
       {paneComponent}
     </div>
   );
