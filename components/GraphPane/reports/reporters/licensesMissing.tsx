@@ -2,6 +2,7 @@ import simplur from 'simplur';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type { LicenseAnalysisState } from '../analyzeLicenses.ts';
+import * as reportItemStyles from '../ReportItem.module.scss';
 
 export function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
   if (!unlicensedModules.length) return;
@@ -11,7 +12,7 @@ export function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
   const details = unlicensedModules
     .sort((a, b) => a.key.localeCompare(b.key))
     .map(module => (
-      <div className="zebra-row" key={module.key}>
+      <div className={reportItemStyles.zebraRow} key={module.key}>
         <Selectable value={module.key} />
       </div>
     ));

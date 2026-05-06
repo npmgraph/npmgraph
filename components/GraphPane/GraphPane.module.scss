@@ -9,3 +9,9 @@
 .reportSection h3:nth-last-child(1) {
   display: none;
 }
+
+.collapseInfo {
+  margin-top: 1em;
+  color: var(--text-dim);
+  font-size: 90%;
+}

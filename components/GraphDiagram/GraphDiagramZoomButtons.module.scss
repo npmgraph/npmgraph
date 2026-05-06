@@ -14,3 +14,10 @@
   border-bottom-right-radius: var(--rad-sm);
   padding-right: calc(var(--padding) + 1px);
 }
+
+.zoom11 {
+  border-width: 1px 0;
+  padding: 0 0.5em;
+  width: fit-content;
+  font-size: 1em;
+}

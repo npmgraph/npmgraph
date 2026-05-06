@@ -7,6 +7,7 @@ import { ExternalLink } from '../../../ExternalLink.tsx';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type { ModuleAnalysisState } from '../analyzeModules.ts';
+import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './moduleReplacements.module.scss';
 
 const REPLACEMENTS = new Map<string, ModuleReplacement>();
@@ -78,8 +79,11 @@ export function moduleReplacementsNative({
       }
 
       return (
-        <div className={cn(styles.root, 'zebra-row')} key={module.key}>
-          <Selectable value={module.key} />
+        <div
+          className={cn(styles.root, reportItemStyles.zebraRow)}
+          key={module.key}
+        >
+          <Selectable value={module.key} className={styles.selectable} />
           {': '}
           <span className={styles.body}>{detail}</span>
         </div>
