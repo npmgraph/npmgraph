@@ -16,6 +16,8 @@
     border-color: var(--bg1);
   }
 
+  // :global is required because .zebra-row is applied as a plain class string
+  // in JSX (not via a CSS module reference), making it a global class name.
   :global {
     .zebra-row:nth-child(even) {
       background-color: rgba(127, 127, 127, 0.05);

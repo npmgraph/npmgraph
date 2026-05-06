@@ -74,6 +74,13 @@
   min-width: fit-content;
 }
 
+// :global is required here because all SVG elements below are dynamically
+// injected by Graphviz at runtime (not rendered by React), so CSS module
+// class names cannot be applied to them directly.
+//
+// The pattern#warning ID selector is necessary because SVG fill references
+// use the syntax fill: url(#id), which requires the element to be matched
+// by its ID attribute — the ID "warning" is set in the injected SVG string.
 :global {
   pattern#warning {
     .line0 {

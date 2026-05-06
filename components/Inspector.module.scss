@@ -6,14 +6,8 @@
   overflow: auto;
   color: var(--text);
 
-  :global(.description) {
-    font-weight: 600;
-  }
-
-  :global(.module) {
-    white-space: nowrap;
-  }
-
+  // :global is required because Tag.tsx applies 'tag' and the QueryType value
+  // as plain class strings (not via CSS module references), making them global.
   :global(.tag) {
     cursor: pointer;
     border-radius: var(--rad-lg);
