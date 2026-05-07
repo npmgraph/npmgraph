@@ -8,6 +8,7 @@ import AppHeader from '../AppHeader.tsx';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
 import Inspector from '../Inspector.tsx';
 import Intro from '../Intro.tsx';
+import PreviewWidget from '../PreviewWidget.tsx';
 import Tabs from '../Tabs.tsx';
 import useExternalInput from '../useExternalInput.ts';
 import * as styles from './App.module.scss';
@@ -29,7 +30,12 @@ export default function App() {
   }, [query, isTightScreen, setPane]);
 
   if (query.length === 0) {
-    return <Intro />;
+    return (
+      <>
+        <Intro />
+        <PreviewWidget />
+      </>
+    );
   }
 
   return (
@@ -43,6 +49,7 @@ export default function App() {
         {!isTightScreen ? <GraphDiagram activity={activity} /> : null}
         <Inspector activity={activity} />
       </div>
+      <PreviewWidget />
     </div>
   );
 }

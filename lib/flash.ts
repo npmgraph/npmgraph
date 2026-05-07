@@ -1,12 +1,16 @@
 import confetti from 'canvas-confetti';
 import { $ } from 'select-dom';
+import * as graphDiagramStyles from '../components/GraphDiagram/GraphDiagram.module.scss';
 import * as appHeaderStyles from '../components/AppHeader.module.scss';
 import * as styles from './flash.module.scss';
 
 const FLASH_GAP = 10;
 
 export function flash(wat: unknown, bg = '#f80') {
-  const graph = $('#graph');
+  const graph = document.getElementsByClassName(graphDiagramStyles.graph)[0];
+  if (!(graph instanceof HTMLElement)) {
+    throw new TypeError('Graph element not found or invalid');
+  }
   const flashes = document.getElementsByClassName(styles.flash);
   const prev =
     flashes.length > 0 ? (flashes[flashes.length - 1] as HTMLElement) : null;
@@ -38,7 +42,7 @@ export function flash(wat: unknown, bg = '#f80') {
 
   el.style.top = `${top + FLASH_GAP / 2}px`;
   el.style.left = `${-el.offsetWidth - FLASH_GAP}px`;
-  el.style.maxWidth = graph ? `${graph.offsetWidth - FLASH_GAP}px` : '100%';
+  el.style.maxWidth = `${graph.offsetWidth - FLASH_GAP}px`;
   el.style.backgroundColor = bg;
 
   setTimeout(() => {
@@ -67,8 +71,11 @@ export function celebrate(msg: string) {
 }
 
 function defaultTop() {
-  const appHeader = document.querySelector<HTMLElement>(
-    `.${appHeaderStyles.root}`,
-  );
-  return appHeader ? appHeader.offsetTop + appHeader.offsetHeight : 0;
+  const appHeader = document.getElementsByClassName(appHeaderStyles.root);
+  if (appHeader.length === 0) return 0;
+
+  const appHeaderElement = appHeader[0];
+  if (!(appHeaderElement instanceof HTMLElement)) return 0;
+
+  return appHeaderElement.offsetTop + appHeaderElement.offsetHeight;
 }
