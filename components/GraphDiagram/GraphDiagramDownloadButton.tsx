@@ -67,13 +67,13 @@ function downloadSvg() {
   if (!svg) return;
 
   // Add link(s) to font files
-  $$<HTMLLinkElement>('link[rel="stylesheet"]').forEach(link => {
-    if (!link.href.includes('fonts.googleapis.com')) return;
+  for (const link of $$<HTMLLinkElement>('link[rel="stylesheet"]')) {
+    if (!link.href.includes('fonts.googleapis.com')) continue;
 
     const fontEl = document.createElement('defs');
     fontEl.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
     svg.insertBefore(fontEl, svg.firstChild);
-  });
+  }
 
   // Clone runtime stylesheet link (e.g. /npmgraph...css) into an inline style for export.
   const appStylesheetLink = $optional<HTMLLinkElement>(

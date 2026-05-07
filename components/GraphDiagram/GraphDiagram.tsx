@@ -246,14 +246,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12"/>
         </pattern>`;
 
-      select(`.${styles.graph} svg`)
+      select(svgDom)
         .insert('defs', ':first-child')
         .html(PATTERN);
 
       // Decorate DOM nodes with appropriate classname
-      for (const el of $$(`.${styles.graph} g.node`)) {
+      for (const nodeEl of $$('g.node', el)) {
         // Find module this node represents
-        const key = $(':scope > title', el)?.textContent?.trim();
+        const key = $(':scope > title', nodeEl)?.textContent?.trim();
         if (!key) continue;
 
         const m = getCachedModule(key);
@@ -261,21 +261,21 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (!m) continue;
 
         if (m?.package.deprecated) {
-          el.classList.add('warning');
+          nodeEl.classList.add('warning');
         }
 
         if (m.name) {
-          el.dataset.module = m.key;
+          nodeEl.dataset.module = m.key;
         } else {
           report.warn(new Error(`Bad replace: ${key}`));
         }
 
         if (!moduleFilter(m)) {
-          el.classList.add('collapsed');
+          nodeEl.classList.add('collapsed');
         }
 
         if (m.isStub) {
-          el.classList.add('stub');
+          nodeEl.classList.add('stub');
         }
       }
 
