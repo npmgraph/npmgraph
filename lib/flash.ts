@@ -69,8 +69,8 @@ export function celebrate(msg: string) {
 
 function defaultTop() {
   const appHeader = document.getElementsByClassName(appHeaderStyles.root);
-  return appHeader.length > 0
-    ? (appHeader[0] as HTMLElement).offsetTop +
-        (appHeader[0] as HTMLElement).offsetHeight
-    : 0;
+  if (appHeader.length === 0) return 0;
+
+  const appHeaderElement = appHeader[0] as HTMLElement;
+  return appHeaderElement.offsetTop + appHeaderElement.offsetHeight;
 }
