@@ -1,7 +1,7 @@
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { $, $$ } from 'select-dom';
+import { $, $closestOptional, $optional, $$optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -86,19 +86,17 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }, [depTypes]);
 
   async function handleGraphClick(event: React.MouseEvent) {
+    const { target } = event;
     if (
-      !(event.target instanceof Element) ||
-      event.target.closest(`.${styles.graphControls}`)
+      !(target instanceof Element) ||
+      // Allow opening the link in a new tab
+      event.metaKey ||
+      $closestOptional(`.${styles.graphControls}`, target)
     ) {
       return;
     }
 
-    if (event.metaKey) {
-      // Allow opening the link in a new tab
-      return;
-    }
-
-    const node = event.target.closest('g.node');
+    const node = $closestOptional('g.node', target);
     if (node) {
       // Don't navigate to link
       event.preventDefault();
@@ -229,7 +227,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.remove();
 
       // Remove background element so page background shows thru
-      svgDom.querySelector('.graph > polygon')?.remove();
+      $optional('.graph > polygon', svgDom)?.remove();
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       svgDom.classList.add(styles.graphDiagram);
 
@@ -252,9 +250,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         .html(PATTERN);
 
       // Decorate DOM nodes with appropriate classname
-      for (const el of $$(`.${styles.graph} g.node`)) {
+      for (const nodeEl of $$optional('g.node', el)) {
         // Find module this node represents
-        const key = $(':scope > title', el)?.textContent?.trim();
+        const key = $(':scope > title', nodeEl)?.textContent?.trim();
         if (!key) continue;
 
         const m = getCachedModule(key);
@@ -262,21 +260,21 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (!m) continue;
 
         if (m?.package.deprecated) {
-          el.classList.add('warning');
+          nodeEl.classList.add('warning');
         }
 
         if (m.name) {
-          el.dataset.module = m.key;
+          nodeEl.dataset.module = m.key;
         } else {
           report.warn(new Error(`Bad replace: ${key}`));
         }
 
         if (!moduleFilter(m)) {
-          el.classList.add('collapsed');
+          nodeEl.classList.add('collapsed');
         }
 
         if (m.isStub) {
-          el.classList.add('stub');
+          nodeEl.classList.add('stub');
         }
       }
 
@@ -358,7 +356,7 @@ function scrollGraphIntoView(
   el: Element | null,
   scrollOptions?: ScrollToOptions,
 ) {
-  const graphEl = document.querySelector(`.${styles.graph}`);
+  const graphEl = $optional(`.${styles.graph}`);
   if (graphEl && el) {
     // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
     // Firefox.  And even in Chrome it just scrolls the element to *barely*
@@ -401,7 +399,7 @@ function updateSelection(
 
   // Set selection classes for node elements
   let scrollEl: HTMLElement | undefined;
-  for (const el of $$('svg .node[data-module]')) {
+  for (const el of $$optional('svg .node[data-module]')) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
     const isUpstream = si.upstreamModuleKeys.has(moduleKey);
@@ -420,7 +418,7 @@ function updateSelection(
   }
 
   // Set selection classes for edge elements
-  for (const edge of $$('svg g.edge')) {
+  for (const edge of $$optional('svg g.edge')) {
     const edgeTitle = $('title', edge)?.textContent ?? '';
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
     const isDownstream = si.downstreamEdgeKeys.has(edgeTitle);
@@ -456,13 +454,13 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
   if (!colorizer) {
     // Unset all node colors
-    for (const node of svg.querySelectorAll('g.node path')) {
+    for (const node of $$optional('g.node path', svg)) {
       node.removeAttribute('style');
     }
     return;
   }
 
-  const moduleEls = svg.querySelectorAll('g.node');
+  const moduleEls = $$optional('g.node', svg);
 
   if (isSimpleColorizer(colorizer)) {
     // For each node in graph

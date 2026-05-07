@@ -1,4 +1,5 @@
 import { report } from '../../lib/bugsnag.ts';
+import { $$, $optional } from 'select-dom';
 import { DownloadIcon } from '../Icons.tsx';
 import * as styles from './GraphDiagramDownloadButton.module.scss';
 import { getDiagramElement } from './graph_util.ts';
@@ -66,18 +67,16 @@ function downloadSvg() {
   if (!svg) return;
 
   // Add link(s) to font files
-  document
-    .querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
-    .forEach(link => {
-      if (!link.href.includes('fonts.googleapis.com')) return;
+  for (const link of $$('link[rel="stylesheet"]')) {
+    if (!link.href.includes('fonts.googleapis.com')) continue;
 
-      const fontEl = document.createElement('defs');
-      fontEl.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
-      svg.insertBefore(fontEl, svg.firstChild);
-    });
+    const fontEl = document.createElement('defs');
+    fontEl.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
+    svg.insertBefore(fontEl, svg.firstChild);
+  }
 
   // Clone runtime stylesheet link (e.g. /npmgraph...css) into an inline style for export.
-  const appStylesheetLink = document.querySelector<HTMLLinkElement>(
+  const appStylesheetLink = $optional(
     'link[rel="stylesheet"][href^="/npmgraph"]',
   );
   if (appStylesheetLink) {
@@ -91,7 +90,7 @@ function downloadSvg() {
     }
   }
 
-  const svgData = svg.outerHTML;
+  const svgData = new XMLSerializer().serializeToString(svg);
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const svgUrl = URL.createObjectURL(svgBlob);
   generateLinkToDownload('svg', svgUrl);
