@@ -9,7 +9,7 @@ const FLASH_GAP = 10;
 export function flash(wat: unknown, bg = '#f80') {
   const graph = document.getElementsByClassName(graphDiagramStyles.graph)[0];
   if (!(graph instanceof HTMLElement)) {
-    throw new TypeError('Graph element not found');
+    throw new TypeError('Graph element not found or invalid');
   }
   const flashes = document.getElementsByClassName(styles.flash);
   const prev =
@@ -74,6 +74,8 @@ function defaultTop() {
   const appHeader = document.getElementsByClassName(appHeaderStyles.root);
   if (appHeader.length === 0) return 0;
 
-  const appHeaderElement = appHeader[0] as HTMLElement;
+  const appHeaderElement = appHeader[0];
+  if (!(appHeaderElement instanceof HTMLElement)) return 0;
+
   return appHeaderElement.offsetTop + appHeaderElement.offsetHeight;
 }
