@@ -24,9 +24,13 @@ export function ReportItem<T>({
   useEffect(() => {
     if (!data) return;
 
+    let cancelled = false;
     Promise.resolve(reporter(data)).then(report => {
-      setAnalysis(report);
+      if (!cancelled) setAnalysis(report);
     });
+    return () => {
+      cancelled = true;
+    };
   }, [data, reporter]);
 
   if (!analysis) return null;

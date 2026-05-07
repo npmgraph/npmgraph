@@ -21,12 +21,18 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
     // eslint-disable-next-line react/set-state-in-effect
     setBundleInfo(undefined);
 
-    if (!pkg) return;
-
+    let cancelled = false;
     fetchJSON<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
-      .then(data => setBundleInfo(data))
-      .catch(err => setBundleInfo(err));
-  }, [pkg, module.isLocal, bpApiUrl]);
+      .then(data => {
+        if (!cancelled) setBundleInfo(data);
+      })
+      .catch(err => {
+        if (!cancelled) setBundleInfo(err);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [bpApiUrl, module.isLocal]);
 
   if (!bundleInfo) {
     return 'Loading ...';

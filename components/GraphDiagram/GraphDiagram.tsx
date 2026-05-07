@@ -190,7 +190,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     );
 
     return abort;
-  }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph, setPane]);
+  }, [sortedQuery, dependencyTypes, moduleFilter, setGraph, setPane]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {

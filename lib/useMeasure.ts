@@ -1,35 +1,28 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function useMeasure<T extends Element>() {
-  const ref = useRef<T>(null);
+  const [node, setNode] = useState<T | null>(null);
+  const ref = useCallback((n: T | null) => setNode(n), []);
 
   const [size, setSize] = useState({
     width: 0,
     height: 0,
   });
-  const target = ref.current;
 
   useEffect(() => {
-    // eslint-disable-next-line react/set-state-in-effect
-    setSize({
-      width: ref.current?.clientWidth ?? 0,
-      height: ref.current?.clientHeight ?? 0,
+    if (!node) return;
+
+    const observer = new ResizeObserver(entries => {
+      const entry = entries[0];
+      if (!entry) return;
+      const { inlineSize: width, blockSize: height } = entry.borderBoxSize[0];
+      setSize({ width, height });
     });
 
-    // if (!target) return;
+    observer.observe(node);
 
-    // const observer = new ResizeObserver(entries => {
-    //   const entry = entries[0];
-    //   if (!entry) return;
-    //   const { inlineSize: width, blockSize: height } = entry.borderBoxSize[0];
-
-    //   setSize({ width, height });
-    // });
-
-    // observer.observe(target);
-
-    // return () => observer.unobserve(target);
-  }, [target]);
+    return () => observer.unobserve(node);
+  }, [node]);
 
   return [ref, size] as const;
 }

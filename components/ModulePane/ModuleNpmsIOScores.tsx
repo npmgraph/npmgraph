@@ -14,12 +14,20 @@ export default function ModuleNpmsIOScores({ module }: { module: Module }) {
     // eslint-disable-next-line react/set-state-in-effect
     setNpmsData(undefined);
 
+    let cancelled = false;
     fetchJSON<NPMSIOData>(
       `https://api.npms.io/v2/package/${encodeURIComponent(module.name)}`,
       { silent: true, timeout: 5000 },
     )
-      .then(data => setNpmsData(data))
-      .catch(err => setNpmsData(err));
+      .then(data => {
+        if (!cancelled) setNpmsData(data);
+      })
+      .catch(err => {
+        if (!cancelled) setNpmsData(err);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [module]);
 
   if (!npmsData) {

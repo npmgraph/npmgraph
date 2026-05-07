@@ -19,6 +19,9 @@ export function PieGraph({
     const svgElement = svgRef.current;
     if (!svgElement) return;
 
+    // Clear previous render before re-drawing
+    select(svgElement).selectAll('g').remove();
+
     const svg = select(svgElement);
     const svgNode = svg.node();
     if (!svgNode) return;
@@ -94,7 +97,7 @@ export function PieGraph({
           .attr('fill-opacity', 0.5)
           .text(d => d.data[1].toLocaleString()),
       );
-  });
+  }, [entries]);
 
   return <svg ref={svgRef} {...props} />;
 }
