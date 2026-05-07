@@ -14,12 +14,18 @@ type GlobalState = {
   selectedModules?: Map<string, Module>;
 };
 
+import { TIGHT_SCREEN_QUERY } from './useTightScreen.ts';
+
 function _getInitialPane() {
   if (!searchGet(PARAM_QUERY)) {
     return PaneType.INFO;
   }
   const select = hashGet('select')?.split(/[, ]+/);
-  return select ? PaneType.MODULE : PaneType.REPORT;
+  if (select) return PaneType.MODULE;
+  const isTight =
+    typeof window !== 'undefined' &&
+    window.matchMedia(TIGHT_SCREEN_QUERY).matches;
+  return isTight ? PaneType.GRAPH : PaneType.REPORT;
 }
 
 let globalState: GlobalState = {

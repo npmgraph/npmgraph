@@ -9,13 +9,14 @@ import * as styles from './Tabs.module.scss';
 
 function Tab({
   active,
+  className,
   children,
   ...props
 }: HTMLProps<HTMLDivElement> & {
   active: boolean;
 }) {
   return (
-    <div className={cn(styles.tab, { [styles.active]: active })} {...props}>
+    <div className={cn(styles.tab, className, { [styles.active]: active })} {...props}>
       <button type="button" className="bright-hover">
         {children}
       </button>
@@ -49,6 +50,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Report
       </Tab>
       <Tab
+        className={styles.tabMobileOnly}
         active={inspector && pane === PaneType.GRAPH}
         onClick={() => {
           setHide(null);

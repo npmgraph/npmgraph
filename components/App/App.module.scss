@@ -10,7 +10,6 @@
     display: none;
     @include tight-screen {
       display: flex;
-      flex-grow: 1;
       justify-content: stretch;
     }
   }
