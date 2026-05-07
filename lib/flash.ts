@@ -7,7 +7,12 @@ import * as styles from './flash.module.scss';
 const FLASH_GAP = 10;
 
 export function flash(wat: unknown, bg = '#f80') {
-  const graph = document.getElementsByClassName(graphDiagramStyles.graph);
+  const graph = document.getElementsByClassName(graphDiagramStyles.graph)[0] as
+    | HTMLElement
+    | undefined;
+  if (!graph) {
+    throw new Error('Graph element not found');
+  }
   const flashes = document.getElementsByClassName(styles.flash);
   const prev =
     flashes.length > 0 ? (flashes[flashes.length - 1] as HTMLElement) : null;
@@ -39,7 +44,7 @@ export function flash(wat: unknown, bg = '#f80') {
 
   el.style.top = `${top + FLASH_GAP / 2}px`;
   el.style.left = `${-el.offsetWidth - FLASH_GAP}px`;
-  el.style.maxWidth = `${(graph[0] as HTMLElement).offsetWidth - FLASH_GAP}px`;
+  el.style.maxWidth = `${graph.offsetWidth - FLASH_GAP}px`;
   el.style.backgroundColor = bg;
 
   setTimeout(() => {
