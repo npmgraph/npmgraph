@@ -120,6 +120,13 @@
     "typescript-plugin-css-modules": "^5.2.0",
     "url": "0.11.4"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=24.0.0",
+      "onFail": "warn"
+    }
+  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
