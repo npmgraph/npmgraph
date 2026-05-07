@@ -1,7 +1,7 @@
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { $, $$, $closestOptional, $optional, $$optional } from 'select-dom';
+import { $, $closestOptional, $optional, $$optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -251,7 +251,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         .html(PATTERN);
 
       // Decorate DOM nodes with appropriate classname
-      for (const nodeEl of $$('g.node', el)) {
+      for (const nodeEl of $$optional('g.node', el)) {
         // Find module this node represents
         const key = $(':scope > title', nodeEl)?.textContent?.trim();
         if (!key) continue;
@@ -400,7 +400,7 @@ function updateSelection(
 
   // Set selection classes for node elements
   let scrollEl: HTMLElement | undefined;
-  for (const el of $$('svg .node[data-module]')) {
+  for (const el of $$optional('svg .node[data-module]')) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
     const isUpstream = si.upstreamModuleKeys.has(moduleKey);
@@ -419,7 +419,7 @@ function updateSelection(
   }
 
   // Set selection classes for edge elements
-  for (const edge of $$('svg g.edge')) {
+  for (const edge of $$optional('svg g.edge')) {
     const edgeTitle = $('title', edge)?.textContent ?? '';
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
     const isDownstream = si.downstreamEdgeKeys.has(edgeTitle);
