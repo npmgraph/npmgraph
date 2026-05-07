@@ -1,4 +1,7 @@
+import { useEffect } from 'react';
 import { useActivity } from '../../lib/useActivity.ts';
+import { PaneType } from '../../lib/constants.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useQuery } from '../../lib/useQuery.ts';
 import { useTightScreen } from '../../lib/useTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
@@ -14,7 +17,15 @@ export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
   const isTightScreen = useTightScreen();
+  const [, setPane] = useGlobalState('pane');
   useExternalInput();
+
+  // On mobile, auto-select the Graph tab whenever the query changes
+  useEffect(() => {
+    if (isTightScreen && query.length > 0) {
+      setPane(PaneType.GRAPH);
+    }
+  }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (query.length === 0) {
     return <Intro />;
@@ -22,11 +33,13 @@ export default function App() {
 
   return (
     <div className={styles.root}>
-      <AppHeader />
+      <div className={styles.stickyTop}>
+        <AppHeader />
+        <Tabs className={styles.mobileTabs} />
+      </div>
       {activity.total > 0 ? <Loader activity={activity} /> : null}
       <div className={styles.content}>
         {!isTightScreen ? <GraphDiagram activity={activity} /> : null}
-        <Tabs className={styles.mobileTabs} />
         <Inspector activity={activity} />
       </div>
     </div>

@@ -12,7 +12,6 @@ import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { searchSet } from '../../lib/url_util.ts';
 import { patchLocation } from '../../lib/useLocation.ts';
 import { useQuery } from '../../lib/useQuery.ts';
-import { useTightScreen } from '../../lib/useTightScreen.ts';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
@@ -26,7 +25,6 @@ export default function QueryInput({
   const [query] = useQuery();
   const [graph] = useGlobalState('graph');
   const [, setPane] = useGlobalState('pane');
-  const isTightScreen = useTightScreen();
   const initialValue = query.join(', ');
 
   const [value, setValue] = useState(
@@ -45,11 +43,7 @@ export default function QueryInput({
 
   function handleSubmit(e?: React.FormEvent<HTMLFormElement>) {
     e?.preventDefault();
-
     patchLocation({ search: getSearchParams(), hash: '' }, false);
-    if (isTightScreen) {
-      setPane(PaneType.GRAPH);
-    }
   }
 
   // Add cmd-enter support to search in a new tab

@@ -1,6 +1,12 @@
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { $, $$ } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
@@ -129,8 +135,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }
 
   function applyZoom() {
-    const graphEl = $(`.${styles.graph}`)!;
-    if (!diagramElement) return;
+    const graphEl = $(`.${styles.graph}`);
+    if (!graphEl || !diagramElement) return;
 
     // Note: Not using svg.getBBox() here because (for some reason???) it's
     // smaller than the actual bounding box
@@ -291,8 +297,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     };
   }, [activity, graphviz, graph, moduleFilter, sizing]);
 
-  // (Re)apply zoom if/when it changes
-  useEffect(applyZoom, [zoom, diagramElement]);
+  // (Re)apply zoom if/when it changes — useLayoutEffect prevents visual flicker when switching modes
+  useLayoutEffect(applyZoom, [zoom, diagramElement]);
 
   const selectedModules = useMemo(() => {
     if (!graph) return new Map<string, Module>();

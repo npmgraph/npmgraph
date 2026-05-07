@@ -49,7 +49,9 @@
   --padding: 6px;
 
   @include tight-screen {
-    inset: 1em 1em auto auto;
+    position: fixed;
+    z-index: 20;
+    inset: auto 1em 1em auto;
   }
 
   button {
