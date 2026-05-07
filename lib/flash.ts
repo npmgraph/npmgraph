@@ -1,12 +1,15 @@
 import confetti from 'canvas-confetti';
 import { $, $optional } from 'select-dom';
+import * as graphDiagramStyles from '../components/GraphDiagram/GraphDiagram.module.scss';
 import * as appHeaderStyles from '../components/AppHeader.module.scss';
 import * as styles from './flash.module.scss';
 
 const FLASH_GAP = 10;
 
 export function flash(wat: unknown, bg = '#f80') {
-  const graph = $('#graph');
+  const graph =
+    $optional<HTMLElement>('#graph') ??
+    $optional<HTMLElement>(`.${graphDiagramStyles.graph}`);
   const flashes = document.getElementsByClassName(styles.flash);
   const prev =
     flashes.length > 0 ? (flashes[flashes.length - 1] as HTMLElement) : null;
