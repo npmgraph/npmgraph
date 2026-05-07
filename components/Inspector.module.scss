@@ -1,3 +1,5 @@
+@use '../lib/root.module.scss' as *;
+
 .inspector {
   display: flex;
   flex-shrink: 1;
@@ -9,6 +11,10 @@
   ul {
     margin-top: 0;
     padding-inline-start: 1em;
+  }
+
+  @include tight-screen {
+    flex-grow: 1;
   }
 
   @media print {

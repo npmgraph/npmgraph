@@ -29,6 +29,7 @@ export const ZOOM_NONE = null;
 
 export const PaneType = {
   MODULE: 'module',
+  REPORT: 'report',
   GRAPH: 'graph',
   INFO: 'info',
   SETTINGS: 'settings',

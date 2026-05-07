@@ -1,5 +1,6 @@
 import { useActivity } from '../../lib/useActivity.ts';
 import { useQuery } from '../../lib/useQuery.ts';
+import { useTightScreen } from '../../lib/useTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
 import Inspector from '../Inspector.tsx';
@@ -12,6 +13,7 @@ import { Loader } from './Loader.tsx';
 export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
+  const isTightScreen = useTightScreen();
   useExternalInput();
 
   if (query.length === 0) {
@@ -23,9 +25,9 @@ export default function App() {
       <AppHeader />
       {activity.total > 0 ? <Loader activity={activity} /> : null}
       <div className={styles.content}>
-        <GraphDiagram activity={activity} />
+        {!isTightScreen ? <GraphDiagram activity={activity} /> : null}
         <Tabs className={styles.mobileTabs} />
-        <Inspector />
+        <Inspector activity={activity} />
       </div>
     </div>
   );

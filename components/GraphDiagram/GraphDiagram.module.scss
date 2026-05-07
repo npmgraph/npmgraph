@@ -1,5 +1,11 @@
 @use '../../lib/root.module.scss' as *;
 
+.root {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
 .graph {
   position: relative;
   flex: 1;
