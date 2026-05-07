@@ -3,50 +3,38 @@
   position: fixed;
   top: 50%;
   left: 1em;
-  z-index: 30;
   flex-direction: column;
   transform: translateY(-50%);
+  z-index: 30;
   box-shadow: 2px 2px 6px var(--bg0-shadow-color);
-}
 
-.root a,
-.root button {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  border: solid 1px var(--bg1);
-  background: var(--bg0);
-  padding: 6px;
-  color: var(--text);
+  a,
+  button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px var(--bg1);
+    background: var(--bg0);
+    padding: 6px;
+    color: var(--text);
 
-  svg {
-    display: block;
+    svg {
+      display: block;
+    }
   }
-}
 
-.root a:first-child {
-  border-top-left-radius: var(--rad-sm);
-  border-top-right-radius: var(--rad-sm);
-}
+  a:first-child {
+    border-top-right-radius: var(--rad-sm);
+    border-top-left-radius: var(--rad-sm);
+  }
 
-.root button {
-  border-bottom-right-radius: var(--rad-sm);
-  border-bottom-left-radius: var(--rad-sm);
-}
+  button {
+    border-bottom-right-radius: var(--rad-sm);
+    border-bottom-left-radius: var(--rad-sm);
+  }
 
-.root a + a,
-.root a + button {
-  border-top-width: 0;
-}
-
-.srOnly {
-  position: absolute;
-  margin: -1px;
-  border: 0;
-  padding: 0;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
+  a + a,
+  a + button {
+    border-top-width: 0;
+  }
 }

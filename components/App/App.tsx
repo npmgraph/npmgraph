@@ -15,21 +15,26 @@ export default function App() {
   const [query] = useQuery();
   useExternalInput();
 
+  if (query.length === 0) {
+    return (
+      <>
+        <Intro />
+        <PreviewWidget />
+      </>
+    );
+  }
+
   return (
     <>
-      {query.length === 0 ? (
-        <Intro />
-      ) : (
-        <div className={styles.root}>
-          <AppHeader />
-          {activity.total > 0 ? <Loader activity={activity} /> : null}
-          <div className={styles.content}>
-            <GraphDiagram activity={activity} />
-            <Tabs className={styles.mobileTabs} />
-            <Inspector />
-          </div>
+      <div className={styles.root}>
+        <AppHeader />
+        {activity.total > 0 ? <Loader activity={activity} /> : null}
+        <div className={styles.content}>
+          <GraphDiagram activity={activity} />
+          <Tabs className={styles.mobileTabs} />
+          <Inspector />
         </div>
-      )}
+      </div>
       <PreviewWidget />
     </>
   );
