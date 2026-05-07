@@ -88,6 +88,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const { target } = event;
     if (
       !(target instanceof Element) ||
+
+      // Allow opening the link in a new tab
       event.metaKey ||
       $closestOptional(`.${styles.graphControls}`, target)
     ) {
