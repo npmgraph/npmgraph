@@ -67,7 +67,7 @@ function downloadSvg() {
   if (!svg) return;
 
   // Add link(s) to font files
-  for (const link of $$<HTMLLinkElement>('link[rel="stylesheet"]')) {
+  for (const link of $$('link[rel="stylesheet"]')) {
     if (!link.href.includes('fonts.googleapis.com')) continue;
 
     const fontEl = document.createElement('defs');
@@ -76,7 +76,7 @@ function downloadSvg() {
   }
 
   // Clone runtime stylesheet link (e.g. /npmgraph...css) into an inline style for export.
-  const appStylesheetLink = $optional<HTMLLinkElement>(
+  const appStylesheetLink = $optional(
     'link[rel="stylesheet"][href^="/npmgraph"]',
   );
   if (appStylesheetLink) {

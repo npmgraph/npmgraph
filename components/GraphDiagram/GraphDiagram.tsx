@@ -85,19 +85,16 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }, [depTypes]);
 
   async function handleGraphClick(event: React.MouseEvent) {
+    const { target } = event;
     if (
-      !(event.target instanceof Element) ||
-      $closestOptional(`.${styles.graphControls}`, event.target as Element)
+      !(target instanceof Element) ||
+      event.metaKey ||
+      $closestOptional(`.${styles.graphControls}`, target)
     ) {
       return;
     }
 
-    if (event.metaKey) {
-      // Allow opening the link in a new tab
-      return;
-    }
-
-    const node = $closestOptional('g.node', event.target as Element);
+    const node = $closestOptional('g.node', target);
     if (node) {
       // Don't navigate to link
       event.preventDefault();
