@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import useLocation from '../lib/useLocation.ts';
 import { GithubIcon, OffsiteLinkIcon, XIcon } from './Icons.tsx';
 import * as styles from './PreviewWidget.module.scss';
-import * as utilities from './utilities.module.scss';
 
 function getNpmgraphJsOrgUrl(locationHref: URL) {
   const url = new URL('https://npmgraph.js.org/');
@@ -27,11 +26,7 @@ export default function PreviewWidget() {
   );
 
   if (isHidden) {
-    return (
-      <p className={utilities.srOnly} aria-live="polite">
-        Preview widget hidden until the page is reloaded.
-      </p>
-    );
+    return null;
   }
 
   return (

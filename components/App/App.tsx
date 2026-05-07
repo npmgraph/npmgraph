@@ -34,8 +34,8 @@ export default function App() {
           <Tabs className={styles.mobileTabs} />
           <Inspector />
         </div>
+        <PreviewWidget />
       </div>
-      <PreviewWidget />
     </>
   );
 }

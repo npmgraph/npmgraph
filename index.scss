@@ -134,16 +134,6 @@ footer {
   text-align: center;
 }
 
-.bright-hover {
-  transition: filter 0.2s;
-  will-change: filter;
-
-  &:hover {
-    filter: brightness(125%);
-    transition-duration: 0.1s;
-  }
-}
-
 label {
   display: block;
   margin: 0.3em 0;
