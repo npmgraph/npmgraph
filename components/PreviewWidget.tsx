@@ -3,16 +3,17 @@ import useLocation from '../lib/useLocation.ts';
 import { GithubIcon, OffsiteLinkIcon, XIcon } from './Icons.tsx';
 import * as styles from './PreviewWidget.module.scss';
 
-function getNpmgraphJsOrgUrl(locationHref: URL) {
+function getNpmgraphJsOrgUrl(locationUrl: URL) {
   const url = new URL('https://npmgraph.js.org/');
-  url.search = locationHref.search;
-  url.hash = locationHref.hash;
+  url.search = locationUrl.search;
+  url.hash = locationUrl.hash;
   return url.href;
 }
 
 export default function PreviewWidget() {
   const [isHidden, setIsHidden] = useState(false);
-  const [locationHref] = useLocation();
+  const [locationUrl] = useLocation();
+  const isProductionHost = locationUrl.hostname === 'npmgraph.js.org';
   const prNumber = useMemo(() => {
     // eslint-disable-next-line node/prefer-global/process
     return process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim();
@@ -21,11 +22,11 @@ export default function PreviewWidget() {
     ? `https://github.com/npmgraph/npmgraph/pull/${prNumber}`
     : null;
   const npmgraphUrl = useMemo(
-    () => getNpmgraphJsOrgUrl(locationHref),
-    [locationHref],
+    () => getNpmgraphJsOrgUrl(locationUrl),
+    [locationUrl],
   );
 
-  if (isHidden) {
+  if (isHidden || isProductionHost) {
     return null;
   }
 
