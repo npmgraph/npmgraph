@@ -58,7 +58,7 @@
     "filter-altered-clicks": "2.1.1",
     "hosted-git-info": "^9.0.2",
     "md5": "2.3.0",
-    "module-replacements": "2.11.0",
+    "module-replacements": "^3.0.0-beta.7",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "select-dom": "^9.5.0",
@@ -119,6 +119,13 @@
     "typescript": "5.9.3",
     "typescript-plugin-css-modules": "^5.2.0",
     "url": "0.11.4"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=24.0.0",
+      "onFail": "warn"
+    }
   },
   "commitlint": {
     "extends": [
