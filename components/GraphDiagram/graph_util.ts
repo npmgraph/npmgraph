@@ -1,5 +1,5 @@
 import { satisfies } from 'semver';
-import { $optional } from 'select-dom';
+import { $ } from 'select-dom';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
@@ -463,5 +463,5 @@ export function gatherSelectionInfo(
 }
 
 export function getDiagramElement() {
-  return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
+  return $<SVGSVGElement>(`.${styles.graphDiagram}`);
 }
