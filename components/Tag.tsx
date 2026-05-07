@@ -4,6 +4,7 @@ import { QueryType } from '../lib/ModuleCache.ts';
 import { cn } from '../lib/dom.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
 import * as styles from './Tag.module.scss';
+import * as utilities from './utilities.module.scss';
 
 export function Tags({
   children,
@@ -44,7 +45,7 @@ export function Tag({
       className={cn(
         styles.tag,
         type === QueryType.Maintainer && styles.maintainer,
-        'bright-hover',
+        utilities.brightHover,
         className,
       )}
       title={title}

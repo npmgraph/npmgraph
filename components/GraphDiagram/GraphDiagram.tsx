@@ -34,6 +34,7 @@ import {
   getColorizer,
   isSimpleColorizer,
 } from '../GraphPane/colorizers/index.ts';
+import * as utilities from '../utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
@@ -138,7 +139,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (!vb) return;
 
     const [, , w, h] = vb;
-    graphEl.classList.remove('d-block');
+    graphEl.classList.remove(utilities.dBlock);
 
     switch (zoom) {
       case ZOOM_NONE:
@@ -154,7 +155,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       case ZOOM_FIT_HEIGHT:
         diagramElement.removeAttribute('width');
         diagramElement.setAttribute('height', '100%');
-        graphEl.classList.add('d-block');
+        graphEl.classList.add(utilities.dBlock);
         break;
     }
   }
