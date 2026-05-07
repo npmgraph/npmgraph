@@ -128,3 +128,13 @@ export function OffsiteLinkIcon(props: IconProps) {
     />
   );
 }
+
+export function XIcon(props: IconProps) {
+  return (
+    <Icon
+      name="x"
+      {...props}
+      strokePath="M 3,3 13,13 M 13,3 3,13"
+    />
+  );
+}
