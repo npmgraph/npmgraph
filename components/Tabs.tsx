@@ -16,7 +16,10 @@ function Tab({
   active: boolean;
 }) {
   return (
-    <div className={cn(styles.tab, className, { [styles.active]: active })} {...props}>
+    <div
+      className={cn(styles.tab, className, { [styles.active]: active })}
+      {...props}
+    >
       <button type="button" className="bright-hover">
         {children}
       </button>
