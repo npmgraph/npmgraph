@@ -351,7 +351,7 @@ export function composeDOT({
       graph.moduleInfos.size > 1
         ? `{rank=same; ${[...graph.moduleInfos.values()]
             .filter(info => info.level === 0)
-            .map(info => `"${info.module}"`)
+            .map(info => `"${dotEscape(info.module.key)}"`)
             .join('; ')};}`
         : '',
     )
