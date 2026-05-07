@@ -14,7 +14,6 @@ export function useTightScreen() {
     if (typeof window === 'undefined') return;
     const media = window.matchMedia(TIGHT_SCREEN_QUERY);
     const update = () => setIsTightScreen(media.matches);
-    update();
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
