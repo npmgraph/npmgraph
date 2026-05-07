@@ -1,7 +1,7 @@
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { $, $$ } from 'select-dom';
+import { $, $$, $closestOptional, $optional, $$optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -87,7 +87,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   async function handleGraphClick(event: React.MouseEvent) {
     if (
       !(event.target instanceof Element) ||
-      event.target.closest(`.${styles.graphControls}`)
+      $closestOptional(`.${styles.graphControls}`, event.target as Element)
     ) {
       return;
     }
@@ -97,7 +97,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       return;
     }
 
-    const node = event.target.closest('g.node');
+    const node = $closestOptional('g.node', event.target as Element);
     if (node) {
       // Don't navigate to link
       event.preventDefault();
@@ -228,7 +228,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.remove();
 
       // Remove background element so page background shows thru
-      svgDom.querySelector('.graph > polygon')?.remove();
+      $optional('.graph > polygon', svgDom)?.remove();
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       svgDom.classList.add(styles.graphDiagram);
 
@@ -357,7 +357,7 @@ function scrollGraphIntoView(
   el: Element | null,
   scrollOptions?: ScrollToOptions,
 ) {
-  const graphEl = document.querySelector(`.${styles.graph}`);
+  const graphEl = $optional(`.${styles.graph}`);
   if (graphEl && el) {
     // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
     // Firefox.  And even in Chrome it just scrolls the element to *barely*
@@ -455,13 +455,13 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
   if (!colorizer) {
     // Unset all node colors
-    for (const node of svg.querySelectorAll('g.node path')) {
+    for (const node of $$optional('g.node path', svg)) {
       node.removeAttribute('style');
     }
     return;
   }
 
-  const moduleEls = svg.querySelectorAll('g.node');
+  const moduleEls = $$optional('g.node', svg);
 
   if (isSimpleColorizer(colorizer)) {
     // For each node in graph
