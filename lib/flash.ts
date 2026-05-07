@@ -1,5 +1,5 @@
 import confetti from 'canvas-confetti';
-import { $ } from 'select-dom';
+import { $, $optional } from 'select-dom';
 import * as appHeaderStyles from '../components/AppHeader.module.scss';
 import * as styles from './flash.module.scss';
 
@@ -67,8 +67,6 @@ export function celebrate(msg: string) {
 }
 
 function defaultTop() {
-  const appHeader = document.querySelector<HTMLElement>(
-    `.${appHeaderStyles.root}`,
-  );
+  const appHeader = $optional<HTMLElement>(`.${appHeaderStyles.root}`);
   return appHeader ? appHeader.offsetTop + appHeader.offsetHeight : 0;
 }
