@@ -40,6 +40,15 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Info
       </Tab>
       <Tab
+        active={inspector && pane === PaneType.REPORT}
+        onClick={() => {
+          setHide(null);
+          setPane(PaneType.REPORT);
+        }}
+      >
+        Report
+      </Tab>
+      <Tab
         active={inspector && pane === PaneType.GRAPH}
         onClick={() => {
           setHide(null);

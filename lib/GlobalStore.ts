@@ -19,7 +19,7 @@ function _getInitialPane() {
     return PaneType.INFO;
   }
   const select = hashGet('select')?.split(/[, ]+/);
-  return select ? PaneType.MODULE : PaneType.GRAPH;
+  return select ? PaneType.MODULE : PaneType.REPORT;
 }
 
 let globalState: GlobalState = {
