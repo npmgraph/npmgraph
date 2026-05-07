@@ -246,7 +246,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12"/>
         </pattern>`;
 
-      select(svgDom)
+      select(`.${styles.graph} svg`)
         .insert('defs', ':first-child')
         .html(PATTERN);
 
