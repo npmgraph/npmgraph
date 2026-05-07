@@ -4,6 +4,7 @@ import { useParsedQuery } from '../../lib/useQuery.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
+import * as utilities from '../utilities.module.scss';
 import FilePicker from './FilePicker.tsx';
 import * as styles from './InfoPane.module.scss';
 
@@ -69,7 +70,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             href="https://github.com/npmgraph/npmgraph"
             target="_blank"
             rel="noopener noreferrer"
-            className={cn('bright-hover', 'external-link')}
+            className={cn(utilities.brightHover, 'external-link')}
           >
             GitHub repo
           </a>
@@ -78,7 +79,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             href="https://github.com/sponsors/broofa"
             target="_blank"
             rel="noopener noreferrer"
-            className={cn('bright-hover', 'external-link')}
+            className={cn(utilities.brightHover, 'external-link')}
           >
             Sponsor
           </a>

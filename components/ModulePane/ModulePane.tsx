@@ -16,6 +16,7 @@ import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import { Section } from '../Section.tsx';
 import { Tag, Tags } from '../Tag.tsx';
+import * as utilities from '../utilities.module.scss';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
 import ModuleNpmsIOScores from './ModuleNpmsIOScores.tsx';
 import * as styles from './ModulePane.module.scss';
@@ -121,7 +122,7 @@ export default function ModulePane({
       <div className={styles.moduleHeader}>
         {isSingleEntryModule ? null : (
           <QueryLink
-            className="bright-hover"
+            className={utilities.brightHover}
             query={module.key}
             style={{ textDecoration: 'none' }}
           >

@@ -3,6 +3,7 @@ import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { cn } from '../lib/dom.ts';
 import useHashParam from '../lib/useHashParam.ts';
+import * as utilities from './utilities.module.scss';
 
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
@@ -16,7 +17,7 @@ function Tab({
 }) {
   return (
     <div className={cn(styles.tab, { [styles.active]: active })} {...props}>
-      <button type="button" className="bright-hover">
+      <button type="button" className={utilities.brightHover}>
         {children}
       </button>
     </div>
