@@ -1,5 +1,3 @@
-name: 'Copilot Setup Steps'
-
 on:
   workflow_dispatch:
   push:
@@ -17,14 +15,9 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
+          cache: npm
+      - run: npm ci
