@@ -12,7 +12,6 @@ import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import ModulePane from './ModulePane/ModulePane.tsx';
-import { Pane } from './Pane.tsx';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
 
 export default function Inspector(
@@ -42,11 +41,7 @@ export default function Inspector(
       );
       break;
     case PaneType.GRAPH:
-      paneComponent = (
-        <Pane className={graphPaneStyles.paneGraph}>
-          <GraphDiagram activity={activity} />
-        </Pane>
-      );
+      paneComponent = <GraphDiagram activity={activity} />;
       break;
     case PaneType.SETTINGS:
       paneComponent = <SettingsPane />;
