@@ -11,6 +11,7 @@ export function useTightScreen() {
   const [isTightScreen, setIsTightScreen] = useState(getMatches);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const media = window.matchMedia(TIGHT_SCREEN_QUERY);
     const update = () => setIsTightScreen(media.matches);
     update();
