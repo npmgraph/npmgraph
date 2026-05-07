@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useActivity } from '../../lib/useActivity.ts';
 import { PaneType } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
@@ -17,15 +17,19 @@ export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
   const isTightScreen = useTightScreen();
+  const isTightScreenRef = useRef(isTightScreen);
+  isTightScreenRef.current = isTightScreen;
   const [, setPane] = useGlobalState('pane');
   useExternalInput();
 
-  // On mobile, auto-select the Graph tab whenever the query changes
+  // On mobile, auto-select the Graph tab whenever the query changes.
+  // This handles both deep links (initial load) and new queries during a session.
+  // isTightScreen is read via ref so viewport resizes don't trigger the effect.
   useEffect(() => {
-    if (isTightScreen && query.length > 0) {
+    if (isTightScreenRef.current && query.length > 0) {
       setPane(PaneType.GRAPH);
     }
-  }, [query]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [query, setPane]);
 
   if (query.length === 0) {
     return <Intro />;

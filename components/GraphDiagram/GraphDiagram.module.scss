@@ -49,6 +49,7 @@
   --padding: 6px;
 
   @include tight-screen {
+    /* override absolute positioning from above — fixed keeps controls visible while scrolling the graph */
     position: fixed;
     z-index: 20;
     inset: auto 1em 1em auto;
