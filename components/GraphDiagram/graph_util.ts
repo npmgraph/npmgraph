@@ -1,3 +1,4 @@
+import { satisfies } from 'semver';
 import { $ } from 'select-dom';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
@@ -32,6 +33,7 @@ const DEFAULT_STYLES = {
 const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=black]',
+  peerDependencies: '[color=black style=dashed label="peer"]',
   optionalDependencies: '[color=black style=dashed]', // unused
   optionalDevDependencies: '[color=black style=dashed]', // unused
 };
@@ -39,6 +41,7 @@ const EDGE_ATTRIBUTES = {
 export type DependencyKey =
   | 'dependencies'
   | 'devDependencies'
+  | 'peerDependencies'
   | 'optionalDependencies';
 
 type DependencyEntry = {
@@ -174,6 +177,64 @@ export async function getGraphForQuery(
     }),
   );
 
+  // Second pass: resolve peer dependencies.
+  // Build a name → Module[] index for O(1) lookups of already-present modules.
+  const modulesByName = new Map<string, Module[]>();
+  for (const { module } of graphState.moduleInfos.values()) {
+    let list = modulesByName.get(module.name);
+    if (!list) {
+      list = [];
+      modulesByName.set(module.name, list);
+    }
+    list.push(module);
+  }
+
+  await Promise.allSettled(
+    [...graphState.moduleInfos.values()].map(async info => {
+      const { peerDependencies } = info.module.package;
+      if (!peerDependencies) return;
+
+      for (const [name, versionRange] of Object.entries(peerDependencies) as [
+        string,
+        string,
+      ][]) {
+        // Prefer an existing node that satisfies the range to avoid duplicates.
+        // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
+        let peerModule = modulesByName.get(name)?.find(m => {
+          if (!m.version) return false;
+          try {
+            return satisfies(m.version, versionRange);
+          } catch {
+            return false;
+          }
+        });
+
+        if (!peerModule) {
+          // Not yet in graph — fetch and traverse the resolved version.
+          try {
+            peerModule = await getModule(getModuleKey(name, versionRange));
+            if (peerModule.isStub) continue;
+            await _visit(peerModule, info.level + 1);
+            // Register in the name index so later iterations can find it.
+            let list = modulesByName.get(name);
+            if (!list) {
+              list = [];
+              modulesByName.set(name, list);
+            }
+            if (!list.includes(peerModule)) list.push(peerModule);
+          } catch {
+            continue;
+          }
+        }
+
+        info.downstream.add({ module: peerModule, type: 'peerDependencies' });
+        graphState.moduleInfos
+          .get(peerModule.key)
+          ?.upstream.add({ module: info.module, type: 'peerDependencies' });
+      }
+    }),
+  );
+
   return graphState;
 }
 
@@ -224,18 +285,34 @@ export function composeDOT({
 
   const nodes = ['\n// Nodes & per-node styling'];
   const edges = ['\n// Edges & per-edge styling'];
+  // Map from rank-group index → list of node IDs.
+  // Peer-dep-only nodes are placed in their parent's rank group (level - 1) so
+  // they appear in the same column as their peer parent rather than one column
+  // to the right.
+  const rankGroupMap = new Map<number, string[]>();
 
-  for (const [, { module, level, downstream }] of entries) {
+  for (const [, { module, level, upstream, downstream }] of entries) {
     let fontsize = 11;
     const { unpackedSize } = module;
     if (sizing && unpackedSize) {
       fontsize *= Math.max(1, Math.log10(unpackedSize) - 2);
     }
 
+    // A node is "peer-only" when it exists solely because of peer dependency
+    // edges (no regular dependency pulls it in).  Give it a dashed border to
+    // make it visually distinct from hard dependencies.
+    // Root nodes (level === 0) are always explicitly queried, so they never
+    // get a dashed border even if a peer dep edge also points to them.
+    const isPeerOnly =
+      level !== 0 &&
+      upstream.size > 0 &&
+      [...upstream].every(({ type }) => type === 'peerDependencies');
+
     const link = new URL(location.origin);
     link.searchParams.append(PARAM_QUERY, module.key);
     const label = module.isUnnamed ? UNNAMED_PACKAGE : undefined;
-    const vs = { root: level === 0, fontsize, href: link.href, label };
+    const style = isPeerOnly ? 'rounded,dashed' : undefined;
+    const vs = { root: level === 0, fontsize, href: link.href, label, style };
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
@@ -247,6 +324,12 @@ export function composeDOT({
         }`,
       );
     }
+
+    // Peer-only nodes belong to their parent's rank group so they render in
+    // the same column (below the parent) rather than one column to the right.
+    const groupLevel = isPeerOnly ? level - 1 : level;
+    if (!rankGroupMap.has(groupLevel)) rankGroupMap.set(groupLevel, []);
+    rankGroupMap.get(groupLevel)!.push(`"${dotEscape(module.key)}"`);
   }
 
   const titleParts = entries
@@ -262,6 +345,17 @@ export function composeDOT({
     );
   }
 
+  // Emit rank=same constraints:
+  // - Always emit the level-0 group to anchor entry modules at the left column.
+  // - Emit deeper groups only when they contain >1 member (grouping matters).
+  const rankConstraints =
+    graph.moduleInfos.size > 1
+      ? [...rankGroupMap.entries()]
+          .sort(([a], [b]) => a - b)
+          .filter(([groupLevel, nodes]) => groupLevel === 0 || nodes.length > 1)
+          .map(([, nodes]) => `{rank=same; ${nodes.join('; ')}}`)
+      : [];
+
   return [
     'digraph {',
     'rankdir="LR"',
@@ -276,14 +370,7 @@ export function composeDOT({
   ]
     .concat(nodes)
     .concat(edges)
-    .concat(
-      graph.moduleInfos.size > 1
-        ? `{rank=same; ${[...graph.moduleInfos.values()]
-            .filter(info => info.level === 0)
-            .map(info => `"${info.module}"`)
-            .join('; ')};}`
-        : '',
-    )
+    .concat(rankConstraints)
     .concat('}')
     .join('\n');
 }
