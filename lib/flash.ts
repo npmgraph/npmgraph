@@ -7,11 +7,9 @@ import * as styles from './flash.module.scss';
 const FLASH_GAP = 10;
 
 export function flash(wat: unknown, bg = '#f80') {
-  const graph = document.getElementsByClassName(graphDiagramStyles.graph)[0] as
-    | HTMLElement
-    | undefined;
-  if (!graph) {
-    throw new Error('Graph element not found');
+  const graph = document.getElementsByClassName(graphDiagramStyles.graph)[0];
+  if (!(graph instanceof HTMLElement)) {
+    throw new TypeError('Graph element not found');
   }
   const flashes = document.getElementsByClassName(styles.flash);
   const prev =
