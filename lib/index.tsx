@@ -1,4 +1,5 @@
 import 'typed-query-selector';
+import '../index.scss';
 import './bugsnag.ts'; // Initialize ASAP!
 
 import type { ReactElement } from 'react';

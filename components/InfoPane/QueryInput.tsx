@@ -88,7 +88,7 @@ export default function QueryInput({
       </form>
 
       {errors.map(([key, error]) => (
-        <div key={key} className="query-error">
+        <div key={key} className={styles.queryError}>
           {error.message}
         </div>
       ))}

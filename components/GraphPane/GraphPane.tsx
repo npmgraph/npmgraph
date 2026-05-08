@@ -52,9 +52,7 @@ export default function GraphPane({
 
   return (
     <Pane className={cn(styles.paneGraph, className)} {...restProps}>
-      <div
-        style={{ fontSize: '90%', color: 'var(--text-dim)', marginTop: '1em' }}
-      >
+      <div className={styles.collapseInfo}>
         {collapse.length ? (
           <span>
             {simplur`${collapse.length} module[|s] collapsed `}
@@ -93,7 +91,7 @@ export default function GraphPane({
 
         <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
           From the{' '}
-          <ExternalLink href="https://github.com/es-tooling/module-replacements">
+          <ExternalLink href="https://github.com/e18e/module-replacements">
             module-replacements
           </ExternalLink>{' '}
           project, these modules can be removed or replaced with more modern,

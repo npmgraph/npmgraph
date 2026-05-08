@@ -8,9 +8,7 @@
     font-style: italic;
   }
 
-  :global {
-    .selectable {
-      margin-inline-end: 0;
-    }
+  .selectable {
+    margin-inline-end: 0;
   }
 }

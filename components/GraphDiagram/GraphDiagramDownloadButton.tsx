@@ -1,7 +1,7 @@
-import * as indexStyles from 'bundle-text:../../index.scss';
-import * as diagramStyles from 'bundle-text:./GraphDiagram.module.scss';
 import { report } from '../../lib/bugsnag.ts';
+import { $$, $optional } from 'select-dom';
 import { DownloadIcon } from '../Icons.tsx';
+import * as styles from './GraphDiagramDownloadButton.module.scss';
 import { getDiagramElement } from './graph_util.ts';
 
 type DownloadExtension = 'svg' | 'png';
@@ -9,7 +9,7 @@ type DownloadExtension = 'svg' | 'png';
 export default function GraphDiagramDownloadButton() {
   return (
     <button
-      id="download-svg"
+      className={styles.root}
       onClick={() => download('svg')}
       title="Download as SVG"
       type="button"
@@ -67,27 +67,54 @@ function downloadSvg() {
   if (!svg) return;
 
   // Add link(s) to font files
-  document
-    .querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')
-    .forEach(link => {
-      if (!link.href.includes('fonts.googleapis.com')) return;
+  for (const link of $$('link[rel="stylesheet"]')) {
+    if (!link.href.includes('fonts.googleapis.com')) continue;
 
-      const fontEl = document.createElement('defs');
-      fontEl.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
-      svg.insertBefore(fontEl, svg.firstChild);
-    });
-
-  // Inline app stylesheets (we can't just link to these since they change as the app changes)
-  for (const styles of [indexStyles, diagramStyles]) {
-    const styleEl = document.createElement('style');
-    styleEl.innerHTML = styles as unknown as string;
-    svg.appendChild(styleEl);
+    const fontEl = document.createElement('defs');
+    fontEl.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
+    svg.insertBefore(fontEl, svg.firstChild);
   }
 
-  const svgData = svg.outerHTML;
+  // Clone runtime stylesheet link (e.g. /npmgraph...css) into an inline style for export.
+  const appStylesheetLink = $optional(
+    'link[rel="stylesheet"][href^="/npmgraph"]',
+  );
+  if (appStylesheetLink) {
+    try {
+      const styleEl = cloneStyleElementFromSheet(appStylesheetLink.sheet);
+      if (styleEl) {
+        svg.appendChild(styleEl);
+      }
+    } catch (err) {
+      report.error(err instanceof Error ? err : new Error(String(err)));
+    }
+  }
+
+  const svgData = new XMLSerializer().serializeToString(svg);
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const svgUrl = URL.createObjectURL(svgBlob);
   generateLinkToDownload('svg', svgUrl);
+}
+
+function cloneStyleElementFromSheet(sheet: StyleSheet | null | undefined) {
+  if (!sheet) return null;
+
+  const cssSheet = sheet as CSSStyleSheet;
+  const styleEl = document.createElement('style');
+
+  try {
+    const cssText = Array.from(cssSheet.cssRules)
+      .filter(rule => rule.type !== CSSRule.MEDIA_RULE)
+      .map(rule => rule.cssText)
+      .join('\n');
+
+    styleEl.textContent = cssText;
+
+    return styleEl;
+  } catch (err) {
+    report.error(err instanceof Error ? err : new Error(String(err)));
+    return null;
+  }
 }
 
 function generateLinkToDownload(extension: DownloadExtension, link: string) {

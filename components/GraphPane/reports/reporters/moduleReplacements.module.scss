@@ -14,9 +14,11 @@
     font-weight: bold;
   }
 
-  :global {
-    .selectable {
-      margin-inline-end: 0;
-    }
+  .body ul {
+    margin-bottom: 0px;
+  }
+
+  .selectable {
+    margin-inline-end: 0;
   }
 }

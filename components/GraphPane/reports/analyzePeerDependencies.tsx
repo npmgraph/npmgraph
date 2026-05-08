@@ -32,11 +32,21 @@ export function analyzePeerDependencies({
         destination: undefined,
       };
 
-      for (const { module: mod } of moduleInfos.values()) {
+      for (const { module: mod, level, upstream } of moduleInfos.values()) {
         if (mod.name !== name || !satisfies(mod.version, versionRange))
           continue;
 
-        pdi.destination = mod;
+        // Only count as "met" if the module was brought in via a regular
+        // (non-peer) dependency, or is an explicitly queried root module.
+        // Nodes that are in the graph solely due to peer dep resolution should
+        // still be reported as "missing" in the unmet-peer-deps report.
+        const hasNonPeerUpstream =
+          level === 0 ||
+          [...upstream].some(({ type }) => type !== 'peerDependencies');
+        if (hasNonPeerUpstream) {
+          pdi.destination = mod;
+          break;
+        }
       }
 
       peerDependencyInfos.push(pdi);

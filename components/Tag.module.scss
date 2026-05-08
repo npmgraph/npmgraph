@@ -1,0 +1,26 @@
+.tags {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.tag {
+  cursor: pointer;
+  border-radius: var(--rad-lg);
+  background-color: var(--bg1);
+  padding: 2px 8px;
+  overflow: hidden;
+  color: var(--text);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.maintainer {
+  padding: 0;
+  height: 32px;
+
+  img {
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+}

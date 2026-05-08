@@ -24,10 +24,18 @@
     min-width: 0;
   }
 
+  a {
+    color: inherit;
+  }
+
   @include tight-screen {
     .tabs {
       display: none;
     }
+  }
+
+  @media print {
+    display: none;
   }
 }
 

@@ -1,7 +1,7 @@
 import { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { $, $$ } from 'select-dom';
+import { $, $closestOptional, $optional, $$optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -23,6 +23,7 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
+import { cn } from '../../lib/dom.ts';
 import { celebrate, flash } from '../../lib/flash.ts';
 import useCollapse from '../../lib/useCollapse.ts';
 import useGraphSelection from '../../lib/useGraphSelection.ts';
@@ -33,7 +34,9 @@ import {
   getColorizer,
   isSimpleColorizer,
 } from '../GraphPane/colorizers/index.ts';
-import './GraphDiagram.module.scss';
+import * as utilities from '../utilities.module.scss';
+import * as styles from './GraphDiagram.module.scss';
+import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
@@ -83,19 +86,17 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }, [depTypes]);
 
   async function handleGraphClick(event: React.MouseEvent) {
+    const { target } = event;
     if (
-      !(event.target instanceof Element) ||
-      event.target.closest('#graph-controls')
+      !(target instanceof Element) ||
+      // Allow opening the link in a new tab
+      event.metaKey ||
+      $closestOptional(`.${styles.graphControls}`, target)
     ) {
       return;
     }
 
-    if (event.metaKey) {
-      // Allow opening the link in a new tab
-      return;
-    }
-
-    const node = event.target.closest('g.node');
+    const node = $closestOptional('g.node', target);
     if (node) {
       // Don't navigate to link
       event.preventDefault();
@@ -127,7 +128,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }
 
   function applyZoom() {
-    const graphEl = $('div#graph')!;
+    const graphEl = $(`.${styles.graph}`)!;
     if (!diagramElement) return;
 
     // Note: Not using svg.getBBox() here because (for some reason???) it's
@@ -136,7 +137,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (!vb) return;
 
     const [, , w, h] = vb;
-    graphEl.classList.remove('d-block');
+    graphEl.classList.remove(utilities.dBlock);
 
     switch (zoom) {
       case ZOOM_NONE:
@@ -152,7 +153,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       case ZOOM_FIT_HEIGHT:
         diagramElement.removeAttribute('width');
         diagramElement.setAttribute('height', '100%');
-        graphEl.classList.add('d-block');
+        graphEl.classList.add(utilities.dBlock);
         break;
     }
   }
@@ -226,12 +227,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.remove();
 
       // Remove background element so page background shows thru
-      svgDom.querySelector('.graph > polygon')?.remove();
+      $optional('.graph > polygon', svgDom)?.remove();
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svgDom.id = 'graph-diagram';
+      svgDom.classList.add(styles.graphDiagram);
 
       // Inject into DOM
-      const el = $('#graph')!;
+      const el = $(`.${styles.graph}`)!;
       getDiagramElement()?.remove();
       el.appendChild(svgDom);
 
@@ -244,12 +245,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12"/>
         </pattern>`;
 
-      select('#graph svg').insert('defs', ':first-child').html(PATTERN);
+      select(`.${styles.graph} svg`)
+        .insert('defs', ':first-child')
+        .html(PATTERN);
 
       // Decorate DOM nodes with appropriate classname
-      for (const el of $$('#graph g.node')) {
+      for (const nodeEl of $$optional('g.node', el)) {
         // Find module this node represents
-        const key = $(':scope > title', el)?.textContent?.trim();
+        const key = $(':scope > title', nodeEl)?.textContent?.trim();
         if (!key) continue;
 
         const m = getCachedModule(key);
@@ -257,21 +260,21 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (!m) continue;
 
         if (m?.package.deprecated) {
-          el.classList.add('warning');
+          nodeEl.classList.add('warning');
         }
 
         if (m.name) {
-          el.dataset.module = m.key;
+          nodeEl.dataset.module = m.key;
         } else {
           report.warn(new Error(`Bad replace: ${key}`));
         }
 
         if (!moduleFilter(m)) {
-          el.classList.add('collapsed');
+          nodeEl.classList.add('collapsed');
         }
 
         if (m.isStub) {
-          el.classList.add('stub');
+          nodeEl.classList.add('stub');
         }
       }
 
@@ -314,7 +317,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   if (!graphviz) {
     if (graphvizLoading) {
       return (
-        <div id="graph" className="graphviz-loading">
+        <div className={cn(styles.graph, styles.graphvizLoading)}>
           {graphvizLoading
             ? 'Loading layout package...'
             : 'Layout package failed to load.'}
@@ -325,11 +328,11 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   return (
     <>
-      <div id="graph-controls">
+      <div className={styles.graphControls}>
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />
       </div>
-      <div id="graph" onClick={handleGraphClick}></div>
+      <div className={styles.graph} onClick={handleGraphClick}></div>
     </>
   );
 }
@@ -353,7 +356,7 @@ function scrollGraphIntoView(
   el: Element | null,
   scrollOptions?: ScrollToOptions,
 ) {
-  const graphEl = document.querySelector('#graph');
+  const graphEl = $optional(`.${styles.graph}`);
   if (graphEl && el) {
     // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
     // Firefox.  And even in Chrome it just scrolls the element to *barely*
@@ -396,7 +399,7 @@ function updateSelection(
 
   // Set selection classes for node elements
   let scrollEl: HTMLElement | undefined;
-  for (const el of $$('svg .node[data-module]')) {
+  for (const el of $$optional('svg .node[data-module]')) {
     const moduleKey = el.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
     const isUpstream = si.upstreamModuleKeys.has(moduleKey);
@@ -415,7 +418,7 @@ function updateSelection(
   }
 
   // Set selection classes for edge elements
-  for (const edge of $$('svg g.edge')) {
+  for (const edge of $$optional('svg g.edge')) {
     const edgeTitle = $('title', edge)?.textContent ?? '';
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
     const isDownstream = si.downstreamEdgeKeys.has(edgeTitle);
@@ -439,7 +442,9 @@ function updateSelection(
     } else if (!scrollEl) {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
-      scrollGraphIntoView(select('#graph svg .node').node() as HTMLElement);
+      scrollGraphIntoView(
+        select(`.${styles.graph} svg .node`).node() as HTMLElement,
+      );
     }
   }
 }
@@ -449,13 +454,13 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
   if (!colorizer) {
     // Unset all node colors
-    for (const node of svg.querySelectorAll('g.node path')) {
+    for (const node of $$optional('g.node path', svg)) {
       node.removeAttribute('style');
     }
     return;
   }
 
-  const moduleEls = svg.querySelectorAll('g.node');
+  const moduleEls = $$optional('g.node', svg);
 
   if (isSimpleColorizer(colorizer)) {
     // For each node in graph

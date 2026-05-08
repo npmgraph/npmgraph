@@ -23,10 +23,7 @@ export default function ColorizeInput() {
 
   return (
     <>
-      <label
-        className={styles.colorizeUi}
-        style={{ display: 'flex', alignItems: 'baseline' }}
-      >
+      <label className={styles.colorizeUi}>
         <span style={{ flexGrow: 0 }}>Colorize by:</span>
         <select
           style={{ flexGrow: 1 }}

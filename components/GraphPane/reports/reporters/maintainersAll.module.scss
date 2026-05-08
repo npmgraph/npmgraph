@@ -38,10 +38,8 @@
   font-size: 0.9rem;
   font-family: monospace;
 
-  :global {
-    .selectable {
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  .selectable {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

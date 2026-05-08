@@ -1,3 +1,40 @@
 .stubError {
   color: var(--stroke-orange);
 }
+
+.warning {
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(128, 128, 0, 0.1),
+    rgba(128, 128, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.1) 20px
+  );
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.moduleHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.deprecatedBox {
+  border-radius: 0.5em;
+  padding: 0.5em;
+}
+
+.deprecatedTitle {
+  margin-top: 0;
+  color: darkred;
+}
+
+.sizeGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 1em;
+}

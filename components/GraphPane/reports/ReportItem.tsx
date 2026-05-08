@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { cn } from '../../../lib/dom.ts';
+import * as utilities from '../../utilities.module.scss';
 import type { RenderedAnalysis } from './Analyzer.tsx';
 import * as styles from './ReportItem.module.scss';
 
@@ -34,7 +35,7 @@ export function ReportItem<T>({
 
   return (
     <details className={cn(styles.root, styles[type])} {...props}>
-      <summary className="bright-hover">
+      <summary className={utilities.brightHover}>
         <span className={styles.symbol}>{SYMBOLS[type]}</span>
         {summary}
       </summary>

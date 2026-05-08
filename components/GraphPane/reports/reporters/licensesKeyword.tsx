@@ -4,6 +4,7 @@ import type { OSIKeyword } from '../../../../lib/licenses.ts';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type { LicenseAnalysisState } from '../analyzeLicenses.ts';
+import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './modulesAll.module.scss';
 
 export function licensesKeyword(keyword: OSIKeyword) {
@@ -16,7 +17,10 @@ export function licensesKeyword(keyword: OSIKeyword) {
     const details = modules
       .sort((a, b) => a.key.localeCompare(b.key))
       .map(module => (
-        <div className={cn(styles.row, 'zebra-row')} key={module.key}>
+        <div
+          className={cn(styles.row, reportItemStyles.zebraRow)}
+          key={module.key}
+        >
           <Selectable className={cn(styles.name)} value={module.key} />
         </div>
       ));

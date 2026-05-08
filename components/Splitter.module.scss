@@ -20,4 +20,8 @@
   @include tight-screen {
     display: none !important;
   }
+
+  @media print {
+    display: none;
+  }
 }
