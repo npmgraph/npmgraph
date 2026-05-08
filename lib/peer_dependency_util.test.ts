@@ -30,4 +30,20 @@ describe('isOptionalPeerDependency', () => {
   it('returns false when metadata does not include the dependency', () => {
     assert.equal(isOptionalPeerDependency({}, 'react'), false);
   });
+
+  it('returns false when peerDependenciesMeta is undefined', () => {
+    assert.equal(isOptionalPeerDependency(undefined, 'react'), false);
+  });
+
+  it('returns false when optional is explicitly false', () => {
+    assert.equal(
+      isOptionalPeerDependency(
+        {
+          react: { optional: false },
+        },
+        'react',
+      ),
+      false,
+    );
+  });
 });
