@@ -43,7 +43,6 @@ export default function QueryInput({
 
   function handleSubmit(e?: React.FormEvent<HTMLFormElement>) {
     e?.preventDefault();
-
     patchLocation({ search: getSearchParams(), hash: '' }, false);
   }
 

@@ -1,3 +1,5 @@
+@use '../lib/root.module.scss' as *;
+
 .root {
   display: flex;
   flex-shrink: 0;
@@ -29,5 +31,12 @@
 
   &.active button {
     background: var(--accent);
+  }
+}
+
+.tabMobileOnly {
+  display: none;
+  @include tight-screen {
+    display: flex;
   }
 }
