@@ -2,6 +2,7 @@ import type { HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
+import type { PaneTypes } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
 import type LoadActivity from '../lib/LoadActivity.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
@@ -30,29 +31,37 @@ export default function Inspector(
 
   const selectedModules = queryModuleCache(queryType, queryValue);
 
-  let paneComponent;
-  switch (pane) {
-    case PaneType.MODULE:
-      paneComponent = <ModulePane selectedModules={selectedModules} />;
-      break;
-    case PaneType.REPORT:
-      paneComponent = (
-        <GraphPane className={graphPaneStyles.paneGraph} graph={graph} />
-      );
-      break;
-    case PaneType.GRAPH:
-      paneComponent = <GraphDiagram activity={activity} />;
-      break;
-    case PaneType.SETTINGS:
-      paneComponent = <SettingsPane />;
-      break;
-    case PaneType.INFO:
-      paneComponent = <InfoPane />;
-      break;
-  }
+  const isActivePane = (paneType: PaneTypes) => pane === paneType;
+
   return (
     <div className={cn(styles.inspector, className)} {...restProps}>
-      {paneComponent}
+      <InfoPane
+        aria-hidden={!isActivePane(PaneType.INFO)}
+        className={cn(!isActivePane(PaneType.INFO) && styles.hiddenPane)}
+      />
+      <GraphPane
+        aria-hidden={!isActivePane(PaneType.REPORT)}
+        className={cn(
+          graphPaneStyles.paneGraph,
+          !isActivePane(PaneType.REPORT) && styles.hiddenPane,
+        )}
+        graph={graph}
+      />
+      <div
+        aria-hidden={!isActivePane(PaneType.GRAPH)}
+        className={cn(!isActivePane(PaneType.GRAPH) && styles.hiddenPane)}
+      >
+        <GraphDiagram activity={activity} />
+      </div>
+      <ModulePane
+        aria-hidden={!isActivePane(PaneType.MODULE)}
+        className={cn(!isActivePane(PaneType.MODULE) && styles.hiddenPane)}
+        selectedModules={selectedModules}
+      />
+      <SettingsPane
+        aria-hidden={!isActivePane(PaneType.SETTINGS)}
+        className={cn(!isActivePane(PaneType.SETTINGS) && styles.hiddenPane)}
+      />
     </div>
   );
 }
