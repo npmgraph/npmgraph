@@ -19,6 +19,8 @@
   }
 
   @include tight-screen {
+    box-shadow: none;
+    background-color: transparent;
     padding-bottom: 1em;
     min-height: 200px;
   }
