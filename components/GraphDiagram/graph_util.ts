@@ -5,6 +5,7 @@ import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { getModuleKey } from '../../lib/module_util.ts';
+import { isOptionalPeerDependency } from '../../lib/peer_dependency_util.ts';
 import type { Overrides } from '../../lib/overrides_util.ts';
 import {
   getChildOverrides,
@@ -49,8 +50,6 @@ export type DependencyKey =
   | 'devDependencies'
   | 'peerDependencies'
   | 'optionalDependencies';
-
-export type { Overrides } from '../../lib/overrides_util.ts';
 
 type DependencyEntry = {
   name: string;
@@ -224,13 +223,15 @@ export async function getGraphForQuery(
 
   await Promise.allSettled(
     [...graphState.moduleInfos.values()].map(async info => {
-      const { peerDependencies } = info.module.package;
+      const { peerDependencies, peerDependenciesMeta } = info.module.package;
       if (!peerDependencies) return;
 
       for (const [name, versionRange] of Object.entries(peerDependencies) as [
         string,
         string,
       ][]) {
+        if (isOptionalPeerDependency(peerDependenciesMeta, name)) continue;
+
         // Prefer an existing node that satisfies the range to avoid duplicates.
         // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
         let peerModule = modulesByName.get(name)?.find(m => {
