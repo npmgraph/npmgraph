@@ -51,8 +51,6 @@ export type DependencyKey =
   | 'peerDependencies'
   | 'optionalDependencies';
 
-export type { Overrides } from '../../lib/overrides_util.ts';
-
 type DependencyEntry = {
   name: string;
   version: string;
