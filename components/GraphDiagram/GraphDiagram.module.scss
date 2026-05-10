@@ -1,5 +1,12 @@
 @use '../../lib/root.module.scss' as *;
 
+.root {
+  display: flex;
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
 .graph {
   position: relative;
   flex: 1;
@@ -43,7 +50,10 @@
   --padding: 6px;
 
   @include tight-screen {
-    inset: 1em 1em auto auto;
+    /* override absolute positioning from above — fixed keeps controls visible while scrolling the graph */
+    position: fixed;
+    z-index: 20;
+    inset: auto 1em 1em auto;
   }
 
   button {

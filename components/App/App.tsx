@@ -1,5 +1,9 @@
+import { useEffect } from 'react';
 import { useActivity } from '../../lib/useActivity.ts';
+import { PaneType } from '../../lib/constants.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useQuery } from '../../lib/useQuery.ts';
+import { useTightScreen } from '../../lib/useTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
 import Inspector from '../Inspector.tsx';
@@ -13,7 +17,17 @@ import { Loader } from './Loader.tsx';
 export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
+  const isTightScreen = useTightScreen();
+  const [, setPane] = useGlobalState('pane');
   useExternalInput();
+
+  // On mobile, auto-select the Graph tab whenever the query changes.
+  // This handles both deep links (initial load) and new queries during a session.
+  useEffect(() => {
+    if (isTightScreen && query.length > 0) {
+      setPane(PaneType.GRAPH);
+    }
+  }, [query, isTightScreen, setPane]);
 
   if (query.length === 0) {
     return (
@@ -25,17 +39,17 @@ export default function App() {
   }
 
   return (
-    <>
-      <div className={styles.root}>
+    <div className={styles.root}>
+      <div className={styles.stickyTop}>
         <AppHeader />
-        {activity.total > 0 ? <Loader activity={activity} /> : null}
-        <div className={styles.content}>
-          <GraphDiagram activity={activity} />
-          <Tabs className={styles.mobileTabs} />
-          <Inspector />
-        </div>
-        <PreviewWidget />
+        <Tabs className={styles.mobileTabs} />
       </div>
-    </>
+      {activity.total > 0 ? <Loader activity={activity} /> : null}
+      <div className={styles.content}>
+        {!isTightScreen ? <GraphDiagram activity={activity} /> : null}
+        <Inspector activity={activity} />
+      </div>
+      <PreviewWidget />
+    </div>
   );
 }

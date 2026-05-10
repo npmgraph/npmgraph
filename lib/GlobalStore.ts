@@ -3,6 +3,7 @@ import type { GraphState } from '../components/GraphDiagram/graph_util.ts';
 import type { PaneTypes } from './constants.ts';
 import { PaneType, PARAM_QUERY } from './constants.ts';
 import type Module from './Module.ts';
+import { TIGHT_SCREEN_QUERY } from './useTightScreen.ts';
 import { hashGet, searchGet } from './url_util.ts';
 
 type GlobalState = {
@@ -19,7 +20,11 @@ function _getInitialPane() {
     return PaneType.INFO;
   }
   const select = hashGet('select')?.split(/[, ]+/);
-  return select ? PaneType.MODULE : PaneType.GRAPH;
+  if (select) return PaneType.MODULE;
+  const isTight =
+    typeof window !== 'undefined' &&
+    window.matchMedia(TIGHT_SCREEN_QUERY).matches;
+  return isTight ? PaneType.GRAPH : PaneType.REPORT;
 }
 
 let globalState: GlobalState = {
