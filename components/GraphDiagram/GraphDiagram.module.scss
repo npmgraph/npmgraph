@@ -1,6 +1,7 @@
 @use '../../lib/root.module.scss' as *;
 
 .root {
+  display: flex;
   position: relative;
   flex: 1;
   min-width: 0;
