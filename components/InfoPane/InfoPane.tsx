@@ -32,7 +32,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       {valueAsURL ? (
         <div className={styles.tip}>
           Note: {valueAsURL.host} must allow CORS requests from the{' '}
-          {globalThis.location.host} domain for this to work
+          {location.host} domain for this to work
         </div>
       ) : null}
 

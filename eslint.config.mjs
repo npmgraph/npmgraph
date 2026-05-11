@@ -75,6 +75,7 @@ const disabledRules = [
   'import-x/no-unassigned-import',
   'import-x/order',
   'json/no-empty-keys',
+  'no-restricted-globals',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',

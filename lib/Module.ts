@@ -96,9 +96,9 @@ export default class Module {
 
   getShareableLink() {
     const json = JSON.stringify(this.package);
-    const url = new URL(globalThis.location.href);
+    const url = new URL(location.href);
     const hashParameters = new URLSearchParams(
-      globalThis.location.hash.replace(/^#/v, ''),
+      location.hash.replace(/^#/v, ''),
     );
     hashParameters.set('package_json', json);
     url.hash = hashParameters.toString();

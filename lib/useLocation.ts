@@ -4,7 +4,7 @@ import { urlPatch } from './url_util.ts';
 
 function handleLocationUpdate() {
   syncPackagesHash();
-  setGlobalState('location', new URL(globalThis.location.href));
+  setGlobalState('location', new URL(location.href));
 }
 
 globalThis.addEventListener('hashchange', handleLocationUpdate);

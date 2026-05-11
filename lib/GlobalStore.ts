@@ -34,7 +34,7 @@ let globalState: GlobalState = {
     failedEntryModules: new Map(),
   },
   lastVisit: 0,
-  location: new URL(globalThis.location.href),
+  location: new URL(location.href),
   pane: _getInitialPane(),
   selectedModules: new Map(),
 };

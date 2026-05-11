@@ -37,7 +37,7 @@ export function loadPackageJson(json: string, filename?: string): void {
   const module = cacheLocalPackage(pkg as PackumentVersion);
 
   // Set query, and attach package contents in hash
-  const url = new URL(globalThis.location.href);
+  const url = new URL(location.href);
   url.hash = '';
   const hash = hashSet(PARAM_PACKAGES, JSON.stringify([pkg]), url);
   const search = searchSet(PARAM_QUERY, module.key, url);

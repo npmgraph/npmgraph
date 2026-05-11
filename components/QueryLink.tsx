@@ -16,7 +16,7 @@ export function QueryLink({
   const queries = Array.isArray(query) ? query : [query];
 
   const search = query.length > 0 ? `${PARAM_QUERY}=${queries.join(',')}` : '';
-  const hash = reset ? '' : globalThis.location.hash;
+  const hash = reset ? '' : location.hash;
   const url = urlPatch({ search, hash });
 
   function onClick(event: React.MouseEvent) {
