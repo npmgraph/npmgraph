@@ -2,7 +2,6 @@ import Bugsnag from '@bugsnag/js';
 import pkg from '../package.json' with { type: 'json' };
 import HttpError from './HttpError.ts';
 
-// eslint-disable-next-line node/prefer-global/process
 const apiKey = process.env.BUGSNAG_KEY;
 
 if (!apiKey) {

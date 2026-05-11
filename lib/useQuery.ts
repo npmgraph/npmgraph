@@ -33,6 +33,5 @@ export function useParsedQuery() {
   const [query] = useQuery();
   const initialValue = query.join(', ');
 
-  // eslint-disable-next-line react/use-state -- Done downstream
   return useState(initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue);
 }

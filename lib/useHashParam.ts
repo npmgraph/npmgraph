@@ -1,6 +1,5 @@
 import { patchLocation } from './useLocation.ts';
 
-// eslint-disable-next-line react/no-unnecessary-use-prefix
 export default function useHashParam(paramName: string) {
   const params = new URLSearchParams(location.hash.replace(/^#/, ''));
   const param = params.get(paramName);

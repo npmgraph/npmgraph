@@ -344,7 +344,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 }
 
 // Debug helper for logging when a react variable changes
-// eslint-disable-next-line unused-imports/no-unused-vars
 function logUpdate(name: string, val: unknown) {
   if (!val) {
     if (!idSeen.has(name)) {

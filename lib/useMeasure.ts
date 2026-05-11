@@ -10,7 +10,6 @@ export default function useMeasure<T extends Element>() {
   const target = ref.current;
 
   useEffect(() => {
-    // eslint-disable-next-line react/set-state-in-effect
     setSize({
       width: ref.current?.clientWidth ?? 0,
       height: ref.current?.clientHeight ?? 0,
