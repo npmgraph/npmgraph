@@ -85,7 +85,7 @@ async function fetchModuleFromURL(urlString: string) {
   // TODO: We should probably be fetching github content via their REST API, but
   // that makes this code much more github-specific.  So, for now, we just do
   // some URL-massaging to pull from the "raw" URL
-  if (/\.?github.com$/v.test(url.host)) {
+  if (/\.?github.com$/.test(url.host)) {
     url.host = 'raw.githubusercontent.com';
     url.pathname = url.pathname.replace('/blob', '');
   }

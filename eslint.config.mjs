@@ -87,9 +87,13 @@ const disabledRules = [
   'react/no-unescaped-entities',
   'react/prefer-read-only-props',
   'react/self-closing-comp',
+  'unicorn/switch-case-braces',
+  'capitalized-comments',
+  'require-unicode-regexp',
 
   // TODO: After https://github.com/sindresorhus/eslint-plugin-unicorn/pull/2953
   'unicorn/prefer-query-selector',
+
 ];
 
 export default [

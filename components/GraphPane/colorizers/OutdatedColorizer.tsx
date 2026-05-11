@@ -44,9 +44,8 @@ export default {
 
     switch (outdated) {
       case 'major':
-      case 'premajor': {
+      case 'premajor':
         return COLORIZE_COLORS[0];
-      }
       case 'minor':
       case 'preminor': {
         return COLORIZE_COLORS[1];

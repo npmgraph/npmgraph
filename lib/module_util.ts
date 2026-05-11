@@ -2,7 +2,7 @@ import type { PackumentVersion } from '@npm/types';
 import type { Dependencies } from './Module.ts';
 
 export function isHttpModule(moduleKey: string) {
-  return /^https?:\/\//v.test(moduleKey);
+  return /^https?:\/\//.test(moduleKey);
 }
 
 export function resolveModule(name: string, version?: string) {

@@ -71,7 +71,7 @@ function isOriginAllowed(origin) {
     return true;
   }
 
-  if (/npmgraph-git-\w+-broofas-projects.vercel.app/v.test(url.hostname)) {
+  if (/npmgraph-git-\w+-broofas-projects.vercel.app/.test(url.hostname)) {
     return true;
   }
 
