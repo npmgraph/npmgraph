@@ -1,5 +1,5 @@
 import confetti from 'canvas-confetti';
-import { $ } from 'select-dom';
+import { $, $$optional } from 'select-dom';
 import * as graphDiagramStyles from '../components/GraphDiagram/GraphDiagram.module.scss';
 import * as appHeaderStyles from '../components/AppHeader.module.scss';
 import * as styles from './flash.module.scss';
@@ -7,14 +7,9 @@ import * as styles from './flash.module.scss';
 const FLASH_GAP = 10;
 
 export function flash(wat: unknown, bg = '#f80') {
-  const graph = document.querySelector<HTMLElement>(
-    `.${graphDiagramStyles.graph}`,
-  );
-  if (!(graph instanceof HTMLElement)) {
-    throw new TypeError('Graph element not found or invalid');
-  }
-  const flashes = document.querySelectorAll<HTMLElement>(`.${styles.flash}`);
-  const previous = flashes.length > 0 ? flashes.item(flashes.length - 1) : null;
+  const graph = $(`.${graphDiagramStyles.graph}`);
+  const flashes = $$optional(`.${styles.flash}`);
+  const previous = flashes.length > 0 ? (flashes.at(-1) as HTMLElement) : null;
   const element = document.createElement('div');
 
   if (wat instanceof Error) {
@@ -73,9 +68,7 @@ export function celebrate(message: string) {
 }
 
 function defaultTop() {
-  const appHeader = document.querySelectorAll<HTMLElement>(
-    `.${appHeaderStyles.root}`,
-  );
+  const appHeader = document.getElementsByClassName(appHeaderStyles.root);
   if (appHeader.length === 0) return 0;
 
   const appHeaderElement = appHeader[0];
