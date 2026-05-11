@@ -19,7 +19,7 @@ function _getInitialPane() {
   if (!searchGet(PARAM_QUERY)) {
     return PaneType.INFO;
   }
-  const select = hashGet('select')?.split(/[, ]+/v);
+  const select = hashGet('select')?.split(/[, ]+/);
   if (select) return PaneType.MODULE;
   const isTight =
     globalThis.window !== undefined &&

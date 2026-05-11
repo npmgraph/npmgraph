@@ -292,19 +292,18 @@ function vizStyle(
     switch (typeof value) {
       case 'number':
         return `${key}=${value}`;
-      
+
       case 'string':
         return `${key}="${value}"`;
-      
+
       case 'boolean':
         return `${key}=${value ? 'true' : 'false'}`;
-      
+
       case 'undefined':
         return '';
-      
+
       default:
         throw new Error('Invalid value type');
-      
     }
   });
   return `[${pairs.filter(Boolean).join(' ')}]`;

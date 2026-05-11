@@ -92,19 +92,18 @@ export class NPMSColorizer implements BulkColorizer {
         case COLORIZE_OVERALL:
           color = scoreColor(score.final);
           break;
-        
+
         case COLORIZE_QUALITY:
           color = scoreColor(score.detail.quality);
           break;
-        
+
         case COLORIZE_POPULARITY:
           color = scoreColor(score.detail.popularity);
           break;
-        
+
         case COLORIZE_MAINTENANCE:
           color = scoreColor(score.detail.maintenance);
           break;
-        
       }
       if (color) {
         colors.set(m, color);

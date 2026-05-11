@@ -164,9 +164,9 @@ function parseLicense(
 
   if (!license) return [];
 
-  return license.replaceAll(/^\(|\)$/gv, '').split(/\s+or\s+/v);
+  return license.replaceAll(/^\(|\)$/gv, '').split(/\s+or\s+/);
 }
 
 function parseGithubPath(s: string) {
-  return s.match(/github\.com\/[^\/]+\/[^\/?#]+/v)?.[0]?.replace(/\.git$/v, '');
+  return s.match(/github\.com\/[^/]+\/[^/?#]+/)?.[0]?.replace(/\.git$/v, '');
 }

@@ -209,12 +209,11 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
         if (module.getLicenses().includes(queryValue.toLowerCase()))
           results.set(module.key, module);
         break;
-      
+
       case QueryType.Maintainer:
         if (module.maintainers.some(({ name }) => name === queryValue))
           results.set(module.key, module);
         break;
-      
     }
   }
 

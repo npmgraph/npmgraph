@@ -49,15 +49,14 @@ export default {
       case 'minor':
       case 'preminor':
         return COLORIZE_COLORS[1];
-      
+
       case 'patch':
       case 'prepatch':
       case 'prerelease':
         return COLORIZE_COLORS[2];
-      
+
       default:
         return COLORIZE_COLORS[3];
-      
     }
   },
 } as SimpleColorizer;

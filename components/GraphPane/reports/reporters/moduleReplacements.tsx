@@ -54,15 +54,12 @@ function renderDetail(replacement: ModuleReplacement) {
           </ExternalLink>
         </span>
       );
-    
 
     case 'simple':
       return <span>{replacement.description}</span>;
-    
 
     case 'removal':
       return <span>{replacement.description}</span>;
-    
   }
 }
 

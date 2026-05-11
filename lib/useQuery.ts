@@ -23,7 +23,7 @@ export function useQuery() {
   const [location] = useGlobalState('location');
   const queryString = searchGet(PARAM_QUERY, location) ?? '';
   const parsedQuery = useMemo(
-    () => queryString.split(/\s*,\s*/v).filter(Boolean),
+    () => queryString.split(/\s*,\s*/).filter(Boolean),
     [queryString],
   );
   return [parsedQuery, setQuery] as const;
