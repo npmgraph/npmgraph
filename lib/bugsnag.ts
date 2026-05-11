@@ -17,23 +17,23 @@ const bugsnag = Bugsnag.start({
   enabledReleaseStages: ['production'],
 });
 
-function info(error_: Error) {
-  console.log(error_);
+function info(error: Error) {
+  console.log(error);
 }
 
-function warn(error_: Error) {
-  console.warn(error_);
+function warn(error: Error) {
+  console.warn(error);
 }
 
-function error(error_: Error) {
-  console.error(error_);
+function error(error: Error) {
+  console.error(error);
 
-  if (error_ instanceof HttpError) {
+  if (error instanceof HttpError) {
     // Don't report HttpErrors since they're kind of expected from time to time
     return;
   }
 
-  bugsnag?.notify(error_);
+  bugsnag?.notify(error);
 }
 
 export const report = { info, warn, error };
