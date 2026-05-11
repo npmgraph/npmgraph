@@ -16,9 +16,9 @@ export function patchLocation(urlParts: Partial<URL>, replace: boolean) {
 
   // Assign url directly to the location field
   if (replace) {
-    globalThis.history.replaceState({}, '', url);
+    history.replaceState({}, '', url);
   } else {
-    globalThis.history.pushState({}, '', url);
+    history.pushState({}, '', url);
   }
 
   // ... and also update our global cache of the value (notifies listeners)

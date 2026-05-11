@@ -34,7 +34,7 @@ function detectFeatures() {
     'AbortSignal.timeout': globalThis.AbortSignal?.timeout,
     'Map.groupBy': globalThis.Map?.groupBy,
     fetch: globalThis.fetch,
-    globalThis: globalThis.globalThis,
+    globalThis: typeof globalThis !== 'undefined',
     Promise: globalThis.Promise,
   };
 
@@ -51,8 +51,8 @@ function detectFeatures() {
 
   // LocalStorage may not work if cookies are disabled. See #202
   try {
-    globalThis.localStorage.setItem('test', 'test');
-    globalThis.localStorage.removeItem('test');
+    localStorage.setItem('test', 'test');
+    localStorage.removeItem('test');
   } catch {
     unsupported.set(
       'localStorage',

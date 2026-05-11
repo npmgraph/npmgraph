@@ -1,9 +1,7 @@
 import { patchLocation } from './useLocation.ts';
 
 export default function useHashParameter(parameterName: string) {
-  const parameters = new URLSearchParams(
-    location.hash.replace(/^#/v, ''),
-  );
+  const parameters = new URLSearchParams(location.hash.replace(/^#/v, ''));
   const parameter = parameters.get(parameterName);
 
   const setValue = (

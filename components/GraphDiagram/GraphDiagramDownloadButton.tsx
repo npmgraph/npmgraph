@@ -49,14 +49,13 @@ function downloadPng() {
   canvas.width = Number.parseInt(vb[2], 10);
   canvas.height = Number.parseInt(vb[3], 10);
   const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
-  const DOMURL = globalThis.URL || globalThis.webkitURL;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
-  const url = DOMURL.createObjectURL(svgBlob);
+  const url = URL.createObjectURL(svgBlob);
 
   img.addEventListener('load', () => {
     ctx.drawImage(img, 0, 0);
-    DOMURL.revokeObjectURL(url);
+    URL.revokeObjectURL(url);
     const pngImg = canvas.toDataURL('image/png');
     generateLinkToDownload('png', pngImg);
   });

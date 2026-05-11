@@ -1,15 +1,9 @@
-export function urlPatch(
-  urlParts: Partial<URL>,
-  url = new URL(location.href),
-) {
+export function urlPatch(urlParts: Partial<URL>, url = new URL(location.href)) {
   Object.assign(url, urlParts);
   return url;
 }
 
-export function hashGet(
-  key: string,
-  location: URL | Location = location,
-) {
+export function hashGet(key: string, location: URL | Location = location) {
   const parameters = new URLSearchParams(location.hash.slice(1));
   return parameters.get(key);
 }
@@ -28,10 +22,7 @@ export function hashSet(
   return parameters.toString();
 }
 
-export function searchGet(
-  key: string,
-  location: URL | Location = location,
-) {
+export function searchGet(key: string, location: URL | Location = location) {
   const parameters = new URLSearchParams(location.search);
   return parameters.get(key);
 }
