@@ -20,7 +20,7 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
     const licenses = module.getLicenses();
 
-    // LicensesRenderMissing
+    // licensesRenderMissing
     if (licenses.length === 0 || licenses[0] === 'unlicensed') {
       unlicensedModules.push(module);
     }
@@ -28,14 +28,14 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
     if (licenses.length === 0) continue;
 
     for (let license of licenses) {
-      // LicensesRenderAll
+      // licensesRenderAll
       license = license.toLowerCase();
       if (!modulesByLicense.has(license)) {
         modulesByLicense.set(license, []);
       }
       modulesByLicense.get(license)!.push(module);
 
-      // LicensesRenderKeywords
+      // licensesRenderKeywords
       const keywords = LICENSES[license]?.keywords;
       if (!keywords) continue;
       for (const keyword of keywords) {

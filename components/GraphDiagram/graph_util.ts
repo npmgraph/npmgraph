@@ -41,8 +41,8 @@ const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=black]',
   peerDependencies: '[color=black style=dashed label="peer"]',
-  optionalDependencies: '[color=black style=dashed]', // Unused
-  optionalDevDependencies: '[color=black style=dashed]', // Unused
+  optionalDependencies: '[color=black style=dashed]', // unused
+  optionalDevDependencies: '[color=black style=dashed]', // unused
 };
 
 export type DependencyKey =
@@ -190,7 +190,7 @@ export async function getGraphForQuery(
     return info;
   }
 
-  // Deep-resolve all modules in query
+  // deep-resolve all modules in query
   await Promise.allSettled(
     query.map(async moduleKey => {
       const m = await getModule(moduleKey);

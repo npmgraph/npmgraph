@@ -10,7 +10,7 @@ function setQuery(moduleKeys: string[] = [], replace = false) {
     key = key.trim();
 
     // Don't lowercase URLs
-    if (/https?:\/\//iv.test(key)) return key;
+    if (/https?:\/\//i.test(key)) return key;
 
     return key.toLowerCase();
   });

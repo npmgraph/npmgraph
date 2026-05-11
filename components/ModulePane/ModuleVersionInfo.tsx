@@ -59,7 +59,7 @@ export function ModuleVersionInfo({
       updateClassName = styles.patchUpdates;
       message = simplur`${patchDiff} patch version[|s] behind`;
     } else {
-      // Prerelease behind the stable release of the same version
+      // prerelease behind the stable release of the same version
       updateClassName = styles.patchUpdates;
       message = 'prerelease, behind';
     }

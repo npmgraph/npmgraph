@@ -52,7 +52,7 @@ describe('Module', () => {
           new Module({
             version: '1.0.0',
           } as unknown as PackumentVersion),
-        /Package name is required/v,
+        /Package name is required/,
       );
     });
   });

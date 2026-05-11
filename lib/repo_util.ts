@@ -34,7 +34,7 @@ export function getRepoUrlForModule(module: Module): string | undefined {
 
     // Fallback: strip path suffixes and try again
     const baseUrl = url.replace(
-      /\/(issues|pulls|wiki|tree|blob|commit|releases).*$/v,
+      /\/(issues|pulls|wiki|tree|blob|commit|releases).*$/,
       '',
     );
     if (baseUrl !== url) {

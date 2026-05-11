@@ -25,8 +25,8 @@ const moduleCache = new Map<string, ModuleCacheEntry>();
 
 export enum QueryType {
   Default = '',
-  Exact = 'exact', // Deprecated - use Default
-  Name = 'name', // Deprecated - use Default
+  Exact = 'exact', // deprecated - use Default
+  Name = 'name', // deprecated - use Default
   License = 'license',
   Maintainer = 'maintainer',
 }
@@ -106,7 +106,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   if (isHttpModule(moduleKey)) {
     name = moduleKey;
     version = '';
-    // Unchanged
+    // unchanged
   } else {
     [name, version] = resolveModule(name, version);
   }
@@ -209,7 +209,6 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
         if (module.getLicenses().includes(queryValue.toLowerCase()))
           results.set(module.key, module);
         break;
-
       case QueryType.Maintainer:
         if (module.maintainers.some(({ name }) => name === queryValue))
           results.set(module.key, module);

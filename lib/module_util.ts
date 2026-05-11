@@ -30,7 +30,7 @@ export function parseModuleKey(moduleKey: string): string[] {
   const parts = moduleKey.match(/(.+)@(.*)/);
   if (!parts) return [moduleKey];
 
-  parts.shift(); // Remove full match
+  parts.shift(); // remove full match
   return parts; // [name, version]
 }
 

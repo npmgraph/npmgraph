@@ -65,7 +65,7 @@ function renderDetail(replacement: ModuleReplacement) {
 
 export function moduleReplacementsNative({
   moduleInfos,
-  // EntryModules,
+  // entryModules,
 }: ModuleAnalysisState) {
   const details = [...moduleInfos.values()]
     .map(({ module }) => ({

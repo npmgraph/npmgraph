@@ -24,7 +24,6 @@ function download(type: DownloadExtension) {
     case 'svg':
       downloadSvg();
       break;
-
     case 'png':
       downloadPng();
       break;

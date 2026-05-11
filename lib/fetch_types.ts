@@ -122,7 +122,7 @@ export type BundlePhobiaData = {
     type: string;
   }[];
   dependencyCount: number;
-  // DependencySizes may be undefined, but making it optional here causes TS to
+  // dependencySizes may be undefined, but making it optional here causes TS to
   // complain when trying to pick it's type of this structure with
   // `BundlePhobiaData['dependencySizes'][number]`.
   dependencySizes: { approximateSize: number; name: string }[];

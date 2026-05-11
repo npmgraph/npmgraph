@@ -35,21 +35,17 @@ export default function Inspector(
     case PaneType.MODULE:
       paneComponent = <ModulePane selectedModules={selectedModules} />;
       break;
-
     case PaneType.REPORT:
       paneComponent = (
         <GraphPane className={graphPaneStyles.paneGraph} graph={graph} />
       );
       break;
-
     case PaneType.GRAPH:
       paneComponent = <GraphDiagram activity={activity} />;
       break;
-
     case PaneType.SETTINGS:
       paneComponent = <SettingsPane />;
       break;
-
     case PaneType.INFO:
       paneComponent = <InfoPane />;
       break;
