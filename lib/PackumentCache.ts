@@ -42,10 +42,7 @@ export async function getNPMPackument(
       headers: { Accept: 'application/json' },
     })
       .catch(error => {
-        console.warn(
-          `Failed to fetch packument for ${moduleName}`,
-          error.message,
-        );
+        console.warn('Failed to fetch packument', moduleName, error.message);
         return undefined;
       })
       .then(cacheEntry.resolve);

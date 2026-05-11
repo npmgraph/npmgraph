@@ -10,8 +10,9 @@ export function ModuleTable({ data }: { data: ModuleTableData }) {
   const moduleNames = [...data.keys()].toSorted();
 
   const rows = moduleNames.map(name => {
-    const modules = data.get(name)!;
-    modules.toSorted((a, b) => a.version.localeCompare(b.version));
+    const modules = data
+      .get(name)!
+      .toSorted((a, b) => a.version.localeCompare(b.version));
 
     return modules.length === 1 ? (
       <div className={styles.rootRow} key={name}>

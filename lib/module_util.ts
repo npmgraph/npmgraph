@@ -46,10 +46,12 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
     if (!deps) {
       continue;
     } else if (deps.constructor !== Object) {
-      console.warn(
-        `Unexpected value for ${pkg.name}@${pkg.version}#${depType}`,
-        typeof deps,
-      );
+      console.warn('Unexpected dependency object shape', {
+        depType,
+        moduleName: pkg.name,
+        moduleVersion: pkg.version,
+        valueType: typeof deps,
+      });
       continue;
     }
 
