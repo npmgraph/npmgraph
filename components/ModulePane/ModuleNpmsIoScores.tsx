@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type Module from '../../lib/Module.ts';
-import fetchJSON from '../../lib/fetchJSON.ts';
+import fetchJSON from '../../lib/fetchJson.ts';
 import type { NPMSIOData } from '../../lib/fetch_types.ts';
 import { ModuleScoreBar } from './ModuleScoreBar.tsx';
 import * as styles from './ModuleNpmsIOScores.module.scss';
@@ -18,12 +18,13 @@ export default function ModuleNpmsIOScores({ module }: { module: Module }) {
       { silent: true, timeout: 5000 },
     )
       .then(data => setNpmsData(data))
-      .catch(err => setNpmsData(err));
+      .catch(error => setNpmsData(error));
   }, [module]);
 
   if (!npmsData) {
     return 'Loading ...';
-  } else if (npmsData instanceof Error) {
+  }
+  if (npmsData instanceof Error) {
     return 'Score not available';
   }
 

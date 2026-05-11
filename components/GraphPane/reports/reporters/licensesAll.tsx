@@ -9,8 +9,8 @@ import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './licensesAll.module.scss';
 
 export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
-  const details = Array.from(modulesByLicense.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
+  const details = [...modulesByLicense.entries()]
+    .toSorted(([a], [b]) => a.localeCompare(b))
     .map(([license, modules]) => {
       const keywords = LICENSES[license.toLowerCase()]?.keywords;
 

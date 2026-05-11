@@ -86,7 +86,7 @@ export default class Module {
   }
 
   get version() {
-    const version = this.package.version;
+    const { version } = this.package;
     // I've forgotten under what circumstances package.version.version might
     // actually be a thing... :-/
     return (
@@ -96,17 +96,19 @@ export default class Module {
 
   getShareableLink() {
     const json = JSON.stringify(this.package);
-    const url = new URL(window.location.href);
-    const hashParams = new URLSearchParams(location.hash.replace(/^#/, ''));
-    hashParams.set('package_json', json);
-    url.hash = hashParams.toString();
+    const url = new URL(globalThis.location.href);
+    const hashParameters = new URLSearchParams(
+      globalThis.location.hash.replace(/^#/v, ''),
+    );
+    hashParameters.set('package_json', json);
+    url.hash = hashParameters.toString();
     return url;
   }
 
   get repository() {
     // TODO: Handle non-github repositories
     const { repository } = this.package;
-    if (typeof repository == 'string') return repository;
+    if (typeof repository === 'string') return repository;
     return repository?.url;
   }
 
@@ -150,8 +152,11 @@ function parseLicense(
     | undefined,
 ): string[] {
   if (Array.isArray(license)) {
-    return license.flatMap(parseLicense).filter(isDefined);
-  } else if (typeof license === 'object') {
+    return license
+      .flatMap(value => parseLicense(value))
+      .filter(value => isDefined(value));
+  }
+  if (typeof license === 'object') {
     license = license.type;
   }
 
@@ -159,9 +164,9 @@ function parseLicense(
 
   if (!license) return [];
 
-  return license.replace(/^\(|\)$/g, '').split(/\s+or\s+/);
+  return license.replaceAll(/^\(|\)$/gv, '').split(/\s+or\s+/v);
 }
 
 function parseGithubPath(s: string) {
-  return s.match(/github.com\/[^/]+\/[^/?#]+/)?.[0]?.replace(/\.git$/, '');
+  return s.match(/github\.com\/[^\/]+\/[^\/?#]+/v)?.[0]?.replace(/\.git$/v, '');
 }

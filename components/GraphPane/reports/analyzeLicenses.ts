@@ -20,22 +20,22 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
     const licenses = module.getLicenses();
 
-    // licensesRenderMissing
-    if (!licenses.length || licenses[0] === 'unlicensed') {
+    // LicensesRenderMissing
+    if (licenses.length === 0 || licenses[0] === 'unlicensed') {
       unlicensedModules.push(module);
     }
 
-    if (!licenses.length) continue;
+    if (licenses.length === 0) continue;
 
     for (let license of licenses) {
-      // licensesRenderAll
+      // LicensesRenderAll
       license = license.toLowerCase();
       if (!modulesByLicense.has(license)) {
         modulesByLicense.set(license, []);
       }
       modulesByLicense.get(license)!.push(module);
 
-      // licensesRenderKeywords
+      // LicensesRenderKeywords
       const keywords = LICENSES[license]?.keywords;
       if (!keywords) continue;
       for (const keyword of keywords) {

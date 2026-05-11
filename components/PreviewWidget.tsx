@@ -14,9 +14,10 @@ export default function PreviewWidget() {
   const [isHidden, setIsHidden] = useState(false);
   const [locationUrl] = useLocation();
   const isProductionHost = locationUrl.hostname === 'npmgraph.js.org';
-  const prNumber = useMemo(() => {
-    return process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim();
-  }, []);
+  const prNumber = useMemo(
+    () => process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim(),
+    [],
+  );
   const prUrl = prNumber
     ? `https://github.com/npmgraph/npmgraph/pull/${prNumber}`
     : null;

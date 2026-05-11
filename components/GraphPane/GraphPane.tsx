@@ -53,7 +53,7 @@ export default function GraphPane({
   return (
     <Pane className={cn(styles.paneGraph, className)} {...restProps}>
       <div className={styles.collapseInfo}>
-        {collapse.length ? (
+        {collapse.length > 0 ? (
           <span>
             {simplur`${collapse.length} module[|s] collapsed `}
             <button onClick={() => setCollapse([])} type="button">

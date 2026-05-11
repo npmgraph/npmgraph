@@ -4,12 +4,12 @@ export type PromiseWithResolversType<T> = {
   reject: (reason?: unknown) => void;
 };
 
-export default function <T>() {
+export default function promiseWithResolvers<T>() {
   let resolve!: (value: T | Promise<T>) => void;
   let reject!: (reason?: unknown) => void;
 
-  const promise = new Promise<T>((res, rej) => {
-    resolve = res;
+  const promise = new Promise<T>((result, rej) => {
+    resolve = result;
     reject = rej;
   });
   return { promise, resolve, reject };

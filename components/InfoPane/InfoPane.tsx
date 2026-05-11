@@ -10,7 +10,7 @@ import * as styles from './InfoPane.module.scss';
 
 function isGithubUrl(url: URL | null) {
   if (!url) return false;
-  return /^github.com$|\.github.com$/.test(url?.host ?? '');
+  return /^github.com$|\.github.com$/v.test(url?.host ?? '');
 }
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
@@ -32,7 +32,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       {valueAsURL ? (
         <div className={styles.tip}>
           Note: {valueAsURL.host} must allow CORS requests from the{' '}
-          {location.host} domain for this to work
+          {globalThis.location.host} domain for this to work
         </div>
       ) : null}
 

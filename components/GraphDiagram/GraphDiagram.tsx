@@ -79,15 +79,15 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [graphviz, graphvizLoading] = useGraphviz();
 
   // Stable query array for use in effects
-  const sortedQuery = useMemo(() => [...query].sort(), [query]);
+  const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
 
   // Stable dependency types for use in effects
   const dependencyTypes = useMemo(() => {
     const extra = (depTypes ?? '')
-      .split(/\s*,\s*/)
+      .split(/\s*,\s*/v)
       .map(s => s.trim())
       .filter(Boolean)
-      .sort() as DependencyKey[];
+      .toSorted() as DependencyKey[];
     return new Set<DependencyKey>(['dependencies', ...extra]);
   }, [depTypes]);
 
@@ -134,33 +134,37 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   }
 
   function applyZoom() {
-    const graphEl = $(`.${styles.graph}`);
-    if (!graphEl || !diagramElement) return;
+    const graphElement = $(`.${styles.graph}`);
+    if (!graphElement || !diagramElement) return;
 
     // Note: Not using svg.getBBox() here because (for some reason???) it's
     // smaller than the actual bounding box
     const vb = diagramElement.getAttribute('viewBox')?.split(' ').map(Number);
     if (!vb) return;
 
-    const [, , w, h] = vb;
-    graphEl.classList.remove(utilities.dBlock);
+    const w = vb[2];
+    const h = vb[3];
+    graphElement.classList.remove(utilities.dBlock);
 
     switch (zoom) {
-      case ZOOM_NONE:
+      case ZOOM_NONE: {
         diagramElement.setAttribute('width', String(w));
         diagramElement.setAttribute('height', String(h));
         break;
+      }
 
-      case ZOOM_FIT_WIDTH:
+      case ZOOM_FIT_WIDTH: {
         diagramElement.setAttribute('width', '100%');
         diagramElement.removeAttribute('height');
         break;
+      }
 
-      case ZOOM_FIT_HEIGHT:
+      case ZOOM_FIT_HEIGHT: {
         diagramElement.removeAttribute('width');
         diagramElement.setAttribute('height', '100%');
-        graphEl.classList.add(utilities.dBlock);
+        graphElement.classList.add(utilities.dBlock);
         break;
+      }
     }
   }
 
@@ -220,8 +224,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           svgMarkup = graph?.moduleInfos.size
             ? await graphviz.dot(dotDoc, 'svg')
             : '<svg />';
-        } catch (err) {
-          console.error(err);
+        } catch (error) {
+          console.error(error);
           flash('Error while rendering graph');
         }
       }
@@ -238,9 +242,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.classList.add(styles.graphDiagram);
 
       // Inject into DOM
-      const el = $(`.${styles.graph}`)!;
+      const element = $(`.${styles.graph}`)!;
       getDiagramElement()?.remove();
-      el.appendChild(svgDom);
+      element.append(svgDom);
 
       // Inject bg pattern for deprecated modules
       const PATTERN = `<pattern id="warning"
@@ -256,9 +260,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         .html(PATTERN);
 
       // Decorate DOM nodes with appropriate classname
-      for (const nodeEl of $$optional('g.node', el)) {
+      for (const nodeElement of $$optional('g.node', element)) {
         // Find module this node represents
-        const key = $(':scope > title', nodeEl)?.textContent?.trim();
+        const key = $(':scope > title', nodeElement)?.textContent?.trim();
         if (!key) continue;
 
         const m = getCachedModule(key);
@@ -266,21 +270,21 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (!m) continue;
 
         if (m?.package.deprecated) {
-          nodeEl.classList.add('warning');
+          nodeElement.classList.add('warning');
         }
 
         if (m.name) {
-          nodeEl.dataset.module = m.key;
+          nodeElement.dataset.module = m.key;
         } else {
           report.warn(new Error(`Bad replace: ${key}`));
         }
 
         if (!moduleFilter(m)) {
-          nodeEl.classList.add('collapsed');
+          nodeElement.classList.add('collapsed');
         }
 
         if (m.isStub) {
-          nodeEl.classList.add('stub');
+          nodeElement.classList.add('stub');
         }
       }
 
@@ -320,16 +324,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
 
-  if (!graphviz) {
-    if (graphvizLoading) {
-      return (
-        <div className={cn(styles.graph, styles.graphvizLoading)}>
-          {graphvizLoading
-            ? 'Loading layout package...'
-            : 'Layout package failed to load.'}
-        </div>
-      );
-    }
+  if (!graphviz && graphvizLoading) {
+    return (
+      <div className={cn(styles.graph, styles.graphvizLoading)}>
+        {graphvizLoading
+          ? 'Loading layout package...'
+          : 'Layout package failed to load.'}
+      </div>
+    );
   }
 
   return (
@@ -344,35 +346,38 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 }
 
 // Debug helper for logging when a react variable changes
-function logUpdate(name: string, val: unknown) {
-  if (!val) {
+function logUpdate(name: string, value: unknown) {
+  if (!value) {
     if (!idSeen.has(name)) {
       console.log(name, '<undefined>');
       idSeen.add(name);
     }
     return;
   }
-  if (idSeen.has(val)) return;
-  idSeen.add(val);
-  console.log(name, 'updated ->', val);
+  if (idSeen.has(value)) return;
+  idSeen.add(value);
+  console.log(name, 'updated ->', value);
 }
 
 function scrollGraphIntoView(
-  el: Element | null,
+  element: Element | null,
   scrollOptions?: ScrollToOptions,
 ) {
-  const graphEl = $optional(`.${styles.graph}`);
-  if (graphEl && el) {
+  const graphElement = $optional(`.${styles.graph}`);
+  if (graphElement && element) {
     // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
     // Firefox.  And even in Chrome it just scrolls the element to *barely*
     // be in view, which isn't really what we want.  (We'd like element to
     // be centered in the view.)  So, instead, we manually compute the
     // scroll coordinates.
-    const { top: elTop, left: elLeft } = el.getBoundingClientRect();
-    const left = graphEl.scrollLeft + elLeft - graphEl.clientWidth / 2;
-    const top = graphEl.scrollTop + elTop - graphEl.clientHeight / 2;
+    const { top: elementTop, left: elementLeft } =
+      element.getBoundingClientRect();
+    const left =
+      graphElement.scrollLeft + elementLeft - graphElement.clientWidth / 2;
+    const top =
+      graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
 
-    graphEl.scrollTo({ left, top, ...scrollOptions });
+    graphElement.scrollTo({ left, top, ...scrollOptions });
   }
 }
 
@@ -382,8 +387,8 @@ function useGraphviz() {
 
   useEffect(() => {
     Graphviz.load()
-      .catch(err => {
-        console.error('Graphviz failed to load', err);
+      .catch(error => {
+        console.error('Graphviz failed to load', error);
         return undefined;
       })
       .then(setGraphviz)
@@ -403,22 +408,22 @@ function updateSelection(
   const isSelection = modules.size > 0;
 
   // Set selection classes for node elements
-  let scrollEl: HTMLElement | undefined;
-  for (const el of $$optional('svg .node[data-module]')) {
-    const moduleKey = el.dataset.module ?? '';
+  let scrollElement: HTMLElement | undefined;
+  for (const element of $$optional('svg .node[data-module]')) {
+    const moduleKey = element.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
     const isUpstream = si.upstreamModuleKeys.has(moduleKey);
     const isDownstream = si.downstreamModuleKeys.has(moduleKey);
-    el.classList.toggle('selected', isSelection && isSelected);
-    el.classList.toggle('upstream', isSelection && isUpstream);
-    el.classList.toggle('downstream', isSelection && isDownstream);
-    el.classList.toggle(
+    element.classList.toggle('selected', isSelection && isSelected);
+    element.classList.toggle('upstream', isSelection && isUpstream);
+    element.classList.toggle('downstream', isSelection && isDownstream);
+    element.classList.toggle(
       'unselected',
       isSelection && !isSelected && !isUpstream && !isDownstream,
     );
 
     if (isSelection && isSelected) {
-      scrollEl = el;
+      scrollElement = element;
     }
   }
 
@@ -436,15 +441,15 @@ function updateSelection(
 
     // Move edge to end of child list so it's painted last
     if (isUpstream || isDownstream) {
-      edge.parentElement?.appendChild(edge);
+      edge.parentElement?.append(edge);
     }
   }
 
   if (scrollToSelected) {
     // Scroll to selected element (if multiple elements, this scrolls to last one)
-    if (scrollEl) {
-      scrollGraphIntoView(scrollEl, { behavior: 'smooth' });
-    } else if (!scrollEl) {
+    if (scrollElement) {
+      scrollGraphIntoView(scrollElement, { behavior: 'smooth' });
+    } else if (!scrollElement) {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
       scrollGraphIntoView(
@@ -469,33 +474,33 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
   if (isSimpleColorizer(colorizer)) {
     // For each node in graph
-    for (const el of moduleEls) {
-      const moduleKey = el.dataset.module;
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elPath = $('path', el)!;
+      const elementPath = $('path', element)!;
 
       // Reset color if there's no module
       if (!m) {
-        elPath.style.fill = '';
+        elementPath.style.fill = '';
         continue;
       }
 
       // Colorize it (async)
       colorizer
         .colorForModule(m)
-        .catch(err => {
-          console.warn(`Error colorizing ${m.name}: ${err.message}`);
+        .catch(error => {
+          console.warn(`Error colorizing ${m.name}: ${error.message}`);
           return null;
         })
         .then(color => {
-          elPath.style.fill = color ?? '';
+          elementPath.style.fill = color ?? '';
         });
     }
   } else {
     // Bundle up modules
     const modules: Module[] = [];
-    for (const el of moduleEls) {
-      const moduleKey = el.dataset.module;
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
       if (m) modules.push(m);
     }
@@ -504,11 +509,11 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     const colors = await colorizer.colorsForModules(modules);
 
     // Apply colors
-    for (const el of moduleEls) {
-      const moduleKey = el.dataset.module;
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elPath = $('path', el)!;
-      elPath.style.fill = (m && colors.get(m)) ?? '';
+      const elementPath = $('path', element)!;
+      elementPath.style.fill = (m && colors.get(m)) ?? '';
     }
   }
 }

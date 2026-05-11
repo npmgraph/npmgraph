@@ -4,7 +4,7 @@ export function createAbortable() {
 
   return {
     signal,
-    abort: () => {
+    abort() {
       signal.aborted = true;
     },
   };

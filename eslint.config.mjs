@@ -2,6 +2,30 @@ import xo from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import prettierConflicts from 'eslint-config-prettier';
 
+const xoConfigs = xo({
+  browser: true,
+}).map(config => {
+  if (!config.rules || config.name !== 'xo/base') return config;
+
+  return {
+    ...config,
+    rules: {
+      ...config.rules,
+      'unicorn/filename-case': [
+        'error',
+        {
+          cases: {
+            kebabCase: true,
+            camelCase: true,
+            pascalCase: true,
+            snakeCase: true,
+          },
+        },
+      ],
+    },
+  };
+});
+
 const xoReactConfigs = xoReact().map(config => ({
   ...config,
   files: ['**/*.{jsx,tsx}'],
@@ -45,31 +69,12 @@ const disabledRules = [
   '@typescript-eslint/strict-void-return',
   '@typescript-eslint/switch-exhaustiveness-check',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'arrow-body-style',
-  'capitalized-comments',
-  'complexity',
-  'eqeqeq',
-  'func-names',
   'import-x/no-anonymous-default-export',
   'import-x/no-duplicates',
   'import-x/no-extraneous-dependencies',
   'import-x/no-unassigned-import',
   'import-x/order',
   'json/no-empty-keys',
-  'logical-assignment-operators',
-  'max-lines',
-  'n/no-extraneous-import',
-  'n/prefer-global/url',
-  'new-cap',
-  'no-await-in-loop',
-  'no-else-return',
-  'no-eq-null',
-  'no-negated-condition',
-  'no-restricted-globals',
-  'no-warning-comments',
-  'object-shorthand',
-  'prefer-destructuring',
-  'radix',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
@@ -81,40 +86,10 @@ const disabledRules = [
   'react/no-unescaped-entities',
   'react/prefer-read-only-props',
   'react/self-closing-comp',
-  'require-unicode-regexp',
-  'unicorn/catch-error-name',
-  'unicorn/explicit-length-check',
-  'unicorn/filename-case',
-  'unicorn/no-anonymous-default-export',
-  'unicorn/no-array-callback-reference',
-  'unicorn/no-array-for-each',
-  'unicorn/no-array-reduce',
-  'unicorn/no-array-reverse',
-  'unicorn/no-array-sort',
-  'unicorn/no-await-expression-member',
-  'unicorn/no-hex-escape',
-  'unicorn/no-immediate-mutation',
-  'unicorn/no-lonely-if',
-  'unicorn/no-negated-condition',
-  'unicorn/no-unreadable-array-destructuring',
-  'unicorn/no-useless-promise-resolve-reject',
-  'unicorn/prefer-add-event-listener',
-  'unicorn/prefer-at',
-  'unicorn/prefer-blob-reading-methods',
-  'unicorn/prefer-dom-node-append',
-  'unicorn/prefer-global-this',
-  'unicorn/prefer-query-selector',
-  'unicorn/prefer-spread',
-  'unicorn/prefer-string-raw',
-  'unicorn/prefer-string-replace-all',
-  'unicorn/prevent-abbreviations',
-  'unicorn/switch-case-braces',
 ];
 
 export default [
-  ...xo({
-    browser: true,
-  }),
+  ...xoConfigs,
   ...xoReactConfigs,
   {
     rules: {

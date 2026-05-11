@@ -32,23 +32,28 @@ export default function Inspector(
 
   let paneComponent;
   switch (pane) {
-    case PaneType.MODULE:
+    case PaneType.MODULE: {
       paneComponent = <ModulePane selectedModules={selectedModules} />;
       break;
-    case PaneType.REPORT:
+    }
+    case PaneType.REPORT: {
       paneComponent = (
         <GraphPane className={graphPaneStyles.paneGraph} graph={graph} />
       );
       break;
-    case PaneType.GRAPH:
+    }
+    case PaneType.GRAPH: {
       paneComponent = <GraphDiagram activity={activity} />;
       break;
-    case PaneType.SETTINGS:
+    }
+    case PaneType.SETTINGS: {
       paneComponent = <SettingsPane />;
       break;
-    case PaneType.INFO:
+    }
+    case PaneType.INFO: {
       paneComponent = <InfoPane />;
       break;
+    }
   }
   return (
     <div className={cn(styles.inspector, className)} {...restProps}>

@@ -13,8 +13,8 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   const [sizing, setSizing] = useHashParam(PARAM_SIZING);
 
   const dependencyTypes = (
-    (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
-  ).filter(isDefined);
+    (depTypes ?? '').split(/\s*,\s*/v) as DependencyKey[]
+  ).filter(item => isDefined(item));
 
   const includeDev = dependencyTypes.includes('devDependencies');
 

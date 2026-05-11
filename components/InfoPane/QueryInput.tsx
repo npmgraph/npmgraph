@@ -31,26 +31,26 @@ export default function QueryInput({
     initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue,
   );
 
-  function getSearchParams() {
+  function getSearchParameters() {
     let moduleKeys = inputRef
       .current!.value.split(',')
       .map(v => v.trim())
-      .filter(isDefined);
+      .filter(item => isDefined(item));
 
     moduleKeys = [...new Set(moduleKeys)]; // De-dupe
     return searchSet(PARAM_QUERY, moduleKeys.join(', '));
   }
 
-  function handleSubmit(e?: React.FormEvent<HTMLFormElement>) {
-    e?.preventDefault();
-    patchLocation({ search: getSearchParams(), hash: '' }, false);
+  function handleSubmit(event?: React.FormEvent<HTMLFormElement>) {
+    event?.preventDefault();
+    patchLocation({ search: getSearchParameters(), hash: '' }, false);
   }
 
   // Add cmd-enter support to search in a new tab
-  function handleCmdEnter(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' && e.metaKey) {
-      window.open(`/?${getSearchParams()}`, '_blank');
-      e.preventDefault();
+  function handleCmdEnter(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter' && event.metaKey) {
+      window.open(`/?${getSearchParameters()}`, '_blank');
+      event.preventDefault();
     }
   }
 
@@ -79,7 +79,7 @@ export default function QueryInput({
           spellCheck="false"
           // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting
           autoFocus={!hasSoftKeyboard}
-          onChange={e => setValue(e.target.value)}
+          onChange={event => setValue(event.target.value)}
           onKeyDown={handleCmdEnter}
           onFocus={handleFocus}
           {...props}

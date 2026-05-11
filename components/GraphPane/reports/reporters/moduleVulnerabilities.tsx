@@ -1,7 +1,7 @@
 import simplur from 'simplur';
 import { QueryType } from '../../../../lib/ModuleCache.ts';
 import { cn } from '../../../../lib/dom.ts';
-import fetchJSON from '../../../../lib/fetchJSON.ts';
+import fetchJSON from '../../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../../ExternalLink.tsx';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
@@ -38,11 +38,11 @@ export async function moduleVulnerabilities({
   const versionsByName: Record<string, string[]> = {};
 
   let nModules = 0;
-  moduleInfos.forEach(({ module }) => {
+  for (const { module } of moduleInfos.values()) {
     versionsByName[module.name] ??= [];
     versionsByName[module.name].push(module.version);
     nModules++;
-  });
+  }
 
   let moduleAdvisories: BulkAdvisories | null = null;
   if (nModules > 0) {
@@ -62,8 +62,8 @@ export async function moduleVulnerabilities({
         method: 'POST',
         body,
       },
-    ).catch(err => {
-      console.log('Error fetching NPM audit data:', err.message);
+    ).catch(error => {
+      console.log('Error fetching NPM audit data:', error.message);
       return null;
     });
   }
@@ -71,47 +71,47 @@ export async function moduleVulnerabilities({
   // Get flat list of advisories
   const advisories: Advisory[] = [];
   if (moduleAdvisories) {
-    Object.entries(moduleAdvisories).forEach(([moduleName, moduleAdvisory]) => {
+    for (const [moduleName, moduleAdvisory] of Object.entries(
+      moduleAdvisories,
+    )) {
       for (const adv of moduleAdvisory) {
         adv.packageName = moduleName;
         advisories.push(adv);
       }
-    });
+    }
   }
 
-  // sort by severity, name
+  // Sort by severity, name
   advisories.sort((a, b) => {
     const rank = SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity];
     if (rank !== 0) return rank;
     return (a.packageName ?? '').localeCompare(b.packageName ?? '');
   });
 
-  const details = advisories.map(advisory => {
-    return (
-      <div key={advisory.id}>
-        <div
-          className={cn(
-            styles.header,
-            styles.severity,
-            styles[advisory.severity as keyof typeof styles] as string,
-          )}
-        >
-          <span className={styles.module}>
-            <Selectable
-              className={styles.name}
-              type={QueryType.Default}
-              value={`${advisory.packageName}@${advisory.vulnerable_versions}`}
-            />{' '}
-          </span>
-          <span className={styles.severity}>{advisory.severity}</span>
-        </div>
-        <div>
-          {advisory.title}{' '}
-          <ExternalLink href={advisory.url}>details</ExternalLink>
-        </div>
+  const details = advisories.map(advisory => (
+    <div key={advisory.id}>
+      <div
+        className={cn(
+          styles.header,
+          styles.severity,
+          styles[advisory.severity as keyof typeof styles] as string,
+        )}
+      >
+        <span className={styles.module}>
+          <Selectable
+            className={styles.name}
+            type={QueryType.Default}
+            value={`${advisory.packageName}@${advisory.vulnerable_versions}`}
+          />{' '}
+        </span>
+        <span className={styles.severity}>{advisory.severity}</span>
       </div>
-    );
-  });
+      <div>
+        {advisory.title}{' '}
+        <ExternalLink href={advisory.url}>details</ExternalLink>
+      </div>
+    </div>
+  ));
 
   if (details.length <= 0) return;
 

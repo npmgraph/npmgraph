@@ -11,7 +11,7 @@ export function useKeyboardShortcuts() {
       // Focus search field with "/"
       if (ev.key === '/') {
         ev.preventDefault();
-        document.getElementById(SEARCH_FIELD_ID)?.focus();
+        document.querySelector<HTMLElement>(`#${SEARCH_FIELD_ID}`)?.focus();
       }
     }
 

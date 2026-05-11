@@ -15,7 +15,7 @@ export function licensesKeyword(keyword: OSIKeyword) {
     const summary = simplur`Modules with "${keyword}" license (${modules.length})`;
 
     const details = modules
-      .sort((a, b) => a.key.localeCompare(b.key))
+      .toSorted((a, b) => a.key.localeCompare(b.key))
       .map(module => (
         <div
           className={cn(styles.row, reportItemStyles.zebraRow)}

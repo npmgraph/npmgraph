@@ -37,24 +37,28 @@ export default {
     let outdated;
     try {
       outdated = diff(module.version, latestVersion);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       return '';
     }
 
     switch (outdated) {
       case 'major':
-      case 'premajor':
+      case 'premajor': {
         return COLORIZE_COLORS[0];
+      }
       case 'minor':
-      case 'preminor':
+      case 'preminor': {
         return COLORIZE_COLORS[1];
+      }
       case 'patch':
       case 'prepatch':
-      case 'prerelease':
+      case 'prerelease': {
         return COLORIZE_COLORS[2];
-      default:
+      }
+      default: {
         return COLORIZE_COLORS[3];
+      }
     }
   },
 } as SimpleColorizer;

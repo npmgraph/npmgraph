@@ -15,7 +15,7 @@ export default function useMeasure<T extends Element>() {
       height: ref.current?.clientHeight ?? 0,
     });
 
-    // if (!target) return;
+    // If (!target) return;
 
     // const observer = new ResizeObserver(entries => {
     //   const entry = entries[0];

@@ -11,23 +11,21 @@ export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
     return;
   }
 
-  const details = Array.from(moduleInfos.values())
-    .sort((a, b) => a.module.key.localeCompare(b.module.key))
-    .map(({ module }) => {
-      return (
-        <div
-          className={cn(styles.row, reportItemStyles.zebraRow)}
-          key={module.key}
-        >
-          <Selectable
-            className={cn(styles.name, {
-              [styles.entry]: entryModules.has(module),
-            })}
-            value={module.key}
-          />
-        </div>
-      );
-    });
+  const details = [...moduleInfos.values()]
+    .toSorted((a, b) => a.module.key.localeCompare(b.module.key))
+    .map(({ module }) => (
+      <div
+        className={cn(styles.row, reportItemStyles.zebraRow)}
+        key={module.key}
+      >
+        <Selectable
+          className={cn(styles.name, {
+            [styles.entry]: entryModules.has(module),
+          })}
+          value={module.key}
+        />
+      </div>
+    ));
 
   const summary = simplur`All modules (${entryModules.size} top level,  ${
     moduleInfos.size - entryModules.size

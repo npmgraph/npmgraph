@@ -7,59 +7,61 @@ import * as styles from './flash.module.scss';
 const FLASH_GAP = 10;
 
 export function flash(wat: unknown, bg = '#f80') {
-  const graph = document.getElementsByClassName(graphDiagramStyles.graph)[0];
+  const graph = document.querySelector<HTMLElement>(
+    `.${graphDiagramStyles.graph}`,
+  );
   if (!(graph instanceof HTMLElement)) {
     throw new TypeError('Graph element not found or invalid');
   }
-  const flashes = document.getElementsByClassName(styles.flash);
-  const prev =
-    flashes.length > 0 ? (flashes[flashes.length - 1] as HTMLElement) : null;
-  const el = document.createElement('div');
+  const flashes = document.querySelectorAll<HTMLElement>(`.${styles.flash}`);
+  const previous = flashes.length > 0 ? flashes.item(flashes.length - 1) : null;
+  const element = document.createElement('div');
 
   if (wat instanceof Error) {
-    el.classList.add('error');
-    el.textContent = wat.message;
+    element.classList.add('error');
+    element.textContent = wat.message;
   } else if (wat instanceof Document) {
     const body = $('body', wat);
     if (body) {
-      el.append(...body.children);
+      element.append(...body.children);
     }
   } else if (wat instanceof Element || wat instanceof DocumentFragment) {
-    el.append(wat);
-  } else if (typeof wat == 'string') {
-    el.textContent = wat;
+    element.append(wat);
+  } else if (typeof wat === 'string') {
+    element.textContent = wat;
   } else {
-    el.textContent = JSON.stringify(wat, null, 2);
+    element.textContent = JSON.stringify(wat, null, 2);
   }
 
-  document.body.appendChild(el);
-  el.classList.add(styles.flash);
+  document.body.append(element);
+  element.classList.add(styles.flash);
 
-  let top = prev ? prev.offsetTop + prev.offsetHeight : 0;
-  if (top <= 0 || top >= window.innerHeight - el.offsetHeight) {
+  let top = previous ? previous.offsetTop + previous.offsetHeight : 0;
+  if (top <= 0 || top >= window.innerHeight - element.offsetHeight) {
     top = defaultTop();
   }
 
-  el.style.top = `${top + FLASH_GAP / 2}px`;
-  el.style.left = `${-el.offsetWidth - FLASH_GAP}px`;
-  el.style.maxWidth = `${graph.offsetWidth - FLASH_GAP}px`;
-  el.style.backgroundColor = bg;
+  element.style.top = `${top + FLASH_GAP / 2}px`;
+  element.style.left = `${-element.offsetWidth - FLASH_GAP}px`;
+  element.style.maxWidth = `${graph.offsetWidth - FLASH_GAP}px`;
+  element.style.backgroundColor = bg;
 
   setTimeout(() => {
-    el.style.left = `${FLASH_GAP}px`;
+    element.style.left = `${FLASH_GAP}px`;
 
     setTimeout(() => {
-      el.addEventListener('transitionend', () => el.remove());
-      el.style.left = `${-el.offsetWidth - FLASH_GAP}px`;
+      element.addEventListener('transitionend', () => element.remove());
+      element.style.left = `${-element.offsetWidth - FLASH_GAP}px`;
     }, 5000);
   }, 0);
-  return el;
+  return element;
 }
 
-export function celebrate(msg: string) {
-  const el = flash(`🎉 ${msg} 🎉`, 'transparent');
+export function celebrate(message: string) {
+  const element = flash(`🎉 ${message} 🎉`, 'transparent');
 
-  const y = (el.clientTop + el.clientHeight / 2) / document.body.clientHeight;
+  const y =
+    (element.clientTop + element.clientHeight / 2) / document.body.clientHeight;
 
   confetti({
     particleCount: 100,
@@ -71,7 +73,9 @@ export function celebrate(msg: string) {
 }
 
 function defaultTop() {
-  const appHeader = document.getElementsByClassName(appHeaderStyles.root);
+  const appHeader = document.querySelectorAll<HTMLElement>(
+    `.${appHeaderStyles.root}`,
+  );
   if (appHeader.length === 0) return 0;
 
   const appHeaderElement = appHeader[0];

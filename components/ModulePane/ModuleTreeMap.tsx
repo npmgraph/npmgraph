@@ -35,16 +35,19 @@ export function ModuleTreeMap({
       0,
     );
 
-    const nodes = [...dependencySizes];
+    const nodes = [...dependencySizes, { name: '__root', approximateSize: 0 }];
 
     // Placeholder root node so the other nodes have a common parent
-    nodes.push({ name: '__root', approximateSize: 0 });
 
-    const root = stratify<BundlePhobiaData['dependencySizes'][number]>()
+    const stratifyLayout = stratify<
+      BundlePhobiaData['dependencySizes'][number]
+    >()
       .id(d => d.name)
-      .parentId(node => (node.name === '__root' ? '' : '__root'))(nodes)
-      .sum(d => (d.approximateSize * size) / sum)
-      .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+      .parentId(node => (node.name === '__root' ? '' : '__root'));
+    const root = stratifyLayout(nodes).sum(
+      d => (d.approximateSize * size) / sum,
+    ) as HierarchyRectangularNode<BundlePhobiaData['dependencySizes'][number]>;
+    root.sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
     treemap<BundlePhobiaData['dependencySizes'][number]>()
       .size([w, h])
