@@ -290,21 +290,21 @@ function vizStyle(
 ) {
   const pairs = Object.entries(object).map(([key, value]) => {
     switch (typeof value) {
-      case 'number': {
+      case 'number':
         return `${key}=${value}`;
-      }
-      case 'string': {
+      
+      case 'string':
         return `${key}="${value}"`;
-      }
-      case 'boolean': {
+      
+      case 'boolean':
         return `${key}=${value ? 'true' : 'false'}`;
-      }
-      case 'undefined': {
+      
+      case 'undefined':
         return '';
-      }
-      default: {
+      
+      default:
         throw new Error('Invalid value type');
-      }
+      
     }
   });
   return `[${pairs.filter(Boolean).join(' ')}]`;

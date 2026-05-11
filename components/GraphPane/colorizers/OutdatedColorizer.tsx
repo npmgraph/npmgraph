@@ -47,17 +47,17 @@ export default {
       case 'premajor':
         return COLORIZE_COLORS[0];
       case 'minor':
-      case 'preminor': {
+      case 'preminor':
         return COLORIZE_COLORS[1];
-      }
+      
       case 'patch':
       case 'prepatch':
-      case 'prerelease': {
+      case 'prerelease':
         return COLORIZE_COLORS[2];
-      }
-      default: {
+      
+      default:
         return COLORIZE_COLORS[3];
-      }
+      
     }
   },
 } as SimpleColorizer;

@@ -147,24 +147,24 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     graphElement.classList.remove(utilities.dBlock);
 
     switch (zoom) {
-      case ZOOM_NONE: {
+      case ZOOM_NONE:
         diagramElement.setAttribute('width', String(w));
         diagramElement.setAttribute('height', String(h));
         break;
-      }
+      
 
-      case ZOOM_FIT_WIDTH: {
+      case ZOOM_FIT_WIDTH:
         diagramElement.setAttribute('width', '100%');
         diagramElement.removeAttribute('height');
         break;
-      }
+      
 
-      case ZOOM_FIT_HEIGHT: {
+      case ZOOM_FIT_HEIGHT:
         diagramElement.removeAttribute('width');
         diagramElement.setAttribute('height', '100%');
         graphElement.classList.add(utilities.dBlock);
         break;
-      }
+      
     }
   }
 

@@ -21,14 +21,14 @@ export default function GraphDiagramDownloadButton() {
 
 function download(type: DownloadExtension) {
   switch (type) {
-    case 'svg': {
+    case 'svg':
       downloadSvg();
       break;
-    }
-    case 'png': {
+    
+    case 'png':
       downloadPng();
       break;
-    }
+    
   }
 }
 

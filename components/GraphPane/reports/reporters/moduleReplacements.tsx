@@ -43,7 +43,7 @@ function renderDetail(replacement: ModuleReplacement) {
       );
     }
 
-    case 'documented': {
+    case 'documented':
       return (
         <span>
           Replaceable with{' '}
@@ -54,15 +54,15 @@ function renderDetail(replacement: ModuleReplacement) {
           </ExternalLink>
         </span>
       );
-    }
+    
 
-    case 'simple': {
+    case 'simple':
       return <span>{replacement.description}</span>;
-    }
+    
 
-    case 'removal': {
+    case 'removal':
       return <span>{replacement.description}</span>;
-    }
+    
   }
 }
 

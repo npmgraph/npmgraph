@@ -89,22 +89,22 @@ export class NPMSColorizer implements BulkColorizer {
       if (!score) continue;
       let color: string | undefined;
       switch (this.name) {
-        case COLORIZE_OVERALL: {
+        case COLORIZE_OVERALL:
           color = scoreColor(score.final);
           break;
-        }
-        case COLORIZE_QUALITY: {
+        
+        case COLORIZE_QUALITY:
           color = scoreColor(score.detail.quality);
           break;
-        }
-        case COLORIZE_POPULARITY: {
+        
+        case COLORIZE_POPULARITY:
           color = scoreColor(score.detail.popularity);
           break;
-        }
-        case COLORIZE_MAINTENANCE: {
+        
+        case COLORIZE_MAINTENANCE:
           color = scoreColor(score.detail.maintenance);
           break;
-        }
+        
       }
       if (color) {
         colors.set(m, color);
