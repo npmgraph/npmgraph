@@ -46,8 +46,8 @@ function downloadPng() {
   }
 
   const canvas = document.createElement('canvas');
-  canvas.width = Number.parseInt(vb[2], 10);
-  canvas.height = Number.parseInt(vb[3], 10);
+  canvas.width = Number(vb[2]);
+  canvas.height = Number(vb[3]);
   const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
