@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type Module from '../../lib/Module.ts';
-import fetchJSON from '../../lib/fetchJson.ts';
+import fetchJson from '../../lib/fetchJson.ts';
 import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import { ModuleBundleStats } from './ModuleBundleStats.tsx';
@@ -22,7 +22,7 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
 
     if (!pkg) return;
 
-    fetchJSON<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
+    fetchJson<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
       .then(data => setBundleInfo(data))
       .catch(error => setBundleInfo(error));
   }, [pkg, module.isLocal, bpApiUrl]);

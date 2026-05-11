@@ -1,7 +1,7 @@
 import type { Packument } from '@npm/types';
-import type { PromiseWithResolversType } from './PromiseWithResolvers.ts';
-import promiseWithResolvers from './PromiseWithResolvers.ts';
-import fetchJSON from './fetchJson.ts';
+import type { PromiseWithResolversType } from './promiseWithResolvers.ts';
+import promiseWithResolvers from './promiseWithResolvers.ts';
+import fetchJson from './fetchJson.ts';
 import { getRegistry } from './useRegistry.ts';
 
 const packumentCache = new Map<string, PackumentCacheEntry>();
@@ -27,7 +27,7 @@ export async function getNPMPackument(
     cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
 
-    await fetchJSON<Packument>(`${registry}/${moduleName}`, {
+    await fetchJson<Packument>(`${registry}/${moduleName}`, {
       // Per
       // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
       // we should arguably be using the 'Accept:

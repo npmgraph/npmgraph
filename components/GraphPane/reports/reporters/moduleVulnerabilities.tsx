@@ -1,7 +1,7 @@
 import simplur from 'simplur';
 import { QueryType } from '../../../../lib/ModuleCache.ts';
 import { cn } from '../../../../lib/dom.ts';
-import fetchJSON from '../../../../lib/fetchJson.ts';
+import fetchJson from '../../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../../ExternalLink.tsx';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
@@ -53,7 +53,7 @@ export async function moduleVulnerabilities({
     const registry =
       'https://pcwyqhjns4xzfybfy6grsq3if40sccxu.lambda-url.us-west-2.on.aws';
 
-    moduleAdvisories = await fetchJSON<BulkAdvisories>(
+    moduleAdvisories = await fetchJson<BulkAdvisories>(
       `${registry}/-/npm/v1/security/advisories/bulk`,
       {
         headers: {

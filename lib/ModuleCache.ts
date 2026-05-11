@@ -7,10 +7,10 @@ import {
   getCachedPackument,
   getNPMPackument,
 } from './PackumentCache.ts';
-import type { PromiseWithResolversType } from './PromiseWithResolvers.ts';
-import promiseWithResolvers from './PromiseWithResolvers.ts';
+import type { PromiseWithResolversType } from './promiseWithResolvers.ts';
+import promiseWithResolvers from './promiseWithResolvers.ts';
 import { PARAM_PACKAGES } from './constants.ts';
-import fetchJSON from './fetchJson.ts';
+import fetchJson from './fetchJson.ts';
 import { flash } from './flash.ts';
 import {
   getModuleKey,
@@ -89,7 +89,7 @@ async function fetchModuleFromURL(urlString: string) {
     url.host = 'raw.githubusercontent.com';
     url.pathname = url.pathname.replace('/blob', '');
   }
-  const pkg: PackageJSON = await fetchJSON<PackageJSON>(url);
+  const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
 
   pkg.name ||= url.toString();
 

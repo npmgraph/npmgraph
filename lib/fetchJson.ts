@@ -9,7 +9,7 @@ export function setActivityForRequestCache(act: LoadActivity) {
 }
 
 // `fetch()` wrapper that returns parsed JSON and caches requests
-export default function fetchJSON<T>(
+export default function fetchJson<T>(
   input: RequestInfo | URL,
   init?: RequestInit & { silent?: boolean; timeout?: number },
 ): Promise<T> {

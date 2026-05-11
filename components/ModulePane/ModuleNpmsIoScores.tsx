@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import type Module from '../../lib/Module.ts';
-import fetchJSON from '../../lib/fetchJson.ts';
+import fetchJson from '../../lib/fetchJson.ts';
 import type { NPMSIOData } from '../../lib/fetch_types.ts';
 import { ModuleScoreBar } from './ModuleScoreBar.tsx';
-import * as styles from './ModuleNpmsIOScores.module.scss';
+import * as styles from './ModuleNpmsIoScores.module.scss';
 
-export default function ModuleNpmsIOScores({ module }: { module: Module }) {
+export default function ModuleNpmsIoScores({ module }: { module: Module }) {
   const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export default function ModuleNpmsIOScores({ module }: { module: Module }) {
 
     setNpmsData(undefined);
 
-    fetchJSON<NPMSIOData>(
+    fetchJson<NPMSIOData>(
       `https://api.npms.io/v2/package/${encodeURIComponent(module.name)}`,
       { silent: true, timeout: 5000 },
     )

@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import type Module from '../../../lib/Module.ts';
 import BusFactorColorizer from './BusFactorColorizer.tsx';
 import ModuleTypeColorizer from './ModuleTypeColorizer.tsx';
-import { NPMSOverallColorizer } from './npms-colorizer.tsx';
+import { NPMSOverallColorizer } from './NpmsColorizer.tsx';
 import OutdatedColorizer from './OutdatedColorizer.tsx';
 
 type Colorizer = {

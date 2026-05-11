@@ -1,6 +1,6 @@
 import type Module from '../../../lib/Module.ts';
-import promiseWithResolvers from '../../../lib/PromiseWithResolvers.ts';
-import fetchJSON from '../../../lib/fetchJson.ts';
+import promiseWithResolvers from '../../../lib/promiseWithResolvers.ts';
+import fetchJson from '../../../lib/fetchJson.ts';
 import type { NPMSIOData } from '../../../lib/fetch_types.ts';
 import { flash } from '../../../lib/flash.ts';
 import {
@@ -15,7 +15,7 @@ import type { BulkColorizer } from './index.ts';
 // Max number of module names allowed per NPMS request
 const NPMS_BULK_LIMIT = 250;
 
-export class NPMSColorizer implements BulkColorizer {
+export class NpmsColorizer implements BulkColorizer {
   title: string;
   name: string;
 
@@ -51,7 +51,7 @@ export class NPMSColorizer implements BulkColorizer {
       const namesInRequest = moduleNames.slice(i, i + NPMS_BULK_LIMIT);
 
       reqs.push(
-        fetchJSON<Record<string, NPMSIOData>>(
+        fetchJson<Record<string, NPMSIOData>>(
           'https://api.npms.io/v2/package/mget',
           {
             method: 'POST',
@@ -114,19 +114,19 @@ export class NPMSColorizer implements BulkColorizer {
   }
 }
 
-export const NPMSOverallColorizer = new NPMSColorizer(
+export const NPMSOverallColorizer = new NpmsColorizer(
   'NPMS.io Score',
   COLORIZE_OVERALL,
 );
-export const NPMSPopularityColorizer = new NPMSColorizer(
+export const NPMSPopularityColorizer = new NpmsColorizer(
   'NPMS.io Score (Popularity)',
   COLORIZE_POPULARITY,
 );
-export const NPMSQualityColorizer = new NPMSColorizer(
+export const NPMSQualityColorizer = new NpmsColorizer(
   'NPMS.io Score (Quality)',
   COLORIZE_QUALITY,
 );
-export const NPMSMaintenanceColorizer = new NPMSColorizer(
+export const NPMSMaintenanceColorizer = new NpmsColorizer(
   'NPMS.io Score (Maintenance)',
   COLORIZE_MAINTENANCE,
 );
