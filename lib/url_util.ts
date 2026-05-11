@@ -3,7 +3,10 @@ export function urlPatch(urlParts: Partial<URL>, url = new URL(location.href)) {
   return url;
 }
 
-export function hashGet(key: string, location: URL | Location = globalThis.location) {
+export function hashGet(
+  key: string,
+  location: URL | Location = globalThis.location,
+) {
   const parameters = new URLSearchParams(location.hash.slice(1));
   return parameters.get(key);
 }
@@ -22,7 +25,10 @@ export function hashSet(
   return parameters.toString();
 }
 
-export function searchGet(key: string, location: URL | Location = globalThis.location) {
+export function searchGet(
+  key: string,
+  location: URL | Location = globalThis.location,
+) {
   const parameters = new URLSearchParams(location.search);
   return parameters.get(key);
 }
