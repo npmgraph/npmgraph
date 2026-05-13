@@ -131,7 +131,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
     cacheEntry.registry = getRegistry();
     promise = fetchModuleFromNPM(name, version);
   }
-  promise
+  void promise
     .catch(error => {
       if (error instanceof HttpError) {
         error.message = `Fetch failed for ${moduleKey} (code = ${error.code})`;

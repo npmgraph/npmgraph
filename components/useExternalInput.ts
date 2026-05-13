@@ -39,13 +39,13 @@ function onDrop(ev: DragEvent) {
     return;
   }
 
-  readFile(file);
+  void readFile(file);
 }
 
 async function onPaste(ev: ClipboardEvent) {
   const firstItem = ev.clipboardData?.items[0];
   if (firstItem?.kind === 'file') {
-    readFile(firstItem.getAsFile()!);
+    void readFile(firstItem.getAsFile()!);
     ev.preventDefault();
     return;
   }

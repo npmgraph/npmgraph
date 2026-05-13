@@ -54,13 +54,13 @@ export function flash(wat: unknown, bg = '#f80') {
   return element;
 }
 
-export function celebrate(message: string) {
+export async function celebrate(message: string) {
   const element = flash(`🎉 ${message} 🎉`, 'transparent');
 
   const y =
     (element.clientTop + element.clientHeight / 2) / document.body.clientHeight;
 
-  confetti({
+  await confetti({
     particleCount: 100,
     ticks: 100,
     spread: 90,
