@@ -33,7 +33,6 @@
   "scripts": {
     "build": "parcel build index.html robots.txt --no-cache",
     "fetch-licenses": "node scripts/fetch_licenses.js",
-    "prepare": "lefthook install",
     "release": "standard-version",
     "start": "parcel serve index.html robots.txt --no-cache",
     "lint": "eslint .",
@@ -56,7 +55,7 @@
     "d3-selection": "3.0.0",
     "d3-shape": "3.2.0",
     "filter-altered-clicks": "2.1.1",
-    "hosted-git-info": "^9.0.2",
+    "hosted-git-info": "^10.1.0",
     "md5": "2.3.0",
     "module-replacements": "^3.0.0-beta.7",
     "react": "19.2.4",
@@ -118,8 +117,7 @@
     "svgo": "4.0.1",
     "typed-query-selector": "^2.12.1",
     "typescript": "5.9.3",
-    "typescript-plugin-css-modules": "^5.2.0",
-    "url": "0.11.4"
+    "typescript-plugin-css-modules": "^5.2.0"
   },
   "devEngines": {
     "runtime": {

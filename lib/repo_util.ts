@@ -1,13 +1,6 @@
 import hostedGitInfo from 'hosted-git-info';
 import type Module from './Module.ts';
 
-// eslint-disable-next-line unicorn/prefer-node-protocol
-import urlPolyfill from 'url';
-
-// @ts-expect-error - TODO: Drop after https://github.com/npm/hosted-git-info/pull/334
-// eslint-disable-next-line n/prefer-global/url
-urlPolyfill.URL = globalThis.URL;
-
 /**
  * Extracts and normalizes repository URL from a module's package.json metadata.
  *
