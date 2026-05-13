@@ -1,0 +1,7 @@
+{
+  "components/GraphDiagram/graph_util.ts": {
+    "@typescript-eslint/switch-exhaustiveness-check": {
+      "count": 1
+    }
+  }
+}

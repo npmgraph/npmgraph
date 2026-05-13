@@ -105,6 +105,7 @@ function cloneStyleElementFromSheet(sheet: StyleSheet | null) {
 
   try {
     const cssText = [...cssSheet.cssRules]
+      // eslint-disable-next-line @typescript-eslint/no-deprecated -- Still works
       .filter(rule => rule.type !== CSSRule.MEDIA_RULE)
       .map(rule => rule.cssText)
       .join('\n');

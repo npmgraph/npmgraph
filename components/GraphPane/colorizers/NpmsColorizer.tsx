@@ -103,6 +103,7 @@ export class NpmsColorizer implements BulkColorizer {
         case COLORIZE_MAINTENANCE:
           color = scoreColor(score.detail.maintenance);
           break;
+        default:
       }
       if (color) {
         colors.set(m, color);

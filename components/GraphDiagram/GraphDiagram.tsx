@@ -162,6 +162,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         diagramElement.setAttribute('height', '100%');
         graphElement.classList.add(utilities.dBlock);
         break;
+      default:
     }
   }
 

@@ -41,7 +41,7 @@ export default function QueryInput({
     return searchSet(PARAM_QUERY, moduleKeys.join(', '));
   }
 
-  function handleSubmit(event?: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
     event?.preventDefault();
     patchLocation({ search: getSearchParameters(), hash: '' }, false);
   }
