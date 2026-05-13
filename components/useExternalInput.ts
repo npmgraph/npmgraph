@@ -16,19 +16,27 @@ function onDrop(ev: DragEvent) {
 
   // If dropped items aren't files, reject them
   const dt = ev.dataTransfer;
-  if (!dt?.items)
-    return alert('Sorry, file dropping is not supported by this browser');
-  if (dt.items.length !== 1) return alert('You must drop exactly one file');
+  if (!dt?.items) {
+    alert('Sorry, file dropping is not supported by this browser');
+    return;
+  }
+  if (dt.items.length !== 1) {
+    alert('You must drop exactly one file');
+    return;
+  }
 
   const item = dt.items[0];
-  if (item.type && item.type !== 'application/json')
-    return alert('File must have a ".json" extension');
+  if (item.type && item.type !== 'application/json') {
+    alert('File must have a ".json" extension');
+    return;
+  }
 
   const file = item.getAsFile();
   if (!file) {
-    return alert(
+    alert(
       'Please drop a file, not... well... whatever else it was you dropped',
     );
+    return;
   }
 
   readFile(file);

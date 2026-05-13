@@ -20,7 +20,9 @@ export function useTightScreen() {
       }
     };
     media.addEventListener('change', update);
-    return () => media.removeEventListener('change', update);
+    return () => {
+      media.removeEventListener('change', update);
+    };
   }, []);
 
   return isTightScreen;

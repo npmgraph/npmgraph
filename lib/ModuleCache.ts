@@ -36,7 +36,7 @@ type ModuleCacheEntry = PromiseWithResolvers<Module> & {
 
 function selectVersion(
   packument: Packument,
-  targetVersion: string = 'latest',
+  targetVersion = 'latest',
 ): PackumentVersion | undefined {
   let selectedVersion: string | undefined;
 
@@ -233,7 +233,7 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
   const sanitized: PackageJSON = {} as PackageJSON;
 
   for (const key of PACKAGE_WHITELIST) {
-    if (key in pkg) (sanitized[key] as unknown) = pkg[key];
+    if (key in pkg) sanitized[key] = pkg[key];
   }
 
   return sanitized;

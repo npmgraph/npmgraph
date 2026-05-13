@@ -31,7 +31,9 @@ export default function RegistryInput() {
           setStatus(RegistryStatus.ONLINE);
           setRegistry(registry);
         })
-        .catch(() => setStatus(RegistryStatus.OFFLINE));
+        .catch(() => {
+          setStatus(RegistryStatus.OFFLINE);
+        });
     }
 
     const controller = new AbortController();

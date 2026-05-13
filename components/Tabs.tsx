@@ -81,7 +81,12 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       >
         Settings
       </Tab>
-      <Splitter isOpen={inspector} onClick={() => setHide(true)} />
+      <Splitter
+        isOpen={inspector}
+        onClick={() => {
+          setHide(true);
+        }}
+      />
     </div>
   );
 }

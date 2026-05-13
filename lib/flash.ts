@@ -45,7 +45,9 @@ export function flash(wat: unknown, bg = '#f80') {
     element.style.left = `${FLASH_GAP}px`;
 
     setTimeout(() => {
-      element.addEventListener('transitionend', () => element.remove());
+      element.addEventListener('transitionend', () => {
+        element.remove();
+      });
       element.style.left = `${-element.offsetWidth - FLASH_GAP}px`;
     }, 5000);
   }, 0);

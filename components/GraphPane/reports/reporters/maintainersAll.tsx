@@ -17,7 +17,7 @@ export function maintainersAll({
     .toSorted(([a], [b]) => a.localeCompare(b))
     .map(([name, modules]) => {
       const email = emailByMaintainer.get(name);
-      let img: ReactElement | null = null;
+      let img: ReactElement | undefined;
       if (email) {
         img = (
           <img

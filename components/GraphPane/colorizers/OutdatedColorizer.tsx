@@ -53,7 +53,8 @@ export default {
       case 'prepatch':
       case 'prerelease':
         return COLORIZE_COLORS[2];
-      default:
+      case 'release':
+      case null:
         return COLORIZE_COLORS[3];
     }
   },

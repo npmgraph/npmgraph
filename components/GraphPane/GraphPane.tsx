@@ -39,7 +39,7 @@ function ReportSection({ title, children }: { title: string; children: any }) {
 export default function GraphPane({
   graph,
   ...props
-}: { graph: GraphState | null } & React.HTMLAttributes<HTMLDivElement>) {
+}: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...restProps } = props;
   const [collapse, setCollapse] = useCollapse();
 
@@ -56,7 +56,12 @@ export default function GraphPane({
         {collapse.length > 0 ? (
           <span>
             {simplur`${collapse.length} module[|s] collapsed `}
-            <button onClick={() => setCollapse([])} type="button">
+            <button
+              onClick={() => {
+                setCollapse([]);
+              }}
+              type="button"
+            >
               Expand All
             </button>
           </span>
