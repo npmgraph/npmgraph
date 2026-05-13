@@ -37,7 +37,6 @@ const disabledRules = [
   '@stylistic/curly-newline',
   '@stylistic/padding-line-between-statements',
   '@typescript-eslint/array-type',
-  '@typescript-eslint/await-thenable',
   '@typescript-eslint/consistent-generic-constructors',
   '@typescript-eslint/consistent-indexed-object-style',
   '@typescript-eslint/consistent-type-assertions',
@@ -46,7 +45,6 @@ const disabledRules = [
   '@typescript-eslint/no-base-to-string',
   '@typescript-eslint/no-dynamic-delete',
   '@typescript-eslint/no-empty-function',
-  '@typescript-eslint/no-floating-promises',
   '@typescript-eslint/no-restricted-types',
   '@typescript-eslint/no-shadow',
   '@typescript-eslint/no-unsafe-argument',
@@ -59,12 +57,9 @@ const disabledRules = [
   '@typescript-eslint/prefer-includes',
   '@typescript-eslint/prefer-nullish-coalescing',
   '@typescript-eslint/prefer-optional-chain',
-  '@typescript-eslint/prefer-promise-reject-errors',
   '@typescript-eslint/prefer-readonly',
   '@typescript-eslint/prefer-regexp-exec',
-  '@typescript-eslint/promise-function-async',
   '@typescript-eslint/restrict-template-expressions',
-  '@typescript-eslint/strict-void-return',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
   'import-x/no-anonymous-default-export',
   'import-x/no-duplicates',
@@ -72,7 +67,6 @@ const disabledRules = [
   'import-x/no-unassigned-import',
   'import-x/order',
   'json/no-empty-keys',
-  'no-restricted-globals',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
@@ -84,22 +78,23 @@ const disabledRules = [
   'react/no-unescaped-entities',
   'react/prefer-read-only-props',
   'react/self-closing-comp',
-  'capitalized-comments',
-  'require-unicode-regexp',
 
   // TODO: After https://github.com/sindresorhus/eslint-plugin-unicorn/pull/2953
   'unicorn/prefer-query-selector',
+
+  // Unwanted
+  'capitalized-comments',
+  'no-alert',
+  'no-console',
+  'no-restricted-globals',
+  'require-unicode-regexp',
 ];
 
 export default [
   ...xoConfigs,
   ...xoReactConfigs,
   {
-    rules: {
-      ...Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
-      'no-alert': 'off',
-      'no-console': 'off',
-    },
+    rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },
   prettierConflicts,
 ];

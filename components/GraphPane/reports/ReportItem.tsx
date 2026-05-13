@@ -24,7 +24,7 @@ export function ReportItem<T>({
   useEffect(() => {
     if (!data) return;
 
-    Promise.resolve(reporter(data)).then(report => {
+    void Promise.resolve(reporter(data)).then(report => {
       setAnalysis(report);
     });
   }, [data, reporter]);

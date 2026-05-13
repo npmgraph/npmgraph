@@ -131,7 +131,9 @@ export async function getGraphForQuery(
     // Array?  Apply to each element
     if (Array.isArray(module)) {
       await Promise.all(
-        module.map(m => _visit(m, level, currentOverrides, rootOverrides)),
+        module.map(async m =>
+          _visit(m, level, currentOverrides, rootOverrides),
+        ),
       );
       return;
     }

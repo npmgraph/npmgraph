@@ -91,7 +91,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     return new Set<DependencyKey>(['dependencies', ...extra]);
   }, [depTypes]);
 
-  async function handleGraphClick(event: React.MouseEvent) {
+  function handleGraphClick(event: React.MouseEvent) {
     const { target } = event;
     if (
       !(target instanceof Element) ||
@@ -177,13 +177,13 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useEffect(() => {
     const { signal, abort } = createAbortable();
-    getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
+    void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
       newGraph => {
         if (signal.aborted) return; // Check after async
 
         const firstInfo = newGraph.moduleInfos.values().next().value;
         if (newGraph?.moduleInfos.size === 1 && !firstInfo?.module.isStub) {
-          celebrate('Zero dependencies for the win!');
+          void celebrate('Zero dependencies for the win!');
         }
 
         setGraph(newGraph);
@@ -220,7 +220,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
         try {
           svgMarkup = graph?.moduleInfos.size
-            ? await graphviz.dot(dotDoc, 'svg')
+            ? graphviz.dot(dotDoc, 'svg')
             : '<svg />';
         } catch (error) {
           console.error(error);
@@ -319,7 +319,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Colorize nodes
   useEffect(() => {
     if (!diagramElement) return;
-    colorizeGraph(diagramElement, colorize ?? '');
+    void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
 
   if (!graphviz && graphvizLoading) {
@@ -384,7 +384,7 @@ function useGraphviz() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Graphviz.load()
+    void Graphviz.load()
       .catch(error => {
         console.error('Graphviz failed to load', error);
         return undefined;
@@ -486,7 +486,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       }
 
       // Colorize it (async)
-      colorizer
+      void colorizer
         .colorForModule(m)
         .catch(error => {
           console.warn(`Error colorizing ${m.name}: ${error.message}`);
