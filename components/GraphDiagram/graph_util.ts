@@ -227,48 +227,46 @@ export async function getGraphForQuery(
       if (!peerDependencies) return;
 
       await Promise.all(
-        (Object.entries(peerDependencies) as [string, string][]).map(
-          async ([name, versionRange]) => {
-            if (isOptionalPeerDependency(peerDependenciesMeta, name)) return;
+        Object.entries(peerDependencies).map(async ([name, versionRange]) => {
+          if (isOptionalPeerDependency(peerDependenciesMeta, name)) return;
 
-            // Prefer an existing node that satisfies the range to avoid duplicates.
-            // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
-            let peerModule = modulesByName.get(name)?.find(m => {
-              if (!m.version) return false;
-              try {
-                return satisfies(m.version, versionRange);
-              } catch {
-                return false;
-              }
-            });
-
-            if (!peerModule) {
-              // Not yet in graph — fetch and traverse the resolved version.
-              try {
-                peerModule = await getModule(getModuleKey(name, versionRange));
-                if (peerModule.isStub) return;
-                await _visit(peerModule, info.level + 1);
-                // Register in the name index so later iterations can find it.
-                let list = modulesByName.get(name);
-                if (!list) {
-                  list = [];
-                  modulesByName.set(name, list);
-                }
-                if (!list.includes(peerModule)) list.push(peerModule);
-              } catch {
-                return;
-              }
+          // Prefer an existing node that satisfies the range to avoid duplicates.
+          // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
+          let peerModule = modulesByName.get(name)?.find(m => {
+            if (!m.version) return false;
+            try {
+              return satisfies(m.version, versionRange);
+            } catch {
+              return false;
             }
+          });
 
-            info.downstream.add({
-              module: peerModule,
-              type: 'peerDependencies',
-            });
-            graphState.moduleInfos
-              .get(peerModule.key)
-              ?.upstream.add({ module: info.module, type: 'peerDependencies' });
-          },
-        ),
+          if (!peerModule) {
+            // Not yet in graph — fetch and traverse the resolved version.
+            try {
+              peerModule = await getModule(getModuleKey(name, versionRange));
+              if (peerModule.isStub) return;
+              await _visit(peerModule, info.level + 1);
+              // Register in the name index so later iterations can find it.
+              let list = modulesByName.get(name);
+              if (!list) {
+                list = [];
+                modulesByName.set(name, list);
+              }
+              if (!list.includes(peerModule)) list.push(peerModule);
+            } catch {
+              return;
+            }
+          }
+
+          info.downstream.add({
+            module: peerModule,
+            type: 'peerDependencies',
+          });
+          graphState.moduleInfos
+            .get(peerModule.key)
+            ?.upstream.add({ module: info.module, type: 'peerDependencies' });
+        }),
       );
     }),
   );

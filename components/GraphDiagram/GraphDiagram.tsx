@@ -239,7 +239,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.classList.add(styles.graphDiagram);
 
       // Inject into DOM
-      const element = $(`.${styles.graph}`)!;
+      const element = $(`.${styles.graph}`);
       getDiagramElement()?.remove();
       element.append(svgDom);
 
@@ -357,7 +357,7 @@ function logUpdate(name: string, value: unknown) {
 }
 
 function scrollGraphIntoView(
-  element: Element | null,
+  element: Element | undefined,
   scrollOptions?: ScrollToOptions,
 ) {
   const graphElement = $optional(`.${styles.graph}`);
@@ -389,7 +389,9 @@ function useGraphviz() {
         return undefined;
       })
       .then(setGraphviz)
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return [graphviz, loading] as const;
@@ -474,7 +476,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const element of moduleEls) {
       const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elementPath = $('path', element)!;
+      const elementPath = $('path', element);
 
       // Reset color if there's no module
       if (!m) {
@@ -509,7 +511,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const element of moduleEls) {
       const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elementPath = $('path', element)!;
+      const elementPath = $('path', element);
       elementPath.style.fill = (m && colors.get(m)) ?? '';
     }
   }

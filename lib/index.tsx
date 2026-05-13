@@ -78,7 +78,7 @@ globalThis.addEventListener('unhandledrejection', error => {
 window.addEventListener('load', () => {
   const unsupported = detectFeatures();
   if (unsupported.size > 0) {
-    createRoot($('body')!).render(<Unsupported unsupported={unsupported} />);
+    createRoot($('body')).render(<Unsupported unsupported={unsupported} />);
     return;
   }
 
@@ -91,7 +91,7 @@ window.addEventListener('load', () => {
   setActivityForApp(activity);
 
   // Main app component
-  const appElement = $('body')!;
+  const appElement = $('body');
   createRoot(appElement).render(
     // <StrictMode>
     <App />,
@@ -99,7 +99,5 @@ window.addEventListener('load', () => {
   );
 
   // A little component for managing the title
-  createRoot($('title')!).render(
-    <DiagramTitle defaultTitle={document.title} />,
-  );
+  createRoot($('title')).render(<DiagramTitle defaultTitle={document.title} />);
 });

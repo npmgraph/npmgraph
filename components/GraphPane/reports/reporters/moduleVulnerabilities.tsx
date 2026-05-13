@@ -44,7 +44,7 @@ export async function moduleVulnerabilities({
     nModules++;
   }
 
-  let moduleAdvisories: BulkAdvisories | null = null;
+  let moduleAdvisories: BulkAdvisories | undefined = null;
   if (nModules > 0) {
     const body = JSON.stringify(versionsByName, null, 2);
 

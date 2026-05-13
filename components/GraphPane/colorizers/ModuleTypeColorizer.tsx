@@ -26,7 +26,7 @@ export default {
   },
 
   async colorForModule(module: Module) {
-    const pkgType = detectPackageType(module.package as PackageJSON);
+    const pkgType = detectPackageType(module.package);
 
     if (pkgType.esm && pkgType.cjs) {
       return COLORIZE_MODULE_DUAL;

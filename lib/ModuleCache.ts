@@ -38,7 +38,7 @@ type ModuleCacheEntry = PromiseWithResolversType<Module> & {
 
 function selectVersion(
   packument: Packument,
-  targetVersion: string = 'latest',
+  targetVersion = 'latest',
 ): PackumentVersion | undefined {
   let selectedVersion: string | undefined;
 
@@ -235,7 +235,7 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
   const sanitized: PackageJSON = {} as PackageJSON;
 
   for (const key of PACKAGE_WHITELIST) {
-    if (key in pkg) (sanitized[key] as unknown) = pkg[key];
+    if (key in pkg) sanitized[key] = pkg[key];
   }
 
   return sanitized;
@@ -276,7 +276,7 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
   return module;
 }
 
-let lastPackagesValue: string | null;
+let lastPackagesValue: string | undefined;
 
 // Make sure any packages in the URL hash are loaded into the module cache
 export function syncPackagesHash() {

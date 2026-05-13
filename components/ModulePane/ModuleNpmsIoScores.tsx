@@ -17,8 +17,12 @@ export default function ModuleNpmsIoScores({ module }: { module: Module }) {
       `https://api.npms.io/v2/package/${encodeURIComponent(module.name)}`,
       { silent: true, timeout: 5000 },
     )
-      .then(data => setNpmsData(data))
-      .catch(error => setNpmsData(error));
+      .then(data => {
+        setNpmsData(data);
+      })
+      .catch(error => {
+        setNpmsData(error);
+      });
   }, [module]);
 
   if (!npmsData) {

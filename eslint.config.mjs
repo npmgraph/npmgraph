@@ -59,6 +59,7 @@ const disabledRules = [
   '@typescript-eslint/prefer-regexp-exec',
   '@typescript-eslint/promise-function-async',
   '@typescript-eslint/restrict-template-expressions',
+  '@typescript-eslint/no-floating-promises',
   '@typescript-eslint/strict-void-return',
   'import-x/no-anonymous-default-export',
   'import-x/no-duplicates',

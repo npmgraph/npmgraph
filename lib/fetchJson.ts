@@ -47,7 +47,9 @@ export default function fetchJson<T>(
       error.message = `Failed to get ${url}`;
       throw error;
     })
-    .finally(() => finish?.());
+    .finally(() => {
+      finish?.();
+    });
 
   requestCache.set(cacheKey, p);
 

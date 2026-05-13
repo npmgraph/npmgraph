@@ -79,7 +79,9 @@ export default function QueryInput({
           spellCheck="false"
           // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting
           autoFocus={!hasSoftKeyboard}
-          onChange={event => setValue(event.target.value)}
+          onChange={event => {
+            setValue(event.target.value);
+          }}
           onKeyDown={handleCmdEnter}
           onFocus={handleFocus}
           {...props}

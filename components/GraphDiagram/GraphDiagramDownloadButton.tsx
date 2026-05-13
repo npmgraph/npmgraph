@@ -10,7 +10,9 @@ export default function GraphDiagramDownloadButton() {
   return (
     <button
       className={styles.root}
-      onClick={() => download('svg')}
+      onClick={() => {
+        download('svg');
+      }}
       title="Download as SVG"
       type="button"
     >
@@ -95,7 +97,7 @@ function downloadSvg() {
   generateLinkToDownload('svg', svgUrl);
 }
 
-function cloneStyleElementFromSheet(sheet: StyleSheet | null | undefined) {
+function cloneStyleElementFromSheet(sheet: StyleSheet | undefined) {
   if (!sheet) return null;
 
   const cssSheet = sheet as CSSStyleSheet;

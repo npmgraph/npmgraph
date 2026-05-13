@@ -23,8 +23,12 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
     if (!pkg) return;
 
     fetchJson<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
-      .then(data => setBundleInfo(data))
-      .catch(error => setBundleInfo(error));
+      .then(data => {
+        setBundleInfo(data);
+      })
+      .catch(error => {
+        setBundleInfo(error);
+      });
   }, [pkg, module.isLocal, bpApiUrl]);
 
   if (!bundleInfo) {

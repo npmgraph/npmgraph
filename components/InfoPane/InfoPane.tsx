@@ -8,7 +8,7 @@ import * as utilities from '../utilities.module.scss';
 import FilePicker from './FilePicker.tsx';
 import * as styles from './InfoPane.module.scss';
 
-function isGithubUrl(url: URL | null) {
+function isGithubUrl(url: URL | undefined) {
   if (!url) return false;
   return /^github.com$|\.github.com$/.test(url?.host ?? '');
 }

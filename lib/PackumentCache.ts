@@ -23,7 +23,7 @@ export async function getNPMPackument(
   }
 
   if (!cacheEntry) {
-    cacheEntry = promiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry = promiseWithResolvers();
     cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
 
@@ -58,7 +58,7 @@ export function getCachedPackument(moduleName: string): Packument | undefined {
 export function cachePackument(moduleName: string, packument: Packument): void {
   let cacheEntry = packumentCache.get(moduleName);
   if (!cacheEntry) {
-    cacheEntry = promiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry = promiseWithResolvers();
     packumentCache.set(moduleName, cacheEntry);
     cacheEntry.resolve(packument);
   }
