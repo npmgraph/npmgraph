@@ -37,8 +37,8 @@ export default {
     let outdated;
     try {
       outdated = diff(module.version, latestVersion);
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       return '';
     }
 

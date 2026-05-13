@@ -9,7 +9,7 @@ export function setActivityForRequestCache(act: LoadActivity) {
 }
 
 // `fetch()` wrapper that returns parsed JSON and caches requests
-export default function fetchJSON<T>(
+export default function fetchJson<T>(
   input: RequestInfo | URL,
   init?: RequestInit & { silent?: boolean; timeout?: number },
 ): Promise<T> {
@@ -35,17 +35,17 @@ export default function fetchJSON<T>(
     ? () => {}
     : activity?.start(`Fetching ${decodeURIComponent(url)}`);
 
-  const p = window
+  const p = globalThis
     .fetch(input, init)
-    .then(res => {
-      if (res.ok) return res.json();
-      const err = new HttpError(res.status);
-      err.stack = traceError.stack;
-      return Promise.reject(err);
+    .then(response => {
+      if (response.ok) return response.json();
+      const error = new HttpError(response.status);
+      error.stack = traceError.stack;
+      throw error;
     })
-    .catch(err => {
-      err.message = `Failed to get ${url}`;
-      return Promise.reject(err);
+    .catch(error => {
+      error.message = `Failed to get ${url}`;
+      throw error;
     })
     .finally(() => finish?.());
 

@@ -14,8 +14,10 @@ const OSI_URL = 'https://api.opensource.org/licenses/';
 const SPDX_URL =
   'https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json';
 
-const spdx = await (await fetch(SPDX_URL)).json();
-const osi = await (await fetch(OSI_URL)).json();
+const spdxResponse = await fetch(SPDX_URL);
+const spdx = await spdxResponse.json();
+const osiResponse = await fetch(OSI_URL);
+const osi = await osiResponse.json();
 
 const licenses = new Map();
 

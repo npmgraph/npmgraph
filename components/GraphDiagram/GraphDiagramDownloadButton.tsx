@@ -44,20 +44,19 @@ function downloadPng() {
   }
 
   const canvas = document.createElement('canvas');
-  canvas.width = Number.parseInt(vb[2]);
-  canvas.height = Number.parseInt(vb[3]);
+  canvas.width = Number(vb[2]);
+  canvas.height = Number(vb[3]);
   const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
-  const DOMURL = window.URL || window.webkitURL;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
-  const url = DOMURL.createObjectURL(svgBlob);
+  const url = URL.createObjectURL(svgBlob);
 
-  img.onload = function () {
+  img.addEventListener('load', () => {
     ctx.drawImage(img, 0, 0);
-    DOMURL.revokeObjectURL(url);
+    URL.revokeObjectURL(url);
     const pngImg = canvas.toDataURL('image/png');
     generateLinkToDownload('png', pngImg);
-  };
+  });
   img.src = url;
 }
 
@@ -70,9 +69,9 @@ function downloadSvg() {
   for (const link of $$('link[rel="stylesheet"]')) {
     if (!link.href.includes('fonts.googleapis.com')) continue;
 
-    const fontEl = document.createElement('defs');
-    fontEl.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
-    svg.insertBefore(fontEl, svg.firstChild);
+    const fontElement = document.createElement('defs');
+    fontElement.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
+    svg.insertBefore(fontElement, svg.firstChild);
   }
 
   // Clone runtime stylesheet link (e.g. /npmgraph...css) into an inline style for export.
@@ -81,12 +80,12 @@ function downloadSvg() {
   );
   if (appStylesheetLink) {
     try {
-      const styleEl = cloneStyleElementFromSheet(appStylesheetLink.sheet);
-      if (styleEl) {
-        svg.appendChild(styleEl);
+      const styleElement = cloneStyleElementFromSheet(appStylesheetLink.sheet);
+      if (styleElement) {
+        svg.append(styleElement);
       }
-    } catch (err) {
-      report.error(err instanceof Error ? err : new Error(String(err)));
+    } catch (error) {
+      report.error(error instanceof Error ? error : new Error(String(error)));
     }
   }
 
@@ -100,25 +99,25 @@ function cloneStyleElementFromSheet(sheet: StyleSheet | null | undefined) {
   if (!sheet) return null;
 
   const cssSheet = sheet as CSSStyleSheet;
-  const styleEl = document.createElement('style');
+  const styleElement = document.createElement('style');
 
   try {
-    const cssText = Array.from(cssSheet.cssRules)
+    const cssText = [...cssSheet.cssRules]
       .filter(rule => rule.type !== CSSRule.MEDIA_RULE)
       .map(rule => rule.cssText)
       .join('\n');
 
-    styleEl.textContent = cssText;
+    styleElement.textContent = cssText;
 
-    return styleEl;
-  } catch (err) {
-    report.error(err instanceof Error ? err : new Error(String(err)));
+    return styleElement;
+  } catch (error) {
+    report.error(error instanceof Error ? error : new Error(String(error)));
     return null;
   }
 }
 
 function generateLinkToDownload(extension: DownloadExtension, link: string) {
-  const name = document.title.replace(/.*- /, '').replace(/\W+/g, '_');
+  const name = document.title.replace(/.*- /v, '').replaceAll(/\W+/gv, '_');
   const downloadLink = document.createElement('a');
   downloadLink.href = link;
   downloadLink.download = `${name}_dependencies.${extension}`;

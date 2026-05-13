@@ -24,7 +24,7 @@ function renderDetail(replacement: ModuleReplacement) {
       const url = resolveDocUrl(replacement.url)!;
 
       const nodeVersion = replacement.engines?.find(
-        e => e.engine === 'nodejs',
+        engine => engine.engine === 'nodejs',
       )?.minVersion;
 
       return (
@@ -43,7 +43,7 @@ function renderDetail(replacement: ModuleReplacement) {
       );
     }
 
-    case 'documented': {
+    case 'documented':
       return (
         <span>
           Replaceable with{' '}
@@ -54,7 +54,6 @@ function renderDetail(replacement: ModuleReplacement) {
           </ExternalLink>
         </span>
       );
-    }
 
     case 'simple':
       return <span>{replacement.description}</span>;
@@ -68,13 +67,13 @@ export function moduleReplacementsNative({
   moduleInfos,
   // entryModules,
 }: ModuleAnalysisState) {
-  const details = Array.from(moduleInfos.values())
+  const details = [...moduleInfos.values()]
     .map(({ module }) => ({
       module,
       ...getReplacements(module.name),
     }))
-    .sort((a, b) => a.module.key.localeCompare(b.module.key))
-    .filter(d => d.mapping != null)
+    .toSorted((a, b) => a.module.key.localeCompare(b.module.key))
+    .filter(detail => detail.mapping !== null && detail.mapping !== undefined)
     .map(({ module, mapping, replacements }) => {
       const mappingURL = resolveDocUrl(mapping.url);
 

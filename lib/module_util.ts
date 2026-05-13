@@ -6,17 +6,17 @@ export function isHttpModule(moduleKey: string) {
 }
 
 export function resolveModule(name: string, version?: string) {
-  if (!version) {
-    // Parse versioned-names (e.g. "less@1.2.3")
-    [name, version] = parseModuleKey(name);
-  } else {
+  if (version) {
     // Remove "git...#" repo URIs from version strings
-    const gitless = version?.replace(/git.*#(.*)/, '');
+    const gitless = version?.replace(/git.*#(.*)/v, '');
     if (version && gitless !== version) {
       // TODO: Update why this check is needed once we have real-world examples
       console.warn('Found git-based version string');
       version = gitless;
     }
+  } else {
+    // Parse versioned-names (e.g. "less@1.2.3")
+    [name, version] = parseModuleKey(name);
   }
 
   return [name, version] as const;
@@ -34,7 +34,7 @@ export function parseModuleKey(moduleKey: string): string[] {
   return parts; // [name, version]
 }
 
-const ALIAS_RE = /npm:(?<name>@?[^@]+)@(?<semver>.+)/;
+const ALIAS_RE = /npm:(?<name>@?[^@]+)@(?<semver>.+)/v;
 
 export function resolveDependencyAliases(pkg: PackumentVersion) {
   for (const depType of [
@@ -46,10 +46,12 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
     if (!deps) {
       continue;
     } else if (deps.constructor !== Object) {
-      console.warn(
-        `Unexpected value for ${pkg.name}@${pkg.version}#${depType}`,
-        typeof deps,
-      );
+      console.warn('Unexpected dependency object shape', {
+        depType,
+        moduleName: pkg.name,
+        moduleVersion: pkg.version,
+        valueType: typeof deps,
+      });
       continue;
     }
 

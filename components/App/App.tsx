@@ -46,7 +46,7 @@ export default function App() {
       </div>
       {activity.total > 0 ? <Loader activity={activity} /> : null}
       <div className={styles.content}>
-        {!isTightScreen ? <GraphDiagram activity={activity} /> : null}
+        {isTightScreen ? null : <GraphDiagram activity={activity} />}
         <Inspector activity={activity} />
       </div>
       <PreviewWidget />

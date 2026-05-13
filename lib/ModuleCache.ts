@@ -7,10 +7,10 @@ import {
   getCachedPackument,
   getNPMPackument,
 } from './PackumentCache.ts';
-import type { PromiseWithResolversType } from './PromiseWithResolvers.ts';
-import PromiseWithResolvers from './PromiseWithResolvers.ts';
+import type { PromiseWithResolversType } from './promiseWithResolvers.ts';
+import promiseWithResolvers from './promiseWithResolvers.ts';
 import { PARAM_PACKAGES } from './constants.ts';
-import fetchJSON from './fetchJSON.ts';
+import fetchJson from './fetchJson.ts';
 import { flash } from './flash.ts';
 import {
   getModuleKey,
@@ -89,9 +89,9 @@ async function fetchModuleFromURL(urlString: string) {
     url.host = 'raw.githubusercontent.com';
     url.pathname = url.pathname.replace('/blob', '');
   }
-  const pkg: PackageJSON = await fetchJSON<PackageJSON>(url);
+  const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
 
-  if (!pkg.name) pkg.name = url.toString();
+  pkg.name ||= url.toString();
 
   return new Module(pkg as PackumentVersion);
 }
@@ -121,7 +121,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   // Set up the cache so subsequent requests for this module will get the same
   // promise object (and thus the same module), even if the module hasn't been
   // loaded yet
-  const cacheEntry = PromiseWithResolvers() as ModuleCacheEntry;
+  const cacheEntry = promiseWithResolvers() as ModuleCacheEntry;
   moduleCache.set(moduleKey, cacheEntry);
 
   let promise: Promise<Module>;
@@ -134,12 +134,12 @@ export async function getModule(moduleKey: string): Promise<Module> {
     promise = fetchModuleFromNPM(name, version);
   }
   promise
-    .catch(err => {
-      if (err instanceof HttpError) {
-        err.message = `Fetch failed for ${moduleKey} (code = ${err.code})`;
+    .catch(error => {
+      if (error instanceof HttpError) {
+        error.message = `Fetch failed for ${moduleKey} (code = ${error.code})`;
       }
 
-      return Module.stub(moduleKey, err);
+      return Module.stub(moduleKey, error);
     })
     .then(module => {
       cacheEntry.module = module;
@@ -276,15 +276,15 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
   return module;
 }
 
-let lastPackagesVal: string | null;
+let lastPackagesValue: string | null;
 
 // Make sure any packages in the URL hash are loaded into the module cache
 export function syncPackagesHash() {
   const packagesJson = hashGet(PARAM_PACKAGES);
 
   // If the hash param hasn't changed, there's nothing to do
-  if (lastPackagesVal === packagesJson) return;
-  lastPackagesVal = packagesJson;
+  if (lastPackagesValue === packagesJson) return;
+  lastPackagesValue = packagesJson;
 
   if (!packagesJson) return;
 

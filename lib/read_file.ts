@@ -45,11 +45,7 @@ export function loadPackageJson(json: string, filename?: string): void {
 }
 
 export async function readFile(file: File) {
-  const content = await new Promise<string>(resolve => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.readAsText(file);
-  });
+  const content = await file.text();
 
   loadPackageJson(content, file.name);
 }

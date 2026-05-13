@@ -3,21 +3,21 @@ import { PARAM_COLLAPSE } from './constants.ts';
 import useHashParam from './useHashParam.ts';
 
 export default function useCollapse() {
-  const [val, setVal] = useHashParam(PARAM_COLLAPSE);
+  const [value, setValue] = useHashParam(PARAM_COLLAPSE);
   const excludes = useMemo(
     () =>
-      (val || '')
+      (value || '')
         .split(',')
         .filter(Boolean)
-        .sort()
+        .toSorted()
         .map(v => v.trim()),
-    [val],
+    [value],
   );
 
   return [
     excludes,
     function (excludes: string[]) {
-      setVal(excludes.sort().join(','));
+      setValue(excludes.toSorted().join(','));
     },
   ] as const;
 }

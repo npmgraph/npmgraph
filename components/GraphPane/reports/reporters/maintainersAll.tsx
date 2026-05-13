@@ -13,8 +13,8 @@ export function maintainersAll({
   modulesByMaintainer,
   emailByMaintainer,
 }: MaintainerAnalysisState) {
-  const details = Array.from(modulesByMaintainer.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
+  const details = [...modulesByMaintainer.entries()]
+    .toSorted(([a], [b]) => a.localeCompare(b))
     .map(([name, modules]) => {
       const email = emailByMaintainer.get(name);
       let img: ReactElement | null = null;

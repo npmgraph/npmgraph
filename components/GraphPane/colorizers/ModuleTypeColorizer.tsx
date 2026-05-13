@@ -108,17 +108,17 @@ function _detectExports(exports: unknown, pkgType: PackageModuleType) {
   if (Array.isArray(exports)) exports.some(v => _detectExports(v, pkgType));
 
   if (typeof exports === 'object') {
-    const defaultVal = 'default' in exports && exports.default;
-    const importVal = 'import' in exports && exports.import;
-    const requireVal = 'require' in exports && exports.require;
+    const defaultValue = 'default' in exports && exports.default;
+    const importValue = 'import' in exports && exports.import;
+    const requireValue = 'require' in exports && exports.require;
 
     // Infer dual support if there's an explicit import or require in
     // combination with a default export
-    if (importVal || (defaultVal && requireVal)) pkgType.esm = true;
-    if (requireVal || (defaultVal && importVal)) pkgType.cjs = true;
+    if (importValue || (defaultValue && requireValue)) pkgType.esm = true;
+    if (requireValue || (defaultValue && importValue)) pkgType.cjs = true;
 
     // Drill down into object values
-    Object.values(exports).forEach(v => _detectExports(v, pkgType));
+    for (const v of Object.values(exports)) _detectExports(v, pkgType);
   }
 
   return pkgType;

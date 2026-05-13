@@ -30,7 +30,7 @@ export function Tag({
   count?: number;
   gravatar?: string;
 } & HTMLProps<HTMLDivElement>) {
-  const [, , setGraphSelection] = useGraphSelection();
+  const setGraphSelection = useGraphSelection()[2];
   let title = value;
   if (count > 1) title += ` (${count})`;
 

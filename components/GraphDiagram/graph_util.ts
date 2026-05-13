@@ -126,7 +126,7 @@ export async function getGraphForQuery(
     currentOverrides: Overrides = {},
     rootOverrides: Overrides = {},
   ): Promise<GraphModuleInfo | void> {
-    if (!module) return Promise.reject(new Error('Undefined module'));
+    if (!module) throw new Error('Undefined module');
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
@@ -226,54 +226,58 @@ export async function getGraphForQuery(
       const { peerDependencies, peerDependenciesMeta } = info.module.package;
       if (!peerDependencies) return;
 
-      for (const [name, versionRange] of Object.entries(peerDependencies) as [
-        string,
-        string,
-      ][]) {
-        if (isOptionalPeerDependency(peerDependenciesMeta, name)) continue;
+      await Promise.all(
+        (Object.entries(peerDependencies) as [string, string][]).map(
+          async ([name, versionRange]) => {
+            if (isOptionalPeerDependency(peerDependenciesMeta, name)) return;
 
-        // Prefer an existing node that satisfies the range to avoid duplicates.
-        // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
-        let peerModule = modulesByName.get(name)?.find(m => {
-          if (!m.version) return false;
-          try {
-            return satisfies(m.version, versionRange);
-          } catch {
-            return false;
-          }
-        });
+            // Prefer an existing node that satisfies the range to avoid duplicates.
+            // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
+            let peerModule = modulesByName.get(name)?.find(m => {
+              if (!m.version) return false;
+              try {
+                return satisfies(m.version, versionRange);
+              } catch {
+                return false;
+              }
+            });
 
-        if (!peerModule) {
-          // Not yet in graph — fetch and traverse the resolved version.
-          try {
-            peerModule = await getModule(getModuleKey(name, versionRange));
-            if (peerModule.isStub) continue;
-            await _visit(peerModule, info.level + 1);
-            // Register in the name index so later iterations can find it.
-            let list = modulesByName.get(name);
-            if (!list) {
-              list = [];
-              modulesByName.set(name, list);
+            if (!peerModule) {
+              // Not yet in graph — fetch and traverse the resolved version.
+              try {
+                peerModule = await getModule(getModuleKey(name, versionRange));
+                if (peerModule.isStub) return;
+                await _visit(peerModule, info.level + 1);
+                // Register in the name index so later iterations can find it.
+                let list = modulesByName.get(name);
+                if (!list) {
+                  list = [];
+                  modulesByName.set(name, list);
+                }
+                if (!list.includes(peerModule)) list.push(peerModule);
+              } catch {
+                return;
+              }
             }
-            if (!list.includes(peerModule)) list.push(peerModule);
-          } catch {
-            continue;
-          }
-        }
 
-        info.downstream.add({ module: peerModule, type: 'peerDependencies' });
-        graphState.moduleInfos
-          .get(peerModule.key)
-          ?.upstream.add({ module: info.module, type: 'peerDependencies' });
-      }
+            info.downstream.add({
+              module: peerModule,
+              type: 'peerDependencies',
+            });
+            graphState.moduleInfos
+              .get(peerModule.key)
+              ?.upstream.add({ module: info.module, type: 'peerDependencies' });
+          },
+        ),
+      );
     }),
   );
 
   return graphState;
 }
 
-function dotEscape(str: string) {
-  return str.replace(/"/g, '\\"');
+function dotEscape(string_: string) {
+  return string_.replaceAll('"', String.raw`\"`);
 }
 
 /**
@@ -281,17 +285,23 @@ function dotEscape(str: string) {
  *
  * E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
  */
-function vizStyle(obj: Record<string, string | number | boolean | undefined>) {
-  const pairs = Object.entries(obj).map(([key, value]) => {
+function vizStyle(
+  object: Record<string, string | number | boolean | undefined>,
+) {
+  const pairs = Object.entries(object).map(([key, value]) => {
     switch (typeof value) {
       case 'number':
         return `${key}=${value}`;
+
       case 'string':
         return `${key}="${value}"`;
+
       case 'boolean':
         return `${key}=${value ? 'true' : 'false'}`;
+
       case 'undefined':
         return '';
+
       default:
         throw new Error('Invalid value type');
     }
@@ -312,9 +322,8 @@ export function composeDOT({
   entries.sort(([aKey, a], [bKey, b]) => {
     if (a.level !== b.level) {
       return a.level - b.level;
-    } else {
-      return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
     }
+    return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
   });
 
   const nodes = ['\n// Nodes & per-node styling'];
@@ -378,19 +387,18 @@ export function composeDOT({
     `node ${DEFAULT_STYLES.NODE}`,
     `edge ${DEFAULT_STYLES.EDGE}`,
     '',
-  ]
-    .concat(nodes)
-    .concat(edges)
-    .concat(
-      graph.moduleInfos.size > 1
-        ? `{rank=same; ${[...graph.moduleInfos.values()]
+    ...nodes,
+    ...edges,
+    ...(graph.moduleInfos.size > 1
+      ? [
+          `{rank=same; ${[...graph.moduleInfos.values()]
             .filter(info => info.level === 0)
             .map(info => `"${dotEscape(info.module.key)}"`)
-            .join('; ')};}`
-        : '',
-    )
-    .concat('}')
-    .join('\n');
+            .join('; ')};}`,
+        ]
+      : []),
+    '}',
+  ].join('\n');
 }
 
 export function foreachUpstream(

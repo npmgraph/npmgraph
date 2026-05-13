@@ -12,7 +12,7 @@ import { Section } from '../Section.tsx';
 import * as styles from './ReleaseTimeline.module.scss';
 
 function timestring(t: number) {
-  return new Date(t).toISOString().replace(/T.*/, '');
+  return new Date(t).toISOString().replace(/T.*/v, '');
 }
 
 function yearFromTimestamp(t: number) {
@@ -45,22 +45,18 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       } = { ...version, time: Date.parse(time[key]), semver };
       return [key, pv] as const;
     })
-    .filter(isDefined)
-    .sort(([, a], [, b]) => {
-      return a.time < b.time ? -1 : 0;
-    });
+    .filter(item => isDefined(item))
+    .toSorted(([, a], [, b]) => (a.time < b.time ? -1 : 0));
 
   // No releases to display?
   if (byTime.length === 0) return;
 
-  const majorMax = byTime.reduce(
-    (acc, [, v]) => Math.max(acc, v.semver.major),
-    byTime[0][1].semver.major,
-  );
-  const majorMin = byTime.reduce(
-    (acc, [, v]) => Math.min(acc, v.semver.major),
-    byTime[0][1].semver.major,
-  );
+  let majorMax = byTime[0][1].semver.major;
+  let majorMin = byTime[0][1].semver.major;
+  for (const [, version] of byTime) {
+    majorMax = Math.max(majorMax, version.semver.major);
+    majorMin = Math.min(majorMin, version.semver.major);
+  }
 
   const tmin = byTime[0][1].time;
 
@@ -108,7 +104,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     let r = 10;
 
     let layer: keyof typeof layers;
-    if (semver.prerelease.length) {
+    if (semver.prerelease.length > 0) {
       layer = 'prerelease';
       r *= 0.4;
     } else if (semver.patch) {
@@ -157,13 +153,11 @@ export function ReleaseTimeline({ module }: { module: Module }) {
         className={styles.root}
         ref={ref}
       >
-        {Object.entries(layers).map(([k, layer]) => {
-          return (
-            <g key={`layer-${k}`} className={layerClasses[k]}>
-              {layer}
-            </g>
-          );
-        })}
+        {Object.entries(layers).map(([k, layer]) => (
+          <g key={`layer-${k}`} className={layerClasses[k]}>
+            {layer}
+          </g>
+        ))}
       </svg>
 
       <div className={styles.xAxis}>

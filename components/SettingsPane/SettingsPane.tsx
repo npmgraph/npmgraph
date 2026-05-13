@@ -14,7 +14,7 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
 
   const dependencyTypes = (
     (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
-  ).filter(isDefined);
+  ).filter(item => isDefined(item));
 
   const includeDev = dependencyTypes.includes('devDependencies');
 

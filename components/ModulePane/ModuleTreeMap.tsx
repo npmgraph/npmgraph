@@ -35,15 +35,18 @@ export function ModuleTreeMap({
       0,
     );
 
-    const nodes = [...dependencySizes];
+    const nodes = [
+      ...dependencySizes,
 
-    // Placeholder root node so the other nodes have a common parent
-    nodes.push({ name: '__root', approximateSize: 0 });
+      // Placeholder root node so the other nodes have a common parent
+      { name: '__root', approximateSize: 0 },
+    ];
 
     const root = stratify<BundlePhobiaData['dependencySizes'][number]>()
       .id(d => d.name)
       .parentId(node => (node.name === '__root' ? '' : '__root'))(nodes)
       .sum(d => (d.approximateSize * size) / sum)
+      // eslint-disable-next-line unicorn/no-array-sort -- False positive
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
     treemap<BundlePhobiaData['dependencySizes'][number]>()

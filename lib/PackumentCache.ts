@@ -1,7 +1,7 @@
 import type { Packument } from '@npm/types';
-import type { PromiseWithResolversType } from './PromiseWithResolvers.ts';
-import PromiseWithResolvers from './PromiseWithResolvers.ts';
-import fetchJSON from './fetchJSON.ts';
+import type { PromiseWithResolversType } from './promiseWithResolvers.ts';
+import promiseWithResolvers from './promiseWithResolvers.ts';
+import fetchJson from './fetchJson.ts';
 import { getRegistry } from './useRegistry.ts';
 
 const packumentCache = new Map<string, PackumentCacheEntry>();
@@ -23,11 +23,11 @@ export async function getNPMPackument(
   }
 
   if (!cacheEntry) {
-    cacheEntry = PromiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry = promiseWithResolvers() as PackumentCacheEntry;
     cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
 
-    await fetchJSON<Packument>(`${registry}/${moduleName}`, {
+    await fetchJson<Packument>(`${registry}/${moduleName}`, {
       // Per
       // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
       // we should arguably be using the 'Accept:
@@ -41,11 +41,8 @@ export async function getNPMPackument(
       // requests.
       headers: { Accept: 'application/json' },
     })
-      .catch(err => {
-        console.warn(
-          `Failed to fetch packument for ${moduleName}`,
-          err.message,
-        );
+      .catch(error => {
+        console.warn('Failed to fetch packument', moduleName, error.message);
         return undefined;
       })
       .then(cacheEntry.resolve);
@@ -61,7 +58,7 @@ export function getCachedPackument(moduleName: string): Packument | undefined {
 export function cachePackument(moduleName: string, packument: Packument): void {
   let cacheEntry = packumentCache.get(moduleName);
   if (!cacheEntry) {
-    cacheEntry = PromiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry = promiseWithResolvers() as PackumentCacheEntry;
     packumentCache.set(moduleName, cacheEntry);
     cacheEntry.resolve(packument);
   }

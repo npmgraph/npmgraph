@@ -17,7 +17,7 @@ export function Selectable({
   value: string;
   label?: string;
 } & HTMLProps<HTMLSpanElement>) {
-  const [, , setGraphSelection] = useGraphSelection();
+  const setGraphSelection = useGraphSelection()[2];
   const title = label || value;
 
   return (

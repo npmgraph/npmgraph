@@ -4,7 +4,7 @@ export function cn(...args: (string | object | undefined)[]) {
     if (!arg) {
       continue;
     } else if (typeof arg === 'string') {
-      for (const cn of arg.split(/\s+/g)) {
+      for (const cn of arg.split(/\s+/gv)) {
         classes.add(cn);
       }
     } else if (typeof arg === 'object') {
@@ -18,7 +18,7 @@ export function cn(...args: (string | object | undefined)[]) {
     }
   }
 
-  return Array.from(classes).join(' ');
+  return [...classes].join(' ');
 }
 
 export function percent(n: number, precision = 3) {

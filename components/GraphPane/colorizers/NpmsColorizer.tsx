@@ -1,6 +1,6 @@
 import type Module from '../../../lib/Module.ts';
-import PromiseWithResolvers from '../../../lib/PromiseWithResolvers.ts';
-import fetchJSON from '../../../lib/fetchJSON.ts';
+import promiseWithResolvers from '../../../lib/promiseWithResolvers.ts';
+import fetchJson from '../../../lib/fetchJson.ts';
 import type { NPMSIOData } from '../../../lib/fetch_types.ts';
 import { flash } from '../../../lib/flash.ts';
 import {
@@ -15,12 +15,12 @@ import type { BulkColorizer } from './index.ts';
 // Max number of module names allowed per NPMS request
 const NPMS_BULK_LIMIT = 250;
 
-export class NPMSColorizer implements BulkColorizer {
+export class NpmsColorizer implements BulkColorizer {
   title: string;
   name: string;
 
   #pendingModules: Module[] = [];
-  #pendingRequest = PromiseWithResolvers<unknown>();
+  #pendingRequest = promiseWithResolvers<unknown>();
 
   constructor(title: string, field: string) {
     this.title = title;
@@ -45,13 +45,13 @@ export class NPMSColorizer implements BulkColorizer {
   async colorsForModules(modules: Module[]): Promise<Map<Module, string>> {
     const moduleNames = [...new Set(modules.map(m => m.name))];
 
-    // npms.io requests need to be batched
+    // Npms.io requests need to be batched
     const reqs: Promise<Record<string, NPMSIOData>>[] = [];
     for (let i = 0; i < moduleNames.length; i += NPMS_BULK_LIMIT) {
       const namesInRequest = moduleNames.slice(i, i + NPMS_BULK_LIMIT);
 
       reqs.push(
-        fetchJSON<Record<string, NPMSIOData>>(
+        fetchJson<Record<string, NPMSIOData>>(
           'https://api.npms.io/v2/package/mget',
           {
             method: 'POST',
@@ -92,12 +92,15 @@ export class NPMSColorizer implements BulkColorizer {
         case COLORIZE_OVERALL:
           color = scoreColor(score.final);
           break;
+
         case COLORIZE_QUALITY:
           color = scoreColor(score.detail.quality);
           break;
+
         case COLORIZE_POPULARITY:
           color = scoreColor(score.detail.popularity);
           break;
+
         case COLORIZE_MAINTENANCE:
           color = scoreColor(score.detail.maintenance);
           break;
@@ -111,19 +114,19 @@ export class NPMSColorizer implements BulkColorizer {
   }
 }
 
-export const NPMSOverallColorizer = new NPMSColorizer(
+export const NPMSOverallColorizer = new NpmsColorizer(
   'NPMS.io Score',
   COLORIZE_OVERALL,
 );
-export const NPMSPopularityColorizer = new NPMSColorizer(
+export const NPMSPopularityColorizer = new NpmsColorizer(
   'NPMS.io Score (Popularity)',
   COLORIZE_POPULARITY,
 );
-export const NPMSQualityColorizer = new NPMSColorizer(
+export const NPMSQualityColorizer = new NpmsColorizer(
   'NPMS.io Score (Quality)',
   COLORIZE_QUALITY,
 );
-export const NPMSMaintenanceColorizer = new NPMSColorizer(
+export const NPMSMaintenanceColorizer = new NpmsColorizer(
   'NPMS.io Score (Maintenance)',
   COLORIZE_MAINTENANCE,
 );

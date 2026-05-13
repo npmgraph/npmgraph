@@ -10,21 +10,19 @@ export function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
   if (deprecated.length <= 0) return;
 
   const details = deprecated
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .map(module => {
-      return (
-        <div
-          className={cn(styles.root, reportItemStyles.zebraRow)}
-          key={module.key}
-        >
-          <Selectable value={module.key} className={styles.selectable} />
-          {': '}
-          <span className={styles.body}>
-            &rdquo;{module.package.deprecated}&ldquo;
-          </span>
-        </div>
-      );
-    });
+    .toSorted((a, b) => a.name.localeCompare(b.name))
+    .map(module => (
+      <div
+        className={cn(styles.root, reportItemStyles.zebraRow)}
+        key={module.key}
+      >
+        <Selectable value={module.key} className={styles.selectable} />
+        {': '}
+        <span className={styles.body}>
+          &rdquo;{module.package.deprecated}&ldquo;
+        </span>
+      </div>
+    ));
 
   const summary = simplur`Deprecated modules (${deprecated.length})`;
   return { type: 'warn', summary, details } as RenderedAnalysis;

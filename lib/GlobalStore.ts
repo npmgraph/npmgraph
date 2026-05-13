@@ -22,8 +22,8 @@ function _getInitialPane() {
   const select = hashGet('select')?.split(/[, ]+/);
   if (select) return PaneType.MODULE;
   const isTight =
-    typeof window !== 'undefined' &&
-    window.matchMedia(TIGHT_SCREEN_QUERY).matches;
+    globalThis.window !== undefined &&
+    globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches;
   return isTight ? PaneType.GRAPH : PaneType.REPORT;
 }
 

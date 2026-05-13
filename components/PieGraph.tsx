@@ -32,17 +32,17 @@ export function PieGraph({
 
     // Create arcs
     const arcs = pie<PieDatum>()
-      .value(e => e[1])
+      .value(entry => entry[1])
       .sort(null)(entries);
 
     // Create colors
     const color = scaleOrdinal<string>()
-      .domain(entries.map(e => e[0]))
+      .domain(entries.map(entry => entry[0]))
       .range(
         quantize(
           t => interpolateSpectral(t * 0.8 + 0.1),
           entries.length,
-        ).reverse(),
+        ).toReversed(),
       );
 
     // Render arcs
@@ -52,7 +52,7 @@ export function PieGraph({
       .selectAll('path')
       .data(arcs)
       .join('path')
-      .attr('fill', e => color(e.data[0]))
+      .attr('fill', entry => color(entry.data[0]))
       .attr(
         'd',
         arc<PieArcDatum<PieDatum>>()

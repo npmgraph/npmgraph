@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type Module from '../../lib/Module.ts';
-import fetchJSON from '../../lib/fetchJSON.ts';
+import fetchJson from '../../lib/fetchJson.ts';
 import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import { ModuleBundleStats } from './ModuleBundleStats.tsx';
@@ -18,14 +18,13 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
   useEffect(() => {
     if (module.isLocal) return;
 
-    // eslint-disable-next-line react/set-state-in-effect
     setBundleInfo(undefined);
 
     if (!pkg) return;
 
-    fetchJSON<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
+    fetchJson<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
       .then(data => setBundleInfo(data))
-      .catch(err => setBundleInfo(err));
+      .catch(error => setBundleInfo(error));
   }, [pkg, module.isLocal, bpApiUrl]);
 
   if (!bundleInfo) {

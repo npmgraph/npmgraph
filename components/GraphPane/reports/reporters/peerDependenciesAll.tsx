@@ -12,60 +12,58 @@ import * as styles from './peerDependenciesAll.module.scss';
 export function peerDependenciesAll({
   peerDependencyInfos,
 }: PeerDependenciesState) {
-  if (!peerDependencyInfos.length) return;
+  if (peerDependencyInfos.length === 0) return;
 
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
     peerDependencyInfos,
     (pdi: PeerDependencyInfo) => pdi.source.key,
   );
 
-  const details = Array.from(peerDepsBySource.keys())
-    .sort()
-    .map(sourceName => {
-      const pdis = peerDepsBySource.get(sourceName)!;
+  const details = [...peerDepsBySource.keys()].toSorted().map(sourceName => {
+    const pdis = peerDepsBySource.get(sourceName)!;
 
-      return (
-        <div key={sourceName}>
-          <div className={styles.header}>
-            <span>
-              <Selectable value={sourceName} />{' '}
-            </span>
-          </div>
-          <div className={styles.section}>
-            <div className={styles.headerRow}>
-              <span className={styles.wants}>Wants</span>
-              <span className={styles.gets}>Gets</span>
-            </div>
-
-            {pdis.map(pdi => {
-              const { name, optional, versionRange, destination } = pdi;
-              return (
-                <div
-                  className={cn(reportItemStyles.zebraRow, styles.row)}
-                  key={`${pdi.name}${pdi.versionRange}`}
-                >
-                  <span className={styles.wants}>
-                    {name}@{versionRange}
-                    {optional ? <i>(optional)</i> : ''}
-                  </span>
-                  <span className={styles.gets}>
-                    {destination ? (
-                      <Selectable
-                        type={QueryType.Default}
-                        label={destination.version}
-                        value={destination.key}
-                      />
-                    ) : (
-                      <i>{optional ? '—' : 'missing'}</i>
-                    )}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+    return (
+      <div key={sourceName}>
+        <div className={styles.header}>
+          <span>
+            <Selectable value={sourceName} />{' '}
+          </span>
         </div>
-      );
-    });
+        <div className={styles.section}>
+          <div className={styles.headerRow}>
+            <span className={styles.wants}>Wants</span>
+            <span className={styles.gets}>Gets</span>
+          </div>
+
+          {pdis.map(pdi => {
+            const { name, optional, versionRange, destination } = pdi;
+            return (
+              <div
+                className={cn(reportItemStyles.zebraRow, styles.row)}
+                key={`${pdi.name}${pdi.versionRange}`}
+              >
+                <span className={styles.wants}>
+                  {name}@{versionRange}
+                  {optional ? <i>(optional)</i> : ''}
+                </span>
+                <span className={styles.gets}>
+                  {destination ? (
+                    <Selectable
+                      type={QueryType.Default}
+                      label={destination.version}
+                      value={destination.key}
+                    />
+                  ) : (
+                    <i>{optional ? '—' : 'missing'}</i>
+                  )}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  });
 
   const summary = `All peer dependencies (${peerDependencyInfos.length})`;
 
