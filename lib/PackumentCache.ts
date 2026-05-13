@@ -23,7 +23,7 @@ export async function getNPMPackument(
   }
 
   if (!cacheEntry) {
-    cacheEntry = promiseWithResolvers();
+    cacheEntry = promiseWithResolvers() as PackumentCacheEntry;
     cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
 
@@ -41,14 +41,8 @@ export async function getNPMPackument(
       // requests.
       headers: { Accept: 'application/json' },
     })
-      .catch((error: unknown) => {
-        const wrappedError =
-          error instanceof Error ? error : new Error(String(error));
-        console.warn(
-          'Failed to fetch packument',
-          moduleName,
-          wrappedError.message,
-        );
+      .catch(error => {
+        console.warn('Failed to fetch packument', moduleName, error.message);
         return undefined;
       })
       .then(cacheEntry.resolve);
@@ -64,7 +58,7 @@ export function getCachedPackument(moduleName: string): Packument | undefined {
 export function cachePackument(moduleName: string, packument: Packument): void {
   let cacheEntry = packumentCache.get(moduleName);
   if (!cacheEntry) {
-    cacheEntry = promiseWithResolvers();
+    cacheEntry = promiseWithResolvers() as PackumentCacheEntry;
     packumentCache.set(moduleName, cacheEntry);
     cacheEntry.resolve(packument);
   }

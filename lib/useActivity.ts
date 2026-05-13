@@ -9,8 +9,6 @@ export function setActivityForApp(ack: LoadActivity) {
 export function useActivity() {
   const [bool, setBool] = useState(true);
   if (!activity) throw new Error('Activity not set');
-  activity.onChange = () => {
-    setBool(!bool);
-  };
+  activity.onChange = () => setBool(!bool);
   return activity;
 }

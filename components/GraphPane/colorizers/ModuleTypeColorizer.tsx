@@ -26,7 +26,7 @@ export default {
   },
 
   async colorForModule(module: Module) {
-    const pkgType = detectPackageType(module.package);
+    const pkgType = detectPackageType(module.package as PackageJSON);
 
     if (pkgType.esm && pkgType.cjs) {
       return COLORIZE_MODULE_DUAL;
@@ -60,11 +60,11 @@ type PackageModuleType = {
 };
 
 function isESMFile(file?: string) {
-  return (file?.endsWith('.mjs') ?? false) || (file?.endsWith('.mts') ?? false);
+  return file?.endsWith?.('.mjs') || file?.endsWith?.('.mts');
 }
 
 function isCJSFile(file?: string) {
-  return (file?.endsWith('.cjs') ?? false) || (file?.endsWith('.cts') ?? false);
+  return file?.endsWith?.('.cjs') || file?.endsWith?.('.cts');
 }
 
 function detectPackageType(pkg: PackageJSON) {
@@ -114,18 +114,8 @@ function _detectExports(exports: unknown, pkgType: PackageModuleType) {
 
     // Infer dual support if there's an explicit import or require in
     // combination with a default export
-    if (
-      importValue !== undefined ||
-      (defaultValue !== undefined && requireValue !== undefined)
-    ) {
-      pkgType.esm = true;
-    }
-    if (
-      requireValue !== undefined ||
-      (defaultValue !== undefined && importValue !== undefined)
-    ) {
-      pkgType.cjs = true;
-    }
+    if (importValue || (defaultValue && requireValue)) pkgType.esm = true;
+    if (requireValue || (defaultValue && importValue)) pkgType.cjs = true;
 
     // Drill down into object values
     for (const v of Object.values(exports)) _detectExports(v, pkgType);

@@ -19,8 +19,8 @@ export class NpmsColorizer implements BulkColorizer {
   title: string;
   name: string;
 
-  readonly #pendingModules: Module[] = [];
-  readonly #pendingRequest = promiseWithResolvers<unknown>();
+  #pendingModules: Module[] = [];
+  #pendingRequest = promiseWithResolvers<unknown>();
 
   constructor(title: string, field: string) {
     this.title = title;
@@ -104,8 +104,6 @@ export class NpmsColorizer implements BulkColorizer {
         case COLORIZE_MAINTENANCE:
           color = scoreColor(score.detail.maintenance);
           break;
-        default:
-          color = undefined;
       }
       if (color) {
         colors.set(m, color);

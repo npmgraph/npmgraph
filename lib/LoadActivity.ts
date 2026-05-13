@@ -7,11 +7,11 @@ type LoadActivityFn = (la: LoadActivity) => void;
  * Lite class for tracking async activity
  */
 export default class LoadActivity {
-  title: string | undefined = '';
+  title: string | null = '';
 
   total = 0;
   active = 0;
-  onChange: LoadActivityFn | undefined;
+  onChange: LoadActivityFn | null = null;
 
   start(title: string): () => void {
     if (title) this.title = title;
@@ -26,7 +26,7 @@ export default class LoadActivity {
       this.active--;
       if (!this.active) {
         this.total = 0;
-        this.title = undefined;
+        this.title = null;
       }
       this.onChange?.(this);
     };

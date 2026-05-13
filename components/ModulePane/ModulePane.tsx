@@ -49,10 +49,7 @@ export default function ModulePane({
     );
   }
 
-  const module = selectedModules.values().next().value;
-  if (!module) {
-    return null;
-  }
+  const module = selectedModules?.values().next().value as Module;
 
   const pkg = module.package;
 
@@ -177,14 +174,16 @@ export default function ModulePane({
         title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
       >
         <Tags>
-          {maintainers.map(({ name, email }: Exclude<Maintainer, string>) => (
-            <Tag
-              key={name + email}
-              type={QueryType.Maintainer}
-              value={name}
-              gravatar={email}
-            />
-          ))}
+          {maintainers.map(
+            ({ name = 'Unknown', email }: Exclude<Maintainer, string>) => (
+              <Tag
+                key={name + email}
+                type={QueryType.Maintainer}
+                value={name}
+                gravatar={email}
+              />
+            ),
+          )}
         </Tags>
       </Section>
     </Pane>

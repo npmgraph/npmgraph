@@ -28,9 +28,7 @@ export default function ColorizeInput() {
         <select
           style={{ flexGrow: 1 }}
           value={colorize ?? ''}
-          onChange={event => {
-            setColorize(event.target.value);
-          }}
+          onChange={event => setColorize(event.target.value)}
         >
           {options}
         </select>

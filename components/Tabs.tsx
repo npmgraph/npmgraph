@@ -38,7 +38,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       <Tab
         active={inspector && pane === PaneType.INFO}
         onClick={() => {
-          setHide(undefined);
+          setHide(null);
           setPane(PaneType.INFO);
         }}
       >
@@ -47,7 +47,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       <Tab
         active={inspector && pane === PaneType.REPORT}
         onClick={() => {
-          setHide(undefined);
+          setHide(null);
           setPane(PaneType.REPORT);
         }}
       >
@@ -57,7 +57,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         className={styles.tabMobileOnly}
         active={inspector && pane === PaneType.GRAPH}
         onClick={() => {
-          setHide(undefined);
+          setHide(null);
           setPane(PaneType.GRAPH);
         }}
       >
@@ -66,7 +66,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       <Tab
         active={inspector && pane === PaneType.MODULE}
         onClick={() => {
-          setHide(undefined);
+          setHide(null);
           setPane(PaneType.MODULE);
         }}
       >
@@ -75,18 +75,13 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       <Tab
         active={inspector && pane === PaneType.SETTINGS}
         onClick={() => {
-          setHide(undefined);
+          setHide(null);
           setPane(PaneType.SETTINGS);
         }}
       >
         Settings
       </Tab>
-      <Splitter
-        isOpen={inspector}
-        onClick={() => {
-          setHide(true);
-        }}
-      />
+      <Splitter isOpen={inspector} onClick={() => setHide(true)} />
     </div>
   );
 }

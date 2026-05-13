@@ -11,29 +11,29 @@ if (!apiKey) {
 const bugsnag = Bugsnag.start({
   appVersion: pkg.version,
   apiKey,
-  releaseStage: location.hostname.includes('npmgraph')
+  releaseStage: /npmgraph/.test(location.hostname)
     ? 'production'
     : 'development',
   enabledReleaseStages: ['production'],
 });
 
-function info(reportError: Error) {
-  console.log(reportError);
+function info(error: Error) {
+  console.log(error);
 }
 
-function warn(reportError: Error) {
-  console.warn(reportError);
+function warn(error: Error) {
+  console.warn(error);
 }
 
-function error(reportError: Error) {
-  console.error(reportError);
+function error(error: Error) {
+  console.error(error);
 
-  if (reportError instanceof HttpError) {
+  if (error instanceof HttpError) {
     // Don't report HttpErrors since they're kind of expected from time to time
     return;
   }
 
-  bugsnag?.notify(reportError);
+  bugsnag?.notify(error);
 }
 
 export const report = { info, warn, error };

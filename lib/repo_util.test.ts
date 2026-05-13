@@ -4,8 +4,8 @@ import { describe, it } from 'node:test';
 import Module from './Module.ts';
 import { getRepoUrlForModule } from './repo_util.ts';
 
-void describe('getRepoUrlForModule', () => {
-  void it('should extract GitHub URL from repository.url field', () => {
+describe('getRepoUrlForModule', () => {
+  it('should extract GitHub URL from repository.url field', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -19,7 +19,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/facebook/react');
   });
 
-  void it('should handle repository as string', () => {
+  it('should handle repository as string', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -30,7 +30,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/user/repo');
   });
 
-  void it('should extract GitHub URL from homepage field when repository is missing', () => {
+  it('should extract GitHub URL from homepage field when repository is missing', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -41,7 +41,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/user/repo');
   });
 
-  void it('should handle bugs.url with /issues suffix', () => {
+  it('should handle bugs.url with /issues suffix', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -54,7 +54,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/user/repo');
   });
 
-  void it('should prioritize repository over homepage', () => {
+  it('should prioritize repository over homepage', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -69,7 +69,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/real/repo');
   });
 
-  void it('should return undefined for non-repo homepage', () => {
+  it('should return undefined for non-repo homepage', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -80,7 +80,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, undefined);
   });
 
-  void it('should handle GitLab repositories', () => {
+  it('should handle GitLab repositories', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -94,7 +94,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://gitlab.com/user/repo');
   });
 
-  void it('should handle SSH format URLs', () => {
+  it('should handle SSH format URLs', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -108,7 +108,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/user/repo');
   });
 
-  void it('should handle http GitHub repository URLs with .git suffix', () => {
+  it('should handle http GitHub repository URLs with .git suffix', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -122,7 +122,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/drewyoung1/armyjs');
   });
 
-  void it('should handle https GitHub repository URLs with .git suffix', () => {
+  it('should handle https GitHub repository URLs with .git suffix', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -136,7 +136,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/uuidjs/uuid');
   });
 
-  void it('should handle Bitbucket repositories', () => {
+  it('should handle Bitbucket repositories', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -150,7 +150,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://bitbucket.org/user/repo');
   });
 
-  void it('should strip /pulls suffix from URLs', () => {
+  it('should strip /pulls suffix from URLs', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -161,7 +161,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/user/repo');
   });
 
-  void it('should strip /wiki suffix from URLs', () => {
+  it('should strip /wiki suffix from URLs', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -172,7 +172,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, 'https://github.com/user/repo');
   });
 
-  void it('should return undefined when no repository info is available', () => {
+  it('should return undefined when no repository info is available', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
@@ -182,7 +182,7 @@ void describe('getRepoUrlForModule', () => {
     assert.equal(result, undefined);
   });
 
-  void it('should handle bugs as string', () => {
+  it('should handle bugs as string', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',

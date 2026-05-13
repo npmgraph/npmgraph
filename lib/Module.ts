@@ -71,7 +71,7 @@ export default class Module {
 
     if (!Array.isArray(maintainers)) {
       console.warn(
-        `Unexpected maintainers type for ${this.key}: ${String(maintainers)}`,
+        `Unexpected maintainers type for ${this.key}: ${maintainers}`,
       );
       maintainers = [maintainers];
     }
@@ -131,7 +131,7 @@ export default class Module {
     const pkg = this.getLatestVersion() ?? this.package;
 
     return parseLicense(
-      pkg.license ?? (pkg as unknown as { licenses: string[] }).licenses,
+      pkg.license || (pkg as unknown as { licenses: string[] }).licenses,
     );
   }
 
@@ -168,5 +168,5 @@ function parseLicense(
 }
 
 function parseGithubPath(s: string) {
-  return /github\.com\/[^/]+\/[^/?#]+/.exec(s)?.[0]?.replace(/\.git$/v, '');
+  return s.match(/github\.com\/[^/]+\/[^/?#]+/)?.[0]?.replace(/\.git$/v, '');
 }

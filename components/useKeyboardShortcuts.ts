@@ -16,8 +16,6 @@ export function useKeyboardShortcuts() {
     }
 
     document.addEventListener('keypress', handleKeyPress);
-    return () => {
-      document.removeEventListener('keypress', handleKeyPress);
-    };
+    return () => document.removeEventListener('keypress', handleKeyPress);
   }, []);
 }

@@ -49,9 +49,7 @@ export function Tag({
         className,
       )}
       title={title}
-      onClick={() => {
-        setGraphSelection(type, value);
-      }}
+      onClick={() => setGraphSelection(type, value)}
     >
       {img}
       {title}

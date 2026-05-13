@@ -1,11 +1,11 @@
-export function cn(...args: (string | Record<string, unknown> | undefined)[]) {
+export function cn(...args: (string | object | undefined)[]) {
   const classes = new Set();
   for (const arg of args) {
     if (!arg) {
       continue;
     } else if (typeof arg === 'string') {
-      for (const className of arg.split(/\s+/gv)) {
-        classes.add(className);
+      for (const cn of arg.split(/\s+/gv)) {
+        classes.add(cn);
       }
     } else if (typeof arg === 'object') {
       for (const [k, v] of Object.entries(arg)) {

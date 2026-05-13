@@ -23,9 +23,7 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
       <Toggle
         checked={includeDev}
         style={{ marginTop: '1rem' }}
-        onChange={() => {
-          setDepTypes(includeDev ? '' : 'devDependencies');
-        }}
+        onChange={() => setDepTypes(includeDev ? '' : 'devDependencies')}
       >
         Include devDependencies
       </Toggle>
@@ -33,9 +31,7 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
       <Toggle
         checked={sizing === ''}
         style={{ marginTop: '1rem' }}
-        onChange={() => {
-          setSizing(sizing === null);
-        }}
+        onChange={() => setSizing(sizing === null)}
       >
         Size modules by unpacked size
       </Toggle>

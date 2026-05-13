@@ -28,10 +28,12 @@ export function ModuleTreeMap({
 
     // Note: dependencySizes is *sometimes* undefined.  E.g.
     // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
-    const { size } = data;
-    const dependencySizes = data.dependencySizes ?? [];
+    const { size, dependencySizes = [] } = data;
 
-    const sum = dependencySizes.reduce((sum, n) => sum + n.approximateSize, 0);
+    const sum = data.dependencySizes?.reduce(
+      (sum, n) => sum + n.approximateSize,
+      0,
+    );
 
     const nodes = [
       ...dependencySizes,
@@ -56,7 +58,7 @@ export function ModuleTreeMap({
       const rd = d as unknown as HierarchyRectangularNode<
         BundlePhobiaData['dependencySizes'][number]
       >;
-      const sizeLabel = human(d.value ?? 0, 'B');
+      const size = human(d.value ?? 0, 'B');
       const frac = ((rd.x1 - rd.x0) * (rd.y1 - rd.y0)) / (w * h);
       const backgroundColor = `
             color-mix(in srgb, color-mix(in oklch increasing hue, var(--bg-orange),
@@ -66,7 +68,7 @@ export function ModuleTreeMap({
       return (
         <div
           key={d.data.name}
-          title={`${d.data.name} (${sizeLabel})`}
+          title={`${d.data.name} (${size})`}
           className={styles.root}
           style={{
             left: `${rd.x0 + m / 2}px`,
@@ -77,7 +79,7 @@ export function ModuleTreeMap({
             backgroundColor,
           }}
         >
-          {d.data.name} <span>{sizeLabel}</span>
+          {d.data.name} <span>{size}</span>
         </div>
       );
     });

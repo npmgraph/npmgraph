@@ -13,10 +13,7 @@ export default function useGraphSelection() {
     selectType,
     selectValue,
     (queryType = QueryType.Default, queryValue?: string) => {
-      if (!queryType && !queryValue) {
-        setSel('');
-        return;
-      }
+      if (!queryType && !queryValue) return setSel('');
       if (
         queryType === QueryType.Default ||
         queryType === QueryType.Name ||

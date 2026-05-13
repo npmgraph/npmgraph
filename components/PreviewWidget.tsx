@@ -54,9 +54,7 @@ export default function PreviewWidget() {
       </a>
       <button
         aria-label="Hide widget"
-        onClick={() => {
-          setIsHidden(true);
-        }}
+        onClick={() => setIsHidden(true)}
         title="Hide widget until reload"
         type="button"
       >

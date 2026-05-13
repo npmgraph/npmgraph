@@ -16,36 +16,28 @@ function onDrop(ev: DragEvent) {
 
   // If dropped items aren't files, reject them
   const dt = ev.dataTransfer;
-  if (!dt?.items) {
-    alert('Sorry, file dropping is not supported by this browser');
-    return;
-  }
-  if (dt.items.length !== 1) {
-    alert('You must drop exactly one file');
-    return;
-  }
+  if (!dt?.items)
+    return alert('Sorry, file dropping is not supported by this browser');
+  if (dt.items.length !== 1) return alert('You must drop exactly one file');
 
   const item = dt.items[0];
-  if (item.type && item.type !== 'application/json') {
-    alert('File must have a ".json" extension');
-    return;
-  }
+  if (item.type && item.type !== 'application/json')
+    return alert('File must have a ".json" extension');
 
   const file = item.getAsFile();
   if (!file) {
-    alert(
+    return alert(
       'Please drop a file, not... well... whatever else it was you dropped',
     );
-    return;
   }
 
-  void readFile(file);
+  readFile(file);
 }
 
 async function onPaste(ev: ClipboardEvent) {
   const firstItem = ev.clipboardData?.items[0];
   if (firstItem?.kind === 'file') {
-    void readFile(firstItem.getAsFile()!);
+    readFile(firstItem.getAsFile()!);
     ev.preventDefault();
     return;
   }

@@ -18,15 +18,13 @@ export function Selectable({
   label?: string;
 } & HTMLProps<HTMLSpanElement>) {
   const setGraphSelection = useGraphSelection()[2];
-  const title = label ?? value;
+  const title = label || value;
 
   return (
     <span
       className={cn(styles.root, utilities.brightHover, className)}
       title={title}
-      onClick={() => {
-        setGraphSelection(type, value);
-      }}
+      onClick={() => setGraphSelection(type, value)}
       {...props}
     >
       {title}
