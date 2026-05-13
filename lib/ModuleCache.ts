@@ -7,8 +7,6 @@ import {
   getCachedPackument,
   getNPMPackument,
 } from './PackumentCache.ts';
-import type { PromiseWithResolversType } from './promiseWithResolvers.ts';
-import promiseWithResolvers from './promiseWithResolvers.ts';
 import { PARAM_PACKAGES } from './constants.ts';
 import fetchJson from './fetchJson.ts';
 import { flash } from './flash.ts';
@@ -31,7 +29,7 @@ export enum QueryType {
   Maintainer = 'maintainer',
 }
 
-type ModuleCacheEntry = PromiseWithResolversType<Module> & {
+type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   module: Module; // Set once module is loaded
   registry?: string; // NPM_REGISTRY url
 };
@@ -121,7 +119,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   // Set up the cache so subsequent requests for this module will get the same
   // promise object (and thus the same module), even if the module hasn't been
   // loaded yet
-  const cacheEntry = promiseWithResolvers() as ModuleCacheEntry;
+  const cacheEntry = Promise.withResolvers() as ModuleCacheEntry;
   moduleCache.set(moduleKey, cacheEntry);
 
   let promise: Promise<Module>;

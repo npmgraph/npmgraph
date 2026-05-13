@@ -1,5 +1,4 @@
 import type Module from '../../../lib/Module.ts';
-import promiseWithResolvers from '../../../lib/promiseWithResolvers.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
 import type { NPMSIOData } from '../../../lib/fetch_types.ts';
 import { flash } from '../../../lib/flash.ts';
@@ -20,7 +19,7 @@ export class NpmsColorizer implements BulkColorizer {
   name: string;
 
   #pendingModules: Module[] = [];
-  #pendingRequest = promiseWithResolvers<unknown>();
+  #pendingRequest = Promise.withResolvers();
 
   constructor(title: string, field: string) {
     this.title = title;
