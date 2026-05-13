@@ -91,7 +91,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     return new Set<DependencyKey>(['dependencies', ...extra]);
   }, [depTypes]);
 
-  async function handleGraphClick(event: React.MouseEvent) {
+  function handleGraphClick(event: React.MouseEvent) {
     const { target } = event;
     if (
       !(target instanceof Element) ||

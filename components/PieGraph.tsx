@@ -79,21 +79,21 @@ export function PieGraph({
         'font-size',
         d => `${0.75 + (d.endAngle - d.startAngle) / Math.PI / 2}em`,
       )
-      .call(text =>
+      .call(text => {
         text
           .append('tspan')
           .attr('y', '-0.4em')
-          .text(d => d.data[0]),
-      )
-      .call(text =>
+          .text(d => d.data[0]);
+      })
+      .call(text => {
         text
           .filter(d => d.endAngle - d.startAngle > 0.25)
           .append('tspan')
           .attr('x', 0)
           .attr('y', '0.7em')
           .attr('fill-opacity', 0.5)
-          .text(d => d.data[1].toLocaleString()),
-      );
+          .text(d => d.data[1].toLocaleString());
+      });
   });
 
   return <svg ref={svgRef} {...props} />;

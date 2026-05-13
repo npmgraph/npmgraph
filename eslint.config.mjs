@@ -60,7 +60,6 @@ const disabledRules = [
   '@typescript-eslint/prefer-readonly',
   '@typescript-eslint/prefer-regexp-exec',
   '@typescript-eslint/restrict-template-expressions',
-  '@typescript-eslint/strict-void-return',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
   'import-x/no-anonymous-default-export',
   'import-x/no-duplicates',

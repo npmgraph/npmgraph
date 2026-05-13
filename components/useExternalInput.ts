@@ -42,7 +42,7 @@ function onDrop(ev: DragEvent) {
   void readFile(file);
 }
 
-async function onPaste(ev: ClipboardEvent) {
+function onPaste(ev: ClipboardEvent): void {
   const firstItem = ev.clipboardData?.items[0];
   if (firstItem?.kind === 'file') {
     void readFile(firstItem.getAsFile()!);
