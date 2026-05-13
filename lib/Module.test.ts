@@ -4,9 +4,9 @@ import { describe, it } from 'node:test';
 import Module from './Module.ts';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
 
-describe('Module', () => {
-  describe('isUnnamed', () => {
-    it('should return false for a module with a regular name', () => {
+void describe('Module', () => {
+  void describe('isUnnamed', () => {
+    void it('should return false for a module with a regular name', () => {
       const module = new Module({
         name: 'my-package',
         version: '1.0.0',
@@ -15,7 +15,7 @@ describe('Module', () => {
       assert.equal(module.isUnnamed, false);
     });
 
-    it('should return true for a module with a generated unnamed prefix', () => {
+    void it('should return true for a module with a generated unnamed prefix', () => {
       const module = new Module({
         name: `${UNNAMED_PACKAGE_PREFIX}abc-123`,
         version: '1.0.0',
@@ -25,8 +25,8 @@ describe('Module', () => {
     });
   });
 
-  describe('displayName', () => {
-    it('should return the package name for a named module', () => {
+  void describe('displayName', () => {
+    void it('should return the package name for a named module', () => {
       const module = new Module({
         name: 'my-package',
         version: '1.0.0',
@@ -35,7 +35,7 @@ describe('Module', () => {
       assert.equal(module.displayName, 'my-package');
     });
 
-    it(`should return '${UNNAMED_PACKAGE}' for an unnamed module`, () => {
+    void it(`should return '${UNNAMED_PACKAGE}' for an unnamed module`, () => {
       const module = new Module({
         name: `${UNNAMED_PACKAGE_PREFIX}abc-123`,
         version: '1.0.0',
@@ -45,8 +45,8 @@ describe('Module', () => {
     });
   });
 
-  describe('constructor', () => {
-    it('should throw if name is not provided', () => {
+  void describe('constructor', () => {
+    void it('should throw if name is not provided', () => {
       assert.throws(
         () =>
           new Module({

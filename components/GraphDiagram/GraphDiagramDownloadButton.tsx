@@ -10,7 +10,9 @@ export default function GraphDiagramDownloadButton() {
   return (
     <button
       className={styles.root}
-      onClick={() => download('svg')}
+      onClick={() => {
+        download('svg');
+      }}
       title="Download as SVG"
       type="button"
     >
@@ -80,7 +82,9 @@ function downloadSvg() {
   );
   if (appStylesheetLink) {
     try {
-      const styleElement = cloneStyleElementFromSheet(appStylesheetLink.sheet);
+      const styleElement = cloneStyleElementFromSheet(
+        appStylesheetLink.sheet ?? undefined,
+      );
       if (styleElement) {
         svg.append(styleElement);
       }
@@ -95,7 +99,7 @@ function downloadSvg() {
   generateLinkToDownload('svg', svgUrl);
 }
 
-function cloneStyleElementFromSheet(sheet: StyleSheet | null | undefined) {
+function cloneStyleElementFromSheet(sheet: StyleSheet | undefined) {
   if (!sheet) return null;
 
   const cssSheet = sheet as CSSStyleSheet;
@@ -103,7 +107,7 @@ function cloneStyleElementFromSheet(sheet: StyleSheet | null | undefined) {
 
   try {
     const cssText = [...cssSheet.cssRules]
-      .filter(rule => rule.type !== CSSRule.MEDIA_RULE)
+      .filter(rule => !(rule instanceof CSSMediaRule))
       .map(rule => rule.cssText)
       .join('\n');
 

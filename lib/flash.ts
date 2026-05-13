@@ -9,7 +9,7 @@ const FLASH_GAP = 10;
 export function flash(wat: unknown, bg = '#f80') {
   const graph = $(`.${graphDiagramStyles.graph}`);
   const flashes = $$optional(`.${styles.flash}`);
-  const previous = flashes.length > 0 ? (flashes.at(-1) as HTMLElement) : null;
+  const previous = flashes.length > 0 ? flashes.at(-1)! : null;
   const element = document.createElement('div');
 
   if (wat instanceof Error) {
@@ -45,7 +45,9 @@ export function flash(wat: unknown, bg = '#f80') {
     element.style.left = `${FLASH_GAP}px`;
 
     setTimeout(() => {
-      element.addEventListener('transitionend', () => element.remove());
+      element.addEventListener('transitionend', () => {
+        element.remove();
+      });
       element.style.left = `${-element.offsetWidth - FLASH_GAP}px`;
     }, 5000);
   }, 0);
@@ -58,7 +60,7 @@ export function celebrate(message: string) {
   const y =
     (element.clientTop + element.clientHeight / 2) / document.body.clientHeight;
 
-  confetti({
+  void confetti({
     particleCount: 100,
     ticks: 100,
     spread: 90,

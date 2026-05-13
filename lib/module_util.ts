@@ -27,7 +27,7 @@ export function getModuleKey(name: string, version: string) {
 }
 
 export function parseModuleKey(moduleKey: string): string[] {
-  const parts = moduleKey.match(/(.+)@(.*)/);
+  const parts = /(.+)@(.*)/.exec(moduleKey);
   if (!parts) return [moduleKey];
 
   parts.shift(); // remove full match
@@ -55,6 +55,7 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
       continue;
     }
 
+    const nextDeps: Dependencies = {};
     for (const [name, version] of Object.entries(deps)) {
       // Dereference npm:-prefixed aliases
       const match = ALIAS_RE.exec(version);
@@ -62,10 +63,13 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
         console.log(
           `Resolving alias ${name} -> ${match.groups!.name}@${match.groups!.semver}`,
         );
-        delete deps[name];
-        deps[match.groups!.name] = match.groups!.semver;
+        nextDeps[match.groups!.name] = match.groups!.semver;
+      } else {
+        nextDeps[name] = version;
       }
     }
+
+    pkg[depType as keyof PackumentVersion] = nextDeps;
   }
 
   return pkg;

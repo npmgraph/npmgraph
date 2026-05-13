@@ -93,12 +93,12 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   // Add version dots and lines
   for (const [key, version] of byTime) {
-    const { time, semver } = version;
+    const { time: publishedTime, semver } = version;
 
     if (!semver) continue;
 
-    const x = xScale(time);
-    const title = `${key} published ${timestring(time)}`;
+    const x = xScale(publishedTime);
+    const title = `${key} published ${timestring(publishedTime)}`;
     const y = yScale(semver.major);
 
     let r = 10;

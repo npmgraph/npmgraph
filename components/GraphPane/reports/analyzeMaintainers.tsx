@@ -36,7 +36,11 @@ export function analyzeMaintainers({
       const { maintainers } = module;
 
       // Group modules we aren't interested in under "" (removed below)
-      if (module.isStub || module.package.private || maintainers.length !== 1)
+      if (
+        module.isStub ||
+        (module.package.private ?? false) ||
+        maintainers.length !== 1
+      )
         return '';
 
       soloModulesCount++;
@@ -63,7 +67,9 @@ export function analyzeMaintainers({
       }
 
       if (!maintainer.name) {
-        report.error(new Error(`Nameless maintainer "${m}" in ${module.key}`));
+        report.error(
+          new Error(`Nameless maintainer "${String(m)}" in ${module.key}`),
+        );
         maintainer.name = '\u{26A0}\u{FE0F} (unnamed maintainer)';
       }
 

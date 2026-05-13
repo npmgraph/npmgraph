@@ -38,7 +38,7 @@ type ModuleCacheEntry = PromiseWithResolversType<Module> & {
 
 function selectVersion(
   packument: Packument,
-  targetVersion: string = 'latest',
+  targetVersion = 'latest',
 ): PackumentVersion | undefined {
   let selectedVersion: string | undefined;
 
@@ -114,7 +114,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   moduleKey = getModuleKey(name, version);
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(moduleKey);
-  if (cachedEntry && cachedEntry.registry === getRegistry()) {
+  if (cachedEntry?.registry === getRegistry()) {
     return cachedEntry.promise;
   }
 
@@ -133,13 +133,15 @@ export async function getModule(moduleKey: string): Promise<Module> {
     cacheEntry.registry = getRegistry();
     promise = fetchModuleFromNPM(name, version);
   }
-  promise
-    .catch(error => {
-      if (error instanceof HttpError) {
-        error.message = `Fetch failed for ${moduleKey} (code = ${error.code})`;
+  void promise
+    .catch((error: unknown) => {
+      const wrappedError =
+        error instanceof Error ? error : new Error(String(error));
+      if (wrappedError instanceof HttpError) {
+        wrappedError.message = `Fetch failed for ${moduleKey} (code = ${wrappedError.code})`;
       }
 
-      return Module.stub(moduleKey, error);
+      return Module.stub(moduleKey, wrappedError);
     })
     .then(module => {
       cacheEntry.module = module;
@@ -156,7 +158,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
 
 export function getCachedModule(key: string) {
   const entry = moduleCache.get(key);
-  return entry && entry.registry === getRegistry() ? entry.module : undefined;
+  return entry?.registry === getRegistry() ? entry.module : undefined;
 }
 
 export function cacheModule(module: Module, registry?: string) {
@@ -170,8 +172,8 @@ export function cacheModule(module: Module, registry?: string) {
       promise: Promise.resolve(module),
       module,
       registry,
-      resolve() {},
-      reject() {},
+      resolve: () => undefined,
+      reject: () => undefined,
     });
   }
 }
@@ -235,7 +237,7 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
   const sanitized: PackageJSON = {} as PackageJSON;
 
   for (const key of PACKAGE_WHITELIST) {
-    if (key in pkg) (sanitized[key] as unknown) = pkg[key];
+    if (key in pkg) sanitized[key] = pkg[key];
   }
 
   return sanitized;
@@ -276,7 +278,7 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
   return module;
 }
 
-let lastPackagesValue: string | null;
+let lastPackagesValue: string | undefined;
 
 // Make sure any packages in the URL hash are loaded into the module cache
 export function syncPackagesHash() {
@@ -284,7 +286,7 @@ export function syncPackagesHash() {
 
   // If the hash param hasn't changed, there's nothing to do
   if (lastPackagesValue === packagesJson) return;
-  lastPackagesValue = packagesJson;
+  lastPackagesValue = packagesJson ?? undefined;
 
   if (!packagesJson) return;
 

@@ -6,7 +6,7 @@ export default function useCollapse() {
   const [value, setValue] = useHashParam(PARAM_COLLAPSE);
   const excludes = useMemo(
     () =>
-      (value || '')
+      (value ?? '')
         .split(',')
         .filter(Boolean)
         .toSorted()
@@ -16,8 +16,8 @@ export default function useCollapse() {
 
   return [
     excludes,
-    function (excludes: string[]) {
-      setValue(excludes.toSorted().join(','));
+    function (nextExcludes: string[]) {
+      setValue(nextExcludes.toSorted().join(','));
     },
   ] as const;
 }

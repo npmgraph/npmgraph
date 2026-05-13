@@ -21,7 +21,9 @@ export function GraphDiagramZoomButtons() {
           { [parentStyles.selected]: zoom === ZOOM_FIT_WIDTH },
           utilities.brightHover,
         )}
-        onClick={() => setZoom(ZOOM_FIT_WIDTH)}
+        onClick={() => {
+          setZoom(ZOOM_FIT_WIDTH);
+        }}
         title="Zoom (fit width)"
         type="button"
       >
@@ -33,7 +35,9 @@ export function GraphDiagramZoomButtons() {
           { [parentStyles.selected]: zoom === ZOOM_NONE },
           utilities.brightHover,
         )}
-        onClick={() => setZoom(ZOOM_NONE)}
+        onClick={() => {
+          setZoom(undefined);
+        }}
         title="Zoom (1:1)"
         type="button"
       >
@@ -45,7 +49,9 @@ export function GraphDiagramZoomButtons() {
           { [parentStyles.selected]: zoom === ZOOM_FIT_HEIGHT },
           utilities.brightHover,
         )}
-        onClick={() => setZoom(ZOOM_FIT_HEIGHT)}
+        onClick={() => {
+          setZoom(ZOOM_FIT_HEIGHT);
+        }}
         title="Zoom (fit height)"
         type="button"
       >

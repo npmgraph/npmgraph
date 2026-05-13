@@ -44,7 +44,7 @@ export async function moduleVulnerabilities({
     nModules++;
   }
 
-  let moduleAdvisories: BulkAdvisories | null = null;
+  let moduleAdvisories: BulkAdvisories | undefined;
   if (nModules > 0) {
     const body = JSON.stringify(versionsByName, null, 2);
 
@@ -62,9 +62,10 @@ export async function moduleVulnerabilities({
         method: 'POST',
         body,
       },
-    ).catch(error => {
-      console.log('Error fetching NPM audit data:', error.message);
-      return null;
+    ).catch((error: unknown) => {
+      const message = error instanceof Error ? error.message : String(error);
+      console.log('Error fetching NPM audit data:', message);
+      return undefined;
     });
   }
 

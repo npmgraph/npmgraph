@@ -4,7 +4,7 @@ import * as styles from './FilePicker.module.scss';
 function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {
   const file = ev.target.files?.item(0);
   if (file) {
-    readFile(file);
+    void readFile(file);
   }
 
   // Reset field

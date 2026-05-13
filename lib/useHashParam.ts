@@ -5,7 +5,7 @@ export default function useHashParameter(parameterName: string) {
   const parameter = parameters.get(parameterName);
 
   const setValue = (
-    value: string | boolean | number | null | undefined,
+    value: string | boolean | number | undefined,
     replace = true,
   ) => {
     if (value === parameter) return;

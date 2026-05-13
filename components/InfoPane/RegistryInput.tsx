@@ -23,15 +23,17 @@ export default function RegistryInput() {
   }
 
   useEffect(() => {
-    function checkRegistryStatus(registry: string, signal: AbortSignal) {
+    function checkRegistryStatus(registryUrl: string, signal: AbortSignal) {
       if (signal.aborted) return;
 
-      fetch(`${registry}/_`, { method: 'HEAD', signal })
+      fetch(`${registryUrl}/_`, { method: 'HEAD', signal })
         .then(() => {
           setStatus(RegistryStatus.ONLINE);
-          setRegistry(registry);
+          setRegistry(registryUrl);
         })
-        .catch(() => setStatus(RegistryStatus.OFFLINE));
+        .catch(() => {
+          setStatus(RegistryStatus.OFFLINE);
+        });
     }
 
     const controller = new AbortController();

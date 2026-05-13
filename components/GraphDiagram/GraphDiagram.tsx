@@ -162,6 +162,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         diagramElement.setAttribute('height', '100%');
         graphElement.classList.add(utilities.dBlock);
         break;
+      default:
+        throw new Error(`Unexpected zoom option: ${String(zoom)}`);
     }
   }
 
@@ -176,8 +178,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useEffect(() => {
     const { signal, abort } = createAbortable();
-    getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
-      newGraph => {
+    void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter)
+      .then(newGraph => {
         if (signal.aborted) return; // Check after async
 
         const firstInfo = newGraph.moduleInfos.values().next().value;
@@ -193,8 +195,12 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         ) {
           setPane(PaneType.INFO);
         }
-      },
-    );
+      })
+      .catch((error: unknown) => {
+        if (signal.aborted) return;
+        console.error(error);
+        flash('Error while loading graph');
+      });
 
     return abort;
   }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph, setPane]);
@@ -239,7 +245,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.classList.add(styles.graphDiagram);
 
       // Inject into DOM
-      const element = $(`.${styles.graph}`)!;
+      const element = $(`.${styles.graph}`);
       getDiagramElement()?.remove();
       element.append(svgDom);
 
@@ -318,7 +324,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Colorize nodes
   useEffect(() => {
     if (!diagramElement) return;
-    colorizeGraph(diagramElement, colorize ?? '');
+    void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
 
   if (!graphviz && graphvizLoading) {
@@ -357,7 +363,7 @@ function logUpdate(name: string, value: unknown) {
 }
 
 function scrollGraphIntoView(
-  element: Element | null,
+  element: Element | undefined,
   scrollOptions?: ScrollToOptions,
 ) {
   const graphElement = $optional(`.${styles.graph}`);
@@ -383,13 +389,15 @@ function useGraphviz() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Graphviz.load()
-      .catch(error => {
+    void Graphviz.load()
+      .catch((error: unknown) => {
         console.error('Graphviz failed to load', error);
         return undefined;
       })
       .then(setGraphviz)
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return [graphviz, loading] as const;
@@ -474,7 +482,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const element of moduleEls) {
       const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elementPath = $('path', element)!;
+      const elementPath = $('path', element);
 
       // Reset color if there's no module
       if (!m) {
@@ -483,10 +491,12 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       }
 
       // Colorize it (async)
-      colorizer
+      void colorizer
         .colorForModule(m)
-        .catch(error => {
-          console.warn(`Error colorizing ${m.name}: ${error.message}`);
+        .catch((error: unknown) => {
+          const message =
+            error instanceof Error ? error.message : String(error);
+          console.warn(`Error colorizing ${m.name}: ${message}`);
           return null;
         })
         .then(color => {
@@ -509,7 +519,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const element of moduleEls) {
       const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elementPath = $('path', element)!;
+      const elementPath = $('path', element);
       elementPath.style.fill = (m && colors.get(m)) ?? '';
     }
   }
