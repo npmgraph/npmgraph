@@ -55,7 +55,7 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
       continue;
     }
 
-    const nextDeps: Dependencies = {};
+    const processedDeps: Dependencies = {};
     for (const [name, version] of Object.entries(deps)) {
       // Dereference npm:-prefixed aliases
       const match = ALIAS_RE.exec(version);
@@ -63,13 +63,13 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
         console.log(
           `Resolving alias ${name} -> ${match.groups!.name}@${match.groups!.semver}`,
         );
-        nextDeps[match.groups!.name] = match.groups!.semver;
+        processedDeps[match.groups!.name] = match.groups!.semver;
       } else {
-        nextDeps[name] = version;
+        processedDeps[name] = version;
       }
     }
 
-    pkg[depType as keyof PackumentVersion] = nextDeps;
+    pkg[depType as keyof PackumentVersion] = processedDeps;
   }
 
   return pkg;

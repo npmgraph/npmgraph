@@ -289,27 +289,23 @@ function vizStyle(
   object: Record<string, string | number | boolean | undefined>,
 ) {
   const pairs = Object.entries(object).map(([key, value]) => {
-    switch (typeof value) {
-      case 'number':
-        return `${key}=${value}`;
-
-      case 'string':
-        return `${key}="${value}"`;
-
-      case 'boolean':
-        return `${key}=${value ? 'true' : 'false'}`;
-
-      case 'undefined':
-        return '';
-
-      case 'bigint':
-      case 'symbol':
-      case 'object':
-      case 'function':
-        throw new Error(`Invalid value type: ${typeof value}`);
+    if (typeof value === 'number') {
+      return `${key}=${value}`;
     }
 
-    return '';
+    if (typeof value === 'string') {
+      return `${key}="${value}"`;
+    }
+
+    if (typeof value === 'boolean') {
+      return `${key}=${value ? 'true' : 'false'}`;
+    }
+
+    if (value === undefined) {
+      return '';
+    }
+
+    throw new Error(`Invalid value type: ${typeof value}`);
   });
   return `[${pairs.filter(Boolean).join(' ')}]`;
 }

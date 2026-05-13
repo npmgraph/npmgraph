@@ -28,12 +28,10 @@ export function ModuleTreeMap({
 
     // Note: dependencySizes is *sometimes* undefined.  E.g.
     // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
-    const { size, dependencySizes } = data;
+    const { size } = data;
+    const dependencySizes = data.dependencySizes ?? [];
 
-    const sum = data.dependencySizes?.reduce(
-      (sum, n) => sum + n.approximateSize,
-      0,
-    );
+    const sum = dependencySizes.reduce((sum, n) => sum + n.approximateSize, 0);
 
     const nodes = [
       ...dependencySizes,

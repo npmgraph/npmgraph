@@ -36,7 +36,7 @@ export function GraphDiagramZoomButtons() {
           utilities.brightHover,
         )}
         onClick={() => {
-          setZoom(undefined);
+          setZoom(ZOOM_NONE ?? undefined);
         }}
         title="Zoom (1:1)"
         type="button"
