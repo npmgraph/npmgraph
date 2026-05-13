@@ -68,7 +68,6 @@ const disabledRules = [
   'import-x/no-unassigned-import',
   'import-x/order',
   'json/no-empty-keys',
-  'no-restricted-globals',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
@@ -80,22 +79,23 @@ const disabledRules = [
   'react/no-unescaped-entities',
   'react/prefer-read-only-props',
   'react/self-closing-comp',
-  'capitalized-comments',
-  'require-unicode-regexp',
 
   // TODO: After https://github.com/sindresorhus/eslint-plugin-unicorn/pull/2953
   'unicorn/prefer-query-selector',
+
+  // Unwanted
+  'capitalized-comments',
+  'no-alert',
+  'no-console',
+  'no-restricted-globals',
+  'require-unicode-regexp',
 ];
 
 export default [
   ...xoConfigs,
   ...xoReactConfigs,
   {
-    rules: {
-      ...Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
-      'no-alert': 'off',
-      'no-console': 'off',
-    },
+    rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },
   prettierConflicts,
 ];
