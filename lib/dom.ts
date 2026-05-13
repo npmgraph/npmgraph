@@ -4,8 +4,8 @@ export function cn(...args: (string | Record<string, unknown> | undefined)[]) {
     if (!arg) {
       continue;
     } else if (typeof arg === 'string') {
-      for (const cn of arg.split(/\s+/gv)) {
-        classes.add(cn);
+      for (const className of arg.split(/\s+/gv)) {
+        classes.add(className);
       }
     } else if (typeof arg === 'object') {
       for (const [k, v] of Object.entries(arg)) {

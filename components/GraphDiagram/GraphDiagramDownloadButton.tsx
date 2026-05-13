@@ -97,7 +97,7 @@ function downloadSvg() {
   generateLinkToDownload('svg', svgUrl);
 }
 
-function cloneStyleElementFromSheet(sheet: StyleSheet | undefined) {
+function cloneStyleElementFromSheet(sheet: StyleSheet | null) {
   if (!sheet) return null;
 
   const cssSheet = sheet as CSSStyleSheet;

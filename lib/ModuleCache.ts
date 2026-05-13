@@ -274,7 +274,7 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
   return module;
 }
 
-let lastPackagesValue: string | undefined;
+let lastPackagesValue: string | null;
 
 // Make sure any packages in the URL hash are loaded into the module cache
 export function syncPackagesHash() {

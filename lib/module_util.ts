@@ -45,7 +45,9 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
     const deps = pkg[depType as keyof PackumentVersion] as Dependencies;
     if (!deps) {
       continue;
-    } else if (deps.constructor !== Object) {
+    }
+
+    if (deps.constructor !== Object) {
       console.warn('Unexpected dependency object shape', {
         depType,
         moduleName: pkg.name,

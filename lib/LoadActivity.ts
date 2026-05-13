@@ -11,7 +11,7 @@ export default class LoadActivity {
 
   total = 0;
   active = 0;
-  onChange: LoadActivityFn | undefined = null;
+  onChange: LoadActivityFn | undefined;
 
   start(title: string): () => void {
     if (title) this.title = title;
@@ -26,7 +26,7 @@ export default class LoadActivity {
       this.active--;
       if (!this.active) {
         this.total = 0;
-        this.title = null;
+        this.title = undefined;
       }
       this.onChange?.(this);
     };

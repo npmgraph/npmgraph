@@ -35,8 +35,7 @@ export default function fetchJson<T>(
     ? () => {}
     : activity?.start(`Fetching ${decodeURIComponent(url)}`);
 
-  const p = globalThis
-    .fetch(input, init)
+  const p = fetch(input, init)
     .then(response => {
       if (response.ok) return response.json();
       const error = new HttpError(response.status);
