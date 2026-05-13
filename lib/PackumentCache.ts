@@ -1,12 +1,10 @@
 import type { Packument } from '@npm/types';
-import type { PromiseWithResolversType } from './promiseWithResolvers.ts';
-import promiseWithResolvers from './promiseWithResolvers.ts';
 import fetchJson from './fetchJson.ts';
 import { getRegistry } from './useRegistry.ts';
 
 const packumentCache = new Map<string, PackumentCacheEntry>();
 
-type PackumentCacheEntry = PromiseWithResolversType<Packument | undefined> & {
+type PackumentCacheEntry = PromiseWithResolvers<Packument | undefined> & {
   packument?: Packument; // Set once packument is loaded
   registry?: string; // NPM_REGISTRY url
 };
@@ -23,7 +21,7 @@ export async function getNPMPackument(
   }
 
   if (!cacheEntry) {
-    cacheEntry = promiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry = Promise.withResolvers();
     cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
 
@@ -58,7 +56,7 @@ export function getCachedPackument(moduleName: string): Packument | undefined {
 export function cachePackument(moduleName: string, packument: Packument): void {
   let cacheEntry = packumentCache.get(moduleName);
   if (!cacheEntry) {
-    cacheEntry = promiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry = Promise.withResolvers();
     packumentCache.set(moduleName, cacheEntry);
     cacheEntry.resolve(packument);
   }
