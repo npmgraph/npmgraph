@@ -1,6 +1,6 @@
 import type { Packument, PackumentVersion } from '@npm/types';
-import { isDefined } from './guards.ts';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
+import { isDefined } from './guards.ts';
 import {
   getModuleKey,
   parseModuleKey,
@@ -29,7 +29,7 @@ export default class Module {
     return module;
   }
 
-  // TODO: This should take either PackumentVersion or PackageJSON... but need to
+  // Note: This should take either PackumentVersion or PackageJSON... but need to
   // be clear about the differences between the two!
   constructor(pkg: PackumentVersion, packument?: Packument) {
     if (!pkg.name) {
@@ -106,7 +106,7 @@ export default class Module {
   }
 
   get repository() {
-    // TODO: Handle non-github repositories
+    // Note: Handle non-github repositories
     const { repository } = this.package;
     if (typeof repository === 'string') return repository;
     return repository?.url;

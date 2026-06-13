@@ -1,6 +1,6 @@
+import prettierConflicts from 'eslint-config-prettier';
 import xo from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
-import prettierConflicts from 'eslint-config-prettier';
 
 const xoConfigs = xo({
   browser: true,
@@ -79,7 +79,7 @@ const disabledRules = [
   'react/prefer-read-only-props',
   'react/self-closing-comp',
 
-  // TODO: After https://github.com/sindresorhus/eslint-plugin-unicorn/pull/2953
+  // Note: Enable this after https://github.com/sindresorhus/eslint-plugin-unicorn/pull/2953
   'unicorn/prefer-query-selector',
 
   // Unwanted

@@ -44,7 +44,7 @@ export function Tag({
     <div
       className={cn(
         styles.tag,
-        type === QueryType.Maintainer && styles.maintainer,
+        type === QueryType.Maintainer ? styles.maintainer : '',
         utilities.brightHover,
         className,
       )}

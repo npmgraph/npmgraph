@@ -1,5 +1,6 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { gt, satisfies } from 'semver';
+import { flash } from '../components/Flash/flash.ts';
 import HttpError from './HttpError.ts';
 import Module from './Module.ts';
 import {
@@ -9,7 +10,6 @@ import {
 } from './PackumentCache.ts';
 import { PARAM_PACKAGES } from './constants.ts';
 import fetchJson from './fetchJson.ts';
-import { flash } from './flash.ts';
 import {
   getModuleKey,
   isHttpModule,
@@ -80,7 +80,7 @@ async function fetchModuleFromNPM(
 async function fetchModuleFromURL(urlString: string) {
   const url = new URL(urlString);
 
-  // TODO: We should probably be fetching github content via their REST API, but
+  // Note: We should probably be fetching github content via their REST API, but
   // that makes this code much more github-specific.  So, for now, we just do
   // some URL-massaging to pull from the "raw" URL
   if (/\.?github.com$/.test(url.host)) {
@@ -290,7 +290,7 @@ export function syncPackagesHash() {
   try {
     packages = JSON.parse(packagesJson);
   } catch {
-    flash('"packages" hash param is not valid JSON');
+    flash('`packages` hash param is not valid JSON');
     return;
   }
 

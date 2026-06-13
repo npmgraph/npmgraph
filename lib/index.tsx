@@ -6,12 +6,12 @@ import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
+import { flash } from '../components/Flash/flash.ts';
 import { Unsupported } from '../components/Unsupported.tsx';
 import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
-import { flash } from './flash.ts';
 import { setActivityForApp } from './useActivity.ts';
 
 function isValidJS(src: string) {

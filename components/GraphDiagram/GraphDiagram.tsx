@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { $, $closestOptional, $optional, $$optional } from 'select-dom';
+import { $, $$optional, $closestOptional, $optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -30,12 +30,12 @@ import {
 } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
-import { celebrate, flash } from '../../lib/flash.ts';
 import useCollapse from '../../lib/useCollapse.ts';
 import useGraphSelection from '../../lib/useGraphSelection.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import usePrevious from '../../lib/usePrevious.ts';
 import { useQuery } from '../../lib/useQuery.ts';
+import { celebrate, flash } from '../Flash/flash.ts';
 import {
   getColorizer,
   isSimpleColorizer,
@@ -208,6 +208,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const finish = activity.start('Rendering');
 
     // Render SVG markup (async)
+    // eslint-disable-next-line complexity
     (async function () {
       if (!graphviz) return;
 
@@ -398,6 +399,7 @@ function useGraphviz() {
   return [graphviz, loading] as const;
 }
 
+// eslint-disable-next-line complexity
 function updateSelection(
   graph: GraphState,
   modules: Map<string, Module>,
