@@ -10,7 +10,7 @@ export function resolveModule(name: string, version?: string) {
     // Remove "git...#" repo URIs from version strings
     const gitless = version?.replace(/git.*#(.*)/v, '');
     if (version && gitless !== version) {
-      // Note: Update why this check is needed once we have real-world examples
+      // TODO: Update why this check is needed once we have real-world examples
       console.warn('Found git-based version string');
       version = gitless;
     }

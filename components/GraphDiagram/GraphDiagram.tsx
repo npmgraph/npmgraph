@@ -172,7 +172,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     [collapse],
   );
 
-  // NOTE: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
+  // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
   useEffect(() => {
@@ -208,7 +208,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const finish = activity.start('Rendering');
 
     // Render SVG markup (async)
-    // eslint-disable-next-line complexity
     (async function () {
       if (!graphviz) return;
 
@@ -399,7 +398,6 @@ function useGraphviz() {
   return [graphviz, loading] as const;
 }
 
-// eslint-disable-next-line complexity
 function updateSelection(
   graph: GraphState,
   modules: Map<string, Module>,

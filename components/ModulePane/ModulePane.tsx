@@ -23,7 +23,6 @@ import * as styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
 
-// eslint-disable-next-line complexity
 export default function ModulePane({
   selectedModules,
   ...props

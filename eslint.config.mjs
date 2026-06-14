@@ -61,12 +61,14 @@ const disabledRules = [
   '@typescript-eslint/prefer-regexp-exec',
   '@typescript-eslint/restrict-template-expressions',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
+  'complexity',
   'import-x/no-anonymous-default-export',
   'import-x/no-duplicates',
   'import-x/no-extraneous-dependencies',
   'import-x/no-unassigned-import',
   'import-x/order',
   'json/no-empty-keys',
+  'no-warning-comments',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
@@ -79,7 +81,7 @@ const disabledRules = [
   'react/prefer-read-only-props',
   'react/self-closing-comp',
 
-  // Note: Enable this after https://github.com/sindresorhus/eslint-plugin-unicorn/pull/2953
+  // TODO: Enable this after https://github.com/sindresorhus/eslint-plugin-unicorn/pull/2953
   'unicorn/prefer-query-selector',
 
   // Unwanted

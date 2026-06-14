@@ -29,7 +29,7 @@ export default class Module {
     return module;
   }
 
-  // Note: This should take either PackumentVersion or PackageJSON... but need to
+  // TODO: This should take either PackumentVersion or PackageJSON... but need to
   // be clear about the differences between the two!
   constructor(pkg: PackumentVersion, packument?: Packument) {
     if (!pkg.name) {
@@ -106,7 +106,7 @@ export default class Module {
   }
 
   get repository() {
-    // Note: Handle non-github repositories
+    // TODO: Handle non-github repositories
     const { repository } = this.package;
     if (typeof repository === 'string') return repository;
     return repository?.url;
