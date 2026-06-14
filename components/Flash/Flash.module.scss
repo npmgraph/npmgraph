@@ -41,3 +41,7 @@
     transform: translateX(calc(-100% - 10px));
   }
 }
+
+:export {
+  flashOut: flashOut;
+}
