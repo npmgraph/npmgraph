@@ -1,5 +1,6 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { gt, satisfies } from 'semver';
+import { flash } from '../components/Flash/flash.ts';
 import HttpError from './HttpError.ts';
 import Module from './Module.ts';
 import {
@@ -9,7 +10,6 @@ import {
 } from './PackumentCache.ts';
 import { PARAM_PACKAGES } from './constants.ts';
 import fetchJson from './fetchJson.ts';
-import { flash } from './flash.ts';
 import {
   getModuleKey,
   isHttpModule,
@@ -290,7 +290,7 @@ export function syncPackagesHash() {
   try {
     packages = JSON.parse(packagesJson);
   } catch {
-    flash('"packages" hash param is not valid JSON');
+    flash('`packages` hash param is not valid JSON');
     return;
   }
 

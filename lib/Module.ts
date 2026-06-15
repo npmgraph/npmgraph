@@ -1,6 +1,6 @@
 import type { Packument, PackumentVersion } from '@npm/types';
-import { isDefined } from './guards.ts';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
+import { isDefined } from './guards.ts';
 import {
   getModuleKey,
   parseModuleKey,

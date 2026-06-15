@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useActivity } from '../../lib/useActivity.ts';
 import { PaneType } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { useActivity } from '../../lib/useActivity.ts';
 import { useQuery } from '../../lib/useQuery.ts';
 import { useTightScreen } from '../../lib/useTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
+import Flash from '../Flash/Flash.tsx';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
 import Inspector from '../Inspector.tsx';
 import Intro from '../Intro.tsx';
@@ -32,6 +33,7 @@ export default function App() {
   if (query.length === 0) {
     return (
       <>
+        <Flash />
         <Intro />
         <PreviewWidget />
       </>
@@ -39,17 +41,20 @@ export default function App() {
   }
 
   return (
-    <div className={styles.root}>
-      <div className={styles.stickyTop}>
-        <AppHeader />
-        <Tabs className={styles.mobileTabs} />
+    <>
+      <Flash />
+      <div className={styles.root}>
+        <div className={styles.stickyTop}>
+          <AppHeader />
+          <Tabs className={styles.mobileTabs} />
+        </div>
+        {activity.total > 0 ? <Loader activity={activity} /> : null}
+        <div className={styles.content}>
+          {isTightScreen ? null : <GraphDiagram activity={activity} />}
+          <Inspector activity={activity} />
+        </div>
+        <PreviewWidget />
       </div>
-      {activity.total > 0 ? <Loader activity={activity} /> : null}
-      <div className={styles.content}>
-        {isTightScreen ? null : <GraphDiagram activity={activity} />}
-        <Inspector activity={activity} />
-      </div>
-      <PreviewWidget />
-    </div>
+    </>
   );
 }

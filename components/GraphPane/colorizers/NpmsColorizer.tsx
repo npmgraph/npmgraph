@@ -1,7 +1,7 @@
 import type Module from '../../../lib/Module.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
 import type { NPMSIOData } from '../../../lib/fetch_types.ts';
-import { flash } from '../../../lib/flash.ts';
+import { flash } from '../../Flash/flash.ts';
 import {
   COLORIZE_MAINTENANCE,
   COLORIZE_OVERALL,
