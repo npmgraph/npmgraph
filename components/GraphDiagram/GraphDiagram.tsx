@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { $, $$optional, $closestOptional, $optional } from 'select-dom';
+import { $, $$optional, $optional, closestElementOptional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -95,19 +95,19 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       !(target instanceof Element) ||
       // Allow opening the link in a new tab
       event.metaKey ||
-      $closestOptional(`.${styles.graphControls}`, target)
+      closestElementOptional(`.${styles.graphControls}`, target)
     ) {
       return;
     }
 
-    const node = $closestOptional('g.node', target);
+    const node = closestElementOptional('g.node', target);
     if (node) {
       // Don't navigate to link
       event.preventDefault();
     }
 
     const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
-    const module = moduleKey ? getCachedModule(moduleKey) : undefined;
+    const module = moduleKey === '' ? undefined : getCachedModule(moduleKey);
 
     // Toggle exclude filter?
     if (node && event.shiftKey) {
@@ -126,13 +126,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (node) setZenMode('');
 
     setGraphSelection(QueryType.Default, moduleKey);
-    if (moduleKey) {
+    if (moduleKey !== '') {
       setPane(PaneType.MODULE);
     }
   }
 
   function applyZoom() {
     const graphElement = $(`.${styles.graph}`);
+
     if (!graphElement || !diagramElement) return;
 
     // Note: Not using svg.getBBox() here because (for some reason???) it's
@@ -213,13 +214,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
       // Compose SVG markup
       let svgMarkup = '<svg />';
-      if (graph?.moduleInfos?.size) {
+      if (graph?.moduleInfos?.size !== 0) {
         const dotDoc = composeDOT({ graph, sizing: sizing !== null });
 
         try {
-          svgMarkup = graph?.moduleInfos.size
-            ? graphviz.dot(dotDoc, 'svg')
-            : '<svg />';
+          svgMarkup =
+            graph?.moduleInfos.size === 0
+              ? '<svg />'
+              : graphviz.dot(dotDoc, 'svg');
         } catch (error) {
           console.error(error);
           flash('Error while rendering graph');
@@ -229,7 +231,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
       // Parse markup
       const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
-        .children[0] as SVGSVGElement;
+        .firstElementChild as SVGSVGElement;
       svgDom.remove();
 
       // Remove background element so page background shows thru
@@ -399,7 +401,7 @@ function useGraphviz() {
 function updateSelection(
   graph: GraphState,
   modules: Map<string, Module>,
-  scrollToSelected = true,
+  shouldScrollToSelected = true,
 ) {
   // Get selection info
   const si = gatherSelectionInfo(graph, modules.values());
@@ -443,7 +445,7 @@ function updateSelection(
     }
   }
 
-  if (scrollToSelected) {
+  if (shouldScrollToSelected) {
     // Scroll to selected element (if multiple elements, this scrolls to last one)
     if (scrollElement) {
       scrollGraphIntoView(scrollElement, { behavior: 'smooth' });

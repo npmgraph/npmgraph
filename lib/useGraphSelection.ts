@@ -18,9 +18,7 @@ export default function useGraphSelection() {
         return;
       }
       if (
-        queryType === QueryType.Default ||
-        queryType === QueryType.Name ||
-        queryType === QueryType.Exact
+        [QueryType.Default, QueryType.Name, QueryType.Exact].includes(queryType)
       ) {
         setSel(queryValue);
       } else {

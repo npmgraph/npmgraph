@@ -3,10 +3,10 @@ import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import type { DependencyKey } from '../GraphDiagram/graph_util.ts';
-import { Pane } from '../Pane.tsx';
-import { Toggle } from '../Toggle.tsx';
 import ColorizeInput from '../GraphPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
+import { Pane } from '../Pane.tsx';
+import { Toggle } from '../Toggle.tsx';
 
 export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
@@ -16,15 +16,15 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
     (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
   ).filter(item => isDefined(item));
 
-  const includeDev = dependencyTypes.includes('devDependencies');
+  const isIncludeDev = dependencyTypes.includes('devDependencies');
 
   return (
     <Pane {...props}>
       <Toggle
-        checked={includeDev}
+        checked={isIncludeDev}
         style={{ marginTop: '1rem' }}
         onChange={() => {
-          setDepTypes(includeDev ? '' : 'devDependencies');
+          setDepTypes(isIncludeDev ? '' : 'devDependencies');
         }}
       >
         Include devDependencies

@@ -17,17 +17,17 @@ type DeprecatedLicense = {
 };
 
 export default class Module {
-  package: PackumentVersion;
-  packument?: Packument;
-  isLocal = false;
-  stubError?: Error;
-
   static stub(moduleKey: string, error: Error) {
     const [name, version] = parseModuleKey(moduleKey) ?? {};
     const module = new Module({ name, version } as PackumentVersion);
     module.stubError = error;
     return module;
   }
+
+  package: PackumentVersion;
+  packument?: Packument;
+  isLocal = false;
+  stubError?: Error;
 
   // TODO: This should take either PackumentVersion or PackageJSON... but need to
   // be clear about the differences between the two!
@@ -48,12 +48,16 @@ export default class Module {
     return this.package.name;
   }
 
-  /** True if this module was loaded from a package.json that had no `name` field */
+  /**
+  True if this module was loaded from a package.json that had no `name` field
+  */
   get isUnnamed() {
     return this.name.startsWith(UNNAMED_PACKAGE_PREFIX);
   }
 
-  /** User-facing display name. Returns 'unnamed module' for unnamed packages */
+  /**
+  User-facing display name. Returns 'unnamed module' for unnamed packages
+  */
   get displayName() {
     return this.isUnnamed ? UNNAMED_PACKAGE : this.name;
   }
@@ -165,5 +169,5 @@ function parseLicense(
 }
 
 function parseGithubPath(s: string) {
-  return s.match(/github\.com\/[^/]+\/[^/?#]+/)?.[0]?.replace(/\.git$/v, '');
+  return s.match(/github\.com\/[^/]+\/[^#/?]+/)?.[0]?.replace(/\.git$/v, '');
 }

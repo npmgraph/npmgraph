@@ -1,10 +1,10 @@
 /**
- * DOM maniulation methods
+ DOM maniulation methods
  */
 type LoadActivityFn = (la: LoadActivity) => void;
 
 /**
- * Lite class for tracking async activity
+ Lite class for tracking async activity
  */
 export default class LoadActivity {
   title: string | undefined = '';
@@ -19,10 +19,10 @@ export default class LoadActivity {
     this.active++;
     this.onChange?.(this);
 
-    let _finished = false;
+    let _isFinished = false;
     return () => {
-      if (_finished) return;
-      _finished = true;
+      if (_isFinished) return;
+      _isFinished = true;
       this.active--;
       if (!this.active) {
         this.total = 0;

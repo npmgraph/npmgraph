@@ -4,12 +4,10 @@ import { getGlobalState, setGlobalState } from './GlobalStore.ts';
 
 export const TIGHT_SCREEN_QUERY = '(max-aspect-ratio: 2/3), (max-width: 700px)';
 
-function getMatches() {
-  return globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches;
-}
-
 export function useTightScreen() {
-  const [isTightScreen, setIsTightScreen] = useState(getMatches);
+  const [isTightScreen, setIsTightScreen] = useState(
+    () => globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches,
+  );
 
   useEffect(() => {
     const media = globalThis.matchMedia(TIGHT_SCREEN_QUERY);

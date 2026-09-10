@@ -1,34 +1,21 @@
 {
   "name": "npmgraph",
-  "type": "module",
   "version": "3.1.1",
   "description": "Visualize npm dependency graphs (public and private!)",
-  "author": {
-    "name": "Robert Kieffer",
-    "url": "http://github.com/broofa"
-  },
   "license": "MIT",
-  "browserslist": [
-    "last 2 versions"
-  ],
+  "repository": "github:npmgraph/npmgraph",
   "funding": [
     "https://github.com/sponsors/broofa",
     "https://github.com/sponsors/fregante"
   ],
-  "repository": {
-    "url": "https://github.com/npmgraph/npmgraph.git",
-    "type": "git"
-  },
-  "keywords": [
-    "npm",
-    "dependencies",
-    "dependency",
-    "graph",
-    "module"
-  ],
-  "alias:COMMENT": "parcel chokes on graphviz's attempt to build a URL that points to a non-existent WASM file.  We use `alias` here to tell parcel to ignore that reference.",
-  "alias": {
-    "./node_modules/@hpcc-js/wasm-graphviz/dist/graphvizlib.wasm": false
+  "author": "Robert Kieffer (http://github.com/broofa)",
+  "type": "module",
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": ">=24.0.0",
+      "onFail": "warn"
+    }
   },
   "scripts": {
     "build": "parcel build index.html robots.txt --no-cache",
@@ -44,6 +31,13 @@
     "test:unit": "node --test **/*.test.ts",
     "test": "run-p format lint types test:unit build"
   },
+  "keywords": [
+    "npm",
+    "dependencies",
+    "dependency",
+    "graph",
+    "module"
+  ],
   "dependencies": {
     "@bugsnag/js": "8.10.0",
     "@hpcc-js/wasm-graphviz": "^1.29.0",
@@ -63,17 +57,6 @@
     "select-dom": "^10.1.0",
     "semver": "7.8.5",
     "simplur": "4.1.1"
-  },
-  "@parcel/resolver-default": {
-    "extensions": [
-      ".ts",
-      ".tsx",
-      ".js",
-      ".jsx",
-      ".json"
-    ],
-    "packageExports": true,
-    "packageExports-why": "added this because new graphviz uses exports in package.json"
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.2",
@@ -96,7 +79,7 @@
     "@types/d3-shape": "3.2.0",
     "@types/hosted-git-info": "^3.0.5",
     "@types/md5": "2.3.6",
-    "@types/node": "25.3.3",
+    "@types/node": "26.5.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@types/semver": "^7.8.0",
@@ -119,12 +102,23 @@
     "typescript": "6.0.3",
     "typescript-plugin-css-modules": "^5.2.0"
   },
-  "devEngines": {
-    "runtime": {
-      "name": "node",
-      "version": ">=24.0.0",
-      "onFail": "warn"
-    }
+  "browserslist": [
+    "last 2 versions"
+  ],
+  "alias:COMMENT": "parcel chokes on graphviz's attempt to build a URL that points to a non-existent WASM file.  We use `alias` here to tell parcel to ignore that reference.",
+  "alias": {
+    "./node_modules/@hpcc-js/wasm-graphviz/dist/graphvizlib.wasm": false
+  },
+  "@parcel/resolver-default": {
+    "extensions": [
+      ".ts",
+      ".tsx",
+      ".js",
+      ".jsx",
+      ".json"
+    ],
+    "packageExports": true,
+    "packageExports-why": "added this because new graphviz uses exports in package.json"
   },
   "commitlint": {
     "extends": [

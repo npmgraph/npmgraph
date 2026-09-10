@@ -32,11 +32,11 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [pane, setPane] = useGlobalState('pane');
   const [hide, setHide] = useHashParam(PARAM_HIDE);
 
-  const inspector = hide === null;
+  const isInspector = hide === null;
   return (
     <div className={[styles.root, className].join(' ')}>
       <Tab
-        active={inspector && pane === PaneType.INFO}
+        active={isInspector && pane === PaneType.INFO}
         onClick={() => {
           setHide(null);
           setPane(PaneType.INFO);
@@ -45,7 +45,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Info
       </Tab>
       <Tab
-        active={inspector && pane === PaneType.REPORT}
+        active={isInspector && pane === PaneType.REPORT}
         onClick={() => {
           setHide(null);
           setPane(PaneType.REPORT);
@@ -55,7 +55,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       </Tab>
       <Tab
         className={styles.tabMobileOnly}
-        active={inspector && pane === PaneType.GRAPH}
+        active={isInspector && pane === PaneType.GRAPH}
         onClick={() => {
           setHide(null);
           setPane(PaneType.GRAPH);
@@ -64,7 +64,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Graph
       </Tab>
       <Tab
-        active={inspector && pane === PaneType.MODULE}
+        active={isInspector && pane === PaneType.MODULE}
         onClick={() => {
           setHide(null);
           setPane(PaneType.MODULE);
@@ -73,7 +73,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Module
       </Tab>
       <Tab
-        active={inspector && pane === PaneType.SETTINGS}
+        active={isInspector && pane === PaneType.SETTINGS}
         onClick={() => {
           setHide(null);
           setPane(PaneType.SETTINGS);
@@ -82,7 +82,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Settings
       </Tab>
       <Splitter
-        isOpen={inspector}
+        isOpen={isInspector}
         onClick={() => {
           setHide(true);
         }}
