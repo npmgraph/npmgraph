@@ -116,7 +116,7 @@
     "standard-version": "9.5.0",
     "svgo": "4.1.0",
     "typed-query-selector": "^2.12.2",
-    "typescript": "7.0.2",
+    "typescript": "6.0.3",
     "typescript-plugin-css-modules": "^5.2.0"
   },
   "devEngines": {
