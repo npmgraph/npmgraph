@@ -7,11 +7,12 @@ import * as styles from './ModuleTable.module.scss';
 export type ModuleTableData = Map<string, Module[]>;
 
 export function ModuleTable({ data }: { data: ModuleTableData }) {
-  const moduleNames = Array.from(data.keys()).sort();
+  const moduleNames = [...data.keys()].toSorted();
 
   const rows = moduleNames.map(name => {
-    const modules = data.get(name)!;
-    modules.sort((a, b) => a.version.localeCompare(b.version));
+    const modules = data
+      .get(name)!
+      .toSorted((a, b) => a.version.localeCompare(b.version));
 
     return modules.length === 1 ? (
       <div className={styles.rootRow} key={name}>

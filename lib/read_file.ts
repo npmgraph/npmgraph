@@ -1,11 +1,11 @@
 import type { PackageJSON, PackumentVersion } from '@npm/types';
+import { flash } from '../components/Flash/flash.ts';
 import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.ts';
 import {
   PARAM_PACKAGES,
   PARAM_QUERY,
   UNNAMED_PACKAGE_PREFIX,
 } from './constants.ts';
-import { flash } from './flash.ts';
 import { hashSet, searchSet } from './url_util.ts';
 import { patchLocation } from './useLocation.ts';
 
@@ -45,11 +45,7 @@ export function loadPackageJson(json: string, filename?: string): void {
 }
 
 export async function readFile(file: File) {
-  const content = await new Promise<string>(resolve => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result as string);
-    reader.readAsText(file);
-  });
+  const content = await file.text();
 
   loadPackageJson(content, file.name);
 }

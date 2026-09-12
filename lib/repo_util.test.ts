@@ -114,7 +114,7 @@ describe('getRepoUrlForModule', () => {
       version: '1.0.0',
       repository: {
         type: 'git',
-        url: 'http://github.com/drewyoung1/armyjs.git',
+        url: 'https://github.com/drewyoung1/armyjs.git',
       },
     } as PackumentVersion);
 

@@ -12,15 +12,13 @@ export default function useGraphSelection() {
   return [
     selectType,
     selectValue,
-    function setGraphSelection(
-      queryType = QueryType.Default,
-      queryValue?: string,
-    ) {
-      if (!queryType && !queryValue) return setSel('');
+    (queryType = QueryType.Default, queryValue?: string) => {
+      if (!queryType && !queryValue) {
+        setSel('');
+        return;
+      }
       if (
-        queryType === QueryType.Default ||
-        queryType === QueryType.Name ||
-        queryType === QueryType.Exact
+        [QueryType.Default, QueryType.Name, QueryType.Exact].includes(queryType)
       ) {
         setSel(queryValue);
       } else {

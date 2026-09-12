@@ -1,3 +1,5 @@
+/* eslint-disable max-lines -- comes from external source */
+
 // Source: https://github.com/spdx/license-list-data/blob/main/json/licenses.json
 //
 // For each license...

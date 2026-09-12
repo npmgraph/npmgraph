@@ -1,11 +1,9 @@
-export function cn(...args: (string | object | undefined)[]) {
+export function cn(...args: (string | Record<string, unknown> | undefined)[]) {
   const classes = new Set();
   for (const arg of args) {
-    if (!arg) {
-      continue;
-    } else if (typeof arg === 'string') {
-      for (const cn of arg.split(/\s+/g)) {
-        classes.add(cn);
+    if (typeof arg === 'string') {
+      for (const className of arg.split(/\s+/v)) {
+        classes.add(className);
       }
     } else if (typeof arg === 'object') {
       for (const [k, v] of Object.entries(arg)) {
@@ -18,7 +16,7 @@ export function cn(...args: (string | object | undefined)[]) {
     }
   }
 
-  return Array.from(classes).join(' ');
+  return [...classes].join(' ');
 }
 
 export function percent(n: number, precision = 3) {

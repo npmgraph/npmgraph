@@ -1,12 +1,10 @@
 import type { Packument } from '@npm/types';
-import type { PromiseWithResolversType } from './PromiseWithResolvers.ts';
-import PromiseWithResolvers from './PromiseWithResolvers.ts';
-import fetchJSON from './fetchJSON.ts';
+import fetchJson from './fetchJson.ts';
 import { getRegistry } from './useRegistry.ts';
 
 const packumentCache = new Map<string, PackumentCacheEntry>();
 
-type PackumentCacheEntry = PromiseWithResolversType<Packument | undefined> & {
+type PackumentCacheEntry = PromiseWithResolvers<Packument | undefined> & {
   packument?: Packument; // Set once packument is loaded
   registry?: string; // NPM_REGISTRY url
 };
@@ -23,11 +21,11 @@ export async function getNPMPackument(
   }
 
   if (!cacheEntry) {
-    cacheEntry = PromiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry = Promise.withResolvers();
     cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
 
-    await fetchJSON<Packument>(`${registry}/${moduleName}`, {
+    await fetchJson<Packument>(`${registry}/${moduleName}`, {
       // Per
       // https://github.com/npm/registry/blob/master/docs/responses/package-metadata.md
       // we should arguably be using the 'Accept:
@@ -41,11 +39,8 @@ export async function getNPMPackument(
       // requests.
       headers: { Accept: 'application/json' },
     })
-      .catch(err => {
-        console.warn(
-          `Failed to fetch packument for ${moduleName}`,
-          err.message,
-        );
+      .catch(error => {
+        console.warn('Failed to fetch packument', moduleName, error.message);
         return undefined;
       })
       .then(cacheEntry.resolve);
@@ -61,7 +56,7 @@ export function getCachedPackument(moduleName: string): Packument | undefined {
 export function cachePackument(moduleName: string, packument: Packument): void {
   let cacheEntry = packumentCache.get(moduleName);
   if (!cacheEntry) {
-    cacheEntry = PromiseWithResolvers() as PackumentCacheEntry;
+    cacheEntry = Promise.withResolvers();
     packumentCache.set(moduleName, cacheEntry);
     cacheEntry.resolve(packument);
   }

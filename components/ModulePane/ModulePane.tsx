@@ -18,7 +18,7 @@ import { Section } from '../Section.tsx';
 import { Tag, Tags } from '../Tag.tsx';
 import * as utilities from '../utilities.module.scss';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
-import ModuleNpmsIOScores from './ModuleNpmsIOScores.tsx';
+import ModuleNpmsIoScores from './ModuleNpmsIoScores.tsx';
 import * as styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
@@ -39,7 +39,8 @@ export default function ModulePane({
         <p>No modules selected.</p>
       </Pane>
     );
-  } else if (nSelected > 1) {
+  }
+  if (nSelected > 1) {
     return (
       <Pane>
         Multiple modules selected. Click a single module in the graph to see
@@ -49,8 +50,6 @@ export default function ModulePane({
   }
 
   const module = selectedModules?.values().next().value as Module;
-
-  const pkg = module.package;
 
   if (module.isLocal) {
     return (
@@ -90,7 +89,7 @@ export default function ModulePane({
   const isSingleEntryModule =
     graph.entryModules.size === 1 &&
     [...graph.entryModules][0].key === module.key;
-  const maintainers = module.maintainers;
+  const { maintainers } = module;
 
   const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
   const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
@@ -100,6 +99,8 @@ export default function ModulePane({
     !module.package.homepage.startsWith('https://github.com/')
       ? module.package.homepage
       : null;
+
+  const pkg = module.package;
 
   return (
     <Pane {...props}>
@@ -166,7 +167,7 @@ export default function ModulePane({
       </Section>
 
       <Section title="npms.io Score">
-        <ModuleNpmsIOScores module={module} />
+        <ModuleNpmsIoScores module={module} />
       </Section>
 
       <Section

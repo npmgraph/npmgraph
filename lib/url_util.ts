@@ -5,44 +5,44 @@ export function urlPatch(urlParts: Partial<URL>, url = new URL(location.href)) {
 
 export function hashGet(
   key: string,
-  location: URL | Location = window.location,
+  location: URL | Location = globalThis.location,
 ) {
-  const params = new URLSearchParams(location.hash.slice(1));
-  return params.get(key);
+  const parameters = new URLSearchParams(location.hash.slice(1));
+  return parameters.get(key);
 }
 
 export function hashSet(
   key: string,
   value?: string,
-  location: URL | Location = window.location,
+  location: URL | Location = globalThis.location,
 ) {
-  const params = new URLSearchParams(location.hash.slice(1));
+  const parameters = new URLSearchParams(location.hash.slice(1));
   if (value) {
-    params.set(key, value);
+    parameters.set(key, value);
   } else {
-    params.delete(key);
+    parameters.delete(key);
   }
-  return params.toString();
+  return parameters.toString();
 }
 
 export function searchGet(
   key: string,
-  location: URL | Location = window.location,
+  location: URL | Location = globalThis.location,
 ) {
-  const params = new URLSearchParams(location.search);
-  return params.get(key);
+  const parameters = new URLSearchParams(location.search);
+  return parameters.get(key);
 }
 
 export function searchSet(
   key: string,
   value?: string,
-  location: URL | Location = window.location,
+  location: URL | Location = globalThis.location,
 ) {
-  const params = new URLSearchParams(location.search);
+  const parameters = new URLSearchParams(location.search);
   if (value) {
-    params.set(key, value);
+    parameters.set(key, value);
   } else {
-    params.delete(key);
+    parameters.delete(key);
   }
-  return params.toString();
+  return parameters.toString();
 }

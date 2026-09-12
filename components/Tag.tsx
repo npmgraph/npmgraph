@@ -30,7 +30,7 @@ export function Tag({
   count?: number;
   gravatar?: string;
 } & HTMLProps<HTMLDivElement>) {
-  const [, , setGraphSelection] = useGraphSelection();
+  const setGraphSelection = useGraphSelection()[2];
   let title = value;
   if (count > 1) title += ` (${count})`;
 
@@ -44,12 +44,14 @@ export function Tag({
     <div
       className={cn(
         styles.tag,
-        type === QueryType.Maintainer && styles.maintainer,
+        type === QueryType.Maintainer ? styles.maintainer : '',
         utilities.brightHover,
         className,
       )}
       title={title}
-      onClick={() => setGraphSelection(type, value)}
+      onClick={() => {
+        setGraphSelection(type, value);
+      }}
     >
       {img}
       {title}

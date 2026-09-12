@@ -1,10 +1,17 @@
-import { satisfies } from 'semver';
 import { $optional } from 'select-dom';
+import { satisfies } from 'semver';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { getModuleKey } from '../../lib/module_util.ts';
+import type { Overrides } from '../../lib/overrides_util.ts';
+import {
+  getChildOverrides,
+  getVersionOverride,
+  isOverrides,
+} from '../../lib/overrides_util.ts';
+import { isOptionalPeerDependency } from '../../lib/peer_dependency_util.ts';
 import * as styles from './GraphDiagram.module.scss';
 
 const FONT = 'Roboto Condensed, sans-serif';
@@ -88,7 +95,7 @@ function getDependencyEntries(
     if (!deps) continue;
 
     // Only do one level for non-"dependencies"
-    if (level > 0 && type !== 'dependencies') continue;
+    if (type !== 'dependencies' && level > 0) continue;
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
@@ -100,11 +107,12 @@ function getDependencyEntries(
 }
 
 /**
- * Fetch the module dependency tree for a given query.
+ Fetch the module dependency tree for a given query.
  */
 export async function getGraphForQuery(
   query: string[],
   dependencyTypes: Set<DependencyKey>,
+  // eslint-disable-next-line unicorn/consistent-boolean-name
   moduleFilter: (m: Module) => boolean,
 ) {
   const graphState: GraphState = {
@@ -116,12 +124,18 @@ export async function getGraphForQuery(
   async function _visit(
     module: Module[] | Module,
     level = 0,
+    currentOverrides: Overrides = {},
+    rootOverrides: Overrides = {},
   ): Promise<GraphModuleInfo | void> {
-    if (!module) return Promise.reject(new Error('Undefined module'));
+    if (!module) throw new Error('Undefined module');
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
-      await Promise.all(module.map(m => _visit(m, level)));
+      await Promise.all(
+        module.map(async m =>
+          _visit(m, level, currentOverrides, rootOverrides),
+        ),
+      );
       return;
     }
 
@@ -149,9 +163,27 @@ export async function getGraphForQuery(
     // Walk downstream dependencies
     await Promise.allSettled(
       [...downstreamEntries].map(async ({ name, version, type }) => {
-        const downstreamModule = await getModule(getModuleKey(name, version));
+        // Apply version override if one exists for this dependency name
+        const overriddenVersion =
+          getVersionOverride(currentOverrides, name) ?? version;
 
-        const moduleInfo = await _visit(downstreamModule, level + 1);
+        const downstreamModule = await getModule(
+          getModuleKey(name, overriddenVersion),
+        );
+
+        // Compute the overrides context to pass into this child's subtree
+        const childOverrides = getChildOverrides(
+          currentOverrides,
+          rootOverrides,
+          name,
+        );
+
+        const moduleInfo = await _visit(
+          downstreamModule,
+          level + 1,
+          childOverrides,
+          rootOverrides,
+        );
 
         moduleInfo?.upstream.add({ module, type });
         info?.downstream.add({ module: downstreamModule, type });
@@ -172,7 +204,10 @@ export async function getGraphForQuery(
         );
       } else {
         graphState.entryModules.add(m);
-        return _visit(m);
+        // Use overrides from the entry module's package.json, if present
+        const rawOverrides = m.package.overrides;
+        const rootOverrides = isOverrides(rawOverrides) ? rawOverrides : {};
+        return _visit(m, 0, rootOverrides, rootOverrides);
       }
     }),
   );
@@ -191,73 +226,83 @@ export async function getGraphForQuery(
 
   await Promise.allSettled(
     [...graphState.moduleInfos.values()].map(async info => {
-      const { peerDependencies } = info.module.package;
+      const { peerDependencies, peerDependenciesMeta } = info.module.package;
       if (!peerDependencies) return;
 
-      for (const [name, versionRange] of Object.entries(peerDependencies) as [
-        string,
-        string,
-      ][]) {
-        // Prefer an existing node that satisfies the range to avoid duplicates.
-        // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
-        let peerModule = modulesByName.get(name)?.find(m => {
-          if (!m.version) return false;
-          try {
-            return satisfies(m.version, versionRange);
-          } catch {
-            return false;
-          }
-        });
+      await Promise.all(
+        Object.entries(peerDependencies).map(async ([name, versionRange]) => {
+          if (isOptionalPeerDependency(peerDependenciesMeta, name)) return;
 
-        if (!peerModule) {
-          // Not yet in graph — fetch and traverse the resolved version.
-          try {
-            peerModule = await getModule(getModuleKey(name, versionRange));
-            if (peerModule.isStub) continue;
-            await _visit(peerModule, info.level + 1);
-            // Register in the name index so later iterations can find it.
-            let list = modulesByName.get(name);
-            if (!list) {
-              list = [];
-              modulesByName.set(name, list);
+          // Prefer an existing node that satisfies the range to avoid duplicates.
+          // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
+          let peerModule = modulesByName.get(name)?.find(m => {
+            if (!m.version) return false;
+            try {
+              return satisfies(m.version, versionRange);
+            } catch {
+              return false;
             }
-            if (!list.includes(peerModule)) list.push(peerModule);
-          } catch {
-            continue;
-          }
-        }
+          });
 
-        info.downstream.add({ module: peerModule, type: 'peerDependencies' });
-        graphState.moduleInfos
-          .get(peerModule.key)
-          ?.upstream.add({ module: info.module, type: 'peerDependencies' });
-      }
+          if (!peerModule) {
+            // Not yet in graph — fetch and traverse the resolved version.
+            try {
+              peerModule = await getModule(getModuleKey(name, versionRange));
+              if (peerModule.isStub) return;
+              await _visit(peerModule, info.level + 1);
+              // Register in the name index so later iterations can find it.
+              let list = modulesByName.get(name);
+              if (!list) {
+                list = [];
+                modulesByName.set(name, list);
+              }
+              if (!list.includes(peerModule)) list.push(peerModule);
+            } catch {
+              return;
+            }
+          }
+
+          info.downstream.add({
+            module: peerModule,
+            type: 'peerDependencies',
+          });
+          graphState.moduleInfos
+            .get(peerModule.key)
+            ?.upstream.add({ module: info.module, type: 'peerDependencies' });
+        }),
+      );
     }),
   );
 
   return graphState;
 }
 
-function dotEscape(str: string) {
-  return str.replace(/"/g, '\\"');
+function dotEscape(string_: string) {
+  return string_.replaceAll('"', String.raw`\"`);
 }
 
 /**
- * Creates a GraphViz style string from an object of key-value pairs.
- *
- * E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
+ Creates a GraphViz style string from an object of key-value pairs.
+
+ E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
  */
-function vizStyle(obj: Record<string, string | number | boolean | undefined>) {
-  const pairs = Object.entries(obj).map(([key, value]) => {
+function vizStyle(
+  object: Record<string, string | number | boolean | undefined>,
+) {
+  const pairs = Object.entries(object).map(([key, value]) => {
     switch (typeof value) {
       case 'number':
         return `${key}=${value}`;
+
       case 'string':
         return `${key}="${value}"`;
+
       case 'boolean':
         return `${key}=${value ? 'true' : 'false'}`;
+
       case 'undefined':
         return '';
+
       default:
         throw new Error('Invalid value type');
     }
@@ -274,13 +319,12 @@ export function composeDOT({
   sizing?: boolean;
 }) {
   // Sort modules by [level, key]
-  const entries = [...graph.moduleInfos.entries()];
+  const entries = [...graph.moduleInfos];
   entries.sort(([aKey, a], [bKey, b]) => {
     if (a.level !== b.level) {
       return a.level - b.level;
-    } else {
-      return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
     }
+    return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
   });
 
   const nodes = ['\n// Nodes & per-node styling'];
@@ -344,19 +388,18 @@ export function composeDOT({
     `node ${DEFAULT_STYLES.NODE}`,
     `edge ${DEFAULT_STYLES.EDGE}`,
     '',
-  ]
-    .concat(nodes)
-    .concat(edges)
-    .concat(
-      graph.moduleInfos.size > 1
-        ? `{rank=same; ${[...graph.moduleInfos.values()]
+    ...nodes,
+    ...edges,
+    ...(graph.moduleInfos.size > 1
+      ? [
+          `{rank=same; ${[...graph.moduleInfos.values()]
             .filter(info => info.level === 0)
             .map(info => `"${dotEscape(info.module.key)}"`)
-            .join('; ')};}`
-        : '',
-    )
-    .concat('}')
-    .join('\n');
+            .join('; ')};}`,
+        ]
+      : []),
+    '}',
+  ].join('\n');
 }
 
 export function foreachUpstream(

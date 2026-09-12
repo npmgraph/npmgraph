@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { $, $closestOptional, $optional, $$optional } from 'select-dom';
+import { $, $$optional, $optional, closestElementOptional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -30,12 +30,12 @@ import {
 } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
-import { celebrate, flash } from '../../lib/flash.ts';
 import useCollapse from '../../lib/useCollapse.ts';
 import useGraphSelection from '../../lib/useGraphSelection.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import usePrevious from '../../lib/usePrevious.ts';
 import { useQuery } from '../../lib/useQuery.ts';
+import { celebrate, flash } from '../Flash/flash.ts';
 import {
   getColorizer,
   isSimpleColorizer,
@@ -55,9 +55,7 @@ import {
 } from './graph_util.ts';
 
 export type ZoomOption =
-  | typeof ZOOM_NONE
-  | typeof ZOOM_FIT_WIDTH
-  | typeof ZOOM_FIT_HEIGHT;
+  typeof ZOOM_NONE | typeof ZOOM_FIT_WIDTH | typeof ZOOM_FIT_HEIGHT;
 
 const idSeen = new Set<unknown>();
 
@@ -79,7 +77,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [graphviz, graphvizLoading] = useGraphviz();
 
   // Stable query array for use in effects
-  const sortedQuery = useMemo(() => [...query].sort(), [query]);
+  const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
 
   // Stable dependency types for use in effects
   const dependencyTypes = useMemo(() => {
@@ -87,29 +85,29 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       .split(/\s*,\s*/)
       .map(s => s.trim())
       .filter(Boolean)
-      .sort() as DependencyKey[];
+      .toSorted() as DependencyKey[];
     return new Set<DependencyKey>(['dependencies', ...extra]);
   }, [depTypes]);
 
-  async function handleGraphClick(event: React.MouseEvent) {
+  function handleGraphClick(event: React.MouseEvent) {
     const { target } = event;
     if (
       !(target instanceof Element) ||
       // Allow opening the link in a new tab
       event.metaKey ||
-      $closestOptional(`.${styles.graphControls}`, target)
+      closestElementOptional(`.${styles.graphControls}`, target)
     ) {
       return;
     }
 
-    const node = $closestOptional('g.node', target);
+    const node = closestElementOptional('g.node', target);
     if (node) {
       // Don't navigate to link
       event.preventDefault();
     }
 
     const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
-    const module = moduleKey ? getCachedModule(moduleKey) : undefined;
+    const module = moduleKey === '' ? undefined : getCachedModule(moduleKey);
 
     // Toggle exclude filter?
     if (node && event.shiftKey) {
@@ -128,22 +126,24 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     if (node) setZenMode('');
 
     setGraphSelection(QueryType.Default, moduleKey);
-    if (moduleKey) {
+    if (moduleKey !== '') {
       setPane(PaneType.MODULE);
     }
   }
 
   function applyZoom() {
-    const graphEl = $(`.${styles.graph}`);
-    if (!graphEl || !diagramElement) return;
+    const graphElement = $(`.${styles.graph}`);
+
+    if (!graphElement || !diagramElement) return;
 
     // Note: Not using svg.getBBox() here because (for some reason???) it's
     // smaller than the actual bounding box
     const vb = diagramElement.getAttribute('viewBox')?.split(' ').map(Number);
     if (!vb) return;
 
-    const [, , w, h] = vb;
-    graphEl.classList.remove(utilities.dBlock);
+    const w = vb[2];
+    const h = vb[3];
+    graphElement.classList.remove(utilities.dBlock);
 
     switch (zoom) {
       case ZOOM_NONE:
@@ -159,8 +159,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       case ZOOM_FIT_HEIGHT:
         diagramElement.removeAttribute('width');
         diagramElement.setAttribute('height', '100%');
-        graphEl.classList.add(utilities.dBlock);
+        graphElement.classList.add(utilities.dBlock);
         break;
+      default:
     }
   }
 
@@ -170,18 +171,18 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     [collapse],
   );
 
-  // NOTE: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
+  // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
   useEffect(() => {
     const { signal, abort } = createAbortable();
-    getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
+    void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
       newGraph => {
         if (signal.aborted) return; // Check after async
 
         const firstInfo = newGraph.moduleInfos.values().next().value;
         if (newGraph?.moduleInfos.size === 1 && !firstInfo?.module.isStub) {
-          celebrate('Zero dependencies for the win!');
+          void celebrate('Zero dependencies for the win!');
         }
 
         setGraph(newGraph);
@@ -213,15 +214,16 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
       // Compose SVG markup
       let svgMarkup = '<svg />';
-      if (graph?.moduleInfos?.size) {
+      if (graph?.moduleInfos?.size !== 0) {
         const dotDoc = composeDOT({ graph, sizing: sizing !== null });
 
         try {
-          svgMarkup = graph?.moduleInfos.size
-            ? await graphviz.dot(dotDoc, 'svg')
-            : '<svg />';
-        } catch (err) {
-          console.error(err);
+          svgMarkup =
+            graph?.moduleInfos.size === 0
+              ? '<svg />'
+              : graphviz.dot(dotDoc, 'svg');
+        } catch (error) {
+          console.error(error);
           flash('Error while rendering graph');
         }
       }
@@ -229,7 +231,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
       // Parse markup
       const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
-        .children[0] as SVGSVGElement;
+        .firstElementChild as SVGSVGElement;
       svgDom.remove();
 
       // Remove background element so page background shows thru
@@ -238,9 +240,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       svgDom.classList.add(styles.graphDiagram);
 
       // Inject into DOM
-      const el = $(`.${styles.graph}`)!;
+      const element = $(`.${styles.graph}`);
       getDiagramElement()?.remove();
-      el.appendChild(svgDom);
+      element.append(svgDom);
 
       // Inject bg pattern for deprecated modules
       const PATTERN = `<pattern id="warning"
@@ -256,9 +258,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         .html(PATTERN);
 
       // Decorate DOM nodes with appropriate classname
-      for (const nodeEl of $$optional('g.node', el)) {
+      for (const nodeElement of $$optional('g.node', element)) {
         // Find module this node represents
-        const key = $(':scope > title', nodeEl)?.textContent?.trim();
+        const key = $(':scope > title', nodeElement)?.textContent?.trim();
         if (!key) continue;
 
         const m = getCachedModule(key);
@@ -266,21 +268,21 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         if (!m) continue;
 
         if (m?.package.deprecated) {
-          nodeEl.classList.add('warning');
+          nodeElement.classList.add('warning');
         }
 
         if (m.name) {
-          nodeEl.dataset.module = m.key;
+          nodeElement.dataset.module = m.key;
         } else {
           report.warn(new Error(`Bad replace: ${key}`));
         }
 
         if (!moduleFilter(m)) {
-          nodeEl.classList.add('collapsed');
+          nodeElement.classList.add('collapsed');
         }
 
         if (m.isStub) {
-          nodeEl.classList.add('stub');
+          nodeElement.classList.add('stub');
         }
       }
 
@@ -317,19 +319,17 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // Effect: Colorize nodes
   useEffect(() => {
     if (!diagramElement) return;
-    colorizeGraph(diagramElement, colorize ?? '');
+    void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
 
-  if (!graphviz) {
-    if (graphvizLoading) {
-      return (
-        <div className={cn(styles.graph, styles.graphvizLoading)}>
-          {graphvizLoading
-            ? 'Loading layout package...'
-            : 'Layout package failed to load.'}
-        </div>
-      );
-    }
+  if (!graphviz && graphvizLoading) {
+    return (
+      <div className={cn(styles.graph, styles.graphvizLoading)}>
+        {graphvizLoading
+          ? 'Loading layout package...'
+          : 'Layout package failed to load.'}
+      </div>
+    );
   }
 
   return (
@@ -344,36 +344,38 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 }
 
 // Debug helper for logging when a react variable changes
-// eslint-disable-next-line unused-imports/no-unused-vars
-function logUpdate(name: string, val: unknown) {
-  if (!val) {
+function logUpdate(name: string, value: unknown) {
+  if (!value) {
     if (!idSeen.has(name)) {
       console.log(name, '<undefined>');
       idSeen.add(name);
     }
     return;
   }
-  if (idSeen.has(val)) return;
-  idSeen.add(val);
-  console.log(name, 'updated ->', val);
+  if (idSeen.has(value)) return;
+  idSeen.add(value);
+  console.log(name, 'updated ->', value);
 }
 
 function scrollGraphIntoView(
-  el: Element | null,
+  element: Element | undefined,
   scrollOptions?: ScrollToOptions,
 ) {
-  const graphEl = $optional(`.${styles.graph}`);
-  if (graphEl && el) {
+  const graphElement = $optional(`.${styles.graph}`);
+  if (graphElement && element) {
     // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
     // Firefox.  And even in Chrome it just scrolls the element to *barely*
     // be in view, which isn't really what we want.  (We'd like element to
     // be centered in the view.)  So, instead, we manually compute the
     // scroll coordinates.
-    const { top: elTop, left: elLeft } = el.getBoundingClientRect();
-    const left = graphEl.scrollLeft + elLeft - graphEl.clientWidth / 2;
-    const top = graphEl.scrollTop + elTop - graphEl.clientHeight / 2;
+    const { top: elementTop, left: elementLeft } =
+      element.getBoundingClientRect();
+    const left =
+      graphElement.scrollLeft + elementLeft - graphElement.clientWidth / 2;
+    const top =
+      graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
 
-    graphEl.scrollTo({ left, top, ...scrollOptions });
+    graphElement.scrollTo({ left, top, ...scrollOptions });
   }
 }
 
@@ -382,13 +384,15 @@ function useGraphviz() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Graphviz.load()
-      .catch(err => {
-        console.error('Graphviz failed to load', err);
+    void Graphviz.load()
+      .catch(error => {
+        console.error('Graphviz failed to load', error);
         return undefined;
       })
       .then(setGraphviz)
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return [graphviz, loading] as const;
@@ -397,29 +401,29 @@ function useGraphviz() {
 function updateSelection(
   graph: GraphState,
   modules: Map<string, Module>,
-  scrollToSelected = true,
+  shouldScrollToSelected = true,
 ) {
   // Get selection info
   const si = gatherSelectionInfo(graph, modules.values());
   const isSelection = modules.size > 0;
 
   // Set selection classes for node elements
-  let scrollEl: HTMLElement | undefined;
-  for (const el of $$optional('svg .node[data-module]')) {
-    const moduleKey = el.dataset.module ?? '';
+  let scrollElement: HTMLElement | undefined;
+  for (const element of $$optional('svg .node[data-module]')) {
+    const moduleKey = element.dataset.module ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
     const isUpstream = si.upstreamModuleKeys.has(moduleKey);
     const isDownstream = si.downstreamModuleKeys.has(moduleKey);
-    el.classList.toggle('selected', isSelection && isSelected);
-    el.classList.toggle('upstream', isSelection && isUpstream);
-    el.classList.toggle('downstream', isSelection && isDownstream);
-    el.classList.toggle(
+    element.classList.toggle('selected', isSelection && isSelected);
+    element.classList.toggle('upstream', isSelection && isUpstream);
+    element.classList.toggle('downstream', isSelection && isDownstream);
+    element.classList.toggle(
       'unselected',
       isSelection && !isSelected && !isUpstream && !isDownstream,
     );
 
     if (isSelection && isSelected) {
-      scrollEl = el;
+      scrollElement = element;
     }
   }
 
@@ -437,15 +441,15 @@ function updateSelection(
 
     // Move edge to end of child list so it's painted last
     if (isUpstream || isDownstream) {
-      edge.parentElement?.appendChild(edge);
+      edge.parentElement?.append(edge);
     }
   }
 
-  if (scrollToSelected) {
+  if (shouldScrollToSelected) {
     // Scroll to selected element (if multiple elements, this scrolls to last one)
-    if (scrollEl) {
-      scrollGraphIntoView(scrollEl, { behavior: 'smooth' });
-    } else if (!scrollEl) {
+    if (scrollElement) {
+      scrollGraphIntoView(scrollElement, { behavior: 'smooth' });
+    } else if (!scrollElement) {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
       scrollGraphIntoView(
@@ -470,33 +474,33 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
   if (isSimpleColorizer(colorizer)) {
     // For each node in graph
-    for (const el of moduleEls) {
-      const moduleKey = el.dataset.module;
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elPath = $('path', el)!;
+      const elementPath = $('path', element);
 
       // Reset color if there's no module
       if (!m) {
-        elPath.style.fill = '';
+        elementPath.style.fill = '';
         continue;
       }
 
       // Colorize it (async)
-      colorizer
+      void colorizer
         .colorForModule(m)
-        .catch(err => {
-          console.warn(`Error colorizing ${m.name}: ${err.message}`);
+        .catch(error => {
+          console.warn(`Error colorizing ${m.name}: ${error.message}`);
           return null;
         })
         .then(color => {
-          elPath.style.fill = color ?? '';
+          elementPath.style.fill = color ?? '';
         });
     }
   } else {
     // Bundle up modules
     const modules: Module[] = [];
-    for (const el of moduleEls) {
-      const moduleKey = el.dataset.module;
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
       if (m) modules.push(m);
     }
@@ -505,11 +509,11 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     const colors = await colorizer.colorsForModules(modules);
 
     // Apply colors
-    for (const el of moduleEls) {
-      const moduleKey = el.dataset.module;
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      const elPath = $('path', el)!;
-      elPath.style.fill = (m && colors.get(m)) ?? '';
+      const elementPath = $('path', element);
+      elementPath.style.fill = (m && colors.get(m)) ?? '';
     }
   }
 }

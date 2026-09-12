@@ -6,12 +6,12 @@ import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
+import { flash } from '../components/Flash/flash.ts';
 import { Unsupported } from '../components/Unsupported.tsx';
 import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
-import { setActivityForRequestCache } from './fetchJSON.ts';
-import { flash } from './flash.ts';
+import { setActivityForRequestCache } from './fetchJson.ts';
 import { setActivityForApp } from './useActivity.ts';
 
 function isValidJS(src: string) {
@@ -31,11 +31,11 @@ function detectFeatures() {
   // API checks
   const features = {
     '||= (Logical Or)': isValidJS('a ||= 123'),
-    'AbortSignal.timeout': window.AbortSignal?.timeout,
-    'Map.groupBy': window.Map?.groupBy,
-    fetch: window.fetch,
-    globalThis: window.globalThis,
-    Promise: window.Promise,
+    'AbortSignal.timeout': globalThis.AbortSignal?.timeout,
+    'Map.groupBy': globalThis.Map?.groupBy,
+    fetch: globalThis.fetch,
+    globalThis: typeof globalThis !== 'undefined',
+    Promise: globalThis.Promise,
   };
 
   for (const [k, v] of Object.entries(features)) {
@@ -49,10 +49,10 @@ function detectFeatures() {
     );
   }
 
-  // localStorage may not work if cookies are disabled. See #202
+  // LocalStorage may not work if cookies are disabled. See #202
   try {
-    window.localStorage.setItem('test', 'test');
-    window.localStorage.removeItem('test');
+    localStorage.setItem('test', 'test');
+    localStorage.removeItem('test');
   } catch {
     unsupported.set(
       'localStorage',
@@ -65,20 +65,20 @@ function detectFeatures() {
   return unsupported;
 }
 
-window.addEventListener('error', err => {
-  console.error(err);
-  flash(err.message);
+globalThis.addEventListener('error', error => {
+  console.error(error);
+  flash(error.message);
 });
 
-window.addEventListener('unhandledrejection', err => {
-  console.error(err);
-  flash(err.reason);
+globalThis.addEventListener('unhandledrejection', error => {
+  console.error(error);
+  flash(error.reason);
 });
 
-window.onload = function () {
+window.addEventListener('load', () => {
   const unsupported = detectFeatures();
   if (unsupported.size > 0) {
-    createRoot($('body')!).render(<Unsupported unsupported={unsupported} />);
+    createRoot($('body')).render(<Unsupported unsupported={unsupported} />);
     return;
   }
 
@@ -91,15 +91,13 @@ window.onload = function () {
   setActivityForApp(activity);
 
   // Main app component
-  const appEl = $('body')!;
-  createRoot(appEl).render(
+  const appElement = $('body');
+  createRoot(appElement).render(
     // <StrictMode>
     <App />,
     // </StrictMode>,
   );
 
   // A little component for managing the title
-  createRoot($('title')!).render(
-    <DiagramTitle defaultTitle={document.title} />,
-  );
-};
+  createRoot($('title')).render(<DiagramTitle defaultTitle={document.title} />);
+});

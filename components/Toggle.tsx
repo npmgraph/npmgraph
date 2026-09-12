@@ -16,7 +16,11 @@ export function Toggle({
       style={style}
       {...props}
     >
-      <div onClick={() => onChange()}>
+      <div
+        onClick={() => {
+          onChange();
+        }}
+      >
         <div>{checked ? 'On' : 'Off'}</div>
       </div>
       {children}

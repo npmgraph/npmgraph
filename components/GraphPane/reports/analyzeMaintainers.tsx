@@ -25,7 +25,7 @@ export function analyzeMaintainers({
   const emailByMaintainer = new Map<string, string>();
 
   let soloModulesCount = 0;
-  const modules = Array.from(moduleInfos.values()).map(({ module }) => module);
+  const modules = [...moduleInfos.values()].map(({ module }) => module);
 
   // Find modules that have a single maintainer, group by maintainer
   //

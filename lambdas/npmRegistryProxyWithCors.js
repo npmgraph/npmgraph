@@ -5,8 +5,8 @@
 const NPM_REGISTRY_URL = 'https://registry.npmjs.org';
 
 export async function handler(event) {
-  const req = event.requestContext.http;
-  const origin = event.headers.origin;
+  const request = event.requestContext.http;
+  const { origin } = event.headers;
   const CORS_HEADERS = {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -25,15 +25,15 @@ export async function handler(event) {
       };
     }
 
-    const url = `${NPM_REGISTRY_URL}${req.path}`;
+    const url = `${NPM_REGISTRY_URL}${request.path}`;
     const options = {
-      method: req.method,
+      method: request.method,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body:
-        req.httpMethod === 'GET' || req.httpMethod === 'HEAD'
+        request.httpMethod === 'GET' || request.httpMethod === 'HEAD'
           ? null
           : event.body,
     };

@@ -21,11 +21,11 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
     const licenses = module.getLicenses();
 
     // licensesRenderMissing
-    if (!licenses.length || licenses[0] === 'unlicensed') {
+    if (licenses.length === 0 || licenses[0] === 'unlicensed') {
       unlicensedModules.push(module);
     }
 
-    if (!licenses.length) continue;
+    if (licenses.length === 0) continue;
 
     for (let license of licenses) {
       // licensesRenderAll
@@ -37,7 +37,9 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
       // licensesRenderKeywords
       const keywords = LICENSES[license]?.keywords;
+
       if (!keywords) continue;
+
       for (const keyword of keywords) {
         if (!modulesByKeyword.has(keyword)) {
           modulesByKeyword.set(keyword, []);

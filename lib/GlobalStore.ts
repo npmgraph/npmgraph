@@ -19,11 +19,11 @@ function _getInitialPane() {
   if (!searchGet(PARAM_QUERY)) {
     return PaneType.INFO;
   }
-  const select = hashGet('select')?.split(/[, ]+/);
+  const select = hashGet('select')?.split(/[ ,]+/);
   if (select) return PaneType.MODULE;
   const isTight =
-    typeof window !== 'undefined' &&
-    window.matchMedia(TIGHT_SCREEN_QUERY).matches;
+    globalThis.window !== undefined &&
+    globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches;
   return isTight ? PaneType.GRAPH : PaneType.REPORT;
 }
 
@@ -81,7 +81,9 @@ export function useGlobalState<T extends keyof GlobalState>(
   const globalState = useSyncExternalStore(subscribe, getSnapshot);
 
   const setValue = useCallback(
-    (value: GlobalState[T]) => setGlobalState(key, value),
+    (value: GlobalState[T]) => {
+      setGlobalState(key, value);
+    },
     [key],
   );
 

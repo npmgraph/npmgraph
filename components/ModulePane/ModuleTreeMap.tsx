@@ -21,7 +21,7 @@ export function ModuleTreeMap({
 
   // Render contents as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {
-    let cancelled = false;
+    let isCancelled = false;
 
     const { clientWidth: w, clientHeight: h } = containerRef.current!;
     const m = 1;
@@ -35,15 +35,18 @@ export function ModuleTreeMap({
       0,
     );
 
-    const nodes = [...dependencySizes];
+    const nodes = [
+      ...dependencySizes,
 
-    // Placeholder root node so the other nodes have a common parent
-    nodes.push({ name: '__root', approximateSize: 0 });
+      // Placeholder root node so the other nodes have a common parent
+      { name: '__root', approximateSize: 0 },
+    ];
 
     const root = stratify<BundlePhobiaData['dependencySizes'][number]>()
       .id(d => d.name)
       .parentId(node => (node.name === '__root' ? '' : '__root'))(nodes)
       .sum(d => (d.approximateSize * size) / sum)
+
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
     treemap<BundlePhobiaData['dependencySizes'][number]>()
@@ -82,12 +85,12 @@ export function ModuleTreeMap({
     });
 
     queueMicrotask(() => {
-      if (cancelled) return;
+      if (isCancelled) return;
       setLeaves(newLeaves);
     });
 
     return () => {
-      cancelled = true;
+      isCancelled = true;
     };
   }, [data]);
 

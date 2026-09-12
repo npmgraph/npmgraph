@@ -15,12 +15,12 @@ export function QueryLink({
 }) {
   const queries = Array.isArray(query) ? query : [query];
 
-  const search = query.length ? `${PARAM_QUERY}=${queries.join(',')}` : '';
+  const search = query.length > 0 ? `${PARAM_QUERY}=${queries.join(',')}` : '';
   const hash = reset ? '' : location.hash;
   const url = urlPatch({ search, hash });
 
-  function onClick(e: React.MouseEvent) {
-    e.preventDefault();
+  function onClick(event: React.MouseEvent) {
+    event.preventDefault();
     patchLocation({ search, hash }, false);
   }
 
