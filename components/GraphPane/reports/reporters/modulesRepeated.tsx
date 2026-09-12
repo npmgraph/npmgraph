@@ -31,7 +31,7 @@ export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
       </div>
     ));
 
-  if (details.length <= 0) return;
+  if (details.length === 0) return;
 
   const summary = simplur`Modules with multiple versions (${details.length})`;
 

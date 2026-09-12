@@ -9,7 +9,7 @@ import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './licensesAll.module.scss';
 
 export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
-  const details = [...modulesByLicense.entries()]
+  const details = [...modulesByLicense]
     .toSorted(([a], [b]) => a.localeCompare(b))
     .map(([license, modules]) => {
       const keywords = LICENSES[license.toLowerCase()]?.keywords;
@@ -49,7 +49,7 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
       );
     });
 
-  if (details.length <= 0) return;
+  if (details.length === 0) return;
 
   const summary = simplur`All licenses (${details.length})`;
   return { type: 'info', summary, details } as RenderedAnalysis;

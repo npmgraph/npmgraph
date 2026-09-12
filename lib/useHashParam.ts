@@ -6,7 +6,7 @@ export default function useHashParameter(parameterName: string) {
 
   const setValue = (
     value: string | boolean | number | null | undefined,
-    replace = true,
+    shouldReplace = true,
   ) => {
     if (value === parameter) return;
 
@@ -21,7 +21,7 @@ export default function useHashParameter(parameterName: string) {
     }
 
     // Update page
-    patchLocation({ hash: parameters.toString() }, replace);
+    patchLocation({ hash: parameters.toString() }, shouldReplace);
   };
 
   return [parameter, setValue] as const;

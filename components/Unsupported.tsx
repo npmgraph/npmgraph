@@ -20,7 +20,7 @@ export function Unsupported({
         Specifically, the following features appear to be missing or disabled:
       </p>
       <ul>
-        {[...unsupported.entries()].map(([name, jsx]) => (
+        {[...unsupported].map(([name, jsx]) => (
           <li key={name}>{jsx}</li>
         ))}
       </ul>

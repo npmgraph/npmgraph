@@ -51,8 +51,6 @@ export default function ModulePane({
 
   const module = selectedModules?.values().next().value as Module;
 
-  const pkg = module.package;
-
   if (module.isLocal) {
     return (
       <Pane>
@@ -101,6 +99,8 @@ export default function ModulePane({
     !module.package.homepage.startsWith('https://github.com/')
       ? module.package.homepage
       : null;
+
+  const pkg = module.package;
 
   return (
     <Pane {...props}>

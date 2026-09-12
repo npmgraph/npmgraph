@@ -89,7 +89,7 @@ async function fetchModuleFromURL(urlString: string) {
   }
   const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
 
-  pkg.name ||= url.toString();
+  pkg.name ||= url.href;
 
   return new Module(pkg as PackumentVersion);
 }
@@ -175,7 +175,7 @@ export function cacheModule(module: Module, registry?: string) {
 }
 
 /**
- * Convenience method for getting loaded modules by some criteria.
+ Convenience method for getting loaded modules by some criteria.
  */
 export function queryModuleCache(queryType: QueryType, queryValue: string) {
   const results = new Map<string, Module>();
@@ -183,9 +183,7 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
   if (!queryType && !queryValue) return results;
 
   // 'exact' and 'name' query deprecated in favor of Default
-  if (queryType === QueryType.Exact) {
-    queryType = QueryType.Default;
-  } else if (queryType === QueryType.Name) {
+  if (queryType === QueryType.Exact || queryType === QueryType.Name) {
     queryType = QueryType.Default;
   }
 
@@ -233,7 +231,7 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
   const sanitized: PackageJSON = {} as PackageJSON;
 
   for (const key of PACKAGE_WHITELIST) {
-    if (key in pkg) sanitized[key] = pkg[key];
+    if (Object.hasOwn(pkg, key)) sanitized[key] = pkg[key];
   }
 
   return sanitized;

@@ -10,12 +10,22 @@ function getNpmgraphJsOrgUrl(locationUrl: URL) {
   return url.href;
 }
 
+declare const process: {
+  env: {
+    VERCEL_GIT_PULL_REQUEST_ID?: string;
+  };
+};
+
 export default function PreviewWidget() {
   const [isHidden, setIsHidden] = useState(false);
   const [locationUrl] = useLocation();
   const isProductionHost = locationUrl.hostname === 'npmgraph.js.org';
   const prNumber = useMemo(
-    () => process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim(),
+    () =>
+      (globalThis.process === undefined
+        ? undefined
+        : process.env.VERCEL_GIT_PULL_REQUEST_ID
+      )?.trim(),
     [],
   );
   const prUrl = prNumber

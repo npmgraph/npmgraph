@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-top-level-side-effects -- meh */
 import { setGlobalState, useGlobalState } from './GlobalStore.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { urlPatch } from './url_util.ts';
@@ -10,12 +11,12 @@ function handleLocationUpdate() {
 globalThis.addEventListener('hashchange', handleLocationUpdate);
 globalThis.addEventListener('popstate', handleLocationUpdate);
 
-export function patchLocation(urlParts: Partial<URL>, replace: boolean) {
+export function patchLocation(urlParts: Partial<URL>, shouldReplace: boolean) {
   const url = urlPatch(urlParts);
   Object.freeze(url);
 
   // Assign url directly to the location field
-  if (replace) {
+  if (shouldReplace) {
     history.replaceState({}, '', url);
   } else {
     history.pushState({}, '', url);
