@@ -7,7 +7,7 @@ import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './modulesDeprecated.module.scss';
 
 export function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
-  if (deprecated.length <= 0) return;
+  if (deprecated.length === 0) return;
 
   const details = deprecated
     .toSorted((a, b) => a.name.localeCompare(b.name))

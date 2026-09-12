@@ -4,7 +4,7 @@ import { PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
 import { searchGet, searchSet } from './url_util.ts';
 import { patchLocation } from './useLocation.ts';
 
-function setQuery(moduleKeys: string[] = [], replace = false) {
+function setQuery(moduleKeys: string[] = [], shouldReplace = false) {
   // Clean up keys
   moduleKeys = moduleKeys.filter(Boolean).map(key => {
     key = key.trim();
@@ -16,7 +16,7 @@ function setQuery(moduleKeys: string[] = [], replace = false) {
   });
   moduleKeys = [...new Set(moduleKeys)];
   const search = searchSet(PARAM_QUERY, moduleKeys.join(','));
-  patchLocation({ search }, replace);
+  patchLocation({ search }, shouldReplace);
 }
 
 export function useQuery() {

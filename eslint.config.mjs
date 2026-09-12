@@ -4,6 +4,7 @@ import xoReact from 'eslint-config-xo-react';
 
 const xoConfigs = xo({
   browser: true,
+  space: true,
 }).map(config => {
   if (!config.rules || config.name !== 'xo/base') return config;
 
@@ -34,6 +35,9 @@ const xoReactConfigs = xoReact().map(config => ({
 }));
 
 const disabledRules = [
+  '@html-eslint/attrs-newline',
+  '@html-eslint/no-extra-spacing-tags',
+  '@html-eslint/require-closing-tags',
   '@stylistic/curly-newline',
   '@stylistic/padding-line-between-statements',
   '@typescript-eslint/array-type',
@@ -60,6 +64,8 @@ const disabledRules = [
   '@typescript-eslint/prefer-readonly',
   '@typescript-eslint/prefer-regexp-exec',
   '@typescript-eslint/restrict-template-expressions',
+  '@typescript-eslint/strict-boolean-expressions',
+  '@typescript-eslint/switch-exhaustiveness-check',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
   'complexity',
   'import-x/no-anonymous-default-export',
@@ -68,7 +74,12 @@ const disabledRules = [
   'import-x/no-unassigned-import',
   'import-x/order',
   'json/no-empty-keys',
+  'n/prefer-global/process',
   'no-warning-comments',
+  'package-json/dependency-version-range',
+  'package-json/prefer-files-field',
+  'package-json/require-engines',
+  'package-json/require-entry-point',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
@@ -80,9 +91,14 @@ const disabledRules = [
   'react/no-unescaped-entities',
   'react/prefer-read-only-props',
   'react/self-closing-comp',
+  'regexp/no-super-linear-move',
 
   // TODO: Enable this after https://github.com/sindresorhus/eslint-plugin-unicorn/pull/2953
   'unicorn/prefer-query-selector',
+
+  'unicorn/no-break-in-nested-loop',
+  'unicorn/prefer-dom-node-html-methods',
+  'unicorn/prefer-iterator-to-array',
 
   // Unwanted
   'capitalized-comments',
@@ -97,6 +113,13 @@ export default [
   ...xoReactConfigs,
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
+  },
+  {
+    // node:test's `describe`/`it` return promises that don't need awaiting
+    files: ['**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'off',
+    },
   },
   prettierConflicts,
 ];

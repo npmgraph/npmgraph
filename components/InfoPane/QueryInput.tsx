@@ -48,17 +48,19 @@ export default function QueryInput({
 
   // Add cmd-enter support to search in a new tab
   function handleCmdEnter(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Enter' && event.metaKey) {
-      window.open(`/?${getSearchParameters()}`, '_blank');
-      event.preventDefault();
+    if (!(event.key === 'Enter' && event.metaKey)) {
+      return;
     }
+
+    window.open(`/?${getSearchParameters()}`, '_blank');
+    event.preventDefault();
   }
 
   function handleFocus() {
     setPane(PaneType.INFO);
   }
 
-  const errors = [...graph.failedEntryModules.entries()].filter(([key]) =>
+  const errors = [...graph.failedEntryModules].filter(([key]) =>
     query.includes(key),
   );
 

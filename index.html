@@ -3,24 +3,10 @@
 <html lang="en">
   <head>
     <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-0FPWJCJM5R"
-    ></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag('js', new Date());
-
-      gtag('config', 'G-0FPWJCJM5R');
-    </script>
-
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+
     <meta
-      http-equiv="Content-Security-Policy"
       content="
       ; default-src
       'self'
@@ -46,36 +32,53 @@
       ; connect-src
       *
       "
+      http-equiv="Content-Security-Policy"
     />
-    <link
-      rel="search"
-      type="application/opensearchdescription+xml"
-      title="npmgraph"
-      href="/opensearch.xml"
-    />
-    <meta
-      name="google-site-verification"
-      content="3ngFL3Bcx_jMvyD6oTFDYNk8fmF-wxk5ykjZg7wW624"
-    />
-    <meta name="vercel-toolbar" content="false" />
-    <meta name="description" content="Graph / visualize of npm dependencies" />
-    <meta
-      name="keywords"
-      content="visualize, visualization, graph, npm, npm modules, npm graph, npm licenses"
-    />
+    <title>npmgraph - NPM Dependency Diagrams</title>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-0FPWJCJM5R"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
 
-    <meta
-      property="og:image"
-      content="https://github.com/user-attachments/assets/7b1414d8-a6fd-4d00-8b49-ed490b077b01"
-    />
-    <meta name="twitter:card" content="summary_large_image" />
-
-    <link rel="icon" type="image/png" href="/images/favicon.png" />
+      gtag('config', 'G-0FPWJCJM5R');
+    </script>
     <link
       href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700"
       rel="stylesheet"
     />
-    <title>npmgraph - NPM Dependency Diagrams</title>
+    <link
+      type="application/opensearchdescription+xml"
+      href="/opensearch.xml"
+      rel="search"
+      title="npmgraph"
+    />
+    <meta
+      content="3ngFL3Bcx_jMvyD6oTFDYNk8fmF-wxk5ykjZg7wW624"
+      name="google-site-verification"
+    />
+    <meta content="false" name="vercel-toolbar" />
+
+    <meta content="Graph / visualize of npm dependencies" name="description" />
+    <meta
+      content="visualize, visualization, graph, npm, npm modules, npm graph, npm licenses"
+      name="keywords"
+    />
+
+    <meta content="npmgraph - NPM Dependency Diagrams" property="og:title" />
+    <meta content="website" property="og:type" />
+    <meta content="https://npmgraph.js.org/" property="og:url" />
+    <meta
+      content="https://github.com/user-attachments/assets/7b1414d8-a6fd-4d00-8b49-ed490b077b01"
+      property="og:image"
+    />
+    <meta content="summary_large_image" name="twitter:card" />
+    <link type="image/png" href="/images/favicon.png" rel="icon" />
   </head>
 
   <body></body>

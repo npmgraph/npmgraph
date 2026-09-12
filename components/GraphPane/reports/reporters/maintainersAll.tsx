@@ -13,7 +13,7 @@ export function maintainersAll({
   modulesByMaintainer,
   emailByMaintainer,
 }: MaintainerAnalysisState) {
-  const details = [...modulesByMaintainer.entries()]
+  const details = [...modulesByMaintainer]
     .toSorted(([a], [b]) => a.localeCompare(b))
     .map(([name, modules]) => {
       const email = emailByMaintainer.get(name);
@@ -35,7 +35,7 @@ export function maintainersAll({
           </div>
 
           <div className={styles.modules}>
-            {[...modules.values()].map(m => (
+            {[...modules].map(m => (
               <Selectable
                 value={m.key}
                 key={m.key}
@@ -47,7 +47,7 @@ export function maintainersAll({
       );
     });
 
-  if (details.length <= 0) return;
+  if (details.length === 0) return;
 
   const summary = simplur`All maintainers (${details.length})`;
   return { type: 'info', summary, details } as RenderedAnalysis;

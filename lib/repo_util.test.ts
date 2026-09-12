@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import type { PackumentVersion } from '@npm/types';
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
@@ -115,7 +114,7 @@ describe('getRepoUrlForModule', () => {
       version: '1.0.0',
       repository: {
         type: 'git',
-        url: 'http://github.com/drewyoung1/armyjs.git',
+        url: 'https://github.com/drewyoung1/armyjs.git',
       },
     } as PackumentVersion);
 

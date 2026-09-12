@@ -1,17 +1,17 @@
-import { satisfies } from 'semver';
 import { $optional } from 'select-dom';
+import { satisfies } from 'semver';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { getModuleKey } from '../../lib/module_util.ts';
-import { isOptionalPeerDependency } from '../../lib/peer_dependency_util.ts';
 import type { Overrides } from '../../lib/overrides_util.ts';
 import {
   getChildOverrides,
   getVersionOverride,
   isOverrides,
 } from '../../lib/overrides_util.ts';
+import { isOptionalPeerDependency } from '../../lib/peer_dependency_util.ts';
 import * as styles from './GraphDiagram.module.scss';
 
 const FONT = 'Roboto Condensed, sans-serif';
@@ -95,7 +95,7 @@ function getDependencyEntries(
     if (!deps) continue;
 
     // Only do one level for non-"dependencies"
-    if (level > 0 && type !== 'dependencies') continue;
+    if (type !== 'dependencies' && level > 0) continue;
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
@@ -107,11 +107,12 @@ function getDependencyEntries(
 }
 
 /**
- * Fetch the module dependency tree for a given query.
+ Fetch the module dependency tree for a given query.
  */
 export async function getGraphForQuery(
   query: string[],
   dependencyTypes: Set<DependencyKey>,
+  // eslint-disable-next-line unicorn/consistent-boolean-name
   moduleFilter: (m: Module) => boolean,
 ) {
   const graphState: GraphState = {
@@ -281,9 +282,9 @@ function dotEscape(string_: string) {
 }
 
 /**
- * Creates a GraphViz style string from an object of key-value pairs.
- *
- * E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
+ Creates a GraphViz style string from an object of key-value pairs.
+
+ E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
  */
 function vizStyle(
   object: Record<string, string | number | boolean | undefined>,
@@ -318,7 +319,7 @@ export function composeDOT({
   sizing?: boolean;
 }) {
   // Sort modules by [level, key]
-  const entries = [...graph.moduleInfos.entries()];
+  const entries = [...graph.moduleInfos];
   entries.sort(([aKey, a], [bKey, b]) => {
     if (a.level !== b.level) {
       return a.level - b.level;
