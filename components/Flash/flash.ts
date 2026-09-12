@@ -87,10 +87,7 @@ function toFlashMessage(wat: unknown) {
 
   if (wat instanceof Document) {
     const { body } = wat;
-    if (body) {
-      return body.textContent ?? body.innerHTML;
-    }
-    return wat.documentElement?.textContent ?? '';
+    return wat.body.textContent ?? body.getHTML();
   }
 
   if (wat instanceof Element) {

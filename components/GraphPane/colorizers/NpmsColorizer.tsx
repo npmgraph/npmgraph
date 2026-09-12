@@ -18,9 +18,6 @@ export class NpmsColorizer implements BulkColorizer {
   title: string;
   name: string;
 
-  #pendingModules: Module[] = [];
-  #pendingRequest = Promise.withResolvers();
-
   constructor(title: string, field: string) {
     this.title = title;
     this.name = field;

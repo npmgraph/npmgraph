@@ -113,7 +113,7 @@ export async function moduleVulnerabilities({
     </div>
   ));
 
-  if (details.length <= 0) return;
+  if (details.length === 0) return;
 
   const summary = simplur`Vulnerabilities (${details.length})`;
 

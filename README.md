@@ -97,12 +97,13 @@ url.toString(); // Returns the above URL
 Select a module or category of modules.
 
 Values should have one of the following forms:
-| | |
-|---|---|
-| `exact:<module key>` | Select a specific module |
-| `name:<module name>` | Select modules by name, all versions |
-| `license:<license string>` | Select modules by license |
-| `maintainer:<maintainer name>` | Select modules by maintainer name |
+
+|                                |                                      |
+| ------------------------------ | ------------------------------------ |
+| `exact:<module key>`           | Select a specific module             |
+| `name:<module name>`           | Select modules by name, all versions |
+| `license:<license string>`     | Select modules by license            |
+| `maintainer:<maintainer name>` | Select modules by maintainer name    |
 
 **Example**: Graph `send`, selecting `fresh@0.5.2`
 

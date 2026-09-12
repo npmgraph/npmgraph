@@ -59,6 +59,3 @@ All notable changes to this project will be documented in this file. See [standa
 - simplify x-component state sharing ([b9c2a8c](https://github.com/npmgraph/npmgraph/commit/b9c2a8c6c7d3ac52573727919508cd5020deaf5d))
 - uncomment bugsnag script ([e3e1fb5](https://github.com/npmgraph/npmgraph/commit/e3e1fb551afa04a624a89bfae1a5d77fc4e36abe))
 
-# Changelog
-
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.

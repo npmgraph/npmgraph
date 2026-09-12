@@ -1,5 +1,5 @@
-import { report } from '../../lib/bugsnag.ts';
 import { $$, $optional } from 'select-dom';
+import { report } from '../../lib/bugsnag.ts';
 import { DownloadIcon } from '../Icons.tsx';
 import * as styles from './GraphDiagramDownloadButton.module.scss';
 import { getDiagramElement } from './graph_util.ts';

@@ -8,7 +8,7 @@ export function isHttpModule(moduleKey: string) {
 export function resolveModule(name: string, version?: string) {
   if (version) {
     // Remove "git...#" repo URIs from version strings
-    const gitless = version?.replace(/git.*#(.*)/v, '');
+    const gitless = version?.replace(/git.*#.*/v, '');
     if (version && gitless !== version) {
       // TODO: Update why this check is needed once we have real-world examples
       console.warn('Found git-based version string');
@@ -27,11 +27,10 @@ export function getModuleKey(name: string, version: string) {
 }
 
 export function parseModuleKey(moduleKey: string): string[] {
-  const parts = moduleKey.match(/(.+)@(.*)/);
-  if (!parts) return [moduleKey];
+  const match = moduleKey.match(/(?<name>.+)@(?<version>.*)/v);
+  if (!match) return [moduleKey];
 
-  parts.shift(); // remove full match
-  return parts; // [name, version]
+  return [match.groups!.name, match.groups!.version];
 }
 
 const ALIAS_RE = /npm:(?<name>@?[^@]+)@(?<semver>.+)/v;

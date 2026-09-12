@@ -70,5 +70,5 @@ for (const license of osi) {
 
 await fs.writeFile(
   LICENSE_FILE,
-  `${JSON.stringify(Object.fromEntries(licenses.entries()), null, 2)}\n`,
+  `${JSON.stringify(Object.fromEntries(licenses), null, 2)}\n`,
 );
