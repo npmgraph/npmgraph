@@ -70,10 +70,6 @@
       background-color: var(--accent);
       color: var(--text-on-accent);
     }
-
-    &:not(:first-child) {
-      border-left: none;
-    }
   }
 
   @media print {
