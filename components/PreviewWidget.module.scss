@@ -1,12 +1,11 @@
 .root {
   display: flex;
   position: fixed;
-  top: 50%;
-  left: 1em;
   flex-direction: column;
-  transform: translateY(-50%);
   z-index: 30;
   box-shadow: 2px 2px 6px var(--bg0-shadow-color);
+  // Place it on the bottom left, above the graph controls if they are on screen
+  inset: auto auto 4.4em 1em;
 
   a,
   button {

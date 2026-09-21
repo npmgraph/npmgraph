@@ -48,12 +48,11 @@
   z-index: 1;
   inset: auto auto 1em 1em;
   --padding: 6px;
+  user-select: none;
 
   @include tight-screen {
-    /* override absolute positioning from above — fixed keeps controls visible while scrolling the graph */
     position: fixed;
     z-index: 20;
-    inset: auto 1em 1em auto;
   }
 
   button {
@@ -70,6 +69,10 @@
     &.selected {
       background-color: var(--accent);
       color: var(--text-on-accent);
+    }
+
+    &:not(:first-child) {
+      border-left: none;
     }
   }
 
