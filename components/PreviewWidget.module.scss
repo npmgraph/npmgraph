@@ -13,6 +13,7 @@
     justify-content: center;
     align-items: center;
     border: solid 1px var(--bg1);
+    border-radius: var(--rad-sm) var(--rad-sm) 0 0;
     background: var(--bg0);
     padding: 6px;
     color: var(--text);
@@ -22,18 +23,8 @@
     }
   }
 
-  a:first-child {
-    border-top-right-radius: var(--rad-sm);
-    border-top-left-radius: var(--rad-sm);
-  }
-
   button {
-    border-bottom-right-radius: var(--rad-sm);
-    border-bottom-left-radius: var(--rad-sm);
-  }
-
-  a + a,
-  a + button {
     border-top-width: 0;
+    border-radius: 0 0 var(--rad-sm) var(--rad-sm);
   }
 }
