@@ -1,0 +1,7 @@
+.root {
+  flex-grow: 1;
+  margin-inline: calc(-1 * var(--header-padding));
+  background-color: var(--accent);
+  padding: 0.3em 1em;
+  font-weight: bold;
+}
