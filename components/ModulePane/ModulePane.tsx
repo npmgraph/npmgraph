@@ -8,10 +8,8 @@ import { cn } from '../../lib/dom.ts';
 import human from '../../lib/human.ts';
 import { getRepoUrlForModule } from '../../lib/repo_util.ts';
 import useHashParam from '../../lib/useHashParam.ts';
-import { ExternalLink } from '../ExternalLink.tsx';
 import { foreachDownstream } from '../GraphDiagram/graph_util.ts';
 import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.tsx';
-import { GithubIcon, NpmIcon, Package } from '../Icons.tsx';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import { Section } from '../Section.tsx';
@@ -22,6 +20,7 @@ import ModuleNpmsIoScores from './ModuleNpmsIoScores.tsx';
 import * as styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
+import useCollapse from '../../lib/useCollapse.ts';
 
 export default function ModulePane({
   selectedModules,
@@ -31,6 +30,7 @@ export default function ModulePane({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const nSelected = selectedModules.size;
+  const [collapse, setCollapse] = useCollapse();
   const [graph] = useGlobalState('graph');
 
   if (nSelected === 0) {
@@ -121,29 +121,53 @@ export default function ModulePane({
       <p style={{ marginTop: 0 }}>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
-        {isSingleEntryModule ? null : (
-          <QueryLink
-            className={utilities.brightHover}
-            query={module.key}
-            style={{ textDecoration: 'none' }}
-          >
-            ← Go
-          </QueryLink>
-        )}
-        <ExternalLink href={npmUrl} icon={NpmIcon}>
-          npm
-        </ExternalLink>
-        {repoUrl && (
-          <ExternalLink href={repoUrl} icon={GithubIcon}>
-            GitHub
-          </ExternalLink>
-        )}
-        <ExternalLink href={packageUrl} icon={Package}>
-          package.json
-        </ExternalLink>
-        {homepageUrl && (
-          <ExternalLink href={homepageUrl}>Homepage</ExternalLink>
-        )}
+        <div className={styles.linkGroup}>
+          {isSingleEntryModule ? null : (
+            <>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={collapse.includes(module.name)}
+                  onChange={() => {
+                    if (collapse.includes(module.name)) {
+                      setCollapse(
+                        collapse.filter(name => name !== module.name),
+                      );
+                    } else {
+                      setCollapse([...collapse, module.name]);
+                    }
+                  }}
+                />
+                Collapse
+              </label>
+              <QueryLink
+                className={utilities.brightHover}
+                query={module.key}
+                style={{ textDecoration: 'none' }}
+              >
+                Focus
+              </QueryLink>
+            </>
+          )}
+        </div>
+        <div className={styles.linkGroup}>
+          <a target="_blank" href={npmUrl}>
+            npm
+          </a>
+          {repoUrl && (
+            <a target="_blank" href={repoUrl}>
+              repo
+            </a>
+          )}
+          <a target="_blank" href={packageUrl}>
+            package.json
+          </a>
+          {homepageUrl && (
+            <a target="_blank" href={homepageUrl}>
+              homepage
+            </a>
+          )}
+        </div>
       </div>
 
       <ReleaseTimeline module={module} />
