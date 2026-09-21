@@ -111,6 +111,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     // Toggle exclude filter?
     if (node && event.shiftKey) {
+      setGraphSelection(QueryType.Default, '');
       if (module) {
         const isIncluded = collapse.includes(module.name);
         if (isIncluded) {
