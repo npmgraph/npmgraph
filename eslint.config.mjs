@@ -1,38 +1,7 @@
 import prettierConflicts from 'eslint-config-prettier';
-import xo from 'eslint-config-xo';
+import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
-
-const xoConfigs = xo({
-  browser: true,
-  space: true,
-}).map(config => {
-  if (!config.rules || config.name !== 'xo/base') return config;
-
-  return {
-    ...config,
-    rules: {
-      ...config.rules,
-      'unicorn/switch-case-braces': ['error', 'avoid'],
-
-      'unicorn/filename-case': [
-        'error',
-        {
-          cases: {
-            kebabCase: true,
-            camelCase: true,
-            pascalCase: true,
-            snakeCase: true,
-          },
-        },
-      ],
-    },
-  };
-});
-
-const xoReactConfigs = xoReact().map(config => ({
-  ...config,
-  files: ['**/*.{jsx,tsx}'],
-}));
+import { defineConfig } from 'eslint/config';
 
 const disabledRules = [
   '@html-eslint/attrs-newline',
@@ -108,18 +77,42 @@ const disabledRules = [
   'require-unicode-regexp',
 ];
 
-export default [
-  ...xoConfigs,
-  ...xoReactConfigs,
+export default defineConfig([
   {
-    rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
+    // TODO: Use gitignore when upgrading to eslint-config-xo@4+
+    ignores: [
+      'node_modules',
+      'dist',
+      'package.json',
+      'package-lock.json',
+      'index.html',
+    ],
+  },
+  ...xo({ browser: true, space: true }),
+  ...xoReact(),
+  {
+    files: [tsFilesGlob, jsFilesGlob],
+    rules: {
+      'unicorn/switch-case-braces': ['error', 'avoid'],
+      'unicorn/filename-case': [
+        'error',
+        {
+          cases: {
+            kebabCase: true,
+            camelCase: true,
+            pascalCase: true,
+            snakeCase: true,
+          },
+        },
+      ],
+      ...Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
+    },
   },
   {
     // node:test's `describe`/`it` return promises that don't need awaiting
     files: ['**/*.test.ts'],
-    rules: {
-      '@typescript-eslint/no-floating-promises': 'off',
-    },
+    rules: { '@typescript-eslint/no-floating-promises': 'off' },
   },
+  // TODO: Use `prettier:compat` when upgrading to eslint-config-xo@4+
   prettierConflicts,
-];
+]);
