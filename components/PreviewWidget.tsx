@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import useLocation from '../lib/useLocation.ts';
 import { GithubIcon, OffsiteLinkIcon, XIcon } from './Icons.tsx';
+import * as utilities from './utilities.module.scss';
 import * as styles from './PreviewWidget.module.scss';
 
 function getNpmgraphJsOrgUrl(locationUrl: URL) {
@@ -56,6 +57,7 @@ export default function PreviewWidget() {
       <a
         href={npmgraphUrl}
         target="_blank"
+        className={utilities.brightHover}
         rel="noopener noreferrer"
         aria-label="Open current query on npmgraph.js.org"
         title="Compare to production npmgraph"
@@ -64,6 +66,7 @@ export default function PreviewWidget() {
       </a>
       <button
         aria-label="Hide widget"
+        className={utilities.brightHover}
         onClick={() => {
           setIsHidden(true);
         }}

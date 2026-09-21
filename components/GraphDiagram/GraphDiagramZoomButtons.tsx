@@ -17,7 +17,6 @@ export function GraphDiagramZoomButtons() {
     <div className={styles.root}>
       <button
         className={cn(
-          styles.zoomFitWidth,
           { [parentStyles.selected]: zoom === ZOOM_FIT_WIDTH },
           utilities.brightHover,
         )}
@@ -31,7 +30,6 @@ export function GraphDiagramZoomButtons() {
       </button>
       <button
         className={cn(
-          styles.zoom11,
           { [parentStyles.selected]: zoom === ZOOM_NONE },
           utilities.brightHover,
         )}
@@ -45,7 +43,6 @@ export function GraphDiagramZoomButtons() {
       </button>
       <button
         className={cn(
-          styles.zoomFitHeight,
           { [parentStyles.selected]: zoom === ZOOM_FIT_HEIGHT },
           utilities.brightHover,
         )}
