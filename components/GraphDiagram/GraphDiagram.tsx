@@ -55,7 +55,9 @@ import {
 } from './graph_util.ts';
 
 export type ZoomOption =
-  typeof ZOOM_NONE | typeof ZOOM_FIT_WIDTH | typeof ZOOM_FIT_HEIGHT;
+  | typeof ZOOM_NONE
+  | typeof ZOOM_FIT_WIDTH
+  | typeof ZOOM_FIT_HEIGHT;
 
 const idSeen = new Set<unknown>();
 

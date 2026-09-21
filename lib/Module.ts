@@ -150,7 +150,10 @@ export default class Module {
 
 function parseLicense(
   license:
-    string | DeprecatedLicense | (string | DeprecatedLicense)[] | undefined,
+    | string
+    | DeprecatedLicense
+    | (string | DeprecatedLicense)[]
+    | undefined,
 ): string[] {
   if (Array.isArray(license)) {
     return license
