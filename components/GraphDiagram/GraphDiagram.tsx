@@ -225,6 +225,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           flash('Error while rendering graph');
         }
       }
+
       if (signal.aborted) return; // Check after all async stuff
 
       // Parse markup
@@ -351,8 +352,10 @@ function logUpdate(name: string, value: unknown) {
       console.log(name, '<undefined>');
       idSeen.add(name);
     }
+
     return;
   }
+
   if (idSeen.has(value)) return;
   idSeen.add(value);
   console.log(name, 'updated ->', value);
@@ -470,6 +473,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const node of $$optional('g.node path', svg)) {
       node.removeAttribute('style');
     }
+
     return;
   }
 

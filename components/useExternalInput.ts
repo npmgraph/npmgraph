@@ -21,6 +21,7 @@ function onDrop(ev: DragEvent) {
     alert('Sorry, file dropping is not supported by this browser');
     return;
   }
+
   if (dt.items.length !== 1) {
     alert('You must drop exactly one file');
     return;

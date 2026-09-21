@@ -33,6 +33,7 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
       if (!modulesByLicense.has(license)) {
         modulesByLicense.set(license, []);
       }
+
       modulesByLicense.get(license)!.push(module);
 
       // licensesRenderKeywords
@@ -44,6 +45,7 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
         if (!modulesByKeyword.has(keyword)) {
           modulesByKeyword.set(keyword, []);
         }
+
         modulesByKeyword.get(keyword)!.push(module);
       }
     }

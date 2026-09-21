@@ -17,6 +17,7 @@ export function useTightScreen() {
         setGlobalState('pane', PaneType.REPORT);
       }
     };
+
     media.addEventListener('change', update);
     return () => {
       media.removeEventListener('change', update);

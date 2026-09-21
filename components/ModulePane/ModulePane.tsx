@@ -40,6 +40,7 @@ export default function ModulePane({
       </Pane>
     );
   }
+
   if (nSelected > 1) {
     return (
       <Pane>

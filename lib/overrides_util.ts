@@ -18,6 +18,7 @@ export function isOverrides(value: unknown): value is Overrides {
   for (const v of Object.values(value)) {
     if (typeof v !== 'string' && !isOverrides(v)) return false;
   }
+
   return true;
 }
 

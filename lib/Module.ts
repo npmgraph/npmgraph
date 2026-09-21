@@ -156,6 +156,7 @@ function parseLicense(
       .flatMap(value => parseLicense(value))
       .filter(value => isDefined(value));
   }
+
   if (typeof license === 'object') {
     license = license.type;
   }

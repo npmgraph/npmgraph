@@ -102,6 +102,7 @@ export class NpmsColorizer implements BulkColorizer {
           break;
         default:
       }
+
       if (color) {
         colors.set(m, color);
       }

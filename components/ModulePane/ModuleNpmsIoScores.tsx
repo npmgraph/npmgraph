@@ -28,6 +28,7 @@ export default function ModuleNpmsIoScores({ module }: { module: Module }) {
   if (!npmsData) {
     return 'Loading ...';
   }
+
   if (npmsData instanceof Error) {
     return 'Score not available';
   }
