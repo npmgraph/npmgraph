@@ -74,6 +74,7 @@ const disabledRules = [
   'no-alert',
   'no-console',
   'no-restricted-globals',
+  'prefer-ternary',
   'require-unicode-regexp',
 ];
 

@@ -57,9 +57,7 @@ export function getChildOverrides(
 
   // Merge with any nested overrides defined for this specific child
   const nested = currentOverrides[childName];
-  if (typeof nested === 'object' && nested !== null) {
-    return { ...rootStringOverrides, ...nested };
-  }
-
-  return rootStringOverrides;
+  return typeof nested === 'object' && nested !== null
+    ? { ...rootStringOverrides, ...nested }
+    : rootStringOverrides;
 }

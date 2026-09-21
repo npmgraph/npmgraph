@@ -74,10 +74,7 @@ export async function celebrate(message: string) {
 }
 
 function normalizeBackgroundColor(bg: string) {
-  if (bg === 'error') {
-    return '#b3261e';
-  }
-  return bg;
+  return bg === 'error' ? '#b3261e' : bg;
 }
 
 function toFlashMessage(wat: unknown) {

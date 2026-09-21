@@ -30,11 +30,9 @@ export function getRepoUrlForModule(module: Module): string | undefined {
       /\/(?:issues|pulls|wiki|tree|blob|commit|releases).*$/,
       '',
     );
-    if (baseUrl !== url) {
-      return hostedGitInfo.fromUrl(baseUrl)?.browse();
-    }
-
-    return undefined;
+    return baseUrl === url
+      ? undefined
+      : hostedGitInfo.fromUrl(baseUrl)?.browse();
   };
 
   return (
