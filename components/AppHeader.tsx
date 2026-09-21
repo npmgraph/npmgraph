@@ -4,6 +4,7 @@ import * as styles from './AppHeader.module.scss';
 import Tabs from './Tabs.tsx';
 import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
 import { QueryLink } from './QueryLink.tsx';
+import ErrorsBanner from './ErrorsBanner.tsx';
 
 export default function AppHeader() {
   useKeyboardShortcuts();
@@ -15,6 +16,7 @@ export default function AppHeader() {
       </QueryLink>
       <QueryInput className={styles.input} />
       <Tabs className={styles.tabs} />
+      <ErrorsBanner />
     </div>
   );
 }
