@@ -30,7 +30,6 @@ export function GraphDiagramZoomButtons() {
       </button>
       <button
         className={cn(
-          styles.zoom11,
           { [parentStyles.selected]: zoom === ZOOM_NONE },
           utilities.brightHover,
         )}
