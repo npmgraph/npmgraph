@@ -21,6 +21,7 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
 
   function setDependencyType(type: DependencyKey, shouldInclude: boolean) {
     const nextTypes = new Set(dependencyTypes);
+
     if (shouldInclude) {
       nextTypes.add(type);
     } else {
