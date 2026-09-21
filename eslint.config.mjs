@@ -81,7 +81,7 @@ const disabledRules = [
 export default defineConfig([
   {
     // TODO: Fix issues
-    ignores: ['package.json', 'index.html'],
+    ignores: ['package.json'],
   },
   ...xo({
     browser: true,
