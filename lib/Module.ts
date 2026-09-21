@@ -160,9 +160,13 @@ function parseLicense(
     license = license.type;
   }
 
-  license = license?.trim().toLowerCase();
-
-  return license ? license.replaceAll(/^\(|\)$/gv, '').split(/\s+or\s+/) : [];
+  return license
+    ? license
+        .trim()
+        .toLowerCase()
+        .replaceAll(/^\(|\)$/gv, '')
+        .split(/\s+or\s+/)
+    : [];
 }
 
 function parseGithubPath(s: string) {
