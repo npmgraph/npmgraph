@@ -19,9 +19,9 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   const isIncludeDev = dependencyTypes.includes('devDependencies');
   const isIncludePeer = dependencyTypes.includes('peerDependencies');
 
-  function setDependencyType(type: DependencyKey, include: boolean) {
+  function setDependencyType(type: DependencyKey, shouldInclude: boolean) {
     const nextTypes = new Set(dependencyTypes);
-    if (include) {
+    if (shouldInclude) {
       nextTypes.add(type);
     } else {
       nextTypes.delete(type);
