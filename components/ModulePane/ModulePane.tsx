@@ -22,6 +22,20 @@ import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
 import useCollapse from '../../lib/useCollapse.ts';
 
+function ExternalLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a target="_blank" href={href} className={utilities.brightHover}>
+      {children}
+    </a>
+  );
+}
+
 export default function ModulePane({
   selectedModules,
   ...props
@@ -128,6 +142,7 @@ export default function ModulePane({
                 <input
                   type="checkbox"
                   checked={collapse.includes(module.name)}
+                  className={utilities.brightHover}
                   onChange={() => {
                     if (collapse.includes(module.name)) {
                       setCollapse(
@@ -151,21 +166,11 @@ export default function ModulePane({
           )}
         </div>
         <div className={styles.linkGroup}>
-          <a target="_blank" href={npmUrl}>
-            npm
-          </a>
-          {repoUrl && (
-            <a target="_blank" href={repoUrl}>
-              repo
-            </a>
-          )}
-          <a target="_blank" href={packageUrl}>
-            package.json
-          </a>
+          <ExternalLink href={npmUrl}>npm</ExternalLink>
+          {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
+          <ExternalLink href={packageUrl}>package.json</ExternalLink>
           {homepageUrl && (
-            <a target="_blank" href={homepageUrl}>
-              homepage
-            </a>
+            <ExternalLink href={homepageUrl}>homepage</ExternalLink>
           )}
         </div>
       </div>
