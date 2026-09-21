@@ -17,6 +17,18 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   ).filter(item => isDefined(item));
 
   const isIncludeDev = dependencyTypes.includes('devDependencies');
+  const isIncludePeer = dependencyTypes.includes('peerDependencies');
+
+  function setDependencyType(type: DependencyKey, include: boolean) {
+    const nextTypes = new Set(dependencyTypes);
+    if (include) {
+      nextTypes.add(type);
+    } else {
+      nextTypes.delete(type);
+    }
+
+    setDepTypes([...nextTypes].toSorted().join(','));
+  }
 
   return (
     <Pane {...props}>
@@ -24,10 +36,20 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
         checked={isIncludeDev}
         style={{ marginTop: '1rem' }}
         onChange={() => {
-          setDepTypes(isIncludeDev ? '' : 'devDependencies');
+          setDependencyType('devDependencies', !isIncludeDev);
         }}
       >
         Include devDependencies
+      </Toggle>
+
+      <Toggle
+        checked={isIncludePeer}
+        style={{ marginTop: '1rem' }}
+        onChange={() => {
+          setDependencyType('peerDependencies', !isIncludePeer);
+        }}
+      >
+        Include peerDependencies
       </Toggle>
 
       <Toggle
