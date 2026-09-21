@@ -1,5 +1,5 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
-import { gt, satisfies } from 'semver';
+import { satisfies } from 'semver';
 import { flash } from '../components/Flash/flash.ts';
 import HttpError from './HttpError.ts';
 import Module from './Module.ts';
@@ -16,6 +16,7 @@ import {
   parseModuleKey,
   resolveModule,
 } from './module_util.ts';
+import selectVersion from './selectVersion.ts';
 import { hashGet } from './url_util.ts';
 import { getRegistry } from './useRegistry.ts';
 
@@ -34,28 +35,7 @@ type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   registry?: string; // NPM_REGISTRY url
 };
 
-function selectVersion(
-  packument: Packument,
-  targetVersion = 'latest',
-): PackumentVersion | undefined {
-  let selectedVersion: string | undefined;
-
-  // If version matches a dist-tag (e.g. "latest", "best", etc), use that
-  const distVersion = packument['dist-tags']?.[targetVersion];
-  if (distVersion) {
-    selectedVersion = distVersion;
-  } else {
-    // Find highest matching version
-    for (const version of Object.keys(packument.versions)) {
-      if (!satisfies(version, targetVersion)) continue;
-      if (!selectedVersion || gt(version, selectedVersion)) {
-        selectedVersion = version;
-      }
-    }
-  }
-
-  return packument.versions[selectedVersion ?? 'undefined'];
-}
+export { default as selectVersion } from './selectVersion.ts';
 
 async function fetchModuleFromNPM(
   moduleName: string,
@@ -67,11 +47,20 @@ async function fetchModuleFromNPM(
     throw new Error(`Could not find ${moduleName} module`);
   }
 
+  // Handle unpublished packages
+  if (packument.time && 'unpublished' in packument.time) {
+    throw new Error(`${moduleName} has been unpublished`);
+  }
+
   // Match best version from manifest
   const packumentVersion = packument && selectVersion(packument, version);
 
   if (!packumentVersion) {
-    throw new Error(`${moduleName} does not have a version ${version}`);
+    throw new Error(
+      version
+        ? `${moduleName} does not have a version ${version}`
+        : `${moduleName} has no published versions`,
+    );
   }
 
   return new Module(packumentVersion, packument);
