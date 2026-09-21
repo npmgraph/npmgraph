@@ -80,16 +80,15 @@ const disabledRules = [
 
 export default defineConfig([
   {
-    // TODO: Use gitignore when upgrading to eslint-config-xo@4+
-    ignores: [
-      'node_modules',
-      'dist',
-      'package.json',
-      'package-lock.json',
-      'index.html',
-    ],
+    // TODO: Fix issues
+    ignores: ['package.json', 'index.html'],
   },
-  ...xo({ browser: true, space: true }),
+  ...xo({
+    browser: true,
+    space: true,
+    prettier: 'compat',
+    gitignore: import.meta.url,
+  }),
   ...xoReact(),
   {
     files: [tsFilesGlob, jsFilesGlob],
@@ -114,6 +113,6 @@ export default defineConfig([
     files: ['**/*.test.ts'],
     rules: { '@typescript-eslint/no-floating-promises': 'off' },
   },
-  // TODO: Use `prettier:compat` when upgrading to eslint-config-xo@4+
+  // TODO: Revisit after https://github.com/xojs/eslint-config-xo-react/issues/46
   prettierConflicts,
 ]);
