@@ -109,7 +109,7 @@ export default defineConfig([
     },
   },
   {
-    // node:test's `describe`/`it` return promises that don't need awaiting
+    // https://github.com/nodejs/node/issues/51292#issuecomment-3151271587
     files: ['**/*.test.ts'],
     rules: { '@typescript-eslint/no-floating-promises': 'off' },
   },
