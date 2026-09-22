@@ -11,16 +11,12 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-member-access',
   '@typescript-eslint/no-unsafe-type-assertion',
   '@typescript-eslint/prefer-nullish-coalescing',
-  '@typescript-eslint/switch-exhaustiveness-check',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
   'import-x/order', // TODO: https://github.com/un-ts/eslint-plugin-import-x/pull/504 https://github.com/un-ts/eslint-plugin-import-x/pull/514
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
   'react-hooks/set-state-in-effect',
-  'react/boolean-prop-naming',
-  'react/forward-ref-uses-ref',
-  'react/hook-use-state',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
@@ -70,7 +66,7 @@ export default defineConfig([
     },
   },
   {
-    // https://github.com/nodejs/node/issues/51292#issuecomment-3151271587
+    // TODO: https://github.com/xojs/eslint-config-xo/issues/128
     files: ['**/*.test.ts'],
     rules: { '@typescript-eslint/no-floating-promises': 'off' },
   },
