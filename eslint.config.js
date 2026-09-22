@@ -8,12 +8,9 @@ const disabledRules = [
   '@typescript-eslint/consistent-generic-constructors',
   '@typescript-eslint/consistent-indexed-object-style',
   '@typescript-eslint/consistent-type-assertions',
-  '@typescript-eslint/member-ordering',
-  '@typescript-eslint/naming-convention',
   '@typescript-eslint/no-base-to-string',
   '@typescript-eslint/no-dynamic-delete',
   '@typescript-eslint/no-empty-function',
-  '@typescript-eslint/no-restricted-types',
   '@typescript-eslint/no-shadow',
   '@typescript-eslint/no-unsafe-argument',
   '@typescript-eslint/no-unsafe-assignment',
@@ -59,6 +56,8 @@ const disabledRules = [
 
   // Unwanted
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
+  '@typescript-eslint/naming-convention', // I don't see this happening
+  '@typescript-eslint/no-restricted-types', // null ok
   'capitalized-comments',
   'complexity',
   'no-alert',
