@@ -32,7 +32,6 @@ const disabledRules = [
   'react/hook-use-state',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
-  'unicorn/prefer-combined-guards',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
 
   // Unwanted
