@@ -47,8 +47,6 @@ const disabledRules = [
   'package-json/require-engines',
   'package-json/require-entry-point',
   'perfectionist/sort-jsx-props',
-  'react-hooks/immutability',
-  'react-hooks/refs',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
