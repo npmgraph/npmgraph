@@ -434,7 +434,7 @@ export function foreachUpstream(
   module: Module,
   graph: GraphState,
   callback: (module: Module) => void,
-  seen: Set<Module> = new Set(),
+  seen = new Set<Module>(),
 ) {
   const info = graph.moduleInfos.get(module.key);
   if (!info || seen.has(module)) {
@@ -453,7 +453,7 @@ export function foreachDownstream(
   module: Module,
   graph: GraphState,
   callback: (module: Module) => void,
-  seen: Set<Module> = new Set(),
+  seen = new Set<Module>(),
 ) {
   const info = graph.moduleInfos.get(module.key);
   if (!info || seen.has(module)) {

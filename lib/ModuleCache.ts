@@ -232,7 +232,7 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
   return results;
 }
 
-const PACKAGE_WHITELIST: (keyof PackageJSON)[] = [
+const PACKAGE_WHITELIST: Array<keyof PackageJSON> = [
   'author',
   'dependencies',
   'devDependencies',

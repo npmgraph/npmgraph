@@ -1,4 +1,4 @@
-const UNITS: [number, string][] = [
+const UNITS: Array<[number, string]> = [
   [6, 'E'],
   [5, 'P'],
   [4, 'T'],

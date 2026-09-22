@@ -4,9 +4,6 @@ import { defineConfig } from 'eslint/config';
 
 const disabledRules = [
   // TODO: Gradually review and enable
-  '@typescript-eslint/array-type',
-  '@typescript-eslint/consistent-generic-constructors',
-  '@typescript-eslint/consistent-indexed-object-style',
   '@typescript-eslint/consistent-type-assertions',
   '@typescript-eslint/no-base-to-string',
   '@typescript-eslint/no-dynamic-delete',

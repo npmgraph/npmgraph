@@ -19,7 +19,7 @@ export type BulkColorizer = {
   colorsForModules: (modules: Module[]) => Promise<Map<Module, string>>;
 } & Colorizer;
 
-const colorizers: (SimpleColorizer | BulkColorizer)[] = [
+const colorizers: Array<SimpleColorizer | BulkColorizer> = [
   ModuleTypeColorizer,
   BusFactorColorizer,
   OutdatedColorizer,

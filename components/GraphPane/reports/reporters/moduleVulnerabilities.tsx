@@ -19,9 +19,7 @@ type Advisory = {
   cvss: { score: number; vectorString: string };
 };
 
-type BulkAdvisories = {
-  [packageName: string]: Advisory[];
-};
+type BulkAdvisories = Record<string, Advisory[]>;
 
 const SEVERITY_RANK = {
   none: 0,

@@ -42,7 +42,7 @@ export class NpmsColorizer implements BulkColorizer {
     const moduleNames = [...new Set(modules.map(m => m.name))];
 
     // Npms.io requests need to be batched
-    const reqs: Promise<Record<string, NPMSIOData>>[] = [];
+    const reqs: Array<Promise<Record<string, NPMSIOData>>> = [];
     for (let i = 0; i < moduleNames.length; i += NPMS_BULK_LIMIT) {
       const namesInRequest = moduleNames.slice(i, i + NPMS_BULK_LIMIT);
 
@@ -63,7 +63,7 @@ export class NpmsColorizer implements BulkColorizer {
     const results = await Promise.allSettled(reqs);
 
     // Merge results back into a single object
-    const combinedResults: { [key: string]: NPMSIOData } = {};
+    const combinedResults: Record<string, NPMSIOData> = {};
     let rejected = 0;
     for (const result of results) {
       if (result.status === 'rejected') {
