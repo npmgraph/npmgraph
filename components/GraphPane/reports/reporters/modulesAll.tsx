@@ -15,8 +15,8 @@ export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
     .toSorted((a, b) => a.module.key.localeCompare(b.module.key))
     .map(({ module }) => (
       <div
-        className={cn(styles.row, reportItemStyles.zebraRow)}
         key={module.key}
+        className={cn(styles.row, reportItemStyles.zebraRow)}
       >
         <Selectable
           className={cn(styles.name, {

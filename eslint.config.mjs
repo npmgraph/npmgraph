@@ -4,8 +4,6 @@ import { defineConfig } from 'eslint/config';
 
 const disabledRules = [
   // TODO: Gradually review and enable
-  '@stylistic/jsx-self-closing-comp',
-  '@stylistic/no-mixed-operators',
   '@typescript-eslint/array-type',
   '@typescript-eslint/consistent-generic-constructors',
   '@typescript-eslint/consistent-indexed-object-style',
@@ -33,21 +31,17 @@ const disabledRules = [
   '@typescript-eslint/strict-boolean-expressions',
   '@typescript-eslint/switch-exhaustiveness-check',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'curly',
   'import-x/no-anonymous-default-export',
   'import-x/no-duplicates',
   'import-x/no-extraneous-dependencies',
   'import-x/no-unassigned-import',
   'import-x/order',
-  'json/no-empty-keys',
   'jsx-a11y-x/alt-text',
   'n/prefer-global/process',
-  'no-warning-comments',
   'package-json/dependency-version-range',
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
-  'perfectionist/sort-jsx-props',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
@@ -58,7 +52,6 @@ const disabledRules = [
   'react/jsx-sort-props',
   'react/no-unescaped-entities',
   'react/prefer-read-only-props',
-  'react/self-closing-comp',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
   'unicorn/prefer-combined-guards',
@@ -69,19 +62,17 @@ const disabledRules = [
   'unicorn/prefer-ternary',
 
   // Unwanted
+  '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
   'capitalized-comments',
   'complexity',
   'no-alert',
   'no-console',
   'no-restricted-globals',
+  'no-warning-comments',
   'require-unicode-regexp',
 ];
 
 export default defineConfig([
-  {
-    // TODO: Fix issues
-    ignores: ['package.json'],
-  },
   ...xo({
     browser: true,
     space: true,

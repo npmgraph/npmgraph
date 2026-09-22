@@ -37,11 +37,9 @@ export default function Icon({
       )}
       {...props}
     >
-      {fillPath ? (
-        <path d={fillPath} className={styles.iconPathFill}></path>
-      ) : null}
+      {fillPath ? <path d={fillPath} className={styles.iconPathFill} /> : null}
       {strokePath ? (
-        <path d={strokePath} className={styles.iconPathStroke}></path>
+        <path d={strokePath} className={styles.iconPathStroke} />
       ) : null}
     </svg>
   );

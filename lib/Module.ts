@@ -125,7 +125,10 @@ export default class Module {
 
   getLatestVersion() {
     const latestVersion = this.packument?.['dist-tags'].latest;
-    if (!latestVersion) return;
+    if (!latestVersion) {
+      return;
+    }
+
     return this.packument?.versions[latestVersion];
   }
 

@@ -28,7 +28,7 @@ export function maintainersAll({
       }
 
       return (
-        <div className={cn(styles.root, reportItemStyles.zebraRow)} key={name}>
+        <div key={name} className={cn(styles.root, reportItemStyles.zebraRow)}>
           <div className={styles.maintainer}>
             {img}
             <Selectable type={QueryType.Maintainer} value={name} />
@@ -37,8 +37,8 @@ export function maintainersAll({
           <div className={styles.modules}>
             {[...modules].map(m => (
               <Selectable
-                value={m.key}
                 key={m.key}
+                value={m.key}
                 className={styles.selectable}
               />
             ))}
@@ -47,7 +47,9 @@ export function maintainersAll({
       );
     });
 
-  if (details.length === 0) return;
+  if (details.length === 0) {
+    return;
+  }
 
   const summary = simplur`All maintainers (${details.length})`;
   return { type: 'info', summary, details } as RenderedAnalysis;

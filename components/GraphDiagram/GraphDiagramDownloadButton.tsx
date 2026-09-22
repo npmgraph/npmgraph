@@ -10,11 +10,11 @@ export default function GraphDiagramDownloadButton() {
   return (
     <button
       className={styles.root}
+      title="Download as SVG"
+      type="button"
       onClick={() => {
         download('svg');
       }}
-      title="Download as SVG"
-      type="button"
     >
       <DownloadIcon />
     </button>
@@ -35,7 +35,9 @@ function download(type: DownloadExtension) {
 function downloadPng() {
   const svg = getDiagramElement();
 
-  if (!svg) return;
+  if (!svg) {
+    return;
+  }
 
   const data = svg.outerHTML;
   const vb = svg.getAttribute('viewBox')?.split(' ');
@@ -65,11 +67,15 @@ function downloadPng() {
 function downloadSvg() {
   // Get svg DOM (cloned, so we can tweak as needed for SVG export)
   const svg = getDiagramElement()?.cloneNode(true) as SVGSVGElement | undefined;
-  if (!svg) return;
+  if (!svg) {
+    return;
+  }
 
   // Add link(s) to font files
   for (const link of $$('link[rel="stylesheet"]')) {
-    if (!link.href.includes('fonts.googleapis.com')) continue;
+    if (!link.href.includes('fonts.googleapis.com')) {
+      continue;
+    }
 
     const fontElement = document.createElement('defs');
     fontElement.innerHTML = `<defs><style type="text/css">@import url('${link.href}');</style></defs>`;
@@ -98,7 +104,9 @@ function downloadSvg() {
 }
 
 function cloneStyleElementFromSheet(sheet: StyleSheet | null) {
-  if (!sheet) return null;
+  if (!sheet) {
+    return null;
+  }
 
   const cssSheet = sheet as CSSStyleSheet;
   const styleElement = document.createElement('style');

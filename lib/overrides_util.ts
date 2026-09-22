@@ -14,9 +14,14 @@ export type Overrides = {
  Type guard that checks whether an unknown value is a valid Overrides object.
  */
 export function isOverrides(value: unknown): value is Overrides {
-  if (typeof value !== 'object' || value === null) return false;
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
   for (const v of Object.values(value)) {
-    if (typeof v !== 'string' && !isOverrides(v)) return false;
+    if (typeof v !== 'string' && !isOverrides(v)) {
+      return false;
+    }
   }
 
   return true;

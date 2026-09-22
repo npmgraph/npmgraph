@@ -60,11 +60,11 @@ export default function QueryInput({
   }
 
   return (
-    <form action="/" onSubmit={handleSubmit} className={styles.form}>
+    <form action="/" className={styles.form} onSubmit={handleSubmit}>
       <input
+        ref={inputRef}
         type="search"
         name="q"
-        ref={inputRef}
         id={SEARCH_FIELD_ID}
         className={cn(styles.input, className)}
         placeholder="Search…"

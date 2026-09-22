@@ -123,7 +123,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       return;
     }
 
-    if (node) setZenMode('');
+    if (node) {
+      setZenMode('');
+    }
 
     setGraphSelection(QueryType.Default, moduleKey);
     if (moduleKey !== '') {
@@ -134,12 +136,16 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   function applyZoom() {
     const graphElement = $(`.${styles.graph}`);
 
-    if (!graphElement || !diagramElement) return;
+    if (!graphElement || !diagramElement) {
+      return;
+    }
 
     // Note: Not using svg.getBBox() here because (for some reason???) it's
     // smaller than the actual bounding box
     const vb = diagramElement.getAttribute('viewBox')?.split(' ').map(Number);
-    if (!vb) return;
+    if (!vb) {
+      return;
+    }
 
     const w = vb[2];
     const h = vb[3];
@@ -178,7 +184,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     const { signal, abort } = createAbortable();
     void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
       newGraph => {
-        if (signal.aborted) return; // Check after async
+        // Check after async
+        if (signal.aborted) {
+          return;
+        }
 
         const firstInfo = newGraph.moduleInfos.values().next().value;
         if (newGraph?.moduleInfos.size === 1 && !firstInfo?.module.isStub) {
@@ -208,9 +217,14 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     // Render SVG markup (async)
     (async function () {
-      if (!graphviz) return;
+      if (!graphviz) {
+        return;
+      }
 
-      if (signal.aborted) return; // Check after all async stuff
+      // Check after all async stuff
+      if (signal.aborted) {
+        return;
+      }
 
       // Compose SVG markup
       let svgMarkup = '<svg />';
@@ -228,7 +242,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         }
       }
 
-      if (signal.aborted) return; // Check after all async stuff
+      if (signal.aborted) {
+        return;
+      } // Check after all async stuff
 
       // Parse markup
       const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
@@ -262,11 +278,15 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       for (const nodeElement of $$optional('g.node', element)) {
         // Find module this node represents
         const key = $(':scope > title', nodeElement)?.textContent?.trim();
-        if (!key) continue;
+        if (!key) {
+          continue;
+        }
 
         const m = getCachedModule(key);
 
-        if (!m) continue;
+        if (!m) {
+          continue;
+        }
 
         if (m?.package.deprecated) {
           nodeElement.classList.add('warning');
@@ -303,13 +323,19 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   useLayoutEffect(applyZoom, [zoom, diagramElement]);
 
   const selectedModules = useMemo(() => {
-    if (!graph) return new Map<string, Module>();
+    if (!graph) {
+      return new Map<string, Module>();
+    }
+
     return queryModuleCache(selectType, selectValue);
   }, [graph, selectType, selectValue]);
   const previousSelection = usePrevious(selectedModules);
   // Effect: render graph selection
   useEffect(() => {
-    if (!graph) return;
+    if (!graph) {
+      return;
+    }
+
     updateSelection(
       graph,
       selectedModules,
@@ -319,7 +345,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
   // Effect: Colorize nodes
   useEffect(() => {
-    if (!diagramElement) return;
+    if (!diagramElement) {
+      return;
+    }
+
     void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
 
@@ -339,7 +368,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />
       </div>
-      <div className={styles.graph} onClick={handleGraphClick}></div>
+      <div className={styles.graph} onClick={handleGraphClick} />
     </div>
   );
 }
@@ -355,7 +384,10 @@ function logUpdate(name: string, value: unknown) {
     return;
   }
 
-  if (idSeen.has(value)) return;
+  if (idSeen.has(value)) {
+    return;
+  }
+
   idSeen.add(value);
   console.log(name, 'updated ->', value);
 }
@@ -506,7 +538,9 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const element of moduleEls) {
       const moduleKey = element.dataset.module;
       const m = moduleKey && getCachedModule(moduleKey);
-      if (m) modules.push(m);
+      if (m) {
+        modules.push(m);
+      }
     }
 
     // Get colors for all modules

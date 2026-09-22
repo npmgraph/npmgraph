@@ -16,8 +16,8 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
 
       return (
         <div
-          className={cn(styles.root, reportItemStyles.zebraRow)}
           key={license}
+          className={cn(styles.root, reportItemStyles.zebraRow)}
         >
           <div className={styles.license}>
             <Selectable
@@ -28,7 +28,7 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
             {keywords ? (
               <div className={styles.keywords}>
                 {keywords.map(k => (
-                  <span className={styles.keyword} key={k}>
+                  <span key={k} className={styles.keyword}>
                     {k}
                   </span>
                 ))}
@@ -39,8 +39,8 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
           <div className={styles.modules}>
             {modules.map(m => (
               <Selectable
-                value={m.key}
                 key={m.key}
+                value={m.key}
                 className={styles.selectable}
               />
             ))}
@@ -49,7 +49,9 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
       );
     });
 
-  if (details.length === 0) return;
+  if (details.length === 0) {
+    return;
+  }
 
   const summary = simplur`All licenses (${details.length})`;
   return { type: 'info', summary, details } as RenderedAnalysis;

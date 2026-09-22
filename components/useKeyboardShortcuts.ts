@@ -6,7 +6,9 @@ export function useKeyboardShortcuts() {
   useEffect(() => {
     function handleKeyPress(ev: KeyboardEvent) {
       const { nodeName } = ev.target as HTMLElement;
-      if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') return;
+      if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
+        return;
+      }
 
       // Focus search field with "/"
       if (ev.key === '/') {

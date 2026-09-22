@@ -15,13 +15,13 @@ export function ModuleTable({ data }: { data: ModuleTableData }) {
       .toSorted((a, b) => a.version.localeCompare(b.version));
 
     return modules.length === 1 ? (
-      <div className={styles.rootRow} key={name}>
+      <div key={name} className={styles.rootRow}>
         <Selectable
           className={styles.rootName}
           value={modules[0].key}
           label={modules[0].displayName}
         />
-        <span></span>
+        <span />
       </div>
     ) : (
       <Fragment key={name}>
@@ -34,9 +34,9 @@ export function ModuleTable({ data }: { data: ModuleTableData }) {
 
           {modules.map(m => (
             <Selectable
+              key={m.version}
               className={styles.rootVersion}
               label={`@${m.version}`}
-              key={m.version}
               value={m.key}
             />
           ))}

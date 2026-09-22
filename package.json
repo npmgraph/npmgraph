@@ -24,7 +24,7 @@
     "start": "parcel serve index.html robots.txt --no-cache",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
-    "fix": "run-p 'lint -- --fix' format:fix",
+    "fix": "run-s lint:fix format:fix",
     "format": "prettier -c .",
     "format:fix": "prettier -w .",
     "types": "tsc --noEmit",

@@ -87,15 +87,21 @@ function getDependencyEntries(
   level = 0,
 ) {
   // We only add non-"dependencies" at the top-level.
-  if (level > 0) dependencyTypes = DEPENDENCIES_ONLY;
+  if (level > 0) {
+    dependencyTypes = DEPENDENCIES_ONLY;
+  }
 
   const depEntries = new Set<DependencyEntry>();
   for (const type of dependencyTypes) {
     const deps = module.package[type];
-    if (!deps) continue;
+    if (!deps) {
+      continue;
+    }
 
     // Only do one level for non-"dependencies"
-    if (type !== 'dependencies' && level > 0) continue;
+    if (type !== 'dependencies' && level > 0) {
+      continue;
+    }
 
     // Get entries, adding type to each entry
     for (const [name, version] of Object.entries(deps)) {
@@ -127,7 +133,9 @@ export async function getGraphForQuery(
     currentOverrides: Overrides = {},
     rootOverrides: Overrides = {},
   ): Promise<GraphModuleInfo | void> {
-    if (!module) throw new Error('Undefined module');
+    if (!module) {
+      throw new Error('Undefined module');
+    }
 
     // Array?  Apply to each element
     if (Array.isArray(module)) {
@@ -229,16 +237,23 @@ export async function getGraphForQuery(
     await Promise.allSettled(
       [...graphState.moduleInfos.values()].map(async info => {
         const { peerDependencies, peerDependenciesMeta } = info.module.package;
-        if (!peerDependencies) return;
+        if (!peerDependencies) {
+          return;
+        }
 
         await Promise.all(
           Object.entries(peerDependencies).map(async ([name, versionRange]) => {
-            if (isOptionalPeerDependency(peerDependenciesMeta, name)) return;
+            if (isOptionalPeerDependency(peerDependenciesMeta, name)) {
+              return;
+            }
 
             // Prefer an existing node that satisfies the range to avoid duplicates.
             // (e.g. react@19.2.4 is already in the graph; don't fetch react@19.2.5)
             let peerModule = modulesByName.get(name)?.find(m => {
-              if (!m.version) return false;
+              if (!m.version) {
+                return false;
+              }
+
               try {
                 return satisfies(m.version, versionRange);
               } catch {
@@ -250,7 +265,10 @@ export async function getGraphForQuery(
               // Not yet in graph — fetch and traverse the resolved version.
               try {
                 peerModule = await getModule(getModuleKey(name, versionRange));
-                if (peerModule.isStub) return;
+                if (peerModule.isStub) {
+                  return;
+                }
+
                 await _visit(peerModule, info.level + 1);
                 // Register in the name index so later iterations can find it.
                 let list = modulesByName.get(name);
@@ -259,7 +277,9 @@ export async function getGraphForQuery(
                   modulesByName.set(name, list);
                 }
 
-                if (!list.includes(peerModule)) list.push(peerModule);
+                if (!list.includes(peerModule)) {
+                  list.push(peerModule);
+                }
               } catch {
                 return;
               }
@@ -359,7 +379,10 @@ export function composeDOT({
 
     nodes.push(`"${dotEscape(module.key)}" ${vizStyle(vs)}`);
 
-    if (!downstream) continue;
+    if (!downstream) {
+      continue;
+    }
+
     for (const { module: dependency, type } of downstream) {
       edges.push(
         `"${dotEscape(module.key)}" -> "${dependency}" ${
@@ -414,7 +437,10 @@ export function foreachUpstream(
   seen: Set<Module> = new Set(),
 ) {
   const info = graph.moduleInfos.get(module.key);
-  if (!info || seen.has(module)) return;
+  if (!info || seen.has(module)) {
+    return;
+  }
+
   seen.add(module);
 
   for (const { module } of info.upstream) {
@@ -430,7 +456,10 @@ export function foreachDownstream(
   seen: Set<Module> = new Set(),
 ) {
   const info = graph.moduleInfos.get(module.key);
-  if (!info || seen.has(module)) return;
+  if (!info || seen.has(module)) {
+    return;
+  }
+
   seen.add(module);
 
   for (const { module } of info.downstream) {
@@ -452,11 +481,16 @@ export function gatherSelectionInfo(
   const downstreamModuleKeys = new Set<string>();
 
   function _visitUpstream(fromModule: Module, visited = new Set<Module>()) {
-    if (visited.has(fromModule)) return;
+    if (visited.has(fromModule)) {
+      return;
+    }
+
     visited.add(fromModule);
 
     const info = graphState.moduleInfos.get(fromModule.key);
-    if (!info) return;
+    if (!info) {
+      return;
+    }
 
     for (const { module } of info.upstream) {
       upstreamModuleKeys.add(module.key);
@@ -466,11 +500,16 @@ export function gatherSelectionInfo(
   }
 
   function _visitDownstream(fromModule: Module, visited = new Set<Module>()) {
-    if (visited.has(fromModule)) return;
+    if (visited.has(fromModule)) {
+      return;
+    }
+
     visited.add(fromModule);
 
     const info = graphState.moduleInfos.get(fromModule.key);
-    if (!info) return;
+    if (!info) {
+      return;
+    }
 
     for (const { module } of info.downstream) {
       downstreamModuleKeys.add(module.key);

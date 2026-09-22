@@ -10,7 +10,9 @@ import * as styles from './moduleReplacements.module.scss';
 
 function getReplacements(moduleName: string) {
   const mapping = all.mappings[moduleName];
-  if (!mapping) return { mapping: null, replacements: null };
+  if (!mapping) {
+    return { mapping: null, replacements: null };
+  }
 
   return {
     mapping,
@@ -79,8 +81,8 @@ export function moduleReplacementsNative({
 
       return (
         <div
-          className={cn(styles.root, reportItemStyles.zebraRow)}
           key={module.key}
+          className={cn(styles.root, reportItemStyles.zebraRow)}
         >
           <Selectable value={module.key} className={styles.selectable} />
           {': '}
@@ -104,7 +106,9 @@ export function moduleReplacementsNative({
       );
     });
 
-  if (details.length === 0) return;
+  if (details.length === 0) {
+    return;
+  }
 
   return {
     type: 'warn',

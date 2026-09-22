@@ -9,9 +9,13 @@ export default function useHashParameter(parameterName: string) {
     value: string | boolean | number | null | undefined,
     shouldReplace = true,
   ) => {
-    if (value === parameter) return;
+    if (value === parameter) {
+      return;
+    }
 
-    if (typeof value === 'number') value = String(value);
+    if (typeof value === 'number') {
+      value = String(value);
+    }
 
     if (!value) {
       parameters.delete(parameterName);

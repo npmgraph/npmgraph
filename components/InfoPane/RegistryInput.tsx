@@ -24,7 +24,9 @@ export default function RegistryInput() {
 
   useEffect(() => {
     function checkRegistryStatus(registry: string, signal: AbortSignal) {
-      if (signal.aborted) return;
+      if (signal.aborted) {
+        return;
+      }
 
       fetch(`${registry}/_`, { method: 'HEAD', signal })
         .then(() => {

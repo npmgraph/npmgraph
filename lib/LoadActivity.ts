@@ -14,14 +14,20 @@ export default class LoadActivity {
   onChange: LoadActivityFn | undefined;
 
   start(title: string): () => void {
-    if (title) this.title = title;
+    if (title) {
+      this.title = title;
+    }
+
     this.total++;
     this.active++;
     this.onChange?.(this);
 
     let _isFinished = false;
     return () => {
-      if (_isFinished) return;
+      if (_isFinished) {
+        return;
+      }
+
       _isFinished = true;
       this.active--;
       if (!this.active) {

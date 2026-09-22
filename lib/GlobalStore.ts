@@ -21,7 +21,10 @@ function _getInitialPane() {
   }
 
   const select = hashGet('select')?.split(/[ ,]+/);
-  if (select) return PaneType.MODULE;
+  if (select) {
+    return PaneType.MODULE;
+  }
+
   const isTight =
     globalThis.window !== undefined &&
     globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches;

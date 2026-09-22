@@ -85,7 +85,10 @@ export function ModuleTreeMap({
     });
 
     queueMicrotask(() => {
-      if (isCancelled) return;
+      if (isCancelled) {
+        return;
+      }
+
       setLeaves(newLeaves);
     });
 

@@ -16,7 +16,9 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
   for (const { module } of moduleInfos.values()) {
     // Stub and private modules are not included in the license analysis
-    if (module.isStub || module.package.private) continue;
+    if (module.isStub || module.package.private) {
+      continue;
+    }
 
     const licenses = module.getLicenses();
 
@@ -25,7 +27,9 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
       unlicensedModules.push(module);
     }
 
-    if (licenses.length === 0) continue;
+    if (licenses.length === 0) {
+      continue;
+    }
 
     for (let license of licenses) {
       // licensesRenderAll
@@ -39,7 +43,9 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
       // licensesRenderKeywords
       const keywords = LICENSES[license]?.keywords;
 
-      if (!keywords) continue;
+      if (!keywords) {
+        continue;
+      }
 
       for (const keyword of keywords) {
         if (!modulesByKeyword.has(keyword)) {

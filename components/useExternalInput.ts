@@ -53,7 +53,9 @@ function onPaste(ev: ClipboardEvent): void {
   }
 
   const text = ev.clipboardData?.getData('text');
-  if (!text) return;
+  if (!text) {
+    return;
+  }
 
   // Ignore pastes in fields, unless the field is the search field and the paste is a JSON file
   if (

@@ -5,14 +5,16 @@ import type { LicenseAnalysisState } from '../analyzeLicenses.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 
 export function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
-  if (unlicensedModules.length === 0) return;
+  if (unlicensedModules.length === 0) {
+    return;
+  }
 
   const summary = simplur`Unlicensed modules (${unlicensedModules.length})`;
 
   const details = unlicensedModules
     .toSorted((a, b) => a.key.localeCompare(b.key))
     .map(module => (
-      <div className={reportItemStyles.zebraRow} key={module.key}>
+      <div key={module.key} className={reportItemStyles.zebraRow}>
         <Selectable value={module.key} />
       </div>
     ));
