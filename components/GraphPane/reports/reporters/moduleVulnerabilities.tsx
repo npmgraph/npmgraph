@@ -84,9 +84,8 @@ export async function moduleVulnerabilities({
   // Sort by severity, name
   advisories.sort((a, b) => {
     const rank = SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity];
-    return rank === 0
-      ? (a.packageName ?? '').localeCompare(b.packageName ?? '')
-      : rank;
+    if (rank !== 0) return rank;
+    return (a.packageName ?? '').localeCompare(b.packageName ?? '');
   });
 
   const details = advisories.map(advisory => (

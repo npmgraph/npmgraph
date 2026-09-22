@@ -21,7 +21,6 @@ export function subscribeFlash(listener: FlashListener) {
   for (const entry of queuedEntries) {
     listener(entry);
   }
-
   queuedEntries.length = 0;
 
   return () => {
@@ -75,7 +74,10 @@ export async function celebrate(message: string) {
 }
 
 function normalizeBackgroundColor(bg: string) {
-  return bg === 'error' ? '#b3261e' : bg;
+  if (bg === 'error') {
+    return '#b3261e';
+  }
+  return bg;
 }
 
 function toFlashMessage(wat: unknown) {

@@ -9,7 +9,8 @@ import FilePicker from './FilePicker.tsx';
 import * as styles from './InfoPane.module.scss';
 
 function isGithubUrl(url: URL | null) {
-  return url ? /^github.com$|\.github.com$/.test(url?.host ?? '') : false;
+  if (!url) return false;
+  return /^github.com$|\.github.com$/.test(url?.host ?? '');
 }
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {

@@ -18,7 +18,6 @@ export function isOverrides(value: unknown): value is Overrides {
   for (const v of Object.values(value)) {
     if (typeof v !== 'string' && !isOverrides(v)) return false;
   }
-
   return true;
 }
 
@@ -58,7 +57,9 @@ export function getChildOverrides(
 
   // Merge with any nested overrides defined for this specific child
   const nested = currentOverrides[childName];
-  return typeof nested === 'object' && nested !== null
-    ? { ...rootStringOverrides, ...nested }
-    : rootStringOverrides;
+  if (typeof nested === 'object' && nested !== null) {
+    return { ...rootStringOverrides, ...nested };
+  }
+
+  return rootStringOverrides;
 }

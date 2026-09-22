@@ -40,7 +40,11 @@ export default {
       return COLORIZE_MODULE_CJS;
     }
 
-    return pkgType.types ? COLORIZE_MODULE_TYPES : '';
+    if (pkgType.types) {
+      return COLORIZE_MODULE_TYPES;
+    }
+
+    return '';
   },
 } as SimpleColorizer;
 

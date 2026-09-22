@@ -3,7 +3,6 @@ import { useQuery } from './useQuery.ts';
 export function DiagramTitle({ defaultTitle }: { defaultTitle: string }) {
   const [query] = useQuery();
 
-  return query.length === 0
-    ? defaultTitle
-    : `npmgraph - Dependencies for ${query.join(', ')}`;
+  if (query.length === 0) return defaultTitle;
+  return `npmgraph - Dependencies for ${query.join(', ')}`;
 }

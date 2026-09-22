@@ -208,7 +208,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     // Render SVG markup (async)
     (async function () {
-      if (!graphviz || signal.aborted) return; // Check after all async stuff
+      if (!graphviz) return;
+
+      if (signal.aborted) return; // Check after all async stuff
 
       // Compose SVG markup
       let svgMarkup = '<svg />';
@@ -225,7 +227,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           flash('Error while rendering graph');
         }
       }
-
       if (signal.aborted) return; // Check after all async stuff
 
       // Parse markup
@@ -300,13 +301,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // (Re)apply zoom if/when it changes — useLayoutEffect prevents visual flicker when switching modes
   useLayoutEffect(applyZoom, [zoom, diagramElement]);
 
-  const selectedModules = useMemo(
-    () =>
-      graph
-        ? queryModuleCache(selectType, selectValue)
-        : new Map<string, Module>(),
-    [graph, selectType, selectValue],
-  );
+  const selectedModules = useMemo(() => {
+    if (!graph) return new Map<string, Module>();
+    return queryModuleCache(selectType, selectValue);
+  }, [graph, selectType, selectValue]);
   const previousSelection = usePrevious(selectedModules);
   // Effect: render graph selection
   useEffect(() => {
@@ -352,10 +350,8 @@ function logUpdate(name: string, value: unknown) {
       console.log(name, '<undefined>');
       idSeen.add(name);
     }
-
     return;
   }
-
   if (idSeen.has(value)) return;
   idSeen.add(value);
   console.log(name, 'updated ->', value);
@@ -366,23 +362,21 @@ function scrollGraphIntoView(
   scrollOptions?: ScrollToOptions,
 ) {
   const graphElement = $optional(`.${styles.graph}`);
-  if (!graphElement || !element) {
-    return;
+  if (graphElement && element) {
+    // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
+    // Firefox.  And even in Chrome it just scrolls the element to *barely*
+    // be in view, which isn't really what we want.  (We'd like element to
+    // be centered in the view.)  So, instead, we manually compute the
+    // scroll coordinates.
+    const { top: elementTop, left: elementLeft } =
+      element.getBoundingClientRect();
+    const left =
+      graphElement.scrollLeft + elementLeft - graphElement.clientWidth / 2;
+    const top =
+      graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
+
+    graphElement.scrollTo({ left, top, ...scrollOptions });
   }
-
-  // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
-  // Firefox.  And even in Chrome it just scrolls the element to *barely*
-  // be in view, which isn't really what we want.  (We'd like element to
-  // be centered in the view.)  So, instead, we manually compute the
-  // scroll coordinates.
-  const { top: elementTop, left: elementLeft } =
-    element.getBoundingClientRect();
-  const left =
-    graphElement.scrollLeft + elementLeft - graphElement.clientWidth / 2;
-  const top =
-    graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
-
-  graphElement.scrollTo({ left, top, ...scrollOptions });
 }
 
 function useGraphviz() {
@@ -473,7 +467,6 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     for (const node of $$optional('g.node path', svg)) {
       node.removeAttribute('style');
     }
-
     return;
   }
 

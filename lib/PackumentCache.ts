@@ -55,11 +55,9 @@ export function getCachedPackument(moduleName: string): Packument | undefined {
 
 export function cachePackument(moduleName: string, packument: Packument): void {
   let cacheEntry = packumentCache.get(moduleName);
-  if (cacheEntry) {
-    return;
+  if (!cacheEntry) {
+    cacheEntry = Promise.withResolvers();
+    packumentCache.set(moduleName, cacheEntry);
+    cacheEntry.resolve(packument);
   }
-
-  cacheEntry = Promise.withResolvers();
-  packumentCache.set(moduleName, cacheEntry);
-  cacheEntry.resolve(packument);
 }

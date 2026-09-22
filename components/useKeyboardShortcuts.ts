@@ -9,12 +9,10 @@ export function useKeyboardShortcuts() {
       if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') return;
 
       // Focus search field with "/"
-      if (ev.key !== '/') {
-        return;
+      if (ev.key === '/') {
+        ev.preventDefault();
+        document.getElementById(SEARCH_FIELD_ID)?.focus();
       }
-
-      ev.preventDefault();
-      document.getElementById(SEARCH_FIELD_ID)?.focus();
     }
 
     document.addEventListener('keypress', handleKeyPress);
