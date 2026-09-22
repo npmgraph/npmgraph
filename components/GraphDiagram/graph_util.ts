@@ -385,7 +385,7 @@ export function composeDOT({
 
     for (const { module: dependency, type } of downstream) {
       edges.push(
-        `"${dotEscape(module.key)}" -> "${dependency}" ${
+        `"${dotEscape(module.key)}" -> "${String(dependency)}" ${
           EDGE_ATTRIBUTES[type]
         }`,
       );
