@@ -118,7 +118,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   moduleKey = getModuleKey(name, version);
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(moduleKey);
-  if (cachedEntry && cachedEntry.registry === getRegistry()) {
+  if (cachedEntry?.registry === getRegistry()) {
     return cachedEntry.promise;
   }
 
@@ -161,7 +161,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
 
 export function getCachedModule(key: string) {
   const entry = moduleCache.get(key);
-  return entry && entry.registry === getRegistry() ? entry.module : undefined;
+  return entry?.registry === getRegistry() ? entry.module : undefined;
 }
 
 export function cacheModule(module: Module, registry?: string) {

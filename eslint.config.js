@@ -16,7 +16,6 @@ const disabledRules = [
   '@typescript-eslint/no-unused-private-class-members',
   '@typescript-eslint/prefer-includes',
   '@typescript-eslint/prefer-nullish-coalescing',
-  '@typescript-eslint/prefer-optional-chain',
   '@typescript-eslint/restrict-template-expressions',
   '@typescript-eslint/strict-boolean-expressions',
   '@typescript-eslint/switch-exhaustiveness-check',
