@@ -14,10 +14,8 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-type-assertion',
   '@typescript-eslint/prefer-nullish-coalescing',
   '@typescript-eslint/restrict-template-expressions',
-  '@typescript-eslint/strict-boolean-expressions',
   '@typescript-eslint/switch-exhaustiveness-check',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'import-x/no-unassigned-import',
   'import-x/order',
   'package-json/dependency-version-range',
   'package-json/prefer-files-field',
@@ -35,6 +33,7 @@ const disabledRules = [
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
   '@typescript-eslint/naming-convention', // I don't see this happening
   '@typescript-eslint/no-restricted-types', // null ok
+  '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
   'complexity',
   'no-alert',
