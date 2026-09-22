@@ -47,6 +47,8 @@ const disabledRules = [
   'package-json/require-engines',
   'package-json/require-entry-point',
   'perfectionist/sort-jsx-props',
+  'react-hooks/immutability',
+  'react-hooks/refs',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
@@ -60,8 +62,12 @@ const disabledRules = [
   'react/self-closing-comp',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
+  'unicorn/prefer-combined-guards',
+  'unicorn/prefer-continue',
   'unicorn/prefer-dom-node-html-methods',
+  'unicorn/prefer-early-return',
   'unicorn/prefer-iterator-to-array',
+  'unicorn/prefer-ternary',
 
   // Unwanted
   'capitalized-comments',

@@ -21,6 +21,7 @@ export function subscribeFlash(listener: FlashListener) {
   for (const entry of queuedEntries) {
     listener(entry);
   }
+
   queuedEntries.length = 0;
 
   return () => {
@@ -77,6 +78,7 @@ function normalizeBackgroundColor(bg: string) {
   if (bg === 'error') {
     return '#b3261e';
   }
+
   return bg;
 }
 
