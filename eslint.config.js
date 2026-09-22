@@ -34,7 +34,6 @@ const disabledRules = [
   'unicorn/no-break-in-nested-loop',
   'unicorn/prefer-combined-guards',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
-  'unicorn/prefer-ternary',
 
   // Unwanted
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?

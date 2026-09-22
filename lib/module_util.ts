@@ -28,11 +28,7 @@ export function getModuleKey(name: string, version: string) {
 
 export function parseModuleKey(moduleKey: string): string[] {
   const match = /(?<name>.+)@(?<version>.*)/v.exec(moduleKey);
-  if (!match) {
-    return [moduleKey];
-  }
-
-  return [match.groups!.name, match.groups!.version];
+  return match ? [match.groups!.name, match.groups!.version] : [moduleKey];
 }
 
 const ALIAS_RE = /npm:(?<name>@?[^@]+)@(?<semver>.+)/v;

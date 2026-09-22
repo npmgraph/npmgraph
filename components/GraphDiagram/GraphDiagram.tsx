@@ -323,13 +323,13 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   // (Re)apply zoom if/when it changes — useLayoutEffect prevents visual flicker when switching modes
   useLayoutEffect(applyZoom, [zoom, diagramElement]);
 
-  const selectedModules = useMemo(() => {
-    if (!graph) {
-      return new Map<string, Module>();
-    }
-
-    return queryModuleCache(selectType, selectValue);
-  }, [graph, selectType, selectValue]);
+  const selectedModules = useMemo(
+    () =>
+      graph
+        ? queryModuleCache(selectType, selectValue)
+        : new Map<string, Module>(),
+    [graph, selectType, selectValue],
+  );
   const previousSelection = usePrevious(selectedModules);
   // Effect: render graph selection
   useEffect(() => {
