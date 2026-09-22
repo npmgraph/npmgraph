@@ -50,7 +50,10 @@ export default function ModulePane({
     );
   }
 
-  const module = selectedModules?.values().next().value as Module;
+  const module = selectedModules.values().next().value;
+  if (!module) {
+    return null;
+  }
 
   if (module.isLocal) {
     return (
