@@ -18,7 +18,6 @@ const disabledRules = [
   '@typescript-eslint/strict-boolean-expressions',
   '@typescript-eslint/switch-exhaustiveness-check',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'import-x/no-anonymous-default-export',
   'import-x/no-unassigned-import',
   'import-x/order',
   'n/prefer-global/process',
