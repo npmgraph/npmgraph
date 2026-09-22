@@ -61,13 +61,15 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
     for (const [name, version] of Object.entries(deps)) {
       // Dereference npm:-prefixed aliases
       const match = ALIAS_RE.exec(version);
-      if (match) {
-        console.log(
-          `Resolving alias ${name} -> ${match.groups!.name}@${match.groups!.semver}`,
-        );
-        delete deps[name];
-        deps[match.groups!.name] = match.groups!.semver;
+      if (!match) {
+        continue;
       }
+
+      console.log(
+        `Resolving alias ${name} -> ${match.groups!.name}@${match.groups!.semver}`,
+      );
+      delete deps[name];
+      deps[match.groups!.name] = match.groups!.semver;
     }
   }
 

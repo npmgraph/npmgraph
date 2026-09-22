@@ -398,21 +398,23 @@ function scrollGraphIntoView(
   scrollOptions?: ScrollToOptions,
 ) {
   const graphElement = $optional(`.${styles.graph}`);
-  if (graphElement && element) {
-    // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
-    // Firefox.  And even in Chrome it just scrolls the element to *barely*
-    // be in view, which isn't really what we want.  (We'd like element to
-    // be centered in the view.)  So, instead, we manually compute the
-    // scroll coordinates.
-    const { top: elementTop, left: elementLeft } =
-      element.getBoundingClientRect();
-    const left =
-      graphElement.scrollLeft + elementLeft - graphElement.clientWidth / 2;
-    const top =
-      graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
-
-    graphElement.scrollTo({ left, top, ...scrollOptions });
+  if (!graphElement || !element) {
+    return;
   }
+
+  // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
+  // Firefox.  And even in Chrome it just scrolls the element to *barely*
+  // be in view, which isn't really what we want.  (We'd like element to
+  // be centered in the view.)  So, instead, we manually compute the
+  // scroll coordinates.
+  const { top: elementTop, left: elementLeft } =
+    element.getBoundingClientRect();
+  const left =
+    graphElement.scrollLeft + elementLeft - graphElement.clientWidth / 2;
+  const top =
+    graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
+
+  graphElement.scrollTo({ left, top, ...scrollOptions });
 }
 
 function useGraphviz() {

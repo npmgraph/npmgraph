@@ -33,8 +33,6 @@ const disabledRules = [
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
   'unicorn/prefer-combined-guards',
-  'unicorn/prefer-continue',
-  'unicorn/prefer-early-return',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
   'unicorn/prefer-ternary',
 
