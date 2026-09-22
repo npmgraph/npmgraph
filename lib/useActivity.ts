@@ -12,5 +12,6 @@ export function useActivity() {
   activity.onChange = () => {
     setBool(!bool);
   };
+
   return activity;
 }

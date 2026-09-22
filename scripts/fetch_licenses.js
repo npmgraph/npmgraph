@@ -26,6 +26,7 @@ function getLicense(id) {
   if (!licenses.has(lowerId)) {
     licenses.set(lowerId, {});
   }
+
   return licenses.get(lowerId);
 }
 

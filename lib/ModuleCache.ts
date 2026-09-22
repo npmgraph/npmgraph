@@ -87,6 +87,7 @@ async function fetchModuleFromURL(urlString: string) {
     url.host = 'raw.githubusercontent.com';
     url.pathname = url.pathname.replace('/blob', '');
   }
+
   const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
 
   pkg.name ||= url.href;
@@ -131,6 +132,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
     cacheEntry.registry = getRegistry();
     promise = fetchModuleFromNPM(name, version);
   }
+
   void promise
     .catch(error => {
       if (error instanceof HttpError) {
@@ -199,8 +201,10 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
         ) {
           results.set(module.key, module);
         }
+
         break;
       }
+
       case QueryType.License:
         if (module.getLicenses().includes(queryValue.toLowerCase()))
           results.set(module.key, module);

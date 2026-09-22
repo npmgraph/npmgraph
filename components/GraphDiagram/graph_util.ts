@@ -221,6 +221,7 @@ export async function getGraphForQuery(
       list = [];
       modulesByName.set(module.name, list);
     }
+
     list.push(module);
   }
 
@@ -257,6 +258,7 @@ export async function getGraphForQuery(
                   list = [];
                   modulesByName.set(name, list);
                 }
+
                 if (!list.includes(peerModule)) list.push(peerModule);
               } catch {
                 return;
@@ -326,6 +328,7 @@ export function composeDOT({
     if (a.level !== b.level) {
       return a.level - b.level;
     }
+
     return aKey < bKey ? -1 : aKey > bKey ? 1 : 0;
   });
 

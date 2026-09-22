@@ -70,6 +70,7 @@ export function analyzeMaintainers({
       if (!modulesByMaintainer.has(maintainer.name)) {
         modulesByMaintainer.set(maintainer.name, new Set());
       }
+
       modulesByMaintainer.get(maintainer.name)!.add(module);
     }
   }

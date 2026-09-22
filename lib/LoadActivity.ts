@@ -28,6 +28,7 @@ export default class LoadActivity {
         this.total = 0;
         this.title = undefined;
       }
+
       this.onChange?.(this);
     };
   }

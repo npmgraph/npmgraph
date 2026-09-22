@@ -112,8 +112,7 @@ export default class Module {
   get repository() {
     // TODO: Handle non-github repositories
     const { repository } = this.package;
-    if (typeof repository === 'string') return repository;
-    return repository?.url;
+    return typeof repository === 'string' ? repository : repository?.url;
   }
 
   get githubPath() {
@@ -157,15 +156,18 @@ function parseLicense(
       .flatMap(value => parseLicense(value))
       .filter(value => isDefined(value));
   }
+
   if (typeof license === 'object') {
     license = license.type;
   }
 
-  license = license?.trim().toLowerCase();
-
-  if (!license) return [];
-
-  return license.replaceAll(/^\(|\)$/gv, '').split(/\s+or\s+/);
+  return license
+    ? license
+        .trim()
+        .toLowerCase()
+        .replaceAll(/^\(|\)$/gv, '')
+        .split(/\s+or\s+/)
+    : [];
 }
 
 function parseGithubPath(s: string) {
