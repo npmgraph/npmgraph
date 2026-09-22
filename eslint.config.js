@@ -5,7 +5,6 @@ import { defineConfig } from 'eslint/config';
 const disabledRules = [
   // TODO: Gradually review and enable
   '@typescript-eslint/consistent-type-assertions',
-  '@typescript-eslint/no-base-to-string',
   '@typescript-eslint/no-dynamic-delete',
   '@typescript-eslint/no-empty-function',
   '@typescript-eslint/no-shadow',
