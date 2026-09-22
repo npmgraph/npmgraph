@@ -38,7 +38,12 @@ export function Unsupported({
         </ExternalLink>
       </p>
 
-      <img className={styles.sadKilroy} width="100" src={imageUrl.href} />
+      <img
+        className={styles.sadKilroy}
+        width="100"
+        src={imageUrl.href}
+        alt="Sad Kilroy"
+      />
     </div>
   );
 }

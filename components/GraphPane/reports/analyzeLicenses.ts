@@ -9,7 +9,7 @@ export type LicenseAnalysisState = {
 };
 
 export function analyzeLicenses({ moduleInfos }: GraphState) {
-  const modulesByLicense: Map<string, Module[]> = new Map();
+  const modulesByLicense = new Map<string, Module[]>();
   const unlicensedModules: Module[] = [];
   const modulesByKeyword = new Map<OSIKeyword, Module[]>();
 

@@ -11,7 +11,7 @@ if (!apiKey) {
 const bugsnag = Bugsnag.start({
   appVersion: pkg.version,
   apiKey,
-  releaseStage: /npmgraph/.test(location.hostname)
+  releaseStage: location.hostname.includes('npmgraph')
     ? 'production'
     : 'development',
   enabledReleaseStages: ['production'],

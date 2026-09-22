@@ -19,9 +19,7 @@ type Advisory = {
   cvss: { score: number; vectorString: string };
 };
 
-type BulkAdvisories = {
-  [packageName: string]: Advisory[];
-};
+type BulkAdvisories = Record<string, Advisory[]>;
 
 const SEVERITY_RANK = {
   none: 0,
@@ -84,11 +82,9 @@ export async function moduleVulnerabilities({
   // Sort by severity, name
   advisories.sort((a, b) => {
     const rank = SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity];
-    if (rank !== 0) {
-      return rank;
-    }
-
-    return (a.packageName ?? '').localeCompare(b.packageName ?? '');
+    return rank === 0
+      ? (a.packageName ?? '').localeCompare(b.packageName ?? '')
+      : rank;
   });
 
   const details = advisories.map(advisory => (

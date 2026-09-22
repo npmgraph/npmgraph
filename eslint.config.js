@@ -4,9 +4,6 @@ import { defineConfig } from 'eslint/config';
 
 const disabledRules = [
   // TODO: Gradually review and enable
-  '@typescript-eslint/array-type',
-  '@typescript-eslint/consistent-generic-constructors',
-  '@typescript-eslint/consistent-indexed-object-style',
   '@typescript-eslint/consistent-type-assertions',
   '@typescript-eslint/no-base-to-string',
   '@typescript-eslint/no-dynamic-delete',
@@ -16,14 +13,7 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-assignment',
   '@typescript-eslint/no-unsafe-member-access',
   '@typescript-eslint/no-unsafe-type-assertion',
-  '@typescript-eslint/no-unused-private-class-members',
-  '@typescript-eslint/no-useless-default-assignment',
-  '@typescript-eslint/non-nullable-type-assertion-style',
-  '@typescript-eslint/prefer-includes',
   '@typescript-eslint/prefer-nullish-coalescing',
-  '@typescript-eslint/prefer-optional-chain',
-  '@typescript-eslint/prefer-readonly',
-  '@typescript-eslint/prefer-regexp-exec',
   '@typescript-eslint/restrict-template-expressions',
   '@typescript-eslint/strict-boolean-expressions',
   '@typescript-eslint/switch-exhaustiveness-check',
@@ -31,7 +21,6 @@ const disabledRules = [
   'import-x/no-anonymous-default-export',
   'import-x/no-unassigned-import',
   'import-x/order',
-  'jsx-a11y-x/alt-text',
   'n/prefer-global/process',
   'package-json/dependency-version-range',
   'package-json/prefer-files-field',
@@ -41,18 +30,9 @@ const disabledRules = [
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
   'react/hook-use-state',
-  'react/jsx-no-bind',
-  'react/jsx-no-leaked-render',
-  'react/jsx-no-target-blank',
-  'react/no-unescaped-entities',
-  'react/prefer-read-only-props',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
-  'unicorn/prefer-combined-guards',
-  'unicorn/prefer-continue',
-  'unicorn/prefer-early-return',
-  'unicorn/prefer-iterator-to-array',
-  'unicorn/prefer-ternary',
+  'unicorn/prefer-iterator-to-array', // TODO: 2027
 
   // Unwanted
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
@@ -64,6 +44,7 @@ const disabledRules = [
   'no-console',
   'no-restricted-globals',
   'no-warning-comments',
+  'react/jsx-no-target-blank',
   'require-unicode-regexp',
 ];
 

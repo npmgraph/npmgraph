@@ -152,7 +152,7 @@ export default class Module {
 
 function parseLicense(
   license:
-    string | DeprecatedLicense | (string | DeprecatedLicense)[] | undefined,
+    string | DeprecatedLicense | Array<string | DeprecatedLicense> | undefined,
 ): string[] {
   if (Array.isArray(license)) {
     return license
@@ -174,5 +174,5 @@ function parseLicense(
 }
 
 function parseGithubPath(s: string) {
-  return s.match(/github\.com\/[^/]+\/[^#/?]+/)?.[0]?.replace(/\.git$/v, '');
+  return /github\.com\/[^/]+\/[^#/?]+/.exec(s)?.[0]?.replace(/\.git$/v, '');
 }
