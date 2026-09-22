@@ -17,7 +17,6 @@ const disabledRules = [
   '@typescript-eslint/prefer-includes',
   '@typescript-eslint/prefer-nullish-coalescing',
   '@typescript-eslint/prefer-optional-chain',
-  '@typescript-eslint/prefer-regexp-exec',
   '@typescript-eslint/restrict-template-expressions',
   '@typescript-eslint/strict-boolean-expressions',
   '@typescript-eslint/switch-exhaustiveness-check',

@@ -27,7 +27,7 @@ export function getModuleKey(name: string, version: string) {
 }
 
 export function parseModuleKey(moduleKey: string): string[] {
-  const match = moduleKey.match(/(?<name>.+)@(?<version>.*)/v);
+  const match = /(?<name>.+)@(?<version>.*)/v.exec(moduleKey);
   if (!match) {
     return [moduleKey];
   }

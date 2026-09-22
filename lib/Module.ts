@@ -174,5 +174,5 @@ function parseLicense(
 }
 
 function parseGithubPath(s: string) {
-  return s.match(/github\.com\/[^/]+\/[^#/?]+/)?.[0]?.replace(/\.git$/v, '');
+  return /github\.com\/[^/]+\/[^#/?]+/.exec(s)?.[0]?.replace(/\.git$/v, '');
 }
