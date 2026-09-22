@@ -39,7 +39,12 @@ export function Tag({
   let img = null;
   if (gravatar) {
     const hash = md5(gravatar);
-    img = <img src={`https://www.gravatar.com/avatar/${hash}?s=32`} />;
+    img = (
+      <img
+        src={`https://www.gravatar.com/avatar/${hash}?s=32`}
+        alt="User avatar"
+      />
+    );
   }
 
   return (

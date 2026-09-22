@@ -22,6 +22,7 @@ export function maintainersAll({
         img = (
           <img
             loading="lazy"
+            alt={`${name}'s avatar`}
             src={`https://www.gravatar.com/avatar/${md5(email)}?s=32`}
           />
         );
