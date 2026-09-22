@@ -4,8 +4,8 @@ import {
   getChildOverrides,
   getVersionOverride,
   isOverrides,
+  type Overrides 
 } from './overrides_util.ts';
-import type { Overrides } from './overrides_util.ts';
 
 describe('getVersionOverride', () => {
   it('should return the overridden version when a string override exists', () => {

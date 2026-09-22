@@ -5,12 +5,10 @@ import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
 import { getModuleKey } from '../../lib/module_util.ts';
-import type { Overrides } from '../../lib/overrides_util.ts';
-import {
+import { type Overrides,
   getChildOverrides,
   getVersionOverride,
-  isOverrides,
-} from '../../lib/overrides_util.ts';
+  isOverrides } from '../../lib/overrides_util.ts';
 import { isOptionalPeerDependency } from '../../lib/peer_dependency_util.ts';
 import * as styles from './GraphDiagram.module.scss';
 

@@ -1,6 +1,5 @@
 import type Module from '../../../lib/Module.ts';
-import type { OSIKeyword } from '../../../lib/licenses.ts';
-import { LICENSES } from '../../../lib/licenses.ts';
+import { type OSIKeyword, LICENSES  } from '../../../lib/licenses.ts';
 import type { GraphState } from '../../GraphDiagram/graph_util.ts';
 
 export type LicenseAnalysisState = {
