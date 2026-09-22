@@ -67,11 +67,11 @@ export default function PreviewWidget() {
       <button
         aria-label="Hide widget"
         className={utilities.brightHover}
+        title="Hide widget until reload"
+        type="button"
         onClick={() => {
           setIsHidden(true);
         }}
-        title="Hide widget until reload"
-        type="button"
       >
         <XIcon />
       </button>

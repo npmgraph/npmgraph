@@ -1,10 +1,8 @@
-import type { SemVer } from 'semver';
-import { parse } from 'semver';
+import { type SemVer, parse } from 'semver';
 import type Module from '../../lib/Module.ts';
 
 import type { PackumentVersion } from '@npm/types';
-import type { ReactElement } from 'react';
-import { useState } from 'react';
+import { type ReactElement, useState } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useMeasure from '../../lib/useMeasure.ts';
@@ -21,7 +19,10 @@ function yearFromTimestamp(t: number) {
 
 function createScale(in0: number, in1: number, out0: number, out1: number) {
   return function (v: number) {
-    if (in1 === in0) return (out1 + out0) / 2;
+    if (in1 === in0) {
+      return (out1 + out0) / 2;
+    }
+
     return ((v - in0) / (in1 - in0)) * (out1 - out0) + out0;
   };
 }
@@ -29,16 +30,24 @@ function createScale(in0: number, in1: number, out0: number, out1: number) {
 export function ReleaseTimeline({ module }: { module: Module }) {
   const [ref, { width: w, height: h }] = useMeasure<SVGSVGElement>();
   const [tmax] = useState(() => Date.now());
-  if (!module.packument?.versions) return;
+  if (!module.packument?.versions) {
+    return;
+  }
 
   const { time, versions } = module.packument;
 
   const byTime = Object.entries(versions)
     .map(([key, version]) => {
       const semver = parse(key);
-      if (!semver) return undefined;
+      if (!semver) {
+        return undefined;
+      }
+
       // "0.0.0" isn't a valid version (e.g. you can't npm publish it)
-      if (semver.version === '0.0.0') return undefined;
+      if (semver.version === '0.0.0') {
+        return undefined;
+      }
+
       const pv: PackumentVersion & {
         time: number;
         semver: SemVer;
@@ -49,7 +58,9 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     .toSorted(([, a], [, b]) => (a.time < b.time ? -1 : 0));
 
   // No releases to display?
-  if (byTime.length === 0) return;
+  if (byTime.length === 0) {
+    return;
+  }
 
   let majorMax = byTime[0][1].semver.major;
   let majorMin = byTime[0][1].semver.major;
@@ -88,14 +99,16 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     year++
   ) {
     const x = xScale(Date.parse(String(year)));
-    layers.grid.push(<line x1={x} y1={0} x2={x} y2={h} key={`year-${year}`} />);
+    layers.grid.push(<line key={`year-${year}`} x1={x} y1={0} x2={x} y2={h} />);
   }
 
   // Add version dots and lines
   for (const [key, version] of byTime) {
     const { time, semver } = version;
 
-    if (!semver) continue;
+    if (!semver) {
+      continue;
+    }
 
     const x = xScale(time);
     const title = `${key} published ${timestring(time)}`;
@@ -149,9 +162,9 @@ export function ReleaseTimeline({ module }: { module: Module }) {
   return (
     <Section title="Release Timeline">
       <svg
+        ref={ref}
         viewBox={`${-xpad} ${-ypad} ${w + xpad * 2} ${h + ypad * 2}`}
         className={styles.root}
-        ref={ref}
       >
         {Object.entries(layers).map(([k, layer]) => (
           <g key={`layer-${k}`} className={layerClasses[k]}>

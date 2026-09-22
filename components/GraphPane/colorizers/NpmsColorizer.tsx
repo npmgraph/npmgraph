@@ -82,7 +82,10 @@ export class NpmsColorizer implements BulkColorizer {
     // Colorize nodes
     for (const m of modules) {
       const score = combinedResults[m.name]?.score;
-      if (!score) continue;
+      if (!score) {
+        continue;
+      }
+
       let color: string | undefined;
       switch (this.name) {
         case COLORIZE_OVERALL:

@@ -85,8 +85,13 @@ function detectPackageType(pkg: PackageJSON) {
   };
 
   // Inspect package#main
-  if (isESMFile(pkg.main)) pkgType.esm = true;
-  if (isCJSFile(pkg.main)) pkgType.cjs = true;
+  if (isESMFile(pkg.main)) {
+    pkgType.esm = true;
+  }
+
+  if (isCJSFile(pkg.main)) {
+    pkgType.cjs = true;
+  }
 
   // Inspect package#exports (recursively)
   return _detectExports(pkg.exports, pkgType);
@@ -94,18 +99,28 @@ function detectPackageType(pkg: PackageJSON) {
 
 // Loosely inspect package.json#exports for module type (recursive)
 function _detectExports(exports: unknown, pkgType: PackageModuleType) {
-  if (!exports) return pkgType;
+  if (!exports) {
+    return pkgType;
+  }
 
   // The presence of .mjs, .mts, .cjs, or .cts files is a strong indicator of
   // the module type
   if (typeof exports === 'string') {
-    if (isESMFile(exports)) pkgType.esm = true;
-    if (isCJSFile(exports)) pkgType.cjs = true;
+    if (isESMFile(exports)) {
+      pkgType.esm = true;
+    }
+
+    if (isCJSFile(exports)) {
+      pkgType.cjs = true;
+    }
+
     return pkgType;
   }
 
   // Drill into array values
-  if (Array.isArray(exports)) exports.some(v => _detectExports(v, pkgType));
+  if (Array.isArray(exports)) {
+    exports.some(v => _detectExports(v, pkgType));
+  }
 
   if (typeof exports === 'object') {
     const defaultValue = 'default' in exports && exports.default;
@@ -114,11 +129,18 @@ function _detectExports(exports: unknown, pkgType: PackageModuleType) {
 
     // Infer dual support if there's an explicit import or require in
     // combination with a default export
-    if (importValue || (defaultValue && requireValue)) pkgType.esm = true;
-    if (requireValue || (defaultValue && importValue)) pkgType.cjs = true;
+    if (importValue || (defaultValue && requireValue)) {
+      pkgType.esm = true;
+    }
+
+    if (requireValue || (defaultValue && importValue)) {
+      pkgType.cjs = true;
+    }
 
     // Drill down into object values
-    for (const v of Object.values(exports)) _detectExports(v, pkgType);
+    for (const v of Object.values(exports)) {
+      _detectExports(v, pkgType);
+    }
   }
 
   return pkgType;

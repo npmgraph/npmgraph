@@ -19,11 +19,15 @@ export function getRepoUrlForModule(module: Module): string | undefined {
   const { homepage, bugs, repository } = module.package;
 
   const parse = (url?: string) => {
-    if (!url) return undefined;
+    if (!url) {
+      return undefined;
+    }
 
     // Try parsing the URL directly
     const info = hostedGitInfo.fromUrl(url);
-    if (info) return info.browse();
+    if (info) {
+      return info.browse();
+    }
 
     // Fallback: strip path suffixes and try again
     const baseUrl = url.replace(

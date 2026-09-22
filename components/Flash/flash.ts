@@ -50,7 +50,9 @@ export function flash(wat: unknown, bg = '#f80') {
 
 export function notifyFlashElementReady(id: number, element: HTMLElement) {
   const waiter = elementWaiters.get(id);
-  if (!waiter) return;
+  if (!waiter) {
+    return;
+  }
 
   elementWaiters.delete(id);
   waiter(element);

@@ -39,7 +39,9 @@ function detectFeatures() {
   };
 
   for (const [k, v] of Object.entries(features)) {
-    if (v) continue;
+    if (v) {
+      continue;
+    }
 
     unsupported.set(
       k,

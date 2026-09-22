@@ -12,7 +12,9 @@ import * as styles from './peerDependenciesAll.module.scss';
 export function peerDependenciesAll({
   peerDependencyInfos,
 }: PeerDependenciesState) {
-  if (peerDependencyInfos.length === 0) return;
+  if (peerDependencyInfos.length === 0) {
+    return;
+  }
 
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
     peerDependencyInfos,
@@ -39,8 +41,8 @@ export function peerDependenciesAll({
             const { name, optional, versionRange, destination } = pdi;
             return (
               <div
-                className={cn(reportItemStyles.zebraRow, styles.row)}
                 key={`${pdi.name}${pdi.versionRange}`}
+                className={cn(reportItemStyles.zebraRow, styles.row)}
               >
                 <span className={styles.wants}>
                   {name}@{versionRange}
@@ -77,7 +79,9 @@ export function peerDependenciesMissing({
     pdi => !pdi.destination && !pdi.optional,
   );
   const result = peerDependenciesAll({ peerDependencyInfos: missingInfos });
-  if (!result) return;
+  if (!result) {
+    return;
+  }
 
   return {
     type: 'warn',

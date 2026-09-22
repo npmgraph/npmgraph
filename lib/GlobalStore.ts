@@ -1,7 +1,6 @@
 import { useCallback, useSyncExternalStore } from 'react';
 import type { GraphState } from '../components/GraphDiagram/graph_util.ts';
-import type { PaneTypes } from './constants.ts';
-import { PaneType, PARAM_QUERY } from './constants.ts';
+import { type PaneTypes, PaneType, PARAM_QUERY } from './constants.ts';
 import type Module from './Module.ts';
 import { TIGHT_SCREEN_QUERY } from './useTightScreen.ts';
 import { hashGet, searchGet } from './url_util.ts';
@@ -21,7 +20,10 @@ function _getInitialPane() {
   }
 
   const select = hashGet('select')?.split(/[ ,]+/);
-  if (select) return PaneType.MODULE;
+  if (select) {
+    return PaneType.MODULE;
+  }
+
   const isTight =
     globalThis.window !== undefined &&
     globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches;

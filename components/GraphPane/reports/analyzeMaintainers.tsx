@@ -36,8 +36,9 @@ export function analyzeMaintainers({
       const { maintainers } = module;
 
       // Group modules we aren't interested in under "" (removed below)
-      if (module.isStub || module.package.private || maintainers.length !== 1)
+      if (module.isStub || module.package.private || maintainers.length !== 1) {
         return '';
+      }
 
       soloModulesCount++;
       return maintainers[0].name;
@@ -48,7 +49,9 @@ export function analyzeMaintainers({
   soloModulesByMaintainer.delete('');
 
   for (const { module } of moduleInfos.values()) {
-    if (module.isStub) continue;
+    if (module.isStub) {
+      continue;
+    }
 
     const { maintainers } = module;
 

@@ -15,7 +15,7 @@ export default function FilePicker({ label }: { label: string }) {
   return (
     <label className={styles.link} style={{ display: 'inline' }}>
       {label}
-      <input type="file" hidden onChange={onSelect} accept=".json" />
+      <input hidden type="file" accept=".json" onChange={onSelect} />
     </label>
   );
 }

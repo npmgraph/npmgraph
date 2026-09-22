@@ -17,7 +17,7 @@ export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
     .filter(([, v]) => v.length > 1)
     .toSorted(([a], [b]) => a.localeCompare(b))
     .map(([name, versions]) => (
-      <div className={styles.row} key={name}>
+      <div key={name} className={styles.row}>
         <Selectable className={styles.name} value={name} />
 
         {versions.map(version => (
@@ -31,7 +31,9 @@ export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
       </div>
     ));
 
-  if (details.length === 0) return;
+  if (details.length === 0) {
+    return;
+  }
 
   const summary = simplur`Modules with multiple versions (${details.length})`;
 

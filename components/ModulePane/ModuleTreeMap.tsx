@@ -1,7 +1,5 @@
-import type { HierarchyRectangularNode } from 'd3-hierarchy';
-import { stratify, treemap } from 'd3-hierarchy';
-import type { ReactElement } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { type HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
+import { type ReactElement, useEffect, useRef, useState } from 'react';
 import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
 import human from '../../lib/human.ts';
 
@@ -85,7 +83,10 @@ export function ModuleTreeMap({
     });
 
     queueMicrotask(() => {
-      if (isCancelled) return;
+      if (isCancelled) {
+        return;
+      }
+
       setLeaves(newLeaves);
     });
 

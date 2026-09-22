@@ -32,7 +32,9 @@ export function Tag({
 } & HTMLProps<HTMLDivElement>) {
   const setGraphSelection = useGraphSelection()[2];
   let title = value;
-  if (count > 1) title += ` (${count})`;
+  if (count > 1) {
+    title += ` (${count})`;
+  }
 
   let img = null;
   if (gravatar) {

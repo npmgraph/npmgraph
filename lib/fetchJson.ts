@@ -23,7 +23,10 @@ export default async function fetchJson<T>(
   init ??= {};
 
   if (init.timeout) {
-    if (init.signal) throw new Error('Cannot use timeout with signal');
+    if (init.signal) {
+      throw new Error('Cannot use timeout with signal');
+    }
+
     // Abort request after `timeout`, while also respecting user-supplied `signal`
     init.signal = AbortSignal?.timeout(init.timeout);
   }
@@ -37,7 +40,10 @@ export default async function fetchJson<T>(
 
   const p = fetch(input, init)
     .then(async response => {
-      if (response.ok) return response.json() as unknown;
+      if (response.ok) {
+        return response.json() as unknown;
+      }
+
       const error = new HttpError(response.status);
       error.stack = traceError.stack;
       throw error;

@@ -15,8 +15,8 @@ export function Splitter({
   return (
     <div
       className={cn(utilities.brightHover, tabStyles.tab, styles.splitter)}
-      onClick={onClick}
       aria-hidden={!isOpen}
+      onClick={onClick}
     >
       {blackRightPointingTriangle}
     </div>

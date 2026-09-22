@@ -48,18 +48,21 @@ export default function Flash() {
       {entries.map(entry => (
         <div
           key={entry.id}
-          className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
-          style={{
-            maxWidth: `${layout.maxWidth}px`,
-            backgroundColor: entry.backgroundColor,
-          }}
           ref={element => {
             if (element) {
               notifyFlashElementReady(entry.id, element);
             }
           }}
+          className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
+          style={{
+            maxWidth: `${layout.maxWidth}px`,
+            backgroundColor: entry.backgroundColor,
+          }}
           onAnimationEnd={event => {
-            if (event.animationName !== flashStyles.flashOut) return;
+            if (event.animationName !== flashStyles.flashOut) {
+              return;
+            }
+
             const { target } = event.nativeEvent;
             setEntries(previous => previous.filter(x => x.id !== entry.id));
           }}

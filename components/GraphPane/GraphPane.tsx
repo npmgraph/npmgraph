@@ -43,7 +43,9 @@ export default function GraphPane({
   const { className, ...restProps } = props;
   const [collapse, setCollapse] = useCollapse();
 
-  if (!graph?.moduleInfos) return <div>Loading</div>;
+  if (!graph?.moduleInfos) {
+    return <div>Loading</div>;
+  }
 
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
@@ -57,10 +59,10 @@ export default function GraphPane({
           <span>
             {simplur`${collapse.length} module[|s] collapsed `}
             <button
+              type="button"
               onClick={() => {
                 setCollapse([]);
               }}
-              type="button"
             >
               Expand All
             </button>

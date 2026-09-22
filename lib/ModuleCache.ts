@@ -47,7 +47,10 @@ function selectVersion(
   } else {
     // Find highest matching version
     for (const version of Object.keys(packument.versions)) {
-      if (!satisfies(version, targetVersion)) continue;
+      if (!satisfies(version, targetVersion)) {
+        continue;
+      }
+
       if (!selectedVersion || gt(version, selectedVersion)) {
         selectedVersion = version;
       }
@@ -98,7 +101,9 @@ async function fetchModuleFromURL(urlString: string) {
 // Note: This method should not throw!  Errors should be returned as part of a
 // stub module
 export async function getModule(moduleKey: string): Promise<Module> {
-  if (!moduleKey) throw new Error('Undefined module name');
+  if (!moduleKey) {
+    throw new Error('Undefined module name');
+  }
 
   let [name, version] = parseModuleKey(moduleKey);
 
@@ -182,7 +187,9 @@ export function cacheModule(module: Module, registry?: string) {
 export function queryModuleCache(queryType: QueryType, queryValue: string) {
   const results = new Map<string, Module>();
 
-  if (!queryType && !queryValue) return results;
+  if (!queryType && !queryValue) {
+    return results;
+  }
 
   // 'exact' and 'name' query deprecated in favor of Default
   if (queryType === QueryType.Exact || queryType === QueryType.Name) {
@@ -190,7 +197,9 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
   }
 
   for (const { module } of moduleCache.values()) {
-    if (!module) continue;
+    if (!module) {
+      continue;
+    }
 
     switch (queryType) {
       case QueryType.Default: {
@@ -206,12 +215,16 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
       }
 
       case QueryType.License:
-        if (module.getLicenses().includes(queryValue.toLowerCase()))
+        if (module.getLicenses().includes(queryValue.toLowerCase())) {
           results.set(module.key, module);
+        }
+
         break;
       case QueryType.Maintainer:
-        if (module.maintainers.some(({ name }) => name === queryValue))
+        if (module.maintainers.some(({ name }) => name === queryValue)) {
           results.set(module.key, module);
+        }
+
         break;
     }
   }
@@ -235,7 +248,9 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
   const sanitized: PackageJSON = {} as PackageJSON;
 
   for (const key of PACKAGE_WHITELIST) {
-    if (Object.hasOwn(pkg, key)) sanitized[key] = pkg[key];
+    if (Object.hasOwn(pkg, key)) {
+      sanitized[key] = pkg[key];
+    }
   }
 
   return sanitized;
@@ -283,10 +298,15 @@ export function syncPackagesHash() {
   const packagesJson = hashGet(PARAM_PACKAGES);
 
   // If the hash param hasn't changed, there's nothing to do
-  if (lastPackagesValue === packagesJson) return;
+  if (lastPackagesValue === packagesJson) {
+    return;
+  }
+
   lastPackagesValue = packagesJson;
 
-  if (!packagesJson) return;
+  if (!packagesJson) {
+    return;
+  }
 
   let packages: PackageJSON[];
   try {

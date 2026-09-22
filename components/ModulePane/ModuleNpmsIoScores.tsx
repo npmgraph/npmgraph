@@ -9,7 +9,9 @@ export default function ModuleNpmsIoScores({ module }: { module: Module }) {
   const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
 
   useEffect(() => {
-    if (module.isLocal) return;
+    if (module.isLocal) {
+      return;
+    }
 
     setNpmsData(undefined);
 

@@ -16,11 +16,15 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
   const bpApiUrl = `https://bundlephobia.com/api/size?package=${pn}`;
 
   useEffect(() => {
-    if (module.isLocal) return;
+    if (module.isLocal) {
+      return;
+    }
 
     setBundleInfo(undefined);
 
-    if (!pkg) return;
+    if (!pkg) {
+      return;
+    }
 
     fetchJson<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
       .then(data => {
