@@ -46,12 +46,14 @@ import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
-import { type DependencyKey,
-type GraphState,
+import {
+  type DependencyKey,
+  type GraphState,
   composeDOT,
   gatherSelectionInfo,
   getDiagramElement,
-  getGraphForQuery } from './graph_util.ts';
+  getGraphForQuery,
+} from './graph_util.ts';
 
 export type ZoomOption =
   typeof ZOOM_NONE | typeof ZOOM_FIT_WIDTH | typeof ZOOM_FIT_HEIGHT;

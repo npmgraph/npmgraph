@@ -1,8 +1,8 @@
-import { type SemVer, parse  } from 'semver';
+import { type SemVer, parse } from 'semver';
 import type Module from '../../lib/Module.ts';
 
 import type { PackumentVersion } from '@npm/types';
-import { type ReactElement, useState  } from 'react';
+import { type ReactElement, useState } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useMeasure from '../../lib/useMeasure.ts';

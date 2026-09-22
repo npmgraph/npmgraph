@@ -1,4 +1,8 @@
-import { all, resolveDocUrl, type ModuleReplacement  } from 'module-replacements';
+import {
+  all,
+  resolveDocUrl,
+  type ModuleReplacement,
+} from 'module-replacements';
 import { cn } from '../../../../lib/dom.ts';
 import { ExternalLink } from '../../../ExternalLink.tsx';
 import { Selectable } from '../../../Selectable.tsx';

@@ -4,7 +4,7 @@ import {
   getChildOverrides,
   getVersionOverride,
   isOverrides,
-  type Overrides 
+  type Overrides,
 } from './overrides_util.ts';
 
 describe('getVersionOverride', () => {

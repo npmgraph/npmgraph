@@ -1,4 +1,4 @@
-import { type HTMLProps, useRef, useState  } from 'react';
+import { type HTMLProps, useRef, useState } from 'react';
 import {
   PaneType,
   PARAM_QUERY,
