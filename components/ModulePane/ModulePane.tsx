@@ -176,6 +176,7 @@ export default function ModulePane({
       >
         <Tags>
           {maintainers.map(
+            // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Incorrect types
             ({ name = 'Unknown', email }: Exclude<Maintainer, string>) => (
               <Tag
                 key={name + email}

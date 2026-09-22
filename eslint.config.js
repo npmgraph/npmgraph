@@ -14,7 +14,6 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-member-access',
   '@typescript-eslint/no-unsafe-type-assertion',
   '@typescript-eslint/no-unused-private-class-members',
-  '@typescript-eslint/no-useless-default-assignment',
   '@typescript-eslint/non-nullable-type-assertion-style',
   '@typescript-eslint/prefer-includes',
   '@typescript-eslint/prefer-nullish-coalescing',
