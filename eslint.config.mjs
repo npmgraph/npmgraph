@@ -5,6 +5,8 @@ import { defineConfig } from 'eslint/config';
 
 const disabledRules = [
   // TODO: Gradually review and enable
+  '@stylistic/jsx-self-closing-comp',
+  'jsx-a11y-x/alt-text',
   '@typescript-eslint/array-type',
   '@typescript-eslint/consistent-generic-constructors',
   '@typescript-eslint/consistent-indexed-object-style',
@@ -44,6 +46,7 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
+  'perfectionist/sort-jsx-props',
   'react-hooks/set-state-in-effect',
   'react/boolean-prop-naming',
   'react/forward-ref-uses-ref',
@@ -80,7 +83,10 @@ export default defineConfig([
     prettier: 'compat',
     gitignore: import.meta.url,
   }),
-  ...xoReact(),
+  ...xoReact({
+    space: true,
+    prettier: 'compat',
+  }),
   {
     files: [tsFilesGlob, jsFilesGlob],
     rules: {

@@ -61,7 +61,6 @@
   "devDependencies": {
     "@commitlint/cli": "21.2.2",
     "@commitlint/config-conventional": "21.2.2",
-    "@eslint-react/eslint-plugin": "^5.19.0",
     "@npm/types": "2.1.0",
     "@parcel/packager-xml": "2.16.4",
     "@parcel/plugin": "^2.16.4",
@@ -86,7 +85,7 @@
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-config-xo": "^4.0.0",
-    "eslint-config-xo-react": "^0.31.0",
+    "eslint-config-xo-react": "^0.32.0",
     "eslint-formatter-unix": "^9.0.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "lefthook": "2.1.12",
