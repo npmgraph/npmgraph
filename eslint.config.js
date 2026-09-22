@@ -13,8 +13,7 @@ const disabledRules = [
   '@typescript-eslint/prefer-nullish-coalescing',
   '@typescript-eslint/switch-exhaustiveness-check',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'import-x/order',
-  'package-json/dependency-version-range',
+  'import-x/order', // TODO: https://github.com/un-ts/eslint-plugin-import-x/pull/504 https://github.com/un-ts/eslint-plugin-import-x/pull/514
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
