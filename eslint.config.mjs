@@ -1,4 +1,3 @@
-import prettierConflicts from 'eslint-config-prettier';
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import { defineConfig } from 'eslint/config';
@@ -6,7 +5,7 @@ import { defineConfig } from 'eslint/config';
 const disabledRules = [
   // TODO: Gradually review and enable
   '@stylistic/jsx-self-closing-comp',
-  'jsx-a11y-x/alt-text',
+  '@stylistic/no-mixed-operators',
   '@typescript-eslint/array-type',
   '@typescript-eslint/consistent-generic-constructors',
   '@typescript-eslint/consistent-indexed-object-style',
@@ -34,12 +33,14 @@ const disabledRules = [
   '@typescript-eslint/strict-boolean-expressions',
   '@typescript-eslint/switch-exhaustiveness-check',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
+  'curly',
   'import-x/no-anonymous-default-export',
   'import-x/no-duplicates',
   'import-x/no-extraneous-dependencies',
   'import-x/no-unassigned-import',
   'import-x/order',
   'json/no-empty-keys',
+  'jsx-a11y-x/alt-text',
   'n/prefer-global/process',
   'no-warning-comments',
   'package-json/dependency-version-range',
@@ -117,6 +118,4 @@ export default defineConfig([
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },
-  // TODO: Revisit after https://github.com/xojs/eslint-config-xo-react/issues/46
-  prettierConflicts,
 ]);
