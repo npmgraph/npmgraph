@@ -76,7 +76,7 @@ export function PieGraph({
       .selectAll('text')
       .data(arcs)
       .join('text')
-      .attr('transform', d => `translate(${arcLabel.centroid(d)})`)
+      .attr('transform', d => `translate(${arcLabel.centroid(d).join(',')})`)
       .attr(
         'font-size',
         d => `${0.75 + (d.endAngle - d.startAngle) / Math.PI / 2}em`,

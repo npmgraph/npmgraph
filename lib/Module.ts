@@ -74,9 +74,7 @@ export default class Module {
       [];
 
     if (!Array.isArray(maintainers)) {
-      console.warn(
-        `Unexpected maintainers type for ${this.key}: ${maintainers}`,
-      );
+      console.warn(`Unexpected maintainers type for ${this.key}`, maintainers);
       maintainers = [maintainers];
     }
 
