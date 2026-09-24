@@ -66,11 +66,6 @@ export default defineConfig([
     },
   },
   {
-    // TODO: https://github.com/xojs/eslint-config-xo/issues/128
-    files: ['**/*.test.ts'],
-    rules: { '@typescript-eslint/no-floating-promises': 'off' },
-  },
-  {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },
 ]);
