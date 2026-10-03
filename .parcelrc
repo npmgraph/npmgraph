@@ -1,9 +1,5 @@
 {
   "extends": "@parcel/config-default",
-  "resolvers": [
-    "./parcel-ts-resolver.js",
-    "..."
-  ],
   "namers": [
     "./scripts/favicon-namer.parcel.js",
     "..."

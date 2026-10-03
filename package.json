@@ -101,7 +101,10 @@
     "typescript-plugin-css-modules": "^5.2.0"
   },
   "browserslist": [
-    "last 2 versions"
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions"
   ],
   "alias:COMMENT": "parcel chokes on graphviz's attempt to build a URL that points to a non-existent WASM file.  We use `alias` here to tell parcel to ignore that reference.",
   "alias": {
