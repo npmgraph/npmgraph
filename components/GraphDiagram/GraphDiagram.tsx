@@ -63,36 +63,22 @@ export type ZoomOption =
 
 const idSeen = new Set<unknown>();
 
-let graphvizPromise: Promise<Graphviz> | undefined;
-
-async function loadGraphviz() {
-  graphvizPromise ??= import('@hpcc-js/wasm-graphviz').then(({ Graphviz }) =>
-    Graphviz.load(),
-  );
-
-  return graphvizPromise;
-}
-
-// Kick off at module load so the promise exists before any render
-// eslint-disable-next-line unicorn/no-top-level-side-effects
-void loadGraphviz();
+// Keep graphviz in a secondary bundle but load it eagerly
+const graphvizPromise = (async () => {
+  const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
+  return Graphviz.load();
+})();
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   return (
     <ErrorBoundary
       fallback={
-        <div className={cn(styles.graph, styles.graphvizLoading)}>
-          Layout package failed to load.
+        <div className={cn(styles.status, styles.failed)}>
+          Layout failed to load
         </div>
       }
     >
-      <Suspense
-        fallback={
-          <div className={cn(styles.graph, styles.graphvizLoading)}>
-            Loading layout package...
-          </div>
-        }
-      >
+      <Suspense fallback={<div className={styles.status}>Loading…</div>}>
         <GraphDiagramInner activity={activity} />
       </Suspense>
     </ErrorBoundary>
@@ -114,7 +100,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
   const [sizing] = useHashParam(PARAM_SIZING);
-  const graphviz = use(loadGraphviz());
+  const graphviz = use(graphvizPromise);
 
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
