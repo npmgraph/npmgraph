@@ -1,30 +1,30 @@
 import simplur from 'simplur';
 
 import { cn } from '../../lib/dom.ts';
-import useCollapse from '../../lib/useCollapse.ts';
-import { ExternalLink } from '../ExternalLink.tsx';
-import type { GraphState } from '../GraphDiagram/graph_util.ts';
-import { Pane } from '../Pane.tsx';
+import useCollapse from '../../hooks/useCollapse.ts';
+import { ExternalLink } from '../ui/ExternalLink.tsx';
+import type { GraphState } from '../../lib/graph_util.ts';
+import { Pane } from '../ui/Pane.tsx';
 import * as styles from './ReportPane.module.scss';
-import { ReportItem } from './reports/ReportItem.tsx';
-import { analyzeLicenses } from './reports/analyzeLicenses.ts';
-import { analyzeMaintainers } from './reports/analyzeMaintainers.tsx';
-import { analyzeModules } from './reports/analyzeModules.ts';
-import { analyzePeerDependencies } from './reports/analyzePeerDependencies.tsx';
-import { licensesAll } from './reports/reporters/licensesAll.tsx';
-import { licensesKeyword } from './reports/reporters/licensesKeyword.tsx';
-import { licensesMissing } from './reports/reporters/licensesMissing.tsx';
-import { maintainersAll } from './reports/reporters/maintainersAll.tsx';
-import { maintainersSolo } from './reports/reporters/maintainersSolo.tsx';
-import { moduleReplacementsNative } from './reports/reporters/moduleReplacements.tsx';
-import { moduleVulnerabilities } from './reports/reporters/moduleVulnerabilities.tsx';
-import { modulesAll } from './reports/reporters/modulesAll.tsx';
-import { modulesDeprecated } from './reports/reporters/modulesDeprecated.tsx';
-import { modulesRepeated } from './reports/reporters/modulesRepeated.tsx';
+import { ReportItem } from './ReportItem.tsx';
+import { analyzeLicenses } from './analyzers/analyzeLicenses.ts';
+import { analyzeMaintainers } from './analyzers/analyzeMaintainers.tsx';
+import { analyzeModules } from './analyzers/analyzeModules.ts';
+import { analyzePeerDependencies } from './analyzers/analyzePeerDependencies.tsx';
+import { licensesAll } from './reporters/licensesAll.tsx';
+import { licensesKeyword } from './reporters/licensesKeyword.tsx';
+import { licensesMissing } from './reporters/licensesMissing.tsx';
+import { maintainersAll } from './reporters/maintainersAll.tsx';
+import { maintainersSolo } from './reporters/maintainersSolo.tsx';
+import { moduleReplacementsNative } from './reporters/moduleReplacements.tsx';
+import { moduleVulnerabilities } from './reporters/moduleVulnerabilities.tsx';
+import { modulesAll } from './reporters/modulesAll.tsx';
+import { modulesDeprecated } from './reporters/modulesDeprecated.tsx';
+import { modulesRepeated } from './reporters/modulesRepeated.tsx';
 import {
   peerDependenciesAll,
   peerDependenciesMissing,
-} from './reports/reporters/peerDependenciesAll.tsx';
+} from './reporters/peerDependenciesAll.tsx';
 
 function ReportSection({ title, children }: { title: string; children: any }) {
   return (

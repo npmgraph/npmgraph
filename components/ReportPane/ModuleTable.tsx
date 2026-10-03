@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Selectable } from '../Selectable.tsx';
+import { Selectable } from '../ui/Selectable.tsx';
 
 import type Module from '../../lib/Module.ts';
 import * as styles from './ModuleTable.module.scss';

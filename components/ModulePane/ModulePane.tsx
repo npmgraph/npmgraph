@@ -7,20 +7,20 @@ import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import human from '../../lib/human.ts';
 import { getRepoUrlForModule } from '../../lib/repo_util.ts';
-import useHashParam from '../../lib/useHashParam.ts';
-import { foreachDownstream } from '../GraphDiagram/graph_util.ts';
-import OutdatedColorizer from '../ReportPane/colorizers/OutdatedColorizer.tsx';
-import { Pane } from '../Pane.tsx';
-import { QueryLink } from '../QueryLink.tsx';
-import { Section } from '../Section.tsx';
-import { Tag, Tags } from '../Tag.tsx';
-import * as utilities from '../utilities.module.scss';
+import useHashParam from '../../hooks/useHashParam.ts';
+import { foreachDownstream } from '../../lib/graph_util.ts';
+import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
+import { Pane } from '../ui/Pane.tsx';
+import { QueryLink } from '../ui/QueryLink.tsx';
+import { Section } from '../ui/Section.tsx';
+import { Tag, Tags } from '../ui/Tag.tsx';
+import * as utilities from '../ui/utilities.module.scss';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
 import ModuleNpmsIoScores from './ModuleNpmsIoScores.tsx';
 import * as styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
-import useCollapse from '../../lib/useCollapse.ts';
+import useCollapse from '../../hooks/useCollapse.ts';
 
 function ExternalLink({
   href,

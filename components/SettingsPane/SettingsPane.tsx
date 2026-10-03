@@ -1,12 +1,12 @@
 import type { HTMLProps } from 'react';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
-import useHashParam from '../../lib/useHashParam.ts';
-import type { DependencyKey } from '../GraphDiagram/graph_util.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
+import type { DependencyKey } from '../../lib/graph_util.ts';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
-import { Pane } from '../Pane.tsx';
-import { Toggle } from '../Toggle.tsx';
+import { Pane } from '../ui/Pane.tsx';
+import { Toggle } from '../ui/Toggle.tsx';
 
 export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);

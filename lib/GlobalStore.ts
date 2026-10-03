@@ -1,8 +1,8 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import type { GraphState } from '../components/GraphDiagram/graph_util.ts';
+import type { GraphState } from './graph_util.ts';
 import { type PaneTypes, PaneType, PARAM_QUERY } from './constants.ts';
 import type Module from './Module.ts';
-import { TIGHT_SCREEN_QUERY } from './useTightScreen.ts';
+import { TIGHT_SCREEN_QUERY } from '../hooks/useTightScreen.ts';
 import { hashGet, searchGet } from './url_util.ts';
 
 type GlobalState = {

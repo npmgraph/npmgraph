@@ -5,9 +5,9 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
-import useHashParam from '../../lib/useHashParam.ts';
-import { ZoomHorizontalIcon, ZoomVerticalIcon } from '../Icons.tsx';
-import * as utilities from '../utilities.module.scss';
+import useHashParam from '../../hooks/useHashParam.ts';
+import { ZoomHorizontalIcon, ZoomVerticalIcon } from '../ui/Icons.tsx';
+import * as utilities from '../ui/utilities.module.scss';
 import * as parentStyles from './GraphDiagram.module.scss';
 import * as styles from './GraphDiagramZoomButtons.module.scss';
 

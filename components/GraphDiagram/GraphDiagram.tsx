@@ -33,17 +33,14 @@ import {
 } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
-import useCollapse from '../../lib/useCollapse.ts';
-import useGraphSelection from '../../lib/useGraphSelection.ts';
-import useHashParam from '../../lib/useHashParam.ts';
-import usePrevious from '../../lib/usePrevious.ts';
-import { useQuery } from '../../lib/useQuery.ts';
+import useCollapse from '../../hooks/useCollapse.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
+import usePrevious from '../../hooks/usePrevious.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
 import { celebrate, flash } from '../Flash/flash.ts';
-import {
-  getColorizer,
-  isSimpleColorizer,
-} from '../ReportPane/colorizers/index.ts';
-import * as utilities from '../utilities.module.scss';
+import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
+import * as utilities from '../ui/utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
@@ -56,7 +53,7 @@ import {
   gatherSelectionInfo,
   getDiagramElement,
   getGraphForQuery,
-} from './graph_util.ts';
+} from '../../lib/graph_util.ts';
 
 export type ZoomOption =
   typeof ZOOM_NONE | typeof ZOOM_FIT_WIDTH | typeof ZOOM_FIT_HEIGHT;

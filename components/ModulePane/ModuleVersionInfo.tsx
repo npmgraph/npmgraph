@@ -3,7 +3,7 @@ import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 
 import { cn } from '../../lib/dom.ts';
-import { QueryLink } from '../QueryLink.tsx';
+import { QueryLink } from '../ui/QueryLink.tsx';
 import * as styles from './ModuleVersionInfo.module.scss';
 
 export function ModuleVersionInfo({

@@ -9,8 +9,8 @@ import { isDefined } from '../../lib/guards.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { searchSet } from '../../lib/url_util.ts';
-import { patchLocation } from '../../lib/useLocation.ts';
-import { useQuery } from '../../lib/useQuery.ts';
+import { patchLocation } from '../../hooks/useLocation.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(

@@ -1,5 +1,5 @@
 import { useGlobalState } from '../lib/GlobalStore.ts';
-import { useQuery } from '../lib/useQuery.ts';
+import { useQuery } from '../hooks/useQuery.ts';
 import * as styles from './ErrorsBanner.module.scss';
 
 export default function ErrorsBanner() {

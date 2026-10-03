@@ -5,8 +5,8 @@ import type { PackumentVersion } from '@npm/types';
 import { type ReactElement, useState } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
-import useMeasure from '../../lib/useMeasure.ts';
-import { Section } from '../Section.tsx';
+import useMeasure from '../../hooks/useMeasure.ts';
+import { Section } from '../ui/Section.tsx';
 import * as styles from './ReleaseTimeline.module.scss';
 
 function timestring(t: number) {

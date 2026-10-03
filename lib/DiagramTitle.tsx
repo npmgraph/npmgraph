@@ -1,4 +1,4 @@
-import { useQuery } from './useQuery.ts';
+import { useQuery } from '../hooks/useQuery.ts';
 
 export function DiagramTitle({ defaultTitle }: { defaultTitle: string }) {
   const [query] = useQuery();

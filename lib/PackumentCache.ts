@@ -1,6 +1,6 @@
 import type { Packument } from '@npm/types';
 import fetchJson from './fetchJson.ts';
-import { getRegistry } from './useRegistry.ts';
+import { getRegistry } from '../hooks/useRegistry.ts';
 
 const packumentCache = new Map<string, PackumentCacheEntry>();
 

@@ -1,8 +1,8 @@
 import { $$, $optional } from 'select-dom';
 import { report } from '../../lib/bugsnag.ts';
-import { DownloadIcon } from '../Icons.tsx';
+import { DownloadIcon } from '../ui/Icons.tsx';
 import * as styles from './GraphDiagramDownloadButton.module.scss';
-import { getDiagramElement } from './graph_util.ts';
+import { getDiagramElement } from '../../lib/graph_util.ts';
 
 type DownloadExtension = 'svg' | 'png';
 

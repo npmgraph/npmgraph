@@ -1,10 +1,10 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../../lib/dom.ts';
-import { useParsedQuery } from '../../lib/useQuery.ts';
-import { ExternalLink } from '../ExternalLink.tsx';
-import { Pane } from '../Pane.tsx';
-import { QueryLink } from '../QueryLink.tsx';
-import * as utilities from '../utilities.module.scss';
+import { useParsedQuery } from '../../hooks/useQuery.ts';
+import { ExternalLink } from '../ui/ExternalLink.tsx';
+import { Pane } from '../ui/Pane.tsx';
+import { QueryLink } from '../ui/QueryLink.tsx';
+import * as utilities from '../ui/utilities.module.scss';
 import FilePicker from './FilePicker.tsx';
 import * as styles from './InfoPane.module.scss';
 

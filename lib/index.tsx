@@ -12,7 +12,7 @@ import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
-import { setActivityForApp } from './useActivity.ts';
+import { setActivityForApp } from '../hooks/useActivity.ts';
 
 function isValidJS(src: string) {
   try {
