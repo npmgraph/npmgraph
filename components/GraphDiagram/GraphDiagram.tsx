@@ -1,4 +1,4 @@
-import { Graphviz } from '@hpcc-js/wasm-graphviz';
+import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import {
   useCallback,
@@ -51,6 +51,7 @@ import {
   type GraphState,
   composeDOT,
   gatherSelectionInfo,
+  getGraphviz,
   getDiagramElement,
   getGraphForQuery,
 } from './graph_util.ts';
@@ -75,7 +76,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
   const [sizing] = useHashParam(PARAM_SIZING);
-  const [graphviz, graphvizLoading] = useGraphviz();
+  const [graphviz, graphvizLoading] = useGraphviz(graph.moduleInfos.size > 0);
 
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
@@ -218,7 +219,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     // Render SVG markup (async)
     (async function () {
-      if (!graphviz) {
+      if (!graphviz && graph?.moduleInfos.size !== 0) {
         return;
       }
 
@@ -236,7 +237,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           svgMarkup =
             graph?.moduleInfos.size === 0
               ? '<svg />'
-              : graphviz.dot(dotDoc, 'svg');
+              : graphviz!.dot(dotDoc, 'svg');
         } catch (error) {
           console.error(error);
           flash('Error while rendering graph');
@@ -417,21 +418,26 @@ function scrollGraphIntoView(
   graphElement.scrollTo({ left, top, ...scrollOptions });
 }
 
-function useGraphviz() {
+function useGraphviz(shouldLoad: boolean) {
   const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    void Graphviz.load()
-      .catch(error => {
+    if (!shouldLoad) {
+      return;
+    }
+
+    setLoading(true);
+    void (async () => {
+      try {
+        setGraphviz(await getGraphviz());
+      } catch (error) {
         console.error('Graphviz failed to load', error);
-        return undefined;
-      })
-      .then(setGraphviz)
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
-  }, []);
+      }
+    })();
+  }, [shouldLoad]);
 
   return [graphviz, loading] as const;
 }
