@@ -15,7 +15,7 @@ import { setActivityForRequestCache } from './fetchJson.ts';
 import { setActivityForApp } from './useActivity.ts';
 
 type GlobalWithErrorDisplay = typeof globalThis & {
-  __displayError: (error: unknown) => void;
+  __displayError?: (error: unknown) => void;
 };
 
 function isValidJS(src: string) {
@@ -100,7 +100,7 @@ window.addEventListener('load', () => {
   const appElement = $('body');
   const displayError = (globalThis as GlobalWithErrorDisplay).__displayError;
   const reportReactError = (error: unknown) => {
-    displayError(error);
+    displayError?.(error);
     console.error(error);
   };
 

@@ -40,40 +40,42 @@
       src="https://www.googletagmanager.com/gtag/js?id=G-0FPWJCJM5R"
     ></script>
     <script>
-      // Temporary preview diagnostics; remove after the blank-page issue is resolved.
-      let output;
-      window.__displayError = error => {
-        if (!output) {
-          output = document.createElement('pre');
-          Object.assign(output.style, {
-            position: 'fixed',
-            inset: '0',
-            zIndex: '2147483647',
-            margin: '0',
-            padding: '1rem',
-            overflow: 'auto',
-            background: '#300',
-            color: 'white',
-            whiteSpace: 'pre-wrap',
-          });
-          (document.body ?? document.documentElement).append(output);
-        }
+      (() => {
+        // Temporary preview diagnostics; remove after the blank-page issue is resolved.
+        let output;
+        window.__displayError = error => {
+          if (!output) {
+            output = document.createElement('pre');
+            Object.assign(output.style, {
+              position: 'fixed',
+              inset: '0',
+              zIndex: '2147483647',
+              margin: '0',
+              padding: '1rem',
+              overflow: 'auto',
+              background: '#300',
+              color: 'white',
+              whiteSpace: 'pre-wrap',
+            });
+            (document.body ?? document.documentElement).append(output);
+          }
 
-        output.textContent += `${output.textContent ? '\n\n' : ''}${
-          error instanceof Error
-            ? (error.stack ?? error.message)
-            : String(error)
-        }`;
-      };
-      window.addEventListener('error', event => {
-        window.__displayError(
-          event.error ??
-            `${event.message} (${event.filename}:${event.lineno}:${event.colno})`,
-        );
-      });
-      window.addEventListener('unhandledrejection', event => {
-        window.__displayError(event.reason);
-      });
+          output.textContent += `${output.textContent ? '\n\n' : ''}${
+            error instanceof Error
+              ? (error.stack ?? error.message)
+              : String(error)
+          }`;
+        };
+        window.addEventListener('error', event => {
+          window.__displayError(
+            event.error ??
+              `${event.message} (${event.filename}:${event.lineno}:${event.colno})`,
+          );
+        });
+        window.addEventListener('unhandledrejection', event => {
+          window.__displayError(event.reason);
+        });
+      })();
     </script>
     <script>
       window.dataLayer = window.dataLayer || [];
