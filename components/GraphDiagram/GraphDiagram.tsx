@@ -76,7 +76,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [zoom] = useHashParam(PARAM_ZOOM);
   const [sizing] = useHashParam(PARAM_SIZING);
   const [graphviz, graphvizLoading, graphvizFailed] = useGraphviz(
-    graph.moduleInfos.size > 0,
+    (graph?.moduleInfos.size ?? 0) > 0,
   );
 
   // Stable query array for use in effects
