@@ -10,10 +10,10 @@ export function setActivityForRequestCache(act: LoadActivity) {
 
 // `fetch()` wrapper that returns parsed JSON and caches requests
 export default async function fetchJson<T>(
-  input: RequestInfo | URL,
+  input: URL | string,
   init?: RequestInit & { silent?: boolean; timeout?: number },
 ): Promise<T> {
-  const url = typeof input === 'string' ? input : input.toString();
+  const url = String(input);
   const cacheKey = `${url} ${JSON.stringify(init)}`;
 
   if (requestCache.has(cacheKey)) {

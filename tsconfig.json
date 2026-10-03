@@ -11,6 +11,6 @@
     "noEmit": true,
     "skipLibCheck": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
-    "types": ["node"]
+    "types": ["node", "typed-query-selector"]
   }
 }

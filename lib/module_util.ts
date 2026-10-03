@@ -64,6 +64,7 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
       console.log(
         `Resolving alias ${name} -> ${match.groups!.name}@${match.groups!.semver}`,
       );
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- Comes from Object.entries()
       delete deps[name];
       deps[match.groups!.name] = match.groups!.semver;
     }

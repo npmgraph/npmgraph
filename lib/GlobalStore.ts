@@ -65,6 +65,7 @@ export function setGlobalState<T extends keyof GlobalState>(
 ) {
   const current = globalState[key];
   if (value instanceof URL || value instanceof Location) {
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string -- Works as expected
     if (String(value) === String(current)) {
       return;
     }

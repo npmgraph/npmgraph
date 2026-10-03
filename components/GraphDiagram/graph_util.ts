@@ -314,6 +314,7 @@ function vizStyle(
   object: Record<string, string | number | boolean | undefined>,
 ) {
   const pairs = Object.entries(object).map(([key, value]) => {
+    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check -- Covered by `default`
     switch (typeof value) {
       case 'number':
         return `${key}=${value}`;
@@ -385,7 +386,7 @@ export function composeDOT({
 
     for (const { module: dependency, type } of downstream) {
       edges.push(
-        `"${dotEscape(module.key)}" -> "${dependency}" ${
+        `"${dotEscape(module.key)}" -> "${String(dependency)}" ${
           EDGE_ATTRIBUTES[type]
         }`,
       );

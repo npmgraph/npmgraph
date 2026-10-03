@@ -66,7 +66,11 @@ export function analyzeMaintainers({
       }
 
       if (!maintainer.name) {
-        report.error(new Error(`Nameless maintainer "${m}" in ${module.key}`));
+        report.error(
+          new Error(
+            `Nameless maintainer ${JSON.stringify(m)} in ${module.key}`,
+          ),
+        );
         maintainer.name = '\u{26A0}\u{FE0F} (unnamed maintainer)';
       }
 
