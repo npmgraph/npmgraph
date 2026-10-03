@@ -5,7 +5,7 @@ import useCollapse from '../../lib/useCollapse.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import type { GraphState } from '../GraphDiagram/graph_util.ts';
 import { Pane } from '../Pane.tsx';
-import * as styles from './GraphPane.module.scss';
+import * as styles from './ReportPane.module.scss';
 import { ReportItem } from './reports/ReportItem.tsx';
 import { analyzeLicenses } from './reports/analyzeLicenses.ts';
 import { analyzeMaintainers } from './reports/analyzeMaintainers.tsx';
@@ -36,7 +36,7 @@ function ReportSection({ title, children }: { title: string; children: any }) {
   );
 }
 
-export default function GraphPane({
+export default function ReportPane({
   graph,
   ...props
 }: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {

@@ -7,16 +7,16 @@ import type LoadActivity from '../lib/LoadActivity.ts';
 import useGraphSelection from '../lib/useGraphSelection.ts';
 import useHashParam from '../lib/useHashParam.ts';
 import GraphDiagram from './GraphDiagram/GraphDiagram.tsx';
-import * as graphPaneStyles from './GraphPane/GraphPane.module.scss';
+import * as reportPaneStyles from './ReportPane/ReportPane.module.scss';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
 
 // Keep these panes in secondary bundles but start loading them eagerly
-const graphPanePromise = import('./GraphPane/GraphPane.tsx');
+const reportPanePromise = import('./ReportPane/ReportPane.tsx');
 const modulePanePromise = import('./ModulePane/ModulePane.tsx');
 
-const GraphPane = lazy(async () => graphPanePromise);
+const ReportPane = lazy(async () => reportPanePromise);
 const ModulePane = lazy(async () => modulePanePromise);
 
 export default function Inspector(
@@ -42,7 +42,7 @@ export default function Inspector(
       break;
     case PaneType.REPORT:
       paneComponent = (
-        <GraphPane className={graphPaneStyles.paneGraph} graph={graph} />
+        <ReportPane className={reportPaneStyles.paneGraph} graph={graph} />
       );
       break;
     case PaneType.GRAPH:
