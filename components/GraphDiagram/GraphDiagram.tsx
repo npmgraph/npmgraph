@@ -42,7 +42,7 @@ import { celebrate, flash } from '../Flash/flash.ts';
 import {
   getColorizer,
   isSimpleColorizer,
-} from '../GraphPane/colorizers/index.ts';
+} from '../ReportPane/colorizers/index.ts';
 import * as utilities from '../utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';

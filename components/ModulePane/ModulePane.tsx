@@ -9,7 +9,7 @@ import human from '../../lib/human.ts';
 import { getRepoUrlForModule } from '../../lib/repo_util.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import { foreachDownstream } from '../GraphDiagram/graph_util.ts';
-import OutdatedColorizer from '../GraphPane/colorizers/OutdatedColorizer.tsx';
+import OutdatedColorizer from '../ReportPane/colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../Pane.tsx';
 import { QueryLink } from '../QueryLink.tsx';
 import { Section } from '../Section.tsx';

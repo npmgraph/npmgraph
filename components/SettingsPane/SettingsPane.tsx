@@ -3,7 +3,7 @@ import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useHashParam from '../../lib/useHashParam.ts';
 import type { DependencyKey } from '../GraphDiagram/graph_util.ts';
-import ColorizeInput from '../GraphPane/ColorizeInput.tsx';
+import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../Pane.tsx';
 import { Toggle } from '../Toggle.tsx';
