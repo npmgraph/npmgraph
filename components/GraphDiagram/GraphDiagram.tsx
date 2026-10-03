@@ -1,12 +1,15 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import {
+  Suspense,
+  use,
   useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
   useState,
 } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { $, $$optional, $optional, closestElementOptional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
@@ -60,7 +63,43 @@ export type ZoomOption =
 
 const idSeen = new Set<unknown>();
 
+let graphvizPromise: Promise<Graphviz> | undefined;
+
+async function loadGraphviz() {
+  graphvizPromise ??= import('@hpcc-js/wasm-graphviz').then(({ Graphviz }) =>
+    Graphviz.load(),
+  );
+
+  return graphvizPromise;
+}
+
+// Kick off at module load so the promise exists before any render
+// eslint-disable-next-line unicorn/no-top-level-side-effects
+void loadGraphviz();
+
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
+  return (
+    <ErrorBoundary
+      fallback={
+        <div className={cn(styles.graph, styles.graphvizLoading)}>
+          Layout package failed to load.
+        </div>
+      }
+    >
+      <Suspense
+        fallback={
+          <div className={cn(styles.graph, styles.graphvizLoading)}>
+            Loading layout package...
+          </div>
+        }
+      >
+        <GraphDiagramInner activity={activity} />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
   const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [, setPane] = useGlobalState('pane');
@@ -75,9 +114,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
   const [sizing] = useHashParam(PARAM_SIZING);
-  const [graphviz, graphvizLoading, graphvizFailed] = useGraphviz(
-    (graph?.moduleInfos.size ?? 0) > 0,
-  );
+  const graphviz = use(loadGraphviz());
 
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
@@ -220,10 +257,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
     // Render SVG markup (async)
     (async function () {
-      if (!graphviz && graph?.moduleInfos.size !== 0) {
-        return;
-      }
-
       // Check after all async stuff
       if (signal.aborted) {
         return;
@@ -238,7 +271,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
           svgMarkup =
             graph?.moduleInfos.size === 0
               ? '<svg />'
-              : graphviz!.dot(dotDoc, 'svg');
+              : graphviz.dot(dotDoc, 'svg');
         } catch (error) {
           console.error(error);
           flash('Error while rendering graph');
@@ -355,16 +388,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
 
-  if (!graphviz && (graphvizLoading || graphvizFailed)) {
-    return (
-      <div className={cn(styles.graph, styles.graphvizLoading)}>
-        {graphvizLoading
-          ? 'Loading layout package...'
-          : 'Layout package failed to load.'}
-      </div>
-    );
-  }
-
   return (
     <div className={styles.root}>
       <div className={styles.graphControls}>
@@ -417,32 +440,6 @@ function scrollGraphIntoView(
     graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
 
   graphElement.scrollTo({ left, top, ...scrollOptions });
-}
-
-function useGraphviz(shouldLoad: boolean) {
-  const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
-  const [failed, setFailed] = useState(false);
-
-  useEffect(() => {
-    if (!shouldLoad) {
-      return;
-    }
-
-    setLoading(true);
-    void import('@hpcc-js/wasm-graphviz')
-      .then(async ({ Graphviz }) => Graphviz.load())
-      .then(setGraphviz)
-      .catch(error => {
-        console.error('Graphviz failed to load', error);
-        setFailed(true);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [shouldLoad]);
-
-  return [graphviz, loading, failed] as const;
 }
 
 function updateSelection(
