@@ -99,14 +99,9 @@ window.addEventListener('load', () => {
   // Main app component
   const appElement = $('body');
   const displayError = (globalThis as GlobalWithErrorDisplay).__displayError;
-  const reportReactError = (error: unknown) => {
-    displayError(error);
-    console.error(error);
-  };
-
   createRoot(appElement, {
-    onUncaughtError: reportReactError,
-    onCaughtError: reportReactError,
+    onUncaughtError: displayError,
+    onCaughtError: displayError,
   }).render(
     // <StrictMode>
     <App />,
