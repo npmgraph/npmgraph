@@ -18,7 +18,10 @@ export default function selectVersion(
   } else {
     // Find highest matching version
     for (const version of Object.keys(packument.versions)) {
-      if (!satisfies(version, targetVersion)) continue;
+      if (!satisfies(version, targetVersion)) {
+        continue;
+      }
+
       if (!selectedVersion || gt(version, selectedVersion)) {
         selectedVersion = version;
       }
