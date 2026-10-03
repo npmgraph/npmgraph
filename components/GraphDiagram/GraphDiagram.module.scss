@@ -82,3 +82,14 @@
   margin: auto;
   min-width: fit-content;
 }
+
+.status {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  color: gray;
+
+  &.failed {
+    color: var(--stroke-red);
+  }
+}

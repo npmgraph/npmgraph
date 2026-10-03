@@ -54,6 +54,7 @@
     "module-replacements": "^3.3.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "react-error-boundary": "^6.1.6",
     "select-dom": "^10.1.0",
     "semver": "^7.8.5",
     "simplur": "^4.1.1"
