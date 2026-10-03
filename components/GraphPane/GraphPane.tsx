@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { Suspense, use } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import simplur from 'simplur';
 
 import { cn } from '../../lib/dom.ts';
-import { type Licenses, loadLicenses } from '../../lib/licenses.ts';
+import { licensesPromise } from '../../lib/licenses.ts';
 import useCollapse from '../../lib/useCollapse.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import type { GraphState } from '../GraphDiagram/graph_util.ts';
@@ -27,8 +28,29 @@ import {
   peerDependenciesMissing,
 } from './reports/reporters/peerDependenciesAll.tsx';
 
-// module-replacements + its reporter live in a single lazy chunk
-type Replacements = typeof import('./reports/reporters/moduleReplacements.tsx');
+// module-replacements + its reporter live in a single secondary bundle, loaded eagerly
+const replacementsPromise = import(
+  './reports/reporters/moduleReplacements.tsx'
+);
+
+function ReplacementsReport({
+  data,
+}: {
+  data: ReturnType<typeof analyzeModules>;
+}) {
+  const { moduleReplacementsNative } = use(replacementsPromise);
+
+  return (
+    <ReportItem data={data} reporter={moduleReplacementsNative}>
+      From the{' '}
+      <ExternalLink href="https://github.com/e18e/module-replacements">
+        module-replacements
+      </ExternalLink>{' '}
+      project, these modules can be removed or replaced with more modern,
+      streamlined alternatives
+    </ReportItem>
+  );
+}
 
 function ReportSection({ title, children }: { title: string; children: any }) {
   return (
@@ -40,30 +62,26 @@ function ReportSection({ title, children }: { title: string; children: any }) {
   );
 }
 
-export default function GraphPane({
-  graph,
-  ...props
-}: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
+type GraphPaneProps = {
+  graph: GraphState | undefined;
+} & React.HTMLAttributes<HTMLDivElement>;
+
+export default function GraphPane(props: GraphPaneProps) {
+  return (
+    <ErrorBoundary fallback={<div>Failed to load reports</div>}>
+      <Suspense fallback={<div>Loading</div>}>
+        <GraphPaneInner {...props} />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+function GraphPaneInner({ graph, ...props }: GraphPaneProps) {
   const { className, ...restProps } = props;
   const [collapse, setCollapse] = useCollapse();
-  const [licenses, setLicenses] = useState<Licenses>();
-  const [replacements, setReplacements] = useState<Replacements>();
+  const licenses = use(licensesPromise);
 
-  useEffect(() => {
-    loadLicenses()
-      .then(setLicenses)
-      .catch((err: unknown) => {
-        console.error('Failed to load licenses', err);
-        setLicenses({});
-      });
-    import('./reports/reporters/moduleReplacements.tsx')
-      .then(setReplacements)
-      .catch((err: unknown) => {
-        console.error('Failed to load module-replacements', err);
-      });
-  }, []);
-
-  if (!graph?.moduleInfos || !licenses) {
+  if (!graph?.moduleInfos) {
     return <div>Loading</div>;
   }
 
@@ -116,19 +134,10 @@ export default function GraphPane({
           instructions.
         </ReportItem>
 
-        {replacements && (
-          <ReportItem
-            data={moduleAnalysis}
-            reporter={replacements.moduleReplacementsNative}
-          >
-            From the{' '}
-            <ExternalLink href="https://github.com/e18e/module-replacements">
-              module-replacements
-            </ExternalLink>{' '}
-            project, these modules can be removed or replaced with more modern,
-            streamlined alternatives
-          </ReportItem>
-        )}
+        <Suspense fallback={null}>
+          <ReplacementsReport data={moduleAnalysis} />
+        </Suspense>
+
 
         <ReportItem
           data={peerDependencyAnalysis}
