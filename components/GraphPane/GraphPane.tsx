@@ -3,7 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import simplur from 'simplur';
 
 import { cn } from '../../lib/dom.ts';
-import { licensesPromise } from '../../lib/licenses.ts';
+import { type Licenses } from '../../lib/licenses.ts';
 import useCollapse from '../../lib/useCollapse.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import type { GraphState } from '../GraphDiagram/graph_util.ts';
@@ -27,6 +27,10 @@ import {
   peerDependenciesAll,
   peerDependenciesMissing,
 } from './reports/reporters/peerDependenciesAll.tsx';
+
+// Keep licenses in a secondary bundle but load it eagerly
+const licensesPromise =
+  import('../../lib/licenses.ts') as unknown as Promise<Licenses>;
 
 // module-replacements + its reporter live in a single secondary bundle, loaded eagerly
 const replacementsPromise =
