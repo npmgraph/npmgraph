@@ -13,7 +13,7 @@
 import type { ReactElement } from 'react';
 import type { GraphModuleInfo, GraphState } from '../../../lib/graph_util.ts';
 
-export type Analyzer2 = (graph: GraphState) => unknown;
+type Analyzer2 = (graph: GraphState) => unknown;
 
 export type RenderedAnalysis = {
   type: 'info' | 'warn' | 'error';
@@ -21,7 +21,7 @@ export type RenderedAnalysis = {
   details: ReactElement[];
 };
 
-export abstract class Analyzer {
+abstract class Analyzer {
   constructor(public graph: GraphState) {}
   abstract map(moduleInfo: GraphModuleInfo): void;
   abstract reduce(): RenderedAnalysis | undefined;

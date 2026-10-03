@@ -16,7 +16,7 @@ export type IconProps = {
 } & HTMLProps<SVGSVGElement>;
 
 // General SVG-based icon component path.
-export default function Icon({
+function Icon({
   name,
   strokePath,
   fillPath,
@@ -45,7 +45,7 @@ export default function Icon({
   );
 }
 
-export function Package(props: IconProps) {
+function Package(props: IconProps) {
   // Original path from https://primer.style/foundations/icons/package-16
   return (
     <Icon
@@ -55,7 +55,7 @@ export function Package(props: IconProps) {
   );
 }
 
-export function NpmIcon(props: IconProps) {
+function NpmIcon(props: IconProps) {
   // Original path from https://worldvectorlogo.com/downloaded/npm-square
   return (
     <Icon
@@ -76,7 +76,7 @@ export function GithubIcon(props: IconProps) {
   );
 }
 
-export function PencilIcon(props: IconProps) {
+function PencilIcon(props: IconProps) {
   return (
     <Icon
       {...props}

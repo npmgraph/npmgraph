@@ -14,7 +14,7 @@ import type { BulkColorizer } from './index.ts';
 // Max number of module names allowed per NPMS request
 const NPMS_BULK_LIMIT = 250;
 
-export class NpmsColorizer implements BulkColorizer {
+class NpmsColorizer implements BulkColorizer {
   title: string;
   name: string;
 
@@ -119,15 +119,15 @@ export const NPMSOverallColorizer = new NpmsColorizer(
   'NPMS.io Score',
   COLORIZE_OVERALL,
 );
-export const NPMSPopularityColorizer = new NpmsColorizer(
+const NPMSPopularityColorizer = new NpmsColorizer(
   'NPMS.io Score (Popularity)',
   COLORIZE_POPULARITY,
 );
-export const NPMSQualityColorizer = new NpmsColorizer(
+const NPMSQualityColorizer = new NpmsColorizer(
   'NPMS.io Score (Quality)',
   COLORIZE_QUALITY,
 );
-export const NPMSMaintenanceColorizer = new NpmsColorizer(
+const NPMSMaintenanceColorizer = new NpmsColorizer(
   'NPMS.io Score (Maintenance)',
   COLORIZE_MAINTENANCE,
 );

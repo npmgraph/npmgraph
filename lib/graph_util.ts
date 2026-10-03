@@ -431,7 +431,7 @@ export function composeDOT({
   ].join('\n');
 }
 
-export function foreachUpstream(
+function foreachUpstream(
   module: Module,
   graph: GraphState,
   callback: (module: Module) => void,

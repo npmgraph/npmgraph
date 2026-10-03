@@ -35,8 +35,6 @@ type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   registry?: string; // NPM_REGISTRY url
 };
 
-export { default as selectVersion } from './selectVersion.ts';
-
 async function fetchModuleFromNPM(
   moduleName: string,
   version?: string,
@@ -150,7 +148,7 @@ export function getCachedModule(key: string) {
   return entry?.registry === getRegistry() ? entry.module : undefined;
 }
 
-export function cacheModule(module: Module, registry?: string) {
+function cacheModule(module: Module, registry?: string) {
   const moduleKey = module.key;
   const entry = moduleCache.get(moduleKey);
 

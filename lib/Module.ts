@@ -7,7 +7,7 @@ import {
   resolveDependencyAliases,
 } from './module_util.ts';
 
-export type Maintainers = PackumentVersion['maintainers'];
+type Maintainers = PackumentVersion['maintainers'];
 export type Maintainer = Exclude<Maintainers, undefined>[0];
 export type Dependencies = PackumentVersion['dependencies'];
 

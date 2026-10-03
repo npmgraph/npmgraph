@@ -3,10 +3,10 @@ import type Module from '../../lib/Module.ts';
 import { LegendColor } from './LegendColor.tsx';
 import type { SimpleColorizer } from './index.ts';
 
-export const COLORIZE_MODULE_CJS = 'var(--bg-red)';
-export const COLORIZE_MODULE_DUAL = 'var(--bg-yellow)';
-export const COLORIZE_MODULE_ESM = 'var(--bg-green)';
-export const COLORIZE_MODULE_TYPES = 'var(--bg-blue)';
+const COLORIZE_MODULE_CJS = 'var(--bg-red)';
+const COLORIZE_MODULE_DUAL = 'var(--bg-yellow)';
+const COLORIZE_MODULE_ESM = 'var(--bg-green)';
+const COLORIZE_MODULE_TYPES = 'var(--bg-blue)';
 
 export default {
   title: 'Module Type',
