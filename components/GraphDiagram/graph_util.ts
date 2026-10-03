@@ -18,11 +18,8 @@ import * as styles from './GraphDiagram.module.scss';
 const FONT = 'Roboto Condensed, sans-serif';
 
 let gv: Promise<Graphviz> | undefined;
-// eslint-disable-next-line @typescript-eslint/promise-function-async -- Preserve the memoized promise identity.
-export const getGraphviz = () => {
-  gv ??= import('@hpcc-js/wasm-graphviz').then(
-    m => m.Graphviz.load(), // eslint-disable-line @typescript-eslint/promise-function-async
-  );
+export const getGraphviz = async () => {
+  gv ??= import('@hpcc-js/wasm-graphviz').then(async m => m.Graphviz.load());
   return gv;
 };
 
