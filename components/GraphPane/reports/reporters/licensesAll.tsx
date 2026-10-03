@@ -1,18 +1,20 @@
 import simplur from 'simplur';
 import { QueryType } from '../../../../lib/ModuleCache.ts';
 import { cn } from '../../../../lib/dom.ts';
-import { LICENSES } from '../../../../lib/licenses.ts';
 import { Selectable } from '../../../Selectable.tsx';
 import type { RenderedAnalysis } from '../Analyzer.tsx';
 import type { LicenseAnalysisState } from '../analyzeLicenses.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './licensesAll.module.scss';
 
-export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
+export function licensesAll({
+  modulesByLicense,
+  licenses,
+}: LicenseAnalysisState) {
   const details = [...modulesByLicense]
     .toSorted(([a], [b]) => a.localeCompare(b))
     .map(([license, modules]) => {
-      const keywords = LICENSES[license.toLowerCase()]?.keywords;
+      const keywords = licenses[license.toLowerCase()]?.keywords;
 
       return (
         <div

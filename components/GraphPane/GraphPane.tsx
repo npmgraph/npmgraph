@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import simplur from 'simplur';
 
 import { cn } from '../../lib/dom.ts';
+import { type Licenses, loadLicenses } from '../../lib/licenses.ts';
 import useCollapse from '../../lib/useCollapse.ts';
 import { ExternalLink } from '../ExternalLink.tsx';
 import type { GraphState } from '../GraphDiagram/graph_util.ts';
@@ -16,7 +18,6 @@ import { licensesKeyword } from './reports/reporters/licensesKeyword.tsx';
 import { licensesMissing } from './reports/reporters/licensesMissing.tsx';
 import { maintainersAll } from './reports/reporters/maintainersAll.tsx';
 import { maintainersSolo } from './reports/reporters/maintainersSolo.tsx';
-import { moduleReplacementsNative } from './reports/reporters/moduleReplacements.tsx';
 import { moduleVulnerabilities } from './reports/reporters/moduleVulnerabilities.tsx';
 import { modulesAll } from './reports/reporters/modulesAll.tsx';
 import { modulesDeprecated } from './reports/reporters/modulesDeprecated.tsx';
@@ -25,6 +26,9 @@ import {
   peerDependenciesAll,
   peerDependenciesMissing,
 } from './reports/reporters/peerDependenciesAll.tsx';
+
+// module-replacements + its reporter live in a single lazy chunk
+type Replacements = typeof import('./reports/reporters/moduleReplacements.tsx');
 
 function ReportSection({ title, children }: { title: string; children: any }) {
   return (
@@ -42,15 +46,31 @@ export default function GraphPane({
 }: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...restProps } = props;
   const [collapse, setCollapse] = useCollapse();
+  const [licenses, setLicenses] = useState<Licenses>();
+  const [replacements, setReplacements] = useState<Replacements>();
 
-  if (!graph?.moduleInfos) {
+  useEffect(() => {
+    loadLicenses()
+      .then(setLicenses)
+      .catch((err: unknown) => {
+        console.error('Failed to load licenses', err);
+        setLicenses({});
+      });
+    import('./reports/reporters/moduleReplacements.tsx')
+      .then(setReplacements)
+      .catch((err: unknown) => {
+        console.error('Failed to load module-replacements', err);
+      });
+  }, []);
+
+  if (!graph?.moduleInfos || !licenses) {
     return <div>Loading</div>;
   }
 
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
   const maintainersAnalysis = analyzeMaintainers(graph);
-  const licensesAnalysis = analyzeLicenses(graph);
+  const licensesAnalysis = analyzeLicenses(graph, licenses);
 
   return (
     <Pane className={cn(styles.paneGraph, className)} {...restProps}>
@@ -96,14 +116,19 @@ export default function GraphPane({
           instructions.
         </ReportItem>
 
-        <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
-          From the{' '}
-          <ExternalLink href="https://github.com/e18e/module-replacements">
-            module-replacements
-          </ExternalLink>{' '}
-          project, these modules can be removed or replaced with more modern,
-          streamlined alternatives
-        </ReportItem>
+        {replacements && (
+          <ReportItem
+            data={moduleAnalysis}
+            reporter={replacements.moduleReplacementsNative}
+          >
+            From the{' '}
+            <ExternalLink href="https://github.com/e18e/module-replacements">
+              module-replacements
+            </ExternalLink>{' '}
+            project, these modules can be removed or replaced with more modern,
+            streamlined alternatives
+          </ReportItem>
+        )}
 
         <ReportItem
           data={peerDependencyAnalysis}

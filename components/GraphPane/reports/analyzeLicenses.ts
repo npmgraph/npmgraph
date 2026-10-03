@@ -1,14 +1,18 @@
 import type Module from '../../../lib/Module.ts';
-import { type OSIKeyword, LICENSES } from '../../../lib/licenses.ts';
+import type { Licenses, OSIKeyword } from '../../../lib/licenses.ts';
 import type { GraphState } from '../../GraphDiagram/graph_util.ts';
 
 export type LicenseAnalysisState = {
   modulesByLicense: Map<string, Module[]>;
   unlicensedModules: Module[];
   modulesByKeyword: Map<OSIKeyword, Module[]>;
+  licenses: Licenses;
 };
 
-export function analyzeLicenses({ moduleInfos }: GraphState) {
+export function analyzeLicenses(
+  { moduleInfos }: GraphState,
+  licenses: Licenses,
+): LicenseAnalysisState {
   const modulesByLicense = new Map<string, Module[]>();
   const unlicensedModules: Module[] = [];
   const modulesByKeyword = new Map<OSIKeyword, Module[]>();
@@ -19,18 +23,18 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
       continue;
     }
 
-    const licenses = module.getLicenses();
+    const moduleLicenses = module.getLicenses();
 
     // licensesRenderMissing
-    if (licenses.length === 0 || licenses[0] === 'unlicensed') {
+    if (moduleLicenses.length === 0 || moduleLicenses[0] === 'unlicensed') {
       unlicensedModules.push(module);
     }
 
-    if (licenses.length === 0) {
+    if (moduleLicenses.length === 0) {
       continue;
     }
 
-    for (let license of licenses) {
+    for (let license of moduleLicenses) {
       // licensesRenderAll
       license = license.toLowerCase();
       if (!modulesByLicense.has(license)) {
@@ -40,7 +44,7 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
       modulesByLicense.get(license)!.push(module);
 
       // licensesRenderKeywords
-      const keywords = LICENSES[license]?.keywords;
+      const keywords = licenses[license]?.keywords;
 
       if (!keywords) {
         continue;
@@ -60,5 +64,6 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
     modulesByLicense,
     unlicensedModules,
     modulesByKeyword,
+    licenses,
   };
 }
