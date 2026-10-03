@@ -14,10 +14,6 @@ import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
 import { setActivityForApp } from './useActivity.ts';
 
-type GlobalWithErrorDisplay = typeof globalThis & {
-  __displayError: (error: unknown) => void;
-};
-
 function isValidJS(src: string) {
   try {
     // eslint-disable-next-line no-new-func, no-new
@@ -98,11 +94,7 @@ window.addEventListener('load', () => {
 
   // Main app component
   const appElement = $('body');
-  const displayError = (globalThis as GlobalWithErrorDisplay).__displayError;
-  createRoot(appElement, {
-    onUncaughtError: displayError,
-    onCaughtError: displayError,
-  }).render(
+  createRoot(appElement).render(
     // <StrictMode>
     <App />,
     // </StrictMode>,
