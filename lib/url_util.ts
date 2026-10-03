@@ -22,6 +22,7 @@ export function hashSet(
   } else {
     parameters.delete(key);
   }
+
   return parameters.toString();
 }
 
@@ -44,5 +45,6 @@ export function searchSet(
   } else {
     parameters.delete(key);
   }
+
   return parameters.toString();
 }

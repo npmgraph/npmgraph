@@ -21,6 +21,7 @@ function onDrop(ev: DragEvent) {
     alert('Sorry, file dropping is not supported by this browser');
     return;
   }
+
   if (dt.items.length !== 1) {
     alert('You must drop exactly one file');
     return;
@@ -52,7 +53,9 @@ function onPaste(ev: ClipboardEvent): void {
   }
 
   const text = ev.clipboardData?.getData('text');
-  if (!text) return;
+  if (!text) {
+    return;
+  }
 
   // Ignore pastes in fields, unless the field is the search field and the paste is a JSON file
   if (

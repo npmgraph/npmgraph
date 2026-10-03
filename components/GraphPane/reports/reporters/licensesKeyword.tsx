@@ -10,7 +10,9 @@ import * as styles from './modulesAll.module.scss';
 export function licensesKeyword(keyword: OSIKeyword) {
   return function ({ modulesByKeyword }: LicenseAnalysisState) {
     const modules = modulesByKeyword.get(keyword);
-    if (!modules) return undefined;
+    if (!modules) {
+      return undefined;
+    }
 
     const summary = simplur`Modules with "${keyword}" license (${modules.length})`;
 
@@ -18,8 +20,8 @@ export function licensesKeyword(keyword: OSIKeyword) {
       .toSorted((a, b) => a.key.localeCompare(b.key))
       .map(module => (
         <div
-          className={cn(styles.row, reportItemStyles.zebraRow)}
           key={module.key}
+          className={cn(styles.row, reportItemStyles.zebraRow)}
         >
           <Selectable className={cn(styles.name)} value={module.key} />
         </div>

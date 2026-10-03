@@ -22,14 +22,18 @@ export function ReportItem<T>({
   const [analysis, setAnalysis] = useState<RenderedAnalysis>();
 
   useEffect(() => {
-    if (!data) return;
+    if (!data) {
+      return;
+    }
 
     void Promise.resolve(reporter(data)).then(report => {
       setAnalysis(report);
     });
   }, [data, reporter]);
 
-  if (!analysis) return null;
+  if (!analysis) {
+    return null;
+  }
 
   const { type, summary, details } = analysis;
 

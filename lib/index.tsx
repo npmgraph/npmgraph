@@ -1,6 +1,6 @@
-import 'typed-query-selector';
-import '../index.scss';
+// eslint-disable-next-line import-x/no-unassigned-import
 import './bugsnag.ts'; // Initialize ASAP!
+import '../index.scss';
 
 import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -39,7 +39,9 @@ function detectFeatures() {
   };
 
   for (const [k, v] of Object.entries(features)) {
-    if (v) continue;
+    if (v) {
+      continue;
+    }
 
     unsupported.set(
       k,

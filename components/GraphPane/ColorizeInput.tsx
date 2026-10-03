@@ -8,11 +8,11 @@ export default function ColorizeInput() {
   const [colorize, setColorize] = useHashParam(PARAM_COLORIZE);
 
   const options = [
-    <option value="" key="none">
+    <option key="none" value="">
       None
     </option>,
     ...colorizers.map(colorizer => (
-      <option value={colorizer.name} key={colorizer.name}>
+      <option key={colorizer.name} value={colorizer.name}>
         {colorizer.title}
       </option>
     )),

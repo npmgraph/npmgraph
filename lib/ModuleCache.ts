@@ -76,6 +76,7 @@ async function fetchModuleFromURL(urlString: string) {
     url.host = 'raw.githubusercontent.com';
     url.pathname = url.pathname.replace('/blob', '');
   }
+
   const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
 
   pkg.name ||= url.href;
@@ -86,7 +87,9 @@ async function fetchModuleFromURL(urlString: string) {
 // Note: This method should not throw!  Errors should be returned as part of a
 // stub module
 export async function getModule(moduleKey: string): Promise<Module> {
-  if (!moduleKey) throw new Error('Undefined module name');
+  if (!moduleKey) {
+    throw new Error('Undefined module name');
+  }
 
   let [name, version] = parseModuleKey(moduleKey);
 
@@ -101,7 +104,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   moduleKey = getModuleKey(name, version);
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(moduleKey);
-  if (cachedEntry && cachedEntry.registry === getRegistry()) {
+  if (cachedEntry?.registry === getRegistry()) {
     return cachedEntry.promise;
   }
 
@@ -120,6 +123,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
     cacheEntry.registry = getRegistry();
     promise = fetchModuleFromNPM(name, version);
   }
+
   void promise
     .catch(error => {
       if (error instanceof HttpError) {
@@ -143,7 +147,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
 
 export function getCachedModule(key: string) {
   const entry = moduleCache.get(key);
-  return entry && entry.registry === getRegistry() ? entry.module : undefined;
+  return entry?.registry === getRegistry() ? entry.module : undefined;
 }
 
 export function cacheModule(module: Module, registry?: string) {
@@ -169,7 +173,9 @@ export function cacheModule(module: Module, registry?: string) {
 export function queryModuleCache(queryType: QueryType, queryValue: string) {
   const results = new Map<string, Module>();
 
-  if (!queryType && !queryValue) return results;
+  if (!queryType && !queryValue) {
+    return results;
+  }
 
   // 'exact' and 'name' query deprecated in favor of Default
   if (queryType === QueryType.Exact || queryType === QueryType.Name) {
@@ -177,7 +183,9 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
   }
 
   for (const { module } of moduleCache.values()) {
-    if (!module) continue;
+    if (!module) {
+      continue;
+    }
 
     switch (queryType) {
       case QueryType.Default: {
@@ -188,15 +196,21 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
         ) {
           results.set(module.key, module);
         }
+
         break;
       }
+
       case QueryType.License:
-        if (module.getLicenses().includes(queryValue.toLowerCase()))
+        if (module.getLicenses().includes(queryValue.toLowerCase())) {
           results.set(module.key, module);
+        }
+
         break;
       case QueryType.Maintainer:
-        if (module.maintainers.some(({ name }) => name === queryValue))
+        if (module.maintainers.some(({ name }) => name === queryValue)) {
           results.set(module.key, module);
+        }
+
         break;
     }
   }
@@ -204,7 +218,7 @@ export function queryModuleCache(queryType: QueryType, queryValue: string) {
   return results;
 }
 
-const PACKAGE_WHITELIST: (keyof PackageJSON)[] = [
+const PACKAGE_WHITELIST: Array<keyof PackageJSON> = [
   'author',
   'dependencies',
   'devDependencies',
@@ -220,7 +234,9 @@ export function sanitizePackageKeys(pkg: PackageJSON) {
   const sanitized: PackageJSON = {} as PackageJSON;
 
   for (const key of PACKAGE_WHITELIST) {
-    if (Object.hasOwn(pkg, key)) sanitized[key] = pkg[key];
+    if (Object.hasOwn(pkg, key)) {
+      sanitized[key] = pkg[key];
+    }
   }
 
   return sanitized;
@@ -268,10 +284,15 @@ export function syncPackagesHash() {
   const packagesJson = hashGet(PARAM_PACKAGES);
 
   // If the hash param hasn't changed, there's nothing to do
-  if (lastPackagesValue === packagesJson) return;
+  if (lastPackagesValue === packagesJson) {
+    return;
+  }
+
   lastPackagesValue = packagesJson;
 
-  if (!packagesJson) return;
+  if (!packagesJson) {
+    return;
+  }
 
   let packages: PackageJSON[];
   try {

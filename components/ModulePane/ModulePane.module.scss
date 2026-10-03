@@ -38,3 +38,30 @@
   grid-template-columns: auto 1fr;
   gap: 0 1em;
 }
+
+.linkGroup {
+  display: flex;
+  align-items: center;
+  > * {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+    margin: 0;
+    border: solid 1px var(--bg1);
+    background: var(--bg0);
+    padding: 0 0.5em;
+    color: var(--text);
+    line-height: 2;
+    text-decoration: none;
+    &:not(:first-child) {
+      border-left: none;
+    }
+    &:first-child {
+      border-radius: var(--rad-sm) 0 0 var(--rad-sm);
+    }
+
+    &:last-child {
+      border-radius: 0 var(--rad-sm) var(--rad-sm) 0;
+    }
+  }
+}

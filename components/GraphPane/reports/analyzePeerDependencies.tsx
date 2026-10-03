@@ -21,7 +21,9 @@ export function analyzePeerDependencies({
 
   for (const { module } of moduleInfos.values()) {
     const { peerDependencies, peerDependenciesMeta } = module.package;
-    if (!peerDependencies) continue;
+    if (!peerDependencies) {
+      continue;
+    }
 
     for (const [name, versionRange] of Object.entries(peerDependencies)) {
       const pdi: PeerDependencyInfo = {
@@ -33,8 +35,9 @@ export function analyzePeerDependencies({
       };
 
       for (const { module: mod, level, upstream } of moduleInfos.values()) {
-        if (mod.name !== name || !satisfies(mod.version, versionRange))
+        if (mod.name !== name || !satisfies(mod.version, versionRange)) {
           continue;
+        }
 
         // Only count as "met" if the module was brought in via a regular
         // (non-peer) dependency, or is an explicitly queried root module.

@@ -21,7 +21,9 @@ export default {
   },
 
   async colorForModule(module: Module) {
-    if (module.isLocal || module.isStub) return '';
+    if (module.isLocal || module.isStub) {
+      return '';
+    }
 
     const manifest = await getNPMPackument(module.name);
 

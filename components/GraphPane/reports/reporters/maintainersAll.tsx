@@ -22,13 +22,14 @@ export function maintainersAll({
         img = (
           <img
             loading="lazy"
+            alt={`${name}'s avatar`}
             src={`https://www.gravatar.com/avatar/${md5(email)}?s=32`}
           />
         );
       }
 
       return (
-        <div className={cn(styles.root, reportItemStyles.zebraRow)} key={name}>
+        <div key={name} className={cn(styles.root, reportItemStyles.zebraRow)}>
           <div className={styles.maintainer}>
             {img}
             <Selectable type={QueryType.Maintainer} value={name} />
@@ -37,8 +38,8 @@ export function maintainersAll({
           <div className={styles.modules}>
             {[...modules].map(m => (
               <Selectable
-                value={m.key}
                 key={m.key}
+                value={m.key}
                 className={styles.selectable}
               />
             ))}
@@ -47,7 +48,9 @@ export function maintainersAll({
       );
     });
 
-  if (details.length === 0) return;
+  if (details.length === 0) {
+    return;
+  }
 
   const summary = simplur`All maintainers (${details.length})`;
   return { type: 'info', summary, details } as RenderedAnalysis;

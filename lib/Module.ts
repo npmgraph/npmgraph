@@ -74,9 +74,7 @@ export default class Module {
       [];
 
     if (!Array.isArray(maintainers)) {
-      console.warn(
-        `Unexpected maintainers type for ${this.key}: ${maintainers}`,
-      );
+      console.warn(`Unexpected maintainers type for ${this.key}`, maintainers);
       maintainers = [maintainers];
     }
 
@@ -112,8 +110,7 @@ export default class Module {
   get repository() {
     // TODO: Handle non-github repositories
     const { repository } = this.package;
-    if (typeof repository === 'string') return repository;
-    return repository?.url;
+    return typeof repository === 'string' ? repository : repository?.url;
   }
 
   get githubPath() {
@@ -126,7 +123,10 @@ export default class Module {
 
   getLatestVersion() {
     const latestVersion = this.packument?.['dist-tags'].latest;
-    if (!latestVersion) return;
+    if (!latestVersion) {
+      return;
+    }
+
     return this.packument?.versions[latestVersion];
   }
 
@@ -150,24 +150,27 @@ export default class Module {
 
 function parseLicense(
   license:
-    string | DeprecatedLicense | (string | DeprecatedLicense)[] | undefined,
+    string | DeprecatedLicense | Array<string | DeprecatedLicense> | undefined,
 ): string[] {
   if (Array.isArray(license)) {
     return license
       .flatMap(value => parseLicense(value))
       .filter(value => isDefined(value));
   }
+
   if (typeof license === 'object') {
     license = license.type;
   }
 
-  license = license?.trim().toLowerCase();
-
-  if (!license) return [];
-
-  return license.replaceAll(/^\(|\)$/gv, '').split(/\s+or\s+/);
+  return license
+    ? license
+        .trim()
+        .toLowerCase()
+        .replaceAll(/^\(|\)$/gv, '')
+        .split(/\s+or\s+/)
+    : [];
 }
 
 function parseGithubPath(s: string) {
-  return s.match(/github\.com\/[^/]+\/[^#/?]+/)?.[0]?.replace(/\.git$/v, '');
+  return /github\.com\/[^/]+\/[^#/?]+/.exec(s)?.[0]?.replace(/\.git$/v, '');
 }

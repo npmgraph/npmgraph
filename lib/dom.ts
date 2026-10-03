@@ -1,4 +1,6 @@
-export function cn(...args: (string | Record<string, unknown> | undefined)[]) {
+export function cn(
+  ...args: Array<string | Record<string, unknown> | undefined>
+) {
   const classes = new Set();
   for (const arg of args) {
     if (typeof arg === 'string') {

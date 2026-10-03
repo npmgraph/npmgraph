@@ -14,10 +14,16 @@ export type Overrides = {
  Type guard that checks whether an unknown value is a valid Overrides object.
  */
 export function isOverrides(value: unknown): value is Overrides {
-  if (typeof value !== 'object' || value === null) return false;
-  for (const v of Object.values(value)) {
-    if (typeof v !== 'string' && !isOverrides(v)) return false;
+  if (typeof value !== 'object' || value === null) {
+    return false;
   }
+
+  for (const v of Object.values(value)) {
+    if (typeof v !== 'string' && !isOverrides(v)) {
+      return false;
+    }
+  }
+
   return true;
 }
 
@@ -57,9 +63,7 @@ export function getChildOverrides(
 
   // Merge with any nested overrides defined for this specific child
   const nested = currentOverrides[childName];
-  if (typeof nested === 'object' && nested !== null) {
-    return { ...rootStringOverrides, ...nested };
-  }
-
-  return rootStringOverrides;
+  return typeof nested === 'object' && nested !== null
+    ? { ...rootStringOverrides, ...nested }
+    : rootStringOverrides;
 }
