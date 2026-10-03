@@ -1,4 +1,4 @@
-import type { HTMLProps } from 'react';
+import { lazy, Suspense, type HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
@@ -8,11 +8,16 @@ import useGraphSelection from '../lib/useGraphSelection.ts';
 import useHashParam from '../lib/useHashParam.ts';
 import GraphDiagram from './GraphDiagram/GraphDiagram.tsx';
 import * as graphPaneStyles from './GraphPane/GraphPane.module.scss';
-import GraphPane from './GraphPane/GraphPane.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
-import ModulePane from './ModulePane/ModulePane.tsx';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
+
+// Keep these panes in secondary bundles but start loading them eagerly
+const graphPanePromise = import('./GraphPane/GraphPane.tsx');
+const modulePanePromise = import('./ModulePane/ModulePane.tsx');
+
+const GraphPane = lazy(() => graphPanePromise);
+const ModulePane = lazy(() => modulePanePromise);
 
 export default function Inspector(
   props: HTMLProps<HTMLDivElement> & { activity: LoadActivity },
@@ -53,7 +58,7 @@ export default function Inspector(
 
   return (
     <div className={cn(styles.inspector, className)} {...restProps}>
-      {paneComponent}
+      <Suspense fallback={null}>{paneComponent}</Suspense>
     </div>
   );
 }
