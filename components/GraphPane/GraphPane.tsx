@@ -29,9 +29,8 @@ import {
 } from './reports/reporters/peerDependenciesAll.tsx';
 
 // module-replacements + its reporter live in a single secondary bundle, loaded eagerly
-const replacementsPromise = import(
-  './reports/reporters/moduleReplacements.tsx'
-);
+const replacementsPromise =
+  import('./reports/reporters/moduleReplacements.tsx');
 
 function ReplacementsReport({
   data,
@@ -137,7 +136,6 @@ function GraphPaneInner({ graph, ...props }: GraphPaneProps) {
         <Suspense fallback={null}>
           <ReplacementsReport data={moduleAnalysis} />
         </Suspense>
-
 
         <ReportItem
           data={peerDependencyAnalysis}
