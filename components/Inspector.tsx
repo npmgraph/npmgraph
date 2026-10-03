@@ -50,6 +50,7 @@ export default function Inspector(
       paneComponent = <InfoPane />;
       break;
   }
+
   return (
     <div className={cn(styles.inspector, className)} {...restProps}>
       {paneComponent}

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import useLocation from '../lib/useLocation.ts';
 import { GithubIcon, OffsiteLinkIcon, XIcon } from './Icons.tsx';
+import * as utilities from './utilities.module.scss';
 import * as styles from './PreviewWidget.module.scss';
 
 function getNpmgraphJsOrgUrl(locationUrl: URL) {
@@ -21,11 +22,7 @@ export default function PreviewWidget() {
   const [locationUrl] = useLocation();
   const isProductionHost = locationUrl.hostname === 'npmgraph.js.org';
   const prNumber = useMemo(
-    () =>
-      (globalThis.process === undefined
-        ? undefined
-        : process.env.VERCEL_GIT_PULL_REQUEST_ID
-      )?.trim(),
+    () => process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim(),
     [],
   );
   const prUrl = prNumber
@@ -56,6 +53,7 @@ export default function PreviewWidget() {
       <a
         href={npmgraphUrl}
         target="_blank"
+        className={utilities.brightHover}
         rel="noopener noreferrer"
         aria-label="Open current query on npmgraph.js.org"
         title="Compare to production npmgraph"
@@ -64,11 +62,12 @@ export default function PreviewWidget() {
       </a>
       <button
         aria-label="Hide widget"
+        className={utilities.brightHover}
+        title="Hide widget until reload"
+        type="button"
         onClick={() => {
           setIsHidden(true);
         }}
-        title="Hide widget until reload"
-        type="button"
       >
         <XIcon />
       </button>

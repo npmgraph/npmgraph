@@ -3,6 +3,7 @@
 .root {
   display: flex;
   flex-shrink: 0;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0 1.2em;
   box-sizing: border-box;

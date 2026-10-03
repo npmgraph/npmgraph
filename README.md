@@ -43,13 +43,17 @@ https://npmgraph.js.org/?q=send#color=moduleType
 
 ### `deps` (hash param)
 
-Comma-separated list of the _types_ dependencies to include for modules at the top-level of the graph. (Lower-level modules only ever show `dependencies`).
+Comma-separated list of dependency types to include in the graph. `devDependencies` are only included for top-level modules. `peerDependencies` are included across the graph when enabled.
 
 `dependencies` is always included.
 
 **Example**: Graph `send`, include `devDependencies`:
 
 https://npmgraph.js.org/?q=send#deps=devDependencies
+
+**Example**: Graph `send`, include `peerDependencies`:
+
+https://npmgraph.js.org/?q=send#deps=peerDependencies
 
 ### `hide` (hash param)
 

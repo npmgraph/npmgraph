@@ -14,8 +14,8 @@ export type NPMSIOData = {
         username: string;
         email: string;
       };
-      maintainers: { username: string; email: string }[];
-      contributors: { name: string; email: string }[];
+      maintainers: Array<{ username: string; email: string }>;
+      contributors: Array<{ name: string; email: string }>;
       repository: { type: string; url: string };
       links: {
         npm: string;
@@ -27,20 +27,20 @@ export type NPMSIOData = {
       license: string;
       dependencies: Record<string, string>;
       devDependencies: Record<string, string>;
-      releases: {
+      releases: Array<{
         from: string;
         to: string;
         count: number;
-      }[];
+      }>;
       hasTestScript: boolean;
       readme: string;
     };
     npm: {
-      downloads: {
+      downloads: Array<{
         from: string;
         to: string;
         count: number;
-      }[];
+      }>;
       starsCount: number;
     };
     github: {
@@ -53,19 +53,19 @@ export type NPMSIOData = {
         distribution: Record<string, number>;
         isDisabled: boolean;
       };
-      contributors: {
+      contributors: Array<{
         username: string;
         commitsCount: number;
-      }[];
-      commits: {
+      }>;
+      commits: Array<{
         from: string;
         to: string;
         count: number;
-      }[];
-      statuses: {
+      }>;
+      statuses: Array<{
         context: string;
         state: string;
-      }[];
+      }>;
     };
     source: {
       files: {
@@ -115,17 +115,17 @@ export type NPMSIOData = {
 };
 
 export type BundlePhobiaData = {
-  assets: {
+  assets: Array<{
     gzip: number;
     name: string;
     size: number;
     type: string;
-  }[];
+  }>;
   dependencyCount: number;
   // dependencySizes may be undefined, but making it optional here causes TS to
   // complain when trying to pick it's type of this structure with
   // `BundlePhobiaData['dependencySizes'][number]`.
-  dependencySizes: { approximateSize: number; name: string }[];
+  dependencySizes: Array<{ approximateSize: number; name: string }>;
   description: string;
   gzip: number;
   hasJSModule: boolean;

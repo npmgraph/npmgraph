@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { isValidJson, loadPackageJson, readFile } from '../lib/read_file.ts';
 import * as styles from './useExternalInput.module.scss';
+import { SEARCH_FIELD_ID } from '../lib/constants.ts';
 
 let dragEnterCounter = 0;
 
@@ -20,6 +21,7 @@ function onDrop(ev: DragEvent) {
     alert('Sorry, file dropping is not supported by this browser');
     return;
   }
+
   if (dt.items.length !== 1) {
     alert('You must drop exactly one file');
     return;
@@ -51,12 +53,14 @@ function onPaste(ev: ClipboardEvent): void {
   }
 
   const text = ev.clipboardData?.getData('text');
-  if (!text) return;
+  if (!text) {
+    return;
+  }
 
   // Ignore pastes in fields, unless the field is the search field and the paste is a JSON file
   if (
     ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '') &&
-    (document.activeElement?.id !== 'search-field' || !isValidJson(text))
+    (document.activeElement?.id !== SEARCH_FIELD_ID || !isValidJson(text))
   ) {
     return;
   }

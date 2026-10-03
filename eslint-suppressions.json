@@ -1,0 +1,17 @@
+{
+  "lib/useActivity.ts": {
+    "react-hooks/immutability": {
+      "count": 1
+    }
+  },
+  "lib/useMeasure.ts": {
+    "react-hooks/refs": {
+      "count": 2
+    }
+  },
+  "lib/usePrevious.ts": {
+    "react-hooks/refs": {
+      "count": 1
+    }
+  }
+}

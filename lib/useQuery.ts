@@ -10,9 +10,7 @@ function setQuery(moduleKeys: string[] = [], shouldReplace = false) {
     key = key.trim();
 
     // Don't lowercase URLs
-    if (/https?:\/\//i.test(key)) return key;
-
-    return key.toLowerCase();
+    return /https?:\/\//i.test(key) ? key : key.toLowerCase();
   });
   moduleKeys = [...new Set(moduleKeys)];
   const search = searchSet(PARAM_QUERY, moduleKeys.join(','));
@@ -33,5 +31,6 @@ export function useParsedQuery() {
   const [query] = useQuery();
   const initialValue = query.join(', ');
 
+  // eslint-disable-next-line @eslint-react/use-state -- https://github.com/Rel1cx/eslint-react/issues/1963
   return useState(initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue);
 }

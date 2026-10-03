@@ -9,7 +9,9 @@ export default function ModuleNpmsIoScores({ module }: { module: Module }) {
   const [npmsData, setNpmsData] = useState<NPMSIOData | Error>();
 
   useEffect(() => {
-    if (module.isLocal) return;
+    if (module.isLocal) {
+      return;
+    }
 
     setNpmsData(undefined);
 
@@ -28,6 +30,7 @@ export default function ModuleNpmsIoScores({ module }: { module: Module }) {
   if (!npmsData) {
     return 'Loading ...';
   }
+
   if (npmsData instanceof Error) {
     return 'Score not available';
   }

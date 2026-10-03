@@ -54,6 +54,7 @@ export default function ModulePane({
       </Pane>
     );
   }
+
   if (nSelected > 1) {
     return (
       <Pane>
@@ -63,7 +64,10 @@ export default function ModulePane({
     );
   }
 
-  const module = selectedModules?.values().next().value as Module;
+  const module = selectedModules.values().next().value;
+  if (!module) {
+    return null;
+  }
 
   if (module.isLocal) {
     return (
@@ -204,6 +208,7 @@ export default function ModulePane({
       >
         <Tags>
           {maintainers.map(
+            // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Incorrect types
             ({ name = 'Unknown', email }: Exclude<Maintainer, string>) => (
               <Tag
                 key={name + email}

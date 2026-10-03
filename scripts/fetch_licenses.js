@@ -26,6 +26,7 @@ function getLicense(id) {
   if (!licenses.has(lowerId)) {
     licenses.set(lowerId, {});
   }
+
   return licenses.get(lowerId);
 }
 
@@ -39,8 +40,13 @@ for (const {
   l.id = licenseId;
   l.name = name;
 
-  if (isOsiApproved) l.isOsiApproved = true;
-  if (isDeprecatedLicenseId) l.isDeprecatedLicenseId = true;
+  if (isOsiApproved) {
+    l.isOsiApproved = true;
+  }
+
+  if (isDeprecatedLicenseId) {
+    l.isDeprecatedLicenseId = true;
+  }
 }
 
 for (const license of osi) {

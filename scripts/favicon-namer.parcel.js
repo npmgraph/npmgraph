@@ -1,6 +1,6 @@
 import { Namer } from '@parcel/plugin';
 
-export default new Namer({
+const faviconNamer = new Namer({
   name({ bundle }) {
     if (
       bundle.type === 'png' &&
@@ -11,3 +11,5 @@ export default new Namer({
     }
   },
 });
+
+export default faviconNamer;

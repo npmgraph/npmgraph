@@ -32,12 +32,19 @@ export function Tag({
 } & HTMLProps<HTMLDivElement>) {
   const setGraphSelection = useGraphSelection()[2];
   let title = value;
-  if (count > 1) title += ` (${count})`;
+  if (count > 1) {
+    title += ` (${count})`;
+  }
 
   let img = null;
   if (gravatar) {
     const hash = md5(gravatar);
-    img = <img src={`https://www.gravatar.com/avatar/${hash}?s=32`} />;
+    img = (
+      <img
+        src={`https://www.gravatar.com/avatar/${hash}?s=32`}
+        alt="User avatar"
+      />
+    );
   }
 
   return (

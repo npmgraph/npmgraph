@@ -63,17 +63,9 @@ export async function handler(event) {
 function isOriginAllowed(origin) {
   const url = new URL(origin);
 
-  if (url.hostname === 'localhost') {
-    return true;
-  }
-
-  if (url.hostname === 'npmgraph.js.org') {
-    return true;
-  }
-
-  if (/npmgraph-git-\w+-broofas-projects.vercel.app/.test(url.hostname)) {
-    return true;
-  }
-
-  return false;
+  return (
+    url.hostname === 'localhost' ||
+    url.hostname === 'npmgraph.js.org' ||
+    /npmgraph-git-\w+-broofas-projects.vercel.app/.test(url.hostname)
+  );
 }
