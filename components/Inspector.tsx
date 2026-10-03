@@ -16,8 +16,8 @@ import SettingsPane from './SettingsPane/SettingsPane.tsx';
 const graphPanePromise = import('./GraphPane/GraphPane.tsx');
 const modulePanePromise = import('./ModulePane/ModulePane.tsx');
 
-const GraphPane = lazy(() => graphPanePromise);
-const ModulePane = lazy(() => modulePanePromise);
+const GraphPane = lazy(async () => graphPanePromise);
+const ModulePane = lazy(async () => modulePanePromise);
 
 export default function Inspector(
   props: HTMLProps<HTMLDivElement> & { activity: LoadActivity },
