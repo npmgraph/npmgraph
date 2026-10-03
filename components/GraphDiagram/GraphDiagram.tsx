@@ -51,7 +51,6 @@ import {
   type GraphState,
   composeDOT,
   gatherSelectionInfo,
-  getGraphviz,
   getDiagramElement,
   getGraphForQuery,
 } from './graph_util.ts';
@@ -76,7 +75,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
   const [sizing] = useHashParam(PARAM_SIZING);
-  const [graphviz, graphvizLoading] = useGraphviz(graph.moduleInfos.size > 0);
+  const [graphviz, graphvizLoading, graphvizFailed] = useGraphviz(
+    graph.moduleInfos.size > 0,
+  );
 
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
@@ -354,7 +355,7 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
     void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
 
-  if (!graphviz && graphvizLoading) {
+  if (!graphviz && (graphvizLoading || graphvizFailed)) {
     return (
       <div className={cn(styles.graph, styles.graphvizLoading)}>
         {graphvizLoading
@@ -421,6 +422,7 @@ function scrollGraphIntoView(
 function useGraphviz(shouldLoad: boolean) {
   const [graphviz, setGraphviz] = useState<Graphviz | undefined>(undefined);
   const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!shouldLoad) {
@@ -428,18 +430,19 @@ function useGraphviz(shouldLoad: boolean) {
     }
 
     setLoading(true);
-    void (async () => {
-      try {
-        setGraphviz(await getGraphviz());
-      } catch (error) {
+    void import('@hpcc-js/wasm-graphviz')
+      .then(async ({ Graphviz }) => Graphviz.load())
+      .then(setGraphviz)
+      .catch(error => {
         console.error('Graphviz failed to load', error);
-      } finally {
+        setFailed(true);
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    })();
+      });
   }, [shouldLoad]);
 
-  return [graphviz, loading] as const;
+  return [graphviz, loading, failed] as const;
 }
 
 function updateSelection(

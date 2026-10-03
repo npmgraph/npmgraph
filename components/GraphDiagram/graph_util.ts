@@ -1,7 +1,6 @@
 import { $optional } from 'select-dom';
 import { satisfies } from 'semver';
 import simplur from 'simplur';
-import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import type Module from '../../lib/Module.ts';
 import { getModule } from '../../lib/ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../../lib/constants.ts';
@@ -16,12 +15,6 @@ import { isOptionalPeerDependency } from '../../lib/peer_dependency_util.ts';
 import * as styles from './GraphDiagram.module.scss';
 
 const FONT = 'Roboto Condensed, sans-serif';
-
-let gv: Promise<Graphviz> | undefined;
-export const getGraphviz = async () => {
-  gv ??= import('@hpcc-js/wasm-graphviz').then(async m => m.Graphviz.load());
-  return gv;
-};
 
 const DEFAULT_STYLES = {
   GRAPH: vizStyle({
