@@ -3,7 +3,7 @@ import { cn } from '../../lib/dom.ts';
 
 import * as styles from './Section.module.scss';
 
-export function CollapsableSection({
+export function CollapsibleSection({
   title,
   className,
   children,
