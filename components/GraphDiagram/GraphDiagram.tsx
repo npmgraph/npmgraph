@@ -142,6 +142,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         }
       }
 
+      // The graph is only dimmed while there is a selection, and shift-clicking
+      // is an exclude gesture rather than a selection one, so drop the previous
+      // selection instead of leaving the graph dimmed.
+      setGraphSelection(QueryType.Default, '');
+
       return;
     }
 
