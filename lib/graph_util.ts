@@ -2,6 +2,12 @@ import { $optional } from 'select-dom';
 import { satisfies } from 'semver';
 import simplur from 'simplur';
 import type Module from './Module.ts';
+import type {
+  DependencyEntry,
+  DependencyKey,
+  GraphModuleInfo,
+  GraphState,
+} from './graph_types.ts';
 import { getModule } from './ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
 import { getModuleKey } from './module_util.ts';
@@ -13,6 +19,12 @@ import {
 } from './overrides_util.ts';
 import { isOptionalPeerDependency } from './peer_dependency_util.ts';
 import * as styles from '../components/GraphDiagram/GraphDiagram.module.scss';
+
+export type {
+  DependencyKey,
+  GraphModuleInfo,
+  GraphState,
+} from './graph_types.ts';
 
 const FONT = 'Roboto Condensed, sans-serif';
 
@@ -43,40 +55,6 @@ const EDGE_ATTRIBUTES = {
   peerDependencies: '[color=black style=dashed label="peer"]',
   optionalDependencies: '[color=black style=dashed]', // unused
   optionalDevDependencies: '[color=black style=dashed]', // unused
-};
-
-export type DependencyKey =
-  | 'dependencies'
-  | 'devDependencies'
-  | 'peerDependencies'
-  | 'optionalDependencies';
-
-type DependencyEntry = {
-  name: string;
-  version: string;
-  type: DependencyKey;
-};
-
-type Dependency = {
-  module: Module;
-  type: DependencyKey;
-};
-
-export type GraphModuleInfo = {
-  module: Module;
-  level: number;
-  upstream: Set<Dependency>;
-  downstream: Set<Dependency>;
-};
-
-export type GraphState = {
-  // Map of module key -> module info
-  moduleInfos: Map<string, GraphModuleInfo>;
-
-  entryModules: Set<Module>;
-
-  // Map of module key -> error for entry modules that failed to load
-  failedEntryModules: Map<string, Error>;
 };
 
 const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);

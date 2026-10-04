@@ -3,7 +3,7 @@ import type Module from '../../lib/Module.ts';
 import { getNPMPackument } from '../../lib/PackumentCache.ts';
 import { COLORIZE_COLORS } from '../../lib/constants.ts';
 import { LegendColor } from './LegendColor.tsx';
-import type { SimpleColorizer } from './index.ts';
+import type { SimpleColorizer } from './types.ts';
 
 export default {
   title: 'Outdated Level',

@@ -1,23 +1,8 @@
-import type { ReactElement } from 'react';
-import type Module from '../../lib/Module.ts';
 import BusFactorColorizer from './BusFactorColorizer.tsx';
 import ModuleTypeColorizer from './ModuleTypeColorizer.tsx';
 import { NPMSOverallColorizer } from './NpmsColorizer.tsx';
 import OutdatedColorizer from './OutdatedColorizer.tsx';
-
-type Colorizer = {
-  title: string;
-  name: string;
-  legend: () => ReactElement;
-};
-
-export type SimpleColorizer = {
-  colorForModule: (module: Module) => Promise<string>;
-} & Colorizer;
-
-export type BulkColorizer = {
-  colorsForModules: (modules: Module[]) => Promise<Map<Module, string>>;
-} & Colorizer;
+import type { BulkColorizer, Colorizer, SimpleColorizer } from './types.ts';
 
 const colorizers: Array<SimpleColorizer | BulkColorizer> = [
   ModuleTypeColorizer,

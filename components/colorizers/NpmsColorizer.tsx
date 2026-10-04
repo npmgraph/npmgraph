@@ -9,7 +9,7 @@ import {
   COLORIZE_QUALITY,
   scoreColor,
 } from './colorizer_util.ts';
-import type { BulkColorizer } from './index.ts';
+import type { BulkColorizer } from './types.ts';
 
 // Max number of module names allowed per NPMS request
 const NPMS_BULK_LIMIT = 250;

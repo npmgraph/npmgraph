@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
-import { PaneType } from '../lib/constants.ts';
+import { PaneType, TIGHT_SCREEN_QUERY } from '../lib/constants.ts';
 import { getGlobalState, setGlobalState } from '../lib/GlobalStore.ts';
-
-export const TIGHT_SCREEN_QUERY = '(max-aspect-ratio: 2/3), (max-width: 700px)';
 
 export function useTightScreen() {
   const [isTightScreen, setIsTightScreen] = useState(

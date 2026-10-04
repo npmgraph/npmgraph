@@ -1,7 +1,7 @@
 import type { PackageJSON } from '@npm/types';
 import type Module from '../../lib/Module.ts';
 import { LegendColor } from './LegendColor.tsx';
-import type { SimpleColorizer } from './index.ts';
+import type { SimpleColorizer } from './types.ts';
 
 const COLORIZE_MODULE_CJS = 'var(--bg-red)';
 const COLORIZE_MODULE_DUAL = 'var(--bg-yellow)';

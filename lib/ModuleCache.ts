@@ -18,7 +18,7 @@ import {
 } from './module_util.ts';
 import selectVersion from './selectVersion.ts';
 import { hashGet } from './url_util.ts';
-import { getRegistry } from '../hooks/useRegistry.ts';
+import { getRegistry } from './registry_util.ts';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 

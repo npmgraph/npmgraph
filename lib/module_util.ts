@@ -1,5 +1,6 @@
 import type { PackumentVersion } from '@npm/types';
-import type { Dependencies } from './Module.ts';
+
+type Dependencies = PackumentVersion['dependencies'];
 
 export function isHttpModule(moduleKey: string) {
   return /^https?:\/\//.test(moduleKey);
