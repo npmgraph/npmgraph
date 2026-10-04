@@ -309,3 +309,7 @@ export function syncPackagesHash() {
     cacheLocalPackage(pkg as PackumentVersion);
   }
 }
+
+export function clearModuleCache() {
+  moduleCache.clear();
+}
