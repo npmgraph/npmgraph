@@ -1,10 +1,14 @@
 import { $$, $optional } from 'select-dom';
 import { report } from '../../lib/bugsnag.ts';
-import { DownloadIcon } from '../Icons.tsx';
+import { DownloadIcon } from '../ui/Icons.tsx';
 import * as styles from './GraphDiagramDownloadButton.module.scss';
-import { getDiagramElement } from './graph_util.ts';
+import * as graphStyles from './GraphDiagram.module.scss';
 
 type DownloadExtension = 'svg' | 'png';
+
+function getDiagramElement() {
+  return $optional<SVGSVGElement>(`.${graphStyles.graphDiagram}`);
+}
 
 export default function GraphDiagramDownloadButton() {
   return (

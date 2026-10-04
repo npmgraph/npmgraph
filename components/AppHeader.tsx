@@ -1,9 +1,9 @@
 import QueryInput from './InfoPane/QueryInput.tsx';
 import Logo from './Logo.tsx';
 import * as styles from './AppHeader.module.scss';
-import Tabs from './Tabs.tsx';
-import { useKeyboardShortcuts } from './useKeyboardShortcuts.ts';
-import { QueryLink } from './QueryLink.tsx';
+import Tabs from './ui/Tabs.tsx';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.ts';
+import { QueryLink } from './ui/QueryLink.tsx';
 import ErrorsBanner from './ErrorsBanner.tsx';
 
 export default function AppHeader() {

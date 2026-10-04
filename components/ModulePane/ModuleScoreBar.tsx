@@ -1,5 +1,5 @@
 import { percent } from '../../lib/dom.ts';
-import { scoreColor } from '../ReportPane/colorizers/colorizer_util.ts';
+import { scoreColor } from '../colorizers/colorizer_util.ts';
 import * as styles from './ModuleScoreBar.module.scss';
 
 export function ModuleScoreBar({

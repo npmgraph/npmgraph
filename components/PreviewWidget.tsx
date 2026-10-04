@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import useLocation from '../lib/useLocation.ts';
-import { GithubIcon, OffsiteLinkIcon, XIcon } from './Icons.tsx';
-import * as utilities from './utilities.module.scss';
+import useLocation from '../hooks/useLocation.ts';
+import { GithubIcon, OffsiteLinkIcon, XIcon } from './ui/Icons.tsx';
+import * as utilities from './ui/utilities.module.scss';
 import * as styles from './PreviewWidget.module.scss';
 
 function getNpmgraphJsOrgUrl(locationUrl: URL) {

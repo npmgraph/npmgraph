@@ -1,0 +1,122 @@
+import simplur from 'simplur';
+import { QueryType } from '../../../lib/ModuleCache.ts';
+import { cn } from '../../../lib/dom.ts';
+import fetchJson from '../../../lib/fetchJson.ts';
+import { ExternalLink } from '../../ui/ExternalLink.tsx';
+import { Selectable } from '../../ui/Selectable.tsx';
+import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
+import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
+import * as styles from './moduleVulnerabilities.module.scss';
+
+type Advisory = {
+  packageName?: string;
+  id: number;
+  url: string;
+  title: string;
+  severity: 'none' | 'info' | 'low' | 'moderate' | 'high' | 'critical';
+  vulnerable_versions: string;
+  cwe: string[]; // CWE codes
+  cvss: { score: number; vectorString: string };
+};
+
+type BulkAdvisories = Record<string, Advisory[]>;
+
+const SEVERITY_RANK = {
+  none: 0,
+  info: 1,
+  low: 2,
+  moderate: 3,
+  high: 4,
+  critical: 5,
+};
+
+export async function moduleVulnerabilities({
+  moduleInfos,
+}: ModuleAnalysisState) {
+  const versionsByName: Record<string, string[]> = {};
+
+  let nModules = 0;
+  for (const { module } of moduleInfos.values()) {
+    versionsByName[module.name] ??= [];
+    versionsByName[module.name].push(module.version);
+    nModules++;
+  }
+
+  let moduleAdvisories: BulkAdvisories | null = null;
+  if (nModules > 0) {
+    const body = JSON.stringify(versionsByName, null, 2);
+
+    // Ideally we'd be using `getRegistry()` here, but due to CORS issues with the
+    // npmjs.org registry endpoint, we have to use our own proxy lambda instead.
+    const registry =
+      'https://pcwyqhjns4xzfybfy6grsq3if40sccxu.lambda-url.us-west-2.on.aws';
+
+    moduleAdvisories = await fetchJson<BulkAdvisories>(
+      `${registry}/-/npm/v1/security/advisories/bulk`,
+      {
+        headers: {
+          Accept: 'application/json',
+        },
+        method: 'POST',
+        body,
+      },
+    ).catch(error => {
+      console.log('Error fetching NPM audit data:', error.message);
+      return null;
+    });
+  }
+
+  // Get flat list of advisories
+  const advisories: Advisory[] = [];
+  if (moduleAdvisories) {
+    for (const [moduleName, moduleAdvisory] of Object.entries(
+      moduleAdvisories,
+    )) {
+      for (const adv of moduleAdvisory) {
+        adv.packageName = moduleName;
+        advisories.push(adv);
+      }
+    }
+  }
+
+  // Sort by severity, name
+  advisories.sort((a, b) => {
+    const rank = SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity];
+    return rank === 0
+      ? (a.packageName ?? '').localeCompare(b.packageName ?? '')
+      : rank;
+  });
+
+  const details = advisories.map(advisory => (
+    <div key={advisory.id}>
+      <div
+        className={cn(
+          styles.header,
+          styles.severity,
+          styles[advisory.severity as keyof typeof styles] as string,
+        )}
+      >
+        <span className={styles.module}>
+          <Selectable
+            className={styles.name}
+            type={QueryType.Default}
+            value={`${advisory.packageName}@${advisory.vulnerable_versions}`}
+          />{' '}
+        </span>
+        <span className={styles.severity}>{advisory.severity}</span>
+      </div>
+      <div>
+        {advisory.title}{' '}
+        <ExternalLink href={advisory.url}>details</ExternalLink>
+      </div>
+    </div>
+  ));
+
+  if (details.length === 0) {
+    return;
+  }
+
+  const summary = simplur`Vulnerabilities (${details.length})`;
+
+  return { type: 'warn', summary, details } as RenderedAnalysis;
+}

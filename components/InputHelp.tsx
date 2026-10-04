@@ -1,4 +1,4 @@
-import { QueryLink } from './QueryLink.tsx';
+import { QueryLink } from './ui/QueryLink.tsx';
 
 export default function InputHelp() {
   return (

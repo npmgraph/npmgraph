@@ -1,6 +1,6 @@
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
-export const COLORIZE_BUS = 'bus';
+const COLORIZE_BUS = 'bus';
 export const COLORIZE_COLORS = [
   'var(--bg-red)',
   'var(--bg-orange)',
@@ -36,3 +36,4 @@ export const PaneType = {
 } as const;
 
 export type PaneTypes = (typeof PaneType)[keyof typeof PaneType];
+export const TIGHT_SCREEN_QUERY = '(max-aspect-ratio: 2/3), (max-width: 700px)';

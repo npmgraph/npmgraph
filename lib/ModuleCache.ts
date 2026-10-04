@@ -1,6 +1,6 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { satisfies } from 'semver';
-import { flash } from '../components/Flash/flash.ts';
+import { flash } from './flash.ts';
 import HttpError from './HttpError.ts';
 import Module from './Module.ts';
 import {
@@ -18,7 +18,7 @@ import {
 } from './module_util.ts';
 import selectVersion from './selectVersion.ts';
 import { hashGet } from './url_util.ts';
-import { getRegistry } from './useRegistry.ts';
+import { getRegistry } from './registry_util.ts';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 
@@ -34,8 +34,6 @@ type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   module: Module; // Set once module is loaded
   registry?: string; // NPM_REGISTRY url
 };
-
-export { default as selectVersion } from './selectVersion.ts';
 
 async function fetchModuleFromNPM(
   moduleName: string,
@@ -150,7 +148,7 @@ export function getCachedModule(key: string) {
   return entry?.registry === getRegistry() ? entry.module : undefined;
 }
 
-export function cacheModule(module: Module, registry?: string) {
+function cacheModule(module: Module, registry?: string) {
   const moduleKey = module.key;
   const entry = moduleCache.get(moduleKey);
 
