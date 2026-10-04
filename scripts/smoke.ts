@@ -12,6 +12,10 @@ const browser = await chromium.launch({ channel: 'chrome' });
 const node = (page: Page, module = '') =>
   page.locator(`svg g.node${module && `[data-module^="${module}"]`}`);
 
+// Toggle's click handler lives on its On/Off switch, not the label text
+const toggle = (page: Page, label: string) =>
+  page.locator('label', { hasText: label }).locator('div').first();
+
 const tab = (page: Page, name: string) =>
   page.getByRole('button', { name, exact: true });
 
@@ -81,9 +85,7 @@ const scenarios: Record<string, (page: Page) => Promise<unknown>> = {
     await node(page).first().waitFor({ timeout: TIMEOUT });
     await tab(page, 'Report').click();
     for (const title of ['Modules', 'Maintainers', 'Licenses']) {
-      await page
-        .locator('h3', { hasText: title })
-        .waitFor({ timeout: TIMEOUT });
+      await page.locator('h3', { hasText: title }).waitFor({ timeout: TIMEOUT });
     }
   },
 
@@ -91,8 +93,8 @@ const scenarios: Record<string, (page: Page) => Promise<unknown>> = {
     await page.goto(`${ORIGIN}/?q=ms`);
     await node(page).first().waitFor({ timeout: TIMEOUT });
     await tab(page, 'Settings').click();
-    await page.getByText('Include devDependencies').click();
-    await page.waitForURL(/#.*deps=devDependencies/);
+    await toggle(page, 'Include devDependencies').click();
+    await page.waitForFunction(() => location.hash.includes('deps=devDependencies'));
     await node(page).first().waitFor({ timeout: TIMEOUT });
   },
 
@@ -100,8 +102,8 @@ const scenarios: Record<string, (page: Page) => Promise<unknown>> = {
     await page.goto(`${ORIGIN}/?q=debug`);
     await node(page).first().waitFor({ timeout: TIMEOUT });
     await tab(page, 'Settings').click();
-    await page.getByText('Size modules by unpacked size').click();
-    await page.waitForURL(/#.*sizing=/);
+    await toggle(page, 'Size modules by unpacked size').click();
+    await page.waitForFunction(() => location.hash.includes('sizing='));
     await node(page).first().waitFor({ timeout: TIMEOUT });
   },
 
@@ -163,9 +165,7 @@ for (const [name, run] of Object.entries(scenarios)) {
     console.log(`ok   ${name}`);
   } catch (error) {
     isFailed = true;
-    console.error(
-      `FAIL ${name}\n${error instanceof Error ? error.message : error}`,
-    );
+    console.error(`FAIL ${name}\n${error instanceof Error ? error.message : error}`);
   } finally {
     await page.close();
   }
