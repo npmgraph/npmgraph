@@ -4,18 +4,20 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
 
-const ORIGIN = 'http://app.test';
+const ORIGIN = 'https://app.test';
 
 const browser = await chromium.launch();
 const page = await browser.newPage();
 
 const errors: string[] = [];
-page.on('pageerror', error => errors.push(error.message));
+page.on('pageerror', error => {
+  errors.push(error.message);
+});
 
 // Serve dist/ without a server; every other origin (npm registry) goes to the network
 await page.route(
   url => url.origin === ORIGIN,
-  route => {
+  async route => {
     const { pathname } = new URL(route.request().url());
     const file = join('dist', pathname === '/' ? 'index.html' : pathname);
     return route.fulfill({ path: existsSync(file) ? file : 'dist/index.html' });
