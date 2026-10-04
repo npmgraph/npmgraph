@@ -74,6 +74,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/semver": "^7.8.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.12.0",
     "eslint-config-xo": "^4.0.1",
     "eslint-config-xo-react": "^0.32.0",
@@ -90,7 +91,7 @@
     "standard-version": "^9.5.0",
     "svgo": "^4.1.0",
     "typed-query-selector": "^2.12.2",
-    "typescript": "^6.0.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-plugin-css-modules": "^5.2.0"
   },
   "source": [
