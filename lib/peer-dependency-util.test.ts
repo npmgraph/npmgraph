@@ -1,49 +1,45 @@
-import { strict as assert } from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, expect, it } from 'vitest';
 import { isOptionalPeerDependency } from './peer-dependency-util.ts';
 
 describe('isOptionalPeerDependency', () => {
   it('returns true when a peer dependency is marked optional', () => {
-    assert.equal(
+    expect(
       isOptionalPeerDependency(
         {
           react: { optional: true },
         },
         'react',
       ),
-      true,
-    );
+    ).toBe(true);
   });
 
   it('returns false when a peer dependency is not marked optional', () => {
-    assert.equal(
+    expect(
       isOptionalPeerDependency(
         {
           react: {},
         },
         'react',
       ),
-      false,
-    );
+    ).toBe(false);
   });
 
   it('returns false when metadata does not include the dependency', () => {
-    assert.equal(isOptionalPeerDependency({}, 'react'), false);
+    expect(isOptionalPeerDependency({}, 'react')).toBe(false);
   });
 
   it('returns false when peerDependenciesMeta is undefined', () => {
-    assert.equal(isOptionalPeerDependency(undefined, 'react'), false);
+    expect(isOptionalPeerDependency(undefined, 'react')).toBe(false);
   });
 
   it('returns false when optional is explicitly false', () => {
-    assert.equal(
+    expect(
       isOptionalPeerDependency(
         {
           react: { optional: false },
         },
         'react',
       ),
-      false,
-    );
+    ).toBe(false);
   });
 });

@@ -1,6 +1,5 @@
 import type { PackumentVersion } from '@npm/types';
-import { strict as assert } from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, expect, it } from 'vitest';
 import Module from './Module.ts';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
 
@@ -12,7 +11,7 @@ describe('Module', () => {
         version: '1.0.0',
       } as PackumentVersion);
 
-      assert.equal(module.isUnnamed, false);
+      expect(module.isUnnamed).toBe(false);
     });
 
     it('should return true for a module with a generated unnamed prefix', () => {
@@ -21,7 +20,7 @@ describe('Module', () => {
         version: '1.0.0',
       } as PackumentVersion);
 
-      assert.equal(module.isUnnamed, true);
+      expect(module.isUnnamed).toBe(true);
     });
   });
 
@@ -32,7 +31,7 @@ describe('Module', () => {
         version: '1.0.0',
       } as PackumentVersion);
 
-      assert.equal(module.displayName, 'my-package');
+      expect(module.displayName).toBe('my-package');
     });
 
     it(`should return '${UNNAMED_PACKAGE}' for an unnamed module`, () => {
@@ -41,19 +40,18 @@ describe('Module', () => {
         version: '1.0.0',
       } as PackumentVersion);
 
-      assert.equal(module.displayName, UNNAMED_PACKAGE);
+      expect(module.displayName).toBe(UNNAMED_PACKAGE);
     });
   });
 
   describe('constructor', () => {
     it('should throw if name is not provided', () => {
-      assert.throws(
+      expect(
         () =>
           new Module({
             version: '1.0.0',
           } as unknown as PackumentVersion),
-        /Package name is required/,
-      );
+      ).toThrow(/Package name is required/);
     });
   });
 });
