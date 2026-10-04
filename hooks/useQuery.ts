@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../lib/constants.ts';
-import { searchGet, searchSet } from '../lib/url_util.ts';
+import { searchGet, searchSet } from '../lib/url-util.ts';
 import { patchLocation } from './useLocation.ts';
 
 function setQuery(moduleKeys: string[] = [], shouldReplace = false) {

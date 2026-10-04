@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { isValidJson, loadPackageJson, readFile } from '../lib/read_file.ts';
+import { isValidJson, loadPackageJson, readFile } from '../lib/read-file.ts';
 import * as styles from './useExternalInput.module.scss';
 import { SEARCH_FIELD_ID } from '../lib/constants.ts';
 

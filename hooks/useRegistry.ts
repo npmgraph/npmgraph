@@ -1,5 +1,5 @@
 import { DEFAULT_NPM_REGISTRY, PARAM_REGISTRY } from '../lib/constants.ts';
-import { searchGet, searchSet } from '../lib/url_util.ts';
+import { searchGet, searchSet } from '../lib/url-util.ts';
 import useLocation, { patchLocation } from './useLocation.ts';
 
 export default function useRegistry() {

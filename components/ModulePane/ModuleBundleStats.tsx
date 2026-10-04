@@ -1,4 +1,4 @@
-import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
+import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
 import * as styles from './ModuleBundleStats.module.scss';
 
