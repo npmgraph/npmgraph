@@ -1,6 +1,6 @@
 import type Module from '../../lib/Module.ts';
 import fetchJson from '../../lib/fetchJson.ts';
-import type { NPMSIOData } from '../../lib/fetch_types.ts';
+import type { NPMSIOData } from '../../lib/fetchTypes.ts';
 import { flash } from '../../lib/flash.ts';
 import {
   COLORIZE_MAINTENANCE,
@@ -8,7 +8,7 @@ import {
   COLORIZE_POPULARITY,
   COLORIZE_QUALITY,
   scoreColor,
-} from './colorizer_util.ts';
+} from './colorizerUtil.ts';
 import type { BulkColorizer } from './types.ts';
 
 // Max number of module names allowed per NPMS request

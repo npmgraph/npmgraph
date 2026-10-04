@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type Module from '../../lib/Module.ts';
 import fetchJson from '../../lib/fetchJson.ts';
-import type { NPMSIOData } from '../../lib/fetch_types.ts';
+import type { NPMSIOData } from '../../lib/fetchTypes.ts';
 import { ModuleScoreBar } from './ModuleScoreBar.tsx';
 import * as styles from './ModuleNpmsIoScores.module.scss';
 

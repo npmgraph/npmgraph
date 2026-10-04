@@ -1,4 +1,4 @@
-import { readFile } from '../../lib/read_file.ts';
+import { readFile } from '../../lib/readFile.ts';
 import * as styles from './FilePicker.module.scss';
 
 function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {

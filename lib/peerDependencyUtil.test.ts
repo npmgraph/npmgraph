@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { describe, it } from 'node:test';
-import { isOptionalPeerDependency } from './peer_dependency_util.ts';
+import { isOptionalPeerDependency } from './peerDependencyUtil.ts';
 
 describe('isOptionalPeerDependency', () => {
   it('returns true when a peer dependency is marked optional', () => {

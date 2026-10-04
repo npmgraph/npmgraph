@@ -1,5 +1,5 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import type { GraphState } from './graph_types.ts';
+import type { GraphState } from './graphTypes.ts';
 import {
   type PaneTypes,
   PaneType,
@@ -7,7 +7,7 @@ import {
   TIGHT_SCREEN_QUERY,
 } from './constants.ts';
 import type Module from './Module.ts';
-import { hashGet, searchGet } from './url_util.ts';
+import { hashGet, searchGet } from './urlUtil.ts';
 
 type GlobalState = {
   colorize?: string;

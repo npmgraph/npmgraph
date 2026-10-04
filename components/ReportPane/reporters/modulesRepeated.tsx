@@ -1,5 +1,5 @@
 import simplur from 'simplur';
-import { getModuleKey } from '../../../lib/module_util.ts';
+import { getModuleKey } from '../../../lib/moduleUtil.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
