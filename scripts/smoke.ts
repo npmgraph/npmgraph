@@ -6,7 +6,7 @@ import { chromium } from 'playwright';
 
 const ORIGIN = 'https://app.test';
 
-const browser = await chromium.launch({channel: 'chrome'});
+const browser = await chromium.launch({ channel: 'chrome' });
 const page = await browser.newPage();
 
 const errors: string[] = [];
