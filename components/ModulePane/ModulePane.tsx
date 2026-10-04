@@ -12,7 +12,7 @@ import { foreachDownstream } from '../../lib/graph-util.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import { Section } from '../ui/Section.tsx';
+import { CollapsableSection } from '../ui/Section.tsx';
 import { Tag, Tags } from '../ui/Tag.tsx';
 import * as utilities from '../ui/utilities.module.scss';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
@@ -181,7 +181,7 @@ export default function ModulePane({
 
       <ReleaseTimeline module={module} />
 
-      <Section title="Module Size">
+      <CollapsableSection title="Module Size">
         <div className={styles.sizeGrid}>
           <span>Unpacked Size (module only):</span>
           {unpackedSize ? (
@@ -197,13 +197,13 @@ export default function ModulePane({
           )}
         </div>
         <ModuleBundleSize module={module} />
-      </Section>
+      </CollapsableSection>
 
-      <Section title="npms.io Score">
+      <CollapsableSection title="npms.io Score">
         <ModuleNpmsIoScores module={module} />
-      </Section>
+      </CollapsableSection>
 
-      <Section
+      <CollapsableSection
         title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
       >
         <Tags>
@@ -219,7 +219,7 @@ export default function ModulePane({
             ),
           )}
         </Tags>
-      </Section>
+      </CollapsableSection>
     </Pane>
   );
 }

@@ -6,7 +6,7 @@ import { type ReactElement, useState } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useMeasure from '../../hooks/useMeasure.ts';
-import { Section } from '../ui/Section.tsx';
+import { CollapsableSection } from '../ui/Section.tsx';
 import * as styles from './ReleaseTimeline.module.scss';
 
 function timestring(t: number) {
@@ -158,7 +158,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
   const xpad = w * 0.1;
   const ypad = h * 0.1;
   return (
-    <Section title="Release Timeline">
+    <CollapsableSection title="Release Timeline">
       <svg
         ref={ref}
         viewBox={`${-xpad} ${-ypad} ${w + xpad * 2} ${h + ypad * 2}`}
@@ -191,6 +191,6 @@ export function ReleaseTimeline({ module }: { module: Module }) {
           prerelease
         </span>
       </div>
-    </Section>
+    </CollapsableSection>
   );
 }
