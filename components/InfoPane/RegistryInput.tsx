@@ -3,16 +3,20 @@ import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
 import useRegistry from '../../hooks/useRegistry.ts';
 import * as styles from './RegistryInput.module.scss';
 
-enum RegistryStatus {
-  PENDING = 'pending',
-  ONLINE = 'online',
-  OFFLINE = 'offlinegs',
-}
+const RegistryStatus = {
+  PENDING: 'pending',
+  ONLINE: 'online',
+  OFFLINE: 'offline',
+} as const;
+
+type RegistryStatusType = (typeof RegistryStatus)[keyof typeof RegistryStatus];
 
 export default function RegistryInput() {
   const [registry, setRegistry] = useRegistry();
   const [value, setValue] = useState(registry ?? '');
-  const [status, setStatus] = useState<RegistryStatus>(RegistryStatus.PENDING);
+  const [status, setStatus] = useState<RegistryStatusType>(
+    RegistryStatus.PENDING,
+  );
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value.trim());

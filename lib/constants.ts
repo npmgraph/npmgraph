@@ -1,6 +1,5 @@
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
-const COLORIZE_BUS = 'bus';
 export const COLORIZE_COLORS = [
   'var(--bg-red)',
   'var(--bg-orange)',

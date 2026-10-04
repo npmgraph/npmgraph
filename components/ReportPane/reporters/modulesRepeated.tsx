@@ -10,7 +10,7 @@ export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
 
   for (const { module } of moduleInfos.values()) {
     versionsByName[module.name] ??= [];
-    versionsByName[module.name].push(module.version);
+    (versionsByName[module.name] ??= []).push(module.version);
   }
 
   const details = Object.entries(versionsByName)

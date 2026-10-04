@@ -38,7 +38,7 @@ export async function moduleVulnerabilities({
   let nModules = 0;
   for (const { module } of moduleInfos.values()) {
     versionsByName[module.name] ??= [];
-    versionsByName[module.name].push(module.version);
+    (versionsByName[module.name] ??= []).push(module.version);
     nModules++;
   }
 

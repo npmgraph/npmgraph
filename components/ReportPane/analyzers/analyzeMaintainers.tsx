@@ -41,7 +41,7 @@ export function analyzeMaintainers({
       }
 
       soloModulesCount++;
-      return maintainers[0].name;
+      return maintainers[0]?.name;
     },
   );
 

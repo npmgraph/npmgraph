@@ -26,11 +26,12 @@
     "lint:fix": "eslint --fix .",
     "fix": "run-s --continue-on-error lint:fix format:fix",
     "format": "prettier -c .",
-    "format:fix": "prettier -w .",
+    "format:fix": "prettier --write --list-different .",
     "types": "tsc --noEmit",
     "test:unit": "node --test **/*.test.ts",
     "test": "run-p format lint types test:unit build",
-    "smoke": "node scripts/smoke.ts"
+    "smoke": "node scripts/smoke.ts",
+    "watch": "tsc --watch"
   },
   "keywords": [
     "npm",
@@ -65,6 +66,7 @@
     "@parcel/transformer-sass": "^2.16.4",
     "@parcel/transformer-svg-react": "^2.16.4",
     "@parcel/transformer-xml": "^2.16.4",
+    "@sindresorhus/tsconfig": "^8.1.0",
     "@types/canvas-confetti": "^1.9.0",
     "@types/d3-hierarchy": "^3.1.7",
     "@types/d3-selection": "^3.0.11",
@@ -74,6 +76,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/semver": "^7.8.0",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.12.0",
     "eslint-config-xo": "^4.0.1",
     "eslint-config-xo-react": "^0.32.0",
@@ -90,7 +93,7 @@
     "standard-version": "^9.5.0",
     "svgo": "^4.1.0",
     "typed-query-selector": "^2.12.2",
-    "typescript": "^6.0.3",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-plugin-css-modules": "^5.2.0"
   },
   "source": [

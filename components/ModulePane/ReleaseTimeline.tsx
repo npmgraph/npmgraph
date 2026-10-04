@@ -49,7 +49,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       const pv: PackumentVersion & {
         time: number;
         semver: SemVer;
-      } = { ...version, time: Date.parse(time[key]), semver };
+      } = { ...version, time: Date.parse(time[key]!), semver };
       return [key, pv] as const;
     })
     .filter(item => isDefined(item))
@@ -60,14 +60,14 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     return;
   }
 
-  let majorMax = byTime[0][1].semver.major;
-  let majorMin = byTime[0][1].semver.major;
+  let majorMax = byTime[0]![1].semver.major;
+  let majorMin = byTime[0]![1].semver.major;
   for (const [, version] of byTime) {
     majorMax = Math.max(majorMax, version.semver.major);
     majorMin = Math.min(majorMin, version.semver.major);
   }
 
-  const tmin = byTime[0][1].time;
+  const tmin = byTime[0]![1].time;
 
   const layers = {
     // Note: order here controls layering in SVG

@@ -63,7 +63,6 @@ export default function Flash() {
               return;
             }
 
-            const { target } = event.nativeEvent;
             setEntries(previous => previous.filter(x => x.id !== entry.id));
           }}
         >

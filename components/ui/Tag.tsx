@@ -1,6 +1,6 @@
 import md5 from 'md5';
+import { type QueryTypeValue, QueryType } from '../../lib/ModuleCache.ts';
 import type { HTMLProps } from 'react';
-import { QueryType } from '../../lib/ModuleCache.ts';
 import { cn } from '../../lib/dom.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import * as styles from './Tag.module.scss';
@@ -25,7 +25,7 @@ export function Tag({
   gravatar,
   className,
 }: {
-  type: QueryType;
+  type: QueryTypeValue;
   value: string;
   count?: number;
   gravatar?: string;
