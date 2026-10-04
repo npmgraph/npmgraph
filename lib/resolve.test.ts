@@ -124,8 +124,32 @@ describe('overrides', () => {
     ]);
   });
 
-  it.todo('$ref overrides');
-  it.todo('version-scoped override keys (foo@^1)');
+  it.fails('$ref override uses the root dependency spec', async () => {
+    add('a', { '1.0.0': { dependencies: { react: '^18' } } });
+    root({
+      dependencies: { a: '1', react: '17.0.2' },
+      overrides: { react: '$react' },
+    });
+    await expect(edges()).resolves.toContain(
+      'a@1.0.0 -> react@17.0.2 [dependencies]',
+    );
+  });
+
+  it.fails('version-scoped key only applies to matching specs', async () => {
+    add('x', { '1.0.0': {}, '2.0.0': {}, '3.0.0': {} });
+    add('a', { '1.0.0': { dependencies: { x: '^1' } } });
+    add('b', { '1.0.0': { dependencies: { x: '^3' } } });
+    root({
+      dependencies: { a: '1', b: '1' },
+      overrides: { 'x@^1': '2.0.0' },
+    });
+    await expect(edges()).resolves.toEqual(
+      expect.arrayContaining([
+        'a@1.0.0 -> x@2.0.0 [dependencies]',
+        'b@1.0.0 -> x@3.0.0 [dependencies]',
+      ]),
+    );
+  });
 });
 
 describe('spec kinds', () => {
