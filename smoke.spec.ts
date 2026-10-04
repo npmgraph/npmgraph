@@ -172,7 +172,7 @@ describe('panes', () => {
     await node().waitFor();
     await tab('Settings').click();
     await toggle('Include devDependencies').click();
-    await hashHas('deps=devDependencies');
+    await hashHas('devDependencies');
     await node().waitFor();
   });
 
