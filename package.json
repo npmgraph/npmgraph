@@ -29,7 +29,8 @@
     "format:fix": "prettier -w .",
     "types": "tsc --noEmit",
     "test:unit": "node --test **/*.test.ts",
-    "test": "run-p format lint types test:unit build"
+    "test": "run-p format lint types test:unit build",
+    "smoke": "node scripts/smoke.ts"
   },
   "keywords": [
     "npm",
@@ -81,6 +82,7 @@
     "npm-run-all2": "^9.0.3",
     "parcel": "^2.16.4",
     "path-browserify": "^1.0.1",
+    "playwright": "^1.63.0",
     "postcss": "^8.5.28",
     "postcss-modules": "^6.0.1",
     "prettier": "^3.9.9",
