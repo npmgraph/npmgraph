@@ -1,4 +1,3 @@
-import { $optional } from 'select-dom';
 import { satisfies } from 'semver';
 import simplur from 'simplur';
 import type Module from './Module.ts';
@@ -18,7 +17,6 @@ import {
   isOverrides,
 } from './overrides_util.ts';
 import { isOptionalPeerDependency } from './peer_dependency_util.ts';
-import * as styles from '../components/GraphDiagram/GraphDiagram.module.scss';
 
 export type {
   DependencyKey,
@@ -510,8 +508,4 @@ export function gatherSelectionInfo(
     downstreamEdgeKeys,
     downstreamModuleKeys,
   };
-}
-
-export function getDiagramElement() {
-  return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
 }

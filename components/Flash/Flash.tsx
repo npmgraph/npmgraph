@@ -6,7 +6,7 @@ import {
   notifyFlashElementReady,
   subscribeFlash,
   type FlashEntry,
-} from './flash.ts';
+} from '../../lib/flash.ts';
 
 const FLASH_GAP = 10;
 

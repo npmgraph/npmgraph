@@ -1,6 +1,6 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { satisfies } from 'semver';
-import { flash } from '../components/Flash/flash.ts';
+import { flash } from './flash.ts';
 import HttpError from './HttpError.ts';
 import Module from './Module.ts';
 import {

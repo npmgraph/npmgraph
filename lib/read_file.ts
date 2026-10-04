@@ -1,5 +1,5 @@
 import type { PackageJSON, PackumentVersion } from '@npm/types';
-import { flash } from '../components/Flash/flash.ts';
+import { flash } from './flash.ts';
 import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.ts';
 import {
   PARAM_PACKAGES,

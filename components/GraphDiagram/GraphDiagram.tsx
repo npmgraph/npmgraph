@@ -38,7 +38,7 @@ import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
-import { celebrate, flash } from '../Flash/flash.ts';
+import { celebrate, flash } from '../../lib/flash.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import * as utilities from '../ui/utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
@@ -51,12 +51,15 @@ import {
   type GraphState,
   composeDOT,
   gatherSelectionInfo,
-  getDiagramElement,
   getGraphForQuery,
 } from '../../lib/graph_util.ts';
 
 type ZoomOption =
   typeof ZOOM_NONE | typeof ZOOM_FIT_WIDTH | typeof ZOOM_FIT_HEIGHT;
+
+function getDiagramElement() {
+  return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
+}
 
 const idSeen = new Set<unknown>();
 

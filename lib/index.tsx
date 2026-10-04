@@ -6,7 +6,7 @@ import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
-import { flash } from '../components/Flash/flash.ts';
+import { flash } from './flash.ts';
 import { Unsupported } from '../components/Unsupported.tsx';
 import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
