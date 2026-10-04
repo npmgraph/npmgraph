@@ -12,7 +12,7 @@ export function analyzeModules({ moduleInfos, entryModules }: GraphState) {
   for (const { module } of moduleInfos.values()) {
     // For renderRepeatedModules
     versionsByName[module.name] ??= [];
-    versionsByName[module.name].push(module);
+    (versionsByName[module.name] ??= []).push(module);
 
     // For renderDeprecatedModules
     if (module.package.deprecated) {

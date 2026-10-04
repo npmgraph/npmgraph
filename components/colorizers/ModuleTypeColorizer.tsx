@@ -71,10 +71,10 @@ function detectPackageType(pkg: PackageJSON) {
 
   const pkgType: PackageModuleType = {
     // If pkg#type is not set to 'module', assume it's CJS
-    cjs: pkg.type !== 'module',
+    cjs: pkg['type'] !== 'module',
 
     // If pkg#type is set to 'module', then it's ESM
-    esm: pkg.type === 'module',
+    esm: pkg['type'] === 'module',
 
     // If pkg#types is set, then TS types are available
     types: pkg.types !== undefined,
@@ -90,7 +90,7 @@ function detectPackageType(pkg: PackageJSON) {
   }
 
   // Inspect package#exports (recursively)
-  return _detectExports(pkg.exports, pkgType);
+  return _detectExports(pkg['exports'], pkgType);
 }
 
 // Loosely inspect package.json#exports for module type (recursive)

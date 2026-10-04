@@ -119,15 +119,15 @@ export const NPMSOverallColorizer = new NpmsColorizer(
   'NPMS.io Score',
   COLORIZE_OVERALL,
 );
-const NPMSPopularityColorizer = new NpmsColorizer(
+export const NPMSPopularityColorizer = new NpmsColorizer(
   'NPMS.io Score (Popularity)',
   COLORIZE_POPULARITY,
 );
-const NPMSQualityColorizer = new NpmsColorizer(
+export const NPMSQualityColorizer = new NpmsColorizer(
   'NPMS.io Score (Quality)',
   COLORIZE_QUALITY,
 );
-const NPMSMaintenanceColorizer = new NpmsColorizer(
+export const NPMSMaintenanceColorizer = new NpmsColorizer(
   'NPMS.io Score (Maintenance)',
   COLORIZE_MAINTENANCE,
 );

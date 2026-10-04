@@ -407,7 +407,7 @@ export function composeDOT({
   ].join('\n');
 }
 
-function foreachUpstream(
+export function foreachUpstream(
   module: Module,
   graph: GraphState,
   callback: (module: Module) => void,

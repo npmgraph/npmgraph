@@ -91,11 +91,11 @@ export function moduleReplacementsNative({
           {': '}
           <div className={styles.body}>
             {replacements.length === 1 ? (
-              renderDetail(replacements[0])
+              renderDetail(replacements[0]!)
             ) : (
               <ul>
                 {replacements.map(r => (
-                  <li key={r.id}>{renderDetail(r)}</li>
+                  <li key={r!.id}>{renderDetail(r!)}</li>
                 ))}
               </ul>
             )}

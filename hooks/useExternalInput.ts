@@ -28,6 +28,9 @@ function onDrop(ev: DragEvent) {
   }
 
   const item = dt.items[0];
+  if (!item) {
+    return;
+  }
   if (item.type && item.type !== 'application/json') {
     alert('File must have a ".json" extension');
     return;

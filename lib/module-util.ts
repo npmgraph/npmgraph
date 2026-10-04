@@ -17,7 +17,7 @@ export function resolveModule(name: string, version?: string) {
     }
   } else {
     // Parse versioned-names (e.g. "less@1.2.3")
-    [name, version] = parseModuleKey(name);
+    [name, version] = parseModuleKey(name) as [string, string];
   }
 
   return [name, version] as const;
@@ -29,7 +29,9 @@ export function getModuleKey(name: string, version: string) {
 
 export function parseModuleKey(moduleKey: string): string[] {
   const match = /(?<name>.+)@(?<version>.*)/v.exec(moduleKey);
-  return match ? [match.groups!.name, match.groups!.version] : [moduleKey];
+  return match
+    ? [match.groups!['name']!, match.groups!['version']!]
+    : [moduleKey];
 }
 
 const ALIAS_RE = /npm:(?<name>@?[^@]+)@(?<semver>.+)/v;
@@ -63,11 +65,15 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
       }
 
       console.log(
-        `Resolving alias ${name} -> ${match.groups!.name}@${match.groups!.semver}`,
+        `Resolving alias ${name} -> ${match.groups!['name']}@${match.groups!['semver']}`,
       );
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- Comes from Object.entries()
       delete deps[name];
-      deps[match.groups!.name] = match.groups!.semver;
+      const groupName = match.groups!['name'];
+      const groupSemver = match.groups!['semver'];
+      if (groupName && groupSemver) {
+        deps[groupName] = groupSemver;
+      }
     }
   }
 

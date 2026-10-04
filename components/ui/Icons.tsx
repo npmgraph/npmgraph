@@ -45,7 +45,7 @@ function Icon({
   );
 }
 
-function Package(props: IconProps) {
+export function Package(props: IconProps) {
   // Original path from https://primer.style/foundations/icons/package-16
   return (
     <Icon
@@ -55,7 +55,7 @@ function Package(props: IconProps) {
   );
 }
 
-function NpmIcon(props: IconProps) {
+export function NpmIcon(props: IconProps) {
   // Original path from https://worldvectorlogo.com/downloaded/npm-square
   return (
     <Icon
@@ -76,7 +76,7 @@ export function GithubIcon(props: IconProps) {
   );
 }
 
-function PencilIcon(props: IconProps) {
+export function PencilIcon(props: IconProps) {
   return (
     <Icon
       {...props}

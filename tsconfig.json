@@ -1,4 +1,5 @@
 {
+  "extends": "@sindresorhus/tsconfig",
   "compilerOptions": {
     "target": "esnext",
     "jsx": "react-jsx",

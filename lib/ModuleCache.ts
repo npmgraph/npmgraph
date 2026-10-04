@@ -22,13 +22,14 @@ import { getRegistry } from './registry-util.ts';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 
-export enum QueryType {
-  Default = '',
-  Exact = 'exact', // deprecated - use Default
-  Name = 'name', // deprecated - use Default
-  License = 'license',
-  Maintainer = 'maintainer',
-}
+export const QueryType = {
+  Default: 'default',
+  Name: 'name',
+  Exact: 'exact',
+  License: 'license',
+  Maintainer: 'maintainer',
+} as const;
+export type QueryType = (typeof QueryType)[keyof typeof QueryType];
 
 type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   module: Module; // Set once module is loaded
@@ -96,7 +97,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
     version = '';
     // unchanged
   } else {
-    [name, version] = resolveModule(name, version);
+    [name, version] = resolveModule(name!, version);
   }
 
   moduleKey = getModuleKey(name, version);

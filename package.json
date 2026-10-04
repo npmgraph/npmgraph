@@ -65,6 +65,7 @@
     "@parcel/transformer-sass": "^2.16.4",
     "@parcel/transformer-svg-react": "^2.16.4",
     "@parcel/transformer-xml": "^2.16.4",
+    "@sindresorhus/tsconfig": "^8.1.0",
     "@types/canvas-confetti": "^1.9.0",
     "@types/d3-hierarchy": "^3.1.7",
     "@types/d3-selection": "^3.0.11",

@@ -106,7 +106,7 @@ export default function ModulePane({
 
   const isSingleEntryModule =
     graph.entryModules.size === 1 &&
-    [...graph.entryModules][0].key === module.key;
+    [...graph.entryModules][0]?.key === module.key;
   const { maintainers } = module;
 
   const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;

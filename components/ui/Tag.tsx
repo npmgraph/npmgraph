@@ -57,7 +57,7 @@ export function Tag({
       )}
       title={title}
       onClick={() => {
-        setGraphSelection(type, value);
+        setGraphSelection(undefined, value);
       }}
     >
       {img}

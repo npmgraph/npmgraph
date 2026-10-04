@@ -1,4 +1,3 @@
-import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import {
   Suspense,
@@ -54,7 +53,7 @@ import {
   getGraphForQuery,
 } from '../../lib/graph-util.ts';
 
-type ZoomOption =
+export type ZoomOption =
   typeof ZOOM_NONE | typeof ZOOM_FIT_WIDTH | typeof ZOOM_FIT_HEIGHT;
 
 function getDiagramElement() {
@@ -315,7 +314,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         }
 
         if (m.name) {
-          nodeElement.dataset.module = m.key;
+          nodeElement.dataset['module'] = m.key;
         } else {
           report.warn(new Error(`Bad replace: ${key}`));
         }
@@ -386,7 +385,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 }
 
 // Debug helper for logging when a react variable changes
-function logUpdate(name: string, value: unknown) {
+export function logUpdate(name: string, value: unknown) {
   if (!value) {
     if (!idSeen.has(name)) {
       console.log(name, '<undefined>');
@@ -440,7 +439,7 @@ function updateSelection(
   // Set selection classes for node elements
   let scrollElement: HTMLElement | undefined;
   for (const element of $$optional('svg .node[data-module]')) {
-    const moduleKey = element.dataset.module ?? '';
+    const moduleKey = element.dataset['module'] ?? '';
     const isSelected = si.selectedKeys.has(moduleKey);
     const isUpstream = si.upstreamModuleKeys.has(moduleKey);
     const isDownstream = si.downstreamModuleKeys.has(moduleKey);
@@ -506,7 +505,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   if (isSimpleColorizer(colorizer)) {
     // For each node in graph
     for (const element of moduleEls) {
-      const moduleKey = element.dataset.module;
+      const moduleKey = element.dataset['module'];
       const m = moduleKey && getCachedModule(moduleKey);
       const elementPath = $('path', element);
 
@@ -531,7 +530,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
     // Bundle up modules
     const modules: Module[] = [];
     for (const element of moduleEls) {
-      const moduleKey = element.dataset.module;
+      const moduleKey = element.dataset['module'];
       const m = moduleKey && getCachedModule(moduleKey);
       if (m) {
         modules.push(m);
@@ -543,7 +542,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
     // Apply colors
     for (const element of moduleEls) {
-      const moduleKey = element.dataset.module;
+      const moduleKey = element.dataset['module'];
       const m = moduleKey && getCachedModule(moduleKey);
       const elementPath = $('path', element);
       elementPath.style.fill = (m && colors.get(m)) ?? '';
