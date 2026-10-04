@@ -22,10 +22,7 @@ export default function PreviewWidget() {
   const [locationUrl] = useLocation();
   const isProductionHost = locationUrl.hostname === 'npmgraph.js.org';
   const prNumber = useMemo(
-    () =>
-      typeof process === 'undefined'
-        ? undefined
-        : process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim(),
+    () => process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim(),
     [],
   );
   const prUrl = prNumber
