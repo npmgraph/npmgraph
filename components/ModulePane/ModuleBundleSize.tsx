@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type Module from '../../lib/Module.ts';
 import fetchJson from '../../lib/fetchJson.ts';
-import type { BundlePhobiaData } from '../../lib/fetch_types.ts';
+import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { ModuleBundleStats } from './ModuleBundleStats.tsx';
 import { ModuleTreeMap } from './ModuleTreeMap.tsx';

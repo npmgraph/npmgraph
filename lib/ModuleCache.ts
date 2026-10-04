@@ -15,10 +15,10 @@ import {
   isHttpModule,
   parseModuleKey,
   resolveModule,
-} from './module_util.ts';
+} from './module-util.ts';
 import selectVersion from './selectVersion.ts';
-import { hashGet } from './url_util.ts';
-import { getRegistry } from './registry_util.ts';
+import { hashGet } from './url-util.ts';
+import { getRegistry } from './registry-util.ts';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 

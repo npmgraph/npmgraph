@@ -4,7 +4,7 @@ import { GithubIcon } from './ui/Icons.tsx';
 
 import * as styles from './Unsupported.module.scss';
 
-const imageUrl = new URL('../images/sad_kilroy.png', import.meta.url);
+const imageUrl = new URL('../images/sad-kilroy.png', import.meta.url);
 
 export function Unsupported({
   unsupported,

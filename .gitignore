@@ -5,3 +5,4 @@
 art/**/*.svg.*.svg  # inkscape backup files
 dist
 node_modules
+restructure.ts

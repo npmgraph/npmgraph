@@ -1,5 +1,5 @@
 import type Module from '../../../lib/Module.ts';
-import type { GraphState } from '../../../lib/graph_util.ts';
+import type { GraphState } from '../../../lib/graph-util.ts';
 
 export type ModuleAnalysisState = GraphState & {
   versionsByName: Record<string, Module[]>;

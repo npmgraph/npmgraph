@@ -52,7 +52,7 @@ import {
   composeDOT,
   gatherSelectionInfo,
   getGraphForQuery,
-} from '../../lib/graph_util.ts';
+} from '../../lib/graph-util.ts';
 
 type ZoomOption =
   typeof ZOOM_NONE | typeof ZOOM_FIT_WIDTH | typeof ZOOM_FIT_HEIGHT;
