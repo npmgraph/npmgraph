@@ -28,9 +28,9 @@
     "format": "prettier -c .",
     "format:fix": "prettier --write --list-different .",
     "types": "tsc --noEmit",
-    "test:unit": "node --test **/*.test.ts",
+    "test:unit": "vitest run --project unit",
     "test": "run-p format lint types test:unit build",
-    "smoke": "node scripts/smoke.ts",
+    "smoke": "vitest run --project smoke",
     "watch": "tsc --watch"
   },
   "keywords": [
@@ -77,6 +77,7 @@
     "@types/react-dom": "^19.3.0",
     "@types/semver": "^7.8.0",
     "@typescript/native": "npm:typescript@^7.0.2",
+    "@vitest/browser-playwright": "^5.0.3",
     "eslint": "^10.12.0",
     "eslint-config-xo": "^4.0.1",
     "eslint-config-xo-react": "^0.32.0",
@@ -94,7 +95,9 @@
     "svgo": "^4.1.0",
     "typed-query-selector": "^2.12.3",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "typescript-plugin-css-modules": "^5.2.0"
+    "typescript-plugin-css-modules": "^5.2.0",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
   },
   "source": [
     "index.html",

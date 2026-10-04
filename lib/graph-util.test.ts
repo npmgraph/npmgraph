@@ -1,5 +1,4 @@
-import { strict as assert } from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, expect, it } from 'vitest';
 import {
   getChildOverrides,
   getVersionOverride,
@@ -10,21 +9,21 @@ import {
 describe('getVersionOverride', () => {
   it('should return the overridden version when a string override exists', () => {
     const overrides: Overrides = { 'package-b': '1.0.0' };
-    assert.equal(getVersionOverride(overrides, 'package-b'), '1.0.0');
+    expect(getVersionOverride(overrides, 'package-b')).toBe('1.0.0');
   });
 
   it('should return undefined when no override exists for the package', () => {
     const overrides: Overrides = { 'package-b': '1.0.0' };
-    assert.equal(getVersionOverride(overrides, 'package-a'), undefined);
+    expect(getVersionOverride(overrides, 'package-a')).toBe(undefined);
   });
 
   it('should return undefined when the override is an object (nested), not a string', () => {
     const overrides: Overrides = { 'package-a': { 'package-b': '1.0.0' } };
-    assert.equal(getVersionOverride(overrides, 'package-a'), undefined);
+    expect(getVersionOverride(overrides, 'package-a')).toBe(undefined);
   });
 
   it('should return undefined for an empty overrides object', () => {
-    assert.equal(getVersionOverride({}, 'package-a'), undefined);
+    expect(getVersionOverride({}, 'package-a')).toBe(undefined);
   });
 });
 
@@ -35,7 +34,7 @@ describe('getChildOverrides', () => {
       'package-a': { 'package-b': '1.0.0' },
     };
     const result = getChildOverrides(rootOverrides, rootOverrides, 'package-x');
-    assert.deepEqual(result, { 'package-c': '2.0.0' });
+    expect(result).toStrictEqual({ 'package-c': '2.0.0' });
   });
 
   it('should merge global string overrides with nested overrides for a child', () => {
@@ -44,7 +43,10 @@ describe('getChildOverrides', () => {
       'package-a': { 'package-b': '1.0.0' },
     };
     const result = getChildOverrides(rootOverrides, rootOverrides, 'package-a');
-    assert.deepEqual(result, { 'package-c': '2.0.0', 'package-b': '1.0.0' });
+    expect(result).toStrictEqual({
+      'package-c': '2.0.0',
+      'package-b': '1.0.0',
+    });
   });
 
   it('should return only nested overrides merged with global overrides when entering nested package', () => {
@@ -63,12 +65,12 @@ describe('getChildOverrides', () => {
       'package-b',
     );
     // Should have package-c: 3.0.0 from the nested overrides
-    assert.deepEqual(result, { 'package-c': '3.0.0' });
+    expect(result).toStrictEqual({ 'package-c': '3.0.0' });
   });
 
   it('should return empty object when both overrides are empty', () => {
     const result = getChildOverrides({}, {}, 'package-a');
-    assert.deepEqual(result, {});
+    expect(result).toStrictEqual({});
   });
 
   it('should not include nested object overrides in global overrides propagation', () => {
@@ -78,33 +80,33 @@ describe('getChildOverrides', () => {
     // When going into a random package (not package-a), only string globals apply
     // "package-a" has an object value so it's NOT a global override
     const result = getChildOverrides(rootOverrides, rootOverrides, 'package-x');
-    assert.deepEqual(result, {});
+    expect(result).toStrictEqual({});
   });
 });
 
 describe('isOverrides', () => {
   it('should return true for a flat string-valued overrides object', () => {
-    assert.equal(isOverrides({ foo: '1.0.0' }), true);
+    expect(isOverrides({ foo: '1.0.0' })).toBe(true);
   });
 
   it('should return true for a nested overrides object', () => {
-    assert.equal(isOverrides({ 'package-a': { 'package-b': '1.0.0' } }), true);
+    expect(isOverrides({ 'package-a': { 'package-b': '1.0.0' } })).toBe(true);
   });
 
   it('should return true for an empty object', () => {
-    assert.equal(isOverrides({}), true);
+    expect(isOverrides({})).toBe(true);
   });
 
   it('should return false for null', () => {
-    assert.equal(isOverrides(null), false);
+    expect(isOverrides(null)).toBe(false);
   });
 
   it('should return false for a non-object value', () => {
-    assert.equal(isOverrides('1.0.0'), false);
-    assert.equal(isOverrides(42), false);
+    expect(isOverrides('1.0.0')).toBe(false);
+    expect(isOverrides(42)).toBe(false);
   });
 
   it('should return false when a value is neither a string nor an object', () => {
-    assert.equal(isOverrides({ foo: 42 }), false);
+    expect(isOverrides({ foo: 42 })).toBe(false);
   });
 });
