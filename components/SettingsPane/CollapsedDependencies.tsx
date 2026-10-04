@@ -1,5 +1,6 @@
 import useCollapse from '../../hooks/useCollapse.ts';
 import { Section } from '../ui/Section.tsx';
+import * as styles from './CollapsedDependencies.module.scss';
 
 export default function CollapsedDependencies() {
   const [collapse, setCollapse] = useCollapse();
@@ -10,11 +11,11 @@ export default function CollapsedDependencies() {
 
   return (
     <Section title="Collapsed dependencies">
-      <ul style={{ margin: 0, paddingLeft: '1.25rem' }}>
+      <div className={styles.list}>
         {collapse.map(name => (
-          <li key={name}>
-            <span>{name}</span>{' '}
+          <li key={name} className={styles.item}>
             <button
+              className={styles.remove}
               type="button"
               aria-label={`Remove ${name} from collapsed dependencies`}
               onClick={() => {
@@ -23,9 +24,10 @@ export default function CollapsedDependencies() {
             >
               ×
             </button>
+            <span>{name}</span>
           </li>
         ))}
-      </ul>
+      </div>
     </Section>
   );
 }
