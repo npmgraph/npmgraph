@@ -29,7 +29,8 @@ export const QueryType = {
   License: 'license',
   Maintainer: 'maintainer',
 } as const;
-export type QueryType = (typeof QueryType)[keyof typeof QueryType];
+
+export type QueryTypeValue = (typeof QueryType)[keyof typeof QueryType];
 
 type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   module: Module; // Set once module is loaded
@@ -169,7 +170,10 @@ function cacheModule(module: Module, registry?: string) {
 /**
  Convenience method for getting loaded modules by some criteria.
  */
-export function queryModuleCache(queryType: QueryType, queryValue: string) {
+export function queryModuleCache(
+  queryType: QueryTypeValue,
+  queryValue: string,
+) {
   const results = new Map<string, Module>();
 
   if (!queryType && !queryValue) {

@@ -26,7 +26,7 @@
     "lint:fix": "eslint --fix .",
     "fix": "run-s --continue-on-error lint:fix format:fix",
     "format": "prettier -c .",
-    "format:fix": "prettier -w .",
+    "format:fix": "prettier --write --list-different .",
     "types": "tsc --noEmit",
     "test:unit": "node --test **/*.test.ts",
     "test": "run-p format lint types test:unit build",

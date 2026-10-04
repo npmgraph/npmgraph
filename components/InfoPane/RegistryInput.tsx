@@ -9,12 +9,12 @@ const RegistryStatus = {
   OFFLINE: 'offline',
 } as const;
 
-type RegistryStatus = (typeof RegistryStatus)[keyof typeof RegistryStatus];
+type RegistryStatusType = (typeof RegistryStatus)[keyof typeof RegistryStatus];
 
 export default function RegistryInput() {
   const [registry, setRegistry] = useRegistry();
   const [value, setValue] = useState(registry ?? '');
-  const [status, setStatus] = useState<RegistryStatus>(RegistryStatus.PENDING);
+  const [status, setStatus] = useState<RegistryStatusType>(RegistryStatus.PENDING);
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value.trim());
@@ -50,7 +50,7 @@ export default function RegistryInput() {
     };
   }, [value]);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     setRegistry(value || DEFAULT_NPM_REGISTRY);
   }

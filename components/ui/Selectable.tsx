@@ -1,5 +1,5 @@
 import type { HTMLProps } from 'react';
-import type { QueryType } from '../../lib/ModuleCache.ts';
+import type { QueryTypeValue } from '../../lib/ModuleCache.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 
 import { cn } from '../../lib/dom.ts';
@@ -13,7 +13,7 @@ export function Selectable({
   className,
   ...props
 }: {
-  type?: QueryType;
+  type?: QueryTypeValue;
   value: string;
   label?: string;
 } & HTMLProps<HTMLSpanElement>) {
@@ -25,7 +25,7 @@ export function Selectable({
       className={cn(styles.root, utilities.brightHover, className)}
       title={title}
       onClick={() => {
-        setGraphSelection(undefined, value);
+        setGraphSelection(type, value);
       }}
       {...props}
     >
