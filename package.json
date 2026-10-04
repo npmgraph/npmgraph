@@ -10,7 +10,6 @@
   ],
   "author": "Robert Kieffer (http://github.com/broofa)",
   "type": "module",
-  "main": "./lib/index.tsx",
   "devEngines": {
     "runtime": {
       "name": "node",
