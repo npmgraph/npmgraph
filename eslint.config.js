@@ -59,6 +59,7 @@ export default defineConfig([
             kebabCase: true,
             camelCase: true,
             pascalCase: true,
+            snakeCase: true, // TODO: Drop
           },
         },
       ],

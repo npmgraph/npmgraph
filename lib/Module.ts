@@ -5,7 +5,7 @@ import {
   getModuleKey,
   parseModuleKey,
   resolveDependencyAliases,
-} from './moduleUtil.ts';
+} from './module_util.ts';
 
 type Maintainers = PackumentVersion['maintainers'];
 export type Maintainer = Exclude<Maintainers, undefined>[0];

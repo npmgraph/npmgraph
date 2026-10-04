@@ -3,7 +3,7 @@ import simplur from 'simplur';
 import { cn } from '../../lib/dom.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
-import type { GraphState } from '../../lib/graphUtil.ts';
+import type { GraphState } from '../../lib/graph_util.ts';
 import { Pane } from '../ui/Pane.tsx';
 import * as styles from './ReportPane.module.scss';
 import { ReportItem } from './ReportItem.tsx';

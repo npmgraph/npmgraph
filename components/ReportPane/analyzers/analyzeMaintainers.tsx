@@ -1,7 +1,7 @@
 import type Module from '../../../lib/Module.ts';
 import type { Maintainer } from '../../../lib/Module.ts';
 import { report } from '../../../lib/bugsnag.ts';
-import type { GraphState } from '../../../lib/graphUtil.ts';
+import type { GraphState } from '../../../lib/graph_util.ts';
 
 export type MaintainerAnalysisState = {
   modulesByMaintainer: Map<string, Set<Module>>;

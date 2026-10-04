@@ -11,7 +11,7 @@
  */
 
 import type { ReactElement } from 'react';
-import type { GraphModuleInfo, GraphState } from '../../../lib/graphUtil.ts';
+import type { GraphModuleInfo, GraphState } from '../../../lib/graph_util.ts';
 
 type Analyzer2 = (graph: GraphState) => unknown;
 

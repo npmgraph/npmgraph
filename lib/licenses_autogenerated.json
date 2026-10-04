@@ -12,7 +12,11 @@
     "id": "AAL",
     "name": "Attribution Assurance License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "abstyles": {
     "id": "Abstyles",
@@ -70,7 +74,11 @@
     "id": "AFL-3.0",
     "name": "Academic Free License v3.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "afmparse": {
     "id": "Afmparse",
@@ -94,7 +102,9 @@
     "name": "GNU Affero General Public License v3.0",
     "isOsiApproved": true,
     "isDeprecatedLicenseId": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "agpl-3.0-only": {
     "id": "AGPL-3.0-only",
@@ -154,13 +164,21 @@
     "id": "Apache-1.1",
     "name": "Apache License 1.1",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "obsolete", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "obsolete",
+      "osi-approved"
+    ]
   },
   "apache-2.0": {
     "id": "Apache-2.0",
     "name": "Apache License 2.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "popular", "permissive"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "permissive"
+    ]
   },
   "apafml": {
     "id": "APAFML",
@@ -170,7 +188,10 @@
     "id": "APL-1.0",
     "name": "Adaptive Public License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "miscellaneous"]
+    "keywords": [
+      "osi-approved",
+      "miscellaneous"
+    ]
   },
   "app-s2p": {
     "id": "App-s2p",
@@ -195,7 +216,11 @@
     "id": "APSL-2.0",
     "name": "Apple Public Source License 2.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "arphic-1999": {
     "id": "Arphic-1999",
@@ -205,7 +230,11 @@
     "id": "Artistic-1.0",
     "name": "Artistic License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "obsolete"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "obsolete"
+    ]
   },
   "artistic-1.0-cl8": {
     "id": "Artistic-1.0-cl8",
@@ -221,7 +250,10 @@
     "id": "Artistic-2.0",
     "name": "Artistic License 2.0",
     "isOsiApproved": true,
-    "keywords": ["miscellaneous", "osi-approved"]
+    "keywords": [
+      "miscellaneous",
+      "osi-approved"
+    ]
   },
   "artistic-dist": {
     "id": "Artistic-dist",
@@ -313,7 +345,11 @@
     "id": "BSD-2-Clause",
     "name": "BSD 2-Clause \"Simplified\" License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "popular", "permissive"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "permissive"
+    ]
   },
   "bsd-2-clause-darwin": {
     "id": "BSD-2-Clause-Darwin",
@@ -350,7 +386,11 @@
     "id": "BSD-3-Clause",
     "name": "BSD 3-Clause \"New\" or \"Revised\" License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "popular", "permissive"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "permissive"
+    ]
   },
   "bsd-3-clause-acpica": {
     "id": "BSD-3-Clause-acpica",
@@ -470,7 +510,9 @@
     "id": "BSL-1.0",
     "name": "Boost Software License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "busl-1.1": {
     "id": "BUSL-1.1",
@@ -515,7 +557,11 @@
     "id": "CATOSL-1.1",
     "name": "Computer Associates Trusted Open Source License 1.1",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "cc-by-1.0": {
     "id": "CC-BY-1.0",
@@ -741,7 +787,10 @@
     "id": "CDDL-1.0",
     "name": "Common Development and Distribution License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "popular"]
+    "keywords": [
+      "osi-approved",
+      "popular"
+    ]
   },
   "cddl-1.1": {
     "id": "CDDL-1.1",
@@ -847,7 +896,11 @@
     "id": "CNRI-Python",
     "name": "CNRI Python License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "cnri-python-gpl-compatible": {
     "id": "CNRI-Python-GPL-Compatible",
@@ -881,13 +934,19 @@
     "id": "CPAL-1.0",
     "name": "Common Public Attribution License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "cpl-1.0": {
     "id": "CPL-1.0",
     "name": "Common Public License 1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "obsolete", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "obsolete",
+      "osi-approved"
+    ]
   },
   "cpol-1.02": {
     "id": "CPOL-1.02",
@@ -913,7 +972,11 @@
     "id": "CUA-OPL-1.0",
     "name": "CUA Office Public License v1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "cube": {
     "id": "Cube",
@@ -995,13 +1058,20 @@
     "id": "ECL-1.0",
     "name": "Educational Community License v1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "obsolete", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "obsolete",
+      "osi-approved"
+    ]
   },
   "ecl-2.0": {
     "id": "ECL-2.0",
     "name": "Educational Community License v2.0",
     "isOsiApproved": true,
-    "keywords": ["special-purpose", "osi-approved"]
+    "keywords": [
+      "special-purpose",
+      "osi-approved"
+    ]
   },
   "ecos-2.0": {
     "id": "eCos-2.0",
@@ -1012,13 +1082,21 @@
     "id": "EFL-1.0",
     "name": "Eiffel Forum License v1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "obsolete"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "obsolete"
+    ]
   },
   "efl-2.0": {
     "id": "EFL-2.0",
     "name": "Eiffel Forum License v2.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "egenix": {
     "id": "eGenix",
@@ -1032,7 +1110,11 @@
     "id": "Entessa",
     "name": "Entessa Public License v1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "epics": {
     "id": "EPICS",
@@ -1042,7 +1124,10 @@
     "id": "EPL-1.0",
     "name": "Eclipse Public License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "popular"]
+    "keywords": [
+      "osi-approved",
+      "popular"
+    ]
   },
   "epl-2.0": {
     "id": "EPL-2.0",
@@ -1069,7 +1154,11 @@
     "id": "EUDatagrid",
     "name": "EU DataGrid Software License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "eupl-1.0": {
     "id": "EUPL-1.0",
@@ -1079,7 +1168,9 @@
     "id": "EUPL-1.1",
     "name": "European Union Public License 1.1",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "eupl-1.2": {
     "id": "EUPL-1.2",
@@ -1094,7 +1185,11 @@
     "id": "Fair",
     "name": "Fair License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "fbm": {
     "id": "FBM",
@@ -1112,7 +1207,11 @@
     "id": "Frameworx-1.0",
     "name": "Frameworx Open License 1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "freebsd-doc": {
     "id": "FreeBSD-DOC",
@@ -1316,7 +1415,11 @@
     "name": "GNU General Public License v2.0 only",
     "isOsiApproved": true,
     "isDeprecatedLicenseId": true,
-    "keywords": ["osi-approved", "popular", "copyleft"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "copyleft"
+    ]
   },
   "gpl-2.0+": {
     "id": "GPL-2.0+",
@@ -1364,7 +1467,11 @@
     "name": "GNU General Public License v3.0 only",
     "isOsiApproved": true,
     "isDeprecatedLicenseId": true,
-    "keywords": ["osi-approved", "popular", "copyleft"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "copyleft"
+    ]
   },
   "gpl-3.0+": {
     "id": "GPL-3.0+",
@@ -1441,7 +1548,11 @@
     "id": "HPND",
     "name": "Historical Permission Notice and Disclaimer",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "hpnd-dec": {
     "id": "HPND-DEC",
@@ -1588,7 +1699,11 @@
     "id": "Intel",
     "name": "Intel Open Source License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "retired", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "retired",
+      "osi-approved"
+    ]
   },
   "intel-acpi": {
     "id": "Intel-ACPI",
@@ -1602,19 +1717,28 @@
     "id": "IPA",
     "name": "IPA Font License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "special-purpose"]
+    "keywords": [
+      "osi-approved",
+      "special-purpose"
+    ]
   },
   "ipl-1.0": {
     "id": "IPL-1.0",
     "name": "IBM Public License v1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "isc": {
     "id": "ISC",
     "name": "ISC License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "isc-veillard": {
     "id": "ISC-Veillard",
@@ -1704,7 +1828,11 @@
     "name": "GNU Lesser General Public License v2.1 only",
     "isOsiApproved": true,
     "isDeprecatedLicenseId": true,
-    "keywords": ["osi-approved", "popular", "copyleft"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "copyleft"
+    ]
   },
   "lgpl-2.1+": {
     "id": "LGPL-2.1+",
@@ -1727,7 +1855,11 @@
     "name": "GNU Lesser General Public License v3.0 only",
     "isOsiApproved": true,
     "isDeprecatedLicenseId": true,
-    "keywords": ["osi-approved", "popular", "copyleft"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "copyleft"
+    ]
   },
   "lgpl-3.0+": {
     "id": "LGPL-3.0+",
@@ -1820,13 +1952,21 @@
     "id": "LPL-1.0",
     "name": "Lucent Public License Version 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "obsolete"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "obsolete"
+    ]
   },
   "lpl-1.02": {
     "id": "LPL-1.02",
     "name": "Lucent Public License v1.02",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "lppl-1.0": {
     "id": "LPPL-1.0",
@@ -1848,7 +1988,11 @@
     "id": "LPPL-1.3c",
     "name": "LaTeX Project Public License v1.3c",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "lsof": {
     "id": "lsof",
@@ -1914,13 +2058,19 @@
     "id": "MirOS",
     "name": "The MirOS Licence",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "mit": {
     "id": "MIT",
     "name": "MIT License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "popular", "permissive"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "permissive"
+    ]
   },
   "mit-0": {
     "id": "MIT-0",
@@ -1984,7 +2134,11 @@
     "id": "Motosoto",
     "name": "Motosoto License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "mpeg-ssg": {
     "id": "MPEG-SSG",
@@ -2002,19 +2156,31 @@
     "id": "MPL-1.0",
     "name": "Mozilla Public License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "obsolete"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "obsolete"
+    ]
   },
   "mpl-1.1": {
     "id": "MPL-1.1",
     "name": "Mozilla Public License 1.1",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "obsolete"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "obsolete"
+    ]
   },
   "mpl-2.0": {
     "id": "MPL-2.0",
     "name": "Mozilla Public License 2.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "popular", "copyleft"]
+    "keywords": [
+      "osi-approved",
+      "popular",
+      "copyleft"
+    ]
   },
   "mpl-2.0-no-copyleft-exception": {
     "id": "MPL-2.0-no-copyleft-exception",
@@ -2033,13 +2199,17 @@
     "id": "MS-PL",
     "name": "Microsoft Public License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "ms-rl": {
     "id": "MS-RL",
     "name": "Microsoft Reciprocal License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "mtll": {
     "id": "MTLL",
@@ -2058,7 +2228,11 @@
     "id": "Multics",
     "name": "Multics License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "mup": {
     "id": "Mup",
@@ -2072,13 +2246,20 @@
     "id": "NASA-1.3",
     "name": "NASA Open Source Agreement 1.3",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "special-purpose"]
+    "keywords": [
+      "osi-approved",
+      "special-purpose"
+    ]
   },
   "naumen": {
     "id": "Naumen",
     "name": "Naumen Public License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "nbpl-1.0": {
     "id": "NBPL-1.0",
@@ -2100,7 +2281,11 @@
     "id": "NCSA",
     "name": "University of Illinois/NCSA Open Source License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "net-snmp": {
     "id": "Net-SNMP",
@@ -2119,7 +2304,11 @@
     "id": "NGPL",
     "name": "Nethack General Public License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "ngrep": {
     "id": "ngrep",
@@ -2157,7 +2346,11 @@
     "id": "Nokia",
     "name": "Nokia Open Source License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "nosl": {
     "id": "NOSL",
@@ -2179,7 +2372,9 @@
     "id": "NPOSL-3.0",
     "name": "Non-Profit Open Software License 3.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "nrl": {
     "id": "NRL",
@@ -2193,7 +2388,9 @@
     "id": "NTP",
     "name": "NTP License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "ntp-0": {
     "id": "NTP-0",
@@ -2220,7 +2417,11 @@
     "id": "OCLC-2.0",
     "name": "OCLC Research Public License 2.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "odbl-1.0": {
     "id": "ODbL-1.0",
@@ -2250,7 +2451,10 @@
     "id": "OFL-1.1",
     "name": "SIL Open Font License 1.1",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "special-purpose"]
+    "keywords": [
+      "osi-approved",
+      "special-purpose"
+    ]
   },
   "ofl-1.1-no-rfn": {
     "id": "OFL-1.1-no-RFN",
@@ -2290,7 +2494,9 @@
     "id": "OGTSL",
     "name": "Open Group Test Suite License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "oldap-1.1": {
     "id": "OLDAP-1.1",
@@ -2403,7 +2609,11 @@
     "id": "OSL-1.0",
     "name": "Open Software License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "osl-1.1": {
     "id": "OSL-1.1",
@@ -2418,13 +2628,20 @@
     "id": "OSL-2.1",
     "name": "Open Software License 2.1",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "osl-3.0": {
     "id": "OSL-3.0",
     "name": "Open Software License 3.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "miscellaneous"]
+    "keywords": [
+      "osi-approved",
+      "miscellaneous"
+    ]
   },
   "padl": {
     "id": "PADL",
@@ -2446,7 +2663,11 @@
     "id": "PHP-3.0",
     "name": "PHP License v3.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "php-3.01": {
     "id": "PHP-3.01",
@@ -2481,7 +2702,11 @@
     "id": "PostgreSQL",
     "name": "PostgreSQL License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "ppl": {
     "id": "PPL",
@@ -2503,7 +2728,11 @@
     "id": "Python-2.0",
     "name": "Python License 2.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "python-2.0.1": {
     "id": "Python-2.0.1",
@@ -2521,7 +2750,9 @@
     "id": "QPL-1.0",
     "name": "Q Public License 1.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "qpl-1.0-inria-2004": {
     "id": "QPL-1.0-INRIA-2004",
@@ -2543,19 +2774,29 @@
     "id": "RPL-1.1",
     "name": "Reciprocal Public License 1.1",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "obsolete", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "obsolete",
+      "osi-approved"
+    ]
   },
   "rpl-1.5": {
     "id": "RPL-1.5",
     "name": "Reciprocal Public License 1.5",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "rpsl-1.0": {
     "id": "RPSL-1.0",
     "name": "RealNetworks Public Source License v1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "rsa-md": {
     "id": "RSA-MD",
@@ -2565,7 +2806,11 @@
     "id": "RSCPL",
     "name": "Ricoh Source Code Public License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "ruby": {
     "id": "Ruby",
@@ -2639,13 +2884,19 @@
     "id": "SimPL-2.0",
     "name": "Simple Public License 2.0",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "sissl": {
     "id": "SISSL",
     "name": "Sun Industry Standards Source License v1.1",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "retired", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "retired",
+      "osi-approved"
+    ]
   },
   "sissl-1.2": {
     "id": "SISSL-1.2",
@@ -2659,7 +2910,11 @@
     "id": "Sleepycat",
     "name": "Sleepycat License",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "smail-gpl": {
     "id": "SMAIL-GPL",
@@ -2709,7 +2964,11 @@
     "id": "SPL-1.0",
     "name": "Sun Public License v1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "ssh-keyscan": {
     "id": "ssh-keyscan",
@@ -2913,13 +3172,21 @@
     "id": "VSL-1.0",
     "name": "Vovida Software License v1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "w3c": {
     "id": "W3C",
     "name": "W3C Software Notice and License (2002-12-31)",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "w3c-19980720": {
     "id": "W3C-19980720",
@@ -2938,7 +3205,11 @@
     "id": "Watcom-1.0",
     "name": "Sybase Open Watcom Public License 1.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "widget-workshop": {
     "id": "Widget-Workshop",
@@ -2970,7 +3241,11 @@
     "name": "wxWindows Library License",
     "isOsiApproved": true,
     "isDeprecatedLicenseId": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "x11": {
     "id": "X11",
@@ -3016,7 +3291,11 @@
     "id": "Xnet",
     "name": "X.Net License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved", "discouraged", "redundant"]
+    "keywords": [
+      "osi-approved",
+      "discouraged",
+      "redundant"
+    ]
   },
   "xpp": {
     "id": "xpp",
@@ -3062,7 +3341,9 @@
     "id": "Zlib",
     "name": "zlib License",
     "isOsiApproved": true,
-    "keywords": ["osi-approved"]
+    "keywords": [
+      "osi-approved"
+    ]
   },
   "zlib-acknowledgement": {
     "id": "zlib-acknowledgement",
@@ -3076,7 +3357,11 @@
     "id": "ZPL-2.0",
     "name": "Zope Public License 2.0",
     "isOsiApproved": true,
-    "keywords": ["discouraged", "non-reusable", "osi-approved"]
+    "keywords": [
+      "discouraged",
+      "non-reusable",
+      "osi-approved"
+    ]
   },
   "zpl-2.1": {
     "id": "ZPL-2.1",

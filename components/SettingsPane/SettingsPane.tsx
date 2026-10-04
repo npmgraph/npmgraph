@@ -2,7 +2,7 @@ import type { HTMLProps } from 'react';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
-import type { DependencyKey } from '../../lib/graphUtil.ts';
+import type { DependencyKey } from '../../lib/graph_util.ts';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';

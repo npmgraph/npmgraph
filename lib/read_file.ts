@@ -6,7 +6,7 @@ import {
   PARAM_QUERY,
   UNNAMED_PACKAGE_PREFIX,
 } from './constants.ts';
-import { hashSet, searchSet } from './urlUtil.ts';
+import { hashSet, searchSet } from './url_util.ts';
 import { patchLocation } from '../hooks/useLocation.ts';
 
 export function isValidJson(text: string): boolean {

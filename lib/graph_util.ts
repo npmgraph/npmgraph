@@ -6,23 +6,23 @@ import type {
   DependencyKey,
   GraphModuleInfo,
   GraphState,
-} from './graphTypes.ts';
+} from './graph_types.ts';
 import { getModule } from './ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
-import { getModuleKey } from './moduleUtil.ts';
+import { getModuleKey } from './module_util.ts';
 import {
   type Overrides,
   getChildOverrides,
   getVersionOverride,
   isOverrides,
-} from './overridesUtil.ts';
-import { isOptionalPeerDependency } from './peerDependencyUtil.ts';
+} from './overrides_util.ts';
+import { isOptionalPeerDependency } from './peer_dependency_util.ts';
 
 export type {
   DependencyKey,
   GraphModuleInfo,
   GraphState,
-} from './graphTypes.ts';
+} from './graph_types.ts';
 
 const FONT = 'Roboto Condensed, sans-serif';
 

@@ -1,6 +1,6 @@
 import { DEFAULT_NPM_REGISTRY, PARAM_REGISTRY } from './constants.ts';
 import { getGlobalState } from './GlobalStore.ts';
-import { searchGet } from './urlUtil.ts';
+import { searchGet } from './url_util.ts';
 
 export function getRegistry() {
   const location = getGlobalState('location');
