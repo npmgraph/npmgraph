@@ -14,7 +14,9 @@ type RegistryStatusType = (typeof RegistryStatus)[keyof typeof RegistryStatus];
 export default function RegistryInput() {
   const [registry, setRegistry] = useRegistry();
   const [value, setValue] = useState(registry ?? '');
-  const [status, setStatus] = useState<RegistryStatusType>(RegistryStatus.PENDING);
+  const [status, setStatus] = useState<RegistryStatusType>(
+    RegistryStatus.PENDING,
+  );
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value.trim());

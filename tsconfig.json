@@ -1,16 +1,11 @@
 {
   "extends": "@sindresorhus/tsconfig",
   "compilerOptions": {
-    "target": "esnext",
-    "jsx": "react-jsx",
-    "lib": ["ES2024", "DOM", "DOM.Iterable"],
+    "lib": ["ES2025", "DOM", "DOM.Iterable"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
-    "strict": true,
     "noEmit": true,
-    "skipLibCheck": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "types": ["node", "typed-query-selector"]
   }
