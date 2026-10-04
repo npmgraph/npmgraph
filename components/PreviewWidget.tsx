@@ -11,12 +11,6 @@ function getNpmgraphJsOrgUrl(locationUrl: URL) {
   return url.href;
 }
 
-declare const process: {
-  env: {
-    VERCEL_GIT_PULL_REQUEST_ID?: string;
-  };
-};
-
 export default function PreviewWidget() {
   const [isHidden, setIsHidden] = useState(false);
   const [locationUrl] = useLocation();
@@ -25,6 +19,7 @@ export default function PreviewWidget() {
     () =>
       typeof process === 'undefined'
         ? undefined
+        // eslint-disable-next-line unicorn/no-optional-chaining-on-undeclared-variable -- False positive
         : process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim(),
     [],
   );

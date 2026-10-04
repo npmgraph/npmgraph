@@ -2,12 +2,6 @@ import Bugsnag from '@bugsnag/js';
 import pkg from '../package.json' with { type: 'json' };
 import HttpError from './HttpError.ts';
 
-declare const process: {
-  env: {
-    BUGSNAG_KEY?: string;
-  };
-};
-
 const apiKey = process.env.BUGSNAG_KEY;
 
 if (!apiKey) {

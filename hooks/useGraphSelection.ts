@@ -2,6 +2,12 @@ import { QueryType, type QueryTypeValue } from '../lib/ModuleCache.ts';
 import { PARAM_SELECTION } from '../lib/constants.ts';
 import useHashParam from './useHashParam.ts';
 
+const selectableQueryTypes = new Set<QueryTypeValue>([
+  QueryType.Default,
+  QueryType.Name,
+  QueryType.Exact,
+]);
+
 export default function useGraphSelection() {
   const [sel, setSel] = useHashParam(PARAM_SELECTION);
   const parts = sel ? sel.split(':') : [];
@@ -18,12 +24,7 @@ export default function useGraphSelection() {
         return;
       }
 
-      if (
-        // eslint-disable-next-line unicorn/prefer-includes-over-repeated-comparisons -- Bad .includes typing
-        queryType === QueryType.Default ||
-        queryType === QueryType.Name ||
-        queryType === QueryType.Exact
-      ) {
+      if (selectableQueryTypes.has(queryType)) {
         setSel(queryValue);
       } else {
         setSel(`${queryType}:${queryValue}`);

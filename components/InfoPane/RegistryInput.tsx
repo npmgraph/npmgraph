@@ -22,51 +22,58 @@ export default function RegistryInput() {
     setValue(event.target.value.trim());
   }
 
-  useEffect(() => {
-    let isCancelled = false;
-
-    async function checkRegistry() {
-      setStatus(RegistryStatus.PENDING);
-
-      try {
-        const response = await fetch(value || DEFAULT_NPM_REGISTRY, {
-          method: 'HEAD',
-        });
-
-        if (!isCancelled) {
-          setStatus(
-            response.ok ? RegistryStatus.ONLINE : RegistryStatus.OFFLINE,
-          );
-        }
-      } catch {
-        if (!isCancelled) {
-          setStatus(RegistryStatus.OFFLINE);
-        }
-      }
-    }
-
-    void checkRegistry();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [value]);
-
-  function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setRegistry(value || DEFAULT_NPM_REGISTRY);
+  function handleBlur() {
+    setRegistry(value);
   }
 
+  useEffect(() => {
+    function checkRegistryStatus(registry: string, signal: AbortSignal) {
+      if (signal.aborted) {
+        return;
+      }
+
+      fetch(`${registry}/_`, { method: 'HEAD', signal })
+        .then(() => {
+          setStatus(RegistryStatus.ONLINE);
+          setRegistry(registry);
+        })
+        .catch(() => {
+          setStatus(RegistryStatus.OFFLINE);
+        });
+    }
+
+    const controller = new AbortController();
+    setStatus(RegistryStatus.PENDING);
+    const timer = setTimeout(
+      checkRegistryStatus,
+      1000,
+      value,
+      controller.signal,
+    );
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [setRegistry, value]);
+
+  const statusText =
+    status === RegistryStatus.ONLINE
+      ? '✅ Online'
+      : status === RegistryStatus.OFFLINE
+        ? '❌ Offline'
+        : 'Checking...';
+
   return (
-    <form className={styles.root} onSubmit={handleSubmit}>
+    <div className={styles.root}>
+      <span>Registry:</span>
       <input
+        type="text"
         value={value}
         placeholder={DEFAULT_NPM_REGISTRY}
-        aria-label="NPM registry"
         onChange={handleChange}
+        onBlur={handleBlur}
       />
-      <button type="submit">Set Registry</button>
-      <span data-status={status}>{status}</span>
-    </form>
+      <span className={styles.status}>{statusText}</span>
+    </div>
   );
 }
