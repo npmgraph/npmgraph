@@ -53,9 +53,6 @@ import {
   getGraphForQuery,
 } from '../../lib/graph-util.ts';
 
-export type ZoomOption =
-  typeof ZOOM_NONE | typeof ZOOM_FIT_WIDTH | typeof ZOOM_FIT_HEIGHT;
-
 function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
 }
@@ -384,8 +381,8 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   );
 }
 
-// Debug helper for logging when a react variable changes
-export function logUpdate(name: string, value: unknown) {
+// @ts-expect-error Debug helper for logging when a react variable changes
+function logUpdate(name: string, value: unknown) {
   if (!value) {
     if (!idSeen.has(name)) {
       console.log(name, '<undefined>');

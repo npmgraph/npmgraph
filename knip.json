@@ -1,0 +1,3 @@
+{
+  "entry": ["lib/index.tsx", "scripts/*","lambdas/*"]
+}

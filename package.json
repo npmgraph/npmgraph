@@ -30,7 +30,8 @@
     "types": "tsc --noEmit",
     "test:unit": "node --test **/*.test.ts",
     "test": "run-p format lint types test:unit build",
-    "smoke": "node scripts/smoke.ts"
+    "smoke": "node scripts/smoke.ts",
+    "watch": "tsc --watch"
   },
   "keywords": [
     "npm",
