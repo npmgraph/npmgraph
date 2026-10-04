@@ -30,7 +30,7 @@
     "types": "tsc --noEmit",
     "test:unit": "node --test **/*.test.ts",
     "test": "run-p format lint types test:unit build",
-    "smoke": "node scripts/smoke.ts",
+    "smoke": "vitest run",
     "watch": "tsc --watch"
   },
   "keywords": [
@@ -94,7 +94,9 @@
     "svgo": "^4.1.0",
     "typed-query-selector": "^2.12.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "typescript-plugin-css-modules": "^5.2.0"
+    "typescript-plugin-css-modules": "^5.2.0",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
   },
   "source": [
     "index.html",
