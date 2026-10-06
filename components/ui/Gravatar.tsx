@@ -37,11 +37,7 @@ export function Gravatar({
     };
   }, [email]);
 
-  if (!hash) {
-    return null;
-  }
-
-  return (
+  return hash && (
     <img
       loading="lazy"
       alt={`${username}'s avatar`}
