@@ -1,6 +1,5 @@
 import type { PackumentVersion } from '@npm/types';
-import { strict as assert } from 'node:assert';
-import { describe, it } from 'node:test';
+import { describe, expect, it } from 'vitest';
 import Module from './Module.ts';
 import { getRepoUrlForModule } from './repo-util.ts';
 
@@ -16,7 +15,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/facebook/react');
+    expect(result).toBe('https://github.com/facebook/react');
   });
 
   it('should handle repository as string', () => {
@@ -27,7 +26,7 @@ describe('getRepoUrlForModule', () => {
     } as unknown as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/user/repo');
+    expect(result).toBe('https://github.com/user/repo');
   });
 
   it('should extract GitHub URL from homepage field when repository is missing', () => {
@@ -38,7 +37,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/user/repo');
+    expect(result).toBe('https://github.com/user/repo');
   });
 
   it('should handle bugs.url with /issues suffix', () => {
@@ -51,7 +50,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/user/repo');
+    expect(result).toBe('https://github.com/user/repo');
   });
 
   it('should prioritize repository over homepage', () => {
@@ -66,7 +65,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/real/repo');
+    expect(result).toBe('https://github.com/real/repo');
   });
 
   it('should return undefined for non-repo homepage', () => {
@@ -77,7 +76,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, undefined);
+    expect(result).toBe(undefined);
   });
 
   it('should handle GitLab repositories', () => {
@@ -91,7 +90,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://gitlab.com/user/repo');
+    expect(result).toBe('https://gitlab.com/user/repo');
   });
 
   it('should handle SSH format URLs', () => {
@@ -105,7 +104,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/user/repo');
+    expect(result).toBe('https://github.com/user/repo');
   });
 
   it('should handle http GitHub repository URLs with .git suffix', () => {
@@ -119,7 +118,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/drewyoung1/armyjs');
+    expect(result).toBe('https://github.com/drewyoung1/armyjs');
   });
 
   it('should handle https GitHub repository URLs with .git suffix', () => {
@@ -133,7 +132,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/uuidjs/uuid');
+    expect(result).toBe('https://github.com/uuidjs/uuid');
   });
 
   it('should handle Bitbucket repositories', () => {
@@ -147,7 +146,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://bitbucket.org/user/repo');
+    expect(result).toBe('https://bitbucket.org/user/repo');
   });
 
   it('should strip /pulls suffix from URLs', () => {
@@ -158,7 +157,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/user/repo');
+    expect(result).toBe('https://github.com/user/repo');
   });
 
   it('should strip /wiki suffix from URLs', () => {
@@ -169,7 +168,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/user/repo');
+    expect(result).toBe('https://github.com/user/repo');
   });
 
   it('should return undefined when no repository info is available', () => {
@@ -179,7 +178,7 @@ describe('getRepoUrlForModule', () => {
     } as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, undefined);
+    expect(result).toBe(undefined);
   });
 
   it('should handle bugs as string', () => {
@@ -190,6 +189,6 @@ describe('getRepoUrlForModule', () => {
     } as unknown as PackumentVersion);
 
     const result = getRepoUrlForModule(module);
-    assert.equal(result, 'https://github.com/user/repo');
+    expect(result).toBe('https://github.com/user/repo');
   });
 });
