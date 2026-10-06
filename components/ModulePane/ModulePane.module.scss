@@ -21,6 +21,8 @@
 .moduleHeader {
   display: flex;
   justify-content: space-between;
+  // Optical alignment, give more space
+  margin-inline: -4px;
 }
 
 .deprecatedBox {
