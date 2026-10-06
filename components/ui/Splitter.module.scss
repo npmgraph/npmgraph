@@ -5,12 +5,14 @@
   justify-content: center;
   align-items: center;
   transition: border-radius var(--transition-duration);
-  cursor: default;
+  cursor: pointer;
   margin-right: calc(-1 * var(--header-padding));
+  border: 0;
   border-right: none;
   background: var(--tabs-bg) var(--bg-gradient);
   padding: 0 10px;
   color: var(--tabs-text);
+  font: inherit;
   user-select: none;
   &[aria-hidden='true'] {
     // Hide it but keep its place

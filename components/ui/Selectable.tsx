@@ -1,4 +1,4 @@
-import type { HTMLProps } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 import type { QueryTypeValue } from '../../lib/ModuleCache.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 
@@ -16,12 +16,13 @@ export function Selectable({
   type?: QueryTypeValue;
   value: string;
   label?: string;
-} & HTMLProps<HTMLSpanElement>) {
+} & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>) {
   const setGraphSelection = useGraphSelection()[2];
   const title = label || value;
 
   return (
-    <span
+    <button
+      type="button"
       className={cn(styles.root, utilities.brightHover, className)}
       title={title}
       onClick={() => {
@@ -30,6 +31,6 @@ export function Selectable({
       {...props}
     >
       {title}
-    </span>
+    </button>
   );
 }

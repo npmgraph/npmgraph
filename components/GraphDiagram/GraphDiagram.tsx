@@ -57,6 +57,64 @@ function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
 }
 
+function handleGraphKeyDown(
+  event: React.KeyboardEvent,
+  handleGraphClick: (event: React.MouseEvent | React.KeyboardEvent) => void,
+) {
+  if (event.key !== 'Enter' && event.key !== ' ') {
+    return;
+  }
+
+  if (
+    !(event.target instanceof Element) ||
+    !closestElementOptional('g.node', event.target)
+  ) {
+    return;
+  }
+
+  event.preventDefault();
+  handleGraphClick(event);
+}
+
+function decorateGraphNodes(
+  element: Element,
+  isModuleVisible: ({ name }: { name: string }) => boolean,
+) {
+  for (const nodeElement of $$optional('g.node', element)) {
+    const key = $(':scope > title', nodeElement)?.textContent?.trim();
+    if (!key) {
+      continue;
+    }
+
+    const module = getCachedModule(key);
+    if (!module) {
+      continue;
+    }
+
+    nodeElement.setAttribute('role', 'button');
+    nodeElement.setAttribute('tabindex', '0');
+    nodeElement.setAttribute('aria-label', `Select ${module.key}`);
+
+    if (module.package.deprecated) {
+      nodeElement.classList.add('warning');
+    }
+
+    if (module.name) {
+      nodeElement.dataset['module'] = module.key;
+    } else {
+      report.warn(new Error(`Bad replace: ${key}`));
+    }
+
+    if (!isModuleVisible(module)) {
+      nodeElement.classList.add('collapsed');
+    }
+
+    if (module.isStub) {
+      nodeElement.classList.add('stub');
+    }
+  }
+}
+
 const idSeen = new Set<unknown>();
 
 // Keep graphviz in a secondary bundle but load it eagerly
@@ -111,7 +169,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
     return new Set<DependencyKey>(['dependencies', ...extra]);
   }, [depTypes]);
 
-  function handleGraphClick(event: React.MouseEvent) {
+  function handleGraphClick(event: React.MouseEvent | React.KeyboardEvent) {
     const { target } = event;
     if (
       !(target instanceof Element) ||
@@ -292,38 +350,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         .insert('defs', ':first-child')
         .html(PATTERN);
 
-      // Decorate DOM nodes with appropriate classname
-      for (const nodeElement of $$optional('g.node', element)) {
-        // Find module this node represents
-        const key = $(':scope > title', nodeElement)?.textContent?.trim();
-        if (!key) {
-          continue;
-        }
-
-        const m = getCachedModule(key);
-
-        if (!m) {
-          continue;
-        }
-
-        if (m?.package.deprecated) {
-          nodeElement.classList.add('warning');
-        }
-
-        if (m.name) {
-          nodeElement.dataset['module'] = m.key;
-        } else {
-          report.warn(new Error(`Bad replace: ${key}`));
-        }
-
-        if (!moduleFilter(m)) {
-          nodeElement.classList.add('collapsed');
-        }
-
-        if (m.isStub) {
-          nodeElement.classList.add('stub');
-        }
-      }
+      decorateGraphNodes(element, moduleFilter);
 
       // Signal other hooks that graph DOM has changed
       setDiagramElement(getDiagramElement());
@@ -376,7 +403,15 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />
       </div>
-      <div className={styles.graph} onClick={handleGraphClick} />
+      <div
+        className={styles.graph}
+        role="group"
+        aria-label="Dependency graph"
+        onClick={handleGraphClick}
+        onKeyDown={event => {
+          handleGraphKeyDown(event, handleGraphClick);
+        }}
+      />
     </div>
   );
 }

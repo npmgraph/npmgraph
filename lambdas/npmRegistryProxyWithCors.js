@@ -38,7 +38,7 @@ export async function handler(event) {
           : event.body,
     };
 
-    const response = await fetch(url, options);
+    const response = await fetch(url, { ...options, redirect: 'manual' });
     const body = await response.text();
 
     return {
