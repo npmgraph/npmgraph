@@ -197,6 +197,7 @@ export default function ModulePane({
         </div>
         <ModuleBundleSize module={module} />
       </Section>
+
       <Section
         title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
       >
