@@ -14,12 +14,23 @@ import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
 import { setActivityForApp } from '../hooks/useActivity.ts';
 
+function isValidJS(src: string) {
+  try {
+    // eslint-disable-next-line no-new-func, no-new
+    new Function(src);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
   const unsupported = new Map<string, ReactElement>();
 
   // API checks
   const features = {
+    '||= (Logical Or)': isValidJS('a ||= 123'),
     'AbortSignal.timeout': globalThis.AbortSignal?.timeout,
     'Map.groupBy': globalThis.Map?.groupBy,
     fetch: globalThis.fetch,
