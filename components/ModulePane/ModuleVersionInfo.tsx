@@ -1,4 +1,4 @@
-import { gt, parse } from 'semver';
+import { isGreaterThan, tryParse } from 'verkit';
 import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 
@@ -14,13 +14,13 @@ export function ModuleVersionInfo({
     return null;
   }
 
-  const versionParts = parse(module.version);
+  const versionParts = tryParse(module.version);
   if (!versionParts) {
     return null;
   }
 
   const latestVersion = module.packument['dist-tags'].latest;
-  const latestParts = parse(latestVersion);
+  const latestParts = tryParse(latestVersion ?? '');
   if (!latestVersion || !latestParts) {
     return null;
   }
@@ -43,7 +43,7 @@ export function ModuleVersionInfo({
 
   // Use semver.gt for the outdated check so prerelease versions are handled
   // correctly (e.g. 1.0.0-rc.12 < 1.0.0 even though major/minor/patch are all 0).
-  const isOutdated = gt(latestVersion, module.version);
+  const isOutdated = isGreaterThan(latestVersion, module.version);
 
   let content = null;
   let updateClassName = '';
