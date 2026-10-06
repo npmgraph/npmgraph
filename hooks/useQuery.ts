@@ -31,6 +31,5 @@ export function useParsedQuery() {
   const [query] = useQuery();
   const initialValue = query.join(', ');
 
-  // eslint-disable-next-line @eslint-react/use-state -- https://github.com/Rel1cx/eslint-react/issues/1963
   return useState(initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue);
 }
