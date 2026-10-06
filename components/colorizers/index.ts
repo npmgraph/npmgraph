@@ -1,6 +1,5 @@
 import BusFactorColorizer from './BusFactorColorizer.tsx';
 import ModuleTypeColorizer from './ModuleTypeColorizer.tsx';
-import { NPMSOverallColorizer } from './NpmsColorizer.tsx';
 import OutdatedColorizer from './OutdatedColorizer.tsx';
 import type { BulkColorizer, Colorizer, SimpleColorizer } from './types.ts';
 
@@ -8,7 +7,6 @@ const colorizers: Array<SimpleColorizer | BulkColorizer> = [
   ModuleTypeColorizer,
   BusFactorColorizer,
   OutdatedColorizer,
-  NPMSOverallColorizer,
 ];
 
 export function isSimpleColorizer(
