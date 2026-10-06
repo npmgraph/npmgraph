@@ -16,7 +16,6 @@ import { Section } from '../ui/Section.tsx';
 import { Tag, Tags } from '../ui/Tag.tsx';
 import * as utilities from '../ui/utilities.module.scss';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
-import ModuleNpmsIoScores from './ModuleNpmsIoScores.tsx';
 import * as styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
@@ -197,10 +196,6 @@ export default function ModulePane({
           )}
         </div>
         <ModuleBundleSize module={module} />
-      </Section>
-
-      <Section title="npms.io Score">
-        <ModuleNpmsIoScores module={module} />
       </Section>
 
       <Section

@@ -35,7 +35,6 @@ https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
 | `moduleType`  | `package.json#type` value                                                         |
 | `bus`         | # of maintainers ("bus" = [bus factor](https://en.wikipedia.org/wiki/Bus_factor)) |
 | `outdated`    | Degree of `version` outdated-ness                                                 |
-| `maintenance` | npms.io score                                                                     |
 
 **Example**: Graph `send`, colorize by module type:
 
