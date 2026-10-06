@@ -41,6 +41,8 @@ export function Gravatar({
     hash && (
       <img
         loading="lazy"
+        width={size}
+        height={size}
         alt={`${username}'s avatar`}
         src={`https://www.gravatar.com/avatar/${hash}?s=${size * 2}`}
         {...props}
