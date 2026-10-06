@@ -37,12 +37,14 @@ export function Gravatar({
     };
   }, [email]);
 
-  return hash && (
-    <img
-      loading="lazy"
-      alt={`${username}'s avatar`}
-      src={`https://www.gravatar.com/avatar/${hash}?s=${size * 2}`}
-      {...props}
-    />
+  return (
+    hash && (
+      <img
+        loading="lazy"
+        alt={`${username}'s avatar`}
+        src={`https://www.gravatar.com/avatar/${hash}?s=${size * 2}`}
+        {...props}
+      />
+    )
   );
 }
