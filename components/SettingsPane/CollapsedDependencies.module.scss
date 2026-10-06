@@ -1,0 +1,34 @@
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+}
+
+.remove {
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 0;
+  border-radius: 0.25rem;
+  background: transparent;
+  padding: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  font: inherit;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.remove:hover,
+.remove:focus-visible {
+  background: color-mix(in srgb, currentColor 10%, transparent);
+}

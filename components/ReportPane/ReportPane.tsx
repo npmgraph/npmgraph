@@ -26,15 +26,19 @@ import {
   peerDependenciesMissing,
 } from './reporters/peerDependenciesAll.tsx';
 
-function ReportSection({ title, children }: { title: string; children: any }) {
-  return (
-    <div className={styles.reportSection}>
-      <hr />
-      <h3>{title}</h3>
-      {children}
-    </div>
-  );
-}
+import { Section } from '../ui/Section.tsx';
+
+const ReportSection = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: any;
+}) => (
+  <Section title={title} className={styles.reportSection}>
+    {children}
+  </Section>
+);
 
 export default function ReportPane({
   graph,
