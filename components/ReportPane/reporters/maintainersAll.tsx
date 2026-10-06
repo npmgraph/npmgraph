@@ -1,8 +1,7 @@
-import md5 from 'md5';
-import type { ReactElement } from 'react';
 import simplur from 'simplur';
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
+import { Gravatar } from '../../ui/Gravatar.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.tsx';
@@ -17,21 +16,11 @@ export function maintainersAll({
     .toSorted(([a], [b]) => a.localeCompare(b))
     .map(([name, modules]) => {
       const email = emailByMaintainer.get(name);
-      let img: ReactElement | undefined;
-      if (email) {
-        img = (
-          <img
-            loading="lazy"
-            alt={`${name}'s avatar`}
-            src={`https://www.gravatar.com/avatar/${md5(email)}?s=32`}
-          />
-        );
-      }
 
       return (
         <div key={name} className={cn(styles.root, reportItemStyles.zebraRow)}>
           <div className={styles.maintainer}>
-            {img}
+            {email && <Gravatar email={email} username={name} />}
             <Selectable type={QueryType.Maintainer} value={name} />
           </div>
 
