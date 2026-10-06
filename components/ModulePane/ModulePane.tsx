@@ -12,11 +12,10 @@ import { foreachDownstream } from '../../lib/graph-util.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import { CollapsibleSection } from '../ui/Section.tsx';
+import { Section } from '../ui/Section.tsx';
 import { Tag, Tags } from '../ui/Tag.tsx';
 import * as utilities from '../ui/utilities.module.scss';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
-import ModuleNpmsIoScores from './ModuleNpmsIoScores.tsx';
 import * as styles from './ModulePane.module.scss';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
@@ -181,7 +180,7 @@ export default function ModulePane({
 
       <ReleaseTimeline module={module} />
 
-      <CollapsibleSection title="Module Size">
+      <Section title="Module Size">
         <div className={styles.sizeGrid}>
           <span>Unpacked Size (module only):</span>
           {unpackedSize ? (
@@ -197,13 +196,8 @@ export default function ModulePane({
           )}
         </div>
         <ModuleBundleSize module={module} />
-      </CollapsibleSection>
-
-      <CollapsibleSection title="npms.io Score">
-        <ModuleNpmsIoScores module={module} />
-      </CollapsibleSection>
-
-      <CollapsibleSection
+      </Section>
+      <Section
         title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
       >
         <Tags>
@@ -219,7 +213,7 @@ export default function ModulePane({
             ),
           )}
         </Tags>
-      </CollapsibleSection>
+      </Section>
     </Pane>
   );
 }
