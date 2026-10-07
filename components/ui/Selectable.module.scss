@@ -1,10 +1,9 @@
+@use '../../lib/root.module.scss' as *;
+
 .root {
+  @include button-reset;
   --selectable: #840;
-  border: 0;
-  background: none;
-  padding: 0;
   color: var(--selectable);
-  font: inherit;
   text-wrap: nowrap;
 
   @media (prefers-color-scheme: dark) {

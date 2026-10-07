@@ -1,11 +1,8 @@
+@use '../../lib/root.module.scss' as *;
+
 .toggle {
+  @include button-reset;
   display: block;
-  border: 0;
-  background: none;
-  padding: 0;
-  color: inherit;
-  font: inherit;
-  text-align: left;
 
   & > span {
     display: inline-block;

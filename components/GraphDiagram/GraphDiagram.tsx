@@ -57,25 +57,6 @@ function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
 }
 
-function handleGraphKeyDown(
-  event: React.KeyboardEvent,
-  handleGraphClick: (event: React.MouseEvent | React.KeyboardEvent) => void,
-) {
-  if (event.key !== 'Enter' && event.key !== ' ') {
-    return;
-  }
-
-  if (
-    !(event.target instanceof Element) ||
-    !closestElementOptional('g.node', event.target)
-  ) {
-    return;
-  }
-
-  event.preventDefault();
-  handleGraphClick(event);
-}
-
 function decorateGraphNodes(
   element: Element,
   isModuleVisible: ({ name }: { name: string }) => boolean,
@@ -169,7 +150,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
     return new Set<DependencyKey>(['dependencies', ...extra]);
   }, [depTypes]);
 
-  function handleGraphClick(event: React.MouseEvent | React.KeyboardEvent) {
+  function handleGraphClick(event: React.MouseEvent) {
     const { target } = event;
     if (
       !(target instanceof Element) ||
@@ -403,14 +384,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />
       </div>
-      <div
-        className={styles.graph}
-        tabIndex={-1}
-        onClick={handleGraphClick}
-        onKeyDown={event => {
-          handleGraphKeyDown(event, handleGraphClick);
-        }}
-      />
+      <div className={styles.graph} onClick={handleGraphClick} />
     </div>
   );
 }

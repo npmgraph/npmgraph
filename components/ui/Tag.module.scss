@@ -1,3 +1,5 @@
+@use '../../lib/root.module.scss' as *;
+
 .tags {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -5,14 +7,12 @@
 }
 
 .tag {
-  border: 0;
+  @include button-reset;
   border-radius: var(--rad-lg);
   background-color: var(--bg1);
   padding: 2px 8px;
   overflow: hidden;
   color: var(--text);
-  font: inherit;
-  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
