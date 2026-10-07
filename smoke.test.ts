@@ -28,9 +28,9 @@ const node = (module = '') =>
 
 const tab = (name: string) => app().getByRole('button', { name, exact: true });
 
-// Toggle's click handler lives on its On/Off switch, not the label text
+// Toggle is a button; its On/Off pill is aria-hidden (state is in aria-pressed)
 const toggle = (label: string) =>
-  app().getByCSS(`label:has-text("${label}") > div`);
+  app().getByRole('button', { name: label, exact: true });
 
 // Wait for something to appear in the app's DOM
 const appears = async (css: string, text?: RegExp) =>

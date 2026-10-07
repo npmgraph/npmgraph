@@ -1,4 +1,4 @@
-import type { HTMLProps } from 'react';
+import type { ButtonHTMLAttributes } from 'react';
 import { cn } from '../../lib/dom.ts';
 import * as styles from './Toggle.module.scss';
 
@@ -9,21 +9,23 @@ export function Toggle({
   children,
   className,
   ...props
-}: HTMLProps<HTMLLabelElement> & { checked?: boolean; onChange: () => void }) {
+}: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onChange'> & {
+  checked?: boolean;
+  onChange: () => void;
+}) {
   return (
-    <label
+    <button
+      type="button"
+      aria-pressed={checked}
       className={cn(styles.toggle, { [styles.checked]: checked }, className)}
       style={style}
       {...props}
+      onClick={onChange}
     >
-      <div
-        onClick={() => {
-          onChange();
-        }}
-      >
-        <div>{checked ? 'On' : 'Off'}</div>
-      </div>
+      <span aria-hidden="true">
+        <span>{checked ? 'On' : 'Off'}</span>
+      </span>
       {children}
-    </label>
+    </button>
   );
 }
