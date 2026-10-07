@@ -16,7 +16,7 @@ async function checkRegistryStatus(
   signal: AbortSignal,
   setStatus: (status: RegistryStatusType) => void,
   setRegistry: (registry: string) => void,
-) {
+): Promise<void> {
   try {
     await fetch(`${registry}/_`, { method: 'HEAD', signal });
     if (!signal.aborted) {
@@ -49,6 +49,7 @@ export default function RegistryInput() {
     const controller = new AbortController();
     setStatus(RegistryStatus.PENDING);
     const timer = setTimeout(
+      // eslint-disable-next-line @typescript-eslint/strict-void-return -- It is void (promised)
       checkRegistryStatus,
       1000,
       value,
