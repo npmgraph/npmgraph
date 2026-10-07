@@ -81,7 +81,7 @@ function decorateGraphNodes(
   isModuleVisible: ({ name }: { name: string }) => boolean,
 ) {
   for (const nodeElement of $$optional('g.node', element)) {
-    const key = $(':scope > title', nodeElement)?.textContent?.trim();
+    const key = $optional(':scope > title', nodeElement)?.textContent!.trim();
     if (!key) {
       continue;
     }
