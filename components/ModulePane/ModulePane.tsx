@@ -56,7 +56,7 @@ export default function ModulePane({
 
   if (nSelected > 1) {
     return (
-      <Pane>
+      <Pane className={styles.centered}>
         Multiple modules selected. Click a single module in the graph to see
         details.
       </Pane>
@@ -173,7 +173,7 @@ export default function ModulePane({
           {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
           <ExternalLink href={packageUrl}>package.json</ExternalLink>
           {homepageUrl && (
-            <ExternalLink href={homepageUrl}>homepage</ExternalLink>
+            <ExternalLink href={homepageUrl}>website</ExternalLink>
           )}
         </div>
       </div>
