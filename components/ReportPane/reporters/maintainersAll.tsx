@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import { Gravatar } from '../../ui/Gravatar.tsx';
@@ -41,6 +40,10 @@ export function maintainersAll({
     return;
   }
 
-  const summary = simplur`All maintainers (${details.length})`;
-  return { type: 'info', summary, details } as RenderedAnalysis;
+  return {
+    type: 'info',
+    summary: 'Maintainers',
+    count: details.length,
+    details,
+  } as RenderedAnalysis;
 }

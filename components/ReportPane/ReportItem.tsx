@@ -35,15 +35,20 @@ export function ReportItem<T>({
     return null;
   }
 
-  const { type, summary, details } = analysis;
+  const { type, summary, count, details } = analysis;
 
   return (
     <CollapsibleSection
       open={false}
       icon={
-        <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
+        SYMBOLS[type] && (
+          <span className={cn(styles.symbol, styles[type])}>
+            {SYMBOLS[type]}
+          </span>
+        )
       }
       title={summary}
+      count={count}
       {...props}
     >
       {children ? <div className={styles.description}>{children}</div> : null}

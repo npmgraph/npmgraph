@@ -64,6 +64,27 @@ export default function ReportPane({
 
       <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
+      <ReportItem
+        data={peerDependencyAnalysis}
+        reporter={peerDependenciesAll}
+      />
+
+      <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
+
+      <ReportItem data={licensesAnalysis} reporter={licensesAll} />
+
+      <ReportItem
+        type="warn"
+        data={licensesAnalysis}
+        reporter={licensesKeyword('obsolete')}
+      >
+        "Obsolete" licenses have a newer version available. Consider asking the
+        module owner to update to a more recent version. See{' '}
+        <ExternalLink href="https://opensource.org/licenses/">
+          OSI Licenses
+        </ExternalLink>
+        .
+      </ReportItem>
       <ReportItem data={moduleAnalysis} reporter={moduleVulnerabilities}>
         Security advisories per <code>npm audit</code>. Data sourced from the
         npm registry. See{' '}
@@ -85,27 +106,6 @@ export default function ReportPane({
         instructions.
       </ReportItem>
 
-      <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
-        From the{' '}
-        <ExternalLink href="https://github.com/e18e/module-replacements">
-          module-replacements
-        </ExternalLink>{' '}
-        project, these modules can be removed or replaced with more modern,
-        streamlined alternatives
-      </ReportItem>
-
-      <ReportItem
-        data={peerDependencyAnalysis}
-        reporter={peerDependenciesAll}
-      />
-
-      <ReportItem
-        data={peerDependencyAnalysis}
-        reporter={peerDependenciesMissing}
-      />
-
-      <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
-
       <ReportItem data={maintainersAnalysis} reporter={maintainersSolo}>
         Modules with a single maintainer are at risk of "unplanned abandonment".
         See{' '}
@@ -114,8 +114,6 @@ export default function ReportPane({
         </ExternalLink>
         .
       </ReportItem>
-      <ReportItem data={licensesAnalysis} reporter={licensesAll} />
-
       <ReportItem
         type="warn"
         data={licensesAnalysis}
@@ -138,18 +136,19 @@ export default function ReportPane({
         .
       </ReportItem>
 
-      <ReportItem
-        type="warn"
-        data={licensesAnalysis}
-        reporter={licensesKeyword('obsolete')}
-      >
-        "Obsolete" licenses have a newer version available. Consider asking the
-        module owner to update to a more recent version. See{' '}
-        <ExternalLink href="https://opensource.org/licenses/">
-          OSI Licenses
-        </ExternalLink>
-        .
+      <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
+        From the{' '}
+        <ExternalLink href="https://github.com/e18e/module-replacements">
+          module-replacements
+        </ExternalLink>{' '}
+        project, these modules can be removed or replaced with more modern,
+        streamlined alternatives
       </ReportItem>
+
+      <ReportItem
+        data={peerDependencyAnalysis}
+        reporter={peerDependenciesMissing}
+      />
     </Pane>
   );
 }
