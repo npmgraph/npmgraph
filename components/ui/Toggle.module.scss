@@ -1,15 +1,11 @@
 .toggle {
-  all: unset;
   display: block;
-  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
   color: inherit;
   font: inherit;
   text-align: left;
-
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-  }
 
   & > span {
     display: inline-block;

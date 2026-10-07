@@ -405,8 +405,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       </div>
       <div
         className={styles.graph}
-        role="group"
-        aria-label="Dependency graph"
+        tabIndex={-1}
         onClick={handleGraphClick}
         onKeyDown={event => {
           handleGraphKeyDown(event, handleGraphClick);

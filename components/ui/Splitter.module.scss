@@ -5,7 +5,7 @@
   justify-content: center;
   align-items: center;
   transition: border-radius var(--transition-duration);
-  cursor: pointer;
+  cursor: default;
   margin-right: calc(-1 * var(--header-padding));
   border: 0;
   border-right: none;

@@ -5,7 +5,6 @@
 }
 
 .tag {
-  cursor: pointer;
   border: 0;
   border-radius: var(--rad-lg);
   background-color: var(--bg1);
@@ -16,11 +15,6 @@
   text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
-
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
-  }
 }
 
 .maintainer {

@@ -1,16 +1,13 @@
 .root {
-  all: unset;
   --selectable: #840;
-  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
   color: var(--selectable);
+  font: inherit;
   text-wrap: nowrap;
 
   @media (prefers-color-scheme: dark) {
     --selectable: #fc9;
-  }
-
-  &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 2px;
   }
 }
