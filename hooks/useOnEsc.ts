@@ -11,12 +11,14 @@ export default function useOnEsc(handler: () => void) {
       if (event.key !== 'Escape' || event.defaultPrevented) {
         return;
       }
+
       if (
         event.target instanceof HTMLElement &&
         event.target.matches(EDITABLE)
       ) {
         return;
       }
+
       handler();
     };
 
