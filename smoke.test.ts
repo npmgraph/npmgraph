@@ -28,9 +28,8 @@ const node = (module = '') =>
 
 const tab = (name: string) => app().getByRole('button', { name, exact: true });
 
-// Toggle's click handler lives on its On/Off switch, not the label text
-const toggle = (label: string) =>
-  app().getByCSS(`label:has-text("${label}") > div`);
+// Toggle is a button whose accessible name includes its On/Off state and label
+const toggle = (label: string) => app().getByRole('button', { name: label });
 
 // Wait for something to appear in the app's DOM
 const appears = async (css: string, text?: RegExp) =>
