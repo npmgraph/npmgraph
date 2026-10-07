@@ -54,27 +54,15 @@ async function downloadPng() {
   const canvas = document.createElement('canvas');
   canvas.width = Number(vb[2]);
   canvas.height = Number(vb[3]);
-  const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
+  const ctx = canvas.getContext('2d')!;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
   const url = URL.createObjectURL(svgBlob);
 
   try {
-    await new Promise<void>(resolve => {
-      img.addEventListener(
-        'load',
-        () => {
-          resolve();
-        },
-        { once: true },
-      );
-      img.addEventListener(
-        'error',
-        () => {
-          resolve();
-        },
-        { once: true },
-      );
+    await new Promise(resolve => {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
       img.src = url;
     });
 
