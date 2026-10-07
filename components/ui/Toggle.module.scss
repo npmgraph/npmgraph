@@ -1,12 +1,18 @@
+@use '../../lib/root.module.scss' as *;
+
 .toggle {
-  & > div {
+  @include button-reset;
+  display: block;
+
+  & > span {
     display: inline-block;
     margin-right: 0.5em;
     border-radius: 1em;
     background-color: var(--bg2);
     width: 4em;
   }
-  & > div > div {
+  & > span > span {
+    display: block;
     transition: 0.15s;
     margin-left: 0;
     border-radius: 1em;
@@ -14,7 +20,7 @@
     width: 3em;
     text-align: center;
   }
-  &.checked > div > div {
+  &.checked > span > span {
     margin-left: 1em;
     background-color: var(--bg-green);
   }

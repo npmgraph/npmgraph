@@ -1,6 +1,8 @@
+@use '../../lib/root.module.scss' as *;
+
 .root {
+  @include button-reset;
   --selectable: #840;
-  cursor: default;
   color: var(--selectable);
   text-wrap: nowrap;
 

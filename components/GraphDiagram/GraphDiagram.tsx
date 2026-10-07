@@ -52,9 +52,49 @@ import {
   gatherSelectionInfo,
   getGraphForQuery,
 } from '../../lib/graph-util.ts';
+import useOnEsc from '../../hooks/useOnEsc.ts';
 
 function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
+}
+
+function decorateGraphNodes(
+  element: Element,
+  isModuleVisible: ({ name }: { name: string }) => boolean,
+) {
+  for (const nodeElement of $$optional('g.node', element)) {
+    const key = $optional(':scope > title', nodeElement)?.textContent!.trim();
+    if (!key) {
+      continue;
+    }
+
+    const module = getCachedModule(key);
+    if (!module) {
+      continue;
+    }
+
+    nodeElement.setAttribute('role', 'button');
+    nodeElement.setAttribute('tabindex', '0');
+    nodeElement.setAttribute('aria-label', `Select ${module.key}`);
+
+    if (module.package.deprecated) {
+      nodeElement.classList.add('warning');
+    }
+
+    if (module.name) {
+      nodeElement.dataset['module'] = module.key;
+    } else {
+      report.warn(new Error(`Bad replace: ${key}`));
+    }
+
+    if (!isModuleVisible(module)) {
+      nodeElement.classList.add('collapsed');
+    }
+
+    if (module.isStub) {
+      nodeElement.classList.add('stub');
+    }
+  }
 }
 
 const idSeen = new Set<unknown>();
@@ -292,38 +332,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         .insert('defs', ':first-child')
         .html(PATTERN);
 
-      // Decorate DOM nodes with appropriate classname
-      for (const nodeElement of $$optional('g.node', element)) {
-        // Find module this node represents
-        const key = $(':scope > title', nodeElement)?.textContent?.trim();
-        if (!key) {
-          continue;
-        }
-
-        const m = getCachedModule(key);
-
-        if (!m) {
-          continue;
-        }
-
-        if (m?.package.deprecated) {
-          nodeElement.classList.add('warning');
-        }
-
-        if (m.name) {
-          nodeElement.dataset['module'] = m.key;
-        } else {
-          report.warn(new Error(`Bad replace: ${key}`));
-        }
-
-        if (!moduleFilter(m)) {
-          nodeElement.classList.add('collapsed');
-        }
-
-        if (m.isStub) {
-          nodeElement.classList.add('stub');
-        }
-      }
+      decorateGraphNodes(element, moduleFilter);
 
       // Signal other hooks that graph DOM has changed
       setDiagramElement(getDiagramElement());
@@ -369,6 +378,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
     void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
+
+  // Effect: Reset graph selection on Esc key press
+  useOnEsc(() => {
+    setGraphSelection(QueryType.Default, '');
+  });
 
   return (
     <div className={styles.root}>

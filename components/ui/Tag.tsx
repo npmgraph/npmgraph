@@ -29,7 +29,7 @@ export function Tag({
   value: string;
   count?: number;
   gravatar?: string;
-} & HTMLProps<HTMLDivElement>) {
+} & Omit<HTMLProps<HTMLButtonElement>, 'type'>) {
   const setGraphSelection = useGraphSelection()[2];
   let title = value;
   if (count > 1) {
@@ -37,7 +37,8 @@ export function Tag({
   }
 
   return (
-    <div
+    <button
+      type="button"
       className={cn(
         styles.tag,
         type === QueryType.Maintainer ? styles.maintainer : '',
@@ -51,6 +52,6 @@ export function Tag({
     >
       {gravatar && <Gravatar email={gravatar} username={value} />}
       {title}
-    </div>
+    </button>
   );
 }
