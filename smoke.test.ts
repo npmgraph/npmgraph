@@ -28,8 +28,9 @@ const node = (module = '') =>
 
 const tab = (name: string) => app().getByRole('button', { name, exact: true });
 
-// Toggle is a button whose accessible name includes its On/Off state and label
-const toggle = (label: string) => app().getByRole('button', { name: label });
+// Toggle is a button; its On/Off pill is aria-hidden (state is in aria-pressed)
+const toggle = (label: string) =>
+  app().getByRole('button', { name: label, exact: true });
 
 // Wait for something to appear in the app's DOM
 const appears = async (css: string, text?: RegExp) =>

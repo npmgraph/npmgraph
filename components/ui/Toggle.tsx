@@ -22,7 +22,7 @@ export function Toggle({
       {...props}
       onClick={onChange}
     >
-      <span>
+      <span aria-hidden="true">
         <span>{checked ? 'On' : 'Off'}</span>
       </span>
       {children}
