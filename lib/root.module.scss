@@ -3,3 +3,12 @@
     @content;
   }
 }
+
+@mixin button-reset {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}

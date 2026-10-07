@@ -3,7 +3,7 @@ import { cn } from '../../lib/dom.ts';
 import { useParsedQuery } from '../../hooks/useQuery.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { Pane } from '../ui/Pane.tsx';
-import { QueryLink } from '../ui/QueryLink.tsx';
+import InputHelp from '../InputHelp.tsx';
 import * as utilities from '../ui/utilities.module.scss';
 import FilePicker from './FilePicker.tsx';
 import * as styles from './InfoPane.module.scss';
@@ -35,23 +35,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
         </div>
       ) : null}
 
-      <p>npmgraph supports looking up:</p>
-
-      <ul>
-        <li>
-          A npm module name: <QueryLink query={['express']} />
-        </li>
-        <li>
-          Multiple, versioned module names:{' '}
-          <QueryLink query={['cross-env@6', 'rimraf']} />
-        </li>
-        <li>
-          A URL to a{' '}
-          <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
-            package.json file
-          </QueryLink>
-        </li>
-      </ul>
+      <InputHelp heading="npmgraph supports looking up:" />
 
       <p>It also accepts package.json:</p>
       <ul>

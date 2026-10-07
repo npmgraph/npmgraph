@@ -1,9 +1,13 @@
 import { QueryLink } from './ui/QueryLink.tsx';
 
-export default function InputHelp() {
+export default function InputHelp({
+  heading = 'For example:',
+}: {
+  heading?: string;
+}) {
   return (
     <>
-      <p>For example:</p>
+      <p>{heading}</p>
 
       <ul>
         <li>

@@ -11,6 +11,25 @@ const RegistryStatus = {
 
 type RegistryStatusType = (typeof RegistryStatus)[keyof typeof RegistryStatus];
 
+async function checkRegistryStatus(
+  registry: string,
+  signal: AbortSignal,
+  setStatus: (status: RegistryStatusType) => void,
+  setRegistry: (registry: string) => void,
+): Promise<void> {
+  try {
+    await fetch(`${registry}/_`, { method: 'HEAD', signal });
+    if (!signal.aborted) {
+      setStatus(RegistryStatus.ONLINE);
+      setRegistry(registry);
+    }
+  } catch {
+    if (!signal.aborted) {
+      setStatus(RegistryStatus.OFFLINE);
+    }
+  }
+}
+
 export default function RegistryInput() {
   const [registry, setRegistry] = useRegistry();
   const [value, setValue] = useState(registry ?? '');
@@ -27,28 +46,16 @@ export default function RegistryInput() {
   }
 
   useEffect(() => {
-    function checkRegistryStatus(registry: string, signal: AbortSignal) {
-      if (signal.aborted) {
-        return;
-      }
-
-      fetch(`${registry}/_`, { method: 'HEAD', signal })
-        .then(() => {
-          setStatus(RegistryStatus.ONLINE);
-          setRegistry(registry);
-        })
-        .catch(() => {
-          setStatus(RegistryStatus.OFFLINE);
-        });
-    }
-
     const controller = new AbortController();
     setStatus(RegistryStatus.PENDING);
     const timer = setTimeout(
+      // eslint-disable-next-line @typescript-eslint/strict-void-return -- It is void (promised)
       checkRegistryStatus,
       1000,
       value,
       controller.signal,
+      setStatus,
+      setRegistry,
     );
     return () => {
       clearTimeout(timer);
