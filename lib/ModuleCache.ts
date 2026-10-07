@@ -1,5 +1,5 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
-import { satisfies } from 'semver';
+import { satisfies } from 'verkit';
 import { flash } from './flash.ts';
 import HttpError from './HttpError.ts';
 import Module from './Module.ts';
