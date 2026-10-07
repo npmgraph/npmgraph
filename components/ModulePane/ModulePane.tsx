@@ -171,10 +171,10 @@ export default function ModulePane({
         <div className={styles.linkGroup}>
           <ExternalLink href={npmUrl}>npm</ExternalLink>
           {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
-          <ExternalLink href={packageUrl}>package.json</ExternalLink>
           {homepageUrl && (
             <ExternalLink href={homepageUrl}>website</ExternalLink>
           )}
+          <ExternalLink href={packageUrl}>package.json</ExternalLink>
         </div>
       </div>
 

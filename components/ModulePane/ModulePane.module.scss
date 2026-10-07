@@ -22,8 +22,9 @@
 
 .moduleHeader {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
   // Optical alignment, give more space
   margin-inline: -4px;
 }
