@@ -15,5 +15,6 @@ import type { ReactElement } from 'react';
 export type RenderedAnalysis = {
   type: 'info' | 'warn' | 'error';
   summary: string;
+  count?: number | string;
   details: ReactElement[];
 };

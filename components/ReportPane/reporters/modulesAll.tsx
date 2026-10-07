@@ -27,9 +27,14 @@ export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
       </div>
     ));
 
-  const summary = simplur`All modules (${entryModules.size} top level,  ${
+  const count = simplur`${entryModules.size} top level, ${
     moduleInfos.size - entryModules.size
-  } dependenc[y|ies])`;
+  } dependenc[y|ies]`;
 
-  return { type: 'info', summary, details } as RenderedAnalysis;
+  return {
+    type: 'info',
+    summary: 'Modules',
+    count,
+    details,
+  } as RenderedAnalysis;
 }

@@ -67,9 +67,12 @@ export function peerDependenciesAll({
     );
   });
 
-  const summary = `All peer dependencies (${peerDependencyInfos.length})`;
-
-  return { type: 'info', summary, details } as RenderedAnalysis;
+  return {
+    type: 'info',
+    summary: 'Peer dependencies',
+    count: peerDependencyInfos.length,
+    details,
+  } as RenderedAnalysis;
 }
 
 export function peerDependenciesMissing({
@@ -85,7 +88,8 @@ export function peerDependenciesMissing({
 
   return {
     type: 'warn',
-    summary: `Missing peer dependencies (${missingInfos.length})`,
+    summary: 'Missing peer dependencies',
+    count: missingInfos.length,
     details: result?.details,
   } as RenderedAnalysis;
 }

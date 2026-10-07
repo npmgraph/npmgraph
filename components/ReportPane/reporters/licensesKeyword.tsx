@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import { cn } from '../../../lib/dom.ts';
 import type { OSIKeyword } from '../../../lib/licenses.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
@@ -14,7 +13,7 @@ export function licensesKeyword(keyword: OSIKeyword) {
       return undefined;
     }
 
-    const summary = simplur`Modules with "${keyword}" license (${modules.length})`;
+    const summary = `Modules with "${keyword}" license`;
 
     const details = modules
       .toSorted((a, b) => a.key.localeCompare(b.key))
@@ -27,6 +26,11 @@ export function licensesKeyword(keyword: OSIKeyword) {
         </div>
       ));
 
-    return { type: 'warn', summary, details } as RenderedAnalysis;
+    return {
+      type: 'warn',
+      summary,
+      count: modules.length,
+      details,
+    } as RenderedAnalysis;
   };
 }

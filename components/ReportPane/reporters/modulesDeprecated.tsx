@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import { cn } from '../../../lib/dom.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
@@ -26,6 +25,10 @@ export function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
       </div>
     ));
 
-  const summary = simplur`Deprecated modules (${deprecated.length})`;
-  return { type: 'warn', summary, details } as RenderedAnalysis;
+  return {
+    type: 'warn',
+    summary: 'Deprecated modules',
+    count: deprecated.length,
+    details,
+  } as RenderedAnalysis;
 }

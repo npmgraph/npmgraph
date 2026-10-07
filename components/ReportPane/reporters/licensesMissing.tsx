@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { LicenseAnalysisState } from '../analyzers/analyzeLicenses.ts';
@@ -9,8 +8,6 @@ export function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
     return;
   }
 
-  const summary = simplur`Unlicensed modules (${unlicensedModules.length})`;
-
   const details = unlicensedModules
     .toSorted((a, b) => a.key.localeCompare(b.key))
     .map(module => (
@@ -19,5 +16,10 @@ export function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
       </div>
     ));
 
-  return { type: 'warn', summary, details } as RenderedAnalysis;
+  return {
+    type: 'warn',
+    summary: 'Unlicensed modules',
+    count: unlicensedModules.length,
+    details,
+  } as RenderedAnalysis;
 }
