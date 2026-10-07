@@ -20,7 +20,7 @@ export function ModuleVersionInfo({
   }
 
   const latestVersion = module.packument['dist-tags'].latest;
-  const latestParts = tryParse(latestVersion ?? '');
+  const latestParts = latestVersion && tryParse(latestVersion);
   if (!latestVersion || !latestParts) {
     return null;
   }
