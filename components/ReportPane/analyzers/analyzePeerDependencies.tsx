@@ -1,4 +1,4 @@
-import { satisfies } from 'semver';
+import { satisfies } from 'verkit';
 import type Module from '../../../lib/Module.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
 

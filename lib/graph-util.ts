@@ -1,4 +1,4 @@
-import { satisfies } from 'semver';
+import { satisfies } from 'verkit';
 import simplur from 'simplur';
 import type Module from './Module.ts';
 import type {
