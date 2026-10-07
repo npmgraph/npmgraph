@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import * as appStyles from '../App/App.module.scss';
 import * as appHeaderStyles from '../AppHeader.module.scss';
 import * as graphDiagramStyles from '../GraphDiagram/GraphDiagram.module.scss';
 import * as flashStyles from './Flash.module.scss';
@@ -82,13 +83,15 @@ function computeLayout(): FlashLayout {
     graphWidth > 0 ? graphWidth - FLASH_GAP : window.innerWidth - FLASH_GAP * 2,
   );
 
-  const appHeader = document.querySelector(`.${appHeaderStyles.root}`);
+  // On tight screens the header is followed by the mobile tabs, both inside
+  // the sticky top container, so place the flash below the whole container
+  const topBar =
+    document.querySelector(`.${appStyles.stickyTop}`) ??
+    document.querySelector(`.${appHeaderStyles.root}`);
 
   const top =
     FLASH_GAP / 2 +
-    (appHeader instanceof HTMLElement
-      ? appHeader.offsetTop + appHeader.offsetHeight
-      : 0);
+    (topBar instanceof HTMLElement ? topBar.getBoundingClientRect().bottom : 0);
 
   return { top, maxWidth };
 }
