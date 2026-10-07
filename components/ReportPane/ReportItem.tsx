@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { cn } from '../../lib/dom.ts';
-import * as utilities from '../ui/utilities.module.scss';
+import { CollapsibleSection } from '../ui/Section.tsx';
 import type { RenderedAnalysis } from './analyzers/Analyzer.tsx';
 import * as styles from './ReportItem.module.scss';
 
@@ -38,13 +38,16 @@ export function ReportItem<T>({
   const { type, summary, details } = analysis;
 
   return (
-    <details className={cn(styles.root, styles[type])} {...props}>
-      <summary className={utilities.brightHover}>
-        <span className={styles.symbol}>{SYMBOLS[type]}</span>
-        {summary}
-      </summary>
+    <CollapsibleSection
+      open={false}
+      icon={
+        <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
+      }
+      title={summary}
+      {...props}
+    >
       {children ? <div className={styles.description}>{children}</div> : null}
-      <div className={styles.root}>{details}</div>
-    </details>
+      <div className={styles.details}>{details}</div>
+    </CollapsibleSection>
   );
 }

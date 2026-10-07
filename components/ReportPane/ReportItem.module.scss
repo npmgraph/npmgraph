@@ -1,36 +1,6 @@
-.root {
-  cursor: default;
-  border: solid 1px transparent;
-
-  & > * {
-    padding-right: 1rem;
-    padding-left: 1rem;
-  }
-
-  &[open] {
-    border-radius: 0.3rem;
-  }
-
-  &[open] {
-    margin-bottom: 1rem;
-    border-color: var(--bg1);
-  }
-
-  summary {
-    position: sticky;
-    top: 0;
-    border-radius: 0.3rem;
-    background-color: var(--bg0);
-    color: var(--accent);
-    font-weight: normal;
-    font-size: 1rem;
-    line-height: 1.5rem;
-    list-style: none;
-
-    &::marker {
-      display: none;
-    }
-  }
+.details > * {
+  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
 .zebraRow:nth-child(even) {
@@ -45,16 +15,16 @@
   width: 1rem;
   font-size: 1.3rem;
   text-align: left;
-}
 
-.info .symbol {
-  color: green;
-}
-.warn .symbol {
-  color: var(--stroke-yellow);
-}
-.error .symbol {
-  color: green;
+  &.info {
+    color: green;
+  }
+  &.warn {
+    color: var(--stroke-yellow);
+  }
+  &.error {
+    color: green;
+  }
 }
 
 .description {
