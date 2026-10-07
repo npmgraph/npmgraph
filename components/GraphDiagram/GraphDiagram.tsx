@@ -52,6 +52,7 @@ import {
   gatherSelectionInfo,
   getGraphForQuery,
 } from '../../lib/graph-util.ts';
+import useOnEsc from '../../hooks/useOnEsc.ts';
 
 function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
@@ -377,6 +378,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
     void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
+
+  // Effect: Reset graph selection on Esc key press
+  useOnEsc(() => {
+    setGraphSelection(QueryType.Default, '');
+  });
 
   return (
     <div className={styles.root}>
