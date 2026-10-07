@@ -185,7 +185,7 @@ describe('panes', () => {
     await nodeAppears();
     await userEvent.click(tab('Report'));
     await Promise.all(
-      ['All modules', 'All maintainers', 'All licenses'].map(async title =>
+      ['Modules', 'Maintainers', 'Licenses'].map(async title =>
         appears('details > summary', new RegExp(title)),
       ),
     );
