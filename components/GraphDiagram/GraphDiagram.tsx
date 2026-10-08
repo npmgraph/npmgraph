@@ -24,6 +24,7 @@ import {
   PARAM_COLORIZE,
   PARAM_DEPENDENCIES,
   PARAM_HIDE,
+  PARAM_PACKAGES,
   PARAM_SIZING,
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
@@ -124,6 +125,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
   const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
+  // Pasted package.json files are in the hash, they can change without the query changing
+  const [packages] = useHashParam(PARAM_PACKAGES);
   const [, setPane] = useGlobalState('pane');
   const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
@@ -268,7 +271,15 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
     );
 
     return abort;
-  }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph, setPane]);
+  }, [
+    sortedQuery,
+    dependencyTypes,
+    collapse,
+    moduleFilter,
+    packages,
+    setGraph,
+    setPane,
+  ]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {
