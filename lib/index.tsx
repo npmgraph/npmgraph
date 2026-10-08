@@ -33,6 +33,7 @@ function detectFeatures() {
     '||= (Logical Or)': isValidJS('a ||= 123'),
     'AbortSignal.timeout': globalThis.AbortSignal?.timeout,
     'Map.groupBy': globalThis.Map?.groupBy,
+    'URL.parse': globalThis.URL?.parse,
     fetch: globalThis.fetch,
     globalThis: typeof globalThis !== 'undefined',
     Promise: globalThis.Promise,
