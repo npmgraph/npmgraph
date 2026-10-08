@@ -72,8 +72,8 @@ describe('aliases', () => {
   });
 
   it.each([
-    { react: '^18', 'react-17': 'npm:react@^17' },
-    { 'react-17': 'npm:react@^17', react: '^18' },
+    { react: '^18', react17: 'npm:react@^17' },
+    { react17: 'npm:react@^17', react: '^18' },
   ])('alias of a direct dependency keeps both %o', async dependencies => {
     root({ dependencies });
     await expect(nodeKeys()).resolves.toEqual([
