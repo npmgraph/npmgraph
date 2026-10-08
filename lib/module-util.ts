@@ -36,6 +36,14 @@ export function parseModuleKey(moduleKey: string): string[] {
 
 const ALIAS_RE = /npm:(?<name>@?[^@]+)@(?<semver>.+)/v;
 
+/**
+Resolve a dependency to its real name and range, following npm: aliases
+*/
+export function resolveAlias(name: string, version: string) {
+  const groups = ALIAS_RE.exec(version)?.groups;
+  return [groups?.['name'] ?? name, groups?.['semver'] ?? version] as const;
+}
+
 export function resolveDependencyAliases(pkg: PackumentVersion) {
   for (const depType of [
     'dependencies',
@@ -64,12 +72,19 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
         continue;
       }
 
+      const groupName = match.groups!['name'];
+
+      // Leave aliases that would replace another dependency as-is, e.g.
+      // "foo": "^2" next to "foo-1": "npm:foo@^1". See resolveAlias()
+      if (groupName !== name && groupName && Object.hasOwn(deps, groupName)) {
+        continue;
+      }
+
       console.log(
         `Resolving alias ${name} -> ${match.groups!['name']}@${match.groups!['semver']}`,
       );
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- Comes from Object.entries()
       delete deps[name];
-      const groupName = match.groups!['name'];
       const groupSemver = match.groups!['semver'];
       if (groupName && groupSemver) {
         deps[groupName] = groupSemver;
