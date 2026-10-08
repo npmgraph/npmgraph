@@ -282,6 +282,15 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
 
 let lastPackagesValue: string | null;
 
+function isPackage(pkg: unknown): pkg is PackageJSON {
+  return (
+    typeof pkg === 'object' &&
+    pkg !== null &&
+    'name' in pkg &&
+    typeof pkg.name === 'string'
+  );
+}
+
 // Make sure any packages in the URL hash are loaded into the module cache
 export function syncPackagesHash() {
   const packagesJson = hashGet(PARAM_PACKAGES);
@@ -297,7 +306,7 @@ export function syncPackagesHash() {
     return;
   }
 
-  let packages: PackageJSON[];
+  let packages: unknown;
   try {
     packages = JSON.parse(packagesJson);
   } catch {
@@ -305,8 +314,14 @@ export function syncPackagesHash() {
     return;
   }
 
-  for (const pkg of packages) {
-    cacheLocalPackage(pkg as PackumentVersion);
+  // The hash can contain anything, don't let it break the app
+  if (!Array.isArray(packages) || packages.some(pkg => !isPackage(pkg))) {
+    flash('`packages` hash param is not a valid list of packages');
+    return;
+  }
+
+  for (const pkg of packages as PackageJSON[]) {
+    cacheLocalPackage(sanitizePackageKeys(pkg) as PackumentVersion);
   }
 }
 
