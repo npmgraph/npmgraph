@@ -225,6 +225,7 @@ const PACKAGE_WHITELIST: Array<keyof PackageJSON> = [
   'devDependencies',
   'license',
   'name',
+  'optionalDependencies',
   'overrides',
   'peerDependencies',
   'peerDependenciesMeta',

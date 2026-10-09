@@ -51,7 +51,9 @@ const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=black]',
   peerDependencies: '[color=black style=dashed label="peer"]',
-  optionalDependencies: '[color=black style=dashed]',
+  peerDependenciesOptional:
+    '[color=black style=dashed label="peer (optional)"]',
+  optionalDependencies: '[color=black style=dashed label="optional"]',
   optionalDevDependencies: '[color=black style=dashed]', // unused
 };
 
@@ -375,10 +377,16 @@ export function composeDOT({
     }
 
     for (const { module: dependency, type } of downstream) {
+      const attributes =
+        type === 'peerDependencies' &&
+        isOptionalPeerDependency(
+          module.package.peerDependenciesMeta,
+          dependency.name,
+        )
+          ? EDGE_ATTRIBUTES.peerDependenciesOptional
+          : EDGE_ATTRIBUTES[type];
       edges.push(
-        `"${dotEscape(module.key)}" -> "${String(dependency)}" ${
-          EDGE_ATTRIBUTES[type]
-        }`,
+        `"${dotEscape(module.key)}" -> "${String(dependency)}" ${attributes}`,
       );
     }
   }
