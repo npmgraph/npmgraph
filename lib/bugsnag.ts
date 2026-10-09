@@ -3,19 +3,15 @@ import HttpError from './HttpError.ts';
 
 const apiKey = process.env.BUGSNAG_KEY;
 
-const releaseStage =
-  process.env.VERCEL_ENV === 'production'
-    ? 'production'
-    : process.env.VERCEL_ENV === 'preview'
-      ? 'staging'
-      : 'development';
+export const releaseStage = process.env.VERCEL_ENV ?? 'development';
+export const appVersion = process.env.VERCEL_GIT_COMMIT_SHA ?? 'none';
 
 const bugsnag = apiKey
   ? Bugsnag.start({
-      appVersion: process.env.VERCEL_GIT_COMMIT_SHA ?? 'development',
+      appVersion,
       apiKey,
       releaseStage,
-      enabledReleaseStages: ['production', 'staging'],
+      enabledReleaseStages: ['production', 'preview'],
     })
   : undefined;
 
