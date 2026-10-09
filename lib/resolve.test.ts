@@ -243,6 +243,37 @@ describe('graph structure', () => {
   });
 });
 
+describe('optional dependencies', () => {
+  const types: DependencyKey[] = ['dependencies', 'optionalDependencies'];
+
+  it('are followed like regular dependencies', async () => {
+    add('b', { '1.0.0': {} });
+    add('a', { '1.0.0': { optionalDependencies: { b: '1' } } });
+    root({ optionalDependencies: { a: '1' } });
+    await expect(edges(types)).resolves.toEqual(
+      expect.arrayContaining([
+        'root@1.0.0 -> a@1.0.0 [optionalDependencies]',
+        'a@1.0.0 -> b@1.0.0 [optionalDependencies]',
+      ]),
+    );
+  });
+
+  it('override dependencies with the same name', async () => {
+    root({
+      dependencies: { react: '^17' },
+      optionalDependencies: { react: '^18' },
+    });
+    await expect(edges(types)).resolves.toEqual([
+      'root@1.0.0 -> react@18.2.0 [optionalDependencies]',
+    ]);
+  });
+
+  it('are ignored unless requested', async () => {
+    root({ optionalDependencies: { react: '^17' } });
+    await expect(nodeKeys()).resolves.toEqual(['root@1.0.0']);
+  });
+});
+
 describe('peer dependencies', () => {
   const types: DependencyKey[] = ['dependencies', 'peerDependencies'];
 

@@ -51,21 +51,27 @@ const EDGE_ATTRIBUTES = {
   dependencies: '[color=black]',
   devDependencies: '[color=black]',
   peerDependencies: '[color=black style=dashed label="peer"]',
-  optionalDependencies: '[color=black style=dashed]', // unused
+  peerDependenciesOptional:
+    '[color=black style=dashed label="peer (optional)"]',
+  optionalDependencies: '[color=black style=dashed label="optional"]',
   optionalDevDependencies: '[color=black style=dashed]', // unused
 };
 
-const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
+// Types that are installed along with the modules that depend on them
+const TRANSITIVE_TYPES = new Set<DependencyKey>([
+  'dependencies',
+  'optionalDependencies',
+]);
 
 function getDependencyEntries(
   module: Module,
   dependencyTypes: Set<DependencyKey>,
   level = 0,
 ) {
-  // We only add non-"dependencies" at the top-level.
-  if (level > 0) {
-    dependencyTypes = DEPENDENCIES_ONLY;
-  }
+  // We only add non-"dependencies" at the top-level, except optional ones.
+  const optional = dependencyTypes.has('optionalDependencies')
+    ? module.package.optionalDependencies
+    : undefined;
 
   const depEntries = new Set<DependencyEntry>();
   for (const type of dependencyTypes) {
@@ -74,13 +80,22 @@ function getDependencyEntries(
       continue;
     }
 
-    // Only do one level for non-"dependencies"
-    if (type !== 'dependencies' && level > 0) {
+    // Only do one level for types that aren't installed with the module
+    if (level > 0 && !TRANSITIVE_TYPES.has(type)) {
       continue;
     }
 
     // Get entries, adding type to each entry
     for (const [alias, range] of Object.entries(deps)) {
+      // optionalDependencies override dependencies with the same name
+      if (
+        type === 'dependencies' &&
+        optional &&
+        Object.hasOwn(optional, alias)
+      ) {
+        continue;
+      }
+
       const [name, version] = resolveAlias(alias, range);
       depEntries.add({ name, version, type });
     }
@@ -371,10 +386,16 @@ export function composeDOT({
     }
 
     for (const { module: dependency, type } of downstream) {
+      const attributes =
+        type === 'peerDependencies' &&
+        isOptionalPeerDependency(
+          module.package.peerDependenciesMeta,
+          dependency.name,
+        )
+          ? EDGE_ATTRIBUTES.peerDependenciesOptional
+          : EDGE_ATTRIBUTES[type];
       edges.push(
-        `"${dotEscape(module.key)}" -> "${String(dependency)}" ${
-          EDGE_ATTRIBUTES[type]
-        }`,
+        `"${dotEscape(module.key)}" -> "${String(dependency)}" ${attributes}`,
       );
     }
   }
