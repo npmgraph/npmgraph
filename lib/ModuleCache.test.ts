@@ -5,7 +5,9 @@ import {
   getCachedModule,
   getModule,
 } from './ModuleCache.ts';
+import fetchJson from './fetchJson.ts';
 
+vi.mock('./fetchJson.ts', () => ({ default: vi.fn() }));
 vi.mock('./registry-util.ts', () => ({ getRegistry: () => 'test://registry' }));
 
 const local = (pkg: object) =>
@@ -46,5 +48,19 @@ describe('local packages', () => {
     await expect(dependencies('unversioned-module')).resolves.toEqual({
       b: '1',
     });
+  });
+});
+
+describe('GitHub repos', () => {
+  it('are loaded from user/repo', async () => {
+    const pkg = { name: 'shorthand-package', version: '1.0.0' };
+    vi.mocked(fetchJson).mockResolvedValueOnce(pkg);
+
+    const module = await getModule('some-user/some-repo');
+
+    expect(module.key).toBe('shorthand-package@1.0.0');
+    expect(String(vi.mocked(fetchJson).mock.calls[0]?.[0])).toBe(
+      'https://raw.githubusercontent.com/some-user/some-repo/HEAD/package.json',
+    );
   });
 });

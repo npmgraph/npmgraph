@@ -14,6 +14,7 @@ import {
   getModuleKey,
   isHttpModule,
   parseModuleKey,
+  resolveGitHubShorthand,
   resolveModule,
 } from './module-util.ts';
 import selectVersion from './selectVersion.ts';
@@ -96,6 +97,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
     throw new Error('Undefined module name');
   }
 
+  moduleKey = resolveGitHubShorthand(moduleKey);
   let [name, version] = parseModuleKey(moduleKey);
 
   if (isHttpModule(moduleKey)) {
