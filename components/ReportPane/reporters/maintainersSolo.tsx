@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.tsx';
 import { maintainersAll } from './maintainersAll.tsx';
@@ -22,7 +21,8 @@ export function maintainersSolo({
 
   return {
     type: 'warn',
-    summary: simplur`Modules with only one maintainer (${soloModulesCount})`,
+    summary: 'Modules with only one maintainer',
+    count: soloModulesCount,
     details: results.details,
   } as RenderedAnalysis;
 }

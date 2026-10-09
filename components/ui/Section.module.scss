@@ -1,11 +1,17 @@
 .root {
   line-height: 1.7;
+  &:is(div, [open]) {
+    padding-bottom: 1em;
+  }
 
-  & > summary {
+  & > summary,
+  & > h3 {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
     margin: -1em;
-    margin-block-end: 0;
+    margin-block: 0;
+    border-top: solid 1px var(--bg1);
     padding: 1em;
 
     // Match native H3 style
@@ -21,9 +27,16 @@
     display: none;
   }
   summary::after {
+    margin-left: auto;
     content: '◀';
   }
   &[open] summary:after {
     content: '▼';
   }
+}
+
+.count {
+  color: var(--text-dim);
+  font-weight: normal;
+  font-size: 0.8em;
 }

@@ -71,6 +71,24 @@ describe('aliases', () => {
     ]);
   });
 
+  it.each([
+    { react: '^18', react17: 'npm:react@^17' },
+    { react17: 'npm:react@^17', react: '^18' },
+  ])('alias of a direct dependency keeps both %o', async dependencies => {
+    root({ dependencies });
+    await expect(nodeKeys()).resolves.toEqual([
+      'react@17.0.2',
+      'react@18.2.0',
+      'root@1.0.0',
+    ]);
+    await expect(edges()).resolves.toEqual(
+      expect.arrayContaining([
+        'root@1.0.0 -> react@17.0.2 [dependencies]',
+        'root@1.0.0 -> react@18.2.0 [dependencies]',
+      ]),
+    );
+  });
+
   it.fails('bare npm:name (no range) resolves to latest', async () => {
     root({ dependencies: { x: 'npm:react' } });
     await expect(edges()).resolves.toEqual([

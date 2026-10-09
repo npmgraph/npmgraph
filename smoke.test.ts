@@ -180,13 +180,13 @@ describe('panes', () => {
     await appears('h2', /^debug@/);
   });
 
-  it('renders report sections', async () => {
+  it('renders report items', async () => {
     await goto('?q=debug');
     await nodeAppears();
     await userEvent.click(tab('Report'));
     await Promise.all(
       ['Modules', 'Maintainers', 'Licenses'].map(async title =>
-        appears('h3', new RegExp(title)),
+        appears('details > summary', new RegExp(title)),
       ),
     );
   });

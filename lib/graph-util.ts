@@ -9,7 +9,7 @@ import type {
 } from './graph-types.ts';
 import { getModule } from './ModuleCache.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
-import { getModuleKey } from './module-util.ts';
+import { getModuleKey, resolveAlias } from './module-util.ts';
 import {
   type Overrides,
   getChildOverrides,
@@ -80,7 +80,8 @@ function getDependencyEntries(
     }
 
     // Get entries, adding type to each entry
-    for (const [name, version] of Object.entries(deps)) {
+    for (const [alias, range] of Object.entries(deps)) {
+      const [name, version] = resolveAlias(alias, range);
       depEntries.add({ name, version, type });
     }
   }

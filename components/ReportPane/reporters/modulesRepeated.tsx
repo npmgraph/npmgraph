@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import { getModuleKey } from '../../../lib/module-util.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
@@ -35,7 +34,10 @@ export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
     return;
   }
 
-  const summary = simplur`Modules with multiple versions (${details.length})`;
-
-  return { type: 'warn', summary, details } as RenderedAnalysis;
+  return {
+    type: 'warn',
+    summary: 'Modules with multiple versions',
+    count: details.length,
+    details,
+  } as RenderedAnalysis;
 }

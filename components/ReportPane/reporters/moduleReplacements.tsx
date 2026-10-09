@@ -115,7 +115,8 @@ export function moduleReplacementsNative({
 
   return {
     type: 'warn',
-    summary: `Suggested replacements (${details.length})`,
+    summary: 'Suggested replacements',
+    count: details.length,
     details,
   } as RenderedAnalysis;
 }

@@ -37,6 +37,11 @@ type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   registry?: string; // NPM_REGISTRY url
 };
 
+// Entries without a registry (local and URL modules) are always current
+function isCurrent(entry: ModuleCacheEntry) {
+  return !entry.registry || entry.registry === getRegistry();
+}
+
 async function fetchModuleFromNPM(
   moduleName: string,
   version?: string,
@@ -104,7 +109,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   moduleKey = getModuleKey(name, version);
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(moduleKey);
-  if (cachedEntry?.registry === getRegistry()) {
+  if (cachedEntry && isCurrent(cachedEntry)) {
     return cachedEntry.promise;
   }
 
@@ -147,24 +152,17 @@ export async function getModule(moduleKey: string): Promise<Module> {
 
 export function getCachedModule(key: string) {
   const entry = moduleCache.get(key);
-  return entry?.registry === getRegistry() ? entry.module : undefined;
+  return entry && isCurrent(entry) ? entry.module : undefined;
 }
 
 function cacheModule(module: Module, registry?: string) {
-  const moduleKey = module.key;
-  const entry = moduleCache.get(moduleKey);
-
-  if (entry && entry?.registry === registry) {
-    entry.resolve(module);
-  } else {
-    moduleCache.set(moduleKey, {
-      promise: Promise.resolve(module),
-      module,
-      registry,
-      resolve() {},
-      reject() {},
-    });
-  }
+  moduleCache.set(module.key, {
+    promise: Promise.resolve(module),
+    module,
+    registry,
+    resolve() {},
+    reject() {},
+  });
 }
 
 /**

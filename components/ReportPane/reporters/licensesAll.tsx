@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import { LICENSES } from '../../../lib/licenses.ts';
@@ -53,6 +52,10 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
     return;
   }
 
-  const summary = simplur`All licenses (${details.length})`;
-  return { type: 'info', summary, details } as RenderedAnalysis;
+  return {
+    type: 'info',
+    summary: 'Licenses',
+    count: details.length,
+    details,
+  } as RenderedAnalysis;
 }
