@@ -89,7 +89,7 @@ describe('aliases', () => {
     );
   });
 
-  it.fails('bare npm:name (no range) resolves to latest', async () => {
+  it('bare npm:name (no range) resolves to latest', async () => {
     root({ dependencies: { x: 'npm:react' } });
     await expect(edges()).resolves.toEqual([
       'root@1.0.0 -> react@18.2.0 [dependencies]',
@@ -305,7 +305,7 @@ describe('peer dependencies', () => {
     await expect(nodeKeys(types)).resolves.not.toContain('react@17.0.2');
   });
 
-  it.fails('no duplicate edges for level-0 peers', async () => {
+  it('no duplicate edges for level-0 peers', async () => {
     root({ peerDependencies: { react: '^17' } });
     await expect(edges(types)).resolves.toSatisfy(
       (edges: string[]) => new Set(edges).size === edges.length,
