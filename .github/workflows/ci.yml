@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: "npm"
+          cache: npm
       - run: npm ci
       - run: npm run build
   lint:
@@ -27,10 +27,12 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: "npm"
+          cache: npm
       - run: npm ci
-      - run: npm run lint
-      - run: npm run format
+      - name: eslint
+        run: npm run lint:fix && git diff --exit-code # Check and print diff
+      - name: prettier
+        run: npm run format && git diff --exit-code # Check and print diff
   types:
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +40,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: "npm"
+          cache: npm
       - run: npm ci
       - run: npm run types
   test:
@@ -48,7 +50,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: "npm"
+          cache: npm
       - run: npm ci
       - run: npm run test:unit
   smoke:
@@ -58,7 +60,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-          cache: "npm"
+          cache: npm
       - run: npm ci
       - run: npm run build
       - run: npm run smoke
