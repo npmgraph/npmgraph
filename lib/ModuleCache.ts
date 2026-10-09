@@ -14,6 +14,7 @@ import {
   getModuleKey,
   isHttpModule,
   parseModuleKey,
+  resolveGitHubShorthand,
   resolveModule,
 } from './module-util.ts';
 import selectVersion from './selectVersion.ts';
@@ -36,6 +37,11 @@ type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   module: Module; // Set once module is loaded
   registry?: string; // NPM_REGISTRY url
 };
+
+// Entries without a registry (local and URL modules) are always current
+function isCurrent(entry: ModuleCacheEntry) {
+  return !entry.registry || entry.registry === getRegistry();
+}
 
 async function fetchModuleFromNPM(
   moduleName: string,
@@ -91,6 +97,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
     throw new Error('Undefined module name');
   }
 
+  moduleKey = resolveGitHubShorthand(moduleKey);
   let [name, version] = parseModuleKey(moduleKey);
 
   if (isHttpModule(moduleKey)) {
@@ -104,7 +111,7 @@ export async function getModule(moduleKey: string): Promise<Module> {
   moduleKey = getModuleKey(name, version);
   // Check cache once we're done massaging the version string
   const cachedEntry = moduleCache.get(moduleKey);
-  if (cachedEntry?.registry === getRegistry()) {
+  if (cachedEntry && isCurrent(cachedEntry)) {
     return cachedEntry.promise;
   }
 
@@ -147,24 +154,17 @@ export async function getModule(moduleKey: string): Promise<Module> {
 
 export function getCachedModule(key: string) {
   const entry = moduleCache.get(key);
-  return entry?.registry === getRegistry() ? entry.module : undefined;
+  return entry && isCurrent(entry) ? entry.module : undefined;
 }
 
 function cacheModule(module: Module, registry?: string) {
-  const moduleKey = module.key;
-  const entry = moduleCache.get(moduleKey);
-
-  if (entry && entry?.registry === registry) {
-    entry.resolve(module);
-  } else {
-    moduleCache.set(moduleKey, {
-      promise: Promise.resolve(module),
-      module,
-      registry,
-      resolve() {},
-      reject() {},
-    });
-  }
+  moduleCache.set(module.key, {
+    promise: Promise.resolve(module),
+    module,
+    registry,
+    resolve() {},
+    reject() {},
+  });
 }
 
 /**
@@ -282,6 +282,15 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
 
 let lastPackagesValue: string | null;
 
+function isPackage(pkg: unknown): pkg is PackageJSON {
+  return (
+    typeof pkg === 'object' &&
+    pkg !== null &&
+    'name' in pkg &&
+    typeof pkg.name === 'string'
+  );
+}
+
 // Make sure any packages in the URL hash are loaded into the module cache
 export function syncPackagesHash() {
   const packagesJson = hashGet(PARAM_PACKAGES);
@@ -297,7 +306,7 @@ export function syncPackagesHash() {
     return;
   }
 
-  let packages: PackageJSON[];
+  let packages: unknown;
   try {
     packages = JSON.parse(packagesJson);
   } catch {
@@ -305,8 +314,14 @@ export function syncPackagesHash() {
     return;
   }
 
-  for (const pkg of packages) {
-    cacheLocalPackage(pkg as PackumentVersion);
+  // The hash can contain anything, don't let it break the app
+  if (!Array.isArray(packages) || packages.some(pkg => !isPackage(pkg))) {
+    flash('`packages` hash param is not a valid list of packages');
+    return;
+  }
+
+  for (const pkg of packages as PackageJSON[]) {
+    cacheLocalPackage(sanitizePackageKeys(pkg) as PackumentVersion);
   }
 }
 

@@ -272,6 +272,15 @@ export async function getGraphForQuery(
               }
             }
 
+            // Peers of level 0 modules are already included as dependencies
+            const hasEdge = [...info.downstream].some(
+              ({ module, type }) =>
+                module === peerModule && type === 'peerDependencies',
+            );
+            if (hasEdge) {
+              return;
+            }
+
             info.downstream.add({
               module: peerModule,
               type: 'peerDependencies',
