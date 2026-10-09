@@ -2,12 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { resolveGitHubShorthand } from './module-util.ts';
 
 describe('resolveGitHubShorthand', () => {
-  it('converts user/repo to a package.json URL', () => {
+  it('converts user/repo to a raw package.json URL', () => {
     expect(resolveGitHubShorthand('npmgraph/npmgraph')).toBe(
-      'https://github.com/npmgraph/npmgraph/blob/HEAD/package.json',
+      'https://raw.githubusercontent.com/npmgraph/npmgraph/HEAD/package.json',
     );
+
     expect(resolveGitHubShorthand('some-user/some.repo_name')).toBe(
-      'https://github.com/some-user/some.repo_name/blob/HEAD/package.json',
+      'https://raw.githubusercontent.com/some-user/some.repo_name/HEAD/package.json',
     );
   });
 
