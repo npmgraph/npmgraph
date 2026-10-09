@@ -161,6 +161,24 @@ describe('overrides', () => {
     );
   });
 
+  it('merges all matching version-scoped nested overrides', async () => {
+    add('react', { '17.0.2': {}, '18.2.0': {} });
+    add('bar', { '1.0.0': { dependencies: { react: '^17' } } });
+    add('foo', { '1.0.0': { dependencies: { bar: '*' } } });
+    root({
+      dependencies: { foo: '1' },
+      overrides: {
+        foo: {
+          'bar@^1': { react: '17.0.2' },
+          'bar@^2': { react: '18.2.0' },
+        },
+      },
+    });
+    await expect(edges()).resolves.toContain(
+      'bar@1.0.0 -> react@18.2.0 [dependencies]',
+    );
+  });
+
   it('override value may be an npm: alias', async () => {
     root({
       dependencies: { react: '^17' },

@@ -124,11 +124,16 @@ export function getChildOverrides(
   }
 
   // Merge with any nested overrides defined for this specific child
-  const nested = Object.entries(currentOverrides).find(
-    ([key, value]) =>
+  const childOverrides = { ...stringOverrides };
+  for (const [key, value] of Object.entries(currentOverrides)) {
+    if (
       typeof value === 'object' &&
       value !== null &&
-      matchesOverrideKey(key, childName, childSpec),
-  )?.[1];
-  return { ...stringOverrides, ...(typeof nested === 'object' && nested) };
+      matchesOverrideKey(key, childName, childSpec)
+    ) {
+      Object.assign(childOverrides, value);
+    }
+  }
+
+  return childOverrides;
 }
