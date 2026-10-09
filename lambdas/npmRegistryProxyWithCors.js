@@ -66,6 +66,6 @@ function isOriginAllowed(origin) {
   return (
     url.hostname === 'localhost' ||
     url.hostname === 'npmgraph.js.org' ||
-    /npmgraph-git-\w+-broofas-projects.vercel.app/.test(url.hostname)
+    /^npmgraph(?:-[\w-]+)?-broofas-projects\.vercel\.app$/.test(url.hostname)
   );
 }

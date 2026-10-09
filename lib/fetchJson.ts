@@ -49,9 +49,6 @@ export default async function fetchJson<T>(
       throw error;
     })
     .catch(error => {
-      // Don't cache failures, so they can be retried
-      requestCache.delete(cacheKey);
-
       const message = `Failed to get ${url}`;
 
       // `message` is read-only on DOMExceptions (e.g. timeouts and aborts)
