@@ -1,3 +1,10 @@
+.root {
+  margin-top: -1em;
+  & > summary {
+    border-top: 0 !important;
+  }
+}
+
 .list {
   margin: 0;
   padding: 0;

@@ -14,7 +14,11 @@ export default function CollapsedModules() {
   }
 
   return (
-    <CollapsibleSection title="Collapsed modules" count={collapse.length}>
+    <CollapsibleSection
+      title="Collapsed modules"
+      count={collapse.length}
+      className={styles.root}
+    >
       <ul className={styles.list}>
         {collapse.map(name => (
           <li key={name} className={styles.item}>
