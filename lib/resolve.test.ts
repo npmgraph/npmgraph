@@ -132,6 +132,35 @@ describe('overrides', () => {
     );
   });
 
+  it('nested overrides retain distinct contexts for shared modules', async () => {
+    add('x', { '1.0.0': {}, '2.0.0': {} });
+    add('shared', { '1.0.0': { dependencies: { x: '^1' } } });
+    add('foo', { '1.0.0': { dependencies: { shared: '1' } } });
+    add('bar', { '1.0.0': { dependencies: { shared: '1' } } });
+    root({
+      dependencies: { foo: '1', bar: '1' },
+      overrides: { foo: { shared: { x: '2.0.0' } } },
+    });
+    await expect(edges()).resolves.toEqual(
+      expect.arrayContaining([
+        'shared@1.0.0 -> x@1.0.0 [dependencies]',
+        'shared@1.0.0 -> x@2.0.0 [dependencies]',
+      ]),
+    );
+  });
+
+  it('version-scoped keys apply nested overrides to matching child specs', async () => {
+    add('bar', { '1.0.0': {}, '2.0.0': {} });
+    add('foo', { '1.0.0': { dependencies: { bar: '^1' } } });
+    root({
+      dependencies: { foo: '^1' },
+      overrides: { 'foo@^1': { bar: '2.0.0' } },
+    });
+    await expect(edges()).resolves.toContain(
+      'foo@1.0.0 -> bar@2.0.0 [dependencies]',
+    );
+  });
+
   it('override value may be an npm: alias', async () => {
     root({
       dependencies: { react: '^17' },

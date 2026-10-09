@@ -58,6 +58,17 @@ const EDGE_ATTRIBUTES = {
 
 const DEPENDENCIES_ONLY = new Set<DependencyKey>(['dependencies']);
 
+function getOverridesKey(overrides: Overrides): string {
+  return JSON.stringify(
+    Object.entries(overrides)
+      .toSorted(([a], [b]) => a.localeCompare(b))
+      .map(([key, value]) => [
+        key,
+        typeof value === 'string' ? value : getOverridesKey(value),
+      ]),
+  );
+}
+
 function getDependencyEntries(
   module: Module,
   dependencyTypes: Set<DependencyKey>,
@@ -104,6 +115,7 @@ export async function getGraphForQuery(
     entryModules: new Set(),
     failedEntryModules: new Map(),
   };
+  const visited = new Set<string>();
 
   async function _visit(
     module: Module[] | Module,
@@ -125,21 +137,28 @@ export async function getGraphForQuery(
       return;
     }
 
-    let info: GraphModuleInfo | undefined = graphState.moduleInfos.get(
+    const visitKey = JSON.stringify([
       module.key,
-    );
-    if (info) {
-      return info;
+      getOverridesKey(currentOverrides),
+      getOverridesKey(rootOverrides),
+    ]);
+    if (visited.has(visitKey)) {
+      return graphState.moduleInfos.get(module.key);
     }
 
-    // Create object that captures info about how this module fits in the dependency graph
-    info = {
-      module,
-      level,
-      upstream: new Set(),
-      downstream: new Set(),
-    };
-    graphState.moduleInfos.set(module.key, info);
+    visited.add(visitKey);
+
+    let info = graphState.moduleInfos.get(module.key);
+    if (!info) {
+      // Create object that captures info about how this module fits in the dependency graph
+      info = {
+        module,
+        level,
+        upstream: new Set(),
+        downstream: new Set(),
+      };
+      graphState.moduleInfos.set(module.key, info);
+    }
 
     // Get dependency entries
     const downstreamEntries = moduleFilter(module)
@@ -164,6 +183,7 @@ export async function getGraphForQuery(
           currentOverrides,
           rootOverrides,
           downstreamName,
+          version,
         );
 
         const moduleInfo = await _visit(

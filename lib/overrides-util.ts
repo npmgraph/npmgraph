@@ -12,6 +12,26 @@ export type Overrides = {
   [packageName: string]: string | Overrides;
 };
 
+function matchesOverrideKey(key: string, name: string, spec?: string) {
+  // Scoped names start with an @, so only look for one after the first character
+  const at = key.lastIndexOf('@');
+  const keyName = at > 0 ? key.slice(0, at) : key;
+  if (keyName !== name) {
+    return false;
+  }
+
+  if (at <= 0) {
+    return true;
+  }
+
+  try {
+    return spec !== undefined && rangesIntersect(spec, key.slice(at + 1));
+  } catch {
+    // Not a range (tag, URL, etc.), so it can't match
+    return false;
+  }
+}
+
 /**
  Type guard that checks whether an unknown value is a valid Overrides object.
  */
@@ -43,28 +63,11 @@ export function getVersionOverride(
   spec?: string,
 ): string | undefined {
   for (const [key, override] of Object.entries(overrides)) {
-    if (typeof override !== 'string') {
+    if (typeof override !== 'string' || !matchesOverrideKey(key, name, spec)) {
       continue;
     }
 
-    // Scoped names start with an @, so only look for one after the first character
-    const at = key.lastIndexOf('@');
-    const keyName = at > 0 ? key.slice(0, at) : key;
-    if (keyName !== name) {
-      continue;
-    }
-
-    if (at <= 0) {
-      return override;
-    }
-
-    try {
-      if (spec !== undefined && rangesIntersect(spec, key.slice(at + 1))) {
-        return override;
-      }
-    } catch {
-      // Not a range (tag, URL, etc.), so it can't match
-    }
+    return override;
   }
 
   return undefined;
@@ -106,6 +109,7 @@ export function getChildOverrides(
   currentOverrides: Overrides,
   rootOverrides: Overrides,
   childName: string,
+  childSpec?: string,
 ): Overrides {
   // Collect string overrides: the root ones apply everywhere in the tree, and the
   // current ones (from a parent's nested overrides) apply to the whole subtree
@@ -120,6 +124,11 @@ export function getChildOverrides(
   }
 
   // Merge with any nested overrides defined for this specific child
-  const nested = currentOverrides[childName];
+  const nested = Object.entries(currentOverrides).find(
+    ([key, value]) =>
+      typeof value === 'object' &&
+      value !== null &&
+      matchesOverrideKey(key, childName, childSpec),
+  )?.[1];
   return { ...stringOverrides, ...(typeof nested === 'object' && nested) };
 }
