@@ -1,5 +1,4 @@
 import type { PackumentVersion } from '@npm/types';
-import hostedGitInfo from 'hosted-git-info';
 
 type Dependencies = PackumentVersion['dependencies'];
 
@@ -12,14 +11,9 @@ export function isHttpModule(moduleKey: string) {
  unless they're scoped (`@scope/name`), so this isn't ambiguous.
  */
 export function resolveGitHubShorthand(moduleKey: string) {
-  // Only resolve bare user/repo shorthand, not package names or URLs.
-  if (!/^[\w-]+\/[\w\-.]+$/.test(moduleKey)) {
-    return moduleKey;
-  }
-
-  const info = hostedGitInfo.fromUrl(`github:${moduleKey}`);
-
-  return (info?.type === 'github' && info.file('package.json')) || moduleKey;
+  return /^[\w-]+\/[\w\-.]+$/.test(moduleKey)
+    ? `https://github.com/${moduleKey}/blob/HEAD/package.json`
+    : moduleKey;
 }
 
 export function resolveModule(name: string, version?: string) {
