@@ -18,7 +18,10 @@ export default function InputHelp({
           <QueryLink query={['cross-env@6', 'rimraf']} />
         </li>
         <li>
-          A GitHub repository shorthand: <QueryLink query="sindresorhus/type-fest">sindresorhus/type-fest</QueryLink>
+          A GitHub repository shorthand:{' '}
+          <QueryLink query="sindresorhus/type-fest">
+            sindresorhus/type-fest
+          </QueryLink>
         </li>
         <li>
           A URL to a{' '}
