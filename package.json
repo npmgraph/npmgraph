@@ -20,7 +20,6 @@
   "scripts": {
     "build": "parcel build --no-cache",
     "fetch-licenses": "node scripts/fetch_licenses.js",
-    "release": "standard-version",
     "start": "parcel serve --no-cache",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
@@ -88,7 +87,6 @@
     "postcss-modules": "^6.0.1",
     "prettier": "^3.9.9",
     "prettier-plugin-css-order": "^2.2.0",
-    "standard-version": "^9.5.0",
     "svgo": "^4.1.0",
     "typed-query-selector": "^2.12.3",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
