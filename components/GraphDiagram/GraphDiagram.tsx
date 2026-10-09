@@ -151,7 +151,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       .map(s => s.trim())
       .filter(Boolean)
       .toSorted() as DependencyKey[];
-    return new Set<DependencyKey>(['dependencies', ...extra]);
+    return new Set<DependencyKey>([
+      'dependencies',
+      'optionalDependencies',
+      ...extra,
+    ]);
   }, [depTypes]);
 
   function handleGraphClick(event: React.MouseEvent) {
