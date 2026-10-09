@@ -6,6 +6,16 @@ export function isHttpModule(moduleKey: string) {
   return /^https?:\/\//.test(moduleKey);
 }
 
+/**
+ Like npm-cli, `user/repo` is a GitHub repo. Package names can't contain a slash
+ unless they're scoped (`@scope/name`), so this isn't ambiguous.
+ */
+export function resolveGitHubShorthand(moduleKey: string) {
+  return /^[\w-]+\/[\w\-.]+$/.test(moduleKey)
+    ? `https://github.com/${moduleKey}/blob/HEAD/package.json`
+    : moduleKey;
+}
+
 export function resolveModule(name: string, version?: string) {
   if (version) {
     // Remove "git...#" repo URIs from version strings

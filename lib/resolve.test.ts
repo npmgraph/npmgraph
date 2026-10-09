@@ -274,7 +274,7 @@ describe('peer dependencies', () => {
     await expect(nodeKeys(types)).resolves.not.toContain('react@17.0.2');
   });
 
-  it.fails('no duplicate edges for level-0 peers', async () => {
+  it('no duplicate edges for level-0 peers', async () => {
     root({ peerDependencies: { react: '^17' } });
     await expect(edges(types)).resolves.toSatisfy(
       (edges: string[]) => new Set(edges).size === edges.length,
