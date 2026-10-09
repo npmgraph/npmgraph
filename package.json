@@ -20,7 +20,7 @@
   "scripts": {
     "build": "parcel build --no-cache",
     "fetch-licenses": "node scripts/fetch_licenses.js",
-    "start": "parcel serve --no-cache",
+    "start": "node scripts/start.js",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "fix": "run-s --continue-on-error format lint:fix format",

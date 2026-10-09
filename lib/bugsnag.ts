@@ -1,21 +1,23 @@
 import Bugsnag from '@bugsnag/js';
-import pkg from '../package.json' with { type: 'json' };
 import HttpError from './HttpError.ts';
 
 const apiKey = process.env.BUGSNAG_KEY;
 
-if (!apiKey) {
-  throw new Error('BUGSNAG_KEY environment variable is not set');
-}
-
-const bugsnag = Bugsnag.start({
-  appVersion: pkg.version,
-  apiKey,
-  releaseStage: location.hostname.includes('npmgraph')
+const releaseStage =
+  process.env.VERCEL_ENV === 'production'
     ? 'production'
-    : 'development',
-  enabledReleaseStages: ['production'],
-});
+    : process.env.VERCEL_ENV === 'preview'
+      ? 'staging'
+      : 'development';
+
+const bugsnag = apiKey
+  ? Bugsnag.start({
+      appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
+      apiKey,
+      releaseStage,
+      enabledReleaseStages: ['production', 'staging'],
+    })
+  : undefined;
 
 function info(error: Error) {
   console.log(error);
