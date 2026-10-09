@@ -89,7 +89,7 @@ describe('aliases', () => {
     );
   });
 
-  it.fails('bare npm:name (no range) resolves to latest', async () => {
+  it('bare npm:name (no range) resolves to latest', async () => {
     root({ dependencies: { x: 'npm:react' } });
     await expect(edges()).resolves.toEqual([
       'root@1.0.0 -> react@18.2.0 [dependencies]',
