@@ -60,6 +60,7 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
   for (const depType of [
     'dependencies',
     'devDependencies',
+    'optionalDependencies',
     'peerDependencies',
   ]) {
     const deps = pkg[depType as keyof PackumentVersion] as Dependencies;
