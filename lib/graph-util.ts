@@ -15,6 +15,7 @@ import {
   getChildOverrides,
   getVersionOverride,
   isOverrides,
+  resolveOverrideRefs,
 } from './overrides-util.ts';
 import { isOptionalPeerDependency } from './peer-dependency-util.ts';
 
@@ -148,19 +149,21 @@ export async function getGraphForQuery(
     // Walk downstream dependencies
     await Promise.allSettled(
       [...downstreamEntries].map(async ({ name, version, type }) => {
-        // Apply version override if one exists for this dependency name
-        const overriddenVersion =
-          getVersionOverride(currentOverrides, name) ?? version;
+        // Apply version override if one exists for this dependency name and spec
+        const override = getVersionOverride(currentOverrides, name, version);
+        const [downstreamName, downstreamVersion] = override
+          ? resolveAlias(name, override)
+          : [name, version];
 
         const downstreamModule = await getModule(
-          getModuleKey(name, overriddenVersion),
+          getModuleKey(downstreamName, downstreamVersion),
         );
 
         // Compute the overrides context to pass into this child's subtree
         const childOverrides = getChildOverrides(
           currentOverrides,
           rootOverrides,
-          name,
+          downstreamName,
         );
 
         const moduleInfo = await _visit(
@@ -191,7 +194,14 @@ export async function getGraphForQuery(
         graphState.entryModules.add(m);
         // Use overrides from the entry module's package.json, if present
         const rawOverrides = m.package.overrides;
-        const rootOverrides = isOverrides(rawOverrides) ? rawOverrides : {};
+        const rootOverrides = isOverrides(rawOverrides)
+          ? resolveOverrideRefs(rawOverrides, {
+              ...m.package.peerDependencies,
+              ...m.package.optionalDependencies,
+              ...m.package.devDependencies,
+              ...m.package.dependencies,
+            })
+          : {};
         return _visit(m, 0, rootOverrides, rootOverrides);
       }
     }),

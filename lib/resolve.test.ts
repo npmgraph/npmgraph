@@ -120,7 +120,7 @@ describe('overrides', () => {
     );
   });
 
-  it.fails('nested override applies to the whole subtree', async () => {
+  it('nested override applies to the whole subtree', async () => {
     add('baz', { '1.0.0': { dependencies: { react: '^17' } } });
     add('foo', { '1.0.0': { dependencies: { baz: '1' } } });
     root({
@@ -132,7 +132,7 @@ describe('overrides', () => {
     );
   });
 
-  it.fails('override value may be an npm: alias', async () => {
+  it('override value may be an npm: alias', async () => {
     root({
       dependencies: { react: '^17' },
       overrides: { react: 'npm:react@18.2.0' },
@@ -142,7 +142,7 @@ describe('overrides', () => {
     ]);
   });
 
-  it.fails('$ref override uses the root dependency spec', async () => {
+  it('$ref override uses the root dependency spec', async () => {
     add('a', { '1.0.0': { dependencies: { react: '^18' } } });
     root({
       dependencies: { a: '1', react: '17.0.2' },
@@ -153,7 +153,7 @@ describe('overrides', () => {
     );
   });
 
-  it.fails('version-scoped key only applies to matching specs', async () => {
+  it('version-scoped key only applies to matching specs', async () => {
     add('x', { '1.0.0': {}, '2.0.0': {}, '3.0.0': {} });
     add('a', { '1.0.0': { dependencies: { x: '^1' } } });
     add('b', { '1.0.0': { dependencies: { x: '^3' } } });
