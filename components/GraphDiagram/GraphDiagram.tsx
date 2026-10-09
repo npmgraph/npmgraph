@@ -6,7 +6,6 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -141,7 +140,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [zoom] = useHashParam(PARAM_ZOOM);
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
-  const hasCelebratedRef = useRef(false);
 
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
@@ -266,10 +264,8 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           firstInfo &&
           newGraph?.moduleInfos.size === 1 &&
           !firstInfo.module.isStub &&
-          moduleFilter(firstInfo.module) &&
-          !hasCelebratedRef.current
+          moduleFilter(firstInfo.module)
         ) {
-          hasCelebratedRef.current = true;
           void celebrate('Zero dependencies for the win!');
         }
 

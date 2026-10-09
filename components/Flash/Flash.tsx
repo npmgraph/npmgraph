@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as appStyles from '../App/App.module.scss';
 import * as graphDiagramStyles from '../GraphDiagram/GraphDiagram.module.scss';
 import * as flashStyles from './Flash.module.scss';
@@ -16,43 +16,6 @@ type FlashLayout = {
   top: number;
   maxWidth: number;
 };
-
-function FlashItem({
-  entry,
-  maxWidth,
-  onRemove,
-}: {
-  entry: FlashViewEntry;
-  maxWidth: number;
-  onRemove: () => void;
-}) {
-  const flashRef = useCallback(
-    (element: HTMLDivElement | null) => {
-      if (element) {
-        notifyFlashElementReady(entry.id, element);
-      }
-    },
-    [entry.id],
-  );
-
-  return (
-    <div
-      ref={flashRef}
-      className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
-      style={{
-        maxWidth: `${maxWidth}px`,
-        backgroundColor: entry.backgroundColor,
-      }}
-      onAnimationEnd={event => {
-        if (event.animationName === flashStyles.flashOut) {
-          onRemove();
-        }
-      }}
-    >
-      {entry.message}
-    </div>
-  );
-}
 
 export default function Flash() {
   const [entries, setEntries] = useState<FlashViewEntry[]>([]);
@@ -83,14 +46,28 @@ export default function Flash() {
   return (
     <div className={flashStyles.root} style={{ top: `${layout.top}px` }}>
       {entries.map(entry => (
-        <FlashItem
+        <div
           key={entry.id}
-          entry={entry}
-          maxWidth={layout.maxWidth}
-          onRemove={() => {
+          ref={element => {
+            if (element) {
+              notifyFlashElementReady(entry.id, element);
+            }
+          }}
+          className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
+          style={{
+            maxWidth: `${layout.maxWidth}px`,
+            backgroundColor: entry.backgroundColor,
+          }}
+          onAnimationEnd={event => {
+            if (event.animationName !== flashStyles.flashOut) {
+              return;
+            }
+
             setEntries(previous => previous.filter(x => x.id !== entry.id));
           }}
-        />
+        >
+          {entry.message}
+        </div>
       ))}
     </div>
   );
