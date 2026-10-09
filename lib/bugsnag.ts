@@ -12,7 +12,7 @@ const releaseStage =
 
 const bugsnag = apiKey
   ? Bugsnag.start({
-      appVersion: process.env.VERCEL_GIT_COMMIT_SHA,
+      appVersion: process.env.VERCEL_GIT_COMMIT_SHA ?? 'development',
       apiKey,
       releaseStage,
       enabledReleaseStages: ['production', 'staging'],

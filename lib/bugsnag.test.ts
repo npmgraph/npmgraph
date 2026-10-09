@@ -23,7 +23,6 @@ describe('Bugsnag configuration', () => {
   it.each([
     ['production', 'production'],
     ['preview', 'staging'],
-    ['development', 'development'],
   ])(
     'uses the %s Vercel release stage and commit SHA',
     async (vercelEnv, releaseStage) => {
@@ -42,4 +41,17 @@ describe('Bugsnag configuration', () => {
       );
     },
   );
+
+  it('uses a fixed app version in development', async () => {
+    vi.stubEnv('BUGSNAG_KEY', 'test-key');
+
+    await import('./bugsnag.ts');
+
+    expect(Bugsnag.start).toHaveBeenCalledWith(
+      expect.objectContaining({
+        appVersion: 'development',
+        releaseStage: 'development',
+      }),
+    );
+  });
 });
