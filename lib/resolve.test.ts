@@ -71,7 +71,25 @@ describe('aliases', () => {
     ]);
   });
 
-  it.fails('bare npm:name (no range) resolves to latest', async () => {
+  it.each([
+    { react: '^18', react17: 'npm:react@^17' },
+    { react17: 'npm:react@^17', react: '^18' },
+  ])('alias of a direct dependency keeps both %o', async dependencies => {
+    root({ dependencies });
+    await expect(nodeKeys()).resolves.toEqual([
+      'react@17.0.2',
+      'react@18.2.0',
+      'root@1.0.0',
+    ]);
+    await expect(edges()).resolves.toEqual(
+      expect.arrayContaining([
+        'root@1.0.0 -> react@17.0.2 [dependencies]',
+        'root@1.0.0 -> react@18.2.0 [dependencies]',
+      ]),
+    );
+  });
+
+  it('bare npm:name (no range) resolves to latest', async () => {
     root({ dependencies: { x: 'npm:react' } });
     await expect(edges()).resolves.toEqual([
       'root@1.0.0 -> react@18.2.0 [dependencies]',
@@ -225,6 +243,37 @@ describe('graph structure', () => {
   });
 });
 
+describe('optional dependencies', () => {
+  const types: DependencyKey[] = ['dependencies', 'optionalDependencies'];
+
+  it('are followed like regular dependencies', async () => {
+    add('b', { '1.0.0': {} });
+    add('a', { '1.0.0': { optionalDependencies: { b: '1' } } });
+    root({ optionalDependencies: { a: '1' } });
+    await expect(edges(types)).resolves.toEqual(
+      expect.arrayContaining([
+        'root@1.0.0 -> a@1.0.0 [optionalDependencies]',
+        'a@1.0.0 -> b@1.0.0 [optionalDependencies]',
+      ]),
+    );
+  });
+
+  it('override dependencies with the same name', async () => {
+    root({
+      dependencies: { react: '^17' },
+      optionalDependencies: { react: '^18' },
+    });
+    await expect(edges(types)).resolves.toEqual([
+      'root@1.0.0 -> react@18.2.0 [optionalDependencies]',
+    ]);
+  });
+
+  it('are ignored unless requested', async () => {
+    root({ optionalDependencies: { react: '^17' } });
+    await expect(nodeKeys()).resolves.toEqual(['root@1.0.0']);
+  });
+});
+
 describe('peer dependencies', () => {
   const types: DependencyKey[] = ['dependencies', 'peerDependencies'];
 
@@ -256,7 +305,7 @@ describe('peer dependencies', () => {
     await expect(nodeKeys(types)).resolves.not.toContain('react@17.0.2');
   });
 
-  it.fails('no duplicate edges for level-0 peers', async () => {
+  it('no duplicate edges for level-0 peers', async () => {
     root({ peerDependencies: { react: '^17' } });
     await expect(edges(types)).resolves.toSatisfy(
       (edges: string[]) => new Set(edges).size === edges.length,
