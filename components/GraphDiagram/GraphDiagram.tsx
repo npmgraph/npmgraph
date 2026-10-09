@@ -254,8 +254,14 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           return;
         }
 
+        // A collapsed module also results in a graph with a single module
         const firstInfo = newGraph.moduleInfos.values().next().value;
-        if (newGraph?.moduleInfos.size === 1 && !firstInfo?.module.isStub) {
+        if (
+          firstInfo &&
+          newGraph?.moduleInfos.size === 1 &&
+          !firstInfo.module.isStub &&
+          moduleFilter(firstInfo.module)
+        ) {
           void celebrate('Zero dependencies for the win!');
         }
 
