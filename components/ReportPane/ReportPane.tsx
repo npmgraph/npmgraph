@@ -1,11 +1,6 @@
-import simplur from 'simplur';
-
-import { cn } from '../../lib/dom.ts';
-import useCollapse from '../../hooks/useCollapse.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import type { GraphState } from '../../lib/graph-util.ts';
 import { Pane } from '../ui/Pane.tsx';
-import * as styles from './ReportPane.module.scss';
 import { ReportItem } from './ReportItem.tsx';
 import { analyzeLicenses } from './analyzers/analyzeLicenses.ts';
 import { analyzeMaintainers } from './analyzers/analyzeMaintainers.tsx';
@@ -25,13 +20,13 @@ import {
   peerDependenciesAll,
   peerDependenciesMissing,
 } from './reporters/peerDependenciesAll.tsx';
+import CollapsedModules from './CollapsedModules.tsx';
 
 export default function ReportPane({
   graph,
   ...props
 }: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...restProps } = props;
-  const [collapse, setCollapse] = useCollapse();
 
   if (!graph?.moduleInfos) {
     return <div>Loading</div>;
@@ -43,24 +38,8 @@ export default function ReportPane({
   const licensesAnalysis = analyzeLicenses(graph);
 
   return (
-    <Pane className={cn(styles.paneGraph, className)} {...restProps}>
-      <div className={styles.collapseInfo}>
-        {collapse.length > 0 ? (
-          <span>
-            {simplur`${collapse.length} module[|s] collapsed `}
-            <button
-              type="button"
-              onClick={() => {
-                setCollapse([]);
-              }}
-            >
-              Expand All
-            </button>
-          </span>
-        ) : (
-          <span>(Shift-click modules in graph to expand/collapse)</span>
-        )}
-      </div>
+    <Pane className={className} {...restProps}>
+      <CollapsedModules />
 
       <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 

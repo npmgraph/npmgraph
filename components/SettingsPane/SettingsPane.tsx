@@ -7,7 +7,6 @@ import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
-import CollapsedDependencies from './CollapsedDependencies.tsx';
 
 export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
@@ -71,8 +70,6 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
       <hr />
 
       <ColorizeInput />
-
-      <CollapsedDependencies />
     </Pane>
   );
 }
