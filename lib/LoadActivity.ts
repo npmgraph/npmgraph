@@ -38,4 +38,13 @@ export default class LoadActivity {
       this.onChange?.(this);
     };
   }
+
+  // Placeholder until the tests are in place: finishes right away
+  startFor(title: string, duration: number): void {
+    if (duration < 0) {
+      throw new RangeError('duration must not be negative');
+    }
+
+    this.start(title)();
+  }
 }
