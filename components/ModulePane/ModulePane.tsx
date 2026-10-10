@@ -5,18 +5,16 @@ import type { Maintainer } from '../../lib/Module.ts';
 import { QueryType } from '../../lib/ModuleCache.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
-import human from '../../lib/human.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
-import { foreachDownstream } from '../../lib/graph-util.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import { Section } from '../ui/Section.tsx';
 import { Tag, Tags } from '../ui/Tag.tsx';
 import * as utilities from '../ui/utilities.module.scss';
-import ModuleBundleSize from './ModuleBundleSize.tsx';
 import * as styles from './ModulePane.module.scss';
+import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
 import useCollapse from '../../hooks/useCollapse.ts';
@@ -92,15 +90,6 @@ export default function ModulePane({
         <p className={styles.stubError}>{module.stubError?.message}</p>
       </Pane>
     );
-  }
-
-  const { unpackedSize } = module;
-
-  let downstreamUnpackedSize = 0;
-  if (graph) {
-    foreachDownstream(module, graph, m => {
-      downstreamUnpackedSize += m.unpackedSize ?? 0;
-    });
   }
 
   const isSingleEntryModule =
@@ -180,23 +169,7 @@ export default function ModulePane({
 
       <ReleaseTimeline module={module} />
 
-      <Section title="Module Size">
-        <div className={styles.sizeGrid}>
-          <span>Unpacked Size (module only):</span>
-          {unpackedSize ? (
-            <strong>{human(unpackedSize, 'B')}</strong>
-          ) : (
-            <i>not available</i>
-          )}
-          <span>Unpacked Size (module + dependencies):</span>
-          {unpackedSize ? (
-            <strong>{human(unpackedSize + downstreamUnpackedSize, 'B')}</strong>
-          ) : (
-            <i>not available</i>
-          )}
-        </div>
-        <ModuleBundleSize module={module} />
-      </Section>
+      <ModuleSize module={module} />
 
       <Section
         title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
