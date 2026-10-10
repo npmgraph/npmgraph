@@ -29,10 +29,6 @@
 // Doesn't create a box, so the graph is laid out as a child of .content
 .graph {
   display: contents;
-
-  &.hidden {
-    display: none;
-  }
 }
 
 @include tight-screen {

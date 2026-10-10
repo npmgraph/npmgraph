@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { PaneType } from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
@@ -55,7 +54,7 @@ export default function App() {
         </div>
         {activity.total > 0 ? <Loader activity={activity} /> : null}
         <div className={styles.content}>
-          <div className={cn(styles.graph, { [styles.hidden]: isGraphHidden })}>
+          <div className={styles.graph} hidden={isGraphHidden}>
             <GraphDiagram activity={activity} />
           </div>
           <Inspector />
