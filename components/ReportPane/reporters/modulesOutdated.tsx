@@ -1,5 +1,4 @@
 import { cn } from '../../../lib/dom.ts';
-import { getOutdatedMessage } from '../../../lib/version-status.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
@@ -28,7 +27,7 @@ export function modulesOutdated({ outdated }: ModuleAnalysisState) {
       >
         <Selectable value={module.key} className={styles.selectable} />
         {': '}
-        {getOutdatedMessage(status)} <code>latest</code> ({status.latest})
+        <code>latest</code> is {status.latest}
       </div>
     ));
 

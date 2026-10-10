@@ -1,8 +1,9 @@
+import simplur from 'simplur';
 import { cn } from '../../lib/dom.ts';
 import type Module from '../../lib/Module.ts';
 import {
-  getOutdatedMessage,
   getVersionStatus,
+  type VersionStatus,
 } from '../../lib/version-status.ts';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import * as styles from './ModuleVersionInfo.module.scss';
@@ -13,6 +14,25 @@ const outdatedClassNames = {
   patch: styles.patchUpdates,
   prerelease: styles.patchUpdates,
 };
+
+function getOutdatedMessage({
+  level,
+  behind,
+}: Extract<VersionStatus, { type: 'outdated' }>) {
+  switch (level) {
+    case 'major':
+      return simplur`${behind} major version[|s] behind`;
+
+    case 'minor':
+      return simplur`${behind} minor version[|s] behind`;
+
+    case 'patch':
+      return simplur`${behind} patch version[|s] behind`;
+
+    case 'prerelease':
+      return 'prerelease, behind';
+  }
+}
 
 export function ModuleVersionInfo({
   module,
