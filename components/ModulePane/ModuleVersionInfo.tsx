@@ -1,10 +1,38 @@
-import { isGreaterThan, tryParse } from 'verkit';
 import simplur from 'simplur';
-import type Module from '../../lib/Module.ts';
-
 import { cn } from '../../lib/dom.ts';
+import type Module from '../../lib/Module.ts';
+import {
+  getVersionStatus,
+  type VersionStatus,
+} from '../../lib/version-status.ts';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import * as styles from './ModuleVersionInfo.module.scss';
+
+const outdatedClassNames = {
+  major: styles.majorUpdates,
+  minor: styles.minorUpdates,
+  patch: styles.patchUpdates,
+  prerelease: styles.patchUpdates,
+};
+
+function getOutdatedMessage({
+  level,
+  behind,
+}: Extract<VersionStatus, { type: 'outdated' }>) {
+  switch (level) {
+    case 'major':
+      return simplur`${behind} major version[|s] behind`;
+
+    case 'minor':
+      return simplur`${behind} minor version[|s] behind`;
+
+    case 'patch':
+      return simplur`${behind} patch version[|s] behind`;
+
+    case 'prerelease':
+      return 'prerelease, behind';
+  }
+}
 
 export function ModuleVersionInfo({
   module,
@@ -14,70 +42,30 @@ export function ModuleVersionInfo({
     return null;
   }
 
-  const versionParts = tryParse(module.version);
-  if (!versionParts) {
+  const status = getVersionStatus(
+    module.version,
+    module.packument['dist-tags'],
+  );
+  if (!status) {
     return null;
   }
-
-  const latestVersion = module.packument['dist-tags'].latest;
-  const latestParts = latestVersion && tryParse(latestVersion);
-  if (!latestVersion || !latestParts) {
-    return null;
-  }
-
-  const majorDiff = latestParts.major - versionParts.major;
-  const minorDiff = latestParts.minor - versionParts.minor;
-  const patchDiff = latestParts.patch - versionParts.patch;
-
-  let distTag;
-  if (module.packument) {
-    for (const [tag, version] of Object.entries(
-      module.packument['dist-tags'],
-    )) {
-      if (version === module.version) {
-        distTag = tag;
-        break;
-      }
-    }
-  }
-
-  // Use semver.gt for the outdated check so prerelease versions are handled
-  // correctly (e.g. 1.0.0-rc.12 < 1.0.0 even though major/minor/patch are all 0).
-  const isOutdated = isGreaterThan(latestVersion, module.version);
 
   let content = null;
   let updateClassName = '';
-  if (isOutdated) {
-    let message;
-    if (majorDiff > 0) {
-      updateClassName = styles.majorUpdates;
-      message = simplur`${majorDiff} major version[|s] behind`;
-    } else if (minorDiff > 0) {
-      updateClassName = styles.minorUpdates;
-      message = simplur`${minorDiff} minor version[|s] behind`;
-    } else if (patchDiff > 0) {
-      updateClassName = styles.patchUpdates;
-      message = simplur`${patchDiff} patch version[|s] behind`;
-    } else {
-      // prerelease behind the stable release of the same version
-      updateClassName = styles.patchUpdates;
-      message = 'prerelease, behind';
-    }
-
-    const latestLink = (
-      <QueryLink query={module.packument.name}>{latestVersion}</QueryLink>
-    );
+  if (status.type === 'outdated') {
+    updateClassName = outdatedClassNames[status.level];
     content = (
       <>
-        {message} <code>latest</code> ({latestLink})
+        {getOutdatedMessage(status)} <code>latest</code> (
+        <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
       </>
     );
-  } else if (distTag) {
-    // Not outdated – show the dist-tag the version is pinned to (e.g. "latest")
+  } else if (status.type === 'tag') {
+    // Not outdated, so show the dist-tag the version is pinned to
     updateClassName = styles.distTag;
     content = (
       <>
-        (<code>{distTag}</code>)
+        (<code>{status.tag}</code>)
       </>
     );
   }
