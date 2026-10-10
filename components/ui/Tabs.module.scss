@@ -19,6 +19,10 @@
   font-weight: 600;
   font-size: 12pt;
 
+  @include tight-screen {
+    border-right: none;
+  }
+
   button {
     all: unset;
     display: flex;
