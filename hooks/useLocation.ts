@@ -2,6 +2,7 @@
 import { setGlobalState, useGlobalState } from '../lib/GlobalStore.ts';
 import { syncPackagesHash } from '../lib/ModuleCache.ts';
 import { urlPatch } from '../lib/url-util.ts';
+import { getActivity } from './useActivity.ts';
 
 function handleLocationUpdate() {
   syncPackagesHash();
@@ -14,6 +15,12 @@ globalThis.addEventListener('popstate', handleLocationUpdate);
 export function patchLocation(urlParts: Partial<URL>, shouldReplace: boolean) {
   const url = urlPatch(urlParts);
   Object.freeze(url);
+
+  // Nothing is going to change (e.g. querying the same module twice), so make
+  // sure there's some feedback
+  if (url.href === location.href) {
+    getActivity()?.startFor('Loading');
+  }
 
   // Assign url directly to the location field
   if (shouldReplace) {

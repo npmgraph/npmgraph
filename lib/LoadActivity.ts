@@ -42,7 +42,7 @@ export default class LoadActivity {
   /**
   Show activity for a fixed time, so that quick actions still give feedback
   */
-  startFor(title: string, duration: number): void {
+  startFor(title: string, duration = 500): void {
     if (duration < 0) {
       throw new RangeError('duration must not be negative');
     }

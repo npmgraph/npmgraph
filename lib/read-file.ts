@@ -45,7 +45,7 @@ export function loadPackageJson(json: string, filename?: string): void {
   patchLocation({ hash, search }, false);
 
   // Loading the same file twice changes nothing, so make sure there's feedback
-  getActivity()?.startFor(`Loading ${filename ?? 'pasted package.json'}`, 500);
+  getActivity()?.startFor(`Loading ${filename ?? 'pasted package.json'}`);
 }
 
 export async function readFile(file: File) {
