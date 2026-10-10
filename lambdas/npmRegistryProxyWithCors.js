@@ -38,8 +38,7 @@ export async function handler(event) {
           : event.body,
     };
 
-    // Pass redirects on to the client instead of following them from here
-    const response = await fetch(url, { ...options, redirect: 'manual' });
+    const response = await fetch(url, options);
     const body = await response.text();
 
     return {
