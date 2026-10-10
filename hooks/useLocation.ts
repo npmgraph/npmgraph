@@ -12,13 +12,18 @@ function handleLocationUpdate() {
 globalThis.addEventListener('hashchange', handleLocationUpdate);
 globalThis.addEventListener('popstate', handleLocationUpdate);
 
-export function patchLocation(urlParts: Partial<URL>, shouldReplace: boolean) {
+export function patchLocation(
+  urlParts: Partial<URL>,
+  shouldReplace: boolean,
+  // Whether the user just entered something, as opposed to e.g. clicking the graph
+  { isInput = false } = {},
+) {
   const url = urlPatch(urlParts);
   Object.freeze(url);
 
   // Nothing is going to change (e.g. querying the same module twice), so make
   // sure there's some feedback
-  if (url.href === location.href) {
+  if (isInput && url.href === location.href) {
     getActivity()?.startFor('Loading');
   }
 
