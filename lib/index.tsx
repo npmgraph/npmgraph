@@ -78,7 +78,7 @@ globalThis.addEventListener('unhandledrejection', error => {
   flash(error.reason);
 });
 
-window.addEventListener('load', () => {
+globalThis.addEventListener('load', () => {
   const unsupported = detectFeatures();
   if (unsupported.size > 0) {
     createRoot($('body')).render(<Unsupported unsupported={unsupported} />);
