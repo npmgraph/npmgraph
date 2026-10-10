@@ -14,40 +14,16 @@ import InputHelp from '../InputHelp.tsx';
 import * as utilities from '../ui/utilities.module.scss';
 import FilePicker from './FilePicker.tsx';
 import * as styles from './SettingsPane.module.scss';
-import { Section } from '../ui/Section.tsx';
 
 function isGithubUrl(url: URL | null) {
   return url ? /^github.com$|\.github.com$/.test(url?.host ?? '') : false;
 }
 
-export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
+function InfoSection() {
   const [value] = useParsedQuery();
   const valueAsURL = URL.parse(value.trim());
-
-  const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
-  const [sizing, setSizing] = useHashParam(PARAM_SIZING);
-
-  const dependencyTypes = (
-    (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
-  ).filter(item => isDefined(item));
-
-  const isIncludeDev = dependencyTypes.includes('devDependencies');
-  const isIncludePeer = dependencyTypes.includes('peerDependencies');
-
-  function setDependencyType(type: DependencyKey, shouldInclude: boolean) {
-    const nextTypes = new Set(dependencyTypes);
-
-    if (shouldInclude) {
-      nextTypes.add(type);
-    } else {
-      nextTypes.delete(type);
-    }
-
-    setDepTypes([...nextTypes].toSorted().join(','));
-  }
-
   return (
-    <Pane {...props}>
+    <>
       {isGithubUrl(valueAsURL) ? (
         <div className={styles.tip}>
           Note: URLs that refer to private GitHub repos or gists should use the
@@ -75,46 +51,8 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
           <FilePicker label="Choose file" /> from your computer
         </li>
       </ul>
+      <hr />
 
-      <Section title="Settings">
-        <Toggle
-          checked={isIncludeDev}
-          style={{ marginTop: '1rem' }}
-          onChange={() => {
-            setDependencyType('devDependencies', !isIncludeDev);
-          }}
-        >
-          Include devDependencies
-        </Toggle>
-
-        <Toggle
-          checked={isIncludePeer}
-          style={{ marginTop: '1rem' }}
-          onChange={() => {
-            setDependencyType('peerDependencies', !isIncludePeer);
-          }}
-        >
-          Include peerDependencies
-        </Toggle>
-
-        <Toggle
-          checked={sizing === ''}
-          style={{ marginTop: '1rem' }}
-          onChange={() => {
-            setSizing(sizing === null);
-          }}
-        >
-          Size modules by unpacked size
-        </Toggle>
-
-        <hr />
-
-        <RegistryInput />
-
-        <hr />
-
-        <ColorizeInput />
-      </Section>
       <footer>
         <p>
           <a
@@ -136,6 +74,74 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
           </a>
         </p>
       </footer>
+    </>
+  );
+}
+
+export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
+  const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
+  const [sizing, setSizing] = useHashParam(PARAM_SIZING);
+
+  const dependencyTypes = (
+    (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
+  ).filter(item => isDefined(item));
+
+  const isIncludeDev = dependencyTypes.includes('devDependencies');
+  const isIncludePeer = dependencyTypes.includes('peerDependencies');
+
+  function setDependencyType(type: DependencyKey, shouldInclude: boolean) {
+    const nextTypes = new Set(dependencyTypes);
+
+    if (shouldInclude) {
+      nextTypes.add(type);
+    } else {
+      nextTypes.delete(type);
+    }
+
+    setDepTypes([...nextTypes].toSorted().join(','));
+  }
+
+  return (
+    <Pane {...props}>
+      <Toggle
+        checked={isIncludeDev}
+        style={{ marginTop: '1rem' }}
+        onChange={() => {
+          setDependencyType('devDependencies', !isIncludeDev);
+        }}
+      >
+        Include devDependencies
+      </Toggle>
+
+      <Toggle
+        checked={isIncludePeer}
+        style={{ marginTop: '1rem' }}
+        onChange={() => {
+          setDependencyType('peerDependencies', !isIncludePeer);
+        }}
+      >
+        Include peerDependencies
+      </Toggle>
+
+      <Toggle
+        checked={sizing === ''}
+        style={{ marginTop: '1rem' }}
+        onChange={() => {
+          setSizing(sizing === null);
+        }}
+      >
+        Size modules by unpacked size
+      </Toggle>
+
+      <hr />
+
+      <RegistryInput />
+
+      <hr />
+
+      <ColorizeInput />
+      <hr />
+      <InfoSection />
     </Pane>
   );
 }

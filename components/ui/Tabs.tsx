@@ -46,15 +46,6 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Graph
       </Tab>
       <Tab
-        active={isInspector && pane === PaneType.SETTINGS}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.SETTINGS);
-        }}
-      >
-        Info
-      </Tab>
-      <Tab
         active={isInspector && pane === PaneType.REPORT}
         onClick={() => {
           setHide(null);
@@ -71,6 +62,15 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         }}
       >
         Module
+      </Tab>
+      <Tab
+        active={isInspector && pane === PaneType.SETTINGS}
+        onClick={() => {
+          setHide(null);
+          setPane(PaneType.SETTINGS);
+        }}
+      >
+        Settings
       </Tab>
       <Splitter
         isOpen={isInspector}

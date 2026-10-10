@@ -7,7 +7,7 @@ import type LoadActivity from '../lib/LoadActivity.ts';
 import useGraphSelection from '../hooks/useGraphSelection.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import GraphDiagram from './GraphDiagram/GraphDiagram.tsx';
-import SettingsPane from './SettingsPane/Settings.tsx';
+import SettingsPane from './SettingsPane/SettingsPane.tsx';
 import * as styles from './Inspector.module.scss';
 
 // Keep these panes in secondary bundles but start loading them eagerly
