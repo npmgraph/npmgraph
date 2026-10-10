@@ -54,6 +54,7 @@ import {
   getGraphForQuery,
 } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
+import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
 
 function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
@@ -336,18 +337,10 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       getDiagramElement()?.remove();
       element.append(svgDom);
 
-      // Inject bg pattern for deprecated modules
-      const PATTERN = `<pattern id="warning"
-        width="12" height="12"
-        patternUnits="userSpaceOnUse"
-        patternTransform="rotate(45 50 50)">
-        <line class="line0" stroke-width="6px" x1="3" x2="3" y2="12"/>
-        <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12"/>
-        </pattern>`;
-
+      // Inject SVG definitions: warning pattern and collapsed-node outline
       select(`.${styles.graph} svg`)
         .insert('defs', ':first-child')
-        .html(PATTERN);
+        .html(svgDefs);
 
       decorateGraphNodes(element, moduleFilter);
 
