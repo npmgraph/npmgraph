@@ -3,6 +3,12 @@ import { cn } from '../../lib/dom.ts';
 
 import * as styles from './Section.module.scss';
 
+function Count({ count }: { count?: number | string }) {
+  return count === undefined ? null : (
+    <span className={styles.count}>{count}</span>
+  );
+}
+
 export function CollapsibleSection({
   title,
   count,
@@ -22,9 +28,7 @@ export function CollapsibleSection({
       <summary>
         {title}
         {icon}
-        {count === undefined ? null : (
-          <span className={styles.count}>{count}</span>
-        )}
+        <Count count={count} />
       </summary>
       {children}
     </details>
@@ -35,14 +39,19 @@ export function Section({
   title,
   children,
   className,
+  count,
 }: {
   title: string;
   children: any;
   className?: string;
+  count?: number | string;
 }) {
   return (
     <div className={cn(className, styles.root)}>
-      <h3>{title}</h3>
+      <h3>
+        {title}
+        <Count count={count} />
+      </h3>
       {children}
     </div>
   );

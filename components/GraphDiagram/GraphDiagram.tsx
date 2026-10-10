@@ -1,3 +1,4 @@
+import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import {
   Suspense,
@@ -33,6 +34,7 @@ import {
 } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
+import memoizeRecent from '../../lib/memoizeRecent.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -107,6 +109,11 @@ const graphvizPromise = (async () => {
   return Graphviz.load();
 })();
 
+// Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
+const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
+  graphviz.dot(dot, 'svg'),
+);
+
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   return (
     <ErrorBoundary
@@ -152,7 +159,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       .map(s => s.trim())
       .filter(Boolean)
       .toSorted() as DependencyKey[];
-    return new Set<DependencyKey>(['dependencies', ...extra]);
+    return new Set<DependencyKey>([
+      'dependencies',
+      'optionalDependencies',
+      ...extra,
+    ]);
   }, [depTypes]);
 
   function handleGraphClick(event: React.MouseEvent) {
@@ -311,7 +322,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           svgMarkup =
             graph?.moduleInfos.size === 0
               ? '<svg />'
-              : graphviz.dot(dotDoc, 'svg');
+              : layout(dotDoc, graphviz);
         } catch (error) {
           console.error(error);
           flash('Error while rendering graph');

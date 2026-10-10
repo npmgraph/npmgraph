@@ -120,7 +120,7 @@ describe('overrides', () => {
     );
   });
 
-  it.fails('nested override applies to the whole subtree', async () => {
+  it('nested override applies to the whole subtree', async () => {
     add('baz', { '1.0.0': { dependencies: { react: '^17' } } });
     add('foo', { '1.0.0': { dependencies: { baz: '1' } } });
     root({
@@ -132,7 +132,54 @@ describe('overrides', () => {
     );
   });
 
-  it.fails('override value may be an npm: alias', async () => {
+  it('nested overrides retain distinct contexts for shared modules', async () => {
+    add('x', { '1.0.0': {}, '2.0.0': {} });
+    add('shared', { '1.0.0': { dependencies: { x: '^1' } } });
+    add('foo', { '1.0.0': { dependencies: { shared: '1' } } });
+    add('bar', { '1.0.0': { dependencies: { shared: '1' } } });
+    root({
+      dependencies: { foo: '1', bar: '1' },
+      overrides: { foo: { shared: { x: '2.0.0' } } },
+    });
+    await expect(edges()).resolves.toEqual(
+      expect.arrayContaining([
+        'shared@1.0.0 -> x@1.0.0 [dependencies]',
+        'shared@1.0.0 -> x@2.0.0 [dependencies]',
+      ]),
+    );
+  });
+
+  it('version-scoped keys apply nested overrides to matching child specs', async () => {
+    add('bar', { '1.0.0': {}, '2.0.0': {} });
+    add('foo', { '1.0.0': { dependencies: { bar: '^1' } } });
+    root({
+      dependencies: { foo: '^1' },
+      overrides: { 'foo@^1': { bar: '2.0.0' } },
+    });
+    await expect(edges()).resolves.toContain(
+      'foo@1.0.0 -> bar@2.0.0 [dependencies]',
+    );
+  });
+
+  it('merges all matching version-scoped nested overrides', async () => {
+    add('react', { '17.0.2': {}, '18.2.0': {} });
+    add('bar', { '1.0.0': { dependencies: { react: '^17' } } });
+    add('foo', { '1.0.0': { dependencies: { bar: '*' } } });
+    root({
+      dependencies: { foo: '1' },
+      overrides: {
+        foo: {
+          'bar@^1': { react: '17.0.2' },
+          'bar@^2': { react: '18.2.0' },
+        },
+      },
+    });
+    await expect(edges()).resolves.toContain(
+      'bar@1.0.0 -> react@18.2.0 [dependencies]',
+    );
+  });
+
+  it('override value may be an npm: alias', async () => {
     root({
       dependencies: { react: '^17' },
       overrides: { react: 'npm:react@18.2.0' },
@@ -142,7 +189,7 @@ describe('overrides', () => {
     ]);
   });
 
-  it.fails('$ref override uses the root dependency spec', async () => {
+  it('$ref override uses the root dependency spec', async () => {
     add('a', { '1.0.0': { dependencies: { react: '^18' } } });
     root({
       dependencies: { a: '1', react: '17.0.2' },
@@ -153,7 +200,7 @@ describe('overrides', () => {
     );
   });
 
-  it.fails('version-scoped key only applies to matching specs', async () => {
+  it('version-scoped key only applies to matching specs', async () => {
     add('x', { '1.0.0': {}, '2.0.0': {}, '3.0.0': {} });
     add('a', { '1.0.0': { dependencies: { x: '^1' } } });
     add('b', { '1.0.0': { dependencies: { x: '^3' } } });
@@ -240,6 +287,37 @@ describe('graph structure', () => {
     await expect(edges()).resolves.toContain(
       'b@1.0.0 -> a@1.0.0 [dependencies]',
     );
+  });
+});
+
+describe('optional dependencies', () => {
+  const types: DependencyKey[] = ['dependencies', 'optionalDependencies'];
+
+  it('are followed like regular dependencies', async () => {
+    add('b', { '1.0.0': {} });
+    add('a', { '1.0.0': { optionalDependencies: { b: '1' } } });
+    root({ optionalDependencies: { a: '1' } });
+    await expect(edges(types)).resolves.toEqual(
+      expect.arrayContaining([
+        'root@1.0.0 -> a@1.0.0 [optionalDependencies]',
+        'a@1.0.0 -> b@1.0.0 [optionalDependencies]',
+      ]),
+    );
+  });
+
+  it('override dependencies with the same name', async () => {
+    root({
+      dependencies: { react: '^17' },
+      optionalDependencies: { react: '^18' },
+    });
+    await expect(edges(types)).resolves.toEqual([
+      'root@1.0.0 -> react@18.2.0 [optionalDependencies]',
+    ]);
+  });
+
+  it('are ignored unless requested', async () => {
+    root({ optionalDependencies: { react: '^17' } });
+    await expect(nodeKeys()).resolves.toEqual(['root@1.0.0']);
   });
 });
 
