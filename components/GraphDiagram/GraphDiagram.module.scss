@@ -10,8 +10,8 @@
 
 .viewport {
   flex: 1;
-  min-width: 0;
   cursor: grab;
+  min-width: 0;
 
   &:active {
     cursor: grabbing;

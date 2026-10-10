@@ -21,7 +21,6 @@ export const SEARCH_FIELD_ID = 'search-field';
 export const UNNAMED_PACKAGE = 'unnamed module';
 export const UNNAMED_PACKAGE_PREFIX = 'unnamed-package-';
 
-
 export const PaneType = {
   MODULE: 'module',
   REPORT: 'report',

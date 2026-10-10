@@ -146,7 +146,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   // Dragging the graph shouldn't count as a click, which would clear the selection
-  const isPanning = useRef(false);
+  const panningRef = useRef(false);
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
 
@@ -171,7 +171,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
     const { target } = event;
 
     // A drag can end on a link, which shouldn't be followed
-    if (isPanning.current) {
+    if (panningRef.current) {
       event.preventDefault();
       return;
     }
@@ -316,8 +316,8 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       // Show the diagram at its natural size, the viewport handles zooming.
       // Note: Not using svg.getBBox() here because (for some reason???) it's
       // smaller than the actual bounding box
-      const [, , width, height] =
-        svgDom.getAttribute('viewBox')?.split(' ') ?? [];
+      const [width, height] =
+        svgDom.getAttribute('viewBox')?.split(' ').slice(2) ?? [];
       if (width && height) {
         svgDom.setAttribute('width', width);
         svgDom.setAttribute('height', height);
@@ -400,13 +400,13 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       doubleClick={{ disabled: true }}
       trackPadPanning={{ disabled: false }}
       onPanning={() => {
-        isPanning.current = true;
+        panningRef.current = true;
       }}
       onPanningStop={() => {
         // The click that ends a drag comes right after this
         setTimeout(() => {
-          isPanning.current = false;
-        });
+          panningRef.current = false;
+        }, 0);
       }}
     >
       <div className={styles.root}>
