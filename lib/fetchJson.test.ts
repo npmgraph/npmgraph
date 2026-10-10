@@ -18,16 +18,16 @@ describe('fetchJson', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
-  it('retries failed requests', async () => {
-    const url = 'https://example.test/retry';
+  it('does not retry failed requests', async () => {
+    const url = 'https://example.test/no-retry';
     const fetchMock = vi
       .fn()
-      .mockRejectedValueOnce(new TypeError('Failed to fetch'))
-      .mockResolvedValueOnce(json({ ok: true }));
+      .mockRejectedValue(new TypeError('Failed to fetch'));
     vi.stubGlobal('fetch', fetchMock);
 
     await expect(fetchJson(url)).rejects.toThrow(`Failed to get ${url}`);
-    await expect(fetchJson(url)).resolves.toEqual({ ok: true });
+    await expect(fetchJson(url)).rejects.toThrow(`Failed to get ${url}`);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('wraps timeouts', async () => {

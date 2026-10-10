@@ -7,7 +7,6 @@ import type LoadActivity from '../lib/LoadActivity.ts';
 import useGraphSelection from '../hooks/useGraphSelection.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import GraphDiagram from './GraphDiagram/GraphDiagram.tsx';
-import * as reportPaneStyles from './ReportPane/ReportPane.module.scss';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
@@ -41,9 +40,7 @@ export default function Inspector(
       paneComponent = <ModulePane selectedModules={selectedModules} />;
       break;
     case PaneType.REPORT:
-      paneComponent = (
-        <ReportPane className={reportPaneStyles.paneGraph} graph={graph} />
-      );
+      paneComponent = <ReportPane graph={graph} />;
       break;
     case PaneType.GRAPH:
       paneComponent = <GraphDiagram activity={activity} />;

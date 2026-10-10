@@ -1,3 +1,10 @@
+.root {
+  margin-top: -1em;
+  & > summary {
+    border-top: 0 !important;
+  }
+}
+
 .list {
   margin: 0;
   padding: 0;
@@ -31,4 +38,18 @@
 .remove:hover,
 .remove:focus-visible {
   background: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.collapseInfo {
+  margin-bottom: 1em;
+  color: var(--text-dim);
+  font-size: 90%;
+}
+
+.expandAll {
+  @extend .remove;
+  margin-top: 1em;
+  padding: 0.25rem 0.5rem;
+  width: auto;
+  font: inherit;
 }
