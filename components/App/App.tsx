@@ -19,7 +19,7 @@ export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
   const isTightScreen = useTightScreen();
-  const [, setPane] = useGlobalState('pane');
+  const [pane, setPane] = useGlobalState('pane');
   useExternalInput();
 
   // On mobile, auto-select the Graph tab whenever the query changes.
@@ -40,6 +40,10 @@ export default function App() {
     );
   }
 
+  // On mobile the graph is a tab. It stays mounted when hidden, otherwise
+  // it'd be laid out again every time the user comes back to it.
+  const isGraphHidden = isTightScreen && pane !== PaneType.GRAPH;
+
   return (
     <>
       <Flash />
@@ -50,8 +54,10 @@ export default function App() {
         </div>
         {activity.total > 0 ? <Loader activity={activity} /> : null}
         <div className={styles.content}>
-          {isTightScreen ? null : <GraphDiagram activity={activity} />}
-          <Inspector activity={activity} />
+          <div className={styles.graph} hidden={isGraphHidden}>
+            <GraphDiagram activity={activity} />
+          </div>
+          <Inspector />
         </div>
         <PreviewWidget />
       </div>
