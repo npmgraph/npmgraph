@@ -134,7 +134,7 @@ describe('graph', () => {
   it('renders with inspector hidden', async () => {
     await goto('?q=debug#hide');
     await nodeAppears();
-    await appears('button', /^Info$/);
+    await appears('button', /^Settings$/);
   });
 });
 
