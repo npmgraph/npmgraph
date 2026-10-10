@@ -16,9 +16,8 @@ import { setActivityForApp } from '../hooks/useActivity.ts';
 
 function isValidJS(src: string) {
   try {
-    // Only called with hard-coded snippets, to detect syntax support
-    // react-doctor-disable-next-line react-doctor/no-eval
-    new Function(src); // eslint-disable-line no-new-func, no-new
+    // eslint-disable-next-line no-new-func, no-new, react-doctor/no-eval -- Only called with hard-coded snippets, to detect syntax support
+    new Function(src);
     return true;
   } catch {
     return false;
