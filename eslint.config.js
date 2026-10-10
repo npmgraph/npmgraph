@@ -1,7 +1,7 @@
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import { defineConfig } from 'eslint/config';
-import reactDoctor, { RECOMMENDED_RULES } from 'oxlint-plugin-react-doctor';
+import reactDoctor from 'eslint-plugin-react-doctor';
 
 const disabledRules = [
   // TODO: Gradually review and enable
@@ -17,6 +17,7 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
+  'react-doctor/jsx-no-new-object-as-prop',
   'react-hooks/set-state-in-effect',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
@@ -65,12 +66,14 @@ export default defineConfig([
       ],
     },
   },
+  reactDoctor.configs.recommended,
   {
-    files: [tsFilesGlob, jsFilesGlob],
-    plugins: { 'react-doctor': reactDoctor },
-    // Report only: existing reports aren't fixed yet, so don't fail on them
+    // The preset has some rules as warnings, but we want them all as errors
     rules: Object.fromEntries(
-      Object.keys(RECOMMENDED_RULES).map(rule => [rule, 'warn']),
+      Object.keys(reactDoctor.configs.recommended.rules).map(rule => [
+        rule,
+        'error',
+      ]),
     ),
   },
   {
