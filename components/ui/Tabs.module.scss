@@ -31,9 +31,6 @@
     align-items: center;
     background: var(--tabs-bg) var(--bg-gradient);
     padding: 0 10px;
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
   }
 
   &.active button {

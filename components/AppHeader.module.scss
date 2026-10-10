@@ -14,7 +14,10 @@
 
   @include tight-screen {
     border-right: none;
-    background: none;
+    background-image: linear-gradient(
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.2)
+    );
   }
 
   // Override --text so the Logo's color-mix renders in light colors on the dark header
