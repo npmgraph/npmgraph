@@ -1,6 +1,7 @@
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import { defineConfig } from 'eslint/config';
+import reactDoctor, { RECOMMENDED_RULES } from 'oxlint-plugin-react-doctor';
 
 const disabledRules = [
   // TODO: Gradually review and enable
@@ -63,6 +64,14 @@ export default defineConfig([
         },
       ],
     },
+  },
+  {
+    files: [tsFilesGlob, jsFilesGlob],
+    plugins: { 'react-doctor': reactDoctor },
+    // Report only: existing reports aren't fixed yet, so don't fail on them
+    rules: Object.fromEntries(
+      Object.keys(RECOMMENDED_RULES).map(rule => [rule, 'warn']),
+    ),
   },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
