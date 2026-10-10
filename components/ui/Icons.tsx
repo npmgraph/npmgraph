@@ -57,22 +57,20 @@ export function GithubIcon(props: IconProps) {
 
 // Paths for these can be found in art/icons.svg
 
-export function ZoomHorizontalIcon(props: IconProps) {
-  return (
-    <Icon
-      name="zoom-horizontal"
-      {...props}
-      strokePath="M 13,8 H 3 M 5,5 3,8 5,11 m 6,-6 2,3 -2,3 M 4,1 H 1 V 15 H 4 M 12,1 h 3 v 14 h -3"
-    />
-  );
+export function ZoomInIcon(props: IconProps) {
+  return <Icon name="zoom-in" {...props} strokePath="M 8,2 V 14 M 2,8 H 14" />;
 }
 
-export function ZoomVerticalIcon(props: IconProps) {
+export function ZoomOutIcon(props: IconProps) {
+  return <Icon name="zoom-out" {...props} strokePath="M 2,8 H 14" />;
+}
+
+export function ZoomFitIcon(props: IconProps) {
   return (
     <Icon
-      name="zoom-vertical"
+      name="zoom-fit"
       {...props}
-      strokePath="m 8,3 v 10 m -3,-2 3,2 3,-2 M 5,5 8,3 11,5 M 1,12 v 3 H 15 V 12 M 1,4 V 1 h 14 v 3"
+      strokePath="M 1,5 V 1 H 5 M 11,1 H 15 V 5 M 15,11 V 15 H 11 M 5,15 H 1 V 11"
     />
   );
 }
