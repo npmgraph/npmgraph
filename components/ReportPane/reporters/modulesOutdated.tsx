@@ -26,8 +26,8 @@ export function modulesOutdated({ outdated }: ModuleAnalysisState) {
         className={cn(styles.root, reportItemStyles.zebraRow)}
       >
         <Selectable value={module.key} className={styles.selectable} />
-        {': '}
-        <code>latest</code> is {status.latest}
+        {' → '}
+        {status.latest}
       </div>
     ));
 
