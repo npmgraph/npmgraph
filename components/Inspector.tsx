@@ -9,7 +9,6 @@ import useHashParam from '../hooks/useHashParam.ts';
 import GraphDiagram from './GraphDiagram/GraphDiagram.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
-import SettingsPane from './SettingsPane/SettingsPane.tsx';
 
 // Keep these panes in secondary bundles but start loading them eagerly
 const reportPanePromise = import('./ReportPane/ReportPane.tsx');
@@ -44,9 +43,6 @@ export default function Inspector(
       break;
     case PaneType.GRAPH:
       paneComponent = <GraphDiagram activity={activity} />;
-      break;
-    case PaneType.SETTINGS:
-      paneComponent = <SettingsPane />;
       break;
     case PaneType.INFO:
       paneComponent = <InfoPane />;

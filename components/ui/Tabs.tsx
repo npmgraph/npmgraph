@@ -34,7 +34,17 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
 
   const isInspector = hide === null;
   return (
-    <div className={[styles.root, className].join(' ')}>
+    <div className={cn(styles.root, className)}>
+      <Tab
+        className={styles.tabMobileOnly}
+        active={isInspector && pane === PaneType.GRAPH}
+        onClick={() => {
+          setHide(null);
+          setPane(PaneType.GRAPH);
+        }}
+      >
+        Graph
+      </Tab>
       <Tab
         active={isInspector && pane === PaneType.INFO}
         onClick={() => {
@@ -54,16 +64,6 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Report
       </Tab>
       <Tab
-        className={styles.tabMobileOnly}
-        active={isInspector && pane === PaneType.GRAPH}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.GRAPH);
-        }}
-      >
-        Graph
-      </Tab>
-      <Tab
         active={isInspector && pane === PaneType.MODULE}
         onClick={() => {
           setHide(null);
@@ -71,15 +71,6 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         }}
       >
         Module
-      </Tab>
-      <Tab
-        active={isInspector && pane === PaneType.SETTINGS}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.SETTINGS);
-        }}
-      >
-        Settings
       </Tab>
       <Splitter
         isOpen={isInspector}
