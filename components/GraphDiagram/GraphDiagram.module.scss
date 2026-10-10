@@ -5,6 +5,7 @@
   position: relative;
   flex: 1;
   min-width: 0;
+  min-height: 0;
 }
 
 .viewport {
@@ -14,10 +15,6 @@
 
   &:active {
     cursor: grabbing;
-  }
-
-  @include tight-screen {
-    min-height: 80vh;
   }
 }
 

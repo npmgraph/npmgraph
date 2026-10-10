@@ -169,8 +169,14 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
   function handleGraphClick(event: React.MouseEvent) {
     const { target } = event;
+
+    // A drag can end on a link, which shouldn't be followed
+    if (isPanning.current) {
+      event.preventDefault();
+      return;
+    }
+
     if (
-      isPanning.current ||
       !(target instanceof Element) ||
       // Allow opening the link in a new tab
       event.metaKey ||
@@ -390,6 +396,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       ref={transformRef}
       minScale={0.05}
       maxScale={4}
+      wheel={{ step: 0.0015 }}
       doubleClick={{ disabled: true }}
       trackPadPanning={{ disabled: false }}
       onPanning={() => {

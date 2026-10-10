@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { PaneType } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
@@ -19,7 +20,7 @@ export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
   const isTightScreen = useTightScreen();
-  const [, setPane] = useGlobalState('pane');
+  const [pane, setPane] = useGlobalState('pane');
   useExternalInput();
 
   // On mobile, auto-select the Graph tab whenever the query changes.
@@ -43,7 +44,11 @@ export default function App() {
   return (
     <>
       <Flash />
-      <div className={styles.root}>
+      <div
+        className={cn(styles.root, {
+          [styles.fixedHeight]: isTightScreen && pane === PaneType.GRAPH,
+        })}
+      >
         <div className={styles.stickyTop}>
           <AppHeader />
           <Tabs className={styles.mobileTabs} />
