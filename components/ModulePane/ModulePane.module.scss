@@ -16,11 +16,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
+  text-wrap: pretty;
 }
 
 .moduleHeader {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 1em;
+  // Optical alignment, give more space
+  margin-inline: -4px;
 }
 
 .deprecatedBox {

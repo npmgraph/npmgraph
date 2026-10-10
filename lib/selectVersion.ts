@@ -1,5 +1,5 @@
 import type { Packument, PackumentVersion } from '@npm/types';
-import { gt, satisfies } from 'semver';
+import { isGreaterThan, satisfies } from 'verkit';
 
 export default function selectVersion(
   packument: Packument,
@@ -22,7 +22,7 @@ export default function selectVersion(
         continue;
       }
 
-      if (!selectedVersion || gt(version, selectedVersion)) {
+      if (!selectedVersion || isGreaterThan(version, selectedVersion)) {
         selectedVersion = version;
       }
     }

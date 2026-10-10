@@ -1,4 +1,4 @@
-import { type SemVer, parse } from 'semver';
+import { type SemVer, tryParse } from 'verkit';
 import type Module from '../../lib/Module.ts';
 
 import type { PackumentVersion } from '@npm/types';
@@ -6,7 +6,7 @@ import { type ReactElement, useState } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useMeasure from '../../hooks/useMeasure.ts';
-import { Section } from '../ui/Section.tsx';
+import { CollapsibleSection } from '../ui/Section.tsx';
 import * as styles from './ReleaseTimeline.module.scss';
 
 function timestring(t: number) {
@@ -36,13 +36,13 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const byTime = Object.entries(versions)
     .map(([key, version]) => {
-      const semver = parse(key);
+      const semver = tryParse(key);
       if (!semver) {
         return undefined;
       }
 
       // "0.0.0" isn't a valid version (e.g. you can't npm publish it)
-      if (semver.version === '0.0.0') {
+      if (key === '0.0.0') {
         return undefined;
       }
 
@@ -115,7 +115,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     let r = 10;
 
     let layer: keyof typeof layers;
-    if (semver.prerelease.length > 0) {
+    if (semver.prerelease?.length) {
       layer = 'prerelease';
       r *= 0.4;
     } else if (semver.patch) {
@@ -158,7 +158,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
   const xpad = w * 0.1;
   const ypad = h * 0.1;
   return (
-    <Section title="Release Timeline">
+    <CollapsibleSection title="Release Timeline">
       <svg
         ref={ref}
         viewBox={`${-xpad} ${-ypad} ${w + xpad * 2} ${h + ypad * 2}`}
@@ -191,6 +191,6 @@ export function ReleaseTimeline({ module }: { module: Module }) {
           prerelease
         </span>
       </div>
-    </Section>
+    </CollapsibleSection>
   );
 }

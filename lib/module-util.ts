@@ -6,6 +6,16 @@ export function isHttpModule(moduleKey: string) {
   return /^https?:\/\//.test(moduleKey);
 }
 
+/**
+ Like npm-cli, `user/repo` is a GitHub repo. Package names can't contain a slash
+ unless they're scoped (`@scope/name`), so this isn't ambiguous.
+ */
+export function resolveGitHubShorthand(moduleKey: string) {
+  return /^[\w-]+\/[\w\-.]+$/.test(moduleKey)
+    ? `https://github.com/${moduleKey}/blob/HEAD/package.json`
+    : moduleKey;
+}
+
 export function resolveModule(name: string, version?: string) {
   if (version) {
     // Remove "git...#" repo URIs from version strings
@@ -34,12 +44,23 @@ export function parseModuleKey(moduleKey: string): string[] {
     : [moduleKey];
 }
 
-const ALIAS_RE = /npm:(?<name>@?[^@]+)@(?<semver>.+)/v;
+const ALIAS_RE = /npm:(?<name>@?[^@]+)(?:@(?<semver>.+))?/v;
+
+/**
+Resolve a dependency to its real name and range, following npm: aliases
+*/
+export function resolveAlias(name: string, version: string) {
+  const groups = ALIAS_RE.exec(version)?.groups;
+  return groups
+    ? ([groups['name']!, groups['semver'] ?? 'latest'] as const)
+    : ([name, version] as const);
+}
 
 export function resolveDependencyAliases(pkg: PackumentVersion) {
   for (const depType of [
     'dependencies',
     'devDependencies',
+    'optionalDependencies',
     'peerDependencies',
   ]) {
     const deps = pkg[depType as keyof PackumentVersion] as Dependencies;
@@ -64,14 +85,20 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
         continue;
       }
 
-      console.log(
-        `Resolving alias ${name} -> ${match.groups!['name']}@${match.groups!['semver']}`,
-      );
+      const groupName = match.groups!['name'];
+
+      // Leave aliases that would replace another dependency as-is, e.g.
+      // "foo": "^2" next to "foo-1": "npm:foo@^1". See resolveAlias()
+      if (groupName !== name && groupName && Object.hasOwn(deps, groupName)) {
+        continue;
+      }
+
+      // Aliases without a range use the latest version
+      const groupSemver = match.groups!['semver'] ?? 'latest';
+      console.log(`Resolving alias ${name} -> ${groupName}@${groupSemver}`);
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- Comes from Object.entries()
       delete deps[name];
-      const groupName = match.groups!['name'];
-      const groupSemver = match.groups!['semver'];
-      if (groupName && groupSemver) {
+      if (groupName) {
         deps[groupName] = groupSemver;
       }
     }

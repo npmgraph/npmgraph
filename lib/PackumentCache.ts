@@ -24,6 +24,7 @@ export async function getNPMPackument(
     cacheEntry = Promise.withResolvers();
     cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
+    const entry = cacheEntry;
 
     await fetchJson<Packument>(`${registry}/${moduleName}`, {
       // Per
@@ -43,7 +44,10 @@ export async function getNPMPackument(
         console.warn('Failed to fetch packument', moduleName, error.message);
         return undefined;
       })
-      .then(cacheEntry.resolve);
+      .then(packument => {
+        entry.packument = packument;
+        entry.resolve(packument);
+      });
   }
 
   return cacheEntry.promise;
@@ -61,5 +65,6 @@ export function cachePackument(moduleName: string, packument: Packument): void {
 
   cacheEntry = Promise.withResolvers();
   packumentCache.set(moduleName, cacheEntry);
+  cacheEntry.packument = packument;
   cacheEntry.resolve(packument);
 }

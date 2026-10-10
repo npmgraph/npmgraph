@@ -38,6 +38,9 @@ export async function handler(event) {
           : event.body,
     };
 
+    // Transparent proxy: the upstream status and body, also for 4xx/5xx errors,
+    // are passed on unchanged, so there's no status to check
+    // react-doctor-disable-next-line react-doctor/no-fetch-response-used-without-status-check
     const response = await fetch(url, options);
     const body = await response.text();
 
@@ -66,6 +69,6 @@ function isOriginAllowed(origin) {
   return (
     url.hostname === 'localhost' ||
     url.hostname === 'npmgraph.js.org' ||
-    /npmgraph-git-\w+-broofas-projects.vercel.app/.test(url.hostname)
+    /^npmgraph(?:-[\w-]+)?-broofas-projects\.vercel\.app$/.test(url.hostname)
   );
 }

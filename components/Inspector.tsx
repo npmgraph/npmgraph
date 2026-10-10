@@ -3,11 +3,8 @@ import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
-import type LoadActivity from '../lib/LoadActivity.ts';
 import useGraphSelection from '../hooks/useGraphSelection.ts';
 import useHashParam from '../hooks/useHashParam.ts';
-import GraphDiagram from './GraphDiagram/GraphDiagram.tsx';
-import * as reportPaneStyles from './ReportPane/ReportPane.module.scss';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
@@ -19,10 +16,8 @@ const modulePanePromise = import('./ModulePane/ModulePane.tsx');
 const ReportPane = lazy(async () => reportPanePromise);
 const ModulePane = lazy(async () => modulePanePromise);
 
-export default function Inspector(
-  props: HTMLProps<HTMLDivElement> & { activity: LoadActivity },
-) {
-  const { className, activity, ...restProps } = props;
+export default function Inspector(props: HTMLProps<HTMLDivElement>) {
+  const { className, ...restProps } = props;
   const [pane] = useGlobalState('pane');
   const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGlobalState('graph');
@@ -41,13 +36,11 @@ export default function Inspector(
       paneComponent = <ModulePane selectedModules={selectedModules} />;
       break;
     case PaneType.REPORT:
-      paneComponent = (
-        <ReportPane className={reportPaneStyles.paneGraph} graph={graph} />
-      );
+      paneComponent = <ReportPane graph={graph} />;
       break;
     case PaneType.GRAPH:
-      paneComponent = <GraphDiagram activity={activity} />;
-      break;
+      // The graph is rendered by App, so it doesn't change when switching tabs
+      return null;
     case PaneType.SETTINGS:
       paneComponent = <SettingsPane />;
       break;

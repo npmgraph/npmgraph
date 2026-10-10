@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import * as appHeaderStyles from '../AppHeader.module.scss';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import * as appStyles from '../App/App.module.scss';
 import * as graphDiagramStyles from '../GraphDiagram/GraphDiagram.module.scss';
 import * as flashStyles from './Flash.module.scss';
 import {
@@ -12,39 +12,23 @@ const FLASH_GAP = 10;
 
 type FlashViewEntry = FlashEntry;
 
-type FlashLayout = {
-  top: number;
-  maxWidth: number;
-};
-
 export default function Flash() {
   const [entries, setEntries] = useState<FlashViewEntry[]>([]);
-  const [layout, setLayout] = useState<FlashLayout>(() => computeLayout());
+
+  // Read from the DOM on resize and on every render (e.g. a new flash)
+  const top = useSyncExternalStore(subscribeToResize, getTop);
+  const maxWidth = useSyncExternalStore(subscribeToResize, getMaxWidth);
 
   useEffect(
     () =>
       subscribeFlash(entry => {
         setEntries(previous => [...previous, entry]);
-        setLayout(computeLayout());
       }),
     [],
   );
 
-  useEffect(() => {
-    const handleResize = () => {
-      setLayout(computeLayout());
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-
   return (
-    <div className={flashStyles.root} style={{ top: `${layout.top}px` }}>
+    <div className={flashStyles.root} style={{ top: `${top}px` }}>
       {entries.map(entry => (
         <div
           key={entry.id}
@@ -55,7 +39,7 @@ export default function Flash() {
           }}
           className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
           style={{
-            maxWidth: `${layout.maxWidth}px`,
+            maxWidth: `${maxWidth}px`,
             backgroundColor: entry.backgroundColor,
           }}
           onAnimationEnd={event => {
@@ -73,22 +57,31 @@ export default function Flash() {
   );
 }
 
-function computeLayout(): FlashLayout {
+function subscribeToResize(callback: () => void) {
+  window.addEventListener('resize', callback);
+
+  return () => {
+    window.removeEventListener('resize', callback);
+  };
+}
+
+function getMaxWidth() {
   const graph = document.querySelector(`.${graphDiagramStyles.graph}`);
 
   const graphWidth = graph instanceof HTMLElement ? graph.offsetWidth : 0;
-  const maxWidth = Math.max(
+  return Math.max(
     160,
     graphWidth > 0 ? graphWidth - FLASH_GAP : window.innerWidth - FLASH_GAP * 2,
   );
+}
 
-  const appHeader = document.querySelector(`.${appHeaderStyles.root}`);
+function getTop() {
+  // On tight screens the header is followed by the mobile tabs, both inside
+  // the sticky top container, so place the flash below the whole container
+  const topBar = document.querySelector(`.${appStyles.stickyTop}`);
 
-  const top =
+  return (
     FLASH_GAP / 2 +
-    (appHeader instanceof HTMLElement
-      ? appHeader.offsetTop + appHeader.offsetHeight
-      : 0);
-
-  return { top, maxWidth };
+    (topBar instanceof HTMLElement ? topBar.getBoundingClientRect().bottom : 0)
+  );
 }

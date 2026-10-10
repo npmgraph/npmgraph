@@ -1,8 +1,8 @@
-import md5 from 'md5';
 import { type QueryTypeValue, QueryType } from '../../lib/ModuleCache.ts';
 import type { HTMLProps } from 'react';
 import { cn } from '../../lib/dom.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import { Gravatar } from './Gravatar.tsx';
 import * as styles from './Tag.module.scss';
 import * as utilities from './utilities.module.scss';
 
@@ -29,26 +29,16 @@ export function Tag({
   value: string;
   count?: number;
   gravatar?: string;
-} & HTMLProps<HTMLDivElement>) {
+} & Omit<HTMLProps<HTMLButtonElement>, 'type'>) {
   const setGraphSelection = useGraphSelection()[2];
   let title = value;
   if (count > 1) {
     title += ` (${count})`;
   }
 
-  let img = null;
-  if (gravatar) {
-    const hash = md5(gravatar);
-    img = (
-      <img
-        src={`https://www.gravatar.com/avatar/${hash}?s=32`}
-        alt="User avatar"
-      />
-    );
-  }
-
   return (
-    <div
+    <button
+      type="button"
       className={cn(
         styles.tag,
         type === QueryType.Maintainer ? styles.maintainer : '',
@@ -60,8 +50,8 @@ export function Tag({
         setGraphSelection(type, value);
       }}
     >
-      {img}
+      {gravatar && <Gravatar email={gravatar} username={value} />}
       {title}
-    </div>
+    </button>
   );
 }

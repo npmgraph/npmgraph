@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
@@ -116,7 +115,10 @@ export async function moduleVulnerabilities({
     return;
   }
 
-  const summary = simplur`Vulnerabilities (${details.length})`;
-
-  return { type: 'warn', summary, details } as RenderedAnalysis;
+  return {
+    type: 'warn',
+    summary: 'Vulnerabilities',
+    count: details.length,
+    details,
+  } as RenderedAnalysis;
 }

@@ -1,9 +1,13 @@
 import { QueryLink } from './ui/QueryLink.tsx';
 
-export default function InputHelp() {
+export default function InputHelp({
+  heading = 'For example:',
+}: {
+  heading?: string;
+}) {
   return (
     <>
-      <p>For example:</p>
+      <p>{heading}</p>
 
       <ul>
         <li>
@@ -12,6 +16,12 @@ export default function InputHelp() {
         <li>
           Multiple, versioned module names:{' '}
           <QueryLink query={['cross-env@6', 'rimraf']} />
+        </li>
+        <li>
+          A GitHub repository shorthand:{' '}
+          <QueryLink query="sindresorhus/type-fest">
+            sindresorhus/type-fest
+          </QueryLink>
         </li>
         <li>
           A URL to a{' '}

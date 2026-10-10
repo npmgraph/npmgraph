@@ -31,12 +31,12 @@ function download(type: DownloadExtension) {
       downloadSvg();
       break;
     case 'png':
-      downloadPng();
+      void downloadPng();
       break;
   }
 }
 
-function downloadPng() {
+async function downloadPng() {
   const svg = getDiagramElement();
 
   if (!svg) {
@@ -54,18 +54,30 @@ function downloadPng() {
   const canvas = document.createElement('canvas');
   canvas.width = Number(vb[2]);
   canvas.height = Number(vb[3]);
-  const ctx = canvas.getContext('2d') as unknown as CanvasRenderingContext2D;
+  const ctx = canvas.getContext('2d')!;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
+  // Revoked in the `finally` block below
+  // react-doctor-disable-next-line react-doctor/no-create-object-url-without-revoke
   const url = URL.createObjectURL(svgBlob);
 
-  img.addEventListener('load', () => {
+  try {
+    await new Promise(resolve => {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
+      img.src = url;
+    });
+
+    if (img.naturalWidth === 0) {
+      return;
+    }
+
     ctx.drawImage(img, 0, 0);
-    URL.revokeObjectURL(url);
     const pngImg = canvas.toDataURL('image/png');
     generateLinkToDownload('png', pngImg);
-  });
-  img.src = url;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
 }
 
 function downloadSvg() {
@@ -137,4 +149,9 @@ function generateLinkToDownload(extension: DownloadExtension, link: string) {
   downloadLink.href = link;
   downloadLink.download = `${name}_dependencies.${extension}`;
   downloadLink.click();
+  if (link.startsWith('blob:')) {
+    setTimeout(() => {
+      URL.revokeObjectURL(link);
+    }, 1000);
+  }
 }

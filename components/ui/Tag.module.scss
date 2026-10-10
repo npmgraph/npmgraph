@@ -1,3 +1,5 @@
+@use '../../lib/root.module.scss' as *;
+
 .tags {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -5,7 +7,7 @@
 }
 
 .tag {
-  cursor: pointer;
+  @include button-reset;
   border-radius: var(--rad-lg);
   background-color: var(--bg1);
   padding: 2px 8px;

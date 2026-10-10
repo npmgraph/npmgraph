@@ -20,7 +20,7 @@ export default async function fetchJson<T>(
     return requestCache.get(cacheKey) as Promise<T>;
   }
 
-  init ??= {};
+  init = { ...init };
 
   if (init.timeout) {
     if (init.signal) {
@@ -49,8 +49,15 @@ export default async function fetchJson<T>(
       throw error;
     })
     .catch(error => {
-      error.message = `Failed to get ${url}`;
-      throw error;
+      const message = `Failed to get ${url}`;
+
+      // `message` is read-only on DOMExceptions (e.g. timeouts and aborts)
+      if (!(error instanceof DOMException)) {
+        error.message = message;
+        throw error;
+      }
+
+      throw new Error(message, { cause: error });
     })
     .finally(() => {
       finish?.();

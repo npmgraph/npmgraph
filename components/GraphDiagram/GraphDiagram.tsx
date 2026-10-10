@@ -1,3 +1,4 @@
+import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import {
   Suspense,
@@ -24,6 +25,7 @@ import {
   PARAM_COLORIZE,
   PARAM_DEPENDENCIES,
   PARAM_HIDE,
+  PARAM_PACKAGES,
   PARAM_SIZING,
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
@@ -32,6 +34,7 @@ import {
 } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
+import memoizeRecent from '../../lib/memoizeRecent.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -52,9 +55,50 @@ import {
   gatherSelectionInfo,
   getGraphForQuery,
 } from '../../lib/graph-util.ts';
+import useOnEsc from '../../hooks/useOnEsc.ts';
+import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
 
 function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
+}
+
+function decorateGraphNodes(
+  element: Element,
+  isModuleVisible: ({ name }: { name: string }) => boolean,
+) {
+  for (const nodeElement of $$optional('g.node', element)) {
+    const key = $optional(':scope > title', nodeElement)?.textContent!.trim();
+    if (!key) {
+      continue;
+    }
+
+    const module = getCachedModule(key);
+    if (!module) {
+      continue;
+    }
+
+    nodeElement.setAttribute('role', 'button');
+    nodeElement.setAttribute('tabindex', '0');
+    nodeElement.setAttribute('aria-label', `Select ${module.key}`);
+
+    if (module.package.deprecated) {
+      nodeElement.classList.add('warning');
+    }
+
+    if (module.name) {
+      nodeElement.dataset['module'] = module.key;
+    } else {
+      report.warn(new Error(`Bad replace: ${key}`));
+    }
+
+    if (!isModuleVisible(module)) {
+      nodeElement.classList.add('collapsed');
+    }
+
+    if (module.isStub) {
+      nodeElement.classList.add('stub');
+    }
+  }
 }
 
 const idSeen = new Set<unknown>();
@@ -64,6 +108,11 @@ const graphvizPromise = (async () => {
   const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
   return Graphviz.load();
 })();
+
+// Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
+const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
+  graphviz.dot(dot, 'svg'),
+);
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   return (
@@ -84,6 +133,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
   const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
+  // Pasted package.json files are in the hash, they can change without the query changing
+  const [packages] = useHashParam(PARAM_PACKAGES);
   const [, setPane] = useGlobalState('pane');
   const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
@@ -108,7 +159,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       .map(s => s.trim())
       .filter(Boolean)
       .toSorted() as DependencyKey[];
-    return new Set<DependencyKey>(['dependencies', ...extra]);
+    return new Set<DependencyKey>([
+      'dependencies',
+      'optionalDependencies',
+      ...extra,
+    ]);
   }, [depTypes]);
 
   function handleGraphClick(event: React.MouseEvent) {
@@ -211,8 +266,14 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           return;
         }
 
+        // A collapsed module also results in a graph with a single module
         const firstInfo = newGraph.moduleInfos.values().next().value;
-        if (newGraph?.moduleInfos.size === 1 && !firstInfo?.module.isStub) {
+        if (
+          firstInfo &&
+          newGraph?.moduleInfos.size === 1 &&
+          !firstInfo.module.isStub &&
+          moduleFilter(firstInfo.module)
+        ) {
           void celebrate('Zero dependencies for the win!');
         }
 
@@ -228,7 +289,15 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
     );
 
     return abort;
-  }, [sortedQuery, dependencyTypes, collapse, moduleFilter, setGraph, setPane]);
+  }, [
+    sortedQuery,
+    dependencyTypes,
+    collapse,
+    moduleFilter,
+    packages,
+    setGraph,
+    setPane,
+  ]);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {
@@ -253,7 +322,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           svgMarkup =
             graph?.moduleInfos.size === 0
               ? '<svg />'
-              : graphviz.dot(dotDoc, 'svg');
+              : layout(dotDoc, graphviz);
         } catch (error) {
           console.error(error);
           flash('Error while rendering graph');
@@ -279,51 +348,12 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       getDiagramElement()?.remove();
       element.append(svgDom);
 
-      // Inject bg pattern for deprecated modules
-      const PATTERN = `<pattern id="warning"
-        width="12" height="12"
-        patternUnits="userSpaceOnUse"
-        patternTransform="rotate(45 50 50)">
-        <line class="line0" stroke-width="6px" x1="3" x2="3" y2="12"/>
-        <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12"/>
-        </pattern>`;
-
+      // Inject SVG definitions: warning pattern and collapsed-node outline
       select(`.${styles.graph} svg`)
         .insert('defs', ':first-child')
-        .html(PATTERN);
+        .html(svgDefs);
 
-      // Decorate DOM nodes with appropriate classname
-      for (const nodeElement of $$optional('g.node', element)) {
-        // Find module this node represents
-        const key = $(':scope > title', nodeElement)?.textContent?.trim();
-        if (!key) {
-          continue;
-        }
-
-        const m = getCachedModule(key);
-
-        if (!m) {
-          continue;
-        }
-
-        if (m?.package.deprecated) {
-          nodeElement.classList.add('warning');
-        }
-
-        if (m.name) {
-          nodeElement.dataset['module'] = m.key;
-        } else {
-          report.warn(new Error(`Bad replace: ${key}`));
-        }
-
-        if (!moduleFilter(m)) {
-          nodeElement.classList.add('collapsed');
-        }
-
-        if (m.isStub) {
-          nodeElement.classList.add('stub');
-        }
-      }
+      decorateGraphNodes(element, moduleFilter);
 
       // Signal other hooks that graph DOM has changed
       setDiagramElement(getDiagramElement());
@@ -369,6 +399,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
     void colorizeGraph(diagramElement, colorize ?? '');
   }, [colorize, diagramElement]);
+
+  // Effect: Reset graph selection on Esc key press
+  useOnEsc(() => {
+    setGraphSelection(QueryType.Default, '');
+  });
 
   return (
     <div className={styles.root}>

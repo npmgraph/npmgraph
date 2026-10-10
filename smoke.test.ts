@@ -28,9 +28,9 @@ const node = (module = '') =>
 
 const tab = (name: string) => app().getByRole('button', { name, exact: true });
 
-// Toggle's click handler lives on its On/Off switch, not the label text
+// Toggle is a button; its On/Off pill is aria-hidden (state is in aria-pressed)
 const toggle = (label: string) =>
-  app().getByCSS(`label:has-text("${label}") > div`);
+  app().getByRole('button', { name: label, exact: true });
 
 // Wait for something to appear in the app's DOM
 const appears = async (css: string, text?: RegExp) =>
@@ -180,13 +180,13 @@ describe('panes', () => {
     await appears('h2', /^debug@/);
   });
 
-  it('renders report sections', async () => {
+  it('renders report items', async () => {
     await goto('?q=debug');
     await nodeAppears();
     await userEvent.click(tab('Report'));
     await Promise.all(
       ['Modules', 'Maintainers', 'Licenses'].map(async title =>
-        appears('h3', new RegExp(title)),
+        appears('details > summary', new RegExp(title)),
       ),
     );
   });

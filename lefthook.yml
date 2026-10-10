@@ -1,7 +1,7 @@
 pre-commit:
   commands:
     format:
-      run: npm run format {staged_files}
+      run: npm run format:check {staged_files}
 
     lint:
       glob: '**/*.{js,ts,jsx,tsx}'
