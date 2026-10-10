@@ -20,7 +20,7 @@ type GlobalState = {
 
 function _getInitialPane() {
   if (!searchGet(PARAM_QUERY)) {
-    return PaneType.INFO;
+    return PaneType.SETTINGS;
   }
 
   const select = hashGet('select')?.split(/[ ,]+/);

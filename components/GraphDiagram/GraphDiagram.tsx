@@ -282,7 +282,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           newGraph.entryModules.size === 0 &&
           newGraph.failedEntryModules.size > 0
         ) {
-          setPane(PaneType.INFO);
+          setPane(PaneType.SETTINGS);
         }
       },
     );

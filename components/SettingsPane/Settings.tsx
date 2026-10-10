@@ -13,14 +13,14 @@ import { ExternalLink } from '../ui/ExternalLink.tsx';
 import InputHelp from '../InputHelp.tsx';
 import * as utilities from '../ui/utilities.module.scss';
 import FilePicker from './FilePicker.tsx';
-import * as styles from './InfoPane.module.scss';
+import * as styles from './SettingsPane.module.scss';
 import { Section } from '../ui/Section.tsx';
 
 function isGithubUrl(url: URL | null) {
   return url ? /^github.com$|\.github.com$/.test(url?.host ?? '') : false;
 }
 
-export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
+export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   const [value] = useParsedQuery();
   const valueAsURL = URL.parse(value.trim());
 

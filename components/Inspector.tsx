@@ -7,7 +7,7 @@ import type LoadActivity from '../lib/LoadActivity.ts';
 import useGraphSelection from '../hooks/useGraphSelection.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import GraphDiagram from './GraphDiagram/GraphDiagram.tsx';
-import InfoPane from './InfoPane/InfoPane.tsx';
+import SettingsPane from './SettingsPane/Settings.tsx';
 import * as styles from './Inspector.module.scss';
 
 // Keep these panes in secondary bundles but start loading them eagerly
@@ -44,8 +44,8 @@ export default function Inspector(
     case PaneType.GRAPH:
       paneComponent = <GraphDiagram activity={activity} />;
       break;
-    case PaneType.INFO:
-      paneComponent = <InfoPane />;
+    case PaneType.SETTINGS:
+      paneComponent = <SettingsPane />;
       break;
   }
 

@@ -46,10 +46,10 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
         Graph
       </Tab>
       <Tab
-        active={isInspector && pane === PaneType.INFO}
+        active={isInspector && pane === PaneType.SETTINGS}
         onClick={() => {
           setHide(null);
-          setPane(PaneType.INFO);
+          setPane(PaneType.SETTINGS);
         }}
       >
         Info
