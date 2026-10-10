@@ -28,7 +28,6 @@ const disabledRules = [
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
-  'complexity',
   'no-alert',
   'no-console',
   'no-warning-comments',

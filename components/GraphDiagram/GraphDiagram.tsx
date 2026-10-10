@@ -459,16 +459,10 @@ function scrollGraphIntoView(
   graphElement.scrollTo({ left, top, ...scrollOptions });
 }
 
-function updateSelection(
-  graph: GraphState,
-  modules: Map<string, Module>,
-  shouldScrollToSelected = true,
-) {
-  // Get selection info
-  const si = gatherSelectionInfo(graph, modules.values());
-  const isSelection = modules.size > 0;
+type SelectionInfo = ReturnType<typeof gatherSelectionInfo>;
 
-  // Set selection classes for node elements
+// Returns the selected node element (if multiple, the last one)
+function updateNodeSelection(si: SelectionInfo, isSelection: boolean) {
   let scrollElement: HTMLElement | undefined;
   for (const element of $$optional('svg .node[data-module]')) {
     const moduleKey = element.dataset['module'] ?? '';
@@ -488,7 +482,10 @@ function updateSelection(
     }
   }
 
-  // Set selection classes for edge elements
+  return scrollElement;
+}
+
+function updateEdgeSelection(si: SelectionInfo, isSelection: boolean) {
   for (const edge of $$optional('svg g.edge')) {
     const edgeTitle = $('title', edge)?.textContent ?? '';
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
@@ -505,12 +502,26 @@ function updateSelection(
       edge.parentElement?.append(edge);
     }
   }
+}
+
+function updateSelection(
+  graph: GraphState,
+  modules: Map<string, Module>,
+  shouldScrollToSelected = true,
+) {
+  // Get selection info
+  const si = gatherSelectionInfo(graph, modules.values());
+  const isSelection = modules.size > 0;
+
+  // Set selection classes for node and edge elements
+  const scrollElement = updateNodeSelection(si, isSelection);
+  updateEdgeSelection(si, isSelection);
 
   if (shouldScrollToSelected) {
     // Scroll to selected element (if multiple elements, this scrolls to last one)
     if (scrollElement) {
       scrollGraphIntoView(scrollElement, { behavior: 'smooth' });
-    } else if (!scrollElement) {
+    } else {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
       scrollGraphIntoView(
