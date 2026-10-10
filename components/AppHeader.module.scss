@@ -10,6 +10,15 @@
   background: var(--tabs-bg) var(--bg-gradient);
   padding-inline: var(--header-padding);
   color: var(--tabs-text);
+  color-scheme: dark;
+
+  @include tight-screen {
+    border-right: none;
+    background-image: linear-gradient(
+      rgba(255, 255, 255, 0.2),
+      rgba(255, 255, 255, 0.2)
+    );
+  }
 
   // Override --text so the Logo's color-mix renders in light colors on the dark header
   --text: var(--tabs-text);
@@ -26,6 +35,7 @@
   }
 
   a {
+    display: flex;
     color: inherit;
   }
 
