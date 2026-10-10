@@ -1,0 +1,28 @@
+{
+  "components/GraphDiagram/GraphDiagram.tsx": {
+    "react-doctor/click-events-have-key-events": {
+      "count": 1
+    },
+    "react-doctor/no-static-element-interactions": {
+      "count": 1
+    }
+  },
+  "components/ModulePane/ModuleLinks.tsx": {
+    "react-doctor/jsx-no-target-blank": {
+      "count": 1
+    }
+  },
+  "hooks/useTightScreen.ts": {
+    "react-doctor/no-match-media-in-state-initializer": {
+      "count": 1
+    },
+    "react-doctor/no-unguarded-browser-global-in-render-or-hook-init": {
+      "count": 1
+    }
+  },
+  "lib/index.tsx": {
+    "react-doctor/no-unguarded-browser-global-at-module-scope": {
+      "count": 1
+    }
+  }
+}
