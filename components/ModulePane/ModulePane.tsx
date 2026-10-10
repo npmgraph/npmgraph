@@ -1,33 +1,16 @@
-import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type Module from '../../lib/Module.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
-import { getRepoUrlForModule } from '../../lib/repo-util.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import * as utilities from '../ui/utilities.module.scss';
+import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.scss';
 import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
-import useCollapse from '../../hooks/useCollapse.ts';
-
-function ExternalLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a target="_blank" href={href} className={utilities.brightHover}>
-      {children}
-    </a>
-  );
-}
 
 export default function ModulePane({
   selectedModules,
@@ -37,8 +20,6 @@ export default function ModulePane({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const nSelected = selectedModules.size;
-  const [collapse, setCollapse] = useCollapse();
-  const [graph] = useGlobalState('graph');
 
   if (nSelected === 0) {
     return (
@@ -88,19 +69,6 @@ export default function ModulePane({
     );
   }
 
-  const isSingleEntryModule =
-    graph.entryModules.size === 1 &&
-    [...graph.entryModules][0]?.key === module.key;
-
-  const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
-  const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
-  const repoUrl = getRepoUrlForModule(module);
-  const homepageUrl =
-    module.package.homepage &&
-    !module.package.homepage.startsWith('https://github.com/')
-      ? module.package.homepage
-      : null;
-
   const pkg = module.package;
 
   return (
@@ -122,44 +90,8 @@ export default function ModulePane({
       <p style={{ marginTop: 0 }}>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
-        <div className={styles.linkGroup}>
-          {isSingleEntryModule ? null : (
-            <>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={collapse.includes(module.name)}
-                  className={utilities.brightHover}
-                  onChange={() => {
-                    if (collapse.includes(module.name)) {
-                      setCollapse(
-                        collapse.filter(name => name !== module.name),
-                      );
-                    } else {
-                      setCollapse([...collapse, module.name]);
-                    }
-                  }}
-                />
-                Collapse
-              </label>
-              <QueryLink
-                className={utilities.brightHover}
-                query={module.key}
-                style={{ textDecoration: 'none' }}
-              >
-                Focus
-              </QueryLink>
-            </>
-          )}
-        </div>
-        <div className={styles.linkGroup}>
-          <ExternalLink href={npmUrl}>npm</ExternalLink>
-          {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
-          {homepageUrl && (
-            <ExternalLink href={homepageUrl}>website</ExternalLink>
-          )}
-          <ExternalLink href={packageUrl}>package.json</ExternalLink>
-        </div>
+        <ModuleActions module={module} />
+        <ModuleExternalLinks module={module} />
       </div>
 
       <ReleaseTimeline module={module} />
