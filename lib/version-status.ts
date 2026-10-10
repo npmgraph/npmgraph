@@ -1,3 +1,4 @@
+import simplur from 'simplur';
 import { isGreaterThan, tryParse } from 'verkit';
 
 export type VersionStatus =
@@ -51,4 +52,20 @@ export function getVersionStatus(
   // Not outdated: the dist-tag the version is pinned to (e.g. "latest")
   const tag = Object.entries(distTags).find(([, v]) => v === version)?.[0];
   return tag ? { type: 'tag', tag } : { type: 'none' };
+}
+
+export function getOutdatedMessage({
+  level,
+  behind,
+}: Extract<VersionStatus, { type: 'outdated' }>) {
+  switch (level) {
+    case 'major':
+      return simplur`${behind} major version[|s] behind`;
+    case 'minor':
+      return simplur`${behind} minor version[|s] behind`;
+    case 'patch':
+      return simplur`${behind} patch version[|s] behind`;
+    case 'prerelease':
+      return 'prerelease, behind';
+  }
 }

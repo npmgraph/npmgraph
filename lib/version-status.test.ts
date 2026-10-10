@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getVersionStatus } from './version-status.ts';
+import { getOutdatedMessage, getVersionStatus } from './version-status.ts';
 
 describe('getVersionStatus', () => {
   it('reports major, minor and patch versions behind', () => {
@@ -49,5 +49,19 @@ describe('getVersionStatus', () => {
     expect(getVersionStatus('not-a-version', { latest: '1.0.0' })).toBeNull();
     expect(getVersionStatus('1.0.0', {})).toBeNull();
     expect(getVersionStatus('1.0.0', { latest: 'nope' })).toBeNull();
+  });
+});
+
+describe('getOutdatedMessage', () => {
+  it('describes how far behind a module is', () => {
+    const message = (version: string, latest: string) => {
+      const status = getVersionStatus(version, { latest });
+      return status?.type === 'outdated' ? getOutdatedMessage(status) : '';
+    };
+
+    expect(message('1.0.0', '2.0.0')).toBe('1 major version behind');
+    expect(message('1.0.0', '1.3.0')).toBe('3 minor versions behind');
+    expect(message('1.0.0', '1.0.1')).toBe('1 patch version behind');
+    expect(message('1.0.0-rc.1', '1.0.0')).toBe('prerelease, behind');
   });
 });
