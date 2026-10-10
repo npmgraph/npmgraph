@@ -7,6 +7,7 @@ import {
   UNNAMED_PACKAGE_PREFIX,
 } from './constants.ts';
 import { hashSet, searchSet } from './url-util.ts';
+import { getActivity } from '../hooks/useActivity.ts';
 import { patchLocation } from '../hooks/useLocation.ts';
 
 export function isValidJson(text: string): boolean {
@@ -42,6 +43,9 @@ export function loadPackageJson(json: string, filename?: string): void {
   const hash = hashSet(PARAM_PACKAGES, JSON.stringify([pkg]), url);
   const search = searchSet(PARAM_QUERY, module.key, url);
   patchLocation({ hash, search }, false);
+
+  // Loading the same file twice changes nothing, so make sure there's feedback
+  getActivity()?.startFor(`Loading ${filename ?? 'pasted package.json'}`, 500);
 }
 
 export async function readFile(file: File) {
