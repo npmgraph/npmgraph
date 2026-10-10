@@ -1,39 +1,16 @@
-import simplur from 'simplur';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type Module from '../../lib/Module.ts';
-import type { Maintainer } from '../../lib/Module.ts';
-import { QueryType } from '../../lib/ModuleCache.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
-import human from '../../lib/human.ts';
-import { getRepoUrlForModule } from '../../lib/repo-util.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
-import { foreachDownstream } from '../../lib/graph-util.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import { Section } from '../ui/Section.tsx';
-import { Tag, Tags } from '../ui/Tag.tsx';
-import * as utilities from '../ui/utilities.module.scss';
-import ModuleBundleSize from './ModuleBundleSize.tsx';
+import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
+import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.scss';
+import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
-import useCollapse from '../../hooks/useCollapse.ts';
-
-function ExternalLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <a target="_blank" href={href} className={utilities.brightHover}>
-      {children}
-    </a>
-  );
-}
 
 export default function ModulePane({
   selectedModules,
@@ -43,8 +20,6 @@ export default function ModulePane({
 } & React.HTMLAttributes<HTMLDivElement>) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const nSelected = selectedModules.size;
-  const [collapse, setCollapse] = useCollapse();
-  const [graph] = useGlobalState('graph');
 
   if (nSelected === 0) {
     return (
@@ -94,29 +69,6 @@ export default function ModulePane({
     );
   }
 
-  const { unpackedSize } = module;
-
-  let downstreamUnpackedSize = 0;
-  if (graph) {
-    foreachDownstream(module, graph, m => {
-      downstreamUnpackedSize += m.unpackedSize ?? 0;
-    });
-  }
-
-  const isSingleEntryModule =
-    graph.entryModules.size === 1 &&
-    [...graph.entryModules][0]?.key === module.key;
-  const { maintainers } = module;
-
-  const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
-  const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
-  const repoUrl = getRepoUrlForModule(module);
-  const homepageUrl =
-    module.package.homepage &&
-    !module.package.homepage.startsWith('https://github.com/')
-      ? module.package.homepage
-      : null;
-
   const pkg = module.package;
 
   return (
@@ -138,83 +90,15 @@ export default function ModulePane({
       <p style={{ marginTop: 0 }}>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
-        <div className={styles.linkGroup}>
-          {isSingleEntryModule ? null : (
-            <>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={collapse.includes(module.name)}
-                  className={utilities.brightHover}
-                  onChange={() => {
-                    if (collapse.includes(module.name)) {
-                      setCollapse(
-                        collapse.filter(name => name !== module.name),
-                      );
-                    } else {
-                      setCollapse([...collapse, module.name]);
-                    }
-                  }}
-                />
-                Collapse
-              </label>
-              <QueryLink
-                className={utilities.brightHover}
-                query={module.key}
-                style={{ textDecoration: 'none' }}
-              >
-                Focus
-              </QueryLink>
-            </>
-          )}
-        </div>
-        <div className={styles.linkGroup}>
-          <ExternalLink href={npmUrl}>npm</ExternalLink>
-          {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
-          {homepageUrl && (
-            <ExternalLink href={homepageUrl}>website</ExternalLink>
-          )}
-          <ExternalLink href={packageUrl}>package.json</ExternalLink>
-        </div>
+        <ModuleActions module={module} />
+        <ModuleExternalLinks module={module} />
       </div>
 
       <ReleaseTimeline module={module} />
 
-      <Section title="Module Size">
-        <div className={styles.sizeGrid}>
-          <span>Unpacked Size (module only):</span>
-          {unpackedSize ? (
-            <strong>{human(unpackedSize, 'B')}</strong>
-          ) : (
-            <i>not available</i>
-          )}
-          <span>Unpacked Size (module + dependencies):</span>
-          {unpackedSize ? (
-            <strong>{human(unpackedSize + downstreamUnpackedSize, 'B')}</strong>
-          ) : (
-            <i>not available</i>
-          )}
-        </div>
-        <ModuleBundleSize module={module} />
-      </Section>
+      <ModuleSize module={module} />
 
-      <Section
-        title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
-      >
-        <Tags>
-          {maintainers.map(
-            // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Incorrect types
-            ({ name = 'Unknown', email }: Exclude<Maintainer, string>) => (
-              <Tag
-                key={name + email}
-                type={QueryType.Maintainer}
-                value={name}
-                gravatar={email}
-              />
-            ),
-          )}
-        </Tags>
-      </Section>
+      <ModuleMaintainers module={module} />
     </Pane>
   );
 }
