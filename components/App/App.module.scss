@@ -9,6 +9,9 @@
 
 .stickyTop {
   flex-shrink: 0;
+  @include tight-screen {
+    background: var(--tabs-bg) var(--bg-gradient);
+  }
 
   .mobileTabs {
     display: none;
