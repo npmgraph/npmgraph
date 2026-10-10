@@ -1,58 +1,38 @@
-import {
-  PARAM_ZOOM,
-  ZOOM_FIT_HEIGHT,
-  ZOOM_FIT_WIDTH,
-  ZOOM_NONE,
-} from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
-import { ZoomHorizontalIcon, ZoomVerticalIcon } from '../ui/Icons.tsx';
-import * as utilities from '../ui/utilities.module.scss';
-import * as parentStyles from './GraphDiagram.module.scss';
+import { useControls } from 'react-zoom-pan-pinch';
+import { ZoomFitIcon, ZoomInIcon, ZoomOutIcon } from '../ui/Icons.tsx';
 import * as styles from './GraphDiagramZoomButtons.module.scss';
 
 export function GraphDiagramZoomButtons() {
-  const [zoom, setZoom] = useHashParam(PARAM_ZOOM);
+  const { zoomIn, zoomOut, fitToView } = useControls();
+
   return (
     <div className={styles.root}>
       <button
-        className={cn(
-          { [parentStyles.selected]: zoom === ZOOM_FIT_WIDTH },
-          utilities.brightHover,
-        )}
-        title="Zoom (fit width)"
         type="button"
+        title="Zoom in"
         onClick={() => {
-          setZoom(ZOOM_FIT_WIDTH);
+          void zoomIn();
         }}
       >
-        <ZoomHorizontalIcon />
+        <ZoomInIcon />
       </button>
       <button
-        className={cn(
-          { [parentStyles.selected]: zoom === ZOOM_NONE },
-          utilities.brightHover,
-        )}
-        title="Zoom (1:1)"
         type="button"
+        title="Zoom out"
         onClick={() => {
-          setZoom(ZOOM_NONE);
+          void zoomOut();
         }}
       >
-        1:1
+        <ZoomOutIcon />
       </button>
       <button
-        className={cn(
-          { [parentStyles.selected]: zoom === ZOOM_FIT_HEIGHT },
-          utilities.brightHover,
-        )}
-        title="Zoom (fit height)"
         type="button"
+        title="Zoom to fit"
         onClick={() => {
-          setZoom(ZOOM_FIT_HEIGHT);
+          void fitToView({ maxScale: 1 });
         }}
       >
-        <ZoomVerticalIcon />
+        <ZoomFitIcon />
       </button>
     </div>
   );

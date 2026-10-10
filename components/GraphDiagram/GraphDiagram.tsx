@@ -5,11 +5,16 @@ import {
   use,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import {
+  type ReactZoomPanPinchContentRef,
+  TransformComponent,
+  TransformWrapper,
+} from 'react-zoom-pan-pinch';
 import { $, $$optional, $optional, closestElementOptional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
@@ -27,10 +32,6 @@ import {
   PARAM_HIDE,
   PARAM_PACKAGES,
   PARAM_SIZING,
-  PARAM_ZOOM,
-  ZOOM_FIT_HEIGHT,
-  ZOOM_FIT_WIDTH,
-  ZOOM_NONE,
 } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
@@ -42,7 +43,6 @@ import usePrevious from '../../hooks/usePrevious.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { celebrate, flash } from '../../lib/flash.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
-import * as utilities from '../ui/utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
@@ -144,7 +144,9 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
   const [collapse, setCollapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
-  const [zoom] = useHashParam(PARAM_ZOOM);
+  const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
+  // Dragging the graph shouldn't count as a click, which would clear the selection
+  const isPanning = useRef(false);
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
 
@@ -168,6 +170,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   function handleGraphClick(event: React.MouseEvent) {
     const { target } = event;
     if (
+      isPanning.current ||
       !(target instanceof Element) ||
       // Allow opening the link in a new tab
       event.metaKey ||
@@ -206,44 +209,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
     setGraphSelection(QueryType.Default, moduleKey);
     if (moduleKey !== '') {
       setPane(PaneType.MODULE);
-    }
-  }
-
-  function applyZoom() {
-    const graphElement = $(`.${styles.graph}`);
-
-    if (!graphElement || !diagramElement) {
-      return;
-    }
-
-    // Note: Not using svg.getBBox() here because (for some reason???) it's
-    // smaller than the actual bounding box
-    const vb = diagramElement.getAttribute('viewBox')?.split(' ').map(Number);
-    if (!vb) {
-      return;
-    }
-
-    const w = vb[2];
-    const h = vb[3];
-    graphElement.classList.remove(utilities.dBlock);
-
-    switch (zoom) {
-      case ZOOM_NONE:
-        diagramElement.setAttribute('width', String(w));
-        diagramElement.setAttribute('height', String(h));
-        break;
-
-      case ZOOM_FIT_WIDTH:
-        diagramElement.setAttribute('width', '100%');
-        diagramElement.removeAttribute('height');
-        break;
-
-      case ZOOM_FIT_HEIGHT:
-        diagramElement.removeAttribute('width');
-        diagramElement.setAttribute('height', '100%');
-        graphElement.classList.add(utilities.dBlock);
-        break;
-      default:
     }
   }
 
@@ -342,6 +307,16 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
       svgDom.classList.add(styles.graphDiagram);
 
+      // Show the diagram at its natural size, the viewport handles zooming.
+      // Note: Not using svg.getBBox() here because (for some reason???) it's
+      // smaller than the actual bounding box
+      const [, , width, height] =
+        svgDom.getAttribute('viewBox')?.split(' ') ?? [];
+      if (width && height) {
+        svgDom.setAttribute('width', width);
+        svgDom.setAttribute('height', height);
+      }
+
       // Inject into DOM
       const element = $(`.${styles.graph}`);
       getDiagramElement()?.remove();
@@ -374,9 +349,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
     };
   }, [activity, graphviz, graph, moduleFilter, sizing]);
 
-  // (Re)apply zoom if/when it changes — useLayoutEffect prevents visual flicker when switching modes
-  useLayoutEffect(applyZoom, [zoom, diagramElement]);
-
   const selectedModules = useMemo(
     () =>
       graph
@@ -395,6 +367,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       graph,
       selectedModules,
       selectedModules.size > 0 || (previousSelection?.size ?? 0) === 0,
+      transformRef.current,
     );
   }, [diagramElement, graph, selectedModules, previousSelection]);
 
@@ -413,13 +386,35 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   });
 
   return (
-    <div className={styles.root}>
-      <div className={styles.graphControls}>
-        <GraphDiagramZoomButtons />
-        <GraphDiagramDownloadButton />
+    <TransformWrapper
+      ref={transformRef}
+      minScale={0.05}
+      maxScale={4}
+      doubleClick={{ disabled: true }}
+      trackPadPanning={{ disabled: false }}
+      onPanning={() => {
+        isPanning.current = true;
+      }}
+      onPanningStop={() => {
+        // The click that ends a drag comes right after this
+        setTimeout(() => {
+          isPanning.current = false;
+        });
+      }}
+    >
+      <div className={styles.root}>
+        <div className={styles.graphControls}>
+          <GraphDiagramZoomButtons />
+          <GraphDiagramDownloadButton />
+        </div>
+        <TransformComponent
+          wrapperClass={styles.viewport}
+          wrapperStyle={{ width: '100%', height: '100%' }}
+        >
+          <div className={styles.graph} onClick={handleGraphClick} />
+        </TransformComponent>
       </div>
-      <div className={styles.graph} onClick={handleGraphClick} />
-    </div>
+    </TransformWrapper>
   );
 }
 
@@ -444,32 +439,44 @@ function logUpdate(name: string, value: unknown) {
 
 function scrollGraphIntoView(
   element: Element | undefined,
-  scrollOptions?: ScrollToOptions,
+  transform: ReactZoomPanPinchContentRef | null,
+  animationTime = 0,
 ) {
-  const graphElement = $optional(`.${styles.graph}`);
-  if (!graphElement || !element) {
+  const wrapper = transform?.instance.wrapperComponent;
+  const content = transform?.instance.contentComponent;
+  if (!transform || !wrapper || !content || !element) {
     return;
   }
 
-  // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
-  // Firefox.  And even in Chrome it just scrolls the element to *barely*
-  // be in view, which isn't really what we want.  (We'd like element to
-  // be centered in the view.)  So, instead, we manually compute the
-  // scroll coordinates.
-  const { top: elementTop, left: elementLeft } =
-    element.getBoundingClientRect();
-  const left =
-    graphElement.scrollLeft + elementLeft - graphElement.clientWidth / 2;
-  const top =
-    graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
+  // Center the element in the viewport, but without moving the graph away from
+  // the edges (like when scrolling)
+  const { scale, positionX, positionY } = transform.instance.state;
+  const view = wrapper.getBoundingClientRect();
+  const box = element.getBoundingClientRect();
+  const clamp = (position: number, viewSize: number, contentSize: number) =>
+    Math.min(0, Math.max(viewSize - contentSize * scale, position));
 
-  graphElement.scrollTo({ left, top, ...scrollOptions });
+  void transform.setTransform(
+    clamp(
+      positionX + view.left + view.width / 2 - (box.left + box.width / 2),
+      view.width,
+      content.offsetWidth,
+    ),
+    clamp(
+      positionY + view.top + view.height / 2 - (box.top + box.height / 2),
+      view.height,
+      content.offsetHeight,
+    ),
+    scale,
+    animationTime,
+  );
 }
 
 function updateSelection(
   graph: GraphState,
   modules: Map<string, Module>,
   shouldScrollToSelected = true,
+  transform: ReactZoomPanPinchContentRef | null = null,
 ) {
   // Get selection info
   const si = gatherSelectionInfo(graph, modules.values());
@@ -516,12 +523,13 @@ function updateSelection(
   if (shouldScrollToSelected) {
     // Scroll to selected element (if multiple elements, this scrolls to last one)
     if (scrollElement) {
-      scrollGraphIntoView(scrollElement, { behavior: 'smooth' });
+      scrollGraphIntoView(scrollElement, transform, 300);
     } else if (!scrollElement) {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
       scrollGraphIntoView(
         select(`.${styles.graph} svg .node`).node() as HTMLElement,
+        transform,
       );
     }
   }
