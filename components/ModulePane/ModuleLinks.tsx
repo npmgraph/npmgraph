@@ -1,5 +1,7 @@
 import useCollapse from '../../hooks/useCollapse.ts';
+import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
 import { QueryLink } from '../ui/QueryLink.tsx';
@@ -23,6 +25,14 @@ function ExternalLink({
 export function ModuleActions({ module }: { module: Module }) {
   const [collapse, setCollapse] = useCollapse();
   const [graph] = useGlobalState('graph');
+  const dependencyTypes = useDependencyTypes();
+
+  // Collapsing a module without dependencies only dims it
+  const canCollapse = hasDependencies(
+    module,
+    dependencyTypes,
+    graph.moduleInfos.get(module.key)?.level,
+  );
 
   const isSingleEntryModule =
     graph.entryModules.size === 1 &&
@@ -32,10 +42,17 @@ export function ModuleActions({ module }: { module: Module }) {
     <div className={styles.linkGroup}>
       {isSingleEntryModule ? null : (
         <>
-          <label>
+          <label
+            title={
+              canCollapse
+                ? undefined
+                : 'Modules without dependencies can’t be collapsed'
+            }
+          >
             <input
               type="checkbox"
-              checked={collapse.includes(module.name)}
+              checked={canCollapse && collapse.includes(module.name)}
+              disabled={!canCollapse}
               className={utilities.brightHover}
               onChange={() => {
                 if (collapse.includes(module.name)) {
