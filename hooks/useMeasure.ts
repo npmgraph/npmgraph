@@ -13,7 +13,7 @@ export default function useMeasure<T extends Element>() {
       setSize({ width: target.clientWidth, height: target.clientHeight });
     };
 
-    update();
+    // ResizeObserver reports the initial size right after observe()
     const observer = new ResizeObserver(update);
     observer.observe(target);
     return () => {
