@@ -4,9 +4,79 @@ import { isDefined } from '../../lib/guards.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
-import RegistryInput from '../InfoPane/RegistryInput.tsx';
+import RegistryInput from './RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
+import { cn } from '../../lib/dom.ts';
+import { useParsedQuery } from '../../hooks/useQuery.ts';
+import { ExternalLink } from '../ui/ExternalLink.tsx';
+import InputHelp from '../InputHelp.tsx';
+import * as utilities from '../ui/utilities.module.scss';
+import FilePicker from './FilePicker.tsx';
+import * as styles from './SettingsPane.module.scss';
+
+function isGithubUrl(url: URL | null) {
+  return url ? /^github.com$|\.github.com$/.test(url?.host ?? '') : false;
+}
+
+function InfoSection() {
+  const [value] = useParsedQuery();
+  const valueAsURL = URL.parse(value.trim());
+  return (
+    <>
+      {isGithubUrl(valueAsURL) ? (
+        <div className={styles.tip}>
+          Note: URLs that refer to private GitHub repos or gists should use the
+          URL shown when{' '}
+          <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
+            viewing the "Raw" file
+          </ExternalLink>
+          .
+        </div>
+      ) : null}
+      {valueAsURL ? (
+        <div className={styles.tip}>
+          Note: {valueAsURL.host} must allow CORS requests from the{' '}
+          {location.host} domain for this to work
+        </div>
+      ) : null}
+
+      <InputHelp heading="npmgraph supports looking up:" />
+
+      <p>It also accepts package.json:</p>
+      <ul>
+        <li>Drag and drop a file anywhere on the page</li>
+        <li>Paste package.json (file or text)</li>
+        <li>
+          <FilePicker label="Choose file" /> from your computer
+        </li>
+      </ul>
+      <hr />
+
+      <footer>
+        <p>
+          <a
+            href="https://github.com/npmgraph/npmgraph"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(utilities.brightHover, 'external-link')}
+          >
+            GitHub repo
+          </a>
+          {' | '}
+          <a
+            href="https://github.com/sponsors/broofa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(utilities.brightHover, 'external-link')}
+          >
+            Sponsor
+          </a>
+        </p>
+      </footer>
+    </>
+  );
+}
 
 export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
@@ -70,6 +140,8 @@ export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
       <hr />
 
       <ColorizeInput />
+      <hr />
+      <InfoSection />
     </Pane>
   );
 }

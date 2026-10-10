@@ -1,6 +1,6 @@
 import { appVersion, releaseStage } from '../lib/bugsnag.ts';
 import GitHubCorner from './GitHubCorner.tsx';
-import QueryInput from './InfoPane/QueryInput.tsx';
+import QueryInput from './SettingsPane/QueryInput.tsx';
 import InputHelp from './InputHelp.tsx';
 import * as styles from './Intro.module.scss';
 import Logo from './Logo.tsx';

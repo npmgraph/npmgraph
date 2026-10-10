@@ -1,4 +1,4 @@
-import QueryInput from './InfoPane/QueryInput.tsx';
+import QueryInput from './SettingsPane/QueryInput.tsx';
 import Logo from './Logo.tsx';
 import * as styles from './AppHeader.module.scss';
 import Tabs from './ui/Tabs.tsx';

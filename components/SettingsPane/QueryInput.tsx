@@ -55,7 +55,7 @@ export default function QueryInput({
   }
 
   function handleFocus() {
-    setPane(PaneType.INFO);
+    setPane(PaneType.SETTINGS);
   }
 
   return (
