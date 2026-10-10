@@ -14,14 +14,26 @@ module.exports = new Transformer({
       .replaceAll('`', '\\`')
       .replaceAll('${', '\\${');
 
-    // 3. Output JavaScript as a CommonJS module
-    asset.type = 'js';
-
-    // 4. FIX: Use a regular JavaScript string concatenation or remove the backslash
-    // so the actual 'escapedContent' variable is injected right here.
-    asset.setCode('module.exports = `' + escapedContent + '`;');
-
-    // 5. Return the new JS asset
-    return [asset];
+    // 3. Return a brand new asset definition that explicitly tells Parcel
+    // it's JavaScript and exposes a safe 'default' symbol for scope hoisting.
+    return [
+      {
+        type: 'js',
+        content: 'export default `' + escapedContent + '`;',
+        sideEffects: false,
+        symbols: new Map([
+          [
+            'default',
+            {
+              local: 'default',
+              loc: {
+                start: { line: 1, column: 1 },
+                end: { line: 1, column: 1 },
+              },
+            },
+          ],
+        ]),
+      },
+    ];
   },
 });
