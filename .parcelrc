@@ -4,6 +4,9 @@
     "*.txt": [
       "@parcel/transformer-raw"
     ],
+    "bundle-text:*": [
+      "./scripts/parcel-transformer-inline.cjs"
+    ],
     "jsx:*.svg": [
       "...",
       "@parcel/transformer-svg-react"
