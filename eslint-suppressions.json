@@ -1,7 +1,0 @@
-{
-  "hooks/useTightScreen.ts": {
-    "react-doctor/no-unguarded-browser-global-in-render-or-hook-init": {
-      "count": 1
-    }
-  }
-}
