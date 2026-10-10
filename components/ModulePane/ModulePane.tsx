@@ -1,8 +1,5 @@
-import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type Module from '../../lib/Module.ts';
-import type { Maintainer } from '../../lib/Module.ts';
-import { QueryType } from '../../lib/ModuleCache.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
@@ -10,9 +7,8 @@ import useHashParam from '../../hooks/useHashParam.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import { Section } from '../ui/Section.tsx';
-import { Tag, Tags } from '../ui/Tag.tsx';
 import * as utilities from '../ui/utilities.module.scss';
+import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.scss';
 import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
@@ -95,7 +91,6 @@ export default function ModulePane({
   const isSingleEntryModule =
     graph.entryModules.size === 1 &&
     [...graph.entryModules][0]?.key === module.key;
-  const { maintainers } = module;
 
   const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
   const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
@@ -171,23 +166,7 @@ export default function ModulePane({
 
       <ModuleSize module={module} />
 
-      <Section
-        title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
-      >
-        <Tags>
-          {maintainers.map(
-            // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Incorrect types
-            ({ name = 'Unknown', email }: Exclude<Maintainer, string>) => (
-              <Tag
-                key={name + email}
-                type={QueryType.Maintainer}
-                value={name}
-                gravatar={email}
-              />
-            ),
-          )}
-        </Tags>
-      </Section>
+      <ModuleMaintainers module={module} />
     </Pane>
   );
 }
