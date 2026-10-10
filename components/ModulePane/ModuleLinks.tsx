@@ -42,28 +42,23 @@ export function ModuleActions({ module }: { module: Module }) {
     <div className={styles.linkGroup}>
       {isSingleEntryModule ? null : (
         <>
-          <label
-            title={
-              canCollapse
-                ? undefined
-                : 'Modules without dependencies can’t be collapsed'
-            }
-          >
-            <input
-              type="checkbox"
-              checked={canCollapse && collapse.includes(module.name)}
-              disabled={!canCollapse}
-              className={utilities.brightHover}
-              onChange={() => {
-                if (collapse.includes(module.name)) {
-                  setCollapse(collapse.filter(name => name !== module.name));
-                } else {
-                  setCollapse([...collapse, module.name]);
-                }
-              }}
-            />
-            Collapse
-          </label>
+          {canCollapse && (
+            <label>
+              <input
+                type="checkbox"
+                checked={collapse.includes(module.name)}
+                className={utilities.brightHover}
+                onChange={() => {
+                  if (collapse.includes(module.name)) {
+                    setCollapse(collapse.filter(name => name !== module.name));
+                  } else {
+                    setCollapse([...collapse, module.name]);
+                  }
+                }}
+              />
+              Collapse
+            </label>
+          )}
           <QueryLink
             className={utilities.brightHover}
             query={module.key}
