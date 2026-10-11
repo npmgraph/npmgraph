@@ -35,8 +35,13 @@ export function clampPosition(
     return [x, y] as const;
   }
 
-  const clamp = (position: number, viewSize: number, contentSize: number) =>
-    Math.min(0, Math.max(viewSize - contentSize * scale, position));
+  const clamp = (position: number, viewSize: number, contentSize: number) => {
+    const scaledSize = contentSize * scale;
+
+    return scaledSize <= viewSize
+      ? (viewSize - scaledSize) / 2
+      : Math.min(0, Math.max(viewSize - scaledSize, position));
+  };
 
   return [
     clamp(x, wrapper.clientWidth, content.offsetWidth),

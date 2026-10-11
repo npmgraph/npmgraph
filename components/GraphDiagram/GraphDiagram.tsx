@@ -156,13 +156,13 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   return (
     <TransformWrapper
       ref={transformRef}
+      centerOnInit
       minScale={minScale}
       maxScale={4}
       zoomAnimation={{ size: 0 }}
       doubleClick={{ disabled: true }}
       wheel={{
         wheelDisabled: true,
-
         step: 0.01,
       }}
       trackPadPanning={{
