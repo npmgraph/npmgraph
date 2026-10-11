@@ -1,35 +1,27 @@
 import { useControls } from 'react-zoom-pan-pinch';
-import { ZoomFitIcon, ZoomInIcon, ZoomOutIcon } from '../ui/Icons.tsx';
+import { ZoomFitIcon } from '../ui/Icons.tsx';
 import * as styles from './GraphDiagramZoomButtons.module.scss';
+import { zoomAroundCenter } from './viewport-util.ts';
 
 export function GraphDiagramZoomButtons() {
-  const { zoomIn, zoomOut, fitToView } = useControls();
+  const controls = useControls();
 
   return (
     <div className={styles.root}>
       <button
         type="button"
-        title="Zoom in"
+        title="Zoom to actual size"
         onClick={() => {
-          void zoomIn();
+          zoomAroundCenter(controls, 1);
         }}
       >
-        <ZoomInIcon />
-      </button>
-      <button
-        type="button"
-        title="Zoom out"
-        onClick={() => {
-          void zoomOut();
-        }}
-      >
-        <ZoomOutIcon />
+        1:1
       </button>
       <button
         type="button"
         title="Zoom to fit"
         onClick={() => {
-          void fitToView({ maxScale: 1 });
+          void controls.fitToView({ maxScale: 1 });
         }}
       >
         <ZoomFitIcon />

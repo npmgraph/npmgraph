@@ -48,6 +48,7 @@ import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import { clampPosition, getFitScale } from './viewport-util.ts';
 import {
   type DependencyKey,
   type GraphState,
@@ -145,6 +146,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [collapse, setCollapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
+  const [minScale, setMinScale] = useState(0.05);
   // Dragging the graph shouldn't count as a click, which would clear the selection
   const panningRef = useRef(false);
   const [sizing] = useHashParam(PARAM_SIZING);
@@ -226,6 +228,36 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
   // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
+  // Effect: Don't allow zooming out further than "fit to screen"
+  useEffect(() => {
+    const controls = transformRef.current;
+    const wrapper = controls?.instance.wrapperComponent;
+    const content = controls?.instance.contentComponent;
+    if (!controls || !wrapper || !content) {
+      return;
+    }
+
+    const update = () => {
+      const fitScale = getFitScale(wrapper, content);
+      if (!fitScale) {
+        return;
+      }
+
+      setMinScale(fitScale);
+      if (controls.instance.state.scale < fitScale) {
+        void controls.fitToView({ maxScale: 1, animationTime: 0 });
+      }
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(wrapper);
+    observer.observe(content);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   // Effect: Fetch modules
   useEffect(() => {
     const { signal, abort } = createAbortable();
@@ -394,8 +426,9 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   return (
     <TransformWrapper
       ref={transformRef}
-      minScale={0.05}
+      minScale={minScale}
       maxScale={4}
+      zoomAnimation={{ size: 0 }}
       wheel={{ step: 0.0015 }}
       doubleClick={{ disabled: true }}
       trackPadPanning={{ disabled: false }}
@@ -450,8 +483,7 @@ function scrollGraphIntoView(
   animationTime = 0,
 ) {
   const wrapper = transform?.instance.wrapperComponent;
-  const content = transform?.instance.contentComponent;
-  if (!transform || !wrapper || !content || !element) {
+  if (!transform || !wrapper || !element) {
     return;
   }
 
@@ -460,23 +492,14 @@ function scrollGraphIntoView(
   const { scale, positionX, positionY } = transform.instance.state;
   const view = wrapper.getBoundingClientRect();
   const box = element.getBoundingClientRect();
-  const clamp = (position: number, viewSize: number, contentSize: number) =>
-    Math.min(0, Math.max(viewSize - contentSize * scale, position));
-
-  void transform.setTransform(
-    clamp(
-      positionX + view.left + view.width / 2 - (box.left + box.width / 2),
-      view.width,
-      content.offsetWidth,
-    ),
-    clamp(
-      positionY + view.top + view.height / 2 - (box.top + box.height / 2),
-      view.height,
-      content.offsetHeight,
-    ),
+  const [x, y] = clampPosition(
+    transform,
+    positionX + view.left + view.width / 2 - (box.left + box.width / 2),
+    positionY + view.top + view.height / 2 - (box.top + box.height / 2),
     scale,
-    animationTime,
   );
+
+  void transform.setTransform(x, y, scale, animationTime);
 }
 
 function updateSelection(

@@ -57,14 +57,6 @@ export function GithubIcon(props: IconProps) {
 
 // Paths for these can be found in art/icons.svg
 
-export function ZoomInIcon(props: IconProps) {
-  return <Icon name="zoom-in" {...props} strokePath="M 8,2 V 14 M 2,8 H 14" />;
-}
-
-export function ZoomOutIcon(props: IconProps) {
-  return <Icon name="zoom-out" {...props} strokePath="M 2,8 H 14" />;
-}
-
 export function ZoomFitIcon(props: IconProps) {
   return (
     <Icon
