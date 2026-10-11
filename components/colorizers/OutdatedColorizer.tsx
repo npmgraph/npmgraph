@@ -1,20 +1,9 @@
-import { difference, isGreaterThan, type VersionDifference } from 'verkit';
+import { difference, isGreaterThan } from 'verkit';
 import type Module from '../../lib/Module.ts';
 import { getNPMPackument } from '../../lib/PackumentCache.ts';
 import { COLORIZE_COLORS } from '../../lib/constants.ts';
 import { LegendColor } from './LegendColor.tsx';
 import type { SimpleColorizer } from './types.ts';
-
-// Index in COLORIZE_COLORS, by how the module version differs from the latest
-const COLOR_INDEX: Record<VersionDifference, 0 | 1 | 2> = {
-  major: 0,
-  premajor: 0,
-  minor: 1,
-  preminor: 1,
-  patch: 2,
-  prepatch: 2,
-  prerelease: 2,
-};
 
 export default {
   title: 'Outdated Level',
@@ -47,12 +36,27 @@ export default {
       return COLORIZE_COLORS[3];
     }
 
+    let outdated;
     try {
-      const outdated = difference(module.version, latestVersion);
-      return COLORIZE_COLORS[outdated ? COLOR_INDEX[outdated] : 3];
+      outdated = difference(module.version, latestVersion);
     } catch (error) {
       console.error(error);
       return '';
+    }
+
+    switch (outdated) {
+      case 'major':
+      case 'premajor':
+        return COLORIZE_COLORS[0];
+      case 'minor':
+      case 'preminor':
+        return COLORIZE_COLORS[1];
+      case 'patch':
+      case 'prepatch':
+      case 'prerelease':
+        return COLORIZE_COLORS[2];
+      case null:
+        return COLORIZE_COLORS[3];
     }
   },
 } as SimpleColorizer;
