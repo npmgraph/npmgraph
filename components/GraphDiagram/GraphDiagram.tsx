@@ -103,9 +103,20 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       }
 
       setMinScale(fitScale);
+
       if (controls.instance.state.scale < fitScale) {
         void controls.fitToView({ maxScale: 1, animationTime: 0 });
+        return;
       }
+
+      const [x, y] = clampPosition(
+        controls,
+        controls.instance.state.positionX,
+        controls.instance.state.positionY,
+        controls.instance.state.scale,
+      );
+
+      void controls.setTransform(x, y, controls.instance.state.scale, 0);
     };
 
     update();
