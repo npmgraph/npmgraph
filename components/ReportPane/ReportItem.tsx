@@ -17,11 +17,7 @@ type ReportItemProps<T> = {
 
 export function ReportItem<T>({ data, ...props }: ReportItemProps<T>) {
   // There's nothing to report until there's data
-  if (!data) {
-    return null;
-  }
-
-  return <LoadedReportItem data={data} {...props} />;
+  return data ? <LoadedReportItem data={data} {...props} /> : null;
 }
 
 function LoadedReportItem<T>({
