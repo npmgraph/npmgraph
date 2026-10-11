@@ -181,6 +181,8 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         velocityDisabled: true,
       }}
       panning={{
+        // Without this it becomes a bit difficult to click on the nodes,
+        // panning starts if you move by 1px and it prevents the default.
         excluded: ['node'],
       }}
       onPanning={() => {
