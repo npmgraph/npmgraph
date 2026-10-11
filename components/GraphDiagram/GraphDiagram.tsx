@@ -1,13 +1,10 @@
-import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import {
   Suspense,
-  use,
   useCallback,
   useEffect,
   useLayoutEffect,
   useMemo,
-  useState,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { $, $$optional, $optional } from 'select-dom';
@@ -19,23 +16,18 @@ import {
   queryModuleCache,
   QueryType,
 } from '../../lib/ModuleCache.ts';
-import { report } from '../../lib/bugsnag.ts';
 import {
   PARAM_COLORIZE,
-  PARAM_SIZING,
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
   ZOOM_FIT_WIDTH,
   ZOOM_NONE,
 } from '../../lib/constants.ts';
-import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
-import memoizeRecent from '../../lib/memoizeRecent.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
-import { flash } from '../../lib/flash.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import * as utilities from '../ui/utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
@@ -45,69 +37,11 @@ import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
-import {
-  type GraphState,
-  composeDOT,
-  gatherSelectionInfo,
-} from '../../lib/graph-util.ts';
+import useRenderDiagram from './useRenderDiagram.ts';
+import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
-import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
-
-function getDiagramElement() {
-  return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
-}
-
-function decorateGraphNodes(
-  element: Element,
-  isModuleVisible: ({ name }: { name: string }) => boolean,
-) {
-  for (const nodeElement of $$optional('g.node', element)) {
-    const key = $optional(':scope > title', nodeElement)?.textContent!.trim();
-    if (!key) {
-      continue;
-    }
-
-    const module = getCachedModule(key);
-    if (!module) {
-      continue;
-    }
-
-    nodeElement.setAttribute('role', 'button');
-    nodeElement.setAttribute('tabindex', '0');
-    nodeElement.setAttribute('aria-label', `Select ${module.key}`);
-
-    if (module.package.deprecated) {
-      nodeElement.classList.add('warning');
-    }
-
-    if (module.name) {
-      nodeElement.dataset['module'] = module.key;
-    } else {
-      report.warn(new Error(`Bad replace: ${key}`));
-    }
-
-    if (!isModuleVisible(module)) {
-      nodeElement.classList.add('collapsed');
-    }
-
-    if (module.isStub) {
-      nodeElement.classList.add('stub');
-    }
-  }
-}
 
 const idSeen = new Set<unknown>();
-
-// Keep graphviz in a secondary bundle but load it eagerly
-const graphvizPromise = (async () => {
-  const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
-  return Graphviz.load();
-})();
-
-// Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
-const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
-  graphviz.dot(dot, 'svg'),
-);
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   return (
@@ -128,15 +62,9 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph] = useGlobalState('graph');
-  const [diagramElement, setDiagramElement] = useState<
-    SVGSVGElement | undefined
-  >(getDiagramElement);
-
   const [collapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
-  const [sizing] = useHashParam(PARAM_SIZING);
-  const graphviz = use(graphvizPromise);
 
   const handleGraphClick = useGraphClick();
 
@@ -189,73 +117,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useLoadGraph(moduleFilter);
 
-  // Effect: Insert SVG markup into DOM
-  useEffect(() => {
-    const { signal, abort } = createAbortable();
-
-    // Post-process rendered DOM
-    const finish = activity.start('Rendering');
-
-    // Render SVG markup (async)
-    (async function () {
-      // Check after all async stuff
-      if (signal.aborted) {
-        return;
-      }
-
-      // Compose SVG markup
-      let svgMarkup = '<svg />';
-      if (graph?.moduleInfos?.size !== 0) {
-        const dotDoc = composeDOT({ graph, sizing: sizing !== null });
-
-        try {
-          svgMarkup =
-            graph?.moduleInfos.size === 0
-              ? '<svg />'
-              : layout(dotDoc, graphviz);
-        } catch (error) {
-          console.error(error);
-          flash('Error while rendering graph');
-        }
-      }
-
-      if (signal.aborted) {
-        return;
-      } // Check after all async stuff
-
-      // Parse markup
-      const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
-        .firstElementChild as SVGSVGElement;
-      svgDom.remove();
-
-      // Remove background element so page background shows thru
-      $optional('.graph > polygon', svgDom)?.remove();
-      svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svgDom.classList.add(styles.graphDiagram);
-
-      // Inject into DOM
-      const element = $(`.${styles.graph}`);
-      getDiagramElement()?.remove();
-      element.append(svgDom);
-
-      // Inject SVG definitions: warning pattern and collapsed-node outline
-      select(`.${styles.graph} svg`)
-        .insert('defs', ':first-child')
-        .html(svgDefs);
-
-      decorateGraphNodes(element, moduleFilter);
-
-      // Signal other hooks that graph DOM has changed
-      setDiagramElement(getDiagramElement());
-
-      finish?.();
-    })();
-
-    return () => {
-      finish();
-      abort();
-    };
-  }, [activity, graphviz, graph, moduleFilter, sizing]);
+  const diagramElement = useRenderDiagram(activity, moduleFilter);
 
   // (Re)apply zoom if/when it changes — useLayoutEffect prevents visual flicker when switching modes
   useLayoutEffect(applyZoom, [zoom, diagramElement]);
