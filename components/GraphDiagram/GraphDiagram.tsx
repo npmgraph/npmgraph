@@ -23,7 +23,6 @@ import { report } from '../../lib/bugsnag.ts';
 import {
   PaneType,
   PARAM_COLORIZE,
-  PARAM_DEPENDENCIES,
   PARAM_HIDE,
   PARAM_PACKAGES,
   PARAM_SIZING,
@@ -36,6 +35,7 @@ import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
+import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
@@ -49,7 +49,6 @@ import './graphviz.css';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import {
-  type DependencyKey,
   type GraphState,
   composeDOT,
   gatherSelectionInfo,
@@ -132,7 +131,6 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [query] = useQuery();
-  const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
   // Pasted package.json files are in the hash, they can change without the query changing
   const [packages] = useHashParam(PARAM_PACKAGES);
   const [, setPane] = useGlobalState('pane');
@@ -152,19 +150,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
 
-  // Stable dependency types for use in effects
-  const dependencyTypes = useMemo(() => {
-    const extra = (depTypes ?? '')
-      .split(/\s*,\s*/)
-      .map(s => s.trim())
-      .filter(Boolean)
-      .toSorted() as DependencyKey[];
-    return new Set<DependencyKey>([
-      'dependencies',
-      'optionalDependencies',
-      ...extra,
-    ]);
-  }, [depTypes]);
+  const dependencyTypes = useDependencyTypes();
 
   function handleGraphClick(event: React.MouseEvent) {
     const { target } = event;

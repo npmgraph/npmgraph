@@ -117,6 +117,18 @@ function getDependencyEntries(
 }
 
 /**
+ Whether a module has dependencies of its own, which is independent from
+ whether they are currently shown (e.g. a collapsed module shows none).
+ */
+export function hasDependencies(
+  module: Module,
+  dependencyTypes: Set<DependencyKey>,
+  level = 0,
+) {
+  return getDependencyEntries(module, dependencyTypes, level).size > 0;
+}
+
+/**
  Fetch the module dependency tree for a given query.
  */
 export async function getGraphForQuery(
