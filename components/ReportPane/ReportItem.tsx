@@ -7,25 +7,32 @@ import * as styles from './ReportItem.module.scss';
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
 
-export function ReportItem<T>({
-  data,
-  reporter,
-  children,
-  ...props
-}: {
+type ReportItemProps<T> = {
   data?: T;
   reporter: (
     state: T,
   ) => Promise<RenderedAnalysis | undefined> | RenderedAnalysis | undefined;
   type?: 'info' | 'warn' | 'error';
-} & React.HTMLAttributes<HTMLDetailsElement>) {
+} & React.HTMLAttributes<HTMLDetailsElement>;
+
+export function ReportItem<T>({ data, ...props }: ReportItemProps<T>) {
+  // There's nothing to report until there's data
+  if (!data) {
+    return null;
+  }
+
+  return <LoadedReportItem data={data} {...props} />;
+}
+
+function LoadedReportItem<T>({
+  data,
+  reporter,
+  children,
+  ...props
+}: ReportItemProps<T> & { data: T }) {
   const [analysis, setAnalysis] = useState<RenderedAnalysis>();
 
   useEffect(() => {
-    if (!data) {
-      return;
-    }
-
     void Promise.resolve(reporter(data)).then(report => {
       setAnalysis(report);
     });
