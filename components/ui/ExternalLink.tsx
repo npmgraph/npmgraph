@@ -1,6 +1,6 @@
-import type { HTMLProps, ReactElement } from 'react';
+import OffsiteLinkIcon from 'jsx:../../images/icons/offsite-link.svg';
+import type { ComponentType, HTMLProps, SVGProps } from 'react';
 import { cn } from '../../lib/dom.ts';
-import { type IconProps, OffsiteLinkIcon } from './Icons.tsx';
 import * as utilities from './utilities.module.scss';
 
 import * as styles from './ExternalLink.module.scss';
@@ -14,7 +14,7 @@ export function ExternalLink({
   ...props
 }: HTMLProps<HTMLAnchorElement> & {
   className?: string;
-  icon?: (props: IconProps) => ReactElement;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>;
 }) {
   return (
     <a
@@ -25,6 +25,8 @@ export function ExternalLink({
     >
       {children}
       <IconComponent
+        // svgo.config.json removes the viewBox of the files, which is needed to resize them
+        viewBox="0 0 16 16"
         style={{ marginLeft: '0.3rem', verticalAlign: '-0.1em' }}
         width={12}
         height={12}
