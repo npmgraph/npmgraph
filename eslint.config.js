@@ -69,7 +69,7 @@ export default defineConfig([
     },
   },
   reactDoctor.configs.recommended,
-  reactYouMightNotNeedAnEffect.configs.recommended,
+  reactYouMightNotNeedAnEffect.configs.strict,
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },
