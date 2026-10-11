@@ -11,7 +11,7 @@ import { getGraphForQuery } from '../../lib/graph-util.ts';
 
 // Fetch the modules of the query and store the resulting graph
 export default function useLoadGraph(
-  moduleFilter: ({ name }: { name: string }) => boolean,
+  isModuleVisible: ({ name }: { name: string }) => boolean,
 ) {
   const [query] = useQuery();
   // Pasted package.json files are in the hash, they can change without the query changing
@@ -26,7 +26,7 @@ export default function useLoadGraph(
 
   useEffect(() => {
     const { signal, abort } = createAbortable();
-    void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
+    void getGraphForQuery(sortedQuery, dependencyTypes, isModuleVisible).then(
       newGraph => {
         // Check after async
         if (signal.aborted) {
@@ -39,7 +39,7 @@ export default function useLoadGraph(
           firstInfo &&
           newGraph?.moduleInfos.size === 1 &&
           !firstInfo.module.isStub &&
-          moduleFilter(firstInfo.module)
+          isModuleVisible(firstInfo.module)
         ) {
           void celebrate('Zero dependencies for the win!');
         }
@@ -60,7 +60,7 @@ export default function useLoadGraph(
     sortedQuery,
     dependencyTypes,
     collapse,
-    moduleFilter,
+    isModuleVisible,
     packages,
     setGraph,
     setPane,
