@@ -1,8 +1,6 @@
-import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import {
   Suspense,
-  use,
   useCallback,
   useEffect,
   useMemo,
@@ -15,7 +13,7 @@ import {
   TransformComponent,
   TransformWrapper,
 } from 'react-zoom-pan-pinch';
-import { $, $$optional, $optional, closestElementOptional } from 'select-dom';
+import { $, $$optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -24,95 +22,26 @@ import {
   queryModuleCache,
   QueryType,
 } from '../../lib/ModuleCache.ts';
-import { report } from '../../lib/bugsnag.ts';
-import {
-  PaneType,
-  PARAM_COLORIZE,
-  PARAM_DEPENDENCIES,
-  PARAM_HIDE,
-  PARAM_PACKAGES,
-  PARAM_SIZING,
-} from '../../lib/constants.ts';
-import { createAbortable } from '../../lib/createAbortable.ts';
+import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
-import memoizeRecent from '../../lib/memoizeRecent.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
-import { useQuery } from '../../hooks/useQuery.ts';
-import { celebrate, flash } from '../../lib/flash.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import useGraphClick from './useGraphClick.ts';
+import useLoadGraph from './useLoadGraph.ts';
+import useRenderDiagram from './useRenderDiagram.ts';
 import { clampPosition, getFitScale } from './viewport-util.ts';
-import {
-  type DependencyKey,
-  type GraphState,
-  composeDOT,
-  gatherSelectionInfo,
-  getGraphForQuery,
-} from '../../lib/graph-util.ts';
+import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
 
-function getDiagramElement() {
-  return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
-}
-
-function decorateGraphNodes(
-  element: Element,
-  isModuleVisible: ({ name }: { name: string }) => boolean,
-) {
-  for (const nodeElement of $$optional('g.node', element)) {
-    const key = $optional(':scope > title', nodeElement)?.textContent!.trim();
-    if (!key) {
-      continue;
-    }
-
-    const module = getCachedModule(key);
-    if (!module) {
-      continue;
-    }
-
-    nodeElement.setAttribute('role', 'button');
-    nodeElement.setAttribute('tabindex', '0');
-    nodeElement.setAttribute('aria-label', `Select ${module.key}`);
-
-    if (module.package.deprecated) {
-      nodeElement.classList.add('warning');
-    }
-
-    if (module.name) {
-      nodeElement.dataset['module'] = module.key;
-    } else {
-      report.warn(new Error(`Bad replace: ${key}`));
-    }
-
-    if (!isModuleVisible(module)) {
-      nodeElement.classList.add('collapsed');
-    }
-
-    if (module.isStub) {
-      nodeElement.classList.add('stub');
-    }
-  }
-}
-
 const idSeen = new Set<unknown>();
-
-// Keep graphviz in a secondary bundle but load it eagerly
-const graphvizPromise = (async () => {
-  const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
-  return Graphviz.load();
-})();
-
-// Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
-const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
-  graphviz.dot(dot, 'svg'),
-);
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   return (
@@ -131,94 +60,17 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 }
 
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
-  const [query] = useQuery();
-  const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
-  // Pasted package.json files are in the hash, they can change without the query changing
-  const [packages] = useHashParam(PARAM_PACKAGES);
-  const [, setPane] = useGlobalState('pane');
-  const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
-  const [graph, setGraph] = useGlobalState('graph');
-  const [diagramElement, setDiagramElement] = useState<
-    SVGSVGElement | undefined
-  >(getDiagramElement);
-
-  const [collapse, setCollapse] = useCollapse();
+  const [graph] = useGlobalState('graph');
+  const [collapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
+
+  const handleGraphClick = useGraphClick();
+
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   const [minScale, setMinScale] = useState(0.05);
   // Dragging the graph shouldn't count as a click, which would clear the selection
   const panningRef = useRef(false);
-  const [sizing] = useHashParam(PARAM_SIZING);
-  const graphviz = use(graphvizPromise);
-
-  // Stable query array for use in effects
-  const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
-
-  // Stable dependency types for use in effects
-  const dependencyTypes = useMemo(() => {
-    const extra = (depTypes ?? '')
-      .split(/\s*,\s*/)
-      .map(s => s.trim())
-      .filter(Boolean)
-      .toSorted() as DependencyKey[];
-    return new Set<DependencyKey>([
-      'dependencies',
-      'optionalDependencies',
-      ...extra,
-    ]);
-  }, [depTypes]);
-
-  function handleGraphClick(event: React.MouseEvent) {
-    const { target } = event;
-
-    // A drag can end on a link, which shouldn't be followed
-    if (panningRef.current) {
-      event.preventDefault();
-      return;
-    }
-
-    if (
-      !(target instanceof Element) ||
-      // Allow opening the link in a new tab
-      event.metaKey ||
-      closestElementOptional(`.${styles.graphControls}`, target)
-    ) {
-      return;
-    }
-
-    const node = closestElementOptional('g.node', target);
-    if (node) {
-      // Don't navigate to link
-      event.preventDefault();
-    }
-
-    const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
-    const module = moduleKey === '' ? undefined : getCachedModule(moduleKey);
-
-    // Toggle exclude filter?
-    if (node && event.shiftKey) {
-      if (module) {
-        const isIncluded = collapse.includes(module.name);
-        if (isIncluded) {
-          setCollapse(collapse.filter(n => n !== module.name));
-        } else {
-          setCollapse([...collapse, module.name]);
-        }
-      }
-
-      return;
-    }
-
-    if (node) {
-      setZenMode('');
-    }
-
-    setGraphSelection(QueryType.Default, moduleKey);
-    if (moduleKey !== '') {
-      setPane(PaneType.MODULE);
-    }
-  }
 
   // Filter for which modules should be shown / collapsed in the graph
   const moduleFilter = useCallback(
@@ -228,6 +80,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
   // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
+  // Effect: Fetch modules
+  useLoadGraph(moduleFilter);
+
+  const diagramElement = useRenderDiagram(activity, moduleFilter);
+
   // Effect: Don't allow zooming out further than "fit to screen"
   useEffect(() => {
     const controls = transformRef.current;
@@ -257,135 +114,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       observer.disconnect();
     };
   }, []);
-
-  // Effect: Fetch modules
-  useEffect(() => {
-    const { signal, abort } = createAbortable();
-    void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
-      newGraph => {
-        // Check after async
-        if (signal.aborted) {
-          return;
-        }
-
-        // A collapsed module also results in a graph with a single module
-        const firstInfo = newGraph.moduleInfos.values().next().value;
-        if (
-          firstInfo &&
-          newGraph?.moduleInfos.size === 1 &&
-          !firstInfo.module.isStub &&
-          moduleFilter(firstInfo.module)
-        ) {
-          void celebrate('Zero dependencies for the win!');
-        }
-
-        setGraph(newGraph);
-
-        if (
-          newGraph.entryModules.size === 0 &&
-          newGraph.failedEntryModules.size > 0
-        ) {
-          setPane(PaneType.INFO);
-        }
-      },
-    );
-
-    return abort;
-  }, [
-    sortedQuery,
-    dependencyTypes,
-    collapse,
-    moduleFilter,
-    packages,
-    setGraph,
-    setPane,
-  ]);
-
-  // Effect: Insert SVG markup into DOM
-  useEffect(() => {
-    const { signal, abort } = createAbortable();
-
-    // Post-process rendered DOM
-    const finish = activity.start('Rendering');
-
-    // Render SVG markup (async)
-    (async function () {
-      // Check after all async stuff
-      if (signal.aborted) {
-        return;
-      }
-
-      // Compose SVG markup
-      let svgMarkup = '<svg />';
-      if (graph?.moduleInfos?.size !== 0) {
-        const dotDoc = composeDOT({ graph, sizing: sizing !== null });
-
-        try {
-          svgMarkup =
-            graph?.moduleInfos.size === 0
-              ? '<svg />'
-              : layout(dotDoc, graphviz);
-        } catch (error) {
-          console.error(error);
-          flash('Error while rendering graph');
-        }
-      }
-
-      if (signal.aborted) {
-        return;
-      } // Check after all async stuff
-
-      // Parse markup
-      const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
-        .firstElementChild as SVGSVGElement;
-      svgDom.remove();
-
-      // Remove background element so page background shows thru
-      $optional('.graph > polygon', svgDom)?.remove();
-      svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svgDom.classList.add(styles.graphDiagram);
-
-      // Show the diagram at its natural size, the viewport handles zooming.
-      // Note: Not using svg.getBBox() here because (for some reason???) it's
-      // smaller than the actual bounding box
-      const [width, height] =
-        svgDom.getAttribute('viewBox')?.split(' ').slice(2) ?? [];
-      if (width && height) {
-        svgDom.setAttribute('width', width);
-        svgDom.setAttribute('height', height);
-      }
-
-      // Inject into DOM
-      const element = $(`.${styles.graph}`);
-      getDiagramElement()?.remove();
-      element.append(svgDom);
-
-      // Inject bg pattern for deprecated modules
-      const PATTERN = `<pattern id="warning"
-        width="12" height="12"
-        patternUnits="userSpaceOnUse"
-        patternTransform="rotate(45 50 50)">
-        <line class="line0" stroke-width="6px" x1="3" x2="3" y2="12"/>
-        <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12"/>
-        </pattern>`;
-
-      select(`.${styles.graph} svg`)
-        .insert('defs', ':first-child')
-        .html(PATTERN);
-
-      decorateGraphNodes(element, moduleFilter);
-
-      // Signal other hooks that graph DOM has changed
-      setDiagramElement(getDiagramElement());
-
-      finish?.();
-    })();
-
-    return () => {
-      finish();
-      abort();
-    };
-  }, [activity, graphviz, graph, moduleFilter, sizing]);
 
   const selectedModules = useMemo(
     () =>
@@ -451,7 +179,18 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           wrapperClass={styles.viewport}
           wrapperStyle={{ width: '100%', height: '100%' }}
         >
-          <div className={styles.graph} onClick={handleGraphClick} />
+          <div
+            className={styles.graph}
+            onClick={event => {
+              // A drag can end on a link, which shouldn't be followed
+              if (panningRef.current) {
+                event.preventDefault();
+                return;
+              }
+
+              handleGraphClick(event);
+            }}
+          />
         </TransformComponent>
       </div>
     </TransformWrapper>
@@ -502,17 +241,10 @@ function scrollGraphIntoView(
   void transform.setTransform(x, y, scale, animationTime);
 }
 
-function updateSelection(
-  graph: GraphState,
-  modules: Map<string, Module>,
-  shouldScrollToSelected = true,
-  transform: ReactZoomPanPinchContentRef | null = null,
-) {
-  // Get selection info
-  const si = gatherSelectionInfo(graph, modules.values());
-  const isSelection = modules.size > 0;
+type SelectionInfo = ReturnType<typeof gatherSelectionInfo>;
 
-  // Set selection classes for node elements
+// Returns the selected node element (if multiple, the last one)
+function updateNodeSelection(si: SelectionInfo, isSelection: boolean) {
   let scrollElement: HTMLElement | undefined;
   for (const element of $$optional('svg .node[data-module]')) {
     const moduleKey = element.dataset['module'] ?? '';
@@ -532,7 +264,10 @@ function updateSelection(
     }
   }
 
-  // Set selection classes for edge elements
+  return scrollElement;
+}
+
+function updateEdgeSelection(si: SelectionInfo, isSelection: boolean) {
   for (const edge of $$optional('svg g.edge')) {
     const edgeTitle = $('title', edge)?.textContent ?? '';
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
@@ -549,12 +284,27 @@ function updateSelection(
       edge.parentElement?.append(edge);
     }
   }
+}
+
+function updateSelection(
+  graph: GraphState,
+  modules: Map<string, Module>,
+  shouldScrollToSelected = true,
+  transform: ReactZoomPanPinchContentRef | null = null,
+) {
+  // Get selection info
+  const si = gatherSelectionInfo(graph, modules.values());
+  const isSelection = modules.size > 0;
+
+  // Set selection classes for node and edge elements
+  const scrollElement = updateNodeSelection(si, isSelection);
+  updateEdgeSelection(si, isSelection);
 
   if (shouldScrollToSelected) {
     // Scroll to selected element (if multiple elements, this scrolls to last one)
     if (scrollElement) {
       scrollGraphIntoView(scrollElement, transform, 300);
-    } else if (!scrollElement) {
+    } else {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
       scrollGraphIntoView(

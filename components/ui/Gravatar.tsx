@@ -23,17 +23,17 @@ export function Gravatar({
   const [hash, setHash] = useState<string>();
 
   useEffect(() => {
-    const controller = new AbortController();
+    let isCancelled = false;
 
     (async () => {
       const h = await sha256(email.trim().toLowerCase());
-      if (!controller.signal.aborted) {
+      if (!isCancelled) {
         setHash(h);
       }
     })();
 
     return () => {
-      controller.abort();
+      isCancelled = true;
     };
   }, [email]);
 

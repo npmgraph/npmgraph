@@ -1,0 +1,33 @@
+<pattern
+  id="warning"
+  width="12"
+  height="12"
+  patternUnits="userSpaceOnUse"
+  patternTransform="rotate(45 50 50)"
+>
+  <line class="line0" stroke-width="6px" x1="3" x2="3" y2="12" />
+  <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12" />
+</pattern>
+<filter
+  id="collapsed-outline"
+  x="-50%"
+  y="-50%"
+  width="200%"
+  height="200%"
+  color-interpolation-filters="sRGB"
+  ><feOffset in="SourceGraphic" dx="4" dy="4" result="copy1" />
+  <feComponentTransfer in="copy1" result="faded-copy1">
+    <feFuncA type="linear" slope="0.5" />
+  </feComponentTransfer>
+
+  <feOffset in="SourceGraphic" dx="8" dy="8" result="copy2" />
+  <feComponentTransfer in="copy2" result="faded-copy2">
+    <feFuncA type="linear" slope="0.25" />
+  </feComponentTransfer>
+
+  <feMerge>
+    <feMergeNode in="faded-copy2" />
+    <feMergeNode in="faded-copy1" />
+    <feMergeNode in="SourceGraphic" />
+  </feMerge>
+</filter>

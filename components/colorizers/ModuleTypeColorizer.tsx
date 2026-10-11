@@ -93,47 +93,41 @@ function detectPackageType(pkg: PackageJSON) {
   return _detectExports(pkg['exports'], pkgType);
 }
 
+// The presence of .mjs, .mts, .cjs, or .cts files is a strong indicator of
+// the module type
+function detectFile(file: string, pkgType: PackageModuleType) {
+  if (isESMFile(file)) {
+    pkgType.esm = true;
+  }
+
+  if (isCJSFile(file)) {
+    pkgType.cjs = true;
+  }
+}
+
+// Infer dual support if there's an explicit import or require in combination
+// with a default export
+function detectConditions(exports: object, pkgType: PackageModuleType) {
+  const defaultValue = 'default' in exports && exports.default;
+  const importValue = 'import' in exports && exports.import;
+  const requireValue = 'require' in exports && exports.require;
+
+  if (importValue || (defaultValue && requireValue)) {
+    pkgType.esm = true;
+  }
+
+  if (requireValue || (defaultValue && importValue)) {
+    pkgType.cjs = true;
+  }
+}
+
 // Loosely inspect package.json#exports for module type (recursive)
 function _detectExports(exports: unknown, pkgType: PackageModuleType) {
-  if (!exports) {
-    return pkgType;
-  }
-
-  // The presence of .mjs, .mts, .cjs, or .cts files is a strong indicator of
-  // the module type
   if (typeof exports === 'string') {
-    if (isESMFile(exports)) {
-      pkgType.esm = true;
-    }
-
-    if (isCJSFile(exports)) {
-      pkgType.cjs = true;
-    }
-
-    return pkgType;
-  }
-
-  // Drill into array values
-  if (Array.isArray(exports)) {
-    exports.some(v => _detectExports(v, pkgType));
-  }
-
-  if (typeof exports === 'object') {
-    const defaultValue = 'default' in exports && exports.default;
-    const importValue = 'import' in exports && exports.import;
-    const requireValue = 'require' in exports && exports.require;
-
-    // Infer dual support if there's an explicit import or require in
-    // combination with a default export
-    if (importValue || (defaultValue && requireValue)) {
-      pkgType.esm = true;
-    }
-
-    if (requireValue || (defaultValue && importValue)) {
-      pkgType.cjs = true;
-    }
-
-    // Drill down into object values
+    detectFile(exports, pkgType);
+  } else if (exports && typeof exports === 'object') {
+    // Also drills into arrays, since they are objects
+    detectConditions(exports, pkgType);
     for (const v of Object.values(exports)) {
       _detectExports(v, pkgType);
     }

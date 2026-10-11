@@ -26,6 +26,11 @@
   min-height: 0;
 }
 
+// Doesn't create a box, so the graph is laid out as a child of .content
+.graph {
+  display: contents;
+}
+
 @include tight-screen {
   html,
   body,

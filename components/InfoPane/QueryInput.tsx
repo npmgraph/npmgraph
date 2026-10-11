@@ -41,7 +41,9 @@ export default function QueryInput({
 
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
     event?.preventDefault();
-    patchLocation({ search: getSearchParameters(), hash: '' }, false);
+    patchLocation({ search: getSearchParameters(), hash: '' }, false, {
+      isInput: true,
+    });
   }
 
   // Add cmd-enter support to search in a new tab

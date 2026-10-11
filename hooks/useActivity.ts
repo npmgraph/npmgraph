@@ -6,6 +6,10 @@ export function setActivityForApp(ack: LoadActivity) {
   activity = ack;
 }
 
+export function getActivity() {
+  return activity;
+}
+
 export function useActivity() {
   const [, rerender] = useReducer((n: number) => n + 1, 0);
   if (!activity) {

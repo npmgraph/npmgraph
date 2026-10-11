@@ -21,7 +21,7 @@ export function QueryLink({
 
   function onClick(event: React.MouseEvent) {
     event.preventDefault();
-    patchLocation({ search, hash }, false);
+    patchLocation({ search, hash }, false, { isInput: true });
   }
 
   if (!children) {

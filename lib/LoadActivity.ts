@@ -38,4 +38,15 @@ export default class LoadActivity {
       this.onChange?.(this);
     };
   }
+
+  /**
+  Show activity for a fixed time, so that quick actions still give feedback
+  */
+  startFor(title: string, duration = 500): void {
+    if (duration < 0) {
+      throw new RangeError('duration must not be negative');
+    }
+
+    setTimeout(this.start(title), duration);
+  }
 }
