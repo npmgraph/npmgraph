@@ -1,11 +1,5 @@
 import { select } from 'd3-selection';
-import {
-  Suspense,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-} from 'react';
+import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { $, $$optional, $optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
@@ -16,25 +10,19 @@ import {
   queryModuleCache,
   QueryType,
 } from '../../lib/ModuleCache.ts';
-import {
-  PARAM_COLORIZE,
-  PARAM_ZOOM,
-  ZOOM_FIT_HEIGHT,
-  ZOOM_FIT_WIDTH,
-  ZOOM_NONE,
-} from '../../lib/constants.ts';
+import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
-import * as utilities from '../ui/utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import useDiagramZoom from './useDiagramZoom.ts';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
 import useRenderDiagram from './useRenderDiagram.ts';
@@ -64,47 +52,8 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [graph] = useGlobalState('graph');
   const [collapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
-  const [zoom] = useHashParam(PARAM_ZOOM);
 
   const handleGraphClick = useGraphClick();
-
-  function applyZoom() {
-    const graphElement = $(`.${styles.graph}`);
-
-    if (!graphElement || !diagramElement) {
-      return;
-    }
-
-    // Note: Not using svg.getBBox() here because (for some reason???) it's
-    // smaller than the actual bounding box
-    const vb = diagramElement.getAttribute('viewBox')?.split(' ').map(Number);
-    if (!vb) {
-      return;
-    }
-
-    const w = vb[2];
-    const h = vb[3];
-    graphElement.classList.remove(utilities.dBlock);
-
-    switch (zoom) {
-      case ZOOM_NONE:
-        diagramElement.setAttribute('width', String(w));
-        diagramElement.setAttribute('height', String(h));
-        break;
-
-      case ZOOM_FIT_WIDTH:
-        diagramElement.setAttribute('width', '100%');
-        diagramElement.removeAttribute('height');
-        break;
-
-      case ZOOM_FIT_HEIGHT:
-        diagramElement.removeAttribute('width');
-        diagramElement.setAttribute('height', '100%');
-        graphElement.classList.add(utilities.dBlock);
-        break;
-      default:
-    }
-  }
 
   // Filter for which modules should be shown / collapsed in the graph
   const moduleFilter = useCallback(
@@ -118,9 +67,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   useLoadGraph(moduleFilter);
 
   const diagramElement = useRenderDiagram(activity, moduleFilter);
-
-  // (Re)apply zoom if/when it changes — useLayoutEffect prevents visual flicker when switching modes
-  useLayoutEffect(applyZoom, [zoom, diagramElement]);
+  useDiagramZoom(diagramElement);
 
   const selectedModules = useMemo(
     () =>
