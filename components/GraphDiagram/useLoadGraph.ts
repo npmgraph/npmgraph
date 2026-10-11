@@ -6,11 +6,13 @@ import { useQuery } from '../../hooks/useQuery.ts';
 import { PaneType, PARAM_PACKAGES } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { getGraphForQuery } from '../../lib/graph-util.ts';
+import { getGraphForQuery, type GraphState } from '../../lib/graph-util.ts';
 
-// Fetch the modules of the query and store the resulting graph
+// Fetch the modules of the query and store the resulting graph, after calling
+// onLoad with it. onLoad must be stable.
 export default function useLoadGraph(
   isModuleVisible: ({ name }: { name: string }) => boolean,
+  onLoad: (graph: GraphState) => void,
 ) {
   const [query] = useQuery();
   // Pasted package.json files are in the hash, they can change without the query changing
@@ -32,6 +34,7 @@ export default function useLoadGraph(
           return;
         }
 
+        onLoad(newGraph);
         setGraph(newGraph);
 
         if (
@@ -49,6 +52,7 @@ export default function useLoadGraph(
     dependencyTypes,
     collapse,
     isModuleVisible,
+    onLoad,
     packages,
     setGraph,
     setPane,
