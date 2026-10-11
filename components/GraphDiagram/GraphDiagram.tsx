@@ -21,9 +21,7 @@ import {
 } from '../../lib/ModuleCache.ts';
 import { report } from '../../lib/bugsnag.ts';
 import {
-  PaneType,
   PARAM_COLORIZE,
-  PARAM_PACKAGES,
   PARAM_SIZING,
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
@@ -34,12 +32,10 @@ import { createAbortable } from '../../lib/createAbortable.ts';
 import { cn } from '../../lib/dom.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
-import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
-import { useQuery } from '../../hooks/useQuery.ts';
-import { celebrate, flash } from '../../lib/flash.ts';
+import { flash } from '../../lib/flash.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import * as utilities from '../ui/utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
@@ -48,11 +44,11 @@ import './graphviz.css';
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import useGraphClick from './useGraphClick.ts';
+import useLoadGraph from './useLoadGraph.ts';
 import {
   type GraphState,
   composeDOT,
   gatherSelectionInfo,
-  getGraphForQuery,
 } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
 import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
@@ -130,12 +126,8 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 }
 
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
-  const [query] = useQuery();
-  // Pasted package.json files are in the hash, they can change without the query changing
-  const [packages] = useHashParam(PARAM_PACKAGES);
-  const [, setPane] = useGlobalState('pane');
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
-  const [graph, setGraph] = useGlobalState('graph');
+  const [graph] = useGlobalState('graph');
   const [diagramElement, setDiagramElement] = useState<
     SVGSVGElement | undefined
   >(getDiagramElement);
@@ -145,11 +137,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [zoom] = useHashParam(PARAM_ZOOM);
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
-
-  // Stable query array for use in effects
-  const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
-
-  const dependencyTypes = useDependencyTypes();
 
   const handleGraphClick = useGraphClick();
 
@@ -200,47 +187,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
-  useEffect(() => {
-    const { signal, abort } = createAbortable();
-    void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
-      newGraph => {
-        // Check after async
-        if (signal.aborted) {
-          return;
-        }
-
-        // A collapsed module also results in a graph with a single module
-        const firstInfo = newGraph.moduleInfos.values().next().value;
-        if (
-          firstInfo &&
-          newGraph?.moduleInfos.size === 1 &&
-          !firstInfo.module.isStub &&
-          moduleFilter(firstInfo.module)
-        ) {
-          void celebrate('Zero dependencies for the win!');
-        }
-
-        setGraph(newGraph);
-
-        if (
-          newGraph.entryModules.size === 0 &&
-          newGraph.failedEntryModules.size > 0
-        ) {
-          setPane(PaneType.INFO);
-        }
-      },
-    );
-
-    return abort;
-  }, [
-    sortedQuery,
-    dependencyTypes,
-    collapse,
-    moduleFilter,
-    packages,
-    setGraph,
-    setPane,
-  ]);
+  useLoadGraph(moduleFilter);
 
   // Effect: Insert SVG markup into DOM
   useEffect(() => {

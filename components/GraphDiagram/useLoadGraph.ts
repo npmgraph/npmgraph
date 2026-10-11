@@ -1,0 +1,68 @@
+import { useEffect, useMemo } from 'react';
+import useCollapse from '../../hooks/useCollapse.ts';
+import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
+import { PaneType, PARAM_PACKAGES } from '../../lib/constants.ts';
+import { createAbortable } from '../../lib/createAbortable.ts';
+import { celebrate } from '../../lib/flash.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { getGraphForQuery } from '../../lib/graph-util.ts';
+
+// Fetch the modules of the query and store the resulting graph
+export default function useLoadGraph(
+  moduleFilter: ({ name }: { name: string }) => boolean,
+) {
+  const [query] = useQuery();
+  // Pasted package.json files are in the hash, they can change without the query changing
+  const [packages] = useHashParam(PARAM_PACKAGES);
+  const [, setPane] = useGlobalState('pane');
+  const [, setGraph] = useGlobalState('graph');
+  const [collapse] = useCollapse();
+  const dependencyTypes = useDependencyTypes();
+
+  // Stable query array for use in effects
+  const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
+
+  useEffect(() => {
+    const { signal, abort } = createAbortable();
+    void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
+      newGraph => {
+        // Check after async
+        if (signal.aborted) {
+          return;
+        }
+
+        // A collapsed module also results in a graph with a single module
+        const firstInfo = newGraph.moduleInfos.values().next().value;
+        if (
+          firstInfo &&
+          newGraph?.moduleInfos.size === 1 &&
+          !firstInfo.module.isStub &&
+          moduleFilter(firstInfo.module)
+        ) {
+          void celebrate('Zero dependencies for the win!');
+        }
+
+        setGraph(newGraph);
+
+        if (
+          newGraph.entryModules.size === 0 &&
+          newGraph.failedEntryModules.size > 0
+        ) {
+          setPane(PaneType.INFO);
+        }
+      },
+    );
+
+    return abort;
+  }, [
+    sortedQuery,
+    dependencyTypes,
+    collapse,
+    moduleFilter,
+    packages,
+    setGraph,
+    setPane,
+  ]);
+}
