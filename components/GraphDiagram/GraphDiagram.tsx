@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { $, $$optional, $optional, closestElementOptional } from 'select-dom';
+import { $, $$optional, $optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -23,7 +23,6 @@ import { report } from '../../lib/bugsnag.ts';
 import {
   PaneType,
   PARAM_COLORIZE,
-  PARAM_HIDE,
   PARAM_PACKAGES,
   PARAM_SIZING,
   PARAM_ZOOM,
@@ -48,6 +47,7 @@ import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import useGraphClick from './useGraphClick.ts';
 import {
   type GraphState,
   composeDOT,
@@ -134,14 +134,13 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Pasted package.json files are in the hash, they can change without the query changing
   const [packages] = useHashParam(PARAM_PACKAGES);
   const [, setPane] = useGlobalState('pane');
-  const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph, setGraph] = useGlobalState('graph');
   const [diagramElement, setDiagramElement] = useState<
     SVGSVGElement | undefined
   >(getDiagramElement);
 
-  const [collapse, setCollapse] = useCollapse();
+  const [collapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const [zoom] = useHashParam(PARAM_ZOOM);
   const [sizing] = useHashParam(PARAM_SIZING);
@@ -152,49 +151,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
   const dependencyTypes = useDependencyTypes();
 
-  function handleGraphClick(event: React.MouseEvent) {
-    const { target } = event;
-    if (
-      !(target instanceof Element) ||
-      // Allow opening the link in a new tab
-      event.metaKey ||
-      closestElementOptional(`.${styles.graphControls}`, target)
-    ) {
-      return;
-    }
-
-    const node = closestElementOptional('g.node', target);
-    if (node) {
-      // Don't navigate to link
-      event.preventDefault();
-    }
-
-    const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
-    const module = moduleKey === '' ? undefined : getCachedModule(moduleKey);
-
-    // Toggle exclude filter?
-    if (node && event.shiftKey) {
-      if (module) {
-        const isIncluded = collapse.includes(module.name);
-        if (isIncluded) {
-          setCollapse(collapse.filter(n => n !== module.name));
-        } else {
-          setCollapse([...collapse, module.name]);
-        }
-      }
-
-      return;
-    }
-
-    if (node) {
-      setZenMode('');
-    }
-
-    setGraphSelection(QueryType.Default, moduleKey);
-    if (moduleKey !== '') {
-      setPane(PaneType.MODULE);
-    }
-  }
+  const handleGraphClick = useGraphClick();
 
   function applyZoom() {
     const graphElement = $(`.${styles.graph}`);
