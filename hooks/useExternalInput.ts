@@ -74,32 +74,32 @@ function onPaste(ev: ClipboardEvent): void {
   loadPackageJson(text);
 }
 
+// Must inform the browser that we'll handle the `drop` event
+// https://stackoverflow.com/a/21341021
+function onDragOver(event: DragEvent) {
+  event.preventDefault();
+}
+
+// Show overlay. `dragenter` is fired repeatedly for any random element that we glide over,
+// not just on `globalThis`, so we need to keep track of how many nested elements we're inside
+function onDragEnter() {
+  dragEnterCounter++;
+  updateDragOverlay();
+}
+
+function onDragLeave() {
+  dragEnterCounter--;
+  updateDragOverlay();
+}
+
+function onClick() {
+  // Fail safe in case the browser skips some `dragleave` events
+  dragEnterCounter = 0;
+  updateDragOverlay();
+}
+
 export default function useExternalInput() {
   useEffect(() => {
-    // Must inform the browser that we'll handle the `drop` event
-    // https://stackoverflow.com/a/21341021
-    const onDragOver = (event: DragEvent) => {
-      event.preventDefault();
-    };
-
-    // Show overlay. `dragenter` is fired repeatedly for any random element that we glide over,
-    // not just on `globalThis`, so we need to keep track of how many nested elements we're inside
-    const onDragEnter = () => {
-      dragEnterCounter++;
-      updateDragOverlay();
-    };
-
-    const onDragLeave = () => {
-      dragEnterCounter--;
-      updateDragOverlay();
-    };
-
-    const onClick = () => {
-      // Fail safe in case the browser skips some `dragleave` events
-      dragEnterCounter = 0;
-      updateDragOverlay();
-    };
-
     globalThis.addEventListener('paste', onPaste);
     document.documentElement.addEventListener('drop', onDrop);
     globalThis.addEventListener('dragover', onDragOver);
