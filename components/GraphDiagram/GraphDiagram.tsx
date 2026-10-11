@@ -159,9 +159,19 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       minScale={minScale}
       maxScale={4}
       zoomAnimation={{ size: 0 }}
-      wheel={{ step: 0.0015 }}
       doubleClick={{ disabled: true }}
-      trackPadPanning={{ disabled: false }}
+      wheel={{
+        wheelDisabled: true,
+
+        step: 0.01,
+      }}
+      trackPadPanning={{
+        disabled: false,
+        velocityDisabled: true,
+      }}
+      panning={{
+        excluded: ['node'],
+      }}
       onPanning={() => {
         panningRef.current = true;
       }}
