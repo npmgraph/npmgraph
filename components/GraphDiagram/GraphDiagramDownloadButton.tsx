@@ -57,8 +57,7 @@ async function downloadPng() {
   const ctx = canvas.getContext('2d')!;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
-  // Revoked in the `finally` block below
-  // react-doctor-disable-next-line react-doctor/no-create-object-url-without-revoke
+  // eslint-disable-next-line react-doctor/no-create-object-url-without-revoke -- Revoked in the `finally` block below
   const url = URL.createObjectURL(svgBlob);
 
   try {
