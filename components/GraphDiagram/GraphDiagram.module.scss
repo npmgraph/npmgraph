@@ -46,7 +46,8 @@
   position: absolute;
   gap: 1em;
   z-index: 1;
-  inset: auto auto 1em 1em;
+  transition: bottom 0.15s;
+  inset: auto auto calc(1em + var(--loader-offset, 0px)) 1em;
   --padding: 6px;
   user-select: none;
 

@@ -47,7 +47,9 @@ export default function App() {
   return (
     <>
       <Flash />
-      <div className={styles.root}>
+      <div
+        className={cn(styles.root, { [styles.loading]: activity.total > 0 })}
+      >
         <div className={styles.stickyTop}>
           <AppHeader />
           <Tabs className={styles.mobileTabs} />
