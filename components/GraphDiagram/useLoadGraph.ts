@@ -5,7 +5,6 @@ import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { PaneType, PARAM_PACKAGES } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
-import { celebrate } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { getGraphForQuery } from '../../lib/graph-util.ts';
 
@@ -31,17 +30,6 @@ export default function useLoadGraph(
         // Check after async
         if (signal.aborted) {
           return;
-        }
-
-        // A collapsed module also results in a graph with a single module
-        const firstInfo = newGraph.moduleInfos.values().next().value;
-        if (
-          firstInfo &&
-          newGraph?.moduleInfos.size === 1 &&
-          !firstInfo.module.isStub &&
-          isModuleVisible(firstInfo.module)
-        ) {
-          void celebrate('Zero dependencies for the win!');
         }
 
         setGraph(newGraph);
