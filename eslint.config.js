@@ -2,6 +2,7 @@ import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import { defineConfig } from 'eslint/config';
 import reactDoctor from 'eslint-plugin-react-doctor';
+import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 
 const disabledRules = [
   // TODO: Gradually review and enable
@@ -68,6 +69,7 @@ export default defineConfig([
     },
   },
   reactDoctor.configs.recommended,
+  reactYouMightNotNeedAnEffect.configs.recommended,
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },

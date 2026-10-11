@@ -79,6 +79,7 @@
     "eslint-config-xo-react": "^0.32.0",
     "eslint-formatter-unix": "^9.0.1",
     "eslint-plugin-react-doctor": "^0.9.17",
+    "eslint-plugin-react-you-might-not-need-an-effect": "^1.0.2",
     "lefthook": "^2.1.16",
     "npm-run-all2": "^9.0.3",
     "parcel": "^2.16.4",
