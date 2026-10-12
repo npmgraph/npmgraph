@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import useLocation from '../hooks/useLocation.ts';
-import { GithubIcon, OffsiteLinkIcon, XIcon } from './ui/Icons.tsx';
+import GithubIcon from 'jsx:../images/icons/github.svg';
+import OffsiteLinkIcon from 'jsx:../images/icons/offsite-link.svg';
+import XIcon from 'jsx:../images/icons/x.svg';
 import * as utilities from './ui/utilities.module.scss';
 import * as styles from './PreviewWidget.module.scss';
 

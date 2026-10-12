@@ -45,8 +45,7 @@ export default function RegistryInput() {
     setRegistry(value);
   }
 
-  // The request is debounced and aborted in the cleanup, so it can't race
-  // react-doctor-disable-next-line react-doctor/no-fetch-in-effect
+  // eslint-disable-next-line react-doctor/no-fetch-in-effect -- The request is debounced and aborted in the cleanup, so it can't race
   useEffect(() => {
     const controller = new AbortController();
     setStatus(RegistryStatus.PENDING);
