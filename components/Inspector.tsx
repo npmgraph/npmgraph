@@ -1,17 +1,24 @@
 import { lazy, Suspense, type HTMLProps } from 'react';
+import useGraphSelection from '../hooks/useGraphSelection.ts';
+import useHashParam from '../hooks/useHashParam.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
-import useGraphSelection from '../hooks/useGraphSelection.ts';
-import useHashParam from '../hooks/useHashParam.ts';
+import { importWithDiagnostics } from '../lib/importWithDiagnostics.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
 
 // Keep these panes in secondary bundles but start loading them eagerly
-const reportPanePromise = import('./ReportPane/ReportPane.tsx');
-const modulePanePromise = import('./ModulePane/ModulePane.tsx');
+const reportPanePromise = importWithDiagnostics(
+  'ReportPane',
+  async () => import('./ReportPane/ReportPane.tsx'),
+);
+const modulePanePromise = importWithDiagnostics(
+  'ModulePane',
+  async () => import('./ModulePane/ModulePane.tsx'),
+);
 
 const ReportPane = lazy(async () => reportPanePromise);
 const ModulePane = lazy(async () => modulePanePromise);

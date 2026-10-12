@@ -1,6 +1,6 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
-import { select } from 'd3-selection';
 import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
+import { select } from 'd3-selection';
 import { use, useEffect, useState } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -10,6 +10,7 @@ import { createAbortable } from '../../lib/createAbortable.ts';
 import { flash } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT } from '../../lib/graph-util.ts';
+import { importWithDiagnostics } from '../../lib/importWithDiagnostics.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
@@ -60,7 +61,10 @@ function decorateGraphNodes(
 
 // Keep graphviz in a secondary bundle but load it eagerly
 const graphvizPromise = (async () => {
-  const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
+  const { Graphviz } = await importWithDiagnostics(
+    'graphviz',
+    async () => import('@hpcc-js/wasm-graphviz'),
+  );
   return Graphviz.load();
 })();
 
