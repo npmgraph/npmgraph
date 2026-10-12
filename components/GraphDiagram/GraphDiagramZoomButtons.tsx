@@ -1,5 +1,5 @@
 import { useControls } from 'react-zoom-pan-pinch';
-import { ZoomFitIcon } from '../ui/Icons.tsx';
+import ZoomFitIcon from 'jsx:../../images/icons/zoom-fit.svg';
 import * as styles from './GraphDiagramZoomButtons.module.scss';
 import { zoomAroundCenter } from './viewport-util.ts';
 

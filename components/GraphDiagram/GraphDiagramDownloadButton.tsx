@@ -1,6 +1,6 @@
 import { $$, $optional } from 'select-dom';
 import { report } from '../../lib/bugsnag.ts';
-import { DownloadIcon } from '../ui/Icons.tsx';
+import DownloadIcon from 'jsx:../../images/icons/download.svg';
 import * as styles from './GraphDiagramDownloadButton.module.scss';
 import * as graphStyles from './GraphDiagram.module.scss';
 
