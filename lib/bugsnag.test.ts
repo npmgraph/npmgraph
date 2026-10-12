@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import Bugsnag from '@bugsnag/js';
+import Bugsnag, { type Event } from '@bugsnag/js';
 
 vi.mock('@bugsnag/js', () => ({
   default: { start: vi.fn(() => ({ notify: vi.fn() })) },
@@ -7,6 +7,7 @@ vi.mock('@bugsnag/js', () => ({
 
 afterEach(() => {
   vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
   vi.resetModules();
   vi.mocked(Bugsnag.start).mockClear();
 });
@@ -51,6 +52,25 @@ describe('Bugsnag configuration', () => {
       expect.objectContaining({
         appVersion: 'none',
         releaseStage: 'development',
+      }),
+    );
+  });
+
+  it('adds runtime metadata to events', async () => {
+    vi.stubEnv('BUGSNAG_KEY', 'test-key');
+    vi.stubGlobal('document', { visibilityState: 'visible' });
+    vi.stubGlobal('navigator', { onLine: true });
+
+    const { addRuntimeMetadata } = await import('./bugsnag.ts');
+    const addMetadata = vi.fn();
+    addRuntimeMetadata({ addMetadata } as unknown as Event);
+
+    expect(addMetadata).toHaveBeenCalledWith(
+      'runtime',
+      expect.objectContaining({
+        online: expect.any(Boolean),
+        visibility: expect.any(String),
+        secondsSincePageLoad: expect.any(Number),
       }),
     );
   });
