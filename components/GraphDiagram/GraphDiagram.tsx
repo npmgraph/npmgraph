@@ -65,13 +65,9 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
-  const handleGraphLoad = useCallback(
-    (newGraph: GraphState) => {
-      celebrateZeroDependencies(newGraph, moduleFilter);
-    },
-    [moduleFilter],
-  );
-  useLoadGraph(moduleFilter, handleGraphLoad);
+  useLoadGraph(moduleFilter, newGraph => {
+    celebrateZeroDependencies(newGraph, moduleFilter);
+  });
 
   const diagramElement = useRenderDiagram(activity, moduleFilter);
   useDiagramZoom(diagramElement);
