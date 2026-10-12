@@ -10,18 +10,30 @@ import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
 
-// Keep these panes in secondary bundles but start loading them eagerly
-const reportPanePromise = importWithDiagnostics(
-  'ReportPane',
-  async () => import('./ReportPane/ReportPane.tsx'),
-);
-const modulePanePromise = importWithDiagnostics(
-  'ModulePane',
-  async () => import('./ModulePane/ModulePane.tsx'),
-);
+const loadReportPane = async () =>
+  importWithDiagnostics(
+    'ReportPane',
+    async () => import('./ReportPane/ReportPane.tsx'),
+  );
+const loadModulePane = async () =>
+  importWithDiagnostics(
+    'ModulePane',
+    async () => import('./ModulePane/ModulePane.tsx'),
+  );
 
-const ReportPane = lazy(async () => reportPanePromise);
-const ModulePane = lazy(async () => modulePanePromise);
+// Keep these panes in secondary bundles but start loading them eagerly.
+// A failed prefetch is swallowed; lazy() re-imports on first render.
+const reportPanePrefetch = loadReportPane().catch(() => {});
+const modulePanePrefetch = loadModulePane().catch(() => {});
+
+const ReportPane = lazy(async () => {
+  await reportPanePrefetch;
+  return loadReportPane();
+});
+const ModulePane = lazy(async () => {
+  await modulePanePrefetch;
+  return loadModulePane();
+});
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;

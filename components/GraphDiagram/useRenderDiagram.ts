@@ -59,14 +59,26 @@ function decorateGraphNodes(
   }
 }
 
+let graphvizPromise: Promise<Graphviz> | undefined;
+
+// Cached while pending/successful; cleared on failure so the next call retries
+async function loadGraphviz() {
+  graphvizPromise ??= (async () => {
+    const { Graphviz } = await importWithDiagnostics(
+      'graphviz',
+      async () => import('@hpcc-js/wasm-graphviz'),
+    );
+    return Graphviz.load();
+  })().catch((error: unknown) => {
+    graphvizPromise = undefined;
+    throw error;
+  });
+  return graphvizPromise;
+}
+
 // Keep graphviz in a secondary bundle but load it eagerly
-const graphvizPromise = (async () => {
-  const { Graphviz } = await importWithDiagnostics(
-    'graphviz',
-    async () => import('@hpcc-js/wasm-graphviz'),
-  );
-  return Graphviz.load();
-})();
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- prefetch only
+void loadGraphviz().catch(() => {});
 
 // Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
 const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
@@ -80,7 +92,7 @@ export default function useRenderDiagram(
 ) {
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
-  const graphviz = use(graphvizPromise);
+  const graphviz = use(loadGraphviz());
   const [diagramElement, setDiagramElement] = useState<
     SVGSVGElement | undefined
   >(getDiagramElement);
