@@ -1,8 +1,8 @@
 import { $$, $optional } from 'select-dom';
 import { report } from '../../lib/bugsnag.ts';
 import DownloadIcon from 'jsx:../../images/icons/download.svg';
-import * as styles from './GraphDiagramDownloadButton.module.scss';
 import * as graphStyles from './GraphDiagram.module.scss';
+import { Button } from '../Button.tsx';
 
 type DownloadExtension = 'svg' | 'png';
 
@@ -12,16 +12,14 @@ function getDiagramElement() {
 
 export default function GraphDiagramDownloadButton() {
   return (
-    <button
-      className={styles.root}
+    <Button
       title="Download as SVG"
-      type="button"
       onClick={() => {
         download('svg');
       }}
     >
       <DownloadIcon />
-    </button>
+    </Button>
   );
 }
 
