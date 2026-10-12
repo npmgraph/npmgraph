@@ -6,15 +6,18 @@
   left: 0;
   z-index: 99;
   box-sizing: border-box;
-  box-shadow: 0 0 6px var(--bg-root);
+  box-shadow: 0 0 6px var(--bg0-shadow-color);
+  border-top: solid 1px var(--bg1);
+  border-right: solid 1px var(--bg1);
   border-top-right-radius: 0.5em;
-  background: var(--bg-root);
+  background: var(--bg0);
   padding: 0 0.75em env(safe-area-inset-bottom);
   max-width: 100%;
   height: calc(var(--loader-height) + env(safe-area-inset-bottom));
 
   overflow: hidden;
   pointer-events: none;
+  color: var(--text);
   line-height: var(--loader-height);
   text-overflow: ellipsis;
   white-space: nowrap;

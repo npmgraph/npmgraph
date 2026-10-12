@@ -4,7 +4,8 @@
   flex-direction: column;
   z-index: 30;
   // Place it on the bottom left, above the graph controls if they are on screen
-  inset: auto auto 4.4em 1em;
+  transition: bottom 0.15s;
+  inset: auto auto calc(4.4em + var(--loader-offset, 0px)) 1em;
   box-shadow: 2px 2px 6px var(--bg0-shadow-color);
 
   a,
