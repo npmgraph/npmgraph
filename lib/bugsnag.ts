@@ -29,6 +29,8 @@ const bugsnag = apiKey
       apiKey,
       releaseStage,
       enabledReleaseStages: ['production', 'preview'],
+      // Rejections are reported via report.error() in index.tsx, normalized to Errors
+      enabledErrorTypes: { unhandledRejections: false },
       onError: addRuntimeMetadata,
     })
   : undefined;
