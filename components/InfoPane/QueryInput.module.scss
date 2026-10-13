@@ -1,21 +1,12 @@
+@use '../../lib/root.module.scss' as *;
+
 .form {
   display: flex;
   align-items: center;
   gap: 1em;
 }
 .input {
-  display: block;
-  box-sizing: border-box;
-  margin-block: 0.6em;
-  outline: none;
-  border: solid 1px #999;
-  border-radius: 1em;
-  padding: 0.3em 0.7em;
-  width: 100%;
-  font: inherit;
-  font-size: 16px; // It must be at least 16px to avoid iOS zooming in on focus
+  @include search-input;
 
-  &:focus {
-    border-color: var(--accent);
-  }
+  margin-block: 0.6em;
 }
