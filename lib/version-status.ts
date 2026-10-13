@@ -40,12 +40,11 @@ export function getVersionStatus(
     }
 
     const patch = latestParts.patch - versionParts.patch;
-    if (patch > 0) {
-      return { type: 'outdated', level: 'patch', behind: patch, latest };
-    }
 
-    // Prerelease behind the stable release of the same version
-    return { type: 'outdated', level: 'prerelease', behind: 0, latest };
+    // Otherwise it's a prerelease behind the stable release of the same version
+    return patch > 0
+      ? { type: 'outdated', level: 'patch', behind: patch, latest }
+      : { type: 'outdated', level: 'prerelease', behind: 0, latest };
   }
 
   // Not outdated: the dist-tag the version is pinned to (e.g. "latest")
