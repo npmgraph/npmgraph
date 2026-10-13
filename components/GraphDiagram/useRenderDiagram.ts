@@ -1,6 +1,6 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
-import { select } from 'd3-selection';
 import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
+import { select } from 'd3-selection';
 import { use, useEffect, useState } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -9,7 +9,8 @@ import { PARAM_SIZING } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { flash } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { composeDOT } from '../../lib/graph-util.ts';
+import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
+import { importWithDiagnostics } from '../../lib/importWithDiagnostics.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
@@ -58,16 +59,80 @@ function decorateGraphNodes(
   }
 }
 
+let graphvizPromise: Promise<Graphviz> | undefined;
+
+// Cached while pending/successful; cleared on failure so the next call retries
+async function loadGraphviz() {
+  graphvizPromise ??= (async () => {
+    const { Graphviz } = await importWithDiagnostics(
+      'graphviz',
+      async () => import('@hpcc-js/wasm-graphviz'),
+    );
+    return Graphviz.load();
+  })().catch((error: unknown) => {
+    graphvizPromise = undefined;
+    throw error;
+  });
+  return graphvizPromise;
+}
+
 // Keep graphviz in a secondary bundle but load it eagerly
-const graphvizPromise = (async () => {
-  const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
-  return Graphviz.load();
-})();
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- prefetch only
+void loadGraphviz().catch(() => {});
 
 // Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
 const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
   graphviz.dot(dot, 'svg'),
 );
+
+// Compose the SVG markup of the graph
+function composeSvgMarkup(
+  graph: GraphState,
+  hasSizing: boolean,
+  graphviz: Graphviz,
+) {
+  if (graph.moduleInfos.size === 0) {
+    return '<svg />';
+  }
+
+  const dotDoc = composeDOT({ graph, sizing: hasSizing });
+
+  try {
+    return layout(dotDoc, graphviz);
+  } catch (error) {
+    console.error(error);
+    flash('Error while rendering graph');
+    return '<svg />';
+  }
+}
+
+// Replace the diagram in the DOM with the SVG markup
+function insertDiagram(
+  svgMarkup: string,
+  isModuleVisible: ({ name }: { name: string }) => boolean,
+) {
+  // Parse markup
+  const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
+    .firstElementChild as SVGSVGElement;
+  svgDom.remove();
+
+  // Remove background element so page background shows thru
+  $optional('.graph > polygon', svgDom)?.remove();
+  svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+  svgDom.classList.add(styles.graphDiagram);
+
+  // Inject into DOM
+  const element = $(`.${styles.graph}`);
+  getDiagramElement()?.remove();
+  element.append(svgDom);
+
+  // Inject SVG definitions: warning pattern and collapsed-node outline
+  select(`.${styles.graph} svg`).insert('defs', ':first-child').html(svgDefs);
+
+  decorateGraphNodes(element, isModuleVisible);
+
+  return getDiagramElement();
+}
 
 // Render the graph as SVG in the DOM, and return the SVG element
 export default function useRenderDiagram(
@@ -76,7 +141,7 @@ export default function useRenderDiagram(
 ) {
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
-  const graphviz = use(graphvizPromise);
+  const graphviz = use(loadGraphviz());
   const [diagramElement, setDiagramElement] = useState<
     SVGSVGElement | undefined
   >(getDiagramElement);
@@ -94,50 +159,13 @@ export default function useRenderDiagram(
         return;
       }
 
-      // Compose SVG markup
-      let svgMarkup = '<svg />';
-      if (graph?.moduleInfos?.size !== 0) {
-        const dotDoc = composeDOT({ graph, sizing: sizing !== null });
-
-        try {
-          svgMarkup =
-            graph?.moduleInfos.size === 0
-              ? '<svg />'
-              : layout(dotDoc, graphviz);
-        } catch (error) {
-          console.error(error);
-          flash('Error while rendering graph');
-        }
-      }
-
-      if (signal.aborted) {
-        return;
-      } // Check after all async stuff
-
-      // Parse markup
-      const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
-        .firstElementChild as SVGSVGElement;
-      svgDom.remove();
-
-      // Remove background element so page background shows thru
-      $optional('.graph > polygon', svgDom)?.remove();
-      svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svgDom.classList.add(styles.graphDiagram);
-
-      // Inject into DOM
-      const element = $(`.${styles.graph}`);
-      getDiagramElement()?.remove();
-      element.append(svgDom);
-
-      // Inject SVG definitions: warning pattern and collapsed-node outline
-      select(`.${styles.graph} svg`)
-        .insert('defs', ':first-child')
-        .html(svgDefs);
-
-      decorateGraphNodes(element, isModuleVisible);
-
       // Signal other hooks that graph DOM has changed
-      setDiagramElement(getDiagramElement());
+      setDiagramElement(
+        insertDiagram(
+          composeSvgMarkup(graph, sizing !== null, graphviz),
+          isModuleVisible,
+        ),
+      );
 
       finish?.();
     })();

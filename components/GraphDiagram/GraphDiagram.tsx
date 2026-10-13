@@ -22,7 +22,6 @@ import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
-import useCelebrateZeroDependencies from './useCelebrateZeroDependencies.ts';
 import useDiagramZoom from './useDiagramZoom.ts';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
@@ -66,7 +65,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
   useLoadGraph(moduleFilter);
-  useCelebrateZeroDependencies(moduleFilter);
 
   const diagramElement = useRenderDiagram(activity, moduleFilter);
   useDiagramZoom(diagramElement);

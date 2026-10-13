@@ -1,10 +1,75 @@
 import { type HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
-import { type ReactElement, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
 
 import { percent } from '../../lib/dom.ts';
 import * as styles from './ModuleTreeMap.module.scss';
+
+type Dependency = BundlePhobiaData['dependencySizes'][number];
+
+type TreemapLeaf = {
+  name: string;
+  value: number;
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+  // Fraction of the container that this leaf covers
+  coverage: number;
+  // Position among the leaves, from 0 (largest) to 1 (smallest)
+  rank: number;
+};
+
+// Lay out the dependencies as a treemap, sized by their share of the module size
+export function layoutTreemap(
+  data: BundlePhobiaData,
+  w: number,
+  h: number,
+): TreemapLeaf[] {
+  // Note: dependencySizes is *sometimes* undefined.  E.g.
+  // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
+  // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- See note in BundlePhobiaData
+  const { size, dependencySizes = [] } = data;
+
+  // Without dependencies the placeholder root would be the only (and a full-size) leaf
+  if (dependencySizes.length === 0) {
+    return [];
+  }
+
+  const sum = dependencySizes.reduce((sum, n) => sum + n.approximateSize, 0);
+
+  const nodes = [
+    ...dependencySizes,
+
+    // Placeholder root node so the other nodes have a common parent
+    { name: '__root', approximateSize: 0 },
+  ];
+
+  const root = stratify<Dependency>()
+    .id(d => d.name)
+    .parentId(node => (node.name === '__root' ? '' : '__root'))(nodes)
+    .sum(d => (d.approximateSize * size) / sum)
+
+    .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+
+  treemap<Dependency>().size([w, h]).padding(2)(root);
+
+  return root.leaves().map((d, i, a) => {
+    // Cast to rectangular node so we can get dimensions,
+    const rd = d as unknown as HierarchyRectangularNode<Dependency>;
+    return {
+      name: d.data.name,
+      value: d.value ?? 0,
+      x0: rd.x0,
+      y0: rd.y0,
+      x1: rd.x1,
+      y1: rd.y1,
+      coverage: ((rd.x1 - rd.x0) * (rd.y1 - rd.y0)) / (w * h),
+      rank: i ? i / (a.length - 1) : 0,
+    };
+  });
+}
 
 export function ModuleTreeMap({
   data,
@@ -15,73 +80,15 @@ export function ModuleTreeMap({
   style?: React.CSSProperties;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [leaves, setLeaves] = useState<ReactElement[]>([]);
+  const [leaves, setLeaves] = useState<TreemapLeaf[]>([]);
+  const m = 1;
 
-  // Render contents as an "effect" because d3 requires the pixel dimensions of the div
+  // Lay out as an "effect" because d3 requires the pixel dimensions of the div
   useEffect(() => {
     let isCancelled = false;
 
-    const { clientWidth: w, clientHeight: h } = containerRef.current!;
-    const m = 1;
-
-    // Note: dependencySizes is *sometimes* undefined.  E.g.
-    // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
-    // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- See note in BundlePhobiaData
-    const { size, dependencySizes = [] } = data;
-
-    const sum = data.dependencySizes?.reduce(
-      (sum, n) => sum + n.approximateSize,
-      0,
-    );
-
-    const nodes = [
-      ...dependencySizes,
-
-      // Placeholder root node so the other nodes have a common parent
-      { name: '__root', approximateSize: 0 },
-    ];
-
-    const root = stratify<BundlePhobiaData['dependencySizes'][number]>()
-      .id(d => d.name)
-      .parentId(node => (node.name === '__root' ? '' : '__root'))(nodes)
-      .sum(d => (d.approximateSize * size) / sum)
-
-      .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
-
-    treemap<BundlePhobiaData['dependencySizes'][number]>()
-      .size([w, h])
-      .padding(2)(root);
-
-    const newLeaves = root.leaves().map((d, i, a) => {
-      // Cast to rectangular node so we can get dimensions,
-      const rd = d as unknown as HierarchyRectangularNode<
-        BundlePhobiaData['dependencySizes'][number]
-      >;
-      const size = human(d.value ?? 0, 'B');
-      const frac = ((rd.x1 - rd.x0) * (rd.y1 - rd.y0)) / (w * h);
-      const backgroundColor = `
-            color-mix(in srgb, color-mix(in oklch increasing hue, var(--bg-orange),
-            var(--bg-red)
-       ${percent(i ? i / (a.length - 1) : 0)}), var(--root-color) 25%)`;
-
-      return (
-        <div
-          key={d.data.name}
-          title={`${d.data.name} (${size})`}
-          className={styles.root}
-          style={{
-            left: `${rd.x0 + m / 2}px`,
-            top: `${rd.y0 + m / 2}px`,
-            width: `${rd.x1 - rd.x0 - m}px`,
-            height: `${rd.y1 - rd.y0 - m}px`,
-            fontSize: `${65 + 70 * Math.sqrt(frac)}%`,
-            backgroundColor,
-          }}
-        >
-          {d.data.name} <span>{size}</span>
-        </div>
-      );
-    });
+    const { clientWidth, clientHeight } = containerRef.current!;
+    const newLeaves = layoutTreemap(data, clientWidth, clientHeight);
 
     queueMicrotask(() => {
       if (isCancelled) {
@@ -102,7 +109,31 @@ export function ModuleTreeMap({
       style={{ position: 'relative', ...style }}
       {...props}
     >
-      {leaves}
+      {leaves.map(leaf => {
+        const size = human(leaf.value, 'B');
+        const backgroundColor = `
+            color-mix(in srgb, color-mix(in oklch increasing hue, var(--bg-orange),
+            var(--bg-red)
+       ${percent(leaf.rank)}), var(--root-color) 25%)`;
+
+        return (
+          <div
+            key={leaf.name}
+            title={`${leaf.name} (${size})`}
+            className={styles.root}
+            style={{
+              left: `${leaf.x0 + m / 2}px`,
+              top: `${leaf.y0 + m / 2}px`,
+              width: `${leaf.x1 - leaf.x0 - m}px`,
+              height: `${leaf.y1 - leaf.y0 - m}px`,
+              fontSize: `${65 + 70 * Math.sqrt(leaf.coverage)}%`,
+              backgroundColor,
+            }}
+          >
+            {leaf.name} <span>{size}</span>
+          </div>
+        );
+      })}
     </div>
   );
 }

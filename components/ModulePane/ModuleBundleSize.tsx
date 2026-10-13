@@ -7,25 +7,36 @@ import { ModuleBundleStats } from './ModuleBundleStats.tsx';
 import { ModuleTreeMap } from './ModuleTreeMap.tsx';
 
 export default function ModuleBundleSize({ module }: { module: Module }) {
-  const pkg = module.package;
+  if (module.isLocal) {
+    return 'Loading ...';
+  }
 
+  const { name, version } = module.package;
+
+  // The key resets the state when the module changes
+  return (
+    <RemoteModuleBundleSize
+      key={`${name}@${version}`}
+      name={name}
+      version={version}
+    />
+  );
+}
+
+function RemoteModuleBundleSize({
+  name,
+  version,
+}: {
+  name: string;
+  version: string;
+}) {
   const [bundleInfo, setBundleInfo] = useState<BundlePhobiaData | Error>();
 
-  const pn = encodeURIComponent(`${pkg.name}@${pkg.version}`);
+  const pn = encodeURIComponent(`${name}@${version}`);
   const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
   const bpApiUrl = `https://bundlephobia.com/api/size?package=${pn}`;
 
   useEffect(() => {
-    if (module.isLocal) {
-      return;
-    }
-
-    setBundleInfo(undefined);
-
-    if (!pkg) {
-      return;
-    }
-
     fetchJson<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
       .then(data => {
         setBundleInfo(data);
@@ -33,7 +44,7 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
       .catch(error => {
         setBundleInfo(error);
       });
-  }, [pkg, module.isLocal, bpApiUrl]);
+  }, [bpApiUrl]);
 
   if (!bundleInfo) {
     return 'Loading ...';
