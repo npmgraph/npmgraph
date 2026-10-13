@@ -7,9 +7,9 @@
   height: 100svh;
   --loader-height: 2em;
 
-  // Makes room for the loader at the bottom of the screen
   &.loading {
-    --loader-offset: calc(var(--loader-height) + env(safe-area-inset-bottom));
+    --graph-controls-opacity: 0;
+    --graph-controls-visibility: hidden;
   }
 }
 
