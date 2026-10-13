@@ -34,7 +34,6 @@ export function ButtonGroup({
       {...props}
       className={cn(
         props.className,
-        styles.group,
         vertical ? styles.verticalGroup : styles.horizontalGroup,
       )}
     />
