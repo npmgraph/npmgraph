@@ -61,7 +61,6 @@ describe('groupOutdatedByLevel', () => {
     expect(
       group([
         createModule('patch', '1.0.0', '1.0.1'),
-        createModule('pre', '2.0.0-beta.1', '2.0.0'),
         createModule('minor', '1.0.0', '1.2.0'),
         createModule('major', '1.0.0', '3.0.0'),
       ]),
@@ -69,7 +68,6 @@ describe('groupOutdatedByLevel', () => {
       ['major', ['major']],
       ['minor', ['minor']],
       ['patch', ['patch']],
-      ['prerelease', ['pre']],
     ]);
   });
 
@@ -87,6 +85,10 @@ describe('groupOutdatedByLevel', () => {
     expect(group([createModule('patch', '1.0.0', '1.0.1')])).toEqual([
       ['patch', ['patch']],
     ]);
+  });
+
+  it('leaves out prereleases of the latest version', () => {
+    expect(group([createModule('pre', '2.0.0-beta.1', '2.0.0')])).toEqual([]);
   });
 
   it('returns no groups without outdated modules', () => {

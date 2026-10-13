@@ -1,40 +1,44 @@
 import { cn } from '../../../lib/dom.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
-import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
-import * as reportItemStyles from '../ReportItem.module.scss';
+import {
+  groupOutdatedByLevel,
+  type ModuleAnalysisState,
+} from '../analyzers/analyzeModules.ts';
 import * as styles from './modulesOutdated.module.scss';
 
-// Most outdated first
-const levelOrder = ['major', 'minor', 'patch', 'prerelease'];
+const levelTitles = {
+  major: 'Major',
+  minor: 'Minor',
+  patch: 'Patch',
+};
 
 export function modulesOutdated({ outdated }: ModuleAnalysisState) {
-  if (outdated.length === 0) {
+  const groups = groupOutdatedByLevel(outdated);
+  if (groups.length === 0) {
     return;
   }
 
-  const details = outdated
-    .toSorted(
-      (a, b) =>
-        levelOrder.indexOf(a.status.level) -
-          levelOrder.indexOf(b.status.level) ||
-        a.module.name.localeCompare(b.module.name),
-    )
-    .map(({ module, status }) => (
+  const details = groups.flatMap(([level, modules]) => [
+    <h4 key={level} className={styles.level}>
+      {levelTitles[level]} ({modules.length})
+    </h4>,
+    ...modules.map(({ module, status }, index) => (
       <div
         key={module.key}
-        className={cn(styles.root, reportItemStyles.zebraRow)}
+        className={cn(styles.root, { [styles.striped]: index % 2 === 1 })}
       >
         <Selectable value={module.key} className={styles.selectable} />
         {' → '}
         {status.latest}
       </div>
-    ));
+    )),
+  ]);
 
   return {
     type: 'warn',
     summary: 'Outdated modules',
-    count: outdated.length,
+    count: groups.reduce((total, [, modules]) => total + modules.length, 0),
     details,
   } as RenderedAnalysis;
 }

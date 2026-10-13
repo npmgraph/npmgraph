@@ -10,12 +10,26 @@ export type OutdatedModule = {
   status: Extract<VersionStatus, { type: 'outdated' }>;
 };
 
-type OutdatedLevel = OutdatedModule['status']['level'];
+type GroupLevel = 'major' | 'minor' | 'patch';
 
-// Placeholder until the tests are in place: puts everything in one group
+// Most outdated first
+const levels: GroupLevel[] = ['major', 'minor', 'patch'];
+
+/**
+Groups the outdated modules by how far behind they are, most outdated first
+*/
 export function groupOutdatedByLevel(outdated: OutdatedModule[]) {
-  const level: OutdatedLevel = 'major';
-  return [[level, outdated] as const];
+  return levels
+    .map(
+      level =>
+        [
+          level,
+          outdated
+            .filter(({ status }) => status.level === level)
+            .toSorted((a, b) => a.module.name.localeCompare(b.module.name)),
+        ] as const,
+    )
+    .filter(([, modules]) => modules.length > 0);
 }
 
 export type ModuleAnalysisState = GraphState & {
