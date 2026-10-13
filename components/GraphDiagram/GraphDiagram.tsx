@@ -110,6 +110,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         <GraphDiagramZoomButtons />
         <GraphDiagramDownloadButton />
       </div>
+      {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- Already handled by onEsc() */}
       <div className={styles.graph} onClick={handleGraphClick} />
     </div>
   );
