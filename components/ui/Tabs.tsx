@@ -11,17 +11,12 @@ import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [currentPane, setCurrentPane] = useGlobalState('pane');
-  const [hide, setHide] = useHashParam(PARAM_HIDE);
-
-  const isInspectorOpen = hide === null;
   const isTightScreen = useIsTightScreen();
+  const [hide, setHide] = useHashParam(PARAM_HIDE);
+  const isInspectorOpen = hide === null;
 
   const tabs = [
-    {
-      pane: PaneType.GRAPH,
-      label: 'Graph',
-      visible: isTightScreen,
-    },
+    { pane: PaneType.GRAPH, label: 'Graph', visible: isTightScreen },
     { pane: PaneType.INFO, label: 'Info' },
     { pane: PaneType.REPORT, label: 'Report' },
     { pane: PaneType.MODULE, label: 'Module' },
@@ -30,27 +25,33 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
 
   return (
     <div className={cn(styles.root, className)}>
-      {tabs
-        .filter(tab => tab.visible !== false)
-        .map(({ pane: tabPane, label }) => (
-          <div
-            key={tabPane}
-            className={cn(styles.tab, {
-              [styles.active]: isInspectorOpen && currentPane === tabPane,
-            })}
-          >
-            <button
-              type="button"
-              className={utilities.brightHover}
-              onClick={() => {
-                setHide(null);
-                setCurrentPane(tabPane);
-              }}
-            >
-              {label}
-            </button>
-          </div>
-        ))}
+      <div role="tablist" aria-label="Inspector panels">
+        {tabs
+          .filter(tab => tab.visible !== false)
+
+            return (
+              <div
+                key={tabPane}
+                className={cn(styles.tab, {
+                  [styles.active]: isSelected,
+                })}
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  className={utilities.brightHover}
+                  onClick={() => {
+                    setHide(null);
+                    setCurrentPane(tabPane);
+                  }}
+                >
+                  {label}
+                </button>
+              </div>
+            );
+          })}
+      </div>
 
       <Splitter
         isOpen={isInspectorOpen}
