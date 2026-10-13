@@ -19,11 +19,8 @@ export default function PreviewWidget() {
   const [locationUrl] = useLocation();
   const isProductionHost = locationUrl.hostname === 'npmgraph.js.org';
   const prNumber = useMemo(
-    () =>
-      typeof process === 'undefined'
-        ? undefined
-        : // eslint-disable-next-line unicorn/no-optional-chaining-on-undeclared-variable -- False positive
-          process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim(),
+    // eslint-disable-next-line unicorn/no-optional-chaining-on-undeclared-variable -- False positie
+    () => process.env.VERCEL_GIT_PULL_REQUEST_ID?.trim(),
     [],
   );
   const prUrl = prNumber
