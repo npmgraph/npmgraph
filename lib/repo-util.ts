@@ -2,19 +2,19 @@ import hostedGitInfo from 'hosted-git-info';
 import type Module from './Module.ts';
 
 /**
- Extracts and normalizes repository URL from a module's package.json metadata.
+Extracts and normalizes repository URL from a module's package.json metadata.
 
- Tries multiple sources in priority order:
- 1. repository field
- 2. homepage field
- 3. bugs field
+Tries multiple sources in priority order:
+1. repository field
+2. homepage field
+3. bugs field
 
- Supports various formats including GitHub, GitLab, Bitbucket, and Gist.
- Handles URLs with path suffixes (e.g., /issues, /pulls) by stripping them.
+Supports various formats including GitHub, GitLab, Bitbucket, and Gist.
+Handles URLs with path suffixes (e.g., /issues, /pulls) by stripping them.
 
- @param module - The module to extract repository URL from
- @returns The normalized repository URL, or undefined if none found
- */
+@param module - The module to extract repository URL from
+@returns The normalized repository URL, or undefined if none found
+*/
 export function getRepoUrlForModule(module: Module): string | undefined {
   const { homepage, bugs, repository } = module.package;
 

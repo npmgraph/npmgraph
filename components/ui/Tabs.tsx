@@ -7,14 +7,14 @@ import * as utilities from './utilities.module.scss';
 
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
-import { useTightScreen } from '../../hooks/useTightScreen.ts';
+import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [currentPane, setCurrentPane] = useGlobalState('pane');
   const [hide, setHide] = useHashParam(PARAM_HIDE);
 
   const isInspectorOpen = hide === null;
-  const isTightScreen = useTightScreen();
+  const isTightScreen = useIsTightScreen();
 
   const tabs = [
     {

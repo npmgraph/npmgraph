@@ -49,11 +49,11 @@ export function ModuleActions({ module }: { module: Module }) {
                 checked={collapse.includes(module.name)}
                 className={utilities.brightHover}
                 onChange={() => {
-                  if (collapse.includes(module.name)) {
-                    setCollapse(collapse.filter(name => name !== module.name));
-                  } else {
-                    setCollapse([...collapse, module.name]);
-                  }
+                  setCollapse(
+                    collapse.includes(module.name)
+                      ? collapse.filter(name => name !== module.name)
+                      : [...collapse, module.name],
+                  );
                 }}
               />
               Collapse

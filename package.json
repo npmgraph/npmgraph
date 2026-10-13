@@ -8,7 +8,7 @@
     "https://github.com/sponsors/broofa",
     "https://github.com/sponsors/fregante"
   ],
-  "author": "Robert Kieffer (http://github.com/broofa)",
+  "author": "Robert Kieffer (https://github.com/broofa)",
   "type": "module",
   "devEngines": {
     "runtime": {
@@ -78,7 +78,7 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vitest/browser-playwright": "^5.0.3",
     "eslint": "^10.12.0",
-    "eslint-config-xo": "^4.0.1",
+    "eslint-config-xo": "^6.0.0",
     "eslint-config-xo-react": "^0.32.0",
     "eslint-formatter-unix": "^9.0.1",
     "eslint-plugin-react-doctor": "^0.9.17",

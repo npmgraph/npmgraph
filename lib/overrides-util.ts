@@ -1,18 +1,18 @@
 import { rangesIntersect } from 'verkit';
 
 /**
- Utilities for resolving `overrides` in package.json dependency trees.
- See: https://docs.npmjs.com/cli/v10/configuring-npm/package-json#overrides
- */
+Utilities for resolving `overrides` in package.json dependency trees.
+See: https://docs.npmjs.com/cli/v10/configuring-npm/package-json#overrides
+*/
 
 /**
- Overrides map as defined in package.json `overrides` field.
- */
+Overrides map as defined in package.json `overrides` field.
+*/
 export type Overrides = {
   [packageName: string]: string | Overrides;
 };
 
-function matchesOverrideKey(key: string, name: string, spec?: string) {
+function doesOverrideKeyMatch(key: string, name: string, spec?: string) {
   // Scoped names start with an @, so only look for one after the first character
   const at = key.lastIndexOf('@');
   const keyName = at > 0 ? key.slice(0, at) : key;
@@ -33,8 +33,8 @@ function matchesOverrideKey(key: string, name: string, spec?: string) {
 }
 
 /**
- Type guard that checks whether an unknown value is a valid Overrides object.
- */
+Type guard that checks whether an unknown value is a valid Overrides object.
+*/
 export function isOverrides(value: unknown): value is Overrides {
   if (typeof value !== 'object' || value === null) {
     return false;
@@ -50,20 +50,23 @@ export function isOverrides(value: unknown): value is Overrides {
 }
 
 /**
- Returns the overridden version for a dependency, if one is defined in the
- current overrides context as a string. Returns undefined if no override
- applies (or if the override is a nested object rather than a version string).
+Returns the overridden version for a dependency, if one is defined in the
+current overrides context as a string. Returns undefined if no override
+applies (or if the override is a nested object rather than a version string).
 
- Keys can include a range (e.g. `{ "foo@^1": "1.2.3" }`), which only applies to
- dependencies whose `spec` intersects that range.
- */
+Keys can include a range (e.g. `{ "foo@^1": "1.2.3" }`), which only applies to
+dependencies whose `spec` intersects that range.
+*/
 export function getVersionOverride(
   overrides: Overrides,
   name: string,
   spec?: string,
 ): string | undefined {
   for (const [key, override] of Object.entries(overrides)) {
-    if (typeof override !== 'string' || !matchesOverrideKey(key, name, spec)) {
+    if (
+      typeof override !== 'string' ||
+      !doesOverrideKeyMatch(key, name, spec)
+    ) {
       continue;
     }
 
@@ -74,9 +77,9 @@ export function getVersionOverride(
 }
 
 /**
- Replaces `$name` references with the spec that the root package has for that
- dependency. References to unknown dependencies are dropped.
- */
+Replaces `$name` references with the spec that the root package has for that
+dependency. References to unknown dependencies are dropped.
+*/
 export function resolveOverrideRefs(
   overrides: Overrides,
   rootSpecs: Record<string, string | undefined>,
@@ -98,13 +101,13 @@ export function resolveOverrideRefs(
 }
 
 /**
- Computes the effective overrides context for a child package named `childName`
- given the current overrides context and the root overrides.
- 
- Root-level string overrides (e.g. `{ "foo": "1.0.0" }`) are applied
- throughout the entire tree. Nested object overrides (e.g. `{ "parent": { "foo":
- "1.0.0" } }`) apply to that parent's whole subtree.
- */
+Computes the effective overrides context for a child package named `childName`
+given the current overrides context and the root overrides.
+
+Root-level string overrides (e.g. `{ "foo": "1.0.0" }`) are applied
+throughout the entire tree. Nested object overrides (e.g. `{ "parent": { "foo":
+"1.0.0" } }`) apply to that parent's whole subtree.
+*/
 export function getChildOverrides(
   currentOverrides: Overrides,
   rootOverrides: Overrides,
@@ -129,7 +132,7 @@ export function getChildOverrides(
     if (
       typeof value === 'object' &&
       value !== null &&
-      matchesOverrideKey(key, childName, childSpec)
+      doesOverrideKeyMatch(key, childName, childSpec)
     ) {
       Object.assign(childOverrides, value);
     }

@@ -75,6 +75,7 @@ async function goto(path: string) {
 const nodeAppears = async (module = '') =>
   appears(`svg g.node${module && `[data-module^="${module}"]`}`);
 
+// eslint-disable-next-line unicorn/no-unnecessary-parameters -- Readable
 const search = async (q: string) => {
   const input = app().getByCSS('#search-field');
   await userEvent.fill(input, q);

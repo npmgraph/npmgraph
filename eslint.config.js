@@ -18,8 +18,6 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
-  'react-doctor/jsx-no-new-function-as-prop',
-  'react-doctor/jsx-no-new-object-as-prop',
   'react-hooks/set-state-in-effect',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
@@ -35,11 +33,12 @@ const disabledRules = [
   'no-alert',
   'no-console',
   'no-warning-comments',
-  'react-doctor/jsx-no-target-blank', // Already covered by react/jsx-no-target-blank
+  'react-doctor/jsx-no-target-blank',
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
 ];
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- https://github.com/sindresorhus/eslint-plugin-unicorn/issues/3813
 export default defineConfig([
   ...xo({
     browser: true,

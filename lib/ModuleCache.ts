@@ -168,8 +168,8 @@ function cacheModule(module: Module, registry?: string) {
 }
 
 /**
- Convenience method for getting loaded modules by some criteria.
- */
+Convenience method for getting loaded modules by some criteria.
+*/
 export function queryModuleCache(
   queryType: QueryTypeValue,
   queryValue: string,
