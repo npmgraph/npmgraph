@@ -10,6 +10,14 @@ export type OutdatedModule = {
   status: Extract<VersionStatus, { type: 'outdated' }>;
 };
 
+type OutdatedLevel = OutdatedModule['status']['level'];
+
+// Placeholder until the tests are in place: puts everything in one group
+export function groupOutdatedByLevel(outdated: OutdatedModule[]) {
+  const level: OutdatedLevel = 'major';
+  return [[level, outdated] as const];
+}
+
 export type ModuleAnalysisState = GraphState & {
   versionsByName: Record<string, Module[]>;
   deprecated: Module[];

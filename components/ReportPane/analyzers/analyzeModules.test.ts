@@ -2,7 +2,7 @@ import type { Packument, PackumentVersion } from '@npm/types';
 import { describe, expect, it } from 'vitest';
 import Module from '../../../lib/Module.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
-import { analyzeModules } from './analyzeModules.ts';
+import { analyzeModules, groupOutdatedByLevel } from './analyzeModules.ts';
 
 function createModule(name: string, version: string, latest: string) {
   const pkg = { name, version } as PackumentVersion;
@@ -47,5 +47,49 @@ describe('analyzeModules', () => {
     } as PackumentVersion);
 
     expect(analyze([local, noPackument]).outdated).toEqual([]);
+  });
+});
+
+describe('groupOutdatedByLevel', () => {
+  const group = (modules: Module[]) =>
+    groupOutdatedByLevel(analyze(modules).outdated).map(([level, items]) => [
+      level,
+      items.map(({ module }) => module.name),
+    ]);
+
+  it('groups the modules by level, most outdated first', () => {
+    expect(
+      group([
+        createModule('patch', '1.0.0', '1.0.1'),
+        createModule('pre', '2.0.0-beta.1', '2.0.0'),
+        createModule('minor', '1.0.0', '1.2.0'),
+        createModule('major', '1.0.0', '3.0.0'),
+      ]),
+    ).toEqual([
+      ['major', ['major']],
+      ['minor', ['minor']],
+      ['patch', ['patch']],
+      ['prerelease', ['pre']],
+    ]);
+  });
+
+  it('sorts the modules by name within a group', () => {
+    expect(
+      group([
+        createModule('b', '1.0.0', '2.0.0'),
+        createModule('c', '1.0.0', '2.0.0'),
+        createModule('a', '1.0.0', '2.0.0'),
+      ]),
+    ).toEqual([['major', ['a', 'b', 'c']]]);
+  });
+
+  it('leaves out the levels without modules', () => {
+    expect(group([createModule('patch', '1.0.0', '1.0.1')])).toEqual([
+      ['patch', ['patch']],
+    ]);
+  });
+
+  it('returns no groups without outdated modules', () => {
+    expect(group([createModule('current', '1.0.0', '1.0.0')])).toEqual([]);
   });
 });
