@@ -55,7 +55,7 @@ export function ModuleActions({ module }: { module: Module }) {
               Collapse
             </Button>
           )}
-          <QueryLink as={Button} query={module.key}>
+          <QueryLink component={Button} query={module.key}>
             Focus
           </QueryLink>
         </>

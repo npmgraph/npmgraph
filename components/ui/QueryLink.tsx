@@ -7,13 +7,13 @@ import { patchLocation } from '../../hooks/useLocation.ts';
 export function QueryLink({
   query,
   reset = true,
-  as: Component = 'a',
+  component: Component = 'a',
   children,
   ...props
 }: HTMLProps<HTMLAnchorElement> & {
   reset?: boolean;
   query: string | string[];
-  as?: React.ElementType;
+  component?: React.ElementType;
 }) {
   const queries = Array.isArray(query) ? query : [query];
 
