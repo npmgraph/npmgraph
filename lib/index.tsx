@@ -1,18 +1,18 @@
+// eslint-disable-next-line import-x/no-unassigned-import
+import './bugsnag.ts'; // Initialize ASAP!
 import '../index.scss';
-import { report } from './bugsnag.ts'; // Initialize ASAP!
 
 import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
+import { flash } from './flash.ts';
 import { Unsupported } from '../components/Unsupported.tsx';
-import { setActivityForApp } from '../hooks/useActivity.ts';
 import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
-import { flash } from './flash.ts';
-import { normalizeRejection } from './normalizeRejection.ts';
+import { setActivityForApp } from '../hooks/useActivity.ts';
 
 function isValidJS(src: string) {
   try {
@@ -73,10 +73,9 @@ globalThis.addEventListener('error', error => {
   flash(error.message);
 });
 
-globalThis.addEventListener('unhandledrejection', event => {
-  console.error(event);
-  report.error(normalizeRejection(event.reason));
-  flash(event.reason);
+globalThis.addEventListener('unhandledrejection', error => {
+  console.error(error);
+  flash(error.reason);
 });
 
 globalThis.addEventListener('load', () => {

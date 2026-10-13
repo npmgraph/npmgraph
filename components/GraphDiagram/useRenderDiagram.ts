@@ -1,6 +1,6 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
-import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
 import { select } from 'd3-selection';
+import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
 import { use, useEffect, useState } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -10,7 +10,6 @@ import { createAbortable } from '../../lib/createAbortable.ts';
 import { flash } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
-import { importWithDiagnostics } from '../../lib/importWithDiagnostics.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
@@ -59,26 +58,11 @@ function decorateGraphNodes(
   }
 }
 
-let graphvizPromise: Promise<Graphviz> | undefined;
-
-// Cached while pending/successful; cleared on failure so the next call retries
-async function loadGraphviz() {
-  graphvizPromise ??= (async () => {
-    const { Graphviz } = await importWithDiagnostics(
-      'graphviz',
-      async () => import('@hpcc-js/wasm-graphviz'),
-    );
-    return Graphviz.load();
-  })().catch((error: unknown) => {
-    graphvizPromise = undefined;
-    throw error;
-  });
-  return graphvizPromise;
-}
-
 // Keep graphviz in a secondary bundle but load it eagerly
-// eslint-disable-next-line unicorn/no-top-level-side-effects -- prefetch only
-void loadGraphviz().catch(() => {});
+const graphvizPromise = (async () => {
+  const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
+  return Graphviz.load();
+})();
 
 // Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
 const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
@@ -141,7 +125,7 @@ export default function useRenderDiagram(
 ) {
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
-  const graphviz = use(loadGraphviz());
+  const graphviz = use(graphvizPromise);
   const [diagramElement, setDiagramElement] = useState<
     SVGSVGElement | undefined
   >(getDiagramElement);
