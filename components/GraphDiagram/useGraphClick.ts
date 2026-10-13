@@ -15,11 +15,11 @@ export default function useGraphClick() {
   const [collapse, setCollapse] = useCollapse();
 
   function toggleCollapsed(name: string) {
-    if (collapse.includes(name)) {
-      setCollapse(collapse.filter(n => n !== name));
-    } else {
-      setCollapse([...collapse, name]);
-    }
+    setCollapse(
+      collapse.includes(name)
+        ? collapse.filter(n => n !== name)
+        : [...collapse, name],
+    );
   }
 
   return (event: React.MouseEvent) => {
