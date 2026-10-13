@@ -33,7 +33,7 @@ const disabledRules = [
   'no-alert',
   'no-console',
   'no-warning-comments',
-  'react-doctor/jsx-no-target-blank', // Already covered by react/jsx-no-target-blank
+  'react-doctor/jsx-no-target-blank',
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
 ];
