@@ -12,7 +12,7 @@ export type Overrides = {
   [packageName: string]: string | Overrides;
 };
 
-function matchesOverrideKey(key: string, name: string, spec?: string) {
+function doesOverrideKeyMatch(key: string, name: string, spec?: string) {
   // Scoped names start with an @, so only look for one after the first character
   const at = key.lastIndexOf('@');
   const keyName = at > 0 ? key.slice(0, at) : key;
@@ -63,7 +63,10 @@ export function getVersionOverride(
   spec?: string,
 ): string | undefined {
   for (const [key, override] of Object.entries(overrides)) {
-    if (typeof override !== 'string' || !matchesOverrideKey(key, name, spec)) {
+    if (
+      typeof override !== 'string' ||
+      !doesOverrideKeyMatch(key, name, spec)
+    ) {
       continue;
     }
 
@@ -129,7 +132,7 @@ export function getChildOverrides(
     if (
       typeof value === 'object' &&
       value !== null &&
-      matchesOverrideKey(key, childName, childSpec)
+      doesOverrideKeyMatch(key, childName, childSpec)
     ) {
       Object.assign(childOverrides, value);
     }
