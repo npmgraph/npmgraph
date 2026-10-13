@@ -12,9 +12,9 @@ export type VersionStatus =
   | { type: 'none' };
 
 /**
- Compares a version to the `latest` dist-tag. Returns `null` if either can't
- be compared.
- */
+Compares a version to the `latest` dist-tag. Returns `null` if either can't
+be compared.
+*/
 export function getVersionStatus(
   version: string,
   distTags: Record<string, string | undefined>,

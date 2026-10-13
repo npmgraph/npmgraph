@@ -1,11 +1,11 @@
 /**
- DOM maniulation methods
- */
+DOM maniulation methods
+*/
 type LoadActivityFn = (la: LoadActivity) => void;
 
 /**
- Lite class for tracking async activity
- */
+Lite class for tracking async activity
+*/
 export default class LoadActivity {
   title: string | undefined = '';
 
