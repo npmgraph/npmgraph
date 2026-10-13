@@ -18,8 +18,6 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
-  'react-doctor/jsx-no-new-function-as-prop',
-  'react-doctor/jsx-no-new-object-as-prop',
   'react-hooks/set-state-in-effect',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
