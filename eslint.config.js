@@ -38,6 +38,7 @@ const disabledRules = [
   'require-unicode-regexp',
 ];
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- https://github.com/sindresorhus/eslint-plugin-unicorn/issues/3813
 export default defineConfig([
   ...xo({
     browser: true,
