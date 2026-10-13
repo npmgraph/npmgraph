@@ -5,6 +5,7 @@ import OffsiteLinkIcon from 'jsx:../images/icons/offsite-link.svg';
 import XIcon from 'jsx:../images/icons/x.svg';
 import * as utilities from './ui/utilities.module.scss';
 import * as styles from './PreviewWidget.module.scss';
+import { Button, ButtonGroup } from './Button.tsx';
 
 function getNpmgraphJsOrgUrl(locationUrl: URL) {
   const url = new URL('https://npmgraph.js.org/');
@@ -38,30 +39,27 @@ export default function PreviewWidget() {
   }
 
   return (
-    <aside className={styles.root}>
+    <ButtonGroup vertical className={styles.root}>
       {prUrl ? (
-        <a
+        <Button
           href={prUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Open pull request"
           title="Open pull request"
         >
           <GithubIcon />
-        </a>
+        </Button>
       ) : null}
-      <a
+      <Button
         href={npmgraphUrl}
         target="_blank"
         className={utilities.brightHover}
         rel="noopener noreferrer"
-        aria-label="Open current query on npmgraph.js.org"
         title="Compare to production npmgraph"
       >
         <OffsiteLinkIcon />
-      </a>
-      <button
-        aria-label="Hide widget"
+      </Button>
+      <Button
         className={utilities.brightHover}
         title="Hide widget until reload"
         type="button"
@@ -70,7 +68,7 @@ export default function PreviewWidget() {
         }}
       >
         <XIcon />
-      </button>
-    </aside>
+      </Button>
+    </ButtonGroup>
   );
 }
