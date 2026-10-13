@@ -17,7 +17,7 @@ export default defineConfig({
         test: {
           name: 'smoke',
           include: ['smoke.test.ts'],
-          testTimeout: 60_000,
+          testTimeout: 3000,
           browser: {
             enabled: true,
             headless: true,

@@ -26,7 +26,7 @@ const node = (module = '') =>
     .getByCSS(`svg g.node${module && `[data-module^="${module}"]`}`)
     .first();
 
-const tab = (name: string) => app().getByRole('button', { name, exact: true });
+const tab = (name: string) => app().getByRole('tab', { name, exact: true });
 
 // Toggle is a button; its On/Off pill is aria-hidden (state is in aria-pressed)
 const toggle = (label: string) =>
