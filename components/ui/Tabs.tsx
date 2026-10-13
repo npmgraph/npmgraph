@@ -25,7 +25,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
 
   return (
     <div className={cn(styles.root, className)}>
-      <div role="tablist" aria-label="Inspector panels">
+      <div role="tablist" aria-label="Inspector panels" className={styles.list}>
         {tabs
           .filter(tab => tab.visible !== false)
           .map(({ pane: tabPane, label }) => {

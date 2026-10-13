@@ -1,6 +1,7 @@
 @use '../../lib/root.module.scss' as *;
 
-.root {
+.root,
+.list {
   display: flex;
   flex-shrink: 0;
   flex-basis: auto;
