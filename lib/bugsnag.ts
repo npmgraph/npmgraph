@@ -1,4 +1,4 @@
-import Bugsnag from '@bugsnag/js';
+import Bugsnag, { type Event } from '@bugsnag/js';
 import HttpError from './HttpError.ts';
 
 const apiKey = process.env.BUGSNAG_KEY;
@@ -6,12 +6,32 @@ const apiKey = process.env.BUGSNAG_KEY;
 export const releaseStage = process.env.VERCEL_ENV ?? 'development';
 export const appVersion = process.env.VERCEL_GIT_COMMIT_SHA ?? 'none';
 
+type NetworkInformation = { effectiveType?: string; saveData?: boolean };
+
+// Context for telling stale-deploy and flaky-network failures apart
+export function addRuntimeMetadata(event: Event) {
+  const { connection } = navigator as Navigator & {
+    connection?: NetworkInformation;
+  };
+
+  event.addMetadata('runtime', {
+    online: navigator.onLine,
+    visibility: document.visibilityState,
+    effectiveType: connection?.effectiveType,
+    saveData: connection?.saveData,
+    secondsSincePageLoad: Math.round(performance.now() / 1000),
+  });
+}
+
 const bugsnag = apiKey
   ? Bugsnag.start({
       appVersion,
       apiKey,
       releaseStage,
       enabledReleaseStages: ['production', 'preview'],
+      // Rejections are reported via report.error() in index.tsx, normalized to Errors
+      enabledErrorTypes: { unhandledRejections: false },
+      onError: addRuntimeMetadata,
     })
   : undefined;
 

@@ -12,3 +12,29 @@
 .entry {
   font-weight: bold;
 }
+
+.filter {
+  padding-block: 0.3rem 0.5rem;
+}
+
+.input {
+  display: block;
+  box-sizing: border-box;
+  outline: none;
+  border: solid 1px #999;
+  border-radius: 1em;
+  padding: 0.2em 0.7em;
+  width: 100%;
+  font: inherit;
+  font-size: 16px; // It must be at least 16px to avoid iOS zooming in on focus
+
+  &:focus {
+    border-color: var(--accent);
+  }
+}
+
+.empty {
+  color: rgba(127, 127, 127, 0.85);
+  font-style: italic;
+  line-height: 1.5rem;
+}
