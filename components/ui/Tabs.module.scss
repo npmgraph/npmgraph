@@ -37,10 +37,3 @@
     background: var(--accent);
   }
 }
-
-.tabMobileOnly {
-  display: none;
-  @include tight-screen {
-    display: flex;
-  }
-}
