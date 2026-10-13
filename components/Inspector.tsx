@@ -1,20 +1,39 @@
 import { lazy, Suspense, type HTMLProps } from 'react';
+import useGraphSelection from '../hooks/useGraphSelection.ts';
+import useHashParam from '../hooks/useHashParam.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
-import useGraphSelection from '../hooks/useGraphSelection.ts';
-import useHashParam from '../hooks/useHashParam.ts';
+import { importWithDiagnostics } from '../lib/importWithDiagnostics.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
 
-// Keep these panes in secondary bundles but start loading them eagerly
-const reportPanePromise = import('./ReportPane/ReportPane.tsx');
-const modulePanePromise = import('./ModulePane/ModulePane.tsx');
+const loadReportPane = async () =>
+  importWithDiagnostics(
+    'ReportPane',
+    async () => import('./ReportPane/ReportPane.tsx'),
+  );
+const loadModulePane = async () =>
+  importWithDiagnostics(
+    'ModulePane',
+    async () => import('./ModulePane/ModulePane.tsx'),
+  );
 
-const ReportPane = lazy(async () => reportPanePromise);
-const ModulePane = lazy(async () => modulePanePromise);
+// Keep these panes in secondary bundles but start loading them eagerly.
+// A failed prefetch is swallowed; lazy() re-imports on first render.
+const reportPanePrefetch = loadReportPane().catch(() => {});
+const modulePanePrefetch = loadModulePane().catch(() => {});
+
+const ReportPane = lazy(async () => {
+  await reportPanePrefetch;
+  return loadReportPane();
+});
+const ModulePane = lazy(async () => {
+  await modulePanePrefetch;
+  return loadModulePane();
+});
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;
