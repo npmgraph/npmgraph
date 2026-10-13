@@ -4,7 +4,7 @@ import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
-import { Button, ButtonGroup } from '../Button.tsx';
+import { Button, ButtonCheckbox, ButtonGroup } from '../Button.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 
 function ExternalLink({
@@ -42,9 +42,9 @@ export function ModuleActions({ module }: { module: Module }) {
       {isSingleEntryModule ? null : (
         <>
           {canCollapse && (
-            <Button
-              selected={collapse.includes(module.name)}
-              onClick={() => {
+            <ButtonCheckbox
+              checked={collapse.includes(module.name)}
+              onChange={() => {
                 setCollapse(
                   collapse.includes(module.name)
                     ? collapse.filter(name => name !== module.name)
@@ -53,7 +53,7 @@ export function ModuleActions({ module }: { module: Module }) {
               }}
             >
               Collapse
-            </Button>
+            </ButtonCheckbox>
           )}
           <QueryLink component={Button} query={module.key}>
             Focus

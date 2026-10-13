@@ -15,6 +15,16 @@
   }
 }
 
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+
+  input {
+    margin: 0;
+  }
+}
+
 .selected {
   background-color: var(--accent);
   color: var(--text-on-accent);
