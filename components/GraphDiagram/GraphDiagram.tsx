@@ -56,7 +56,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const handleGraphClick = useGraphClick();
 
   // Filter for which modules should be shown / collapsed in the graph
-  const moduleFilter = useCallback(
+  const isModuleVisible = useCallback(
     ({ name }: { name: string }) => !collapse?.includes(name),
     [collapse],
   );
@@ -64,9 +64,9 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
-  useLoadGraph(moduleFilter);
+  useLoadGraph(isModuleVisible);
 
-  const diagramElement = useRenderDiagram(activity, moduleFilter);
+  const diagramElement = useRenderDiagram(activity, isModuleVisible);
   useDiagramZoom(diagramElement);
 
   const selectedModules = useMemo(
