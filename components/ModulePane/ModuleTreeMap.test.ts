@@ -20,6 +20,19 @@ describe('layoutTreemap', () => {
     expect(leaves.map(leaf => leaf.rank)).toEqual([0, 0.5, 1]);
   });
 
+  it('has no leaves without dependencies', () => {
+    expect(layoutTreemap({ size: 1000 } as BundlePhobiaData, 300, 150)).toEqual(
+      [],
+    );
+    expect(
+      layoutTreemap(
+        { size: 1000, dependencySizes: [] } as unknown as BundlePhobiaData,
+        300,
+        150,
+      ),
+    ).toEqual([]);
+  });
+
   it('keeps the leaves inside the container', () => {
     for (const leaf of layoutTreemap(data, 300, 150)) {
       expect(leaf.x0).toBeGreaterThanOrEqual(0);
