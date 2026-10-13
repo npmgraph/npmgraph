@@ -4,7 +4,7 @@
   background-color: var(--root-color);
 
   width: 100%;
-  height: 8rem;
+  height: 10rem;
 }
 
 .root {
@@ -12,10 +12,37 @@
 
   .dot > text {
     fill: var(--text);
+    font-size: 0.8rem;
   }
 
-  > .layerGrid {
+  .layerGrid line {
     stroke: var(--grey60);
+  }
+
+  .axis line {
+    stroke: var(--grey60);
+  }
+  .axisTick text {
+    fill: var(--text);
+    font-size: 0.8rem;
+  }
+
+  .current {
+    line {
+      stroke: var(--accent);
+      stroke-dasharray: 3 2;
+      stroke-width: 1.5;
+    }
+    text {
+      fill: var(--accent);
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+  }
+  .currentRing {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
   }
 
   .layerMajor {
@@ -38,41 +65,8 @@
   .layerPrerelease {
     fill: var(--bg-blue);
   }
-}
-
-.legend {
-  display: flex;
-  justify-content: space-between;
-  margin-block-start: 0.5rem;
-
-  & .dotKey {
-    display: inline-block;
-    vertical-align: middle;
-    border-radius: 50%;
-    width: 0.7em;
-    height: 0.7em;
+  .legend text {
+    fill: var(--text);
+    font-size: 1rem;
   }
-  .dotKeyMajor {
-    border: solid 1px var(--grey20);
-    background-color: var(--root-color);
-    width: 1em;
-    height: 1em;
-  }
-  .dotKeyMinor {
-    background-color: var(--bg-orange);
-    width: 0.8em;
-    height: 0.8em;
-  }
-  .dotKeyPatch {
-    background-color: var(--bg-green);
-  }
-  .dotKeyPrerelease {
-    background-color: var(--bg-blue);
-  }
-}
-
-.xAxis {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
 }

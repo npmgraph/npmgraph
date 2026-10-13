@@ -1,8 +1,8 @@
 import { $$, $optional } from 'select-dom';
 import { report } from '../../lib/bugsnag.ts';
-import { DownloadIcon } from '../ui/Icons.tsx';
-import * as styles from './GraphDiagramDownloadButton.module.scss';
+import DownloadIcon from 'jsx:../../images/icons/download.svg';
 import * as graphStyles from './GraphDiagram.module.scss';
+import { Button } from '../Button.tsx';
 
 type DownloadExtension = 'svg' | 'png';
 
@@ -12,16 +12,14 @@ function getDiagramElement() {
 
 export default function GraphDiagramDownloadButton() {
   return (
-    <button
-      className={styles.root}
+    <Button
       title="Download as SVG"
-      type="button"
       onClick={() => {
         download('svg');
       }}
     >
       <DownloadIcon />
-    </button>
+    </Button>
   );
 }
 
@@ -57,8 +55,7 @@ async function downloadPng() {
   const ctx = canvas.getContext('2d')!;
   const img = new Image();
   const svgBlob = new Blob([data], { type: 'image/svg+xml' });
-  // Revoked in the `finally` block below
-  // react-doctor-disable-next-line react-doctor/no-create-object-url-without-revoke
+  // eslint-disable-next-line react-doctor/no-create-object-url-without-revoke -- Revoked in the `finally` block below
   const url = URL.createObjectURL(svgBlob);
 
   try {

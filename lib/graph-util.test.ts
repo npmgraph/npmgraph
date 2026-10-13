@@ -1,4 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import type { PackumentVersion } from '@npm/types';
+import { describe, expect, it, vi } from 'vitest';
+import Module from './Module.ts';
 import {
   getChildOverrides,
   getVersionOverride,
@@ -108,5 +110,47 @@ describe('isOverrides', () => {
 
   it('should return false when a value is neither a string nor an object', () => {
     expect(isOverrides({ foo: 42 })).toBe(false);
+  });
+});
+
+// graph-util.ts needs the location when it's imported
+vi.stubGlobal('location', new URL('http://localhost/'));
+const { hasDependencies } = await import('./graph-util.ts');
+
+describe('hasDependencies', () => {
+  const createModule = (extra: Partial<PackumentVersion>) =>
+    new Module({ name: 'a', version: '1.0.0', ...extra } as PackumentVersion);
+  const types = new Set(['dependencies', 'optionalDependencies'] as const);
+
+  it('is false for a module without dependencies', () => {
+    expect(hasDependencies(createModule({}), types)).toBe(false);
+    expect(hasDependencies(createModule({ dependencies: {} }), types)).toBe(
+      false,
+    );
+  });
+
+  it('is true for a module with dependencies', () => {
+    expect(
+      hasDependencies(createModule({ dependencies: { b: '^1.0.0' } }), types),
+    ).toBe(true);
+    expect(
+      hasDependencies(
+        createModule({ optionalDependencies: { b: '^1.0.0' } }),
+        types,
+      ),
+    ).toBe(true);
+  });
+
+  it('only counts the selected dependency types', () => {
+    const module = createModule({ devDependencies: { b: '^1.0.0' } });
+    expect(hasDependencies(module, types)).toBe(false);
+    expect(hasDependencies(module, new Set(['devDependencies']))).toBe(true);
+  });
+
+  it('ignores dev dependencies below the top level', () => {
+    const module = createModule({ devDependencies: { b: '^1.0.0' } });
+    expect(hasDependencies(module, new Set(['devDependencies']), 1)).toBe(
+      false,
+    );
   });
 });

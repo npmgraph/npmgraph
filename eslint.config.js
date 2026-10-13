@@ -1,6 +1,8 @@
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import { defineConfig } from 'eslint/config';
+import reactDoctor from 'eslint-plugin-react-doctor';
+import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 
 const disabledRules = [
   // TODO: Gradually review and enable
@@ -28,14 +30,15 @@ const disabledRules = [
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
-  'complexity',
   'no-alert',
   'no-console',
   'no-warning-comments',
+  'react-doctor/jsx-no-target-blank',
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
 ];
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- https://github.com/sindresorhus/eslint-plugin-unicorn/issues/3813
 export default defineConfig([
   ...xo({
     browser: true,
@@ -64,6 +67,8 @@ export default defineConfig([
       ],
     },
   },
+  reactDoctor.configs.recommended,
+  reactYouMightNotNeedAnEffect.configs.strict,
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },

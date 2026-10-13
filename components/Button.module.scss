@@ -1,0 +1,57 @@
+@use './ui/utilities.module.scss' as *;
+
+.button {
+  @extend .brightHover;
+  display: inline-block;
+  border: solid 1px var(--bg1);
+  border-radius: var(--rad-sm);
+  background: var(--bg0);
+  padding: 6px;
+  color: var(--text);
+  user-select: none;
+
+  svg {
+    display: block;
+  }
+}
+
+.selected {
+  background-color: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.horizontalGroup,
+.verticalGroup {
+  display: flex;
+  filter: drop-shadow(2px 2px 6px var(--bg0-shadow-color));
+  font-size: 1em;
+}
+.verticalGroup {
+  flex-direction: column;
+}
+
+.horizontalGroup .button {
+  border-radius: 0;
+  &:not(:first-child) {
+    border-left: none;
+  }
+  &:first-child {
+    border-radius: var(--rad-sm) 0 0 var(--rad-sm);
+  }
+  &:last-child {
+    border-radius: 0 var(--rad-sm) var(--rad-sm) 0;
+  }
+}
+
+.verticalGroup .button {
+  border-radius: 0;
+  &:not(:first-child) {
+    border-top: none;
+  }
+  &:first-child {
+    border-radius: var(--rad-sm) var(--rad-sm) 0 0;
+  }
+  &:last-child {
+    border-radius: 0 0 var(--rad-sm) var(--rad-sm);
+  }
+}

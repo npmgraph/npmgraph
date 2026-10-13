@@ -1,16 +1,7 @@
-import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import {
-  Suspense,
-  use,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { Suspense, useCallback, useEffect, useMemo } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { $, $$optional, $optional, closestElementOptional } from 'select-dom';
+import { $, $$optional, $optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -19,100 +10,26 @@ import {
   queryModuleCache,
   QueryType,
 } from '../../lib/ModuleCache.ts';
-import { report } from '../../lib/bugsnag.ts';
-import {
-  PaneType,
-  PARAM_COLORIZE,
-  PARAM_DEPENDENCIES,
-  PARAM_HIDE,
-  PARAM_PACKAGES,
-  PARAM_SIZING,
-  PARAM_ZOOM,
-  ZOOM_FIT_HEIGHT,
-  ZOOM_FIT_WIDTH,
-  ZOOM_NONE,
-} from '../../lib/constants.ts';
-import { createAbortable } from '../../lib/createAbortable.ts';
+import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
-import memoizeRecent from '../../lib/memoizeRecent.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
-import { useQuery } from '../../hooks/useQuery.ts';
-import { celebrate, flash } from '../../lib/flash.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
-import * as utilities from '../ui/utilities.module.scss';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
-import {
-  type DependencyKey,
-  type GraphState,
-  composeDOT,
-  gatherSelectionInfo,
-  getGraphForQuery,
-} from '../../lib/graph-util.ts';
+import useDiagramZoom from './useDiagramZoom.ts';
+import useGraphClick from './useGraphClick.ts';
+import useLoadGraph from './useLoadGraph.ts';
+import useRenderDiagram from './useRenderDiagram.ts';
+import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
-import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
-
-function getDiagramElement() {
-  return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
-}
-
-function decorateGraphNodes(
-  element: Element,
-  isModuleVisible: ({ name }: { name: string }) => boolean,
-) {
-  for (const nodeElement of $$optional('g.node', element)) {
-    const key = $optional(':scope > title', nodeElement)?.textContent!.trim();
-    if (!key) {
-      continue;
-    }
-
-    const module = getCachedModule(key);
-    if (!module) {
-      continue;
-    }
-
-    nodeElement.setAttribute('role', 'button');
-    nodeElement.setAttribute('tabindex', '0');
-    nodeElement.setAttribute('aria-label', `Select ${module.key}`);
-
-    if (module.package.deprecated) {
-      nodeElement.classList.add('warning');
-    }
-
-    if (module.name) {
-      nodeElement.dataset['module'] = module.key;
-    } else {
-      report.warn(new Error(`Bad replace: ${key}`));
-    }
-
-    if (!isModuleVisible(module)) {
-      nodeElement.classList.add('collapsed');
-    }
-
-    if (module.isStub) {
-      nodeElement.classList.add('stub');
-    }
-  }
-}
 
 const idSeen = new Set<unknown>();
-
-// Keep graphviz in a secondary bundle but load it eagerly
-const graphvizPromise = (async () => {
-  const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
-  return Graphviz.load();
-})();
-
-// Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
-const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
-  graphviz.dot(dot, 'svg'),
-);
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   return (
@@ -131,125 +48,15 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 }
 
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
-  const [query] = useQuery();
-  const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
-  // Pasted package.json files are in the hash, they can change without the query changing
-  const [packages] = useHashParam(PARAM_PACKAGES);
-  const [, setPane] = useGlobalState('pane');
-  const [, setZenMode] = useHashParam(PARAM_HIDE);
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
-  const [graph, setGraph] = useGlobalState('graph');
-  const [diagramElement, setDiagramElement] = useState<
-    SVGSVGElement | undefined
-  >(getDiagramElement);
-
-  const [collapse, setCollapse] = useCollapse();
+  const [graph] = useGlobalState('graph');
+  const [collapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
-  const [zoom] = useHashParam(PARAM_ZOOM);
-  const [sizing] = useHashParam(PARAM_SIZING);
-  const graphviz = use(graphvizPromise);
 
-  // Stable query array for use in effects
-  const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
-
-  // Stable dependency types for use in effects
-  const dependencyTypes = useMemo(() => {
-    const extra = (depTypes ?? '')
-      .split(/\s*,\s*/)
-      .map(s => s.trim())
-      .filter(Boolean)
-      .toSorted() as DependencyKey[];
-    return new Set<DependencyKey>([
-      'dependencies',
-      'optionalDependencies',
-      ...extra,
-    ]);
-  }, [depTypes]);
-
-  function handleGraphClick(event: React.MouseEvent) {
-    const { target } = event;
-    if (
-      !(target instanceof Element) ||
-      // Allow opening the link in a new tab
-      event.metaKey ||
-      closestElementOptional(`.${styles.graphControls}`, target)
-    ) {
-      return;
-    }
-
-    const node = closestElementOptional('g.node', target);
-    if (node) {
-      // Don't navigate to link
-      event.preventDefault();
-    }
-
-    const moduleKey = node ? $('title', node)?.textContent?.trim() : '';
-    const module = moduleKey === '' ? undefined : getCachedModule(moduleKey);
-
-    // Toggle exclude filter?
-    if (node && event.shiftKey) {
-      if (module) {
-        const isIncluded = collapse.includes(module.name);
-        if (isIncluded) {
-          setCollapse(collapse.filter(n => n !== module.name));
-        } else {
-          setCollapse([...collapse, module.name]);
-        }
-      }
-
-      return;
-    }
-
-    if (node) {
-      setZenMode('');
-    }
-
-    setGraphSelection(QueryType.Default, moduleKey);
-    if (moduleKey !== '') {
-      setPane(PaneType.MODULE);
-    }
-  }
-
-  function applyZoom() {
-    const graphElement = $(`.${styles.graph}`);
-
-    if (!graphElement || !diagramElement) {
-      return;
-    }
-
-    // Note: Not using svg.getBBox() here because (for some reason???) it's
-    // smaller than the actual bounding box
-    const vb = diagramElement.getAttribute('viewBox')?.split(' ').map(Number);
-    if (!vb) {
-      return;
-    }
-
-    const w = vb[2];
-    const h = vb[3];
-    graphElement.classList.remove(utilities.dBlock);
-
-    switch (zoom) {
-      case ZOOM_NONE:
-        diagramElement.setAttribute('width', String(w));
-        diagramElement.setAttribute('height', String(h));
-        break;
-
-      case ZOOM_FIT_WIDTH:
-        diagramElement.setAttribute('width', '100%');
-        diagramElement.removeAttribute('height');
-        break;
-
-      case ZOOM_FIT_HEIGHT:
-        diagramElement.removeAttribute('width');
-        diagramElement.setAttribute('height', '100%');
-        graphElement.classList.add(utilities.dBlock);
-        break;
-      default:
-    }
-  }
+  const handleGraphClick = useGraphClick();
 
   // Filter for which modules should be shown / collapsed in the graph
-  const moduleFilter = useCallback(
+  const isModuleVisible = useCallback(
     ({ name }: { name: string }) => !collapse?.includes(name),
     [collapse],
   );
@@ -257,118 +64,10 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
-  useEffect(() => {
-    const { signal, abort } = createAbortable();
-    void getGraphForQuery(sortedQuery, dependencyTypes, moduleFilter).then(
-      newGraph => {
-        // Check after async
-        if (signal.aborted) {
-          return;
-        }
+  useLoadGraph(isModuleVisible);
 
-        // A collapsed module also results in a graph with a single module
-        const firstInfo = newGraph.moduleInfos.values().next().value;
-        if (
-          firstInfo &&
-          newGraph?.moduleInfos.size === 1 &&
-          !firstInfo.module.isStub &&
-          moduleFilter(firstInfo.module)
-        ) {
-          void celebrate('Zero dependencies for the win!');
-        }
-
-        setGraph(newGraph);
-
-        if (
-          newGraph.entryModules.size === 0 &&
-          newGraph.failedEntryModules.size > 0
-        ) {
-          setPane(PaneType.INFO);
-        }
-      },
-    );
-
-    return abort;
-  }, [
-    sortedQuery,
-    dependencyTypes,
-    collapse,
-    moduleFilter,
-    packages,
-    setGraph,
-    setPane,
-  ]);
-
-  // Effect: Insert SVG markup into DOM
-  useEffect(() => {
-    const { signal, abort } = createAbortable();
-
-    // Post-process rendered DOM
-    const finish = activity.start('Rendering');
-
-    // Render SVG markup (async)
-    (async function () {
-      // Check after all async stuff
-      if (signal.aborted) {
-        return;
-      }
-
-      // Compose SVG markup
-      let svgMarkup = '<svg />';
-      if (graph?.moduleInfos?.size !== 0) {
-        const dotDoc = composeDOT({ graph, sizing: sizing !== null });
-
-        try {
-          svgMarkup =
-            graph?.moduleInfos.size === 0
-              ? '<svg />'
-              : layout(dotDoc, graphviz);
-        } catch (error) {
-          console.error(error);
-          flash('Error while rendering graph');
-        }
-      }
-
-      if (signal.aborted) {
-        return;
-      } // Check after all async stuff
-
-      // Parse markup
-      const svgDom = new DOMParser().parseFromString(svgMarkup, 'image/svg+xml')
-        .firstElementChild as SVGSVGElement;
-      svgDom.remove();
-
-      // Remove background element so page background shows thru
-      $optional('.graph > polygon', svgDom)?.remove();
-      svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-      svgDom.classList.add(styles.graphDiagram);
-
-      // Inject into DOM
-      const element = $(`.${styles.graph}`);
-      getDiagramElement()?.remove();
-      element.append(svgDom);
-
-      // Inject SVG definitions: warning pattern and collapsed-node outline
-      select(`.${styles.graph} svg`)
-        .insert('defs', ':first-child')
-        .html(svgDefs);
-
-      decorateGraphNodes(element, moduleFilter);
-
-      // Signal other hooks that graph DOM has changed
-      setDiagramElement(getDiagramElement());
-
-      finish?.();
-    })();
-
-    return () => {
-      finish();
-      abort();
-    };
-  }, [activity, graphviz, graph, moduleFilter, sizing]);
-
-  // (Re)apply zoom if/when it changes — useLayoutEffect prevents visual flicker when switching modes
-  useLayoutEffect(applyZoom, [zoom, diagramElement]);
+  const diagramElement = useRenderDiagram(activity, isModuleVisible);
+  useDiagramZoom(diagramElement);
 
   const selectedModules = useMemo(
     () =>
@@ -459,16 +158,10 @@ function scrollGraphIntoView(
   graphElement.scrollTo({ left, top, ...scrollOptions });
 }
 
-function updateSelection(
-  graph: GraphState,
-  modules: Map<string, Module>,
-  shouldScrollToSelected = true,
-) {
-  // Get selection info
-  const si = gatherSelectionInfo(graph, modules.values());
-  const isSelection = modules.size > 0;
+type SelectionInfo = ReturnType<typeof gatherSelectionInfo>;
 
-  // Set selection classes for node elements
+// Returns the selected node element (if multiple, the last one)
+function updateNodeSelection(si: SelectionInfo, isSelection: boolean) {
   let scrollElement: HTMLElement | undefined;
   for (const element of $$optional('svg .node[data-module]')) {
     const moduleKey = element.dataset['module'] ?? '';
@@ -488,7 +181,10 @@ function updateSelection(
     }
   }
 
-  // Set selection classes for edge elements
+  return scrollElement;
+}
+
+function updateEdgeSelection(si: SelectionInfo, isSelection: boolean) {
   for (const edge of $$optional('svg g.edge')) {
     const edgeTitle = $('title', edge)?.textContent ?? '';
     const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
@@ -505,12 +201,26 @@ function updateSelection(
       edge.parentElement?.append(edge);
     }
   }
+}
+
+function updateSelection(
+  graph: GraphState,
+  modules: Map<string, Module>,
+  shouldScrollToSelected = true,
+) {
+  // Get selection info
+  const si = gatherSelectionInfo(graph, modules.values());
+  const isSelection = modules.size > 0;
+
+  // Set selection classes for node and edge elements
+  const scrollElement = updateNodeSelection(si, isSelection);
+  updateEdgeSelection(si, isSelection);
 
   if (shouldScrollToSelected) {
     // Scroll to selected element (if multiple elements, this scrolls to last one)
     if (scrollElement) {
       scrollGraphIntoView(scrollElement, { behavior: 'smooth' });
-    } else if (!scrollElement) {
+    } else {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
       scrollGraphIntoView(

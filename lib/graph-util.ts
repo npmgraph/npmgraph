@@ -117,8 +117,20 @@ function getDependencyEntries(
 }
 
 /**
- Fetch the module dependency tree for a given query.
- */
+Whether a module has dependencies of its own, which is independent from
+whether they are currently shown (e.g. a collapsed module shows none).
+*/
+export function hasDependencies(
+  module: Module,
+  dependencyTypes: Set<DependencyKey>,
+  level = 0,
+) {
+  return getDependencyEntries(module, dependencyTypes, level).size > 0;
+}
+
+/**
+Fetch the module dependency tree for a given query.
+*/
 export async function getGraphForQuery(
   query: string[],
   dependencyTypes: Set<DependencyKey>,
@@ -337,10 +349,10 @@ function dotEscape(string_: string) {
 }
 
 /**
- Creates a GraphViz style string from an object of key-value pairs.
+Creates a GraphViz style string from an object of key-value pairs.
 
- E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
- */
+E.g. { shape: 'box', fontsize: 11 } -> '[shape="box" fontsize=11]'
+*/
 function vizStyle(
   object: Record<string, string | number | boolean | undefined>,
 ) {

@@ -1,11 +1,12 @@
 import { type SemVer, tryParse } from 'verkit';
 import type Module from '../../lib/Module.ts';
 
-import type { PackumentVersion } from '@npm/types';
+import { AxisBottom } from '@visx/axis';
+import { GridColumns } from '@visx/grid';
+import { scaleLinear, scaleTime } from '@visx/scale';
 import { type ReactElement, useState } from 'react';
-import { cn } from '../../lib/dom.ts';
-import { isDefined } from '../../lib/guards.ts';
 import useMeasure from '../../hooks/useMeasure.ts';
+import { isDefined } from '../../lib/guards.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import * as styles from './ReleaseTimeline.module.scss';
 
@@ -13,16 +14,139 @@ function timestring(t: number) {
   return new Date(t).toISOString().replace(/T.*/v, '');
 }
 
-function yearFromTimestamp(t: number) {
-  return new Date(t).getFullYear();
+const MARGIN = { top: 16, right: 14, bottom: 40, left: 14 };
+const LEGEND_Y_FROM_BOTTOM = 10;
+const MAJOR_RADIUS = 8;
+const MIN_TICK_SPACING = 48;
+
+// Note: order here controls layering in SVG
+const KINDS = ['prerelease', 'patch', 'minor', 'major'] as const;
+type Kind = (typeof KINDS)[number];
+
+const KIND_RADIUS: Record<Kind, number> = {
+  prerelease: MAJOR_RADIUS * 0.4,
+  patch: MAJOR_RADIUS * 0.4,
+  minor: MAJOR_RADIUS * 0.5,
+  major: MAJOR_RADIUS,
+};
+
+const KIND_CLASS: Record<Kind, string | undefined> = {
+  prerelease: styles.layerPrerelease,
+  patch: styles.layerPatch,
+  minor: styles.layerMinor,
+  major: styles.layerMajor,
+};
+
+type Release = {
+  key: string;
+  time: number;
+  semver: SemVer;
+};
+
+type Scale = (v: number) => number;
+
+function releaseKind(semver: SemVer): Kind | undefined {
+  if (semver.prerelease?.length) {
+    return 'prerelease';
+  }
+
+  if (semver.patch) {
+    return 'patch';
+  }
+
+  if (semver.minor) {
+    return 'minor';
+  }
+
+  return semver.major ? 'major' : undefined;
 }
 
-function createScale(in0: number, in1: number, out0: number, out1: number) {
-  return function (v: number) {
-    return in1 === in0
-      ? (out1 + out0) / 2
-      : ((v - in0) / (in1 - in0)) * (out1 - out0) + out0;
+function getReleases(packument: NonNullable<Module['packument']>) {
+  const { time, versions } = packument;
+  return Object.keys(versions)
+    .map(key => {
+      const semver = tryParse(key);
+      // "0.0.0" isn't a valid version (e.g. you can't npm publish it)
+      return !semver || key === '0.0.0'
+        ? undefined
+        : { key, semver, time: Date.parse(time[key]!) };
+    })
+    .filter(item => isDefined(item))
+    .toSorted((a, b) => (a.time < b.time ? -1 : 0));
+}
+
+function buildLayers(releases: Release[], xScale: Scale, yScale: Scale) {
+  const layers: Record<Kind, ReactElement[]> = {
+    prerelease: [],
+    patch: [],
+    minor: [],
+    major: [],
   };
+
+  for (const { key, time, semver } of releases) {
+    const kind = releaseKind(semver);
+    if (!kind) {
+      continue;
+    }
+
+    const x = xScale(time);
+    const y = yScale(semver.major);
+    const title = `${key} published ${timestring(time)}`;
+
+    layers[kind].push(
+      <g key={`dot=${key}`} className={styles.dot}>
+        <title>{title}</title>
+        <circle cx={x} cy={y} r={KIND_RADIUS[kind]} />
+        {kind === 'major' ? (
+          <text x={x} y={y} textAnchor="middle" alignmentBaseline="central">
+            {semver.major}
+          </text>
+        ) : null}
+      </g>,
+    );
+  }
+
+  return layers;
+}
+
+function Legend({ x, y, width }: { x: number; y: number; width: number }) {
+  const itemWidth = width / KINDS.length;
+  return (
+    <g className={styles.legend}>
+      {KINDS.toReversed().map((kind, i) => {
+        const r = Math.min(KIND_RADIUS[kind], 7);
+        const cx = x + i * itemWidth + 7;
+        return (
+          <g key={kind}>
+            <g className={KIND_CLASS[kind]}>
+              <circle cx={cx} cy={y} r={r} />
+            </g>
+            <text x={cx + 11} y={y} alignmentBaseline="central">
+              {kind}
+            </text>
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
+// Jan 1 of each year within (t0, t1), thinned so ticks don't crowd
+function yearTicks(t0: number, t1: number, width: number) {
+  const first = new Date(t0).getFullYear() + 1;
+  const last = new Date(t1).getFullYear();
+  const count = last - first + 1;
+  if (count <= 0) {
+    return [];
+  }
+
+  const step = Math.max(1, Math.ceil((count * MIN_TICK_SPACING) / width));
+  const ticks: Date[] = [];
+  for (let year = first; year <= last; year += step) {
+    ticks.push(new Date(year, 0, 1));
+  }
+
+  return ticks;
 }
 
 export function ReleaseTimeline({ module }: { module: Module }) {
@@ -32,165 +156,100 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     return;
   }
 
-  const { time, versions } = module.packument;
-
-  const byTime = Object.entries(versions)
-    .map(([key, version]) => {
-      const semver = tryParse(key);
-      if (!semver) {
-        return undefined;
-      }
-
-      // "0.0.0" isn't a valid version (e.g. you can't npm publish it)
-      if (key === '0.0.0') {
-        return undefined;
-      }
-
-      const pv: PackumentVersion & {
-        time: number;
-        semver: SemVer;
-      } = { ...version, time: Date.parse(time[key]!), semver };
-      return [key, pv] as const;
-    })
-    .filter(item => isDefined(item))
-    .toSorted(([, a], [, b]) => (a.time < b.time ? -1 : 0));
+  const releases = getReleases(module.packument);
 
   // No releases to display?
-  if (byTime.length === 0) {
+  if (releases.length === 0) {
     return;
   }
 
-  let majorMax = byTime[0]![1].semver.major;
-  let majorMin = byTime[0]![1].semver.major;
-  for (const [, version] of byTime) {
-    majorMax = Math.max(majorMax, version.semver.major);
-    majorMin = Math.min(majorMin, version.semver.major);
+  const majors = releases.map(r => r.semver.major);
+  const majorMax = Math.max(...majors);
+  const majorMin = Math.min(...majors);
+  const tmin = releases[0]!.time;
+
+  const innerW = Math.max(0, w - MARGIN.left - MARGIN.right);
+  const plotTop = MARGIN.top;
+  const plotBottom = Math.max(plotTop, h - MARGIN.bottom);
+
+  const xScale = scaleTime({
+    domain: [new Date(tmin), new Date(tmax)],
+    range: [MARGIN.left, MARGIN.left + innerW],
+  });
+  // Inset so the largest dots aren't clipped
+  const yScale = scaleLinear({
+    domain: [majorMin, majorMax],
+    range: [plotBottom - MAJOR_RADIUS, plotTop + MAJOR_RADIUS],
+  });
+
+  const ticks = yearTicks(tmin, tmax, innerW);
+
+  const layers = buildLayers(releases, xScale, yScale);
+
+  const currentRelease = releases.find(r => r.key === module.version);
+  const current = currentRelease
+    ? {
+        key: currentRelease.key,
+        x: xScale(currentRelease.time),
+        y: yScale(currentRelease.semver.major),
+      }
+    : undefined;
+
+  const currentX = current?.x ?? 0;
+  let labelAnchor: 'start' | 'middle' | 'end' = 'middle';
+  if (currentX < MARGIN.left + 36) {
+    labelAnchor = 'start';
+  } else if (currentX > w - MARGIN.right - 36) {
+    labelAnchor = 'end';
   }
 
-  const tmin = byTime[0]![1].time;
-
-  const layers = {
-    // Note: order here controls layering in SVG
-    grid: [] as ReactElement[],
-    prerelease: [] as ReactElement[],
-    patch: [] as ReactElement[],
-    minor: [] as ReactElement[],
-    major: [] as ReactElement[],
-    text: [] as ReactElement[],
-  };
-
-  const layerClasses: Partial<Record<string, string>> = {
-    grid: styles.layerGrid,
-    major: styles.layerMajor,
-    minor: styles.layerMinor,
-    patch: styles.layerPatch,
-    prerelease: styles.layerPrerelease,
-  };
-
-  const xScale = createScale(tmin, tmax, 0, w);
-  const yScale = createScale(majorMax, majorMin, 0, h);
-
-  // Add grid lines for each year
-  for (
-    let year = yearFromTimestamp(tmin) + 1;
-    year <= yearFromTimestamp(tmax);
-    year++
-  ) {
-    const x = xScale(Date.parse(String(year)));
-    layers.grid.push(<line key={`year-${year}`} x1={x} y1={0} x2={x} y2={h} />);
-  }
-
-  // Add version dots and lines
-  for (const [key, version] of byTime) {
-    const { time, semver } = version;
-
-    if (!semver) {
-      continue;
-    }
-
-    const x = xScale(time);
-    const title = `${key} published ${timestring(time)}`;
-    const y = yScale(semver.major);
-
-    let r = 10;
-
-    let layer: keyof typeof layers;
-    if (semver.prerelease?.length) {
-      layer = 'prerelease';
-      r *= 0.4;
-    } else if (semver.patch) {
-      layer = 'patch';
-      r *= 0.4;
-    } else if (semver.minor) {
-      layer = 'minor';
-      r *= 0.5;
-    } else if (semver.major) {
-      layer = 'major';
-
-      // Add major-version grid line
-      // layers.grid.push(
-      //   <line x1={x} y1={y} x2={w} y2={y} key={`version-${version.version}`} />,
-      // );
-    } else {
-      continue;
-    }
-
-    layers[layer].push(
-      <g key={`dot=${key}`} className={styles.dot}>
-        <title>{title}</title>
-        <circle cx={x} cy={y} r={r} />
-        {
-          // Major dots get a label
-          layer === 'major' ? (
-            <>
-              <title>{title}</title>
-
-              <text x={x} y={y} textAnchor="middle" alignmentBaseline="central">
-                {semver.major}
-              </text>
-            </>
-          ) : null
-        }
-      </g>,
-    );
-  }
-
-  const xpad = w * 0.1;
-  const ypad = h * 0.1;
   return (
     <CollapsibleSection title="Release Timeline">
-      <svg
-        ref={ref}
-        viewBox={`${-xpad} ${-ypad} ${w + xpad * 2} ${h + ypad * 2}`}
-        className={styles.root}
-      >
-        {Object.entries(layers).map(([k, layer]) => (
-          <g key={`layer-${k}`} className={layerClasses[k]}>
-            {layer}
+      <svg ref={ref} viewBox={`0 0 ${w} ${h}`} className={styles.root}>
+        <GridColumns
+          scale={xScale}
+          tickValues={ticks}
+          height={plotBottom - plotTop}
+          top={plotTop}
+          className={styles.layerGrid}
+        />
+
+        {current ? (
+          <g className={styles.current}>
+            <text x={current.x} y={plotTop - 4} textAnchor={labelAnchor}>
+              this version
+            </text>
+          </g>
+        ) : null}
+
+        {KINDS.map(kind => (
+          <g key={`layer-${kind}`} className={KIND_CLASS[kind]}>
+            {layers[kind]}
           </g>
         ))}
+
+        {current ? (
+          <circle
+            className={styles.currentRing}
+            cx={current.x}
+            cy={current.y}
+            r={MAJOR_RADIUS + 3}
+          />
+        ) : null}
+
+        <AxisBottom
+          scale={xScale}
+          top={plotBottom}
+          tickValues={ticks}
+          tickFormat={d => String((d as Date).getFullYear())}
+          hideAxisLine={false}
+          axisClassName={styles.axis}
+          tickClassName={styles.axisTick}
+          tickLength={4}
+        />
+
+        <Legend x={MARGIN.left} y={h - LEGEND_Y_FROM_BOTTOM} width={innerW} />
       </svg>
-
-      <div className={styles.xAxis}>
-        <span>{timestring(tmin)}</span>
-        <span>today</span>
-      </div>
-
-      <div className={styles.legend}>
-        <span>
-          <span className={cn(styles.dotKey, styles.dotKeyMajor)} /> = major
-        </span>
-        <span>
-          <span className={cn(styles.dotKey, styles.dotKeyMinor)} /> = minor
-        </span>
-        <span>
-          <span className={cn(styles.dotKey, styles.dotKeyPatch)} /> = patch
-        </span>
-        <span>
-          <span className={cn(styles.dotKey, styles.dotKeyPrerelease)} /> =
-          prerelease
-        </span>
-      </div>
     </CollapsibleSection>
   );
 }

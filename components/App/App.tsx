@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 import { PaneType } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
-import { useTightScreen } from '../../hooks/useTightScreen.ts';
+import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
 import Flash from '../Flash/Flash.tsx';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
@@ -18,7 +19,7 @@ import { Loader } from './Loader.tsx';
 export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
-  const isTightScreen = useTightScreen();
+  const isTightScreen = useIsTightScreen();
   const [pane, setPane] = useGlobalState('pane');
   useExternalInput();
 
@@ -47,7 +48,9 @@ export default function App() {
   return (
     <>
       <Flash />
-      <div className={styles.root}>
+      <div
+        className={cn(styles.root, { [styles.loading]: activity.total > 0 })}
+      >
         <div className={styles.stickyTop}>
           <AppHeader />
           <Tabs className={styles.mobileTabs} />

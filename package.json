@@ -8,7 +8,7 @@
     "https://github.com/sponsors/broofa",
     "https://github.com/sponsors/fregante"
   ],
-  "author": "Robert Kieffer (http://github.com/broofa)",
+  "author": "Robert Kieffer (https://github.com/broofa)",
   "type": "module",
   "devEngines": {
     "runtime": {
@@ -42,6 +42,9 @@
   "dependencies": {
     "@bugsnag/js": "^9.0.0",
     "@hpcc-js/wasm-graphviz": "^1.29.2",
+    "@visx/axis": "^4.0.0",
+    "@visx/grid": "^4.0.0",
+    "@visx/scale": "^4.0.0",
     "canvas-confetti": "^1.9.4",
     "d3-hierarchy": "^3.1.2",
     "d3-selection": "^3.0.0",
@@ -75,9 +78,11 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vitest/browser-playwright": "^5.0.3",
     "eslint": "^10.12.0",
-    "eslint-config-xo": "^4.0.1",
+    "eslint-config-xo": "^6.0.0",
     "eslint-config-xo-react": "^0.32.0",
     "eslint-formatter-unix": "^9.0.1",
+    "eslint-plugin-react-doctor": "^0.9.17",
+    "eslint-plugin-react-you-might-not-need-an-effect": "^1.0.2",
     "lefthook": "^2.1.16",
     "npm-run-all2": "^9.0.3",
     "parcel": "^2.16.4",
