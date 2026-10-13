@@ -12,9 +12,9 @@ export type VersionStatus =
   | { type: 'none' };
 
 /**
- Compares a version to the `latest` dist-tag. Returns `null` if either can't
- be compared.
- */
+Compares a version to the `latest` dist-tag. Returns `null` if either can't
+be compared.
+*/
 export function getVersionStatus(
   version: string,
   distTags: Record<string, string | undefined>,
@@ -40,12 +40,11 @@ export function getVersionStatus(
     }
 
     const patch = latestParts.patch - versionParts.patch;
-    if (patch > 0) {
-      return { type: 'outdated', level: 'patch', behind: patch, latest };
-    }
 
-    // Prerelease behind the stable release of the same version
-    return { type: 'outdated', level: 'prerelease', behind: 0, latest };
+    return patch > 0
+      ? { type: 'outdated', level: 'patch', behind: patch, latest }
+      : // Prerelease behind the stable release of the same version
+        { type: 'outdated', level: 'prerelease', behind: 0, latest };
   }
 
   // Not outdated: the dist-tag the version is pinned to (e.g. "latest")

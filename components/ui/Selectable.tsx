@@ -9,7 +9,7 @@ import * as utilities from './utilities.module.scss';
 export function Selectable({
   type,
   value,
-  label,
+  label = value,
   className,
   ...props
 }: {
@@ -18,19 +18,17 @@ export function Selectable({
   label?: string;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>) {
   const setGraphSelection = useGraphSelection()[2];
-  const title = label || value;
-
   return (
     <button
       type="button"
       className={cn(styles.root, utilities.brightHover, className)}
-      title={title}
+      title={label}
       onClick={() => {
         setGraphSelection(type, value);
       }}
       {...props}
     >
-      {title}
+      {label}
     </button>
   );
 }

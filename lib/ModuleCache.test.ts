@@ -34,18 +34,19 @@ describe('local packages', () => {
   });
 
   it('reflect changes when re-added without a version', async () => {
-    const dependencies = async (key: string) => {
-      const { package: pkg } = await getModule(key);
+    const name = 'unversioned-module';
+    const dependencies = async () => {
+      const { package: pkg } = await getModule(name);
       return pkg.dependencies;
     };
 
-    local({ name: 'unversioned-module', dependencies: { a: '1' } });
-    await expect(dependencies('unversioned-module')).resolves.toEqual({
+    local({ name, dependencies: { a: '1' } });
+    await expect(dependencies()).resolves.toEqual({
       a: '1',
     });
 
-    local({ name: 'unversioned-module', dependencies: { b: '1' } });
-    await expect(dependencies('unversioned-module')).resolves.toEqual({
+    local({ name, dependencies: { b: '1' } });
+    await expect(dependencies()).resolves.toEqual({
       b: '1',
     });
   });

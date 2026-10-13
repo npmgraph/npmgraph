@@ -3,12 +3,8 @@ import { SEARCH_FIELD_ID } from '../lib/constants.ts';
 
 function handleKeyPress(ev: KeyboardEvent) {
   const { nodeName } = ev.target as HTMLElement;
-  if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
-    return;
-  }
-
-  // Focus search field with "/"
-  if (ev.key !== '/') {
+  // Focus search field with "/", unless typing in a field
+  if (nodeName === 'INPUT' || nodeName === 'TEXTAREA' || ev.key !== '/') {
     return;
   }
 
