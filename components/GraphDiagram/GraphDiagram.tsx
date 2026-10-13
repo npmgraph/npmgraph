@@ -22,7 +22,6 @@ import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
-import celebrateZeroDependencies from './celebrateZeroDependencies.ts';
 import useDiagramZoom from './useDiagramZoom.ts';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
@@ -65,9 +64,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
-  useLoadGraph(moduleFilter, newGraph => {
-    celebrateZeroDependencies(newGraph, moduleFilter);
-  });
+  useLoadGraph(moduleFilter);
 
   const diagramElement = useRenderDiagram(activity, moduleFilter);
   useDiagramZoom(diagramElement);
