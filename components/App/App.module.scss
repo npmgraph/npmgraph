@@ -5,6 +5,12 @@
   flex-grow: 1;
   flex-direction: column;
   height: 100svh;
+  --loader-height: 2em;
+
+  &.loading {
+    --graph-controls-opacity: 0;
+    --graph-controls-visibility: hidden;
+  }
 }
 
 .stickyTop {

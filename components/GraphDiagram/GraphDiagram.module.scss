@@ -45,7 +45,13 @@
   display: flex;
   position: absolute;
   gap: 1em;
+  // Hidden while the loader is shown, since it covers the same area
+  visibility: var(--graph-controls-visibility, visible);
+  opacity: var(--graph-controls-opacity, 1);
   z-index: 1;
+  transition:
+    opacity 0.15s,
+    visibility 0.15s;
   inset: auto auto 1em 1em;
   --padding: 6px;
   user-select: none;
