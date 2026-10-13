@@ -32,10 +32,12 @@ export function layoutTreemap(
   // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- See note in BundlePhobiaData
   const { size, dependencySizes = [] } = data;
 
-  const sum = data.dependencySizes?.reduce(
-    (sum, n) => sum + n.approximateSize,
-    0,
-  );
+  // Without dependencies the placeholder root would be the only (and a full-size) leaf
+  if (dependencySizes.length === 0) {
+    return [];
+  }
+
+  const sum = dependencySizes.reduce((sum, n) => sum + n.approximateSize, 0);
 
   const nodes = [
     ...dependencySizes,
