@@ -8,6 +8,7 @@ import { type ReactElement, useState } from 'react';
 import useMeasure from '../../hooks/useMeasure.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
+import { ModuleDownloads } from './ModuleDownloads.tsx';
 import * as styles from './ReleaseTimeline.module.scss';
 
 function timestring(t: number) {
@@ -250,6 +251,8 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
         <Legend x={MARGIN.left} y={h - LEGEND_Y_FROM_BOTTOM} width={innerW} />
       </svg>
+
+      <ModuleDownloads module={module} />
     </CollapsibleSection>
   );
 }
