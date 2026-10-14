@@ -3,26 +3,23 @@
 .button {
   @extend .brightHover;
   display: inline-block;
+  margin: 0;
   border: solid 1px var(--bg1);
   border-radius: var(--rad-sm);
   background: var(--bg0);
   padding: 6px;
   color: var(--text);
   user-select: none;
+  text-decoration: none;
 
   svg {
     display: block;
   }
 }
 
-.checkbox {
-  display: flex;
-  align-items: center;
-  gap: 0.3em;
-
-  input {
-    margin: 0;
-  }
+.checkbox input {
+  vertical-align: middle;
+  margin: 0 0.3em 0 0;
 }
 
 .selected {
@@ -51,6 +48,9 @@
   &:last-child {
     border-radius: 0 var(--rad-sm) var(--rad-sm) 0;
   }
+  &:only-child {
+    border-radius: var(--rad-sm);
+  }
 }
 
 .verticalGroup .button {
@@ -63,5 +63,8 @@
   }
   &:last-child {
     border-radius: 0 0 var(--rad-sm) var(--rad-sm);
+  }
+  &:only-child {
+    border-radius: var(--rad-sm);
   }
 }

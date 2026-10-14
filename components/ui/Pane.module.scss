@@ -10,7 +10,8 @@
   overflow-y: auto;
   color: var(--text);
 
-  a {
+  // Zero specificity so link-styled components like Button can override it
+  :where(&) a {
     color: var(--accent);
   }
 
