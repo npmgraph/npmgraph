@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import useLocation from '../hooks/useLocation.ts';
-import GithubIcon from 'jsx:../images/icons/github.svg';
-import OffsiteLinkIcon from 'jsx:../images/icons/offsite-link.svg';
-import XIcon from 'jsx:../images/icons/x.svg';
+import GithubIcon from '../images/icons/github.svg?react';
+import OffsiteLinkIcon from '../images/icons/offsite-link.svg?react';
+import XIcon from '../images/icons/x.svg?react';
 import * as utilities from './ui/utilities.module.scss';
 import * as styles from './PreviewWidget.module.scss';
 import { Button, ButtonGroup } from './Button.tsx';

@@ -1,4 +1,4 @@
-import OffsiteLinkIcon from 'jsx:../../images/icons/offsite-link.svg';
+import OffsiteLinkIcon from '../../images/icons/offsite-link.svg?react';
 import type { ComponentType, HTMLProps, SVGProps } from 'react';
 import { cn } from '../../lib/dom.ts';
 import * as utilities from './utilities.module.scss';
