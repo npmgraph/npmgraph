@@ -15,14 +15,6 @@
 
 .stickyTop {
   flex-shrink: 0;
-
-  .mobileTabs {
-    display: none;
-    @include tight-screen {
-      display: flex;
-      justify-content: stretch;
-    }
-  }
 }
 
 .content {

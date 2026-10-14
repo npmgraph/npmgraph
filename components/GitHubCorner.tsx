@@ -1,4 +1,4 @@
-import GitHubCornerSvg from 'jsx:../images/github-corner.svg';
+import GitHubCornerSvg from '../images/github-corner.svg?react';
 import * as styles from './GitHubCorner.module.scss';
 // From https://tholman.com/github-corners/
 

@@ -5,8 +5,8 @@ import {
   ZOOM_NONE,
 } from '../../lib/constants.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
-import ZoomHorizontalIcon from 'jsx:../../images/icons/zoom-horizontal.svg';
-import ZoomVerticalIcon from 'jsx:../../images/icons/zoom-vertical.svg';
+import ZoomHorizontalIcon from '../../images/icons/zoom-horizontal.svg?react';
+import ZoomVerticalIcon from '../../images/icons/zoom-vertical.svg?react';
 import { Button, ButtonGroup } from '../Button.tsx';
 
 export function GraphDiagramZoomButtons() {
