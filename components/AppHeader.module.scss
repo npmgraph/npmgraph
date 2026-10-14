@@ -39,12 +39,6 @@
     color: inherit;
   }
 
-  @include tight-screen {
-    .tabs {
-      display: none;
-    }
-  }
-
   @media print {
     display: none;
   }

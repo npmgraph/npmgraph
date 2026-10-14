@@ -27,7 +27,7 @@ const node = (module = '') =>
     .getByCSS(`svg g.node${module && `[data-module^="${module}"]`}`)
     .first();
 
-const tab = (name: string) => app().getByRole('button', { name, exact: true });
+const tab = (name: string) => app().getByRole('tab', { name, exact: true });
 
 // Toggle is a button; its On/Off pill is aria-hidden (state is in aria-pressed)
 const toggle = (label: string) =>
@@ -196,7 +196,7 @@ describe('panes', () => {
   it('toggles dependency types', async () => {
     await goto('?q=ms');
     await nodeAppears();
-    await userEvent.click(tab('Settings'));
+    await userEvent.click(tab('View'));
     await userEvent.click(toggle('Include devDependencies'));
     // hash value is "%2CdevDependencies" (leading empty entry), so match loosely
     await hashHas('devDependencies');
@@ -206,7 +206,7 @@ describe('panes', () => {
   it('toggles module sizing', async () => {
     await goto('?q=debug');
     await nodeAppears();
-    await userEvent.click(tab('Settings'));
+    await userEvent.click(tab('View'));
     await userEvent.click(toggle('Size modules by unpacked size'));
     await hashHas('sizing=');
     await nodeAppears();
