@@ -121,7 +121,7 @@ function buildLayers(
         <circle cx={x} cy={y} r={KIND_RADIUS[kind]} />
         {kind === 'major' ? (
           <text x={x} y={y} textAnchor="middle" alignmentBaseline="central">
-            {isPreV1 ? `.${semver.minor}` : semver.major}
+            {isPreV1 ? `•${semver.minor}` : semver.major}
           </text>
         ) : null}
       </g>,
