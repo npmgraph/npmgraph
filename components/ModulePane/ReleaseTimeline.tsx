@@ -116,7 +116,10 @@ function buildLayers(
     const title = `${key} published ${timestring(time)}`;
 
     layers[kind].push(
-      <g key={`dot=${key}`} className={styles.dot}>
+      <g
+        key={`dot=${key}`}
+        className={`${styles.dot} ${isPreV1 && kind === 'major' ? styles.preV1 : ''}`}
+      >
         <title>{title}</title>
         <circle cx={x} cy={y} r={KIND_RADIUS[kind]} />
         {kind === 'major' ? (
@@ -131,7 +134,17 @@ function buildLayers(
   return layers;
 }
 
-function Legend({ x, y, width }: { x: number; y: number; width: number }) {
+function Legend({
+  x,
+  y,
+  width,
+  isPreV1,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  isPreV1: boolean;
+}) {
   const itemWidth = width / KINDS.length;
   return (
     <g className={styles.legend}>
@@ -140,11 +153,13 @@ function Legend({ x, y, width }: { x: number; y: number; width: number }) {
         const cx = x + i * itemWidth + 7;
         return (
           <g key={kind}>
-            <g className={KIND_CLASS[kind]}>
+            <g
+              className={`${KIND_CLASS[kind]} ${isPreV1 && kind === 'major' ? styles.preV1 : ''}`}
+            >
               <circle cx={cx} cy={y} r={r} />
             </g>
             <text x={cx + 11} y={y} alignmentBaseline="central">
-              {kind}
+              {isPreV1 && kind === 'major' ? '0.x.0' : kind}
             </text>
           </g>
         );
@@ -271,7 +286,12 @@ export function ReleaseTimeline({ module }: { module: Module }) {
           tickLength={4}
         />
 
-        <Legend x={MARGIN.left} y={h - LEGEND_Y_FROM_BOTTOM} width={innerW} />
+        <Legend
+          x={MARGIN.left}
+          y={h - LEGEND_Y_FROM_BOTTOM}
+          width={innerW}
+          isPreV1={isPreV1}
+        />
       </svg>
 
       <ModuleDownloads module={module} />
