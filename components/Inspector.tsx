@@ -7,7 +7,7 @@ import useGraphSelection from '../hooks/useGraphSelection.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
-import SettingsPane from './SettingsPane/SettingsPane.tsx';
+import ViewPane from './ViewPane/ViewPane.tsx';
 
 // Keep these panes in secondary bundles but start loading them eagerly
 const reportPanePromise = import('./ReportPane/ReportPane.tsx');
@@ -41,8 +41,8 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     case PaneType.GRAPH:
       // The graph is rendered by App, so it doesn't change when switching tabs
       return null;
-    case PaneType.SETTINGS:
-      paneComponent = <SettingsPane />;
+    case PaneType.VIEW:
+      paneComponent = <ViewPane />;
       break;
     case PaneType.INFO:
       paneComponent = <InfoPane />;

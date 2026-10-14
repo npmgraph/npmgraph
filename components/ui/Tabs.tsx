@@ -7,82 +7,56 @@ import * as utilities from './utilities.module.scss';
 
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
-
-function Tab({
-  active,
-  className,
-  children,
-  ...props
-}: HTMLProps<HTMLDivElement> & {
-  active: boolean;
-}) {
-  return (
-    <div
-      className={cn(styles.tab, className, { [styles.active]: active })}
-      {...props}
-    >
-      <button type="button" className={utilities.brightHover}>
-        {children}
-      </button>
-    </div>
-  );
-}
+import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
-  const [pane, setPane] = useGlobalState('pane');
+  const [currentPane, setCurrentPane] = useGlobalState('pane');
+  const isTightScreen = useIsTightScreen();
   const [hide, setHide] = useHashParam(PARAM_HIDE);
+  const isInspectorOpen = hide === null;
 
-  const isInspector = hide === null;
+  const tabs = [
+    { pane: PaneType.GRAPH, label: 'Graph', visible: isTightScreen },
+    { pane: PaneType.INFO, label: 'Info' },
+    { pane: PaneType.REPORT, label: 'Report' },
+    { pane: PaneType.MODULE, label: 'Module' },
+    { pane: PaneType.VIEW, label: 'View' },
+  ];
+
   return (
-    <div className={[styles.root, className].join(' ')}>
-      <Tab
-        active={isInspector && pane === PaneType.INFO}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.INFO);
-        }}
-      >
-        Info
-      </Tab>
-      <Tab
-        active={isInspector && pane === PaneType.REPORT}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.REPORT);
-        }}
-      >
-        Report
-      </Tab>
-      <Tab
-        className={styles.tabMobileOnly}
-        active={isInspector && pane === PaneType.GRAPH}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.GRAPH);
-        }}
-      >
-        Graph
-      </Tab>
-      <Tab
-        active={isInspector && pane === PaneType.MODULE}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.MODULE);
-        }}
-      >
-        Module
-      </Tab>
-      <Tab
-        active={isInspector && pane === PaneType.SETTINGS}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.SETTINGS);
-        }}
-      >
-        Settings
-      </Tab>
+    <div className={cn(styles.root, className)}>
+      <div role="tablist" aria-label="Inspector panels" className={styles.list}>
+        {tabs
+          .filter(tab => tab.visible !== false)
+          .map(({ pane: tabPane, label }) => {
+            const isSelected = isInspectorOpen && currentPane === tabPane;
+
+            return (
+              <div
+                key={tabPane}
+                className={cn(styles.tab, {
+                  [styles.active]: isSelected,
+                })}
+              >
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={isSelected}
+                  className={utilities.brightHover}
+                  onClick={() => {
+                    setHide(null);
+                    setCurrentPane(tabPane);
+                  }}
+                >
+                  {label}
+                </button>
+              </div>
+            );
+          })}
+      </div>
+
       <Splitter
-        isOpen={isInspector}
+        isOpen={isInspectorOpen}
         onClick={() => {
           setHide(true);
         }}
