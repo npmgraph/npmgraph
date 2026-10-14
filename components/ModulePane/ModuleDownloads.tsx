@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, use, useMemo } from 'react';
 import { cn } from '../../lib/dom.ts';
 import type { NpmDownloadsPoint } from '../../lib/fetch-types.ts';
 import fetchJson from '../../lib/fetchJson.ts';
@@ -47,22 +47,36 @@ export function ModuleDownloads({ module }: { module: Module }) {
   );
 }
 
+async function loadDownloads(apiUrl: string) {
+  try {
+    return await fetchJson<NpmDownloadsPoint>(apiUrl, {
+      silent: true,
+      timeout: 5000,
+    });
+  } catch {
+    // Handled by the consumer
+  }
+}
+
 function RemoteModuleDownloads({ name }: { name: string }) {
-  const [data, setData] = useState<NpmDownloadsPoint | Error>();
-
   const apiUrl = `https://api.npmjs.org/downloads/point/last-week/${encodeURIComponent(name)}`;
+  const promise = useMemo(async () => loadDownloads(apiUrl), [apiUrl]);
 
-  useEffect(() => {
-    fetchJson<NpmDownloadsPoint>(apiUrl, { silent: true, timeout: 5000 })
-      .then(response => {
-        setData(response);
-      })
-      .catch(error => {
-        setData(error);
-      });
-  }, [apiUrl]);
+  return (
+    <Suspense fallback={null}>
+      <Downloads promise={promise} />
+    </Suspense>
+  );
+}
 
-  if (!data || data instanceof Error || typeof data.downloads !== 'number') {
+function Downloads({
+  promise,
+}: {
+  promise: Promise<NpmDownloadsPoint | undefined>;
+}) {
+  const data = use(promise);
+
+  if (typeof data?.downloads !== 'number') {
     return null;
   }
 
