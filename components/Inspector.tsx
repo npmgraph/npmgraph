@@ -3,8 +3,8 @@ import { useGlobalState } from '../lib/GlobalStore.ts';
 import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
-import { getGraphSelection } from '../lib/selection-util.ts';
-import { getHashParameter } from '../lib/hash-util.ts';
+import useGraphSelection from '../hooks/useGraphSelection.ts';
+import useHashParam from '../hooks/useHashParam.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import SettingsPane from './SettingsPane/SettingsPane.tsx';
@@ -19,10 +19,10 @@ const ModulePane = lazy(async () => modulePanePromise);
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;
   const [pane] = useGlobalState('pane');
-  const [queryType, queryValue] = getGraphSelection();
+  const [queryType, queryValue] = useGraphSelection();
   const [graph] = useGlobalState('graph');
 
-  const [hide] = getHashParameter(PARAM_HIDE);
+  const [hide] = useHashParam(PARAM_HIDE);
 
   if (hide !== null) {
     return null;

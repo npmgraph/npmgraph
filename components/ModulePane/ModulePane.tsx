@@ -1,7 +1,7 @@
 import type Module from '../../lib/Module.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
-import { getHashParameter } from '../../lib/hash-util.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
@@ -18,7 +18,7 @@ export default function ModulePane({
 }: {
   selectedModules: Map<string, Module>;
 } & React.HTMLAttributes<HTMLDivElement>) {
-  const [colorize] = getHashParameter(PARAM_COLORIZE);
+  const [colorize] = useHashParam(PARAM_COLORIZE);
   const nSelected = selectedModules.size;
 
   if (nSelected === 0) {

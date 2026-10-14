@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { $ } from 'select-dom';
-import { getHashParameter } from '../../lib/hash-util.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import {
   PARAM_ZOOM,
   ZOOM_FIT_HEIGHT,
@@ -14,7 +14,7 @@ import * as styles from './GraphDiagram.module.scss';
 export default function useDiagramZoom(
   diagramElement: SVGSVGElement | undefined,
 ) {
-  const [zoom] = getHashParameter(PARAM_ZOOM);
+  const [zoom] = useHashParam(PARAM_ZOOM);
 
   function applyZoom() {
     const graphElement = $(`.${styles.graph}`);

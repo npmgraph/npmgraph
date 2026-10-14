@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
-import { getHashParameter } from '../../lib/hash-util.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { PaneType, PARAM_PACKAGES } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
@@ -32,7 +32,7 @@ export default function useLoadGraph(
 ) {
   const [query] = useQuery();
   // Pasted package.json files are in the hash, they can change without the query changing
-  const [packages] = getHashParameter(PARAM_PACKAGES);
+  const [packages] = useHashParam(PARAM_PACKAGES);
   const [, setPane] = useGlobalState('pane');
   const [, setGraph] = useGlobalState('graph');
   const [collapse] = useCollapse();

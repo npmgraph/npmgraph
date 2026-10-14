@@ -1,6 +1,7 @@
-import { patchLocation } from '../hooks/useLocation.ts';
+import { patchLocation } from './useLocation.ts';
 
-export function getHashParameter(parameterName: string) {
+// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Global state hook
+export default function useHashParameter(parameterName: string) {
   const parameters = new URLSearchParams(location.hash.replace(/^#/v, ''));
   const parameter = parameters.get(parameterName);
 

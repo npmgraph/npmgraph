@@ -13,8 +13,8 @@ import {
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
-import { getGraphSelection } from '../../lib/selection-util.ts';
-import { getHashParameter } from '../../lib/hash-util.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import * as styles from './GraphDiagram.module.scss';
@@ -48,10 +48,10 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 }
 
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
-  const [selectType, selectValue, setGraphSelection] = getGraphSelection();
+  const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph] = useGlobalState('graph');
   const [collapse] = useCollapse();
-  const [colorize] = getHashParameter(PARAM_COLORIZE);
+  const [colorize] = useHashParam(PARAM_COLORIZE);
 
   const handleGraphClick = useGraphClick();
 
