@@ -1,11 +1,12 @@
 import useCollapse from '../../hooks/useCollapse.ts';
+import { toggle } from '../../lib/array-util.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import * as styles from './CollapsedModules.module.scss';
 
 export default function CollapsedModules() {
-  const [collapse, setCollapse, toggleCollapsed] = useCollapse();
+  const [collapse, setCollapse] = useCollapse();
 
-  if (collapse.size === 0) {
+  if (collapse.length === 0) {
     return (
       <div className={styles.collapseInfo}>
         (Shift-click modules in graph to expand/collapse)
@@ -16,18 +17,18 @@ export default function CollapsedModules() {
   return (
     <CollapsibleSection
       title="Collapsed modules"
-      count={collapse.size}
+      count={collapse.length}
       className={styles.root}
     >
       <ul className={styles.list}>
-        {[...collapse].map(name => (
+        {collapse.map(name => (
           <li key={name} className={styles.item}>
             <button
               className={styles.remove}
               type="button"
               aria-label={`Remove ${name} from collapsed modules`}
               onClick={() => {
-                toggleCollapsed(name);
+                setCollapse(toggle(collapse, name));
               }}
             >
               ×
@@ -36,7 +37,7 @@ export default function CollapsedModules() {
           </li>
         ))}
       </ul>
-      {collapse.size > 1 && (
+      {collapse.length > 1 && (
         <button
           className={styles.expandAll}
           type="button"

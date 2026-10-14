@@ -1,5 +1,6 @@
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
+import { toggle } from '../../lib/array-util.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
@@ -22,7 +23,7 @@ function ExternalLink({
 }
 
 export function ModuleActions({ module }: { module: Module }) {
-  const [collapse, , toggleCollapsed] = useCollapse();
+  const [collapse, setCollapse] = useCollapse();
   const [graph] = useGlobalState('graph');
   const dependencyTypes = useDependencyTypes();
 
@@ -43,9 +44,9 @@ export function ModuleActions({ module }: { module: Module }) {
         <>
           {canCollapse && (
             <ButtonCheckbox
-              checked={collapse.has(module.name)}
+              checked={collapse.includes(module.name)}
               onChange={() => {
-                toggleCollapsed(module.name);
+                setCollapse(toggle(collapse, module.name));
               }}
             >
               Collapse
