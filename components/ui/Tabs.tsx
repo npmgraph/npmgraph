@@ -20,7 +20,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
     { pane: PaneType.INFO, label: 'Info' },
     { pane: PaneType.REPORT, label: 'Report' },
     { pane: PaneType.MODULE, label: 'Module' },
-    { pane: PaneType.SETTINGS, label: 'View' },
+    { pane: PaneType.VIEW, label: 'View' },
   ];
 
   return (
