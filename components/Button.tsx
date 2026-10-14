@@ -25,6 +25,18 @@ export function Button({
   );
 }
 
+export function ButtonCheckbox({
+  children,
+  ...props
+}: Omit<React.JSX.IntrinsicElements['input'], 'type'>): React.JSX.Element {
+  return (
+    <label className={cn(styles.button, styles.checkbox)}>
+      <input type="checkbox" {...props} />
+      {children}
+    </label>
+  );
+}
+
 export function ButtonGroup({
   vertical,
   ...props

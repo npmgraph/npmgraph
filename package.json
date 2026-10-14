@@ -18,9 +18,9 @@
     }
   },
   "scripts": {
-    "build": "parcel build --no-cache",
+    "build": "vite build",
     "fetch-licenses": "node scripts/fetch_licenses.js",
-    "start": "parcel serve --no-cache",
+    "start": "vite",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "fix": "run-s --continue-on-error format lint:fix format",
@@ -62,11 +62,6 @@
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
     "@npm/types": "^2.1.0",
-    "@parcel/packager-xml": "^2.16.4",
-    "@parcel/runtime-react-refresh": "^2.13.3",
-    "@parcel/transformer-sass": "^2.16.4",
-    "@parcel/transformer-svg-react": "^2.16.4",
-    "@parcel/transformer-xml": "^2.16.4",
     "@sindresorhus/tsconfig": "^8.1.0",
     "@types/canvas-confetti": "^1.9.0",
     "@types/d3-hierarchy": "^3.1.7",
@@ -76,6 +71,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@typescript/native": "npm:typescript@^7.0.2",
+    "@vitejs/plugin-react": "^6.1.2",
     "@vitest/browser-playwright": "^5.0.3",
     "eslint": "^10.12.0",
     "eslint-config-xo": "^6.0.0",
@@ -85,34 +81,24 @@
     "eslint-plugin-react-you-might-not-need-an-effect": "^1.0.2",
     "lefthook": "^2.1.16",
     "npm-run-all2": "^9.0.3",
-    "parcel": "^2.16.4",
-    "path-browserify": "^1.0.1",
     "playwright": "^1.63.0",
-    "postcss": "^8.5.28",
-    "postcss-modules": "^6.0.1",
     "prettier": "^3.9.9",
     "prettier-plugin-css-order": "^2.2.0",
+    "sass": "^1.105.1",
     "svgo": "^4.1.0",
     "typed-query-selector": "^2.12.3",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-plugin-css-modules": "^5.2.0",
     "vite": "^8.3.2",
+    "vite-plugin-svgr": "^5.2.0",
     "vitest": "^5.0.3"
   },
-  "source": [
-    "index.html",
-    "robots.txt",
-    "images/favicon.png"
-  ],
   "browserslist": [
     "last 2 Chrome versions",
     "last 2 Firefox versions",
     "last 2 Safari versions",
     "last 2 Edge versions"
   ],
-  "@parcel/resolver-default": {
-    "packageExports": true
-  },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
