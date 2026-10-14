@@ -12,6 +12,12 @@
   user-select: none;
 }
 
+.list {
+  @include tight-screen {
+    flex-grow: 1;
+  }
+}
+
 .tab {
   display: flex;
   position: relative;
