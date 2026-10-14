@@ -1,6 +1,7 @@
+import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type Module from '../../lib/Module.ts';
-import { foreachDownstream } from '../../lib/graph-util.ts';
+import { foreachDownstream, hasDependencies } from '../../lib/graph-util.ts';
 import human from '../../lib/human.ts';
 import { Section } from '../ui/Section.tsx';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
@@ -8,6 +9,7 @@ import * as styles from './ModulePane.module.scss';
 
 export function ModuleSize({ module }: { module: Module }) {
   const [graph] = useGlobalState('graph');
+  const dependencyTypes = useDependencyTypes();
   const { unpackedSize } = module;
 
   let downstreamUnpackedSize = 0;
@@ -16,9 +18,6 @@ export function ModuleSize({ module }: { module: Module }) {
       downstreamUnpackedSize += m.unpackedSize ?? 0;
     });
   }
-
-  const hasDependencies =
-    !graph || Boolean(graph.moduleInfos.get(module.key)?.downstream.size);
 
   return (
     <Section title="Module Size">
@@ -29,7 +28,7 @@ export function ModuleSize({ module }: { module: Module }) {
         ) : (
           <i>not available</i>
         )}
-        {hasDependencies && (
+        {hasDependencies(module, dependencyTypes) && (
           <>
             <span>Unpacked Size (module + dependencies):</span>
             {unpackedSize ? (
@@ -42,7 +41,7 @@ export function ModuleSize({ module }: { module: Module }) {
           </>
         )}
       </div>
-      {hasDependencies && <ModuleBundleSize module={module} />}
+      <ModuleBundleSize module={module} />
     </Section>
   );
 }
