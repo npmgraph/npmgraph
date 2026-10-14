@@ -1,0 +1,72 @@
+@use '../../lib/root.module.scss' as *;
+
+.downloads {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.6rem;
+  color: var(--text);
+  line-height: normal;
+}
+
+.count {
+  font-weight: bold;
+}
+
+.meter {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  cursor: default;
+  height: 16px;
+}
+
+.meterBar {
+  opacity: 0.4;
+  transition:
+    background-color 0.2s,
+    opacity 0.2s;
+  border-radius: 1px;
+  background-color: var(--bg1);
+  width: 3px;
+
+  &.filled {
+    opacity: 1;
+
+    &:nth-child(1) {
+      background-color: color-mix(
+        in oklch,
+        var(--stroke-red) 0%,
+        var(--stroke-blue)
+      );
+    }
+    &:nth-child(2) {
+      background-color: color-mix(
+        in oklch,
+        var(--stroke-red) 25%,
+        var(--stroke-blue)
+      );
+    }
+    &:nth-child(3) {
+      background-color: color-mix(
+        in oklch,
+        var(--stroke-red) 50%,
+        var(--stroke-blue)
+      );
+    }
+    &:nth-child(4) {
+      background-color: color-mix(
+        in oklch,
+        var(--stroke-red) 75%,
+        var(--stroke-blue)
+      );
+    }
+    &:nth-child(5) {
+      background-color: color-mix(
+        in oklch,
+        var(--stroke-red) 100%,
+        var(--stroke-blue)
+      );
+    }
+  }
+}
