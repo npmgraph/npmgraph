@@ -1,4 +1,5 @@
-import { Suspense, use, useMemo } from 'react';
+import { Suspense, use } from 'react';
+import usePromise from '../../hooks/usePromise.ts';
 import { cn } from '../../lib/dom.ts';
 import type { NpmDownloadsPoint } from '../../lib/fetch-types.ts';
 import fetchJson from '../../lib/fetchJson.ts';
@@ -55,12 +56,13 @@ async function loadDownloads(apiUrl: string) {
     });
   } catch {
     // Handled by the consumer
+    return undefined;
   }
 }
 
 function RemoteModuleDownloads({ name }: { name: string }) {
   const apiUrl = `https://api.npmjs.org/downloads/point/last-week/${encodeURIComponent(name)}`;
-  const promise = useMemo(async () => loadDownloads(apiUrl), [apiUrl]);
+  const promise = usePromise(apiUrl, async () => loadDownloads(apiUrl));
 
   return (
     <Suspense fallback={null}>

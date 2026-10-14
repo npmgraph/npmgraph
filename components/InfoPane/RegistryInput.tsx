@@ -1,11 +1,12 @@
-import { Suspense, use, useEffect, useMemo, useState } from 'react';
+import { Suspense, use, useEffect, useState } from 'react';
 import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
+import usePromise from '../../hooks/usePromise.ts';
 import useRegistry from '../../hooks/useRegistry.ts';
 import * as styles from './RegistryInput.module.scss';
 
 const CHECKING = 'Checking...';
 
-async function checkRegistry(registry: string): Promise<boolean> {
+async function isRegistryOnline(registry: string): Promise<boolean> {
   try {
     await fetch(`${registry}/_`, { method: 'HEAD' });
     return true;
@@ -38,22 +39,24 @@ function RegistryStatus({
   check: Promise<boolean>;
   setRegistry: (registry: string) => void;
 }) {
-  const online = use(check);
+  const isOnline = use(check);
 
   useEffect(() => {
-    if (online) {
+    if (isOnline) {
       setRegistry(registry);
     }
-  }, [online, registry, setRegistry]);
+  }, [isOnline, registry, setRegistry]);
 
-  return online ? '✅ Online' : '❌ Offline';
+  return isOnline ? '✅ Online' : '❌ Offline';
 }
 
 export default function RegistryInput() {
   const [registry, setRegistry] = useRegistry();
   const [value, setValue] = useState(registry ?? '');
   const debouncedValue = useDebouncedValue(value, 1000);
-  const check = useMemo(() => checkRegistry(debouncedValue), [debouncedValue]);
+  const check = usePromise(debouncedValue, async () =>
+    isRegistryOnline(debouncedValue),
+  );
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value.trim());

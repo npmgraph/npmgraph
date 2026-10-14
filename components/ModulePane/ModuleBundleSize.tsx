@@ -1,4 +1,5 @@
-import { Suspense, use, useMemo } from 'react';
+import { Suspense, use } from 'react';
+import usePromise from '../../hooks/usePromise.ts';
 import type Module from '../../lib/Module.ts';
 import fetchJson from '../../lib/fetchJson.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
@@ -24,6 +25,7 @@ async function loadBundleInfo(apiUrl: string) {
     });
   } catch {
     // Handled by the consumer
+    return undefined;
   }
 }
 
@@ -38,9 +40,8 @@ function RemoteModuleBundleSize({
   const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
   const bpApiUrl = `https://bundlephobia.com/api/size?package=${pn}`;
 
-  const bundleInfoPromise = useMemo(
-    async () => loadBundleInfo(bpApiUrl),
-    [bpApiUrl],
+  const bundleInfoPromise = usePromise(bpApiUrl, async () =>
+    loadBundleInfo(bpApiUrl),
   );
 
   return (

@@ -1,4 +1,5 @@
-import { Suspense, use, useDeferredValue, useMemo } from 'react';
+import { Suspense, use, useDeferredValue } from 'react';
+import usePromise from '../../hooks/usePromise.ts';
 
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
@@ -25,7 +26,7 @@ function LoadedReportItem<T>({
   reporter,
   ...props
 }: ReportItemProps<T> & { data: T }) {
-  const promise = useMemo(async () => reporter(data), [data, reporter]);
+  const promise = usePromise(data, async () => reporter(data));
 
   // Keep showing the previous report (and its open state) while the next one loads
   const deferredPromise = useDeferredValue(promise);
