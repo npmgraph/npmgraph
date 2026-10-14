@@ -1,4 +1,4 @@
-import RawLogo from 'jsx:../images/logo.svg';
+import RawLogo from '../images/logo.svg?react';
 import * as styles from './Logo.module.scss';
 
 export default function Logo() {

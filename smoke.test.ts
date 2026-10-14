@@ -2,6 +2,7 @@
 // Run `npm run build` first.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { type Locator, locators, page, userEvent } from 'vitest/browser';
+import { $$ } from 'select-dom';
 
 declare module 'vitest/browser' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- needed for declaration merging
@@ -36,7 +37,7 @@ const toggle = (label: string) =>
 const appears = async (css: string, text?: RegExp) =>
   vi.waitFor(
     () => {
-      const els = [...doc().querySelectorAll(css)];
+      const els = $$(css, doc());
       expect(
         text ? els.filter(element => text.test(element.textContent)) : els,
       ).not.toHaveLength(0);
