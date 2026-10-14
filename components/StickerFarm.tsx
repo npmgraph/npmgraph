@@ -1,7 +1,7 @@
-import BugsnagLogo from 'jsx:../images/partners/bugsnag.svg';
-import GitHubLogo from 'jsx:../images/partners/github.svg';
-import NpmLogo from 'jsx:../images/partners/npm.svg';
-import VercelLogo from 'jsx:../images/partners/vercel.svg';
+import BugsnagLogo from '../images/partners/bugsnag.svg?react';
+import GitHubLogo from '../images/partners/github.svg?react';
+import NpmLogo from '../images/partners/npm.svg?react';
+import VercelLogo from '../images/partners/vercel.svg?react';
 import * as styles from './StickerFarm.module.scss';
 
 const PARTNERS = [
