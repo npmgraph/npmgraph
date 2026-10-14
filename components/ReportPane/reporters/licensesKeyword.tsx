@@ -4,7 +4,7 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { LicenseAnalysisState } from '../analyzers/analyzeLicenses.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './modulesAll.module.scss';
+import * as styles from './ModuleList.module.scss';
 
 export function licensesKeyword(keyword: OSIKeyword) {
   return function ({ modulesByKeyword }: LicenseAnalysisState) {
