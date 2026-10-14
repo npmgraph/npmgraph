@@ -22,7 +22,7 @@ function ExternalLink({
 }
 
 export function ModuleActions({ module }: { module: Module }) {
-  const [collapse, setCollapse] = useCollapse();
+  const [collapse, , toggleCollapsed] = useCollapse();
   const [graph] = useGlobalState('graph');
   const dependencyTypes = useDependencyTypes();
 
@@ -43,13 +43,9 @@ export function ModuleActions({ module }: { module: Module }) {
         <>
           {canCollapse && (
             <ButtonCheckbox
-              checked={collapse.includes(module.name)}
+              checked={collapse.has(module.name)}
               onChange={() => {
-                setCollapse(
-                  collapse.includes(module.name)
-                    ? collapse.filter(name => name !== module.name)
-                    : [...collapse, module.name],
-                );
+                toggleCollapsed(module.name);
               }}
             >
               Collapse

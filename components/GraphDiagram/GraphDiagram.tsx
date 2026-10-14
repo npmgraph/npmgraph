@@ -57,7 +57,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
   // Filter for which modules should be shown / collapsed in the graph
   const isModuleVisible = useCallback(
-    ({ name }: { name: string }) => !collapse?.includes(name),
+    ({ name }: { name: string }) => !collapse.has(name),
     [collapse],
   );
 

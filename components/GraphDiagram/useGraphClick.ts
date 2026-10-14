@@ -12,15 +12,7 @@ export default function useGraphClick() {
   const [, setPane] = useGlobalState('pane');
   const [, setZenMode] = useHashParam(PARAM_HIDE);
   const setGraphSelection = useGraphSelection()[2];
-  const [collapse, setCollapse] = useCollapse();
-
-  function toggleCollapsed(name: string) {
-    setCollapse(
-      collapse.includes(name)
-        ? collapse.filter(n => n !== name)
-        : [...collapse, name],
-    );
-  }
+  const toggleCollapsed = useCollapse()[2];
 
   return (event: React.MouseEvent) => {
     const { target } = event;
