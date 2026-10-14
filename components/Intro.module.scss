@@ -1,7 +1,7 @@
 .root {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   box-sizing: border-box;
   background: radial-gradient(
@@ -9,17 +9,12 @@
     color-mix(in oklch, var(--accent) 10%, var(--bg-root))
   );
   padding: 1em 1em 0 1em;
+  padding-bottom: 6em;
   width: 100%;
-  height: 100svh;
-  overflow-x: hidden;
-  overflow-y: auto;
+  min-height: 100svh;
 
   @media (prefers-color-scheme: dark) {
     background: radial-gradient(var(--bg0), var(--bg-root));
-  }
-
-  h1 {
-    margin-top: auto;
   }
 
   h1 svg {

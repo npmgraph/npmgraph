@@ -24,8 +24,7 @@ export default function StickerFarm() {
               rel="noopener noreferrer"
               className={styles.logo}
             >
-              <Logo />
-              <span>{name}</span>
+              <Logo width="auto" height="20" />
             </a>
           </li>
         ))}
