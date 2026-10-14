@@ -11,11 +11,15 @@ export function ModuleSize({ module }: { module: Module }) {
   const { unpackedSize } = module;
 
   let downstreamUnpackedSize = 0;
+  let downstreamCount = 0;
   if (graph) {
     foreachDownstream(module, graph, m => {
       downstreamUnpackedSize += m.unpackedSize ?? 0;
+      downstreamCount++;
     });
   }
+
+  const hasDependencies = !graph || downstreamCount > 0;
 
   return (
     <Section title="Module Size">
@@ -26,14 +30,20 @@ export function ModuleSize({ module }: { module: Module }) {
         ) : (
           <i>not available</i>
         )}
-        <span>Unpacked Size (module + dependencies):</span>
-        {unpackedSize ? (
-          <strong>{human(unpackedSize + downstreamUnpackedSize, 'B')}</strong>
-        ) : (
-          <i>not available</i>
+        {hasDependencies && (
+          <>
+            <span>Unpacked Size (module + dependencies):</span>
+            {unpackedSize ? (
+              <strong>
+                {human(unpackedSize + downstreamUnpackedSize, 'B')}
+              </strong>
+            ) : (
+              <i>not available</i>
+            )}
+          </>
         )}
       </div>
-      <ModuleBundleSize module={module} />
+      {hasDependencies && <ModuleBundleSize module={module} />}
     </Section>
   );
 }
