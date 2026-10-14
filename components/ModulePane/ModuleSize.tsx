@@ -11,15 +11,14 @@ export function ModuleSize({ module }: { module: Module }) {
   const { unpackedSize } = module;
 
   let downstreamUnpackedSize = 0;
-  let downstreamCount = 0;
   if (graph) {
     foreachDownstream(module, graph, m => {
       downstreamUnpackedSize += m.unpackedSize ?? 0;
-      downstreamCount++;
     });
   }
 
-  const hasDependencies = !graph || downstreamCount > 0;
+  const hasDependencies =
+    !graph || Boolean(graph.moduleInfos.get(module.key)?.downstream.size);
 
   return (
     <Section title="Module Size">
