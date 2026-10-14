@@ -1,5 +1,6 @@
 import { Suspense, use, useEffect, useState } from 'react';
 import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
+import useDebouncedValue from '../../hooks/useDebouncedValue.ts';
 import usePromise from '../../hooks/usePromise.ts';
 import useRegistry from '../../hooks/useRegistry.ts';
 import * as styles from './RegistryInput.module.scss';
@@ -13,21 +14,6 @@ async function isRegistryOnline(registry: string): Promise<boolean> {
   } catch {
     return false;
   }
-}
-
-function useDebouncedValue<T>(value: T, delay: number) {
-  const [debounced, setDebounced] = useState(value);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebounced(value);
-    }, delay);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debounced;
 }
 
 function RegistryStatus({
