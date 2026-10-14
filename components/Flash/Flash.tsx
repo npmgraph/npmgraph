@@ -7,6 +7,7 @@ import {
   subscribeFlash,
   type FlashEntry,
 } from '../../lib/flash.ts';
+import { $optional } from 'select-dom';
 
 const FLASH_GAP = 10;
 
@@ -66,7 +67,7 @@ function subscribeToResize(callback: () => void) {
 }
 
 function getMaxWidth() {
-  const graph = document.querySelector(`.${graphDiagramStyles.graph}`);
+  const graph = $optional(`.${graphDiagramStyles.graph}`);
 
   const graphWidth = graph instanceof HTMLElement ? graph.offsetWidth : 0;
   return Math.max(
@@ -78,7 +79,7 @@ function getMaxWidth() {
 function getTop() {
   // On tight screens the header is followed by the mobile tabs, both inside
   // the sticky top container, so place the flash below the whole container
-  const topBar = document.querySelector(`.${appStyles.stickyTop}`);
+  const topBar = $optional(`.${appStyles.stickyTop}`);
 
   return (
     FLASH_GAP / 2 +

@@ -8,7 +8,7 @@ import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
 
-export default function SettingsPane(props: HTMLProps<HTMLDivElement>) {
+export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [sizing, setSizing] = useHashParam(PARAM_SIZING);
 
