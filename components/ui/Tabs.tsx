@@ -2,6 +2,7 @@ import type { HTMLProps } from 'react';
 import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import * as utilities from './utilities.module.scss';
 
@@ -31,6 +32,7 @@ function Tab({
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [pane, setPane] = useGlobalState('pane');
   const [hide, setHide] = useHashParam(PARAM_HIDE);
+  const [, selection] = useGraphSelection();
 
   const isInspector = hide === null;
   return (
@@ -63,15 +65,17 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       >
         Graph
       </Tab>
-      <Tab
-        active={isInspector && pane === PaneType.MODULE}
-        onClick={() => {
-          setHide(null);
-          setPane(PaneType.MODULE);
-        }}
-      >
-        Module
-      </Tab>
+      {selection && (
+        <Tab
+          active={isInspector && pane === PaneType.MODULE}
+          onClick={() => {
+            setHide(null);
+            setPane(PaneType.MODULE);
+          }}
+        >
+          Module
+        </Tab>
+      )}
       <Tab
         active={isInspector && pane === PaneType.SETTINGS}
         onClick={() => {
