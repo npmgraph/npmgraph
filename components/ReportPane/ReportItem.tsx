@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Suspense, use, useDeferredValue, useMemo } from 'react';
 
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
@@ -23,16 +23,28 @@ export function ReportItem<T>({ data, ...props }: ReportItemProps<T>) {
 function LoadedReportItem<T>({
   data,
   reporter,
-  children,
   ...props
 }: ReportItemProps<T> & { data: T }) {
-  const [analysis, setAnalysis] = useState<RenderedAnalysis>();
+  const promise = useMemo(async () => reporter(data), [data, reporter]);
 
-  useEffect(() => {
-    void Promise.resolve(reporter(data)).then(report => {
-      setAnalysis(report);
-    });
-  }, [data, reporter]);
+  // Keep showing the previous report (and its open state) while the next one loads
+  const deferredPromise = useDeferredValue(promise);
+
+  return (
+    <Suspense fallback={null}>
+      <ReportItemContent promise={deferredPromise} {...props} />
+    </Suspense>
+  );
+}
+
+function ReportItemContent({
+  promise,
+  children,
+  ...props
+}: Omit<ReportItemProps<unknown>, 'data' | 'reporter'> & {
+  promise: Promise<RenderedAnalysis | undefined>;
+}) {
+  const analysis = use(promise);
 
   if (!analysis) {
     return null;
