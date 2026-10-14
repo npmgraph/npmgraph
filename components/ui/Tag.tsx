@@ -1,7 +1,7 @@
 import { type QueryTypeValue, QueryType } from '../../lib/ModuleCache.ts';
 import type { HTMLProps } from 'react';
 import { cn } from '../../lib/dom.ts';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import { getGraphSelection } from '../../lib/selection-util.ts';
 import { Gravatar } from './Gravatar.tsx';
 import * as styles from './Tag.module.scss';
 import * as utilities from './utilities.module.scss';
@@ -30,7 +30,7 @@ export function Tag({
   count?: number;
   gravatar?: string;
 } & Omit<HTMLProps<HTMLButtonElement>, 'type'>) {
-  const setGraphSelection = useGraphSelection()[2];
+  const setGraphSelection = getGraphSelection()[2];
   let title = value;
   if (count > 1) {
     title += ` (${count})`;

@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes } from 'react';
 import type { QueryTypeValue } from '../../lib/ModuleCache.ts';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import { getGraphSelection } from '../../lib/selection-util.ts';
 
 import { cn } from '../../lib/dom.ts';
 import * as styles from './Selectable.module.scss';
@@ -17,7 +17,7 @@ export function Selectable({
   value: string;
   label?: string;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>) {
-  const setGraphSelection = useGraphSelection()[2];
+  const setGraphSelection = getGraphSelection()[2];
   return (
     <button
       type="button"

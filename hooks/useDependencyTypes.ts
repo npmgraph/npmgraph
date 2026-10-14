@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import { PARAM_DEPENDENCIES } from '../lib/constants.ts';
 import type { DependencyKey } from '../lib/graph-util.ts';
-import useHashParam from './useHashParam.ts';
+import { getHashParameter } from '../lib/hash-util.ts';
 
 /**
 The types of dependencies to include in the graph. The set is stable, so it
 can be used in effects.
 */
 export default function useDependencyTypes() {
-  const [depTypes] = useHashParam(PARAM_DEPENDENCIES);
+  const [depTypes] = getHashParameter(PARAM_DEPENDENCIES);
 
   return useMemo(() => {
     const extra = (depTypes ?? '')

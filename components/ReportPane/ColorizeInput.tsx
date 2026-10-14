@@ -1,11 +1,11 @@
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
+import { getHashParameter } from '../../lib/hash-util.ts';
 import colorizers, { getColorizer } from '../colorizers/index.ts';
 
 import * as styles from './ColorizeInput.module.scss';
 
 export default function ColorizeInput() {
-  const [colorize, setColorize] = useHashParam(PARAM_COLORIZE);
+  const [colorize, setColorize] = getHashParameter(PARAM_COLORIZE);
 
   const options = [
     <option key="none" value="">

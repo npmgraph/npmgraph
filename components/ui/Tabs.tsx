@@ -2,7 +2,7 @@ import type { HTMLProps } from 'react';
 import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
+import { getHashParameter } from '../../lib/hash-util.ts';
 import * as utilities from './utilities.module.scss';
 
 import { Splitter } from './Splitter.tsx';
@@ -30,7 +30,7 @@ function Tab({
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [pane, setPane] = useGlobalState('pane');
-  const [hide, setHide] = useHashParam(PARAM_HIDE);
+  const [hide, setHide] = getHashParameter(PARAM_HIDE);
 
   const isInspector = hide === null;
   return (

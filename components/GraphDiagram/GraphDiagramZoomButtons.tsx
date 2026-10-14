@@ -4,13 +4,13 @@ import {
   ZOOM_FIT_WIDTH,
   ZOOM_NONE,
 } from '../../lib/constants.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
+import { getHashParameter } from '../../lib/hash-util.ts';
 import ZoomHorizontalIcon from 'jsx:../../images/icons/zoom-horizontal.svg';
 import ZoomVerticalIcon from 'jsx:../../images/icons/zoom-vertical.svg';
 import { Button, ButtonGroup } from '../Button.tsx';
 
 export function GraphDiagramZoomButtons() {
-  const [zoom, setZoom] = useHashParam(PARAM_ZOOM);
+  const [zoom, setZoom] = getHashParameter(PARAM_ZOOM);
   return (
     <ButtonGroup>
       <Button
