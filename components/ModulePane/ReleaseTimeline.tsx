@@ -50,15 +50,15 @@ type Scale = (v: number) => number;
 Until a package reaches 1.0.0, its 0.x.0 releases are the breaking ones, so
 they're plotted as majors (labelled ".1", ".2", etc.)
 */
-function isZeroMajor(releases: Release[]) {
+function hasOnlyZeroMajors(releases: Release[]) {
   return releases.every(r => r.semver.major === 0);
 }
 
-function level(semver: SemVer, zeroMajor: boolean) {
-  return zeroMajor ? semver.minor : semver.major;
+function level(semver: SemVer, isPreV1: boolean) {
+  return isPreV1 ? semver.minor : semver.major;
 }
 
-function releaseKind(semver: SemVer, zeroMajor: boolean): Kind | undefined {
+function releaseKind(semver: SemVer, isPreV1: boolean): Kind | undefined {
   if (semver.prerelease?.length) {
     return 'prerelease';
   }
@@ -67,7 +67,7 @@ function releaseKind(semver: SemVer, zeroMajor: boolean): Kind | undefined {
     return 'patch';
   }
 
-  if (zeroMajor) {
+  if (isPreV1) {
     return semver.minor ? 'major' : undefined;
   }
 
@@ -96,7 +96,7 @@ function buildLayers(
   releases: Release[],
   xScale: Scale,
   yScale: Scale,
-  zeroMajor: boolean,
+  isPreV1: boolean,
 ) {
   const layers: Record<Kind, ReactElement[]> = {
     prerelease: [],
@@ -106,13 +106,13 @@ function buildLayers(
   };
 
   for (const { key, time, semver } of releases) {
-    const kind = releaseKind(semver, zeroMajor);
+    const kind = releaseKind(semver, isPreV1);
     if (!kind) {
       continue;
     }
 
     const x = xScale(time);
-    const y = yScale(level(semver, zeroMajor));
+    const y = yScale(level(semver, isPreV1));
     const title = `${key} published ${timestring(time)}`;
 
     layers[kind].push(
@@ -121,7 +121,7 @@ function buildLayers(
         <circle cx={x} cy={y} r={KIND_RADIUS[kind]} />
         {kind === 'major' ? (
           <text x={x} y={y} textAnchor="middle" alignmentBaseline="central">
-            {zeroMajor ? `.${semver.minor}` : semver.major}
+            {isPreV1 ? `.${semver.minor}` : semver.major}
           </text>
         ) : null}
       </g>,
@@ -185,8 +185,8 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     return;
   }
 
-  const zeroMajor = isZeroMajor(releases);
-  const majors = releases.map(r => level(r.semver, zeroMajor));
+  const isPreV1 = hasOnlyZeroMajors(releases);
+  const majors = releases.map(r => level(r.semver, isPreV1));
   const majorMax = Math.max(...majors);
   const majorMin = Math.min(...majors);
   const tmin = releases[0]!.time;
@@ -207,14 +207,14 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const ticks = yearTicks(tmin, tmax, innerW);
 
-  const layers = buildLayers(releases, xScale, yScale, zeroMajor);
+  const layers = buildLayers(releases, xScale, yScale, isPreV1);
 
   const currentRelease = releases.find(r => r.key === module.version);
   const current = currentRelease
     ? {
         key: currentRelease.key,
         x: xScale(currentRelease.time),
-        y: yScale(level(currentRelease.semver, zeroMajor)),
+        y: yScale(level(currentRelease.semver, isPreV1)),
       }
     : undefined;
 
