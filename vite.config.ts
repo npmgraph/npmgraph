@@ -9,13 +9,15 @@ const envKeys = [
   'VERCEL_GIT_PULL_REQUEST_ID',
 ];
 
-// eslint-disable-next-line unicorn/no-top-level-side-effects -- Vite config
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
+  const env = loadEnv(mode, '.', '');
   return {
     plugins: [react(), svgr({ include: '**/*.svg?react' })],
     define: Object.fromEntries(
-      envKeys.map(key => [`process.env.${key}`, `${JSON.stringify(env[key])}`]),
+      envKeys.map(key => [
+        `process.env.${key}`,
+        env[key] === undefined ? 'undefined' : JSON.stringify(env[key]),
+      ]),
     ),
   };
 });
