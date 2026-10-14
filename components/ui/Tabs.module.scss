@@ -1,6 +1,7 @@
 @use '../../lib/root.module.scss' as *;
 
-.root {
+.root,
+.list {
   display: flex;
   flex-shrink: 0;
   flex-basis: auto;
@@ -9,6 +10,12 @@
   min-height: 50px;
   color: var(--tabs-text);
   user-select: none;
+}
+
+.list {
+  @include tight-screen {
+    flex-grow: 1;
+  }
 }
 
 .tab {
@@ -35,12 +42,5 @@
 
   &.active button {
     background: var(--accent);
-  }
-}
-
-.tabMobileOnly {
-  display: none;
-  @include tight-screen {
-    display: flex;
   }
 }
