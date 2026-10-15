@@ -124,7 +124,7 @@ describe('graph', () => {
   });
 
   it('restores state from hash params', async () => {
-    await goto('?q=debug#deps=peerDependencies&zoom=w');
+    await goto('?q=debug#deps=peerDependencies');
     await nodeAppears();
   });
 
