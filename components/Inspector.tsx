@@ -28,7 +28,17 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     return null;
   }
 
-  const selectedModules = queryModuleCache(queryType, queryValue);
+  let selectedModules = queryModuleCache(queryType, queryValue);
+
+  // Fall back to the top-level module if nothing is selected
+  const [entryModule] = graph.entryModules;
+  if (
+    entryModule &&
+    graph.entryModules.size === 1 &&
+    selectedModules.size === 0
+  ) {
+    selectedModules = new Map([[entryModule.key, entryModule]]);
+  }
 
   let paneComponent;
   switch (pane) {
