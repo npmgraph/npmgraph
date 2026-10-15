@@ -1,4 +1,5 @@
-import { Suspense, use, useDeferredValue, useMemo } from 'react';
+import { Suspense, use, useDeferredValue } from 'react';
+import usePromise from '../../hooks/usePromise.ts';
 
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
@@ -25,53 +26,27 @@ function LoadedReportItem<T>({
   reporter,
   ...props
 }: ReportItemProps<T> & { data: T }) {
-  // Reporters can be recreated on every render, `data` identifies the report
-  const result = useMemo(
-    (): ReturnType<typeof reporter> => reporter(data),
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- See above
-    [data],
-  );
+  const promise = usePromise(data, async () => reporter(data));
 
-  // Sync reports render immediately, without suspending
-  return result instanceof Promise ? (
-    <AsyncReportItem promise={result} {...props} />
-  ) : (
-    <ReportItemContent analysis={result} {...props} />
-  );
-}
-
-function AsyncReportItem({
-  promise,
-  ...props
-}: Omit<ReportItemProps<unknown>, 'data' | 'reporter'> & {
-  promise: Promise<RenderedAnalysis | undefined>;
-}) {
   // Keep showing the previous report (and its open state) while the next one loads
   const deferredPromise = useDeferredValue(promise);
 
   return (
     <Suspense fallback={null}>
-      <AwaitedReportItem promise={deferredPromise} {...props} />
+      <ReportItemContent promise={deferredPromise} {...props} />
     </Suspense>
   );
 }
 
-function AwaitedReportItem({
+function ReportItemContent({
   promise,
+  children,
   ...props
 }: Omit<ReportItemProps<unknown>, 'data' | 'reporter'> & {
   promise: Promise<RenderedAnalysis | undefined>;
 }) {
-  return <ReportItemContent analysis={use(promise)} {...props} />;
-}
+  const analysis = use(promise);
 
-function ReportItemContent({
-  analysis,
-  children,
-  ...props
-}: Omit<ReportItemProps<unknown>, 'data' | 'reporter'> & {
-  analysis: RenderedAnalysis | undefined;
-}) {
   if (!analysis) {
     return null;
   }
