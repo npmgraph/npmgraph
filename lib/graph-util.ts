@@ -415,7 +415,7 @@ export function composeDOT({
       upstream.size > 0 &&
       [...upstream].every(({ type }) => type === 'peerDependencies');
 
-    const link = new URL(location.origin);
+    const link = new URL(location.pathname, location.origin);
     link.searchParams.append(PARAM_QUERY, module.key);
     const label = module.isUnnamed ? UNNAMED_PACKAGE : undefined;
     const style = isPeerOnly ? 'rounded,dashed' : undefined;
