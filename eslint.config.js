@@ -1,7 +1,9 @@
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
-import { defineConfig } from 'eslint/config';
 import reactDoctor from 'eslint-plugin-react-doctor';
+import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
+import { defineConfig } from 'eslint/config';
+import selectDom from 'select-dom/eslint-plugin';
 
 const disabledRules = [
   // TODO: Gradually review and enable
@@ -17,9 +19,6 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
-  'react-doctor/jsx-no-new-function-as-prop',
-  'react-doctor/jsx-no-new-object-as-prop',
-  'react-hooks/set-state-in-effect',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
@@ -34,11 +33,12 @@ const disabledRules = [
   'no-alert',
   'no-console',
   'no-warning-comments',
-  'react-doctor/jsx-no-target-blank', // Already covered by react/jsx-no-target-blank
+  'react-doctor/jsx-no-target-blank',
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
 ];
 
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- https://github.com/sindresorhus/eslint-plugin-unicorn/issues/3813
 export default defineConfig([
   ...xo({
     browser: true,
@@ -68,6 +68,11 @@ export default defineConfig([
     },
   },
   reactDoctor.configs.recommended,
+  reactYouMightNotNeedAnEffect.configs.strict,
+  {
+    plugins: { 'select-dom': selectDom },
+    rules: { 'select-dom/prefer': 'error' },
+  },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },

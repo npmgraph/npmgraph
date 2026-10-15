@@ -135,7 +135,7 @@ https://npmgraph.js.org/?q=send@0.18.0#zoom=w
 
 ## Running locally
 
-`NPMGraph` is built with `parcel`. To run in your local dev environment:
+`NPMGraph` is built with `vite`. To run in your local dev environment:
 
 ```shell
 $ git clone https://github.com/npmgraph/npmgraph.git

@@ -26,7 +26,7 @@ export const PaneType = {
   REPORT: 'report',
   GRAPH: 'graph',
   INFO: 'info',
-  SETTINGS: 'settings',
+  VIEW: 'view',
 } as const;
 
 export type PaneTypes = (typeof PaneType)[keyof typeof PaneType];

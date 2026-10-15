@@ -22,3 +22,22 @@ export type BundlePhobiaData = {
   size: number;
   version: string;
 };
+
+export type NpmDownloadDay = {
+  downloads: number;
+  day: string;
+};
+
+export type NpmDownloadsRange = {
+  start: string;
+  end: string;
+  package: string;
+  downloads: NpmDownloadDay[];
+};
+
+export type NpmDownloadsPoint = {
+  downloads: number;
+  start: string;
+  end: string;
+  package: string;
+};

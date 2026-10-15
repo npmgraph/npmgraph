@@ -24,11 +24,11 @@ export default function useGraphSelection() {
         return;
       }
 
-      if (selectableQueryTypes.has(queryType)) {
-        setSel(queryValue);
-      } else {
-        setSel(`${queryType}:${queryValue}`);
-      }
+      setSel(
+        selectableQueryTypes.has(queryType)
+          ? queryValue
+          : `${queryType}:${queryValue}`,
+      );
     },
   ] as const;
 }

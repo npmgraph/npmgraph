@@ -21,7 +21,7 @@ function isScreenTight() {
   return globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches;
 }
 
-export function useTightScreen() {
+export function useIsTightScreen() {
   const isTightScreen = useSyncExternalStore(subscribe, isScreenTight);
   return isTightScreen;
 }

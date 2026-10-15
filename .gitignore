@@ -2,6 +2,7 @@
 .parcel-cache
 .vscode
 .yarn
+.vitest
 art/**/*.svg.*.svg  # inkscape backup files
 dist
 node_modules

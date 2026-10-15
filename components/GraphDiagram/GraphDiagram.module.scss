@@ -51,31 +51,18 @@
   display: flex;
   position: absolute;
   gap: 1em;
+  // Hidden while the loader is shown, since it covers the same area
+  visibility: var(--graph-controls-visibility, visible);
+  opacity: var(--graph-controls-opacity, 1);
   z-index: 1;
+  transition:
+    opacity 0.15s,
+    visibility 0.15s;
   inset: auto auto 1em 1em;
-  --padding: 6px;
-  user-select: none;
 
   @include tight-screen {
     position: fixed;
     z-index: 20;
-  }
-
-  button {
-    display: inline-block;
-    border: solid 1px var(--bg1);
-    background: var(--bg0);
-    padding: var(--padding);
-    color: var(--text);
-
-    svg {
-      display: block;
-    }
-
-    &.selected {
-      background-color: var(--accent);
-      color: var(--text-on-accent);
-    }
   }
 
   @media print {

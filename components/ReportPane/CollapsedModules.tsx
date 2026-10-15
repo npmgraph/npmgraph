@@ -1,4 +1,5 @@
 import useCollapse from '../../hooks/useCollapse.ts';
+import { toggleItem } from '../../lib/array-util.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import * as styles from './CollapsedModules.module.scss';
 
@@ -27,7 +28,7 @@ export default function CollapsedModules() {
               type="button"
               aria-label={`Remove ${name} from collapsed modules`}
               onClick={() => {
-                setCollapse(collapse.filter(item => item !== name));
+                setCollapse(toggleItem(collapse, name));
               }}
             >
               ×

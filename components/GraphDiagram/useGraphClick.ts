@@ -2,6 +2,7 @@ import { $, closestElementOptional } from 'select-dom';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import { toggleItem } from '../../lib/array-util.ts';
 import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
@@ -15,11 +16,7 @@ export default function useGraphClick() {
   const [collapse, setCollapse] = useCollapse();
 
   function toggleCollapsed(name: string) {
-    if (collapse.includes(name)) {
-      setCollapse(collapse.filter(n => n !== name));
-    } else {
-      setCollapse([...collapse, name]);
-    }
+    setCollapse(toggleItem(collapse, name));
   }
 
   return (event: React.MouseEvent) => {

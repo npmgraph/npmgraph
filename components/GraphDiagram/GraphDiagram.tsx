@@ -34,7 +34,6 @@ import './graphviz.css';
 
 import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
-import useCelebrateZeroDependencies from './useCelebrateZeroDependencies.ts';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
 import useRenderDiagram from './useRenderDiagram.ts';
@@ -74,7 +73,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const panningRef = useRef(false);
 
   // Filter for which modules should be shown / collapsed in the graph
-  const moduleFilter = useCallback(
+  const isModuleVisible = useCallback(
     ({ name }: { name: string }) => !collapse?.includes(name),
     [collapse],
   );
@@ -82,10 +81,9 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
   // Thus, it's broken up into different useEffect() actions, below.
   // Effect: Fetch modules
-  useLoadGraph(moduleFilter);
-  useCelebrateZeroDependencies(moduleFilter);
+  useLoadGraph(isModuleVisible);
 
-  const diagramElement = useRenderDiagram(activity, moduleFilter);
+  const diagramElement = useRenderDiagram(activity, isModuleVisible);
 
   // Effect: Don't allow zooming out further than "fit to screen"
   useEffect(() => {
@@ -204,6 +202,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           wrapperClass={styles.viewport}
           wrapperStyle={{ width: '100%', height: '100%' }}
         >
+          {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- Already handled by onEsc() */}
           <div
             className={styles.graph}
             onClick={event => {

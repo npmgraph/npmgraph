@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { Suspense, use } from 'react';
+import usePromise from '../../hooks/usePromise.ts';
 import type Module from '../../lib/Module.ts';
 import fetchJson from '../../lib/fetchJson.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
@@ -7,39 +8,59 @@ import { ModuleBundleStats } from './ModuleBundleStats.tsx';
 import { ModuleTreeMap } from './ModuleTreeMap.tsx';
 
 export default function ModuleBundleSize({ module }: { module: Module }) {
-  const pkg = module.package;
-
-  const [bundleInfo, setBundleInfo] = useState<BundlePhobiaData | Error>();
-
-  const pn = encodeURIComponent(`${pkg.name}@${pkg.version}`);
-  const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
-  const bpApiUrl = `https://bundlephobia.com/api/size?package=${pn}`;
-
-  useEffect(() => {
-    if (module.isLocal) {
-      return;
-    }
-
-    setBundleInfo(undefined);
-
-    if (!pkg) {
-      return;
-    }
-
-    fetchJson<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
-      .then(data => {
-        setBundleInfo(data);
-      })
-      .catch(error => {
-        setBundleInfo(error);
-      });
-  }, [pkg, module.isLocal, bpApiUrl]);
-
-  if (!bundleInfo) {
+  if (module.isLocal) {
     return 'Loading ...';
   }
 
-  if (bundleInfo instanceof Error) {
+  const { name, version } = module.package;
+
+  return <RemoteModuleBundleSize name={name} version={version} />;
+}
+
+async function loadBundleInfo(apiUrl: string) {
+  try {
+    return await fetchJson<BundlePhobiaData>(apiUrl, {
+      silent: true,
+      timeout: 5000,
+    });
+  } catch {
+    // Handled by the consumer
+    return undefined;
+  }
+}
+
+function RemoteModuleBundleSize({
+  name,
+  version,
+}: {
+  name: string;
+  version: string;
+}) {
+  const pn = encodeURIComponent(`${name}@${version}`);
+  const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
+  const bpApiUrl = `https://bundlephobia.com/api/size?package=${pn}`;
+
+  const bundleInfoPromise = usePromise(bpApiUrl, async () =>
+    loadBundleInfo(bpApiUrl),
+  );
+
+  return (
+    <Suspense fallback="Loading ...">
+      <BundleInfo promise={bundleInfoPromise} bpUrl={bpUrl} />
+    </Suspense>
+  );
+}
+
+function BundleInfo({
+  promise,
+  bpUrl,
+}: {
+  promise: Promise<BundlePhobiaData | undefined>;
+  bpUrl: string;
+}) {
+  const bundleInfo = use(promise);
+
+  if (!bundleInfo) {
     return 'Bundle size not available';
   }
 

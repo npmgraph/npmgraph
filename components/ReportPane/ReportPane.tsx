@@ -15,6 +15,7 @@ import { moduleReplacementsNative } from './reporters/moduleReplacements.tsx';
 import { moduleVulnerabilities } from './reporters/moduleVulnerabilities.tsx';
 import { modulesAll } from './reporters/modulesAll.tsx';
 import { modulesDeprecated } from './reporters/modulesDeprecated.tsx';
+import { modulesOutdated } from './reporters/modulesOutdated.tsx';
 import { modulesRepeated } from './reporters/modulesRepeated.tsx';
 import {
   peerDependenciesAll,
@@ -83,6 +84,13 @@ export default function ReportPane({
         Deprecated modules are unsupported and may have unpatched security
         vulnerabilities. See the deprecation notes below for module-specific
         instructions.
+      </ReportItem>
+
+      <ReportItem data={moduleAnalysis} reporter={modulesOutdated}>
+        These modules are behind the <code>latest</code> version on npm. Newer
+        versions may include bug and security fixes. If an update is held back
+        by the version constraint of another module, consider asking{' '}
+        <em>upstream</em> module owners to update.
       </ReportItem>
 
       <ReportItem data={maintainersAnalysis} reporter={maintainersSolo}>
