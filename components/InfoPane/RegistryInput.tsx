@@ -1,47 +1,48 @@
-import { useEffect, useState } from 'react';
+import { Suspense, use, useEffect, useState } from 'react';
 import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
+import useDebouncedValue from '../../hooks/useDebouncedValue.ts';
+import usePromise from '../../hooks/usePromise.ts';
 import useRegistry from '../../hooks/useRegistry.ts';
 import * as styles from './RegistryInput.module.scss';
 
-const RegistryStatus = {
-  PENDING: 'pending',
-  ONLINE: 'online',
-  OFFLINE: 'offline',
-} as const;
+const CHECKING = 'Checking...';
 
-type CheckResult = { registry: string; online: boolean };
-
-async function checkRegistryStatus(
-  registry: string,
-  signal: AbortSignal,
-  setResult: (result: CheckResult) => void,
-  setRegistry: (registry: string) => void,
-): Promise<void> {
+async function isRegistryOnline(registry: string): Promise<boolean> {
   try {
-    await fetch(`${registry}/_`, { method: 'HEAD', signal });
-    if (!signal.aborted) {
-      setResult({ registry, online: true });
+    await fetch(`${registry}/_`, { method: 'HEAD' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function RegistryStatus({
+  registry,
+  check,
+  setRegistry,
+}: {
+  registry: string;
+  check: Promise<boolean>;
+  setRegistry: (registry: string) => void;
+}) {
+  const isOnline = use(check);
+
+  useEffect(() => {
+    if (isOnline) {
       setRegistry(registry);
     }
-  } catch {
-    if (!signal.aborted) {
-      setResult({ registry, online: false });
-    }
-  }
+  }, [isOnline, registry, setRegistry]);
+
+  return isOnline ? '✅ Online' : '❌ Offline';
 }
 
 export default function RegistryInput() {
   const [registry, setRegistry] = useRegistry();
   const [value, setValue] = useState(registry ?? '');
-  const [result, setResult] = useState<CheckResult>();
-
-  // A result only counts for the value it was checked against
-  const status =
-    result?.registry === value
-      ? result.online
-        ? RegistryStatus.ONLINE
-        : RegistryStatus.OFFLINE
-      : RegistryStatus.PENDING;
+  const debouncedValue = useDebouncedValue(value, 1000);
+  const check = usePromise(debouncedValue, async () =>
+    isRegistryOnline(debouncedValue),
+  );
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
     setValue(event.target.value.trim());
@@ -50,31 +51,6 @@ export default function RegistryInput() {
   function handleBlur() {
     setRegistry(value);
   }
-
-  // eslint-disable-next-line react-doctor/no-fetch-in-effect -- The request is debounced and aborted in the cleanup, so it can't race
-  useEffect(() => {
-    const controller = new AbortController();
-    const timer = setTimeout(
-      // eslint-disable-next-line @typescript-eslint/strict-void-return -- It is void (promised)
-      checkRegistryStatus,
-      1000,
-      value,
-      controller.signal,
-      setResult,
-      setRegistry,
-    );
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
-    };
-  }, [setRegistry, value]);
-
-  const statusText =
-    status === RegistryStatus.ONLINE
-      ? '✅ Online'
-      : status === RegistryStatus.OFFLINE
-        ? '❌ Offline'
-        : 'Checking...';
 
   return (
     <div className={styles.root}>
@@ -86,7 +62,19 @@ export default function RegistryInput() {
         onChange={handleChange}
         onBlur={handleBlur}
       />
-      <span className={styles.status}>{statusText}</span>
+      <span className={styles.status}>
+        {value === debouncedValue ? (
+          <Suspense fallback={CHECKING}>
+            <RegistryStatus
+              registry={debouncedValue}
+              check={check}
+              setRegistry={setRegistry}
+            />
+          </Suspense>
+        ) : (
+          CHECKING
+        )}
+      </span>
     </div>
   );
 }

@@ -13,7 +13,7 @@ export default function Intro() {
         <Logo />
       </h1>
       <h2>Explore npm modules and dependencies</h2>
-      <QueryInput />
+      <QueryInput variant="hero" />
       <InputHelp />
       <StickerFarm />
       <GitHubCorner />

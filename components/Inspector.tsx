@@ -1,9 +1,7 @@
-import { lazy, Suspense, type HTMLProps } from 'react';
+import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.ts';
-import { queryModuleCache } from '../lib/ModuleCache.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
-import useGraphSelection from '../hooks/useGraphSelection.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
@@ -19,7 +17,8 @@ const ModulePane = lazy(async () => modulePanePromise);
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;
   const [pane] = useGlobalState('pane');
-  const [queryType, queryValue] = useGraphSelection();
+  // The store updates synchronously, so defer the pane to keep showing the previous one while the next suspends
+  const deferredPane = useDeferredValue(pane);
   const [graph] = useGlobalState('graph');
 
   const [hide] = useHashParam(PARAM_HIDE);
@@ -28,12 +27,10 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     return null;
   }
 
-  const selectedModules = queryModuleCache(queryType, queryValue);
-
   let paneComponent;
-  switch (pane) {
+  switch (deferredPane) {
     case PaneType.MODULE:
-      paneComponent = <ModulePane selectedModules={selectedModules} />;
+      paneComponent = <ModulePane />;
       break;
     case PaneType.REPORT:
       paneComponent = <ReportPane graph={graph} />;
