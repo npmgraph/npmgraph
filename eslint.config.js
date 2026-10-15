@@ -1,8 +1,8 @@
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
-import { defineConfig } from 'eslint/config';
 import reactDoctor from 'eslint-plugin-react-doctor';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
+import { defineConfig } from 'eslint/config';
 import selectDom from 'select-dom/eslint-plugin';
 
 const disabledRules = [

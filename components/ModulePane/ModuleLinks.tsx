@@ -1,5 +1,6 @@
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
+import { toggleItem } from '../../lib/array-util.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
@@ -45,11 +46,7 @@ export function ModuleActions({ module }: { module: Module }) {
             <ButtonCheckbox
               checked={collapse.includes(module.name)}
               onChange={() => {
-                setCollapse(
-                  collapse.includes(module.name)
-                    ? collapse.filter(name => name !== module.name)
-                    : [...collapse, module.name],
-                );
+                setCollapse(toggleItem(collapse, module.name));
               }}
             >
               Collapse
