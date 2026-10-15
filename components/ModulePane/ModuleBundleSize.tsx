@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { Suspense, use } from 'react';
+import usePromise from '../../hooks/usePromise.ts';
 import type Module from '../../lib/Module.ts';
 import fetchJson from '../../lib/fetchJson.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
@@ -13,14 +14,19 @@ export default function ModuleBundleSize({ module }: { module: Module }) {
 
   const { name, version } = module.package;
 
-  // The key resets the state when the module changes
-  return (
-    <RemoteModuleBundleSize
-      key={`${name}@${version}`}
-      name={name}
-      version={version}
-    />
-  );
+  return <RemoteModuleBundleSize name={name} version={version} />;
+}
+
+async function loadBundleInfo(apiUrl: string) {
+  try {
+    return await fetchJson<BundlePhobiaData>(apiUrl, {
+      silent: true,
+      timeout: 5000,
+    });
+  } catch {
+    // Handled by the consumer
+    return undefined;
+  }
 }
 
 function RemoteModuleBundleSize({
@@ -30,27 +36,31 @@ function RemoteModuleBundleSize({
   name: string;
   version: string;
 }) {
-  const [bundleInfo, setBundleInfo] = useState<BundlePhobiaData | Error>();
-
   const pn = encodeURIComponent(`${name}@${version}`);
   const bpUrl = `https://bundlephobia.com/result?p=${pn}`;
   const bpApiUrl = `https://bundlephobia.com/api/size?package=${pn}`;
 
-  useEffect(() => {
-    fetchJson<BundlePhobiaData>(bpApiUrl, { silent: true, timeout: 5000 })
-      .then(data => {
-        setBundleInfo(data);
-      })
-      .catch(error => {
-        setBundleInfo(error);
-      });
-  }, [bpApiUrl]);
+  const bundleInfoPromise = usePromise(bpApiUrl, async () =>
+    loadBundleInfo(bpApiUrl),
+  );
+
+  return (
+    <Suspense fallback="Loading ...">
+      <BundleInfo promise={bundleInfoPromise} bpUrl={bpUrl} />
+    </Suspense>
+  );
+}
+
+function BundleInfo({
+  promise,
+  bpUrl,
+}: {
+  promise: Promise<BundlePhobiaData | undefined>;
+  bpUrl: string;
+}) {
+  const bundleInfo = use(promise);
 
   if (!bundleInfo) {
-    return 'Loading ...';
-  }
-
-  if (bundleInfo instanceof Error) {
     return 'Bundle size not available';
   }
 
