@@ -46,13 +46,29 @@ type Release = {
 
 type Scale = (v: number) => number;
 
-function releaseKind(semver: SemVer): Kind | undefined {
+/**
+Until a package reaches 1.0.0, its 0.x.0 releases are the breaking ones, so
+they're plotted like majors, but as minors (labelled "•1", "•2", etc.)
+*/
+function hasOnlyZeroMajors(releases: Release[]) {
+  return releases.every(r => r.semver.major === 0);
+}
+
+function level(semver: SemVer, isPreV1: boolean) {
+  return isPreV1 ? semver.minor : semver.major;
+}
+
+function releaseKind(semver: SemVer, isPreV1: boolean): Kind | undefined {
   if (semver.prerelease?.length) {
     return 'prerelease';
   }
 
   if (semver.patch) {
     return 'patch';
+  }
+
+  if (isPreV1) {
+    return semver.minor ? 'minor' : undefined;
   }
 
   if (semver.minor) {
@@ -76,7 +92,12 @@ function getReleases(packument: NonNullable<Module['packument']>) {
     .toSorted((a, b) => (a.time < b.time ? -1 : 0));
 }
 
-function buildLayers(releases: Release[], xScale: Scale, yScale: Scale) {
+function buildLayers(
+  releases: Release[],
+  xScale: Scale,
+  yScale: Scale,
+  isPreV1: boolean,
+) {
   const layers: Record<Kind, ReactElement[]> = {
     prerelease: [],
     patch: [],
@@ -85,22 +106,30 @@ function buildLayers(releases: Release[], xScale: Scale, yScale: Scale) {
   };
 
   for (const { key, time, semver } of releases) {
-    const kind = releaseKind(semver);
+    const kind = releaseKind(semver, isPreV1);
     if (!kind) {
       continue;
     }
 
+    const isZeroMinor = isPreV1 && kind === 'minor';
     const x = xScale(time);
-    const y = yScale(semver.major);
+    const y = yScale(level(semver, isPreV1));
     const title = `${key} published ${timestring(time)}`;
 
     layers[kind].push(
-      <g key={`dot=${key}`} className={styles.dot}>
+      <g
+        key={`dot=${key}`}
+        className={`${styles.dot} ${isZeroMinor ? styles.preV1 : ''}`}
+      >
         <title>{title}</title>
-        <circle cx={x} cy={y} r={KIND_RADIUS[kind]} />
-        {kind === 'major' ? (
+        <circle
+          cx={x}
+          cy={y}
+          r={isZeroMinor ? MAJOR_RADIUS : KIND_RADIUS[kind]}
+        />
+        {kind === 'major' || isZeroMinor ? (
           <text x={x} y={y} textAnchor="middle" alignmentBaseline="central">
-            {semver.major}
+            {isZeroMinor ? `•${semver.minor}` : semver.major}
           </text>
         ) : null}
       </g>,
@@ -110,11 +139,23 @@ function buildLayers(releases: Release[], xScale: Scale, yScale: Scale) {
   return layers;
 }
 
-function Legend({ x, y, width }: { x: number; y: number; width: number }) {
-  const itemWidth = width / KINDS.length;
+function Legend({
+  x,
+  y,
+  width,
+  isPreV1,
+}: {
+  x: number;
+  y: number;
+  width: number;
+  isPreV1: boolean;
+}) {
+  // 0.x.0 releases are plotted as minors, so there are no majors
+  const kinds = KINDS.toReversed().filter(kind => kind !== 'major' || !isPreV1);
+  const itemWidth = width / kinds.length;
   return (
     <g className={styles.legend}>
-      {KINDS.toReversed().map((kind, i) => {
+      {kinds.map((kind, i) => {
         const r = Math.min(KIND_RADIUS[kind], 7);
         const cx = x + i * itemWidth + 7;
         return (
@@ -164,7 +205,8 @@ export function ReleaseTimeline({ module }: { module: Module }) {
     return;
   }
 
-  const majors = releases.map(r => r.semver.major);
+  const isPreV1 = hasOnlyZeroMajors(releases);
+  const majors = releases.map(r => level(r.semver, isPreV1));
   const majorMax = Math.max(...majors);
   const majorMin = Math.min(...majors);
   const tmin = releases[0]!.time;
@@ -185,14 +227,14 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   const ticks = yearTicks(tmin, tmax, innerW);
 
-  const layers = buildLayers(releases, xScale, yScale);
+  const layers = buildLayers(releases, xScale, yScale, isPreV1);
 
   const currentRelease = releases.find(r => r.key === module.version);
   const current = currentRelease
     ? {
         key: currentRelease.key,
         x: xScale(currentRelease.time),
-        y: yScale(currentRelease.semver.major),
+        y: yScale(level(currentRelease.semver, isPreV1)),
       }
     : undefined;
 
@@ -249,7 +291,12 @@ export function ReleaseTimeline({ module }: { module: Module }) {
           tickLength={4}
         />
 
-        <Legend x={MARGIN.left} y={h - LEGEND_Y_FROM_BOTTOM} width={innerW} />
+        <Legend
+          x={MARGIN.left}
+          y={h - LEGEND_Y_FROM_BOTTOM}
+          width={innerW}
+          isPreV1={isPreV1}
+        />
       </svg>
 
       <ModuleDownloads module={module} />

@@ -56,6 +56,11 @@
     }
   }
 
+  // 0.x.0 releases: orange minors, but big enough to fit a label
+  .preV1 text {
+    fill: #fff;
+  }
+
   .layerMinor {
     fill: var(--bg-orange);
   }
