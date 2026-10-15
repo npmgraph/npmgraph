@@ -15,7 +15,6 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-type-assertion',
   '@typescript-eslint/prefer-nullish-coalescing',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'import-x/no-unassigned-import',
   'import-x/order', // TODO: https://github.com/un-ts/eslint-plugin-import-x/pull/504 https://github.com/un-ts/eslint-plugin-import-x/pull/514
   'package-json/prefer-files-field',
   'package-json/require-engines',
