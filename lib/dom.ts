@@ -4,7 +4,7 @@ export function cn(
   const classes = new Set();
   for (const arg of args) {
     if (typeof arg === 'string') {
-      for (const className of arg.split(/\s+/v)) {
+      for (const className of arg.split(/\s+/)) {
         classes.add(className);
       }
     } else if (typeof arg === 'object') {
