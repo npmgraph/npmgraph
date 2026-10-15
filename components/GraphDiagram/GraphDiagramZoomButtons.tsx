@@ -1,44 +1,28 @@
-import {
-  PARAM_ZOOM,
-  ZOOM_FIT_HEIGHT,
-  ZOOM_FIT_WIDTH,
-  ZOOM_NONE,
-} from '../../lib/constants.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
-import ZoomHorizontalIcon from '../../images/icons/zoom-horizontal.svg?react';
-import ZoomVerticalIcon from '../../images/icons/zoom-vertical.svg?react';
+import { useControls } from 'react-zoom-pan-pinch';
+import ZoomFitIcon from '../../images/icons/zoom-fit.svg?react';
 import { Button, ButtonGroup } from '../Button.tsx';
+import { zoomAroundCenter } from './viewport-util.ts';
 
 export function GraphDiagramZoomButtons() {
-  const [zoom, setZoom] = useHashParam(PARAM_ZOOM);
+  const controls = useControls();
+
   return (
     <ButtonGroup>
       <Button
-        selected={zoom === ZOOM_FIT_WIDTH}
-        title="Zoom (fit width)"
+        title="Zoom to actual size"
         onClick={() => {
-          setZoom(ZOOM_FIT_WIDTH);
-        }}
-      >
-        <ZoomHorizontalIcon />
-      </Button>
-      <Button
-        selected={zoom === ZOOM_NONE}
-        title="Zoom (1:1)"
-        onClick={() => {
-          setZoom(ZOOM_NONE);
+          zoomAroundCenter(controls, 1);
         }}
       >
         1:1
       </Button>
       <Button
-        selected={zoom === ZOOM_FIT_HEIGHT}
-        title="Zoom (fit height)"
+        title="Zoom to fit"
         onClick={() => {
-          setZoom(ZOOM_FIT_HEIGHT);
+          void controls.fitToView({ maxScale: 1 });
         }}
       >
-        <ZoomVerticalIcon />
+        <ZoomFitIcon />
       </Button>
     </ButtonGroup>
   );

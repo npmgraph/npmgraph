@@ -120,19 +120,6 @@ If present, modules will be scaled to reflect their unpacked size
 
 https://npmgraph.js.org/?q=send#sizing
 
-### `zoom` (hash param)
-
-Specify zoom mode.
-
-|     |                 |
-| --- | --------------- |
-| `w` | Fit view width  |
-| `h` | Fit view height |
-
-**Example**: Graph `send`, fit view width
-
-https://npmgraph.js.org/?q=send@0.18.0#zoom=w
-
 ## Running locally
 
 `NPMGraph` is built with `vite`. To run in your local dev environment:

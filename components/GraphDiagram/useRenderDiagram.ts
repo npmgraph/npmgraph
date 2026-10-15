@@ -105,6 +105,16 @@ function insertDiagram(
   svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
   svgDom.classList.add(styles.graphDiagram);
 
+  // Show the diagram at its natural size, the viewport handles zooming.
+  // Note: Not using svg.getBBox() here because (for some reason???) it's
+  // smaller than the actual bounding box
+  const [width, height] =
+    svgDom.getAttribute('viewBox')?.split(' ').slice(2) ?? [];
+  if (width && height) {
+    svgDom.setAttribute('width', width);
+    svgDom.setAttribute('height', height);
+  }
+
   // Inject into DOM
   const element = $(`.${styles.graph}`);
   getDiagramElement()?.remove();

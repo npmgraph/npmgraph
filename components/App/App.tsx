@@ -49,7 +49,10 @@ export default function App() {
     <>
       <Flash />
       <div
-        className={cn(styles.root, { [styles.loading]: activity.total > 0 })}
+        className={cn(styles.root, {
+          [styles.loading]: activity.total > 0,
+          [styles.fixedHeight]: isTightScreen && pane === PaneType.GRAPH,
+        })}
       >
         <div className={styles.stickyTop}>
           <AppHeader />
