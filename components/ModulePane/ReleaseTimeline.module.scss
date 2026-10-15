@@ -56,9 +56,9 @@
     }
   }
 
-  // 0.x.0 releases: plotted like majors, but not actual majors
-  .preV1 circle {
-    stroke-dasharray: 3 2;
+  // 0.x.0 releases: orange minors, but big enough to fit a label
+  .preV1 text {
+    fill: #fff;
   }
 
   .layerMinor {

@@ -48,7 +48,7 @@ type Scale = (v: number) => number;
 
 /**
 Until a package reaches 1.0.0, its 0.x.0 releases are the breaking ones, so
-they're plotted as majors (labelled ".1", ".2", etc.)
+they're plotted like majors, but as minors (labelled "•1", "•2", etc.)
 */
 function hasOnlyZeroMajors(releases: Release[]) {
   return releases.every(r => r.semver.major === 0);
@@ -68,7 +68,7 @@ function releaseKind(semver: SemVer, isPreV1: boolean): Kind | undefined {
   }
 
   if (isPreV1) {
-    return semver.minor ? 'major' : undefined;
+    return semver.minor ? 'minor' : undefined;
   }
 
   if (semver.minor) {
@@ -111,6 +111,7 @@ function buildLayers(
       continue;
     }
 
+    const isZeroMinor = isPreV1 && kind === 'minor';
     const x = xScale(time);
     const y = yScale(level(semver, isPreV1));
     const title = `${key} published ${timestring(time)}`;
@@ -118,13 +119,17 @@ function buildLayers(
     layers[kind].push(
       <g
         key={`dot=${key}`}
-        className={`${styles.dot} ${isPreV1 && kind === 'major' ? styles.preV1 : ''}`}
+        className={`${styles.dot} ${isZeroMinor ? styles.preV1 : ''}`}
       >
         <title>{title}</title>
-        <circle cx={x} cy={y} r={KIND_RADIUS[kind]} />
-        {kind === 'major' ? (
+        <circle
+          cx={x}
+          cy={y}
+          r={isZeroMinor ? MAJOR_RADIUS : KIND_RADIUS[kind]}
+        />
+        {kind === 'major' || isZeroMinor ? (
           <text x={x} y={y} textAnchor="middle" alignmentBaseline="central">
-            {isPreV1 ? `•${semver.minor}` : semver.major}
+            {isZeroMinor ? `•${semver.minor}` : semver.major}
           </text>
         ) : null}
       </g>,
@@ -145,8 +150,8 @@ function Legend({
   width: number;
   isPreV1: boolean;
 }) {
-  // 0.x.0 releases take the place of majors, so there are no minors
-  const kinds = KINDS.toReversed().filter(kind => kind !== 'minor' || !isPreV1);
+  // 0.x.0 releases are plotted as minors, so there are no majors
+  const kinds = KINDS.toReversed().filter(kind => kind !== 'major' || !isPreV1);
   const itemWidth = width / kinds.length;
   return (
     <g className={styles.legend}>
@@ -155,13 +160,11 @@ function Legend({
         const cx = x + i * itemWidth + 7;
         return (
           <g key={kind}>
-            <g
-              className={`${KIND_CLASS[kind]} ${isPreV1 && kind === 'major' ? styles.preV1 : ''}`}
-            >
+            <g className={KIND_CLASS[kind]}>
               <circle cx={cx} cy={y} r={r} />
             </g>
             <text x={cx + 11} y={y} alignmentBaseline="central">
-              {isPreV1 && kind === 'major' ? '0.x.0' : kind}
+              {kind}
             </text>
           </g>
         );
