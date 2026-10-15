@@ -1,18 +1,17 @@
-// eslint-disable-next-line import-x/no-unassigned-import
-import './bugsnag.ts'; // Initialize ASAP!
 import '../index.scss';
+import './bugsnag.ts'; // Initialize ASAP!
 
 import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
-import { flash } from './flash.ts';
 import { Unsupported } from '../components/Unsupported.tsx';
+import { setActivityForApp } from '../hooks/useActivity.ts';
 import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
-import { setActivityForApp } from '../hooks/useActivity.ts';
+import { flash } from './flash.ts';
 
 function isValidJS(src: string) {
   try {
@@ -31,6 +30,7 @@ function detectFeatures() {
   // API checks
   const features = {
     '||= (Logical Or)': isValidJS('a ||= 123'),
+    'Regex /v flag': isValidJS('const re = /.*/v;'),
     'AbortSignal.timeout': globalThis.AbortSignal?.timeout,
     'Map.groupBy': globalThis.Map?.groupBy,
     'URL.parse': globalThis.URL?.parse,

@@ -1,8 +1,8 @@
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
-import { defineConfig } from 'eslint/config';
 import reactDoctor from 'eslint-plugin-react-doctor';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
+import { defineConfig } from 'eslint/config';
 import selectDom from 'select-dom/eslint-plugin';
 
 const disabledRules = [
@@ -15,6 +15,7 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-type-assertion',
   '@typescript-eslint/prefer-nullish-coalescing',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
+  'import-x/no-unassigned-import',
   'import-x/order', // TODO: https://github.com/un-ts/eslint-plugin-import-x/pull/504 https://github.com/un-ts/eslint-plugin-import-x/pull/514
   'package-json/prefer-files-field',
   'package-json/require-engines',
