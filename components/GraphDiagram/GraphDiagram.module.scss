@@ -16,6 +16,12 @@
   &:active {
     cursor: grabbing;
   }
+
+  // Focusable for the keyboard controls, but the library focuses it when clicked
+  // and the browser then treats it as :focus-visible, so :focus is all we can use
+  &:focus {
+    outline: none;
+  }
 }
 
 .graph {
