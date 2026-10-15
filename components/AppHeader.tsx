@@ -16,7 +16,7 @@ export default function AppHeader() {
       <QueryLink query={[]}>
         <Logo />
       </QueryLink>
-      <QueryInput className={styles.input} />
+      <QueryInput variant="header" />
       {isTightScreen ? null : <Tabs />}
       <ErrorsBanner />
     </div>
