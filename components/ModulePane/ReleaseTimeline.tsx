@@ -145,10 +145,12 @@ function Legend({
   width: number;
   isPreV1: boolean;
 }) {
-  const itemWidth = width / KINDS.length;
+  // 0.x.0 releases take the place of majors, so there are no minors
+  const kinds = KINDS.toReversed().filter(kind => kind !== 'minor' || !isPreV1);
+  const itemWidth = width / kinds.length;
   return (
     <g className={styles.legend}>
-      {KINDS.toReversed().map((kind, i) => {
+      {kinds.map((kind, i) => {
         const r = Math.min(KIND_RADIUS[kind], 7);
         const cx = x + i * itemWidth + 7;
         return (
