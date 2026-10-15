@@ -69,8 +69,10 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   const [minScale, setMinScale] = useState(0.05);
-  // Dragging the graph shouldn't count as a click, which would clear the selection
-  const panningRef = useRef(false);
+  // Position of the graph when the pointer went down, to tell a click from a drag.
+  // The library's panning callbacks aren't used for this because they don't always
+  // come in pairs (e.g. trackpad panning never calls onPanningStop).
+  const pointerDownPositionRef = useRef<[number, number]>(undefined);
 
   // Filter for which modules should be shown / collapsed in the graph
   const isModuleVisible = useCallback(
@@ -117,7 +119,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       void controls.setTransform(x, y, controls.instance.state.scale, 0);
     };
 
-    update();
     const observer = new ResizeObserver(update);
     observer.observe(wrapper);
     observer.observe(content);
@@ -178,19 +179,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         disabled: false,
         velocityDisabled: true,
       }}
+      keyboard={{ disabled: false }}
       panning={{
         // Without this it becomes a bit difficult to click on the nodes,
         // panning starts if you move by 1px and it prevents the default.
         excluded: ['node'],
-      }}
-      onPanning={() => {
-        panningRef.current = true;
-      }}
-      onPanningStop={() => {
-        // The click that ends a drag comes right after this
-        setTimeout(() => {
-          panningRef.current = false;
-        }, 0);
       }}
     >
       <div className={styles.root}>
@@ -205,9 +198,32 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- Already handled by onEsc() */}
           <div
             className={styles.graph}
+            onPointerDown={() => {
+              const { positionX, positionY } =
+                transformRef.current?.instance.state ?? {};
+              pointerDownPositionRef.current =
+                positionX === undefined || positionY === undefined
+                  ? undefined
+                  : [positionX, positionY];
+            }}
+            onDragStart={event => {
+              // Dragging a node or link would start the browser's drag and drop
+              event.preventDefault();
+            }}
             onClick={event => {
-              // A drag can end on a link, which shouldn't be followed
-              if (panningRef.current) {
+              const start = pointerDownPositionRef.current;
+              pointerDownPositionRef.current = undefined;
+              const state = transformRef.current?.instance.state;
+
+              // A drag can end on a node or link, which shouldn't be selected or followed
+              if (
+                start &&
+                state &&
+                Math.hypot(
+                  state.positionX - start[0],
+                  state.positionY - start[1],
+                ) > 5
+              ) {
                 event.preventDefault();
                 return;
               }
