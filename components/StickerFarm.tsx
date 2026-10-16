@@ -1,13 +1,11 @@
 import BugsnagLogo from '../images/partners/bugsnag.svg?react';
 import GitHubLogo from '../images/partners/github.svg?react';
 import NpmLogo from '../images/partners/npm.svg?react';
-import VercelLogo from '../images/partners/vercel.svg?react';
 import * as styles from './StickerFarm.module.scss';
 
 const PARTNERS = [
   { name: 'npm', href: 'https://www.npmjs.com', Logo: NpmLogo },
   { name: 'GitHub', href: 'https://github.com', Logo: GitHubLogo },
-  { name: 'Vercel', href: 'https://vercel.com', Logo: VercelLogo },
   { name: 'Bugsnag', href: 'https://www.bugsnag.com', Logo: BugsnagLogo },
 ];
 
