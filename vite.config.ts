@@ -8,7 +8,7 @@ export default defineConfig({
   // Relative base so the site can be served from any subfolder
   base: './',
   plugins: [react(), svgr()],
-  envPrefix: ['BUGSNAG_', 'VERCEL_'],
+  envPrefix: ['BUGSNAG_', 'VERCEL_', 'NPMGRAPH_'],
   test: {
     projects: [
       {
