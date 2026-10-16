@@ -4,6 +4,8 @@ interface ImportMeta {
     readonly VERCEL_ENV?: string;
     readonly VERCEL_GIT_COMMIT_SHA?: string;
     readonly VERCEL_GIT_PULL_REQUEST_ID?: string;
+    readonly NPMGRAPH_ENV?: string;
+    readonly NPMGRAPH_COMMIT_SHA?: string;
     readonly BUGSNAG_KEY?: string;
   };
 }

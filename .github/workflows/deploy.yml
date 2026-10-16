@@ -27,6 +27,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+        env:
+          NPMGRAPH_ENV: production
+          NPMGRAPH_COMMIT_SHA: ${{ github.sha }}
       - uses: actions/upload-pages-artifact@v5
         with:
           path: dist

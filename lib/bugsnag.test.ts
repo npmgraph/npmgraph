@@ -21,14 +21,14 @@ describe('Bugsnag configuration', () => {
   });
 
   it.each([
-    ['production', 'production'],
-    ['preview', 'preview'],
+    ['NPMGRAPH_ENV', 'NPMGRAPH_COMMIT_SHA', 'production'],
+    ['VERCEL_ENV', 'VERCEL_GIT_COMMIT_SHA', 'preview'],
   ])(
-    'uses the %s Vercel release stage and commit SHA',
-    async (vercelEnv, releaseStage) => {
+    'uses %s for release stage and commit SHA',
+    async (environmentVariable, commitShaVariable, releaseStage) => {
       vi.stubEnv('BUGSNAG_KEY', 'test-key');
-      vi.stubEnv('VERCEL_ENV', vercelEnv);
-      vi.stubEnv('VERCEL_GIT_COMMIT_SHA', 'abc123');
+      vi.stubEnv(environmentVariable, releaseStage);
+      vi.stubEnv(commitShaVariable, 'abc123');
 
       await import('./bugsnag.ts');
 
