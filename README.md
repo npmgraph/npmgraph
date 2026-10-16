@@ -130,3 +130,7 @@ $ cd npmgraph
 $ npm install
 $ npm start
 ```
+
+## Contributing
+
+See [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md). AI coding agents: see [AGENTS.md](AGENTS.md).
