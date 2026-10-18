@@ -1,6 +1,3 @@
-// eslint-disable-next-line import-x/no-unassigned-import
-import './bugsnag.ts'; // Initialize ASAP!
-
 import '../index.scss';
 
 import type { ReactElement } from 'react';
@@ -14,6 +11,24 @@ import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
 import { flash } from './flash.ts';
+
+// A deploy likely replaced the fingerprinted chunks this page references
+globalThis.addEventListener('vite:preloadError', event => {
+  event.preventDefault();
+
+  // Throttle reload loops
+  const now = Date.now();
+  const lastReload = Date.parse(
+    sessionStorage.getItem('preloadReloaded') ?? '0',
+  );
+  if (now - lastReload < 30_000) {
+    return;
+  }
+
+  sessionStorage.setItem('preloadReloaded', now.toString());
+
+  globalThis.location.reload();
+});
 
 function isValidJS(src: string) {
   try {

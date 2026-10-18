@@ -16,26 +16,52 @@ const bugsnag = apiKey
       apiKey,
       releaseStage,
       enabledReleaseStages: ['production', 'preview'],
+      onError(event) {
+        // Don't report HttpErrors since they're kind of expected from time to time
+        if (event.originalError instanceof HttpError) {
+          return false;
+        }
+
+        const message = event.errors[0]?.errorMessage ?? '';
+        const exclude = [
+          'Failed to fetch dynamically imported module',
+          'Unable to preload CSS',
+        ];
+        // Stale chunks after a deploy; handled by reload in index.tsx
+        return exclude.every(item => !message.includes(item));
+      },
     })
   : undefined;
 
-function info(error: Error) {
-  console.log(error);
-}
-
-function warn(error: Error) {
-  console.warn(error);
-}
-
-function error(error: Error) {
-  console.error(error);
-
-  if (error instanceof HttpError) {
-    // Don't report HttpErrors since they're kind of expected from time to time
+function notify(
+  error: Error,
+  severity: 'info' | 'warning' | 'error',
+  onSent?: () => void,
+) {
+  if (!bugsnag) {
+    onSent?.();
     return;
   }
 
-  bugsnag?.notify(error);
+  bugsnag.notify(
+    error,
+    event => {
+      event.severity = severity;
+    },
+    () => onSent?.(),
+  );
+}
+
+function info(error: Error, onSent?: () => void) {
+  notify(error, 'info', onSent);
+}
+
+function warn(error: Error, onSent?: () => void) {
+  notify(error, 'warning', onSent);
+}
+
+function error(error: Error, onSent?: () => void) {
+  notify(error, 'error', onSent);
 }
 
 export const report = { info, warn, error };
