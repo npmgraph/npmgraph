@@ -45,14 +45,9 @@ async function renderPngBlob(): Promise<{
     return null;
   }
 
-  const appStylesheetLink = $optional(
-    'link[rel="stylesheet"][href^="/npmgraph"]',
-  );
-  if (appStylesheetLink) {
-    const styleElement = cloneStyleElementFromSheet(appStylesheetLink.sheet);
-    if (styleElement) {
-      svg.append(styleElement);
-    }
+  const styleElement = cloneStyleElement();
+  if (styleElement) {
+    svg.append(styleElement);
   }
 
   const width = Number(vb[2]);
@@ -145,19 +140,10 @@ function downloadSvg() {
     svg.insertBefore(fontElement, svg.firstChild);
   }
 
-  // Clone runtime stylesheet link (e.g. /npmgraph...css) into an inline style for export.
-  const appStylesheetLink = $optional(
-    'link[rel="stylesheet"][href^="/npmgraph"]',
-  );
-  if (appStylesheetLink) {
-    try {
-      const styleElement = cloneStyleElementFromSheet(appStylesheetLink.sheet);
-      if (styleElement) {
-        svg.append(styleElement);
-      }
-    } catch (error) {
-      report.error(error instanceof Error ? error : new Error(String(error)));
-    }
+  // Inline the app's styles for export
+  const styleElement = cloneStyleElement();
+  if (styleElement) {
+    svg.append(styleElement);
   }
 
   const svgData = new XMLSerializer().serializeToString(svg);
@@ -166,28 +152,31 @@ function downloadSvg() {
   generateLinkToDownload('svg', svgUrl);
 }
 
-function cloneStyleElementFromSheet(sheet: StyleSheet | null) {
-  if (!sheet) {
+// Collects rules from all readable stylesheets (<link> in production, <style>
+// in dev) so CSS variables like --bg-red survive outside the document
+function cloneStyleElement() {
+  const cssTexts: string[] = [];
+
+  for (const sheet of document.styleSheets) {
+    try {
+      for (const rule of sheet.cssRules) {
+        // eslint-disable-next-line @typescript-eslint/no-deprecated -- Still works
+        if (rule.type !== CSSRule.MEDIA_RULE) {
+          cssTexts.push(rule.cssText);
+        }
+      }
+    } catch {
+      // Cross-origin sheets (e.g. Google Fonts) can't be read
+    }
+  }
+
+  if (cssTexts.length === 0) {
     return null;
   }
 
-  const cssSheet = sheet as CSSStyleSheet;
   const styleElement = document.createElement('style');
-
-  try {
-    const cssText = [...cssSheet.cssRules]
-      // eslint-disable-next-line @typescript-eslint/no-deprecated -- Still works
-      .filter(rule => rule.type !== CSSRule.MEDIA_RULE)
-      .map(rule => rule.cssText)
-      .join('\n');
-
-    styleElement.textContent = cssText;
-
-    return styleElement;
-  } catch (error) {
-    report.error(error instanceof Error ? error : new Error(String(error)));
-    return null;
-  }
+  styleElement.textContent = cssTexts.join('\n');
+  return styleElement;
 }
 
 function generateLinkToDownload(extension: DownloadExtension, link: string) {
