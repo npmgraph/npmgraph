@@ -57,6 +57,9 @@ async function renderPngBlob(): Promise<{
 
   const width = Number(vb[2]);
   const height = Number(vb[3]);
+  // Safari can fail to rasterize SVGs lacking explicit pixel dimensions
+  svg.setAttribute('width', String(width));
+  svg.setAttribute('height', String(height));
   const maxScale = Math.sqrt(MAX_PNG_PIXELS / (width * height));
   const isCapped = PNG_SCALE > maxScale;
   const scale = isCapped ? maxScale : PNG_SCALE;
@@ -105,6 +108,10 @@ async function copyPng() {
 
       isCapped = result.capped;
       return result.blob;
+    });
+    // Surface render failures; browsers otherwise report them as a generic NotAllowedError
+    blobPromise.catch((error: unknown) => {
+      console.error('PNG render failed', error);
     });
     await navigator.clipboard.write([
       new ClipboardItem({ 'image/png': blobPromise }),
