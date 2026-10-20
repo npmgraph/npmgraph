@@ -46,6 +46,7 @@
     "@visx/grid": "^4.0.0",
     "@visx/scale": "^4.0.0",
     "canvas-confetti": "^1.9.4",
+    "copy-text-to-clipboard": "^3.2.2",
     "d3-hierarchy": "^3.1.2",
     "d3-selection": "^3.0.0",
     "filter-altered-clicks": "^2.1.1",
