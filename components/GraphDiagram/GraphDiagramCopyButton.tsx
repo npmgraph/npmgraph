@@ -10,7 +10,7 @@ export default function GraphDiagramCopyButton() {
 
   return (
     <Button
-      title="Copy graph as Graphviz DOT text"
+      title="Copy textual representation of graph (Graphviz DOT)"
       onClick={() => {
         if (copy(composeDOT({ graph }))) {
           flash('Copied graph as text');
