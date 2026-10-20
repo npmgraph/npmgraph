@@ -9,6 +9,9 @@ export default defineConfig({
   base: './',
   plugins: [react(), svgr()],
   envPrefix: ['BUGSNAG_', 'VERCEL_', 'NPMGRAPH_'],
+  build: {
+    sourcemap: true,
+  },
   test: {
     projects: [
       {
