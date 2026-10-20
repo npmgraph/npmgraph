@@ -25,6 +25,10 @@ export function Button({
   );
 }
 
+export function ButtonBadge({ children }: { children: React.ReactNode }) {
+  return <span className={styles.badge}>{children}</span>;
+}
+
 export function ButtonCheckbox({
   children,
   ...props

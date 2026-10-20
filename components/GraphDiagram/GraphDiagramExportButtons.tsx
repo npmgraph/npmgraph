@@ -1,9 +1,13 @@
+import copy from 'copy-text-to-clipboard';
 import { $$, $optional } from 'select-dom';
+import CopyIcon from '../../images/icons/copy.svg?react';
 import CopyImageIcon from '../../images/icons/copy-image.svg?react';
 import DownloadIcon from '../../images/icons/download.svg?react';
 import { report } from '../../lib/bugsnag.ts';
 import { flash } from '../../lib/flash.ts';
-import { Button, ButtonGroup } from '../Button.tsx';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { composeDOT } from '../../lib/graph-util.ts';
+import { Button, ButtonBadge, ButtonGroup } from '../Button.tsx';
 import * as graphStyles from './GraphDiagram.module.scss';
 
 type DownloadExtension = 'svg' | 'png';
@@ -12,19 +16,36 @@ function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${graphStyles.graphDiagram}`);
 }
 
-export default function GraphDiagramDownloadButton() {
+export default function GraphDiagramExportButtons() {
+  const [graph] = useGlobalState('graph');
+
   return (
     <ButtonGroup>
-      <Button title="Download as SVG" onClick={downloadSvg}>
+      <Button title="Download graph as SVG" onClick={downloadSvg}>
         <DownloadIcon />
+        <ButtonBadge>SVG</ButtonBadge>
       </Button>
       <Button
-        title="Copy as PNG image"
+        title="Copy graph as PNG"
         onClick={() => {
           void copyPng();
         }}
       >
         <CopyImageIcon />
+        <ButtonBadge>PNG</ButtonBadge>
+      </Button>
+      <Button
+        title="Copy graph as DOT"
+        onClick={() => {
+          if (copy(composeDOT({ graph }))) {
+            flash('Copied graph as text');
+          } else {
+            flash('Could not copy graph', 'error');
+          }
+        }}
+      >
+        <CopyIcon />
+        <ButtonBadge>DOT</ButtonBadge>
       </Button>
     </ButtonGroup>
   );
