@@ -509,7 +509,7 @@ export function composeMermaid({ graph }: { graph: GraphState }) {
         continue;
       }
 
-      const optionalPeer =
+      const isOptionalPeer =
         type === 'peerDependencies' &&
         isOptionalPeerDependency(
           module.package.peerDependenciesMeta,
@@ -518,7 +518,7 @@ export function composeMermaid({ graph }: { graph: GraphState }) {
       const arrow = {
         dependencies: '-->',
         devDependencies: '-->',
-        peerDependencies: optionalPeer
+        peerDependencies: isOptionalPeer
           ? '-. "peer (optional)" .->'
           : '-. peer .->',
         optionalDependencies: '-. optional .->',
