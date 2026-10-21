@@ -12,7 +12,7 @@ export default function GraphDiagramCopyButton() {
     <Button
       title="Copy textual representation of graph (Mermaid)"
       onClick={() => {
-        if (copy(composeMermaid({ graph }))) {
+        if (copy(`\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``)) {
           flash('Copied graph as text');
         } else {
           flash('Could not copy graph', 'error');
