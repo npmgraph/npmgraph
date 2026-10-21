@@ -480,6 +480,64 @@ export function composeDOT({
   ].join('\n');
 }
 
+function mermaidEscape(string_: string) {
+  return string_.replaceAll('"', '#quot;');
+}
+
+// Compose directed graph document (Mermaid flowchart notation)
+export function composeMermaid({ graph }: { graph: GraphState }) {
+  const entries = [...graph.moduleInfos].toSorted(
+    ([aKey, a], [bKey, b]) =>
+      a.level - b.level || (aKey < bKey ? -1 : aKey > bKey ? 1 : 0),
+  );
+  const ids = new Map(entries.map(([key], index) => [key, `n${index}`]));
+
+  const nodes: string[] = [];
+  const edges: string[] = [];
+  const roots: string[] = [];
+  for (const [key, { module, level, downstream }] of entries) {
+    const id = ids.get(key)!;
+    const label = module.isUnnamed ? UNNAMED_PACKAGE : module.key;
+    nodes.push(`  ${id}["${mermaidEscape(label)}"]`);
+    if (level === 0) {
+      roots.push(id);
+    }
+
+    for (const { module: dependency, type } of downstream) {
+      const target = ids.get(dependency.key);
+      if (!target) {
+        continue;
+      }
+
+      const isOptionalPeer =
+        type === 'peerDependencies' &&
+        isOptionalPeerDependency(
+          module.package.peerDependenciesMeta,
+          dependency.name,
+        );
+      const arrow = {
+        dependencies: '-->',
+        devDependencies: '-->',
+        peerDependencies: isOptionalPeer
+          ? '-. "peer (optional)" .->'
+          : '-. peer .->',
+        optionalDependencies: '-. optional .->',
+        optionalDevDependencies: '-.->',
+      }[type];
+      edges.push(`  ${id} ${arrow} ${target}`);
+    }
+  }
+
+  return [
+    'flowchart LR',
+    ...nodes,
+    ...edges,
+    ...(roots.length > 0
+      ? ['  classDef root stroke-width:3px', `  class ${roots.join(',')} root`]
+      : []),
+  ].join('\n');
+}
+
 export function foreachDownstream(
   module: Module,
   graph: GraphState,
