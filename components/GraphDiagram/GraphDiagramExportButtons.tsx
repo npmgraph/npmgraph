@@ -45,7 +45,7 @@ export default function GraphDiagramExportButtons() {
         }}
       >
         <CopyIcon />
-        <ButtonBadge>Mermaid</ButtonBadge>
+        <ButtonBadge>MD</ButtonBadge>
       </Button>
     </ButtonGroup>
   );
