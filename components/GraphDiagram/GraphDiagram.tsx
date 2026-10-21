@@ -32,9 +32,7 @@ import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
-import { ButtonGroup } from '../Button.tsx';
-import GraphDiagramCopyButton from './GraphDiagramCopyButton.tsx';
-import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
+import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
@@ -224,10 +222,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       >
         <div className={styles.graphControls}>
           <GraphDiagramZoomButtons />
-          <ButtonGroup>
-            <GraphDiagramDownloadButton />
-            <GraphDiagramCopyButton />
-          </ButtonGroup>
+          <GraphDiagramExportButtons />
         </div>
         <TransformComponent
           wrapperClass={styles.viewport}
