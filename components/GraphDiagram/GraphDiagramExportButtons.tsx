@@ -6,7 +6,7 @@ import DownloadIcon from '../../images/icons/download.svg?react';
 import { report } from '../../lib/bugsnag.ts';
 import { flash } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { composeDOT } from '../../lib/graph-util.ts';
+import { composeMermaid } from '../../lib/graph-util.ts';
 import { Button, ButtonBadge, ButtonGroup } from '../Button.tsx';
 import * as graphStyles from './GraphDiagram.module.scss';
 
@@ -35,9 +35,9 @@ export default function GraphDiagramExportButtons() {
         <ButtonBadge>PNG</ButtonBadge>
       </Button>
       <Button
-        title="Copy graph as DOT"
+        title="Copy graph as Mermaid"
         onClick={() => {
-          if (copy(composeDOT({ graph }))) {
+          if (copy(`\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``)) {
             flash('Copied graph as text');
           } else {
             flash('Could not copy graph', 'error');
@@ -45,7 +45,7 @@ export default function GraphDiagramExportButtons() {
         }}
       >
         <CopyIcon />
-        <ButtonBadge>DOT</ButtonBadge>
+        <ButtonBadge>Mermaid</ButtonBadge>
       </Button>
     </ButtonGroup>
   );
