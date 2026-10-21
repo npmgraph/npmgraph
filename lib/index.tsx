@@ -10,6 +10,7 @@ import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
+import { disableBugsnag } from './bugsnag.ts';
 import { flash } from './flash.ts';
 
 // A deploy likely replaced the fingerprinted chunks this page references
@@ -97,6 +98,7 @@ globalThis.addEventListener('unhandledrejection', error => {
 globalThis.addEventListener('load', () => {
   const unsupported = detectFeatures();
   if (unsupported.size > 0) {
+    disableBugsnag();
     createRoot($('body')).render(<Unsupported unsupported={unsupported} />);
     return;
   }
