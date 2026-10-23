@@ -14,3 +14,7 @@ npm run fix
 ```
 
 Note: `npm run lint` requires Node.js 24 (`Object.groupBy` is unavailable in older versions). Run `npm run types` for TypeScript checks, which work on all supported versions.
+
+## URL API Documentation
+
+When changing code that reads, writes, adds, removes, or changes the behavior or accepted values of URL search or hash parameters, update the `URL API` section in `README.md` in the same change. Keep the documented fields, defaults, value formats, and examples aligned with the implementation.
