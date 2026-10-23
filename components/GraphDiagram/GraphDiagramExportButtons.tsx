@@ -138,6 +138,16 @@ async function copyPng() {
         : 'Graph image copied to clipboard',
     );
   } catch (error) {
+    if (
+      error instanceof DOMException &&
+      error.name === 'NotAllowedError' &&
+      !document.hasFocus()
+    ) {
+      // User switched away from the page; not an app error
+      flash('Unable to copy image. Keep this window focused and try again.');
+      return;
+    }
+
     report.error(error instanceof Error ? error : new Error(String(error)));
     flash('Unable to copy image to clipboard');
   }
