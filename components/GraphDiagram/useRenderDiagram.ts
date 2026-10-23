@@ -1,6 +1,6 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import svgDefs from 'bundle-text:./GraphDiagram.defs.svg';
+import svgDefs from './GraphDiagram.defs.svg?raw';
 import { use, useEffect, useState } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -104,6 +104,16 @@ function insertDiagram(
   $optional('.graph > polygon', svgDom)?.remove();
   svgDom.setAttribute('preserveAspectRatio', 'xMidYMid meet');
   svgDom.classList.add(styles.graphDiagram);
+
+  // Show the diagram at its natural size, the viewport handles zooming.
+  // Note: Not using svg.getBBox() here because (for some reason???) it's
+  // smaller than the actual bounding box
+  const [width, height] =
+    svgDom.getAttribute('viewBox')?.split(' ').slice(2) ?? [];
+  if (width && height) {
+    svgDom.setAttribute('width', width);
+    svgDom.setAttribute('height', height);
+  }
 
   // Inject into DOM
   const element = $(`.${styles.graph}`);

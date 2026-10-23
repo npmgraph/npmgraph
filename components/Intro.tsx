@@ -4,6 +4,7 @@ import QueryInput from './InfoPane/QueryInput.tsx';
 import InputHelp from './InputHelp.tsx';
 import * as styles from './Intro.module.scss';
 import Logo from './Logo.tsx';
+import StickerFarm from './StickerFarm.tsx';
 
 export default function Intro() {
   return (
@@ -12,8 +13,9 @@ export default function Intro() {
         <Logo />
       </h1>
       <h2>Explore npm modules and dependencies</h2>
-      <QueryInput />
+      <QueryInput variant="hero" />
       <InputHelp />
+      <StickerFarm />
       <GitHubCorner />
     </div>
   );

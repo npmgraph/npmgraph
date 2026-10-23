@@ -8,21 +8,29 @@ A tool for exploring npm modules and dependencies. Available online at https://n
 
 `npmgraph` diagrams can be configured using the URL parameters below.
 
-NOTE: With the exception of the `q` (query) parameter, these are **not** search parameters. These parameters are stored in the location _`hash`_, using normal URL query param encoding.
+`q` and `registry` are search parameters. All other parameters are stored in the URL hash, using normal URL query parameter encoding.
 
-### `q` (search param)
+### `q` (search parameter)
 
-Comma-separated list of module names or URLs.
+Comma-separated list of npm module names, optionally with a version or version range, URLs to `package.json` files, or GitHub `user/repo` shorthand.
 
 **Example**: Graph the `send` module (official NPM registry):
 
 https://npmgraph.js.org/?q=send
 
+### `registry` (search parameter)
+
+The npm-compatible registry URL to use when loading packages. Defaults to `https://registry.npmjs.org`; the default is omitted from the URL.
+
+**Example**: Graph `send` using a custom registry:
+
+https://npmgraph.js.org/?q=send&registry=https%3A%2F%2Fregistry.example.com
+
 ### `collapse` (hash param)
 
-Comma-separated list of modules to collapse
+Comma-separated list of module names whose subtrees should be collapsed. A name collapses every matching version in the graph.
 
-**Example**: Graph `send, collapsing the `debug`and`http-errors` subtrees
+**Example**: Graph `send`, collapsing the `debug` and `http-errors` subtrees
 
 https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
 
@@ -30,11 +38,11 @@ https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
 
 "Colorization" mode (a.k.a "Colorize by..." field in UI). Currently supports the following values:
 
-| `color=...`  | Graph nodes colored by...                                                         |
-| ------------ | --------------------------------------------------------------------------------- |
-| `moduleType` | `package.json#type` value                                                         |
-| `bus`        | # of maintainers ("bus" = [bus factor](https://en.wikipedia.org/wiki/Bus_factor)) |
-| `outdated`   | Degree of `version` outdated-ness                                                 |
+| `color=...`  | Graph nodes colored by...                                                               |
+| ------------ | --------------------------------------------------------------------------------------- |
+| `moduleType` | Module format inferred from package metadata (CommonJS, ESM, dual, or TypeScript types) |
+| `bus`        | Number of maintainers ("bus" = [bus factor](https://en.wikipedia.org/wiki/Bus_factor))  |
+| `outdated`   | How far behind the latest version the module is (major, minor, or patch)                |
 
 **Example**: Graph `send`, colorize by module type:
 
@@ -42,9 +50,9 @@ https://npmgraph.js.org/?q=send#color=moduleType
 
 ### `deps` (hash param)
 
-Comma-separated list of dependency types to include in the graph. `devDependencies` are only included for top-level modules. `peerDependencies` are included across the graph when enabled.
+Comma-separated list of additional dependency types to include in the graph.
 
-`dependencies` is always included.
+`dependencies` and `optionalDependencies` are always included throughout the graph. `devDependencies` are included only for top-level modules. `peerDependencies` are included when enabled, for modules throughout the graph; optional peer dependencies are not included.
 
 **Example**: Graph `send`, include `devDependencies`:
 
@@ -56,15 +64,17 @@ https://npmgraph.js.org/?q=send#deps=peerDependencies
 
 ### `hide` (hash param)
 
-If defined (e.g. `...#hide`), hides the inspector.
+If present (e.g. `...#hide`), hides the inspector panel.
 
 **Example**: Graph `send`, close the inspector
 
-https://npmgraph.js.org/?q=send@0.18.0#view=closed
+https://npmgraph.js.org/?q=send@0.18.0#hide
 
 ### `packages` (hash param, **JSON-encoded**)
 
-JSON-encoded array of `package.json` contents for any custom / proprietary modules included in the graph.
+JSON-encoded array of package objects to load as local modules. Each object must have a string `name`; package fields not supported by the app are ignored.
+
+The legacy `package_json` hash key is not read by the app; use `packages` to include local package data.
 
 **Example**: Graph that includes custom "foo" and "bar" modules, with "foo" as the root module.
 
@@ -97,7 +107,7 @@ url.toString(); // Returns the above URL
 
 ### `select` (hash param)
 
-Select a module or category of modules.
+Highlight a module or category of modules in the graph. Selection is based on modules currently in the graph.
 
 Values should have one of the following forms:
 
@@ -114,28 +124,15 @@ https://npmgraph.js.org/?q=send@0.18.0#select=fresh%400.5.2
 
 ### `sizing` (hash param)
 
-If present, modules will be scaled to reflect their unpacked size
+If present (e.g. `...#sizing`), modules will be scaled to reflect their unpacked size.
 
-**Example**: Graph `send`, selecting `fresh@0.5.2`
+**Example**: Graph `send`, size modules by unpacked size
 
 https://npmgraph.js.org/?q=send#sizing
 
-### `zoom` (hash param)
-
-Specify zoom mode.
-
-|     |                 |
-| --- | --------------- |
-| `w` | Fit view width  |
-| `h` | Fit view height |
-
-**Example**: Graph `send`, fit view width
-
-https://npmgraph.js.org/?q=send@0.18.0#zoom=w
-
 ## Running locally
 
-`NPMGraph` is built with `parcel`. To run in your local dev environment:
+`NPMGraph` is built with `vite`. To run in your local dev environment:
 
 ```shell
 $ git clone https://github.com/npmgraph/npmgraph.git

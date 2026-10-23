@@ -8,9 +8,10 @@
     var(--bg-root),
     color-mix(in oklch, var(--accent) 10%, var(--bg-root))
   );
-  padding: 1em;
+  padding: 1em 1em 0 1em;
+  padding-bottom: 6em;
   width: 100%;
-  height: 100svh;
+  min-height: 100svh;
 
   @media (prefers-color-scheme: dark) {
     background: radial-gradient(var(--bg0), var(--bg-root));
@@ -24,12 +25,6 @@
 
   h2 {
     text-align: center;
-  }
-
-  input {
-    margin-block: 0.8em;
-    max-width: 20em;
-    font-size: 2em !important;
   }
 
   a {

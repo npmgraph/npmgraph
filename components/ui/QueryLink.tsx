@@ -7,11 +7,13 @@ import { patchLocation } from '../../hooks/useLocation.ts';
 export function QueryLink({
   query,
   reset = true,
+  component: Component = 'a',
   children,
   ...props
 }: HTMLProps<HTMLAnchorElement> & {
   reset?: boolean;
   query: string | string[];
+  component?: React.ElementType;
 }) {
   const queries = Array.isArray(query) ? query : [query];
 
@@ -26,15 +28,23 @@ export function QueryLink({
 
   if (!children) {
     return (
-      <a href={url.href} onClick={filterAlteredClicks(onClick)} {...props}>
+      <Component
+        href={url.href}
+        onClick={filterAlteredClicks(onClick)}
+        {...props}
+      >
         {queries.join(', ')}
-      </a>
+      </Component>
     );
   }
 
   return (
-    <a href={url.href} onClick={filterAlteredClicks(onClick)} {...props}>
+    <Component
+      href={url.href}
+      onClick={filterAlteredClicks(onClick)}
+      {...props}
+    >
       {children}
-    </a>
+    </Component>
   );
 }

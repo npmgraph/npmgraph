@@ -1,12 +1,12 @@
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
+import { toggleItem } from '../../lib/array-util.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
+import { Button, ButtonCheckbox, ButtonGroup } from '../Button.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import * as utilities from '../ui/utilities.module.scss';
-import * as styles from './ModulePane.module.scss';
 
 function ExternalLink({
   href,
@@ -16,9 +16,9 @@ function ExternalLink({
   children: React.ReactNode;
 }) {
   return (
-    <a target="_blank" href={href} className={utilities.brightHover}>
+    <Button target="_blank" href={href}>
       {children}
-    </a>
+    </Button>
   );
 }
 
@@ -39,36 +39,25 @@ export function ModuleActions({ module }: { module: Module }) {
     [...graph.entryModules][0]?.key === module.key;
 
   return (
-    <div className={styles.linkGroup}>
+    <ButtonGroup>
       {isSingleEntryModule ? null : (
         <>
           {canCollapse && (
-            <label>
-              <input
-                type="checkbox"
-                checked={collapse.includes(module.name)}
-                className={utilities.brightHover}
-                onChange={() => {
-                  setCollapse(
-                    collapse.includes(module.name)
-                      ? collapse.filter(name => name !== module.name)
-                      : [...collapse, module.name],
-                  );
-                }}
-              />
+            <ButtonCheckbox
+              checked={collapse.includes(module.name)}
+              onChange={() => {
+                setCollapse(toggleItem(collapse, module.name));
+              }}
+            >
               Collapse
-            </label>
+            </ButtonCheckbox>
           )}
-          <QueryLink
-            className={utilities.brightHover}
-            query={module.key}
-            style={{ textDecoration: 'none' }}
-          >
+          <QueryLink component={Button} query={module.key}>
             Focus
           </QueryLink>
         </>
       )}
-    </div>
+    </ButtonGroup>
   );
 }
 
@@ -83,11 +72,11 @@ export function ModuleExternalLinks({ module }: { module: Module }) {
       : null;
 
   return (
-    <div className={styles.linkGroup}>
+    <ButtonGroup>
       <ExternalLink href={npmUrl}>npm</ExternalLink>
       {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
       {homepageUrl && <ExternalLink href={homepageUrl}>website</ExternalLink>}
       <ExternalLink href={packageUrl}>package.json</ExternalLink>
-    </div>
+    </ButtonGroup>
   );
 }

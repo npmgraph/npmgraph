@@ -1,9 +1,11 @@
-declare const process: {
-  exitCode: number;
-  env: {
-    VERCEL_ENV?: string;
-    VERCEL_GIT_COMMIT_SHA?: string;
-    VERCEL_GIT_PULL_REQUEST_ID?: string;
-    BUGSNAG_KEY?: string;
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- needed for declaration merging
+interface ImportMeta {
+  readonly env: {
+    readonly VERCEL_ENV?: string;
+    readonly VERCEL_GIT_COMMIT_SHA?: string;
+    readonly VERCEL_GIT_PULL_REQUEST_ID?: string;
+    readonly NPMGRAPH_ENV?: string;
+    readonly NPMGRAPH_COMMIT_SHA?: string;
+    readonly BUGSNAG_KEY?: string;
   };
-};
+}

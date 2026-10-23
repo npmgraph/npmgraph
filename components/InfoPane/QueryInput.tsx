@@ -17,9 +17,10 @@ import * as styles from './QueryInput.module.scss';
 const hasSoftKeyboard = 'ontouchstart' in document.documentElement;
 
 export default function QueryInput({
+  variant,
   className,
   ...props
-}: HTMLProps<HTMLInputElement>) {
+}: HTMLProps<HTMLInputElement> & { variant?: 'header' | 'hero' }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
   const [, setPane] = useGlobalState('pane');
@@ -67,7 +68,7 @@ export default function QueryInput({
         type="search"
         name="q"
         id={SEARCH_FIELD_ID}
-        className={cn(styles.input, className)}
+        className={cn(styles.input, variant && styles[variant], className)}
         placeholder="Search…"
         value={value}
         autoCapitalize="off"

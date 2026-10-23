@@ -1,8 +1,9 @@
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
-import { defineConfig } from 'eslint/config';
 import reactDoctor from 'eslint-plugin-react-doctor';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
+import { defineConfig } from 'eslint/config';
+import selectDom from 'select-dom/eslint-plugin';
 
 const disabledRules = [
   // TODO: Gradually review and enable
@@ -18,7 +19,6 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
-  'react-hooks/set-state-in-effect',
   'regexp/no-super-linear-move',
   'unicorn/no-break-in-nested-loop',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
@@ -69,6 +69,10 @@ export default defineConfig([
   },
   reactDoctor.configs.recommended,
   reactYouMightNotNeedAnEffect.configs.strict,
+  {
+    plugins: { 'select-dom': selectDom },
+    rules: { 'select-dom/prefer': 'error' },
+  },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },

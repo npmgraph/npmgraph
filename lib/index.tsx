@@ -1,18 +1,35 @@
-// eslint-disable-next-line import-x/no-unassigned-import
-import './bugsnag.ts'; // Initialize ASAP!
 import '../index.scss';
 
 import type { ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
-import { flash } from './flash.ts';
 import { Unsupported } from '../components/Unsupported.tsx';
+import { setActivityForApp } from '../hooks/useActivity.ts';
 import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
-import { setActivityForApp } from '../hooks/useActivity.ts';
+import { disableBugsnag } from './bugsnag.ts';
+import { flash } from './flash.ts';
+
+// A deploy likely replaced the fingerprinted chunks this page references
+globalThis.addEventListener('vite:preloadError', event => {
+  event.preventDefault();
+
+  // Throttle reload loops
+  const now = Date.now();
+  const lastReload = Date.parse(
+    sessionStorage.getItem('preloadReloaded') ?? '0',
+  );
+  if (now - lastReload < 30_000) {
+    return;
+  }
+
+  sessionStorage.setItem('preloadReloaded', now.toString());
+
+  globalThis.location.reload();
+});
 
 function isValidJS(src: string) {
   try {
@@ -81,6 +98,7 @@ globalThis.addEventListener('unhandledrejection', error => {
 globalThis.addEventListener('load', () => {
   const unsupported = detectFeatures();
   if (unsupported.size > 0) {
+    disableBugsnag();
     createRoot($('body')).render(<Unsupported unsupported={unsupported} />);
     return;
   }

@@ -1,8 +1,17 @@
+import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
+import svgr from 'vite-plugin-svgr';
 import { configDefaults, defineConfig } from 'vitest/config';
 
-// eslint-disable-next-line unicorn/no-top-level-side-effects -- https://github.com/sindresorhus/eslint-plugin-unicorn/issues/3813
+// eslint-disable-next-line unicorn/no-top-level-side-effects -- Vite config
 export default defineConfig({
+  // Relative base so the site can be served from any subfolder
+  base: './',
+  plugins: [react(), svgr()],
+  envPrefix: ['BUGSNAG_', 'VERCEL_', 'NPMGRAPH_'],
+  build: {
+    sourcemap: true,
+  },
   test: {
     projects: [
       {
@@ -17,7 +26,7 @@ export default defineConfig({
         test: {
           name: 'smoke',
           include: ['smoke.test.ts'],
-          testTimeout: 60_000,
+          testTimeout: 3000,
           browser: {
             enabled: true,
             headless: true,

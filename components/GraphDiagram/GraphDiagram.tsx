@@ -1,7 +1,19 @@
 import { select } from 'd3-selection';
-import { Suspense, useCallback, useEffect, useMemo } from 'react';
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { $, $$optional, $optional } from 'select-dom';
+import {
+  type ReactZoomPanPinchContentRef,
+  TransformComponent,
+  TransformWrapper,
+} from 'react-zoom-pan-pinch';
+import { $, $$optional } from 'select-dom';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
@@ -20,12 +32,12 @@ import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
-import GraphDiagramDownloadButton from './GraphDiagramDownloadButton.tsx';
+import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
-import useDiagramZoom from './useDiagramZoom.ts';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
 import useRenderDiagram from './useRenderDiagram.ts';
+import { clampPosition, getFitScale } from './viewport-util.ts';
 import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
 
@@ -55,6 +67,13 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
 
   const handleGraphClick = useGraphClick();
 
+  const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
+  const [minScale, setMinScale] = useState(0.05);
+  // Position of the graph when the pointer went down, to tell a click from a drag.
+  // The library's panning callbacks aren't used for this because they don't always
+  // come in pairs (e.g. trackpad panning never calls onPanningStop).
+  const pointerDownPositionRef = useRef<[number, number]>(undefined);
+
   // Filter for which modules should be shown / collapsed in the graph
   const isModuleVisible = useCallback(
     ({ name }: { name: string }) => !collapse?.includes(name),
@@ -67,7 +86,46 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   useLoadGraph(isModuleVisible);
 
   const diagramElement = useRenderDiagram(activity, isModuleVisible);
-  useDiagramZoom(diagramElement);
+
+  // Effect: Don't allow zooming out further than "fit to screen"
+  useEffect(() => {
+    const controls = transformRef.current;
+    const wrapper = controls?.instance.wrapperComponent;
+    const content = controls?.instance.contentComponent;
+    if (!controls || !wrapper || !content) {
+      return;
+    }
+
+    const update = () => {
+      const fitScale = getFitScale(wrapper, content);
+      if (!fitScale) {
+        return;
+      }
+
+      setMinScale(fitScale);
+
+      if (controls.instance.state.scale < fitScale) {
+        void controls.fitToView({ maxScale: 1, animationTime: 0 });
+        return;
+      }
+
+      const [x, y] = clampPosition(
+        controls,
+        controls.instance.state.positionX,
+        controls.instance.state.positionY,
+        controls.instance.state.scale,
+      );
+
+      void controls.setTransform(x, y, controls.instance.state.scale, 0);
+    };
+
+    const observer = new ResizeObserver(update);
+    observer.observe(wrapper);
+    observer.observe(content);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const selectedModules = useMemo(
     () =>
@@ -87,6 +145,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       graph,
       selectedModules,
       selectedModules.size > 0 || (previousSelection?.size ?? 0) === 0,
+      transformRef.current,
     );
   }, [diagramElement, graph, selectedModules, previousSelection]);
 
@@ -105,13 +164,74 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   });
 
   return (
-    <div className={styles.root}>
-      <div className={styles.graphControls}>
-        <GraphDiagramZoomButtons />
-        <GraphDiagramDownloadButton />
+    <TransformWrapper
+      ref={transformRef}
+      centerOnInit
+      minScale={minScale}
+      maxScale={4}
+      zoomAnimation={{ size: 0 }}
+      doubleClick={{ disabled: true }}
+      wheel={{
+        wheelDisabled: true,
+        step: 0.01,
+      }}
+      trackPadPanning={{
+        disabled: false,
+        velocityDisabled: true,
+      }}
+      keyboard={{ disabled: false }}
+      panning={{
+        // Without this it becomes a bit difficult to click on the nodes,
+        // panning starts if you move by 1px and it prevents the default.
+        excluded: ['node'],
+      }}
+    >
+      {/* eslint-disable-next-line react-doctor/no-static-element-interactions -- Already handled by onEsc() */}
+      <div
+        className={styles.root}
+        onPointerDown={() => {
+          const { positionX, positionY } =
+            transformRef.current?.instance.state ?? {};
+          pointerDownPositionRef.current =
+            positionX === undefined || positionY === undefined
+              ? undefined
+              : [positionX, positionY];
+        }}
+        onDragStart={event => {
+          // Dragging a node or link would start the browser's drag and drop
+          event.preventDefault();
+        }}
+        onClick={event => {
+          const start = pointerDownPositionRef.current;
+          pointerDownPositionRef.current = undefined;
+          const state = transformRef.current?.instance.state;
+
+          // A drag can end on a node or link, which shouldn't be selected or followed
+          if (
+            start &&
+            state &&
+            Math.hypot(state.positionX - start[0], state.positionY - start[1]) >
+              5
+          ) {
+            event.preventDefault();
+            return;
+          }
+
+          handleGraphClick(event);
+        }}
+      >
+        <div className={styles.graphControls}>
+          <GraphDiagramZoomButtons />
+          <GraphDiagramExportButtons />
+        </div>
+        <TransformComponent
+          wrapperClass={styles.viewport}
+          wrapperStyle={{ width: '100%', height: '100%' }}
+        >
+          <div className={styles.graph} />
+        </TransformComponent>
       </div>
-      <div className={styles.graph} onClick={handleGraphClick} />
-    </div>
+    </TransformWrapper>
   );
 }
 
@@ -136,26 +256,27 @@ function logUpdate(name: string, value: unknown) {
 
 function scrollGraphIntoView(
   element: Element | undefined,
-  scrollOptions?: ScrollToOptions,
+  transform: ReactZoomPanPinchContentRef | null,
+  animationTime = 0,
 ) {
-  const graphElement = $optional(`.${styles.graph}`);
-  if (!graphElement || !element) {
+  const wrapper = transform?.instance.wrapperComponent;
+  if (!transform || !wrapper || !element) {
     return;
   }
 
-  // Bug: graphEl.scrollIntoView() doesn't work for SVG elements in
-  // Firefox.  And even in Chrome it just scrolls the element to *barely*
-  // be in view, which isn't really what we want.  (We'd like element to
-  // be centered in the view.)  So, instead, we manually compute the
-  // scroll coordinates.
-  const { top: elementTop, left: elementLeft } =
-    element.getBoundingClientRect();
-  const left =
-    graphElement.scrollLeft + elementLeft - graphElement.clientWidth / 2;
-  const top =
-    graphElement.scrollTop + elementTop - graphElement.clientHeight / 2;
+  // Center the element in the viewport, but without moving the graph away from
+  // the edges (like when scrolling)
+  const { scale, positionX, positionY } = transform.instance.state;
+  const view = wrapper.getBoundingClientRect();
+  const box = element.getBoundingClientRect();
+  const [x, y] = clampPosition(
+    transform,
+    positionX + view.left + view.width / 2 - (box.left + box.width / 2),
+    positionY + view.top + view.height / 2 - (box.top + box.height / 2),
+    scale,
+  );
 
-  graphElement.scrollTo({ left, top, ...scrollOptions });
+  void transform.setTransform(x, y, scale, animationTime);
 }
 
 type SelectionInfo = ReturnType<typeof gatherSelectionInfo>;
@@ -207,6 +328,7 @@ function updateSelection(
   graph: GraphState,
   modules: Map<string, Module>,
   shouldScrollToSelected = true,
+  transform: ReactZoomPanPinchContentRef | null = null,
 ) {
   // Get selection info
   const si = gatherSelectionInfo(graph, modules.values());
@@ -219,12 +341,13 @@ function updateSelection(
   if (shouldScrollToSelected) {
     // Scroll to selected element (if multiple elements, this scrolls to last one)
     if (scrollElement) {
-      scrollGraphIntoView(scrollElement, { behavior: 'smooth' });
+      scrollGraphIntoView(scrollElement, transform, 300);
     } else {
       // If no selection and we haven't already scrolled to the root node as part of
       // the initial render, do that now
       scrollGraphIntoView(
         select(`.${styles.graph} svg .node`).node() as HTMLElement,
+        transform,
       );
     }
   }
