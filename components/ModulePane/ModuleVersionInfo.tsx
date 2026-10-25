@@ -46,7 +46,7 @@ export function ModuleVersionInfo({
     module.version,
     module.packument['dist-tags'],
   );
-  if (!status) {
+  if (!status || status.type === 'none') {
     return null;
   }
 
