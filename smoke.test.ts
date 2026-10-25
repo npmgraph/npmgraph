@@ -208,6 +208,18 @@ describe('panes', () => {
         app().getByRole('textbox', {
           name: 'Custom link providers for Module tab',
         }),
+        '',
+      );
+      expect(
+        $('details > summary', doc())?.parentElement?.hasAttribute('open'),
+      ).toBe(true);
+      expect(doc().activeElement).toBe(
+        $('textarea[aria-label="Custom link providers for Module tab"]', doc()),
+      );
+      await userEvent.fill(
+        app().getByRole('textbox', {
+          name: 'Custom link providers for Module tab',
+        }),
         'npmx,https://npmx.dev/package/%s',
       );
 

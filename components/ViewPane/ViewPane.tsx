@@ -1,4 +1,4 @@
-import { useEffect, useRef, type HTMLProps } from 'react';
+import { useEffect, useRef, useState, type HTMLProps } from 'react';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
@@ -14,6 +14,7 @@ import * as styles from './ViewPane.module.scss';
 
 export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
   const [customLinks, setCustomLinks] = useCustomModuleLinks();
+  const [shouldOpenPreferences] = useState(() => Boolean(customLinks.trim()));
   const customLinksRef = useRef<HTMLTextAreaElement>(null);
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [sizing, setSizing] = useHashParam(PARAM_SIZING);
@@ -84,7 +85,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
 
       <CollapsibleSection
         title="Local preferences"
-        open={Boolean(customLinks.trim())}
+        open={shouldOpenPreferences}
         className={styles.localPreferences}
       >
         <label>
