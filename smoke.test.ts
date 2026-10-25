@@ -196,6 +196,18 @@ describe('panes', () => {
         app().getByRole('textbox', {
           name: 'Custom link providers for Module tab',
         }),
+        'invalid row',
+      );
+      expect(
+        $('textarea[aria-label="Custom link providers for Module tab"]', doc())
+          ?.validationMessage,
+      ).toBe(
+        'Each non-empty row must contain a label and a valid HTTP(S) URL separated by a comma.',
+      );
+      await userEvent.fill(
+        app().getByRole('textbox', {
+          name: 'Custom link providers for Module tab',
+        }),
         'npmx,https://npmx.dev/package/%s',
       );
 

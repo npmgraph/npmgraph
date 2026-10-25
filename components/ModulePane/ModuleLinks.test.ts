@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { parseCustomModuleLinks } from './module-links.ts';
+import {
+  getCustomModuleLinksError,
+  parseCustomModuleLinks,
+} from './module-links.ts';
 
 describe('parseCustomModuleLinks', () => {
   it('parses CSV links and expands raw and encoded package keys', () => {
@@ -41,5 +44,16 @@ describe('parseCustomModuleLinks', () => {
         href: 'https://example.com/search?q=a,b',
       },
     ]);
+  });
+
+  it('validates non-empty rows as two-column HTTP(S) CSV', () => {
+    expect(
+      getCustomModuleLinksError(
+        'npmx,https://npmx.dev/package/%s\n"bundle,phobia",https://bundlephobia.com/package/%s',
+      ),
+    ).toBe('');
+    expect(getCustomModuleLinksError('not-csv')).toBeTruthy();
+    expect(getCustomModuleLinksError('extra,columns,are invalid')).toBeTruthy();
+    expect(getCustomModuleLinksError('npmx,ftp://example.com')).toBeTruthy();
   });
 });

@@ -1,9 +1,10 @@
-import type { HTMLProps } from 'react';
+import { useEffect, useRef, type HTMLProps } from 'react';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
+import { getCustomModuleLinksError } from '../ModulePane/module-links.ts';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
@@ -13,8 +14,14 @@ import * as styles from './ViewPane.module.scss';
 
 export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
   const [customLinks, setCustomLinks] = useCustomModuleLinks();
+  const customLinksRef = useRef<HTMLTextAreaElement>(null);
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [sizing, setSizing] = useHashParam(PARAM_SIZING);
+  const customLinksError = getCustomModuleLinksError(customLinks);
+
+  useEffect(() => {
+    customLinksRef.current?.setCustomValidity(customLinksError);
+  }, [customLinksError]);
 
   const dependencyTypes = (
     (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
@@ -75,17 +82,26 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
 
       <ColorizeInput />
 
-      <CollapsibleSection title="Local preferences" open={false}>
+      <CollapsibleSection
+        title="Local preferences"
+        open={false}
+        className={styles.localPreferences}
+      >
         <label>
           Custom link providers for Module tab
           <textarea
+            ref={customLinksRef}
             aria-label="Custom link providers for Module tab"
             className={styles.customLinks}
             placeholder="npmx,https://npmx.dev/package/%s"
             rows={1}
             value={customLinks}
             onChange={event => {
-              setCustomLinks(event.currentTarget.value);
+              const { currentTarget } = event;
+              currentTarget.setCustomValidity(
+                getCustomModuleLinksError(currentTarget.value),
+              );
+              setCustomLinks(currentTarget.value);
             }}
           />
         </label>
