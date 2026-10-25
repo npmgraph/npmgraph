@@ -2,7 +2,7 @@
 // Run `npm run build` first.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { type Locator, locators, page, userEvent } from 'vitest/browser';
-import { $$ } from 'select-dom';
+import { $, $$ } from 'select-dom';
 
 declare module 'vitest/browser' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- needed for declaration merging
@@ -181,6 +181,35 @@ describe('panes', () => {
     await userEvent.click(node('debug@'));
     await appears('h2', /^debug@/);
   });
+
+  it(
+    'adds custom links to the module pane and stores them locally',
+    async () => {
+      localStorage.removeItem('npmgraph-custom-module-links');
+      await goto('?q=debug');
+      await nodeAppears('debug@');
+      await userEvent.click(node());
+      await appears('h2', /^debug@/);
+      const moduleKey = $('h2', doc())?.textContent?.trim() ?? '';
+      expect(moduleKey).toMatch(/^debug@/);
+      await userEvent.click(app().getByText('Custom links', { exact: true }));
+      await userEvent.fill(
+        app().getByRole('textbox', { name: 'Custom module links' }),
+        'npmx,https://npmx.dev/package/%s',
+      );
+
+      await vi.waitFor(async () => {
+        expect(
+          $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
+        ).toBe(`https://npmx.dev/package/${moduleKey}`);
+      });
+      expect(win().localStorage.getItem('npmgraph-custom-module-links')).toBe(
+        'npmx,https://npmx.dev/package/%s',
+      );
+      win().localStorage.removeItem('npmgraph-custom-module-links');
+    },
+    TIMEOUT,
+  );
 
   it('renders report items', async () => {
     await goto('?q=debug');
