@@ -190,22 +190,23 @@ describe('panes', () => {
       await nodeAppears('debug@');
       await userEvent.click(node());
       await appears('h2', /^debug@/);
-      const moduleKey = $('h2', doc())?.textContent?.trim() ?? '';
-      expect(moduleKey).toMatch(/^debug@/);
-      await userEvent.click(app().getByText('Custom links', { exact: true }));
+      await userEvent.click(tab('View'));
       await userEvent.fill(
-        app().getByRole('textbox', { name: 'Custom module links' }),
+        app().getByRole('textbox', {
+          name: 'Custom link providers for Module tab',
+        }),
         'npmx,https://npmx.dev/package/%s',
       );
 
-      await vi.waitFor(async () => {
-        expect(
-          $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
-        ).toBe(`https://npmx.dev/package/${moduleKey}`);
-      });
       expect(win().localStorage.getItem('npmgraph-custom-module-links')).toBe(
         'npmx,https://npmx.dev/package/%s',
       );
+      await userEvent.click(tab('Module'));
+      await vi.waitFor(() => {
+        expect(
+          $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
+        ).toBe('https://npmx.dev/package/debug');
+      });
       win().localStorage.removeItem('npmgraph-custom-module-links');
     },
     TIMEOUT,

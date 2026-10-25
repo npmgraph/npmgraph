@@ -1,14 +1,18 @@
 import type { HTMLProps } from 'react';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
+import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
+import { CollapsibleSection } from '../ui/Section.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
+import * as styles from './ViewPane.module.scss';
 
 export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
+  const [customLinks, setCustomLinks] = useCustomModuleLinks();
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [sizing, setSizing] = useHashParam(PARAM_SIZING);
 
@@ -70,6 +74,28 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
       <hr />
 
       <ColorizeInput />
+
+      <hr />
+
+      <CollapsibleSection title="Local preferences">
+        <label>
+          Custom link providers for Module tab
+          <textarea
+            aria-label="Custom link providers for Module tab"
+            className={styles.customLinks}
+            placeholder="npmx,https://npmx.dev/package/%s"
+            rows={1}
+            value={customLinks}
+            onChange={event => {
+              setCustomLinks(event.currentTarget.value);
+            }}
+          />
+        </label>
+        <p>
+          One per line: label,url or label:url. Use %s for the package name or
+          %e for its URL-encoded form.
+        </p>
+      </CollapsibleSection>
     </Pane>
   );
 }

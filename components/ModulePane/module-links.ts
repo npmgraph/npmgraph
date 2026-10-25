@@ -1,4 +1,4 @@
-export function parseCustomModuleLinks(input: string, moduleKey: string) {
+export function parseCustomModuleLinks(input: string, packageName: string) {
   const links: Array<{ label: string; href: string }> = [];
   for (const line of input.split(/\r?\n/)) {
     let isQuoted = false;
@@ -34,7 +34,7 @@ export function parseCustomModuleLinks(input: string, moduleKey: string) {
     }
 
     const href = template.replaceAll(/%[es]/g, placeholder =>
-      placeholder === '%s' ? moduleKey : encodeURIComponent(moduleKey),
+      placeholder === '%s' ? packageName : encodeURIComponent(packageName),
     );
 
     try {

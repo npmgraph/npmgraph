@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react';
+import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { toggleItem } from '../../lib/array-util.ts';
@@ -7,36 +7,9 @@ import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
 import { parseCustomModuleLinks } from './module-links.ts';
+import * as styles from './ModulePane.module.scss';
 import { Button, ButtonCheckbox, ButtonGroup } from '../Button.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
-
-const CUSTOM_LINKS_STORAGE_KEY = 'npmgraph-custom-module-links';
-const CUSTOM_LINKS_CHANGE_EVENT = 'npmgraph:custom-links-change';
-
-function getCustomLinksSnapshot() {
-  return localStorage.getItem(CUSTOM_LINKS_STORAGE_KEY) ?? '';
-}
-
-function subscribeToCustomLinks(onChange: () => void) {
-  const onStorage = (event: StorageEvent) => {
-    if (event.key === CUSTOM_LINKS_STORAGE_KEY) {
-      onChange();
-    }
-  };
-
-  globalThis.addEventListener('storage', onStorage);
-  globalThis.addEventListener(CUSTOM_LINKS_CHANGE_EVENT, onChange);
-
-  return () => {
-    globalThis.removeEventListener('storage', onStorage);
-    globalThis.removeEventListener(CUSTOM_LINKS_CHANGE_EVENT, onChange);
-  };
-}
-
-function setCustomLinks(value: string) {
-  localStorage.setItem(CUSTOM_LINKS_STORAGE_KEY, value);
-  globalThis.dispatchEvent(new Event(CUSTOM_LINKS_CHANGE_EVENT));
-}
 
 function ExternalLink({
   href,
@@ -92,11 +65,7 @@ export function ModuleActions({ module }: { module: Module }) {
 }
 
 export function ModuleExternalLinks({ module }: { module: Module }) {
-  const customLinks = useSyncExternalStore(
-    subscribeToCustomLinks,
-    getCustomLinksSnapshot,
-    () => '',
-  );
+  const [customLinks] = useCustomModuleLinks();
   const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
   const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
   const repoUrl = getRepoUrlForModule(module);
@@ -108,12 +77,12 @@ export function ModuleExternalLinks({ module }: { module: Module }) {
 
   return (
     <div>
-      <ButtonGroup>
+      <ButtonGroup className={styles.moduleLinks}>
         <ExternalLink href={npmUrl}>npm</ExternalLink>
         {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
         {homepageUrl && <ExternalLink href={homepageUrl}>website</ExternalLink>}
         <ExternalLink href={packageUrl}>package.json</ExternalLink>
-        {parseCustomModuleLinks(customLinks, module.key).map(
+        {parseCustomModuleLinks(customLinks, module.name).map(
           ({ label, href }) => (
             <ExternalLink key={`${label}:${href}`} href={href}>
               {label}
@@ -121,23 +90,6 @@ export function ModuleExternalLinks({ module }: { module: Module }) {
           ),
         )}
       </ButtonGroup>
-      <details>
-        <summary>Custom links</summary>
-        <label>
-          One per line: label,url or label:url. Use %s for the raw package key
-          or %e for its URL-encoded form.
-          <textarea
-            aria-label="Custom module links"
-            value={customLinks}
-            placeholder="npmx,https://npmx.dev/package/%s"
-            rows={3}
-            style={{ display: 'block', boxSizing: 'border-box', width: '100%' }}
-            onChange={event => {
-              setCustomLinks(event.currentTarget.value);
-            }}
-          />
-        </label>
-      </details>
     </div>
   );
 }
