@@ -22,12 +22,11 @@ type TreemapLeaf = {
   rank: number;
 };
 
-function isLabelReadable(leaf: TreemapLeaf) {
+function isTileTooSmall(leaf: TreemapLeaf) {
   const width = leaf.x1 - leaf.x0;
   const height = leaf.y1 - leaf.y0;
-  const textLength = Math.max(leaf.name.length, human(leaf.value, 'B').length);
 
-  return width >= Math.max(80, textLength * 8) && height >= 48;
+  return width < 10 || height < 10;
 }
 
 // Lay out the dependencies as a treemap, sized by their share of the module size
@@ -85,14 +84,16 @@ export function layoutTreemap(
   };
 
   const leaves = layout(dependencySizes);
-  const firstUnreadable = leaves.findIndex(leaf => !isLabelReadable(leaf));
+  const firstTooSmall = leaves.findIndex(
+    (leaf, index) => index >= 5 && isTileTooSmall(leaf),
+  );
 
-  if (firstUnreadable === -1) {
+  if (firstTooSmall === -1) {
     return leaves;
   }
 
   const retainedNames = new Set(
-    leaves.slice(0, firstUnreadable).map(leaf => leaf.name),
+    leaves.slice(0, firstTooSmall).map(leaf => leaf.name),
   );
   const retained = dependencySizes.filter(d => retainedNames.has(d.name));
   const hidden = dependencySizes.filter(d => !retainedNames.has(d.name));

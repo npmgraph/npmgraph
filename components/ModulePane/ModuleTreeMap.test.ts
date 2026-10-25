@@ -20,27 +20,35 @@ describe('layoutTreemap', () => {
     expect(leaves.map(leaf => leaf.rank)).toEqual([0, 0.5, 1]);
   });
 
-  it('groups unreadable dependencies and all smaller ones as others', () => {
+  it('keeps at least five modules and groups sub-10px trailing tiles', () => {
     const leaves = layoutTreemap(
       {
-        size: 1000,
+        size: 28,
         dependencySizes: [
-          { name: 'large', approximateSize: 700 },
-          { name: 'medium', approximateSize: 295 },
-          { name: 'tiny', approximateSize: 4 },
-          { name: 'smaller', approximateSize: 1 },
+          { name: 'one', approximateSize: 7 },
+          { name: 'two', approximateSize: 6 },
+          { name: 'three', approximateSize: 5 },
+          { name: 'four', approximateSize: 4 },
+          { name: 'five', approximateSize: 3 },
+          { name: 'six', approximateSize: 2 },
+          { name: 'seven', approximateSize: 1 },
         ],
       } as BundlePhobiaData,
-      800,
-      400,
+      20,
+      20,
     );
 
     expect(leaves.map(leaf => leaf.name)).toEqual([
-      'large',
-      'medium',
+      'one',
+      'two',
+      'three',
+      'four',
+      'five',
       'others',
     ]);
-    expect(leaves.map(leaf => Math.round(leaf.value))).toEqual([700, 295, 5]);
+    expect(leaves.map(leaf => Math.round(leaf.value))).toEqual([
+      7, 6, 5, 4, 3, 3,
+    ]);
   });
 
   it('has no leaves without dependencies', () => {
