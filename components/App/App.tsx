@@ -4,6 +4,7 @@ import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import useSyncTab from '../../hooks/useSyncTab.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
@@ -22,7 +23,7 @@ export default function App() {
   const [query] = useQuery();
   const isTightScreen = useIsTightScreen();
   const [pane, setPane] = useGlobalState('pane');
-  const [tab, setTab] = useHashParam(PARAM_TAB);
+  const [tab] = useHashParam(PARAM_TAB);
   useExternalInput();
 
   // On mobile, auto-select the Graph tab whenever the query changes.
@@ -40,13 +41,7 @@ export default function App() {
     }
   }, [query, isTightScreen, setPane]);
 
-  // Keep the current tab in the URL hash
-  const hasQuery = query.length > 0;
-  useEffect(() => {
-    if (hasQuery) {
-      setTab(pane === PaneType.GRAPH ? null : pane);
-    }
-  });
+  useSyncTab();
 
   if (query.length === 0) {
     return (
