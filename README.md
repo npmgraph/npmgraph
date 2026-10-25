@@ -142,6 +142,8 @@ https://npmgraph.js.org/?q=send#sizing
 
 Current inspector tab. One of `info`, `report`, `module`, or `view`. Updated automatically as tabs change.
 
+Each graph state has a default tab, which is omitted from the URL: `info` for an empty graph, `module` when exactly one module is selected, and `report` otherwise. When `tab` is absent, the default tab is shown and follows the graph state (e.g. selecting a module switches to `module`). Changing tabs clears `section`.
+
 **Example**: Graph `send`, showing the report tab
 
 https://npmgraph.js.org/?q=send#tab=report
