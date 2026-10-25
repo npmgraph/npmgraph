@@ -220,6 +220,10 @@ describe('panes', () => {
           $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
         ).toBe('https://npmx.dev/package/debug');
       });
+      await userEvent.click(tab('View'));
+      expect(
+        $('details > summary', doc())?.parentElement?.hasAttribute('open'),
+      ).toBe(true);
       win().localStorage.removeItem('npmgraph-custom-module-links');
     },
     TIMEOUT,

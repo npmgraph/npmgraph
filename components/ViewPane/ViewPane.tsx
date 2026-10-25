@@ -84,7 +84,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
 
       <CollapsibleSection
         title="Local preferences"
-        open={false}
+        open={Boolean(customLinks.trim())}
         className={styles.localPreferences}
       >
         <label>
@@ -101,6 +101,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
               currentTarget.setCustomValidity(
                 getCustomModuleLinksError(currentTarget.value),
               );
+              currentTarget.reportValidity();
               setCustomLinks(currentTarget.value);
             }}
           />
