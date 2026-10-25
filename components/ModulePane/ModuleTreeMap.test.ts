@@ -20,7 +20,7 @@ describe('layoutTreemap', () => {
     expect(leaves.map(leaf => leaf.rank)).toEqual([0, 0.5, 1]);
   });
 
-  it('keeps at least five modules and groups sub-10px trailing tiles', () => {
+  it('keeps the five largest modules and aggregates the rest', () => {
     const leaves = layoutTreemap(
       {
         size: 28,
@@ -48,6 +48,32 @@ describe('layoutTreemap', () => {
     ]);
     expect(leaves.map(leaf => Math.round(leaf.value))).toEqual([
       7, 6, 5, 4, 3, 3,
+    ]);
+  });
+
+  it('groups modules after the five largest into others', () => {
+    const leaves = layoutTreemap(
+      {
+        size: 45,
+        dependencySizes: Array.from({ length: 9 }, (_, index) => ({
+          name: `module-${index + 1}`,
+          approximateSize: 9 - index,
+        })),
+      } as BundlePhobiaData,
+      1200,
+      600,
+    );
+
+    expect(leaves.map(leaf => leaf.name)).toEqual([
+      'others',
+      'module-1',
+      'module-2',
+      'module-3',
+      'module-4',
+      'module-5',
+    ]);
+    expect(leaves.map(leaf => Math.round(leaf.value))).toEqual([
+      10, 9, 8, 7, 6, 5,
     ]);
   });
 

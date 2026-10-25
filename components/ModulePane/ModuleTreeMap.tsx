@@ -22,13 +22,6 @@ type TreemapLeaf = {
   rank: number;
 };
 
-function isTileTooSmall(leaf: TreemapLeaf) {
-  const width = leaf.x1 - leaf.x0;
-  const height = leaf.y1 - leaf.y0;
-
-  return width < 10 || height < 10;
-}
-
 // Lay out the dependencies as a treemap, sized by their share of the module size
 export function layoutTreemap(
   data: BundlePhobiaData,
@@ -84,16 +77,14 @@ export function layoutTreemap(
   };
 
   const leaves = layout(dependencySizes);
-  const firstTooSmall = leaves.findIndex(
-    (leaf, index) => index >= 5 && isTileTooSmall(leaf),
-  );
+  const firstToAggregate = Math.min(leaves.length, 5);
 
-  if (firstTooSmall === -1) {
+  if (firstToAggregate === leaves.length) {
     return leaves;
   }
 
   const retainedNames = new Set(
-    leaves.slice(0, firstTooSmall).map(leaf => leaf.name),
+    leaves.slice(0, firstToAggregate).map(leaf => leaf.name),
   );
   const retained = dependencySizes.filter(d => retainedNames.has(d.name));
   const hidden = dependencySizes.filter(d => !retainedNames.has(d.name));
