@@ -47,7 +47,10 @@
       }
       gtag('js', new Date());
 
-      gtag('config', 'G-0FPWJCJM5R');
+      gtag('config', 'G-0FPWJCJM5R', {
+        cookie_domain: 'npmgraph.js.org',
+        cookie_flags: 'SameSite=None;Secure',
+      });
     </script>
     <link
       href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700"

@@ -5,6 +5,8 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModuleList.module.scss';
 
+const MIN_MODULES_FOR_FILTER = 10;
+
 export function ModuleList({
   modules,
   entryModules,
@@ -21,22 +23,24 @@ export function ModuleList({
 
   return (
     <>
-      <div className={styles.filter}>
-        <input
-          type="search"
-          className={styles.input}
-          placeholder="Filter modules…"
-          aria-label="Filter modules"
-          value={filter}
-          autoCapitalize="off"
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck="false"
-          onChange={event => {
-            setFilter(event.target.value);
-          }}
-        />
-      </div>
+      {modules.length >= MIN_MODULES_FOR_FILTER && (
+        <div className={styles.filter}>
+          <input
+            type="search"
+            className={styles.input}
+            placeholder="Filter modules…"
+            aria-label="Filter modules"
+            value={filter}
+            autoCapitalize="off"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck="false"
+            onChange={event => {
+              setFilter(event.target.value);
+            }}
+          />
+        </div>
+      )}
 
       {filteredModules.length === 0 && (
         <div className={styles.empty}>No modules match</div>
