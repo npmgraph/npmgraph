@@ -105,6 +105,14 @@ url.searchParams.set('q', `${fooPackage.name}@${fooPackage.version}`);
 url.toString(); // Returns the above URL
 ```
 
+### `section` (hash param)
+
+Name (lowercase title) of a section in the inspector. When opened, the matching section is expanded (if collapsible) and scrolled into view. Hover over a section title and click the link icon to set this value.
+
+**Example**: Show the release timeline of `formidable@1.0.17`
+
+https://npmgraph.js.org/?q=express@2.4.6#tab=module&section=release+timeline&select=exact%3Aformidable%401.0.17
+
 ### `select` (hash param)
 
 Highlight a module or category of modules in the graph. Selection is based on modules currently in the graph.
@@ -129,6 +137,14 @@ If present (e.g. `...#sizing`), modules will be scaled to reflect their unpacked
 **Example**: Graph `send`, size modules by unpacked size
 
 https://npmgraph.js.org/?q=send#sizing
+
+### `tab` (hash param)
+
+Current inspector tab. One of `info`, `report`, `module`, or `view`. Updated automatically as tabs change.
+
+**Example**: Graph `send`, showing the report tab
+
+https://npmgraph.js.org/?q=send#tab=report
 
 ## Running locally
 

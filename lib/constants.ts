@@ -14,8 +14,10 @@ export const PARAM_HIDE = 'hide';
 export const PARAM_PACKAGES = 'packages';
 export const PARAM_QUERY = 'q';
 export const PARAM_REGISTRY = 'registry';
+export const PARAM_SECTION = 'section';
 export const PARAM_SELECTION = 'select';
 export const PARAM_SIZING = 'sizing';
+export const PARAM_TAB = 'tab';
 
 export const SEARCH_FIELD_ID = 'search-field';
 export const UNNAMED_PACKAGE = 'unnamed module';

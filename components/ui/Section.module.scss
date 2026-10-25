@@ -22,6 +22,19 @@
     line-height: normal;
   }
 
+  .link {
+    opacity: 0;
+    transition: opacity 0.15s;
+    font-weight: normal;
+    font-size: 0.7em;
+    text-decoration: none;
+  }
+  summary:hover .link,
+  h3:hover .link,
+  .link:focus-visible {
+    opacity: 1;
+  }
+
   // Move triangle to the right
   summary::-webkit-details-marker {
     display: none;
