@@ -8,6 +8,7 @@ import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
+import { ModuleDependents } from './ModuleDependents.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.scss';
 import { ModuleSize } from './ModuleSize.tsx';
@@ -111,6 +112,8 @@ export default function ModulePane(
       <ReleaseTimeline module={module} />
 
       <ModuleSize module={module} />
+
+      <ModuleDependents module={module} />
 
       <ModuleMaintainers module={module} />
     </Pane>
