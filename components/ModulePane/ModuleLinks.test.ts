@@ -20,18 +20,13 @@ describe('parseCustomModuleLinks', () => {
     ]);
   });
 
-  it('accepts the label:url example format and ignores invalid entries', () => {
+  it('rejects colon-separated links and non-HTTP URLs', () => {
     expect(
       parseCustomModuleLinks(
         'npmx:https://npmx.dev/package/%s\nbad,javascript:alert(1)\ninvalid',
         'react',
       ),
-    ).toEqual([
-      {
-        label: 'npmx',
-        href: 'https://npmx.dev/package/react',
-      },
-    ]);
+    ).toEqual([]);
   });
 
   it('handles quoted CSV fields containing commas', () => {

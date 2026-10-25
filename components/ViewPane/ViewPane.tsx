@@ -75,9 +75,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
 
       <ColorizeInput />
 
-      <hr />
-
-      <CollapsibleSection title="Local preferences">
+      <CollapsibleSection title="Local preferences" open={false}>
         <label>
           Custom link providers for Module tab
           <textarea
@@ -91,9 +89,9 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
             }}
           />
         </label>
-        <p>
-          One per line: label,url or label:url. Use %s for the package name or
-          %e for its URL-encoded form.
+        <p className={styles.customLinksHelp}>
+          CSV: one link per line with label,url columns. Use %s for the package
+          name or %e for its URL-encoded form.
         </p>
       </CollapsibleSection>
     </Pane>

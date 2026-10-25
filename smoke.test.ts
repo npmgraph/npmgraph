@@ -191,6 +191,7 @@ describe('panes', () => {
       await userEvent.click(node());
       await appears('h2', /^debug@/);
       await userEvent.click(tab('View'));
+      await userEvent.click(app().getByCSS('details > summary'));
       await userEvent.fill(
         app().getByRole('textbox', {
           name: 'Custom link providers for Module tab',

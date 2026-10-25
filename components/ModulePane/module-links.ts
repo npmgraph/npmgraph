@@ -10,7 +10,7 @@ export function parseCustomModuleLinks(input: string, packageName: string) {
         } else {
           isQuoted = !isQuoted;
         }
-      } else if (!isQuoted && (line[i] === ',' || line[i] === ':')) {
+      } else if (!isQuoted && line[i] === ',') {
         delimiterIndex = i;
         break;
       }
