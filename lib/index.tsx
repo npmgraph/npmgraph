@@ -1,6 +1,6 @@
 import '../index.scss';
 
-import type { ReactElement } from 'react';
+import { lazy, Suspense, type ReactElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
@@ -12,6 +12,12 @@ import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
 import { disableBugsnag } from './bugsnag.ts';
 import { flash } from './flash.ts';
+import { REPORT_PATH_PREFIX } from './report-util.ts';
+
+// Only needed on /report/{module}
+const ReportPage = lazy(
+  async () => import('../components/ReportPage/ReportPage.tsx'),
+);
 
 // A deploy likely replaced the fingerprinted chunks this page references
 globalThis.addEventListener('vite:preloadError', event => {
@@ -110,6 +116,16 @@ globalThis.addEventListener('load', () => {
   const activity = new LoadActivity();
   setActivityForRequestCache(activity);
   setActivityForApp(activity);
+
+  // Standalone report page, without the app (or its title management)
+  if (globalThis.location.pathname.startsWith(REPORT_PATH_PREFIX)) {
+    createRoot($('body')).render(
+      <Suspense fallback={null}>
+        <ReportPage />
+      </Suspense>,
+    );
+    return;
+  }
 
   // Main app component
   const appElement = $('body');

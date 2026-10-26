@@ -1,0 +1,279 @@
+// Standalone, GitHub-README-like styles for the /report/{module} page.
+// Intentionally independent of the app's own layout and theme variables.
+
+.page {
+  // Light theme (GitHub "light" palette)
+  --md-fg: #1f2328;
+  --md-fg-muted: #59636e;
+  --md-bg: #fff;
+  --md-bg-subtle: #f6f8fa;
+  --md-border: #d1d9e0;
+  --md-border-muted: #d1d9e0b3;
+  --md-link: #0969da;
+  --md-code-bg: #818b981f;
+  --md-warn: #9a6700;
+  --md-danger: #d1242f;
+  --md-success: #1a7f37;
+
+  box-sizing: border-box;
+  margin-inline: auto;
+  background: var(--md-bg);
+  padding: 45px;
+  max-width: 980px;
+  min-height: 100vh;
+  color: var(--md-fg);
+  font-size: 16px;
+  line-height: 1.5;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica,
+    Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+  overflow-wrap: break-word;
+
+  @media (prefers-color-scheme: dark) {
+    --md-fg: #f0f6fc;
+    --md-fg-muted: #9198a1;
+    --md-bg: #0d1117;
+    --md-bg-subtle: #151b23;
+    --md-border: #3d444d;
+    --md-border-muted: #3d444db3;
+    --md-link: #4493f8;
+    --md-code-bg: #656c7633;
+    --md-warn: #d29922;
+    --md-danger: #f85149;
+    --md-success: #3fb950;
+  }
+
+  @media (max-width: 767px) {
+    padding: 15px;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  // Headings
+  h1 {
+    margin: 0 0 16px;
+    border-bottom: 1px solid var(--md-border-muted);
+    padding-bottom: 0.3em;
+    font-weight: 600;
+    font-size: 2em;
+    line-height: 1.25;
+  }
+
+  p,
+  ul,
+  ol,
+  blockquote,
+  table {
+    margin-block: 0 16px;
+  }
+
+  p {
+    line-height: 1.5;
+  }
+
+  // Links
+  a {
+    color: var(--md-link);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // Inline code
+  code {
+    border-radius: 6px;
+    background: var(--md-code-bg);
+    padding: 0.2em 0.4em;
+    font-size: 85%;
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    white-space: break-spaces;
+  }
+
+  // Lists
+  ul,
+  ol {
+    padding-left: 2em;
+  }
+
+  li + li {
+    margin-top: 0.25em;
+  }
+
+  // Block quotes
+  blockquote {
+    margin-inline: 0;
+    border-left: 0.25em solid var(--md-border);
+    padding: 0 1em;
+    color: var(--md-fg-muted);
+  }
+
+  hr {
+    margin: 24px 0;
+    border: 0;
+    border-bottom: 1px solid var(--md-border-muted);
+    background: var(--md-border);
+    height: 0.25em;
+  }
+
+  // Tables
+  table {
+    display: block;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+  }
+
+  th,
+  td {
+    border: 1px solid var(--md-border);
+    padding: 6px 13px;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  tr:nth-child(2n) {
+    background: var(--md-bg-subtle);
+  }
+
+  // Form controls rendered by report sections (e.g. module filter)
+  input[type='search'] {
+    outline: none;
+    border: 1px solid var(--md-border);
+    border-radius: 6px;
+    background: var(--md-bg);
+    padding: 5px 12px;
+    width: 100%;
+    max-width: 24em;
+    color: var(--md-fg);
+    font: inherit;
+    font-size: 14px;
+
+    &:focus {
+      outline: 2px solid var(--md-link);
+      outline-offset: -1px;
+    }
+  }
+
+  // Module names are only clickable in the app, where they select the module
+  // in the graph. Here they're plain text.
+  button {
+    cursor: text;
+    border: 0;
+    background: none;
+    padding: 0;
+    pointer-events: none;
+    color: inherit;
+    font: inherit;
+    font-size: 85%;
+    font-family:
+      ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas,
+      'Liberation Mono', monospace;
+    text-align: left;
+    text-wrap: wrap;
+  }
+
+  // Collapsible sections: one per report item
+  details {
+    margin-block: 0 16px;
+    border-bottom: 1px solid var(--md-border-muted);
+    padding: 0 0 16px;
+    line-height: 1.5;
+
+    &[open] {
+      padding-bottom: 16px;
+    }
+
+    // Native markers are replaced with a GitHub-style caret
+    & > summary {
+      display: block;
+      position: relative;
+      cursor: pointer;
+      margin: 0;
+      border-top: 0;
+      padding: 0 0 0 1.25em;
+      font-weight: 600;
+      font-size: 1.5em;
+      line-height: 1.25;
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      &::before {
+        position: absolute;
+        top: 0.35em;
+        left: 0.1em;
+        transition: transform 0.1s;
+        border-width: 0.3em 0 0.3em 0.5em;
+        border-style: solid;
+        border-color: transparent transparent transparent var(--md-fg-muted);
+        content: '';
+      }
+
+      &::after,
+      &[open]::after {
+        content: none;
+      }
+
+      &:hover::before {
+        border-left-color: var(--md-fg);
+      }
+
+      // Keep title, icon and count on one line, like a heading with a badge
+      & > span {
+        vertical-align: middle;
+        margin-left: 0.4em;
+      }
+    }
+
+    &[open] > summary::after {
+      content: none;
+    }
+
+    &[open] > summary::before {
+      transform: rotate(90deg);
+    }
+
+    & > summary:focus-visible {
+      outline: 2px solid var(--md-link);
+      outline-offset: 2px;
+      border-radius: 6px;
+    }
+
+    // Section content, indented under the heading
+    & > :not(summary) {
+      margin-left: 1.25em;
+    }
+
+    & > summary + * {
+      margin-top: 12px;
+    }
+  }
+}
+
+.meta {
+  color: var(--md-fg-muted);
+}
+
+.status {
+  color: var(--md-fg-muted);
+  font-style: italic;
+}
+
+.error {
+  border-left-color: var(--md-danger);
+  color: var(--md-danger);
+}

@@ -1,3 +1,8 @@
+import useHashParam from '../../hooks/useHashParam.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
+import useRegistry from '../../hooks/useRegistry.ts';
+import { PARAM_DEPENDENCIES, PARAM_REGISTRY } from '../../lib/constants.ts';
+import { getReportPath } from '../../lib/report-util.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import type { GraphState } from '../../lib/graph-util.ts';
 import { Pane } from '../ui/Pane.tsx';
@@ -22,26 +27,19 @@ import {
   peerDependenciesMissing,
 } from './reporters/peerDependenciesAll.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
+import * as styles from './ReportPane.module.scss';
 
-export default function ReportPane({
-  graph,
-  ...props
-}: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
-  const { className, ...restProps } = props;
-
-  if (!graph?.moduleInfos) {
-    return <div>Loading</div>;
-  }
-
+/*
+The report sections, without any surrounding chrome
+*/
+export function ReportItems({ graph }: { graph: GraphState }) {
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
   const maintainersAnalysis = analyzeMaintainers(graph);
   const licensesAnalysis = analyzeLicenses(graph);
 
   return (
-    <Pane className={className} {...restProps}>
-      <CollapsedModules />
-
+    <>
       <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
       <ReportItem
@@ -136,6 +134,57 @@ export default function ReportPane({
         data={peerDependencyAnalysis}
         reporter={peerDependenciesMissing}
       />
+    </>
+  );
+}
+
+export default function ReportPane({
+  graph,
+  ...props
+}: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
+  const { className, ...restProps } = props;
+  const [query] = useQuery();
+  const [registry] = useRegistry();
+  const [deps] = useHashParam(PARAM_DEPENDENCIES);
+
+  if (!graph?.moduleInfos) {
+    return <div>Loading</div>;
+  }
+
+  return (
+    <Pane className={className} {...restProps}>
+      {query.length > 0 && (
+        <div className={styles.standaloneLink}>
+          <a
+            href={getReportUrl(query, registry, deps)}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Open standalone report ↗
+          </a>
+        </div>
+      )}
+
+      <CollapsedModules />
+
+      <ReportItems graph={graph} />
     </Pane>
   );
+}
+
+function getReportUrl(
+  query: string[],
+  registry: string | null,
+  deps: string | null,
+) {
+  const url = new URL(getReportPath(query), location.origin);
+  if (registry) {
+    url.searchParams.set(PARAM_REGISTRY, registry);
+  }
+
+  if (deps) {
+    url.hash = new URLSearchParams({ [PARAM_DEPENDENCIES]: deps }).toString();
+  }
+
+  return url.href;
 }

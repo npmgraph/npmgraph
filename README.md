@@ -10,6 +10,14 @@ A tool for exploring npm modules and dependencies. Available online at https://n
 
 `q` and `registry` are search parameters. All other parameters are stored in the URL hash, using normal URL query parameter encoding.
 
+### `/report/{module}` (path)
+
+A standalone, plain-page version of the Report tab, without the graph, navigation or tabs. The sections are collapsible. `{module}` is a module name, optionally with a version or version range (e.g. `send`, `send@0.19.0`, `@babel/core@7`). Multiple modules can be separated by commas. The `registry` search parameter and the `deps` hash parameter (see below) are supported.
+
+**Example**: Report for the `send` module:
+
+https://npmgraph.js.org/report/send
+
 ### `q` (search parameter)
 
 Comma-separated list of npm module names, optionally with a version or version range, URLs to `package.json` files, or GitHub `user/repo` shorthand.
