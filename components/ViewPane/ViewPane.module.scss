@@ -1,0 +1,23 @@
+.customLinks {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 3lh;
+  field-sizing: content;
+  font: inherit;
+  font-size: 10px;
+}
+
+.customLinksHelp {
+  color: var(--text-dim);
+}
+
+.customLinksPreview {
+  flex-wrap: wrap;
+  margin-block: 0.5em;
+  pointer-events: none;
+}
+
+.localPreferences {
+  margin-top: 1em;
+}

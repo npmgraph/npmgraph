@@ -2,7 +2,7 @@
 // Run `npm run build` first.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { type Locator, locators, page, userEvent } from 'vitest/browser';
-import { $, $$ } from 'select-dom';
+import { $, $$, $$optional } from 'select-dom';
 
 declare module 'vitest/browser' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- needed for declaration merging
@@ -223,6 +223,118 @@ describe('panes', () => {
     await userEvent.click(node('debug@'));
     await appears('h2', /^debug@/);
   });
+
+  it(
+    'adds custom links to the module pane and stores them locally',
+    async () => {
+      localStorage.removeItem('npmgraph-custom-module-links');
+      localStorage.removeItem('npmgraph-module-link-providers');
+      await goto('?q=debug');
+      await nodeAppears('debug@');
+      await userEvent.click(node());
+      await appears('h2', /^debug@/);
+      const moduleVersion = $('h2', doc())?.textContent?.trim().slice(6);
+      expect(
+        $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),
+      ).toBeDefined();
+      await userEvent.click(tab('View'));
+      await userEvent.click(app().getByCSS('details > summary'));
+      const textarea = $(
+        'textarea[aria-label="Custom link providers for Module tab"]',
+        doc(),
+      );
+      const defaultConfig = textarea?.value ?? '';
+      expect(defaultConfig).toContain(
+        'npm, https://www.npmjs.com/package/{+name}/v/{version}',
+      );
+      expect(defaultConfig).toContain('repo, {repository}');
+      expect(defaultConfig).toContain('website, {homepage}');
+      expect(defaultConfig).toContain(
+        'package.json, https://cdn.jsdelivr.net/npm/{+name}@{version}/package.json',
+      );
+      const previewButtons = $$(
+        '[aria-label="Preview of Module tab link buttons"] button',
+        doc(),
+      );
+      expect(previewButtons.map(button => button.textContent)).toEqual([
+        'npm',
+        'repo',
+        'website',
+        'package.json',
+      ]);
+      expect(previewButtons.every(button => button.disabled)).toBe(true);
+      await userEvent.fill(
+        app().getByRole('textbox', {
+          name: 'Custom link providers for Module tab',
+        }),
+        'invalid row',
+      );
+      expect(
+        $('textarea[aria-label="Custom link providers for Module tab"]', doc())
+          ?.validationMessage,
+      ).toBe(
+        'Each non-empty row must contain a label and a valid HTTP(S) URL separated by a comma.',
+      );
+      await userEvent.fill(
+        app().getByRole('textbox', {
+          name: 'Custom link providers for Module tab',
+        }),
+        '',
+      );
+      expect(
+        $('details > summary', doc())?.parentElement?.hasAttribute('open'),
+      ).toBe(true);
+      expect(doc().activeElement).toBe(
+        $('textarea[aria-label="Custom link providers for Module tab"]', doc()),
+      );
+      const customConfig = [
+        defaultConfig,
+        'npmx,https://npmx.dev/package/{name}@{version}',
+      ].join('\n');
+      await userEvent.fill(
+        app().getByRole('textbox', {
+          name: 'Custom link providers for Module tab',
+        }),
+        customConfig,
+      );
+      expect(
+        $$(
+          '[aria-label="Preview of Module tab link buttons"] button',
+          doc(),
+        ).map(button => button.textContent),
+      ).toContain('npmx');
+
+      expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
+        customConfig,
+      );
+      await userEvent.click(tab('Module'));
+      await vi.waitFor(() => {
+        expect(
+          $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
+        ).toBe(`https://npmx.dev/package/debug@${moduleVersion}`);
+      });
+      await userEvent.click(tab('View'));
+      expect(
+        $('details > summary', doc())?.parentElement?.hasAttribute('open'),
+      ).toBe(true);
+      await userEvent.click(
+        app().getByRole('button', { name: 'Reset to defaults' }),
+      );
+      expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
+        defaultConfig,
+      );
+      await userEvent.click(tab('Module'));
+      await vi.waitFor(() => {
+        expect(
+          $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),
+        ).toBeDefined();
+      });
+      expect($$optional('a[href^="https://npmx.dev/"]', doc())).toHaveLength(0);
+      win().localStorage.removeItem('npmgraph-custom-module-links');
+      win().localStorage.removeItem('npmgraph-module-link-providers');
+    },
+    TIMEOUT,
+  );
 
   it('renders report items', async () => {
     await goto('?q=debug');

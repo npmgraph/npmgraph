@@ -1,16 +1,36 @@
-import type { HTMLProps } from 'react';
+import { useEffect, useRef, useState, type HTMLProps } from 'react';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
+import useCustomModuleLinks, {
+  DEFAULT_CUSTOM_MODULE_LINKS,
+} from '../../hooks/useCustomModuleLinks.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
+import {
+  getCustomModuleLinksError,
+  parseCustomModuleLinks,
+} from '../ModulePane/module-links.ts';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
+import { CollapsibleSection } from '../ui/Section.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
+import { Button, ButtonGroup } from '../Button.tsx';
+import * as styles from './ViewPane.module.scss';
 
 export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
+  const [customLinks, setCustomLinks] = useCustomModuleLinks();
+  const [shouldOpenPreferences] = useState(
+    () => customLinks !== DEFAULT_CUSTOM_MODULE_LINKS,
+  );
+  const customLinksRef = useRef<HTMLTextAreaElement>(null);
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [sizing, setSizing] = useHashParam(PARAM_SIZING);
+  const customLinksError = getCustomModuleLinksError(customLinks);
+
+  useEffect(() => {
+    customLinksRef.current?.setCustomValidity(customLinksError);
+  }, [customLinksError]);
 
   const dependencyTypes = (
     (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
@@ -70,6 +90,60 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
       <hr />
 
       <ColorizeInput />
+
+      <CollapsibleSection
+        title="Local preferences"
+        open={shouldOpenPreferences}
+        className={styles.localPreferences}
+      >
+        <label>
+          Custom link providers for Module tab
+          <textarea
+            ref={customLinksRef}
+            aria-label="Custom link providers for Module tab"
+            className={styles.customLinks}
+            placeholder="npmx,https://npmx.dev/package/{name}@{version}"
+            rows={1}
+            value={customLinks}
+            onChange={event => {
+              const { currentTarget } = event;
+              currentTarget.setCustomValidity(
+                getCustomModuleLinksError(currentTarget.value),
+              );
+              currentTarget.reportValidity();
+              setCustomLinks(currentTarget.value);
+            }}
+          />
+        </label>
+        <Button
+          onClick={() => {
+            setCustomLinks(DEFAULT_CUSTOM_MODULE_LINKS);
+          }}
+        >
+          Reset to defaults
+        </Button>
+        <p>Preview</p>
+        <ButtonGroup
+          aria-label="Preview of Module tab link buttons"
+          className={styles.customLinksPreview}
+          role="group"
+        >
+          {parseCustomModuleLinks(customLinks, 'package', '1.0.0', {
+            repository: 'https://example.com/repository',
+            homepage: 'https://example.com/homepage',
+          }).map(({ label }) => (
+            <Button key={label} disabled>
+              {label}
+            </Button>
+          ))}
+        </ButtonGroup>
+        <p className={styles.customLinksHelp}>
+          CSV: one link per line with label,url columns. {'{name}'} and{' '}
+          {'{version}'} are URL-encoded; {'{+name}'} and {'{+version}'} preserve
+          reserved characters, e.g. @eslint/css. Use {'{repository}'} and{' '}
+          {'{homepage}'} for package metadata URLs.
+        </p>
+      </CollapsibleSection>
     </Pane>
   );
 }
