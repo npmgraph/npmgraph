@@ -6,13 +6,16 @@ import useCustomModuleLinks, {
 } from '../../hooks/useCustomModuleLinks.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
-import { getCustomModuleLinksError } from '../ModulePane/module-links.ts';
+import {
+  getCustomModuleLinksError,
+  parseCustomModuleLinks,
+} from '../ModulePane/module-links.ts';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
-import { Button } from '../Button.tsx';
+import { Button, ButtonGroup } from '../Button.tsx';
 import * as styles from './ViewPane.module.scss';
 
 export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
@@ -112,6 +115,21 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
             }}
           />
         </label>
+        <p>Preview</p>
+        <ButtonGroup
+          aria-label="Preview of Module tab link buttons"
+          className={styles.customLinksPreview}
+          role="group"
+        >
+          {parseCustomModuleLinks(customLinks, 'package', '1.0.0', {
+            repository: 'https://example.com/repository',
+            homepage: 'https://example.com/homepage',
+          }).map(({ label }) => (
+            <Button key={label} disabled>
+              {label}
+            </Button>
+          ))}
+        </ButtonGroup>
         <Button
           onClick={() => {
             setCustomLinks(DEFAULT_CUSTOM_MODULE_LINKS);

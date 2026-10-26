@@ -252,6 +252,17 @@ describe('panes', () => {
       expect(defaultConfig).toContain(
         'package.json, https://cdn.jsdelivr.net/npm/{+name}@{version}/package.json',
       );
+      const previewButtons = $$(
+        '[aria-label="Preview of Module tab link buttons"] button',
+        doc(),
+      );
+      expect(previewButtons.map(button => button.textContent)).toEqual([
+        'npm',
+        'repo',
+        'website',
+        'package.json',
+      ]);
+      expect(previewButtons.every(button => button.disabled)).toBe(true);
       await userEvent.fill(
         app().getByRole('textbox', {
           name: 'Custom link providers for Module tab',
@@ -286,6 +297,12 @@ describe('panes', () => {
         }),
         customConfig,
       );
+      expect(
+        $$(
+          '[aria-label="Preview of Module tab link buttons"] button',
+          doc(),
+        ).map(button => button.textContent),
+      ).toContain('npmx');
 
       expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
         customConfig,

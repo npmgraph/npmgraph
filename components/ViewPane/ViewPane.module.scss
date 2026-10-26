@@ -11,6 +11,12 @@
   color: var(--text-dim);
 }
 
+.customLinksPreview {
+  flex-wrap: wrap;
+  margin-block: 0.5em;
+  pointer-events: none;
+}
+
 .localPreferences {
   margin-top: 1em;
 }
