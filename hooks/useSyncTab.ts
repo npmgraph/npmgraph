@@ -72,6 +72,7 @@ export default function useSyncTab() {
     queryKey: null as string | null,
     graph: undefined as GraphState | undefined,
     isPending: true,
+    isLoaded: false,
     pane,
     defaultPane,
   });
@@ -84,23 +85,30 @@ export default function useSyncTab() {
       return;
     }
 
-    // New query: wait for its graph to load before syncing
+    // New query
     if (queryKey !== state.queryKey) {
       state.queryKey = queryKey;
-      state.graph = graph;
-      state.isPending = true;
-      state.pane = pane;
-      state.defaultPane = defaultPane;
-      return;
+
+      // Later queries keep the current tab. Only the initial load waits for
+      // its graph and then shows the default tab.
+      if (!state.isLoaded) {
+        state.graph = graph;
+        state.isPending = true;
+        state.pane = pane;
+        state.defaultPane = defaultPane;
+        return;
+      }
     }
 
     if (state.isPending) {
-      if (graph === state.graph) {
+      // The user picked a tab while the graph was loading, so keep it
+      const wasPaneChanged = pane !== state.pane;
+      if (!wasPaneChanged && graph === state.graph) {
         return;
       }
 
       state.isPending = false;
-      const wasPaneChanged = pane !== state.pane;
+      state.isLoaded = true;
       state.defaultPane = defaultPane;
       state.pane = pane;
 
@@ -120,8 +128,13 @@ export default function useSyncTab() {
       return;
     }
 
-    // Without an explicit tab, follow the default as the graph state changes
-    if (defaultPane !== state.defaultPane && !hasTabParameter()) {
+    // Without an explicit tab, follow the default as the selection changes.
+    // Don't leave the Info tab just because a graph finished loading.
+    if (
+      defaultPane !== state.defaultPane &&
+      state.defaultPane !== PaneType.INFO &&
+      !hasTabParameter()
+    ) {
       state.defaultPane = defaultPane;
       state.pane = defaultPane;
       if (pane !== defaultPane) {
