@@ -52,15 +52,6 @@
         cookie_flags: 'SameSite=None;Secure',
       });
     </script>
-    <script>
-      // Assets are referenced relatively. Resolve them from the site root when
-      // served from a nested path, e.g. /report/{module}
-      if (location.pathname.startsWith('/report/')) {
-        const base = document.createElement('base');
-        base.href = '/';
-        document.head.prepend(base);
-      }
-    </script>
     <link
       href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700"
       rel="stylesheet"

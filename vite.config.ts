@@ -5,8 +5,8 @@ import { configDefaults, defineConfig } from 'vitest/config';
 
 // eslint-disable-next-line unicorn/no-top-level-side-effects -- Vite config
 export default defineConfig({
-  // Relative base so the site can be served from any subfolder
-  base: './',
+  // Absolute base so assets also resolve from nested paths, e.g. /report/{module}
+  base: '/',
   plugins: [react(), svgr()],
   envPrefix: ['BUGSNAG_', 'VERCEL_', 'NPMGRAPH_'],
   build: {

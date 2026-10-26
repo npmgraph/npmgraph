@@ -1,7 +1,11 @@
 import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import useRegistry from '../../hooks/useRegistry.ts';
-import { PARAM_DEPENDENCIES, PARAM_REGISTRY } from '../../lib/constants.ts';
+import {
+  PARAM_DEPENDENCIES,
+  PARAM_PACKAGES,
+  PARAM_REGISTRY,
+} from '../../lib/constants.ts';
 import { getReportPath } from '../../lib/report-util.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import type { GraphState } from '../../lib/graph-util.ts';
@@ -153,6 +157,8 @@ export default function ReportPane({
   const [query] = useQuery();
   const [registry] = useRegistry();
   const [deps] = useHashParam(PARAM_DEPENDENCIES);
+  // Pasted or uploaded package.json files only exist in this page's URL
+  const [packages] = useHashParam(PARAM_PACKAGES);
 
   if (!graph?.moduleInfos) {
     return <div>Loading</div>;
@@ -160,7 +166,7 @@ export default function ReportPane({
 
   return (
     <Pane className={className} {...restProps}>
-      {query.length > 0 && (
+      {query.length > 0 && packages === null && (
         <div className={styles.standaloneLink}>
           <a
             href={getReportUrl(query, registry, deps)}
