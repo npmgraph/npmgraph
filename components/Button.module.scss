@@ -54,7 +54,7 @@
 .horizontalGroup .button {
   border-radius: 0;
   &:not(:first-child) {
-    border-left: none;
+    margin-left: -1px;
   }
   &:first-child {
     border-radius: var(--rad-sm) 0 0 var(--rad-sm);
@@ -70,7 +70,7 @@
 .verticalGroup .button {
   border-radius: 0;
   &:not(:first-child) {
-    border-top: none;
+    margin-top: -1px;
   }
   &:first-child {
     border-radius: var(--rad-sm) var(--rad-sm) 0 0;
