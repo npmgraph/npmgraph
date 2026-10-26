@@ -115,6 +115,13 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
             }}
           />
         </label>
+        <Button
+          onClick={() => {
+            setCustomLinks(DEFAULT_CUSTOM_MODULE_LINKS);
+          }}
+        >
+          Reset to defaults
+        </Button>
         <p>Preview</p>
         <ButtonGroup
           aria-label="Preview of Module tab link buttons"
@@ -130,13 +137,6 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
             </Button>
           ))}
         </ButtonGroup>
-        <Button
-          onClick={() => {
-            setCustomLinks(DEFAULT_CUSTOM_MODULE_LINKS);
-          }}
-        >
-          Reset to defaults
-        </Button>
         <p className={styles.customLinksHelp}>
           CSV: one link per line with label,url columns. {'{name}'} and{' '}
           {'{version}'} are URL-encoded; {'{+name}'} and {'{+version}'} preserve
