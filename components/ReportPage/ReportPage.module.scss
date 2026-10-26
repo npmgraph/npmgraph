@@ -17,7 +17,6 @@
 
   box-sizing: border-box;
   margin-inline: auto;
-  background: var(--md-bg);
   padding: 45px;
   max-width: 980px;
   min-height: 100vh;
@@ -184,83 +183,67 @@
     text-wrap: wrap;
   }
 
-  // Collapsible sections: one per report item
-  details {
-    margin-block: 0 16px;
+  // Report sections: a linked heading and its content
+  section {
+    margin-block: 0 24px;
+  }
+
+  h2 {
+    position: relative;
+    margin: 24px 0 16px;
     border-bottom: 1px solid var(--md-border-muted);
-    padding: 0 0 16px;
-    line-height: 1.5;
+    padding-bottom: 0.3em;
+    font-weight: 600;
+    font-size: 1.5em;
+    line-height: 1.25;
 
-    &[open] {
-      padding-bottom: 16px;
+    // Title, icon and count stay on one line, like a heading with a badge
+    & > span,
+    & > small {
+      vertical-align: middle;
+      margin-left: 0.4em;
     }
 
-    // Native markers are replaced with a GitHub-style caret
-    & > summary {
-      display: block;
-      position: relative;
-      cursor: pointer;
-      margin: 0;
-      border-top: 0;
-      padding: 0 0 0 1.25em;
-      font-weight: 600;
-      font-size: 1.5em;
-      line-height: 1.25;
-      list-style: none;
+    & > small {
+      color: var(--md-fg-muted);
+      font-weight: normal;
+      font-size: 0.6em;
+    }
 
-      &::-webkit-details-marker {
-        display: none;
+    // GitHub-style permalink: shown to the left of the heading on hover
+    & > a:first-child {
+      position: absolute;
+      top: 50%;
+      right: 100%;
+      transform: translateY(-50%);
+      opacity: 0;
+      padding-right: 4px;
+      padding-left: 4px;
+      color: var(--md-fg-muted);
+      font-weight: normal;
+      font-size: 0.8em;
+      line-height: 1;
+      text-decoration: none;
+
+      &:hover {
+        color: var(--md-link);
       }
 
-      &::before {
-        position: absolute;
-        top: 0.35em;
-        left: 0.1em;
-        transition: transform 0.1s;
-        border-width: 0.3em 0 0.3em 0.5em;
-        border-style: solid;
-        border-color: transparent transparent transparent var(--md-fg-muted);
-        content: '';
-      }
-
-      &::after,
-      &[open]::after {
-        content: none;
-      }
-
-      &:hover::before {
-        border-left-color: var(--md-fg);
-      }
-
-      // Keep title, icon and count on one line, like a heading with a badge
-      & > span {
-        vertical-align: middle;
-        margin-left: 0.4em;
+      &:focus-visible {
+        opacity: 1;
+        outline: 2px solid var(--md-link);
+        border-radius: 6px;
       }
     }
 
-    &[open] > summary::after {
-      content: none;
+    &:hover > a:first-child {
+      opacity: 1;
     }
+  }
 
-    &[open] > summary::before {
-      transform: rotate(90deg);
-    }
-
-    & > summary:focus-visible {
-      outline: 2px solid var(--md-link);
-      outline-offset: 2px;
-      border-radius: 6px;
-    }
-
-    // Section content, indented under the heading
-    & > :not(summary) {
-      margin-left: 1.25em;
-    }
-
-    & > summary + * {
-      margin-top: 12px;
-    }
+  // Leave room below the sticky-less top of the viewport when jumping to a section
+  :target {
+    scroll-margin-top: 16px;
   }
 }
 

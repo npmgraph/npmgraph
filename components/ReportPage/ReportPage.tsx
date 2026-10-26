@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react';
-import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
+import { useEffect, useMemo, useState } from 'react';
+import { parseDependencyTypes } from '../../hooks/useDependencyTypes.ts';
 import useLocation from '../../hooks/useLocation.ts';
-import { PARAM_QUERY, PARAM_REGISTRY } from '../../lib/constants.ts';
+import {
+  PARAM_DEPENDENCIES,
+  PARAM_QUERY,
+  PARAM_REGISTRY,
+} from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { getGraphForQuery, type GraphState } from '../../lib/graph-util.ts';
 import { parseReportPath } from '../../lib/report-util.ts';
-import { searchGet } from '../../lib/url-util.ts';
+import { hashGet, searchGet } from '../../lib/url-util.ts';
 import { ReportItems } from '../ReportPane/ReportPane.tsx';
 import * as styles from './ReportPage.module.scss';
 
@@ -29,7 +33,13 @@ export default function ReportPage() {
   const query = parseReportPath(location.pathname);
   const queryKey = query?.join(',') ?? '';
   const registry = searchGet(PARAM_REGISTRY, location);
-  const dependencyTypes = useDependencyTypes();
+  // The hash is also used for section links, so only read the dependency types
+  // from the URL the page was opened with
+  const [initialDependencies] = useState(() => hashGet(PARAM_DEPENDENCIES));
+  const dependencyTypes = useMemo(
+    () => parseDependencyTypes(initialDependencies),
+    [initialDependencies],
+  );
   const [loaded, setLoaded] = useState<{
     queryKey: string;
     dependencyTypes: typeof dependencyTypes;
@@ -66,6 +76,51 @@ export default function ReportPage() {
     return abort;
   }, [queryKey, dependencyTypes]);
 
+  // The sections render asynchronously, so the browser can't scroll to a linked
+  // one on its own. Wait for it to show up.
+  const hasGraph = graph !== undefined;
+  useEffect(() => {
+    if (!hasGraph) {
+      return;
+    }
+
+    let id = globalThis.location.hash.slice(1);
+    try {
+      id = decodeURIComponent(id);
+    } catch {
+      // Malformed escape sequence, use the hash as is
+    }
+
+    if (!id) {
+      return;
+    }
+
+    const hasScrolledToTarget = () => {
+      const target = document.getElementById(id);
+      target?.scrollIntoView();
+      return Boolean(target);
+    };
+
+    if (hasScrolledToTarget()) {
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      if (hasScrolledToTarget()) {
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    const timer = setTimeout(() => {
+      observer.disconnect();
+    }, 10_000);
+
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [hasGraph]);
+
   const failures = graph ? [...graph.failedEntryModules] : [];
 
   return (
@@ -101,7 +156,9 @@ export default function ReportPage() {
         </blockquote>
       ))}
 
-      {graph && graph.moduleInfos.size > 0 && <ReportItems graph={graph} />}
+      {graph && graph.moduleInfos.size > 0 && (
+        <ReportItems graph={graph} layout="document" />
+      )}
     </main>
   );
 }

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
 import { cn } from '../../../lib/dom.ts';
 import type Module from '../../../lib/Module.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
+import { ReportLayoutContext } from '../ReportLayout.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModuleList.module.scss';
 
@@ -15,6 +16,8 @@ export function ModuleList({
   entryModules: Set<Module>;
 }) {
   const [filter, setFilter] = useState('');
+  // Filtering is interactive, so it doesn't belong in a standalone document
+  const isDocument = use(ReportLayoutContext) === 'document';
 
   const query = filter.trim().toLowerCase();
   const filteredModules = query
@@ -23,7 +26,7 @@ export function ModuleList({
 
   return (
     <>
-      {modules.length >= MIN_MODULES_FOR_FILTER && (
+      {!isDocument && modules.length >= MIN_MODULES_FOR_FILTER && (
         <div className={styles.filter}>
           <input
             type="search"

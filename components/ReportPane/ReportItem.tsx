@@ -4,6 +4,7 @@ import usePromise from '../../hooks/usePromise.ts';
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import type { RenderedAnalysis } from './analyzers/Analyzer.tsx';
+import { getHeadingId, ReportLayoutContext } from './ReportLayout.ts';
 import * as styles from './ReportItem.module.scss';
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
@@ -46,12 +47,41 @@ function ReportItemContent({
   promise: Promise<RenderedAnalysis | undefined>;
 }) {
   const analysis = use(promise);
+  const layout = use(ReportLayoutContext);
 
   if (!analysis) {
     return null;
   }
 
   const { type, summary, count, details } = analysis;
+
+  const body = (
+    <>
+      {children ? <div className={styles.description}>{children}</div> : null}
+      <div className={styles.details}>{details}</div>
+    </>
+  );
+
+  if (layout === 'document') {
+    const id = getHeadingId(summary);
+    return (
+      <section>
+        <h2 id={id}>
+          <a href={`#${id}`} aria-label={`Permalink to ${summary}`}>
+            #
+          </a>
+          {summary}
+          {SYMBOLS[type] && (
+            <span className={cn(styles.symbol, styles[type])}>
+              {SYMBOLS[type]}
+            </span>
+          )}
+          {count !== undefined && <small>{count}</small>}
+        </h2>
+        {body}
+      </section>
+    );
+  }
 
   return (
     <CollapsibleSection
@@ -67,8 +97,7 @@ function ReportItemContent({
       count={count}
       {...props}
     >
-      {children ? <div className={styles.description}>{children}</div> : null}
-      <div className={styles.details}>{details}</div>
+      {body}
     </CollapsibleSection>
   );
 }

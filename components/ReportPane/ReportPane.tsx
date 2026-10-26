@@ -7,6 +7,7 @@ import { ExternalLink } from '../ui/ExternalLink.tsx';
 import type { GraphState } from '../../lib/graph-util.ts';
 import { Pane } from '../ui/Pane.tsx';
 import { ReportItem } from './ReportItem.tsx';
+import { ReportLayoutContext } from './ReportLayout.ts';
 import { analyzeLicenses } from './analyzers/analyzeLicenses.ts';
 import { analyzeMaintainers } from './analyzers/analyzeMaintainers.tsx';
 import { analyzeModules } from './analyzers/analyzeModules.ts';
@@ -32,14 +33,20 @@ import * as styles from './ReportPane.module.scss';
 /*
 The report sections, without any surrounding chrome
 */
-export function ReportItems({ graph }: { graph: GraphState }) {
+export function ReportItems({
+  graph,
+  layout = 'collapsible',
+}: {
+  graph: GraphState;
+  layout?: 'collapsible' | 'document';
+}) {
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
   const maintainersAnalysis = analyzeMaintainers(graph);
   const licensesAnalysis = analyzeLicenses(graph);
 
   return (
-    <>
+    <ReportLayoutContext value={layout}>
       <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
       <ReportItem
@@ -134,7 +141,7 @@ export function ReportItems({ graph }: { graph: GraphState }) {
         data={peerDependencyAnalysis}
         reporter={peerDependenciesMissing}
       />
-    </>
+    </ReportLayoutContext>
   );
 }
 
