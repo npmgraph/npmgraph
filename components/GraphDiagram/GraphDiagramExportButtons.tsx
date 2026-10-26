@@ -1,13 +1,13 @@
 import copy from 'copy-text-to-clipboard';
 import { $$, $optional } from 'select-dom';
-import CopyIcon from '../../images/icons/copy.svg?react';
-import CopyImageIcon from '../../images/icons/copy-image.svg?react';
 import DownloadIcon from '../../images/icons/download.svg?react';
+import MarkdownIcon from '../../images/icons/markdown.svg?react';
+import PngIcon from '../../images/icons/png.svg?react';
 import { report } from '../../lib/bugsnag.ts';
 import { flash } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeMermaid } from '../../lib/graph-util.ts';
-import { Button, ButtonBadge, ButtonGroup } from '../Button.tsx';
+import { Button, ButtonGroup } from '../Button.tsx';
 import * as graphStyles from './GraphDiagram.module.scss';
 
 type DownloadExtension = 'svg' | 'png';
@@ -23,7 +23,6 @@ export default function GraphDiagramExportButtons() {
     <ButtonGroup>
       <Button title="Download graph as SVG" onClick={downloadSvg}>
         <DownloadIcon />
-        <ButtonBadge>SVG</ButtonBadge>
       </Button>
       <Button
         title="Copy graph as PNG"
@@ -31,8 +30,7 @@ export default function GraphDiagramExportButtons() {
           void copyPng();
         }}
       >
-        <CopyImageIcon />
-        <ButtonBadge>PNG</ButtonBadge>
+        <PngIcon />
       </Button>
       <Button
         title="Copy graph as Mermaid"
@@ -44,8 +42,7 @@ export default function GraphDiagramExportButtons() {
           }
         }}
       >
-        <CopyIcon />
-        <ButtonBadge>MD</ButtonBadge>
+        <MarkdownIcon />
       </Button>
     </ButtonGroup>
   );
