@@ -5,16 +5,17 @@ import {
 } from './module-links.ts';
 
 describe('parseCustomModuleLinks', () => {
-  it('parses CSV links and expands raw and encoded package keys', () => {
+  it('expands name and version as RFC 6570 simple variables', () => {
     expect(
       parseCustomModuleLinks(
-        'npmx,https://npmx.dev/package/%s\nencoded,https://example.com/%e',
+        'npmx,https://npmx.dev/package/{name}@{version}\nencoded,https://example.com/{name}',
         '@scope/name',
+        '1.2.3',
       ),
     ).toEqual([
       {
         label: 'npmx',
-        href: 'https://npmx.dev/package/@scope/name',
+        href: 'https://npmx.dev/package/%40scope%2Fname@1.2.3',
       },
       {
         label: 'encoded',
@@ -26,8 +27,9 @@ describe('parseCustomModuleLinks', () => {
   it('rejects colon-separated links and non-HTTP URLs', () => {
     expect(
       parseCustomModuleLinks(
-        'npmx:https://npmx.dev/package/%s\nbad,javascript:alert(1)\ninvalid',
+        'npmx:https://npmx.dev/package/{name}\nbad,javascript:alert(1)\ninvalid',
         'react',
+        '18.2.0',
       ),
     ).toEqual([]);
   });
@@ -37,6 +39,7 @@ describe('parseCustomModuleLinks', () => {
       parseCustomModuleLinks(
         '"npm, x","https://example.com/search?q=a,b"',
         'react',
+        '18.2.0',
       ),
     ).toEqual([
       {
@@ -49,11 +52,17 @@ describe('parseCustomModuleLinks', () => {
   it('validates non-empty rows as two-column HTTP(S) CSV', () => {
     expect(
       getCustomModuleLinksError(
-        'npmx,https://npmx.dev/package/%s\n"bundle,phobia",https://bundlephobia.com/package/%s',
+        'npmx,https://npmx.dev/package/{name}@{version}\n"bundle,phobia",https://bundlephobia.com/package/{name}@{version}',
       ),
     ).toBe('');
     expect(getCustomModuleLinksError('not-csv')).toBeTruthy();
     expect(getCustomModuleLinksError('extra,columns,are invalid')).toBeTruthy();
     expect(getCustomModuleLinksError('npmx,ftp://example.com')).toBeTruthy();
+    expect(
+      getCustomModuleLinksError('npmx,https://example.com/{unknown}'),
+    ).toBeTruthy();
+    expect(
+      getCustomModuleLinksError('npmx,https://example.com/%s'),
+    ).toBeTruthy();
   });
 });

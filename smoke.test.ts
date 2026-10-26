@@ -190,6 +190,7 @@ describe('panes', () => {
       await nodeAppears('debug@');
       await userEvent.click(node());
       await appears('h2', /^debug@/);
+      const moduleVersion = $('h2', doc())?.textContent?.trim().slice(6);
       await userEvent.click(tab('View'));
       await userEvent.click(app().getByCSS('details > summary'));
       await userEvent.fill(
@@ -220,17 +221,17 @@ describe('panes', () => {
         app().getByRole('textbox', {
           name: 'Custom link providers for Module tab',
         }),
-        'npmx,https://npmx.dev/package/%s',
+        'npmx,https://npmx.dev/package/{name}@{version}',
       );
 
       expect(win().localStorage.getItem('npmgraph-custom-module-links')).toBe(
-        'npmx,https://npmx.dev/package/%s',
+        'npmx,https://npmx.dev/package/{name}@{version}',
       );
       await userEvent.click(tab('Module'));
       await vi.waitFor(() => {
         expect(
           $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
-        ).toBe('https://npmx.dev/package/debug');
+        ).toBe(`https://npmx.dev/package/debug@${moduleVersion}`);
       });
       await userEvent.click(tab('View'));
       expect(

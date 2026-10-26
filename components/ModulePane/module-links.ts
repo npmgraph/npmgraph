@@ -3,9 +3,40 @@ const CUSTOM_LINKS_ERROR =
 
 type CustomModuleLink = { label: string; href: string };
 
+function encodeTemplateValue(value: string): string {
+  return encodeURIComponent(value).replaceAll(/[!'()*]/g, character => {
+    const code = {
+      '!': '%21',
+      "'": '%27',
+      '(': '%28',
+      ')': '%29',
+      '*': '%2A',
+    }[character];
+    return code ?? character;
+  });
+}
+
+function expandTemplate(
+  template: string,
+  name: string,
+  version: string,
+): string | null {
+  const href = template.replaceAll(/\{[^{}]*\}/g, expression => {
+    const variable = expression.slice(1, -1);
+    return variable === 'name'
+      ? encodeTemplateValue(name)
+      : variable === 'version'
+        ? encodeTemplateValue(version)
+        : expression;
+  });
+
+  return /[{}]/.test(href) || /%(?![0-9a-f]{2})/i.test(href) ? null : href;
+}
+
 function parseCustomModuleLink(
   line: string,
-  packageName: string,
+  name: string,
+  version: string,
 ): CustomModuleLink | null {
   const columns: string[] = [];
   let column = '';
@@ -65,9 +96,10 @@ function parseCustomModuleLink(
     return null;
   }
 
-  const href = template.replaceAll(/%[es]/g, placeholder =>
-    placeholder === '%s' ? packageName : encodeURIComponent(packageName),
-  );
+  const href = expandTemplate(template, name, version);
+  if (!href) {
+    return null;
+  }
 
   try {
     const url = new URL(href);
@@ -85,14 +117,18 @@ export function getCustomModuleLinksError(input: string): string {
   return input
     .split(/\r?\n/)
     .filter(line => line.trim())
-    .every(line => parseCustomModuleLink(line, 'package'))
+    .every(line => parseCustomModuleLink(line, 'package', '1.0.0'))
     ? ''
     : CUSTOM_LINKS_ERROR;
 }
 
-export function parseCustomModuleLinks(input: string, packageName: string) {
+export function parseCustomModuleLinks(
+  input: string,
+  name: string,
+  version: string,
+) {
   return input.split(/\r?\n/).flatMap(line => {
-    const link = parseCustomModuleLink(line, packageName);
+    const link = parseCustomModuleLink(line, name, version);
     return link === null ? [] : [link];
   });
 }

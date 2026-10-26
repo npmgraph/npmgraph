@@ -82,7 +82,7 @@ export function ModuleExternalLinks({ module }: { module: Module }) {
         {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
         {homepageUrl && <ExternalLink href={homepageUrl}>website</ExternalLink>}
         <ExternalLink href={packageUrl}>package.json</ExternalLink>
-        {parseCustomModuleLinks(customLinks, module.name).map(
+        {parseCustomModuleLinks(customLinks, module.name, module.version).map(
           ({ label, href }) => (
             <ExternalLink key={`${label}:${href}`} href={href}>
               {label}

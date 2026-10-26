@@ -94,7 +94,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
             ref={customLinksRef}
             aria-label="Custom link providers for Module tab"
             className={styles.customLinks}
-            placeholder="npmx,https://npmx.dev/package/%s"
+            placeholder="npmx,https://npmx.dev/package/{name}@{version}"
             rows={1}
             value={customLinks}
             onChange={event => {
@@ -108,8 +108,8 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
           />
         </label>
         <p className={styles.customLinksHelp}>
-          CSV: one link per line with label,url columns. Use %s for the package
-          name or %e for its URL-encoded form.
+          CSV: one link per line with label,url columns. Use {'{name}'} and{' '}
+          {'{version}'} in URLs; values are URL-encoded.
         </p>
       </CollapsibleSection>
     </Pane>
