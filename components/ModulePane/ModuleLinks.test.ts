@@ -43,6 +43,37 @@ describe('parseCustomModuleLinks', () => {
     ]);
   });
 
+  it('expands repository and homepage variables without encoding their URLs', () => {
+    expect(
+      parseCustomModuleLinks(
+        'repo, {repository}\nwebsite, {homepage}',
+        '@eslint/css',
+        '1.2.3',
+        {
+          repository: 'https://github.com/eslint/css',
+          homepage: 'https://eslint.org',
+        },
+      ),
+    ).toEqual([
+      {
+        label: 'repo',
+        href: 'https://github.com/eslint/css',
+      },
+      {
+        label: 'website',
+        href: 'https://eslint.org/',
+      },
+    ]);
+
+    expect(
+      parseCustomModuleLinks(
+        'repo, {repository}\nwebsite, {homepage}',
+        'react',
+        '18.2.0',
+      ),
+    ).toEqual([]);
+  });
+
   it('rejects colon-separated links and non-HTTP URLs', () => {
     expect(
       parseCustomModuleLinks(

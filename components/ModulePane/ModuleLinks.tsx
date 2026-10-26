@@ -66,29 +66,24 @@ export function ModuleActions({ module }: { module: Module }) {
 
 export function ModuleExternalLinks({ module }: { module: Module }) {
   const [customLinks] = useCustomModuleLinks();
-  const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
-  const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
   const repoUrl = getRepoUrlForModule(module);
   const homepageUrl =
     module.package.homepage &&
     !module.package.homepage.startsWith('https://github.com/')
       ? module.package.homepage
-      : null;
+      : undefined;
 
   return (
     <div>
       <ButtonGroup className={styles.moduleLinks}>
-        <ExternalLink href={npmUrl}>npm</ExternalLink>
-        {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
-        {homepageUrl && <ExternalLink href={homepageUrl}>website</ExternalLink>}
-        <ExternalLink href={packageUrl}>package.json</ExternalLink>
-        {parseCustomModuleLinks(customLinks, module.name, module.version).map(
-          ({ label, href }) => (
-            <ExternalLink key={`${label}:${href}`} href={href}>
-              {label}
-            </ExternalLink>
-          ),
-        )}
+        {parseCustomModuleLinks(customLinks, module.name, module.version, {
+          repository: repoUrl,
+          homepage: homepageUrl,
+        }).map(({ label, href }) => (
+          <ExternalLink key={`${label}:${href}`} href={href}>
+            {label}
+          </ExternalLink>
+        ))}
       </ButtonGroup>
     </div>
   );

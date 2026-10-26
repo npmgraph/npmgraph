@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState, type HTMLProps } from 'react';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
-import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
+import useCustomModuleLinks, {
+  DEFAULT_CUSTOM_MODULE_LINKS,
+} from '../../hooks/useCustomModuleLinks.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
 import { getCustomModuleLinksError } from '../ModulePane/module-links.ts';
@@ -10,11 +12,14 @@ import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
+import { Button } from '../Button.tsx';
 import * as styles from './ViewPane.module.scss';
 
 export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
   const [customLinks, setCustomLinks] = useCustomModuleLinks();
-  const [shouldOpenPreferences] = useState(() => Boolean(customLinks.trim()));
+  const [shouldOpenPreferences] = useState(
+    () => customLinks !== DEFAULT_CUSTOM_MODULE_LINKS,
+  );
   const customLinksRef = useRef<HTMLTextAreaElement>(null);
   const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
   const [sizing, setSizing] = useHashParam(PARAM_SIZING);
@@ -107,10 +112,18 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
             }}
           />
         </label>
+        <Button
+          onClick={() => {
+            setCustomLinks(DEFAULT_CUSTOM_MODULE_LINKS);
+          }}
+        >
+          Reset to defaults
+        </Button>
         <p className={styles.customLinksHelp}>
           CSV: one link per line with label,url columns. {'{name}'} and{' '}
           {'{version}'} are URL-encoded; {'{+name}'} and {'{+version}'} preserve
-          reserved characters, e.g. @eslint/css.
+          reserved characters, e.g. @eslint/css. Use {'{repository}'} and{' '}
+          {'{homepage}'} for package metadata URLs.
         </p>
       </CollapsibleSection>
     </Pane>
