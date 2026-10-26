@@ -2,7 +2,7 @@
 // Run `npm run build` first.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { type Locator, locators, page, userEvent } from 'vitest/browser';
-import { $$ } from 'select-dom';
+import { $, $$ } from 'select-dom';
 
 declare module 'vitest/browser' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- needed for declaration merging
@@ -26,6 +26,8 @@ const node = (module = '') =>
   app()
     .getByCSS(`svg g.node${module && `[data-module^="${module}"]`}`)
     .first();
+
+const searchValue = () => $('input#search-field', doc()).value;
 
 const tab = (name: string) => app().getByRole('tab', { name, exact: true });
 
@@ -141,6 +143,17 @@ describe('graph', () => {
 });
 
 describe('navigation', () => {
+  it('keeps the search field in sync with query links', async () => {
+    await goto('?q=debug');
+    await nodeAppears('debug@');
+    expect(searchValue()).toBe('debug');
+    await userEvent.click(tab('Info'));
+    await userEvent.click(app().getByRole('link', { name: 'express' }));
+    await vi.waitFor(() => {
+      expect(searchValue()).toBe('express');
+    });
+  });
+
   it('search updates graph and url', async () => {
     await goto('?q=debug');
     await nodeAppears('debug@');
@@ -161,6 +174,7 @@ describe('navigation', () => {
       expect(win().location.search).toContain('q=debug');
     });
     await nodeAppears('debug@');
+    expect(searchValue()).toBe('debug');
   });
 
   it('"/" focuses search field', async () => {
@@ -171,6 +185,34 @@ describe('navigation', () => {
     await vi.waitFor(() => {
       expect(doc().activeElement?.id).toBe('search-field');
     });
+  });
+});
+
+describe('package.json input', () => {
+  it('does not show local package names in the search field', async () => {
+    await goto('?q=debug');
+    await userEvent.click(tab('Info'));
+    const fileInput = app().getByLabelText('Choose file');
+    const upload = async (contents: object) => {
+      await userEvent.upload(
+        fileInput,
+        new File([JSON.stringify(contents)], 'package.json', {
+          type: 'application/json',
+        }),
+      );
+    };
+
+    await upload({ version: '1.0.1' });
+    await vi.waitFor(() => {
+      expect(win().location.search).toContain('unnamed-package-');
+    });
+    expect(searchValue()).toBe('');
+
+    await upload({ name: 'local-package', version: '1.0.1' });
+    await vi.waitFor(() => {
+      expect(win().location.search).toContain('local-package');
+    });
+    expect(searchValue()).toBe('');
   });
 });
 
