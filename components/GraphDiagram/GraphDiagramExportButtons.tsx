@@ -42,7 +42,7 @@ export default function GraphDiagramExportButtons() {
               <PngIcon />
             </Button>
             <Button
-              title="Copy graph as Mermaid"
+              title="Copy graph as Mermaid in Markdown"
               onClick={() => {
                 setIsCopying(false);
                 if (
