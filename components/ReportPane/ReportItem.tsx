@@ -1,4 +1,4 @@
-import { Suspense, use, useDeferredValue } from 'react';
+import { Suspense, use, useDeferredValue, useState } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
 
 import { cn } from '../../lib/dom.ts';
@@ -46,6 +46,7 @@ function ReportItemContent({
   promise: Promise<RenderedAnalysis | undefined>;
 }) {
   const analysis = use(promise);
+  const [isOpen, setIsOpen] = useState(false);
 
   if (!analysis) {
     return null;
@@ -56,6 +57,9 @@ function ReportItemContent({
   return (
     <CollapsibleSection
       open={false}
+      onToggle={event => {
+        setIsOpen(event.currentTarget.open);
+      }}
       icon={
         SYMBOLS[type] && (
           <span className={cn(styles.symbol, styles[type])}>
@@ -68,7 +72,7 @@ function ReportItemContent({
       {...props}
     >
       {children ? <div className={styles.description}>{children}</div> : null}
-      <div className={styles.details}>{details}</div>
+      <div className={styles.details}>{isOpen ? details : null}</div>
     </CollapsibleSection>
   );
 }
