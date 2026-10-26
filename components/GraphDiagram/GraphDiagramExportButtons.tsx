@@ -1,5 +1,7 @@
 import copy from 'copy-text-to-clipboard';
+import { useState } from 'react';
 import { $$, $optional } from 'select-dom';
+import CopyIcon from '../../images/icons/copy.svg?react';
 import DownloadIcon from '../../images/icons/download.svg?react';
 import MarkdownIcon from '../../images/icons/markdown.svg?react';
 import PngIcon from '../../images/icons/png.svg?react';
@@ -18,33 +20,55 @@ function getDiagramElement() {
 
 export default function GraphDiagramExportButtons() {
   const [graph] = useGlobalState('graph');
+  const [isCopying, setIsCopying] = useState(false);
 
   return (
-    <ButtonGroup>
-      <Button title="Download graph as SVG" onClick={downloadSvg}>
-        <DownloadIcon />
-      </Button>
-      <Button
-        title="Copy graph as PNG"
-        onClick={() => {
-          void copyPng();
-        }}
-      >
-        <PngIcon />
-      </Button>
-      <Button
-        title="Copy graph as Mermaid"
-        onClick={() => {
-          if (copy(`\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``)) {
-            flash('Copied graph as text');
-          } else {
-            flash('Could not copy graph', 'error');
-          }
-        }}
-      >
-        <MarkdownIcon />
-      </Button>
-    </ButtonGroup>
+    <>
+      <ButtonGroup>
+        <Button title="Download graph as SVG" onClick={downloadSvg}>
+          <DownloadIcon />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        {isCopying ? (
+          <>
+            <Button
+              title="Copy graph as PNG"
+              onClick={() => {
+                setIsCopying(false);
+                void copyPng();
+              }}
+            >
+              <PngIcon />
+            </Button>
+            <Button
+              title="Copy graph as Mermaid"
+              onClick={() => {
+                setIsCopying(false);
+                if (
+                  copy(`\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``)
+                ) {
+                  flash('Copied graph as text');
+                } else {
+                  flash('Could not copy graph', 'error');
+                }
+              }}
+            >
+              <MarkdownIcon />
+            </Button>
+          </>
+        ) : (
+          <Button
+            title="Copy graph"
+            onClick={() => {
+              setIsCopying(true);
+            }}
+          >
+            <CopyIcon />
+          </Button>
+        )}
+      </ButtonGroup>
+    </>
   );
 }
 
