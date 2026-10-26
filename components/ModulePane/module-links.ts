@@ -3,6 +3,8 @@ const CUSTOM_LINKS_ERROR =
 
 type CustomModuleLink = { label: string; href: string };
 
+const RESERVED_CHARS = new Set(":/?#[]@!$&'()*+,;=");
+
 function encodeTemplateValue(value: string): string {
   return encodeURIComponent(value).replaceAll(/[!'()*]/g, character => {
     const code = {
@@ -16,6 +18,16 @@ function encodeTemplateValue(value: string): string {
   });
 }
 
+function encodeReservedTemplateValue(value: string): string {
+  return encodeTemplateValue(value).replaceAll(
+    /%(?<byte>[0-9a-f]{2})/gi,
+    (encoded, byte) => {
+      const character = String.fromCodePoint(Number.parseInt(byte, 16));
+      return RESERVED_CHARS.has(character) ? character : encoded;
+    },
+  );
+}
+
 function expandTemplate(
   template: string,
   name: string,
@@ -23,11 +35,24 @@ function expandTemplate(
 ): string | null {
   const href = template.replaceAll(/\{[^{}]*\}/g, expression => {
     const variable = expression.slice(1, -1);
-    return variable === 'name'
-      ? encodeTemplateValue(name)
-      : variable === 'version'
-        ? encodeTemplateValue(version)
-        : expression;
+    const isReservedExpansion = variable.startsWith('+');
+    const nameValue = isReservedExpansion
+      ? encodeReservedTemplateValue(name)
+      : encodeTemplateValue(name);
+    const versionValue = isReservedExpansion
+      ? encodeReservedTemplateValue(version)
+      : encodeTemplateValue(version);
+
+    switch (isReservedExpansion ? variable.slice(1) : variable) {
+      case 'name':
+        return nameValue;
+
+      case 'version':
+        return versionValue;
+
+      default:
+        return expression;
+    }
   });
 
   return /[{}]/.test(href) || /%(?![0-9a-f]{2})/i.test(href) ? null : href;

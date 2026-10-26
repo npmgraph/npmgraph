@@ -108,8 +108,9 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
           />
         </label>
         <p className={styles.customLinksHelp}>
-          CSV: one link per line with label,url columns. Use {'{name}'} and{' '}
-          {'{version}'} in URLs; values are URL-encoded.
+          CSV: one link per line with label,url columns. {'{name}'} and{' '}
+          {'{version}'} are URL-encoded; {'{+name}'} and {'{+version}'} preserve
+          reserved characters, e.g. @eslint/css.
         </p>
       </CollapsibleSection>
     </Pane>

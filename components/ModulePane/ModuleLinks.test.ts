@@ -24,6 +24,25 @@ describe('parseCustomModuleLinks', () => {
     ]);
   });
 
+  it('supports reserved expansion for scoped package names', () => {
+    expect(
+      parseCustomModuleLinks(
+        'encoded,https://example.com/{name}\nraw,https://example.com/{+name}',
+        '@eslint/css',
+        '1.2.3',
+      ),
+    ).toEqual([
+      {
+        label: 'encoded',
+        href: 'https://example.com/%40eslint%2Fcss',
+      },
+      {
+        label: 'raw',
+        href: 'https://example.com/@eslint/css',
+      },
+    ]);
+  });
+
   it('rejects colon-separated links and non-HTTP URLs', () => {
     expect(
       parseCustomModuleLinks(
@@ -64,5 +83,8 @@ describe('parseCustomModuleLinks', () => {
     expect(
       getCustomModuleLinksError('npmx,https://example.com/%s'),
     ).toBeTruthy();
+    expect(getCustomModuleLinksError('npmx,https://example.com/{+name}')).toBe(
+      '',
+    );
   });
 });
