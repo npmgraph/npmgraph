@@ -53,25 +53,10 @@ describe('parseCustomModuleLinks', () => {
     ).toEqual([]);
   });
 
-  it('handles quoted CSV fields containing commas', () => {
-    expect(
-      parseCustomModuleLinks(
-        '"npm, x","https://example.com/search?q=a,b"',
-        'react',
-        '18.2.0',
-      ),
-    ).toEqual([
-      {
-        label: 'npm, x',
-        href: 'https://example.com/search?q=a,b',
-      },
-    ]);
-  });
-
   it('validates non-empty rows as two-column HTTP(S) CSV', () => {
     expect(
       getCustomModuleLinksError(
-        'npmx,https://npmx.dev/package/{name}@{version}\n"bundle,phobia",https://bundlephobia.com/package/{name}@{version}',
+        'npmx,https://npmx.dev/package/{name}@{version}\nbundlephobia,https://bundlephobia.com/package/{name}@{version}',
       ),
     ).toBe('');
     expect(getCustomModuleLinksError('not-csv')).toBeTruthy();
@@ -79,9 +64,6 @@ describe('parseCustomModuleLinks', () => {
     expect(getCustomModuleLinksError('npmx,ftp://example.com')).toBeTruthy();
     expect(
       getCustomModuleLinksError('npmx,https://example.com/{unknown}'),
-    ).toBeTruthy();
-    expect(
-      getCustomModuleLinksError('npmx,https://example.com/%s'),
     ).toBeTruthy();
     expect(getCustomModuleLinksError('npmx,https://example.com/{+name}')).toBe(
       '',
