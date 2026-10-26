@@ -57,9 +57,6 @@ function ReportItemContent({
   return (
     <CollapsibleSection
       open={false}
-      onToggle={event => {
-        setIsOpen(event.currentTarget.open);
-      }}
       icon={
         SYMBOLS[type] && (
           <span className={cn(styles.symbol, styles[type])}>
@@ -69,6 +66,9 @@ function ReportItemContent({
       }
       title={summary}
       count={count}
+      onToggle={event => {
+        setIsOpen(event.currentTarget.open);
+      }}
       {...props}
     >
       {children ? <div className={styles.description}>{children}</div> : null}
