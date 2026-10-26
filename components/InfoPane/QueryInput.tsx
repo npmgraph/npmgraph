@@ -1,13 +1,9 @@
 import { type HTMLProps, useRef, useState } from 'react';
-import {
-  PaneType,
-  PARAM_QUERY,
-  SEARCH_FIELD_ID,
-  UNNAMED_PACKAGE,
-} from '../../lib/constants.ts';
+import { PaneType, PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { getCachedModule } from '../../lib/ModuleCache.ts';
 import { searchSet } from '../../lib/url-util.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
@@ -24,11 +20,20 @@ export default function QueryInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
   const [, setPane] = useGlobalState('pane');
-  const initialValue = query.join(', ');
+  const inputValue = query
+    .filter(key => !getCachedModule(key)?.isLocal)
+    .join(', ');
 
-  const [value, setValue] = useState(
-    initialValue.startsWith(UNNAMED_PACKAGE) ? '' : initialValue,
-  );
+  const [valueState, setValueState] = useState({
+    query,
+    inputValue,
+    value: inputValue,
+  });
+  if (valueState.query !== query || valueState.inputValue !== inputValue) {
+    setValueState({ query, inputValue, value: inputValue });
+  }
+
+  const { value } = valueState;
 
   function getSearchParameters() {
     let moduleKeys = inputRef
@@ -79,7 +84,7 @@ export default function QueryInput({
         // Also don't auto-focus when a graph is loading, since focus switches to the Info pane (overriding the `tab` hash)
         autoFocus={!hasSoftKeyboard && query.length === 0}
         onChange={event => {
-          setValue(event.target.value);
+          setValueState({ query, inputValue, value: event.target.value });
         }}
         onKeyDown={handleCmdEnter}
         onFocus={handleFocus}
