@@ -34,11 +34,12 @@ export default function ReportPane({
 }: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...restProps } = props;
   const [only, setOnly] = useHashParam(PARAM_ONLY);
-  const isDocument = only === 'report';
 
   if (!graph?.moduleInfos) {
     return <div>Loading</div>;
   }
+
+  const isDocument = only === 'report';
 
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
@@ -64,104 +65,101 @@ export default function ReportPane({
           <CollapsedModules />
         </>
       )}
-      <ReportLayoutContext
-        value={isDocument ? 'document' : 'collapsible'}
-      >
+      <ReportLayoutContext value={isDocument ? 'document' : 'collapsible'}>
+        <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
-      <ReportItem data={moduleAnalysis} reporter={modulesAll} />
+        <ReportItem
+          data={peerDependencyAnalysis}
+          reporter={peerDependenciesAll}
+        />
 
-      <ReportItem
-        data={peerDependencyAnalysis}
-        reporter={peerDependenciesAll}
-      />
+        <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
 
-      <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
+        <ReportItem data={licensesAnalysis} reporter={licensesAll} />
 
-      <ReportItem data={licensesAnalysis} reporter={licensesAll} />
+        <ReportItem
+          type="warn"
+          data={licensesAnalysis}
+          reporter={licensesKeyword('obsolete')}
+        >
+          "Obsolete" licenses have a newer version available. Consider asking
+          the module owner to update to a more recent version. See{' '}
+          <ExternalLink href="https://opensource.org/licenses/">
+            OSI Licenses
+          </ExternalLink>
+          .
+        </ReportItem>
+        <ReportItem data={moduleAnalysis} reporter={moduleVulnerabilities}>
+          Security advisories per <code>npm audit</code>. Data sourced from the
+          npm registry. See{' '}
+          <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">
+            npm audit documentation
+          </ExternalLink>
+        </ReportItem>
 
-      <ReportItem
-        type="warn"
-        data={licensesAnalysis}
-        reporter={licensesKeyword('obsolete')}
-      >
-        "Obsolete" licenses have a newer version available. Consider asking the
-        module owner to update to a more recent version. See{' '}
-        <ExternalLink href="https://opensource.org/licenses/">
-          OSI Licenses
-        </ExternalLink>
-        .
-      </ReportItem>
-      <ReportItem data={moduleAnalysis} reporter={moduleVulnerabilities}>
-        Security advisories per <code>npm audit</code>. Data sourced from the
-        npm registry. See{' '}
-        <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">
-          npm audit documentation
-        </ExternalLink>
-      </ReportItem>
+        <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
+          Module repetition is a result of incompatible version constraints, and
+          may lead to increased bundle and <code>node_modules</code> directory
+          size. Consider asking <em>upstream</em> module owners to update to the
+          latest version or loosen the version constraint.
+        </ReportItem>
 
-      <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
-        Module repetition is a result of incompatible version constraints, and
-        may lead to increased bundle and <code>node_modules</code> directory
-        size. Consider asking <em>upstream</em> module owners to update to the
-        latest version or loosen the version constraint.
-      </ReportItem>
+        <ReportItem data={moduleAnalysis} reporter={modulesDeprecated}>
+          Deprecated modules are unsupported and may have unpatched security
+          vulnerabilities. See the deprecation notes below for module-specific
+          instructions.
+        </ReportItem>
 
-      <ReportItem data={moduleAnalysis} reporter={modulesDeprecated}>
-        Deprecated modules are unsupported and may have unpatched security
-        vulnerabilities. See the deprecation notes below for module-specific
-        instructions.
-      </ReportItem>
+        <ReportItem data={moduleAnalysis} reporter={modulesOutdated}>
+          These modules are behind the <code>latest</code> version on npm. Newer
+          versions may include bug and security fixes. If an update is held back
+          by the version constraint of another module, consider asking{' '}
+          <em>upstream</em> module owners to update.
+        </ReportItem>
 
-      <ReportItem data={moduleAnalysis} reporter={modulesOutdated}>
-        These modules are behind the <code>latest</code> version on npm. Newer
-        versions may include bug and security fixes. If an update is held back
-        by the version constraint of another module, consider asking{' '}
-        <em>upstream</em> module owners to update.
-      </ReportItem>
+        <ReportItem data={maintainersAnalysis} reporter={maintainersSolo}>
+          Modules with a single maintainer are at risk of "unplanned
+          abandonment". See{' '}
+          <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
+            Bus factor
+          </ExternalLink>
+          .
+        </ReportItem>
+        <ReportItem
+          type="warn"
+          data={licensesAnalysis}
+          reporter={licensesMissing}
+        >
+          Modules without a declared license, or that are explicitely
+          "UNLICENSED", are not opensource and may infringe on the owner's
+          copyright. Consider contacting the owner to clarify licensing terms.
+        </ReportItem>
 
-      <ReportItem data={maintainersAnalysis} reporter={maintainersSolo}>
-        Modules with a single maintainer are at risk of "unplanned abandonment".
-        See{' '}
-        <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
-          Bus factor
-        </ExternalLink>
-        .
-      </ReportItem>
-      <ReportItem
-        type="warn"
-        data={licensesAnalysis}
-        reporter={licensesMissing}
-      >
-        Modules without a declared license, or that are explicitely
-        "UNLICENSED", are not opensource and may infringe on the owner's
-        copyright. Consider contacting the owner to clarify licensing terms.
-      </ReportItem>
+        <ReportItem
+          type="warn"
+          data={licensesAnalysis}
+          reporter={licensesKeyword('discouraged')}
+        >
+          "Discouraged" licenses typically have a more popular alternative. See{' '}
+          <ExternalLink href="https://opensource.org/licenses/">
+            OSI Licenses
+          </ExternalLink>
+          .
+        </ReportItem>
 
-      <ReportItem
-        type="warn"
-        data={licensesAnalysis}
-        reporter={licensesKeyword('discouraged')}
-      >
-        "Discouraged" licenses typically have a more popular alternative. See{' '}
-        <ExternalLink href="https://opensource.org/licenses/">
-          OSI Licenses
-        </ExternalLink>
-        .
-      </ReportItem>
+        <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
+          From the{' '}
+          <ExternalLink href="https://github.com/e18e/module-replacements">
+            module-replacements
+          </ExternalLink>{' '}
+          project, these modules can be removed or replaced with more modern,
+          streamlined alternatives
+        </ReportItem>
 
-      <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
-        From the{' '}
-        <ExternalLink href="https://github.com/e18e/module-replacements">
-          module-replacements
-        </ExternalLink>{' '}
-        project, these modules can be removed or replaced with more modern,
-        streamlined alternatives
-      </ReportItem>
-
-      <ReportItem
-        data={peerDependencyAnalysis}
-        reporter={peerDependenciesMissing}
-      />
+        <ReportItem
+          data={peerDependencyAnalysis}
+          reporter={peerDependenciesMissing}
+        />
       </ReportLayoutContext>
     </Pane>
   );

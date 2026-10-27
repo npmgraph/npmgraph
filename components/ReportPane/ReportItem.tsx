@@ -100,6 +100,12 @@ function ReportItemContent({
   );
 }
 
+function getSectionHref(id: string) {
+  const parameters = new URLSearchParams(location.hash.replace(/^#/v, ''));
+  parameters.set(PARAM_SECTION, id);
+  return `#${parameters}`;
+}
+
 function DocumentSection({
   summary,
   count,
@@ -125,7 +131,7 @@ function DocumentSection({
     <section>
       <h2 id={id}>
         <a
-          href={`#${new URLSearchParams({ ...Object.fromEntries(new URLSearchParams(location.hash.replace(/^#/v, ''))), [PARAM_SECTION]: id })}`}
+          href={getSectionHref(id)}
           aria-label={`Link to ${summary}`}
           onClick={event => {
             event.preventDefault();

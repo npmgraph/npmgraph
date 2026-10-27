@@ -18,7 +18,11 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const isInspectorOpen = hide === null || isReportOnly;
 
   const tabs = [
-    { pane: PaneType.GRAPH, label: 'Graph', visible: isTightScreen || isReportOnly },
+    {
+      pane: PaneType.GRAPH,
+      label: 'Graph',
+      visible: isTightScreen || isReportOnly,
+    },
     { pane: PaneType.INFO, label: 'Info' },
     { pane: PaneType.REPORT, label: 'Report' },
     { pane: PaneType.MODULE, label: 'Module' },
@@ -49,7 +53,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                     setOnly(null);
                     setHide(null);
                     setCurrentPane(
-                      tabPane === PaneType.GRAPH && !isTightScreen
+                      !isTightScreen && tabPane === PaneType.GRAPH
                         ? PaneType.REPORT
                         : tabPane,
                     );
@@ -62,12 +66,14 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
           })}
       </div>
 
-      {!isReportOnly && <Splitter
-        isOpen={isInspectorOpen}
-        onClick={() => {
-          setHide(true);
-        }}
-      />}
+      {!isReportOnly && (
+        <Splitter
+          isOpen={isInspectorOpen}
+          onClick={() => {
+            setHide(true);
+          }}
+        />
+      )}
     </div>
   );
 }
