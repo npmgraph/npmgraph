@@ -4,6 +4,7 @@
 
   .body {
     display: block;
+    margin-trim: block;
     margin-left: 1rem;
     font-style: italic;
   }
@@ -12,10 +13,6 @@
     color: var(--text-dim);
     font-style: normal;
     font-weight: bold;
-  }
-
-  .body ul {
-    margin-bottom: 0px;
   }
 
   .selectable {
