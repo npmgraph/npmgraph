@@ -11,10 +11,8 @@ import { $optional } from 'select-dom';
 
 const FLASH_GAP = 10;
 
-type FlashViewEntry = FlashEntry;
-
 export default function Flash() {
-  const [entries, setEntries] = useState<FlashViewEntry[]>([]);
+  const [entries, setEntries] = useState<FlashEntry[]>([]);
 
   // Read from the DOM on resize and on every render (e.g. a new flash)
   const top = useSyncExternalStore(subscribeToResize, getTop);

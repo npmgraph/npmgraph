@@ -6,8 +6,6 @@ import human from '../../lib/human.ts';
 import { percent } from '../../lib/dom.ts';
 import * as styles from './ModuleTreeMap.module.scss';
 
-type Dependency = BundlePhobiaData['dependencySizes'][number];
-
 type TreemapLeaf = {
   key: string;
   name: string;
@@ -28,6 +26,8 @@ export function layoutTreemap(
   w: number,
   h: number,
 ): TreemapLeaf[] {
+  type Dependency = BundlePhobiaData['dependencySizes'][number];
+
   // Note: dependencySizes is *sometimes* undefined.  E.g.
   // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
   // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- See note in BundlePhobiaData
