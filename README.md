@@ -74,14 +74,6 @@ https://npmgraph.js.org/?q=send@0.18.0#hide
 
 https://npmgraph.js.org/?q=send#hide=graph
 
-### `section` (hash param)
-
-Used with `hide=graph`: the id of the report section (its lowercased, hyphenated title) to scroll to. Set by the `#` links shown when hovering section headings.
-
-**Example**: Jump to the licenses section
-
-https://npmgraph.js.org/?q=send#hide=graph&section=licenses
-
 ### `packages` (hash param, **JSON-encoded**)
 
 JSON-encoded array of package objects to load as local modules. Each object must have a string `name`; package fields not supported by the app are ignored.
@@ -121,9 +113,15 @@ url.toString(); // Returns the above URL
 
 Name (lowercase title) of a section in the inspector. When opened, the matching section is expanded (if collapsible) and scrolled into view.
 
+Also used by the report-only view (`hide=graph`), where sections are always open and headings have a `#` link.
+
 **Example**: Show the release timeline of `formidable@1.0.17`
 
 https://npmgraph.js.org/?q=express@2.4.6#tab=module&section=release+timeline&select=exact%3Aformidable%401.0.17
+
+**Example**: Show only the report for `send`, at its licenses section
+
+https://npmgraph.js.org/?q=send#hide=graph&section=licenses
 
 ### `select` (hash param)
 

@@ -4,7 +4,7 @@ import usePromise from '../../hooks/usePromise.ts';
 import { PARAM_SECTION } from '../../lib/constants.ts';
 
 import { cn } from '../../lib/dom.ts';
-import { CollapsibleSection } from '../ui/Section.tsx';
+import { CollapsibleSection, sectionName } from '../ui/Section.tsx';
 import type { RenderedAnalysis } from './analyzers/Analyzer.tsx';
 import { getHeadingId, ReportLayoutContext } from './ReportLayout.ts';
 import * as styles from './ReportItem.module.scss';
@@ -100,9 +100,9 @@ function ReportItemContent({
   );
 }
 
-function getSectionHref(id: string) {
+function getSectionHref(name: string) {
   const parameters = new URLSearchParams(location.hash.replace(/^#/v, ''));
-  parameters.set(PARAM_SECTION, id);
+  parameters.set(PARAM_SECTION, name);
   return `#${parameters}`;
 }
 
@@ -118,24 +118,25 @@ function DocumentSection({
   children: React.ReactNode;
 }) {
   const id = getHeadingId(summary);
+  const name = sectionName(summary);
   const [section, setSection] = useHashParam(PARAM_SECTION);
 
   // Sections render asynchronously, so scroll once the linked one exists
   useEffect(() => {
-    if (section === id) {
+    if (section === name) {
       document.getElementById(id)?.scrollIntoView();
     }
-  }, [section, id]);
+  }, [section, name, id]);
 
   return (
     <section>
       <h2 id={id}>
         <a
-          href={getSectionHref(id)}
+          href={getSectionHref(name)}
           aria-label={`Link to ${summary}`}
           onClick={event => {
             event.preventDefault();
-            setSection(id);
+            setSection(name);
           }}
         >
           #

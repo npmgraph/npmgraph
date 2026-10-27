@@ -11,7 +11,7 @@ function Count({ count }: { count?: number | string }) {
   );
 }
 
-function sectionName(title: string) {
+export function sectionName(title: string) {
   return title.toLowerCase();
 }
 
