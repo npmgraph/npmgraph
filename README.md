@@ -107,7 +107,7 @@ url.toString(); // Returns the above URL
 
 ### `section` (hash param)
 
-Name (lowercase title) of a section in the inspector. When opened, the matching section is expanded (if collapsible) and scrolled into view. Hover over a section title and click the link icon to set this value.
+Name (lowercase title) of a section in the inspector. When opened, the matching section is expanded (if collapsible) and scrolled into view.
 
 **Example**: Show the release timeline of `formidable@1.0.17`
 

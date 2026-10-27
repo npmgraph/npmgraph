@@ -15,28 +15,6 @@ function sectionName(title: string) {
   return title.toLowerCase();
 }
 
-function SectionLink({ name }: { name: string }) {
-  const [, setSection] = useHashParam(PARAM_SECTION);
-  const parameters = new URLSearchParams(location.hash.slice(1));
-  parameters.set(PARAM_SECTION, name);
-
-  return (
-    <a
-      className={styles.link}
-      href={`#${parameters}`}
-      aria-label={`Link to ${name} section`}
-      onClick={event => {
-        // Don't toggle <details>
-        event.stopPropagation();
-        event.preventDefault();
-        setSection(name);
-      }}
-    >
-      🔗
-    </a>
-  );
-}
-
 // Open and scroll to the section named in the URL hash, if it's this one
 function useSectionTarget<T extends HTMLElement>(name: string) {
   const [section] = useHashParam(PARAM_SECTION);
@@ -85,7 +63,6 @@ export function CollapsibleSection({
         {title}
         {icon}
         <Count count={count} />
-        <SectionLink name={name} />
       </summary>
       {children}
     </details>
@@ -111,7 +88,6 @@ export function Section({
       <h3>
         {title}
         <Count count={count} />
-        <SectionLink name={name} />
       </h3>
       {children}
     </div>
