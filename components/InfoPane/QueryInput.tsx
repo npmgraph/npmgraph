@@ -80,8 +80,9 @@ export default function QueryInput({
         autoComplete="off"
         autoCorrect="off"
         spellCheck="false"
-        // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting
-        autoFocus={!hasSoftKeyboard}
+        // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting.
+        // Also don't auto-focus when a graph is loading, since focus switches to the Info pane (overriding the `tab` hash)
+        autoFocus={!hasSoftKeyboard && query.length === 0}
         onChange={event => {
           setValueState({ query, inputValue, value: event.target.value });
         }}
