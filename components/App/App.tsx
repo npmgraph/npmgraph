@@ -62,7 +62,7 @@ export default function App() {
       >
         <div className={styles.stickyTop}>
           <AppHeader />
-          {(isTightScreen || isReportOnly) && <Tabs />}
+          {isTightScreen && <Tabs />}
         </div>
         {activity.total > 0 ? <Loader activity={activity} /> : null}
         <div className={styles.content}>
