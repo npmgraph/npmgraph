@@ -189,6 +189,26 @@ describe('overrides', () => {
     ]);
   });
 
+  it('override matches the declared dependency name, not the aliased package', async () => {
+    add('typescript', { '6.0.2': {}, '7.0.2': {} });
+    add('@typescript/typescript6', {
+      '6.0.2': { dependencies: { '@typescript/old': 'npm:typescript@^6' } },
+    });
+    root({
+      devDependencies: {
+        typescript: 'npm:@typescript/typescript6@^6',
+        '@typescript/native': 'npm:typescript@^7',
+      },
+      overrides: { typescript: 'npm:@typescript/typescript6@^6' },
+    });
+    const found = await edges(['devDependencies', 'dependencies']);
+    expect(found.toSorted()).toEqual([
+      '@typescript/typescript6@6.0.2 -> typescript@6.0.2 [dependencies]',
+      'root@1.0.0 -> @typescript/typescript6@6.0.2 [devDependencies]',
+      'root@1.0.0 -> typescript@7.0.2 [devDependencies]',
+    ]);
+  });
+
   it('$ref override uses the root dependency spec', async () => {
     add('a', { '1.0.0': { dependencies: { react: '^18' } } });
     root({
