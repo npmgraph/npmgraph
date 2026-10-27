@@ -45,7 +45,10 @@ export default async function fetchJson<T>(
       }
 
       const error = new HttpError(response.status);
-      error.stack = traceError.stack;
+      if (traceError.stack !== undefined) {
+        error.stack = traceError.stack;
+      }
+
       throw error;
     })
     .catch(error => {

@@ -24,7 +24,7 @@ export default class Module {
   }
 
   package: PackumentVersion;
-  packument?: Packument;
+  packument?: Packument | undefined;
   isLocal = false;
   stubError?: Error;
 

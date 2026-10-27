@@ -35,7 +35,7 @@ export type QueryTypeValue = (typeof QueryType)[keyof typeof QueryType];
 
 type ModuleCacheEntry = PromiseWithResolvers<Module> & {
   module: Module; // Set once module is loaded
-  registry?: string; // NPM_REGISTRY url
+  registry?: string | undefined; // NPM_REGISTRY url
 };
 
 // Entries without a registry (local and URL modules) are always current

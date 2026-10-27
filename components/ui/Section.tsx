@@ -3,7 +3,7 @@ import { cn } from '../../lib/dom.ts';
 
 import * as styles from './Section.module.scss';
 
-function Count({ count }: { count?: number | string }) {
+function Count({ count }: { count?: number | string | undefined }) {
   return count === undefined ? null : (
     <span className={styles.count}>{count}</span>
   );
@@ -19,7 +19,7 @@ export function CollapsibleSection({
   ...props
 }: {
   title: string;
-  count?: number | string;
+  count?: number | string | undefined;
   icon?: ReactNode;
   open?: boolean;
 } & HTMLProps<HTMLDetailsElement>) {
@@ -44,7 +44,7 @@ export function Section({
   title: string;
   children: any;
   className?: string;
-  count?: number | string;
+  count?: number | string | undefined;
 }) {
   return (
     <div className={cn(className, styles.root)}>

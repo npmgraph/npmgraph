@@ -5,7 +5,7 @@ import { getRegistry } from './registry-util.ts';
 const packumentCache = new Map<string, PackumentCacheEntry>();
 
 type PackumentCacheEntry = PromiseWithResolvers<Packument | undefined> & {
-  packument?: Packument; // Set once packument is loaded
+  packument?: Packument | undefined; // Set once packument is loaded
   registry?: string; // NPM_REGISTRY url
 };
 

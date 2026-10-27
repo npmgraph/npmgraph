@@ -28,7 +28,7 @@ export function Tag({
   type: QueryTypeValue;
   value: string;
   count?: number;
-  gravatar?: string;
+  gravatar?: string | undefined;
 } & Omit<HTMLProps<HTMLButtonElement>, 'type'>) {
   const setGraphSelection = useGraphSelection()[2];
   let title = value;

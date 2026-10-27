@@ -9,7 +9,7 @@ import * as styles from './ReportItem.module.scss';
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
 
 type ReportItemProps<T> = {
-  data?: T;
+  data?: T | undefined;
   reporter: (
     state: T,
   ) => Promise<RenderedAnalysis | undefined> | RenderedAnalysis | undefined;
@@ -55,6 +55,7 @@ function ReportItemContent({
 
   return (
     <CollapsibleSection
+      {...props}
       open={false}
       icon={
         SYMBOLS[type] && (
@@ -65,7 +66,6 @@ function ReportItemContent({
       }
       title={summary}
       count={count}
-      {...props}
     >
       {children ? <div className={styles.description}>{children}</div> : null}
       <div className={styles.details}>{details}</div>
