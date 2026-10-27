@@ -1,3 +1,4 @@
+import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { toggleItem } from '../../lib/array-util.ts';
@@ -5,6 +6,8 @@ import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
+import { parseCustomModuleLinks } from './module-links.ts';
+import * as styles from './ModulePane.module.scss';
 import { Button, ButtonCheckbox, ButtonGroup } from '../Button.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 
@@ -62,21 +65,26 @@ export function ModuleActions({ module }: { module: Module }) {
 }
 
 export function ModuleExternalLinks({ module }: { module: Module }) {
-  const npmUrl = `https://www.npmjs.com/package/${module.name}/v/${module.version}`;
-  const packageUrl = `https://cdn.jsdelivr.net/npm/${module.key}/package.json`;
+  const [customLinks] = useCustomModuleLinks();
   const repoUrl = getRepoUrlForModule(module);
   const homepageUrl =
     module.package.homepage &&
     !module.package.homepage.startsWith('https://github.com/')
       ? module.package.homepage
-      : null;
+      : undefined;
 
   return (
-    <ButtonGroup>
-      <ExternalLink href={npmUrl}>npm</ExternalLink>
-      {repoUrl && <ExternalLink href={repoUrl}>repo</ExternalLink>}
-      {homepageUrl && <ExternalLink href={homepageUrl}>website</ExternalLink>}
-      <ExternalLink href={packageUrl}>package.json</ExternalLink>
-    </ButtonGroup>
+    <div>
+      <ButtonGroup className={styles.moduleLinks}>
+        {parseCustomModuleLinks(customLinks, module.name, module.version, {
+          repository: repoUrl,
+          homepage: homepageUrl,
+        }).map(({ label, href }) => (
+          <ExternalLink key={`${label}:${href}`} href={href}>
+            {label}
+          </ExternalLink>
+        ))}
+      </ButtonGroup>
+    </div>
   );
 }

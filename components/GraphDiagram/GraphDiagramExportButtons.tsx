@@ -1,13 +1,15 @@
 import copy from 'copy-text-to-clipboard';
+import { useState } from 'react';
 import { $$, $optional } from 'select-dom';
 import CopyIcon from '../../images/icons/copy.svg?react';
-import CopyImageIcon from '../../images/icons/copy-image.svg?react';
 import DownloadIcon from '../../images/icons/download.svg?react';
+import MarkdownIcon from '../../images/icons/markdown.svg?react';
+import PngIcon from '../../images/icons/png.svg?react';
 import { report } from '../../lib/bugsnag.ts';
 import { flash } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeMermaid } from '../../lib/graph-util.ts';
-import { Button, ButtonBadge, ButtonGroup } from '../Button.tsx';
+import { Button, ButtonGroup } from '../Button.tsx';
 import * as graphStyles from './GraphDiagram.module.scss';
 
 type DownloadExtension = 'svg' | 'png';
@@ -18,36 +20,55 @@ function getDiagramElement() {
 
 export default function GraphDiagramExportButtons() {
   const [graph] = useGlobalState('graph');
+  const [isCopying, setIsCopying] = useState(false);
 
   return (
-    <ButtonGroup>
-      <Button title="Download graph as SVG" onClick={downloadSvg}>
-        <DownloadIcon />
-        <ButtonBadge>SVG</ButtonBadge>
-      </Button>
-      <Button
-        title="Copy graph as PNG"
-        onClick={() => {
-          void copyPng();
-        }}
-      >
-        <CopyImageIcon />
-        <ButtonBadge>PNG</ButtonBadge>
-      </Button>
-      <Button
-        title="Copy graph as Mermaid"
-        onClick={() => {
-          if (copy(`\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``)) {
-            flash('Copied graph as text');
-          } else {
-            flash('Could not copy graph', 'error');
-          }
-        }}
-      >
-        <CopyIcon />
-        <ButtonBadge>MD</ButtonBadge>
-      </Button>
-    </ButtonGroup>
+    <>
+      <ButtonGroup>
+        <Button title="Download graph as SVG" onClick={downloadSvg}>
+          <DownloadIcon />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup>
+        {isCopying ? (
+          <>
+            <Button
+              title="Copy graph as PNG"
+              onClick={() => {
+                setIsCopying(false);
+                void copyPng();
+              }}
+            >
+              <PngIcon />
+            </Button>
+            <Button
+              title="Copy graph as Mermaid in Markdown"
+              onClick={() => {
+                setIsCopying(false);
+                if (
+                  copy(`\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``)
+                ) {
+                  flash('Copied graph as text');
+                } else {
+                  flash('Could not copy graph', 'error');
+                }
+              }}
+            >
+              <MarkdownIcon />
+            </Button>
+          </>
+        ) : (
+          <Button
+            title="Copy graph"
+            onClick={() => {
+              setIsCopying(true);
+            }}
+          >
+            <CopyIcon />
+          </Button>
+        )}
+      </ButtonGroup>
+    </>
   );
 }
 
