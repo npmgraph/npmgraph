@@ -1,7 +1,11 @@
+import useHashParam from '../../hooks/useHashParam.ts';
+import { PARAM_ONLY } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import type { GraphState } from '../../lib/graph-util.ts';
 import { Pane } from '../ui/Pane.tsx';
 import { ReportItem } from './ReportItem.tsx';
+import { ReportLayoutContext } from './ReportLayout.ts';
 import { analyzeLicenses } from './analyzers/analyzeLicenses.ts';
 import { analyzeMaintainers } from './analyzers/analyzeMaintainers.tsx';
 import { analyzeModules } from './analyzers/analyzeModules.ts';
@@ -22,12 +26,15 @@ import {
   peerDependenciesMissing,
 } from './reporters/peerDependenciesAll.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
+import * as styles from './ReportPane.module.scss';
 
 export default function ReportPane({
   graph,
   ...props
 }: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...restProps } = props;
+  const [only, setOnly] = useHashParam(PARAM_ONLY);
+  const isDocument = only === 'report';
 
   if (!graph?.moduleInfos) {
     return <div>Loading</div>;
@@ -39,8 +46,27 @@ export default function ReportPane({
   const licensesAnalysis = analyzeLicenses(graph);
 
   return (
-    <Pane className={className} {...restProps}>
-      <CollapsedModules />
+    <Pane
+      className={cn(className, { [styles.document]: isDocument })}
+      {...restProps}
+    >
+      {isDocument ? null : (
+        <>
+          <button
+            type="button"
+            className={styles.expand}
+            onClick={() => {
+              setOnly('report');
+            }}
+          >
+            Expand report
+          </button>
+          <CollapsedModules />
+        </>
+      )}
+      <ReportLayoutContext
+        value={isDocument ? 'document' : 'collapsible'}
+      >
 
       <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
@@ -136,6 +162,7 @@ export default function ReportPane({
         data={peerDependencyAnalysis}
         reporter={peerDependenciesMissing}
       />
+      </ReportLayoutContext>
     </Pane>
   );
 }

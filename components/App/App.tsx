@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { PaneType } from '../../lib/constants.ts';
+import { PaneType, PARAM_ONLY } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
@@ -21,15 +22,19 @@ export default function App() {
   const [query] = useQuery();
   const isTightScreen = useIsTightScreen();
   const [pane, setPane] = useGlobalState('pane');
+  const [only] = useHashParam(PARAM_ONLY);
+  const isReportOnly = only === 'report';
   useExternalInput();
 
   // On mobile, auto-select the Graph tab whenever the query changes.
   // This handles both deep links (initial load) and new queries during a session.
   useEffect(() => {
-    if (isTightScreen && query.length > 0) {
+    if (isReportOnly) {
+      setPane(PaneType.REPORT);
+    } else if (isTightScreen && query.length > 0) {
       setPane(PaneType.GRAPH);
     }
-  }, [query, isTightScreen, setPane]);
+  }, [query, isTightScreen, isReportOnly, setPane]);
 
   if (query.length === 0) {
     return (
@@ -43,7 +48,8 @@ export default function App() {
 
   // On mobile the graph is a tab. It stays mounted when hidden, otherwise
   // it'd be laid out again every time the user comes back to it.
-  const isGraphHidden = isTightScreen && pane !== PaneType.GRAPH;
+  const isGraphHidden =
+    isReportOnly || (isTightScreen && pane !== PaneType.GRAPH);
 
   return (
     <>
@@ -56,7 +62,7 @@ export default function App() {
       >
         <div className={styles.stickyTop}>
           <AppHeader />
-          {isTightScreen && <Tabs />}
+          {(isTightScreen || isReportOnly) && <Tabs />}
         </div>
         {activity.total > 0 ? <Loader activity={activity} /> : null}
         <div className={styles.content}>

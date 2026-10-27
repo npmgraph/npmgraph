@@ -1,5 +1,5 @@
 import type { HTMLProps } from 'react';
-import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
+import { PaneType, PARAM_HIDE, PARAM_ONLY } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -13,10 +13,12 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [currentPane, setCurrentPane] = useGlobalState('pane');
   const isTightScreen = useIsTightScreen();
   const [hide, setHide] = useHashParam(PARAM_HIDE);
-  const isInspectorOpen = hide === null;
+  const [only, setOnly] = useHashParam(PARAM_ONLY);
+  const isReportOnly = only === 'report';
+  const isInspectorOpen = hide === null || isReportOnly;
 
   const tabs = [
-    { pane: PaneType.GRAPH, label: 'Graph', visible: isTightScreen },
+    { pane: PaneType.GRAPH, label: 'Graph', visible: isTightScreen || isReportOnly },
     { pane: PaneType.INFO, label: 'Info' },
     { pane: PaneType.REPORT, label: 'Report' },
     { pane: PaneType.MODULE, label: 'Module' },
@@ -44,8 +46,13 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   aria-selected={isSelected}
                   className={utilities.brightHover}
                   onClick={() => {
+                    setOnly(null);
                     setHide(null);
-                    setCurrentPane(tabPane);
+                    setCurrentPane(
+                      tabPane === PaneType.GRAPH && !isTightScreen
+                        ? PaneType.REPORT
+                        : tabPane,
+                    );
                   }}
                 >
                   {label}
@@ -55,12 +62,12 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
           })}
       </div>
 
-      <Splitter
+      {!isReportOnly && <Splitter
         isOpen={isInspectorOpen}
         onClick={() => {
           setHide(true);
         }}
-      />
+      />}
     </div>
   );
 }

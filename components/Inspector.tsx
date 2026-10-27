@@ -1,6 +1,6 @@
 import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
 import { useGlobalState } from '../lib/GlobalStore.ts';
-import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
+import { PaneType, PARAM_HIDE, PARAM_ONLY } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
@@ -22,6 +22,17 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [graph] = useGlobalState('graph');
 
   const [hide] = useHashParam(PARAM_HIDE);
+  const [only] = useHashParam(PARAM_ONLY);
+
+  if (only === 'report') {
+    return (
+      <div className={cn(styles.inspector, styles.only, className)}>
+        <Suspense fallback={null}>
+          <ReportPane graph={graph} />
+        </Suspense>
+      </div>
+    );
+  }
 
   if (hide !== null) {
     return null;

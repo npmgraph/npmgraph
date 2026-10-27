@@ -20,3 +20,8 @@
     display: none;
   }
 }
+
+.inspector.only {
+  flex-grow: 1;
+  width: auto;
+}

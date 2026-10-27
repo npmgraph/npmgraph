@@ -1,9 +1,12 @@
-import { Suspense, use, useDeferredValue } from 'react';
+import { Suspense, use, useDeferredValue, useEffect } from 'react';
+import useHashParam from '../../hooks/useHashParam.ts';
 import usePromise from '../../hooks/usePromise.ts';
+import { PARAM_SECTION } from '../../lib/constants.ts';
 
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import type { RenderedAnalysis } from './analyzers/Analyzer.tsx';
+import { getHeadingId, ReportLayoutContext } from './ReportLayout.ts';
 import * as styles from './ReportItem.module.scss';
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
@@ -46,12 +49,37 @@ function ReportItemContent({
   promise: Promise<RenderedAnalysis | undefined>;
 }) {
   const analysis = use(promise);
+  const layout = use(ReportLayoutContext);
 
   if (!analysis) {
     return null;
   }
 
   const { type, summary, count, details } = analysis;
+  const body = (
+    <>
+      {children ? <div className={styles.description}>{children}</div> : null}
+      <div className={styles.details}>{details}</div>
+    </>
+  );
+
+  if (layout === 'document') {
+    return (
+      <DocumentSection
+        summary={summary}
+        count={count}
+        icon={
+          SYMBOLS[type] && (
+            <span className={cn(styles.symbol, styles[type])}>
+              {SYMBOLS[type]}
+            </span>
+          )
+        }
+      >
+        {body}
+      </DocumentSection>
+    );
+  }
 
   return (
     <CollapsibleSection
@@ -67,8 +95,50 @@ function ReportItemContent({
       count={count}
       {...props}
     >
-      {children ? <div className={styles.description}>{children}</div> : null}
-      <div className={styles.details}>{details}</div>
+      {body}
     </CollapsibleSection>
+  );
+}
+
+function DocumentSection({
+  summary,
+  count,
+  icon,
+  children,
+}: {
+  summary: string;
+  count?: number | string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  const id = getHeadingId(summary);
+  const [section, setSection] = useHashParam(PARAM_SECTION);
+
+  // Sections render asynchronously, so scroll once the linked one exists
+  useEffect(() => {
+    if (section === id) {
+      document.getElementById(id)?.scrollIntoView();
+    }
+  }, [section, id]);
+
+  return (
+    <section>
+      <h2 id={id}>
+        <a
+          href={`#${new URLSearchParams({ ...Object.fromEntries(new URLSearchParams(location.hash.replace(/^#/v, ''))), [PARAM_SECTION]: id })}`}
+          aria-label={`Link to ${summary}`}
+          onClick={event => {
+            event.preventDefault();
+            setSection(id);
+          }}
+        >
+          #
+        </a>
+        {summary}
+        {icon}
+        {count !== undefined && <small>{count}</small>}
+      </h2>
+      {children}
+    </section>
   );
 }
