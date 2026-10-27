@@ -4,13 +4,15 @@ const CUSTOM_LINKS_ERROR =
 type LinkMetadata = {
   repository?: string;
   homepage?: string;
+  // False for modules loaded from a URL: their name/version don't identify a registry package
+  fromRegistry?: boolean;
 };
 
 function parseLine(
   line: string,
   name: string,
   version: string,
-  { repository = '', homepage = '' }: LinkMetadata = {},
+  { repository = '', homepage = '', fromRegistry = true }: LinkMetadata = {},
 ) {
   const [label = '', ...rest] = line.split(',');
 
@@ -23,13 +25,15 @@ function parseLine(
     '{repository}': repository,
     '{homepage}': homepage,
   };
-  const href = rest
-    .join(',')
-    .trim()
-    .replaceAll(
-      /\{[^{}]+\}/g,
-      expression => expansions[expression] ?? expression,
-    );
+  const template = rest.join(',').trim();
+  if (!fromRegistry && /\{\+?(?:name|version)\}/.test(template)) {
+    return undefined;
+  }
+
+  const href = template.replaceAll(
+    /\{[^{}]+\}/g,
+    expression => expansions[expression] ?? expression,
+  );
   const url = URL.parse(href);
 
   if (

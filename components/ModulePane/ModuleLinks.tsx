@@ -79,6 +79,7 @@ export function ModuleExternalLinks({ module }: { module: Module }) {
         {parseCustomModuleLinks(customLinks, module.name, module.version, {
           repository: repoUrl,
           homepage: homepageUrl,
+          fromRegistry: Boolean(module.packument),
         }).map(({ label, href }) => (
           <ExternalLink key={`${label}:${href}`} href={href}>
             {label}
