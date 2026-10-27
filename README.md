@@ -64,27 +64,23 @@ https://npmgraph.js.org/?q=send#deps=peerDependencies
 
 ### `hide` (hash param)
 
-If present (e.g. `...#hide`), hides the inspector panel.
+If present (e.g. `...#hide`), hides the inspector panel. If `graph` (`...#hide=graph`), hides the graph and shows only the Report pane, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
 
 **Example**: Graph `send`, close the inspector
 
 https://npmgraph.js.org/?q=send@0.18.0#hide
 
-### `only` (hash param)
-
-If `report`, shows only the Report pane, without the graph, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
-
 **Example**: Show only the report for `send`
 
-https://npmgraph.js.org/?q=send#only=report
+https://npmgraph.js.org/?q=send#hide=graph
 
 ### `section` (hash param)
 
-Used with `only=report`: the id of the report section (its lowercased, hyphenated title) to scroll to. Set by the `#` links shown when hovering section headings.
+Used with `hide=graph`: the id of the report section (its lowercased, hyphenated title) to scroll to. Set by the `#` links shown when hovering section headings.
 
 **Example**: Jump to the licenses section
 
-https://npmgraph.js.org/?q=send#only=report&section=licenses
+https://npmgraph.js.org/?q=send#hide=graph&section=licenses
 
 ### `packages` (hash param, **JSON-encoded**)
 

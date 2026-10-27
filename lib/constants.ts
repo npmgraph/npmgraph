@@ -11,7 +11,6 @@ export const PARAM_COLLAPSE = 'collapse';
 export const PARAM_COLORIZE = 'color';
 export const PARAM_DEPENDENCIES = 'deps';
 export const PARAM_HIDE = 'hide';
-export const PARAM_ONLY = 'only';
 export const PARAM_PACKAGES = 'packages';
 export const PARAM_QUERY = 'q';
 export const PARAM_REGISTRY = 'registry';

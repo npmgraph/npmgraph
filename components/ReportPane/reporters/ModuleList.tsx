@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import useHashParam from '../../../hooks/useHashParam.ts';
-import { PARAM_ONLY } from '../../../lib/constants.ts';
+import { PARAM_HIDE } from '../../../lib/constants.ts';
 import { cn } from '../../../lib/dom.ts';
 import type Module from '../../../lib/Module.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
@@ -17,9 +17,9 @@ export function ModuleList({
   entryModules: Set<Module>;
 }) {
   const [filter, setFilter] = useState('');
-  const [only] = useHashParam(PARAM_ONLY);
+  const [hide] = useHashParam(PARAM_HIDE);
   // The report-only view has no filter field, so any filter is ignored
-  const canFilter = only !== 'report' && modules.length >= MIN_MODULES_FOR_FILTER;
+  const canFilter = hide !== 'graph' && modules.length >= MIN_MODULES_FOR_FILTER;
 
   const query = canFilter ? filter.trim().toLowerCase() : '';
   const filteredModules = query

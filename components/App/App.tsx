@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { PaneType, PARAM_ONLY } from '../../lib/constants.ts';
+import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -22,8 +22,8 @@ export default function App() {
   const [query] = useQuery();
   const isTightScreen = useIsTightScreen();
   const [pane, setPane] = useGlobalState('pane');
-  const [only] = useHashParam(PARAM_ONLY);
-  const isReportOnly = only === 'report';
+  const [hide] = useHashParam(PARAM_HIDE);
+  const isReportOnly = hide === 'graph';
   useExternalInput();
 
   // On mobile, auto-select the Graph tab whenever the query changes.

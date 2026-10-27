@@ -1,5 +1,5 @@
 import useHashParam from '../../hooks/useHashParam.ts';
-import { PARAM_ONLY } from '../../lib/constants.ts';
+import { PARAM_HIDE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import type { GraphState } from '../../lib/graph-util.ts';
@@ -33,13 +33,13 @@ export default function ReportPane({
   ...props
 }: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
   const { className, ...restProps } = props;
-  const [only, setOnly] = useHashParam(PARAM_ONLY);
+  const [hide, setHide] = useHashParam(PARAM_HIDE);
 
   if (!graph?.moduleInfos) {
     return <div>Loading</div>;
   }
 
-  const isDocument = only === 'report';
+  const isDocument = hide === 'graph';
 
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
@@ -57,7 +57,7 @@ export default function ReportPane({
             type="button"
             className={styles.expand}
             onClick={() => {
-              setOnly('report');
+              setHide('graph');
             }}
           >
             Expand report
