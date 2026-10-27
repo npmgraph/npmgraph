@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
-import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
+import { useEffect, useRef } from 'react';
+import { PaneType, PARAM_HIDE, PARAM_TAB } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
+import useSyncTab from '../../hooks/useSyncTab.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
@@ -22,19 +23,32 @@ export default function App() {
   const [query] = useQuery();
   const isTightScreen = useIsTightScreen();
   const [pane, setPane] = useGlobalState('pane');
+  const [tab] = useHashParam(PARAM_TAB);
   const [hide] = useHashParam(PARAM_HIDE);
   const isReportOnly = hide === 'graph';
   useExternalInput();
 
   // On mobile, auto-select the Graph tab whenever the query changes.
   // This handles both deep links (initial load) and new queries during a session.
+  // (unless a deep link specified a tab)
+  const initialTabRef = useRef(tab);
   useEffect(() => {
     if (isReportOnly) {
       setPane(PaneType.REPORT);
-    } else if (isTightScreen && query.length > 0) {
+      return;
+    }
+
+    if (initialTabRef.current !== null) {
+      initialTabRef.current = null;
+      return;
+    }
+
+    if (isTightScreen && query.length > 0) {
       setPane(PaneType.GRAPH);
     }
   }, [query, isTightScreen, isReportOnly, setPane]);
+
+  useSyncTab();
 
   if (query.length === 0) {
     return (
