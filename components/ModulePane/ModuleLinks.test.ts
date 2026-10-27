@@ -5,6 +5,40 @@ import {
 } from './module-links.ts';
 
 describe('parseCustomModuleLinks', () => {
+  it('omits links to the registry for modules not loaded from it', () => {
+    expect(
+      parseCustomModuleLinks(
+        'npm,https://www.npmjs.com/package/{+name}/v/{version}\nrepo,{repository}\nwebsite,{homepage}\npackage.json,https://unpkg.com/{+name}@{version}/package.json',
+        'refined-github',
+        '0.0.0',
+        {
+          repository: 'https://github.com/refined-github/refined-github',
+          homepage: 'https://example.com',
+          fromRegistry: false,
+        },
+      ),
+    ).toEqual([
+      {
+        label: 'repo',
+        href: 'https://github.com/refined-github/refined-github',
+      },
+      { label: 'website', href: 'https://example.com/' },
+    ]);
+  });
+
+  it('keeps links to the registry for modules loaded from it', () => {
+    expect(
+      parseCustomModuleLinks(
+        'npm,https://www.npmjs.com/package/{+name}/v/{version}',
+        'express',
+        '5.0.0',
+        { fromRegistry: true },
+      ),
+    ).toEqual([
+      { label: 'npm', href: 'https://www.npmjs.com/package/express/v/5.0.0' },
+    ]);
+  });
+
   it('expands name and version as RFC 6570 simple variables', () => {
     expect(
       parseCustomModuleLinks(
