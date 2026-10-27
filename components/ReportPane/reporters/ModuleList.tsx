@@ -19,7 +19,8 @@ export function ModuleList({
   const [filter, setFilter] = useState('');
   const [hide] = useHashParam(PARAM_HIDE);
   // The report-only view has no filter field, so any filter is ignored
-  const canFilter = hide !== 'graph' && modules.length >= MIN_MODULES_FOR_FILTER;
+  const canFilter =
+    hide !== 'graph' && modules.length >= MIN_MODULES_FOR_FILTER;
 
   const query = canFilter ? filter.trim().toLowerCase() : '';
   const filteredModules = query
