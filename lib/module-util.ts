@@ -1,7 +1,5 @@
 import type { PackumentVersion } from '@npm/types';
 
-type Dependencies = PackumentVersion['dependencies'];
-
 export function isHttpModule(moduleKey: string) {
   return /^https?:\/\//.test(moduleKey);
 }
@@ -61,6 +59,7 @@ export function resolveDependencyAliases(pkg: PackumentVersion) {
   // other types keep their declared names, which overrides match against; they
   // get resolved by getDependencyEntries()
   for (const depType of ['peerDependencies']) {
+    type Dependencies = PackumentVersion['dependencies'];
     const deps = pkg[depType as keyof PackumentVersion] as Dependencies;
     if (!deps) {
       continue;
