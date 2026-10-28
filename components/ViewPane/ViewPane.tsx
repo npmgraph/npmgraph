@@ -128,7 +128,9 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
           className={styles.customLinksPreview}
           role="group"
         >
-          {parseCustomModuleLinks(customLinks, 'package', '1.0.0', {
+          {parseCustomModuleLinks(customLinks, {
+            name: 'package',
+            version: '1.0.0',
             repository: 'https://example.com/repository',
             homepage: 'https://example.com/homepage',
           }).map(({ label }) => (
