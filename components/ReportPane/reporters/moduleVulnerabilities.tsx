@@ -7,6 +7,18 @@ import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as styles from './moduleVulnerabilities.module.scss';
 
+type Advisory = {
+  packageName?: string;
+  id: number;
+  url: string;
+  title: string;
+  severity: 'none' | 'info' | 'low' | 'moderate' | 'high' | 'critical';
+  vulnerable_versions: string;
+  cwe: string[]; // CWE codes
+  cvss: { score: number; vectorString: string };
+};
+
+
 const SEVERITY_RANK = {
   none: 0,
   info: 1,
@@ -19,19 +31,7 @@ const SEVERITY_RANK = {
 export async function moduleVulnerabilities({
   moduleInfos,
 }: ModuleAnalysisState) {
-  type Advisory = {
-    packageName?: string;
-    id: number;
-    url: string;
-    title: string;
-    severity: 'none' | 'info' | 'low' | 'moderate' | 'high' | 'critical';
-    vulnerable_versions: string;
-    cwe: string[]; // CWE codes
-    cvss: { score: number; vectorString: string };
-  };
-
   type BulkAdvisories = Record<string, Advisory[]>;
-
   const versionsByName: Record<string, string[]> = {};
 
   let nModules = 0;

@@ -2,8 +2,8 @@ const CUSTOM_LINKS_ERROR =
   'Each non-empty row must contain a label and a valid HTTP(S) URL separated by a comma.';
 
 type LinkMetadata = {
-  repository?: string | undefined;
-  homepage?: string | undefined;
+  repository?: string;
+  homepage?: string;
 };
 
 function parseLine(

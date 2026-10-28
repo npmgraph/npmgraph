@@ -5,7 +5,7 @@ import useHashParam from '../../hooks/useHashParam.ts';
 
 import * as styles from './Section.module.scss';
 
-function Count({ count }: { count?: number | string | undefined }) {
+function Count({ count }: { count?: number | string }) {
   return count === undefined ? null : (
     <span className={styles.count}>{count}</span>
   );
@@ -45,7 +45,7 @@ export function CollapsibleSection({
   ...props
 }: {
   title: string;
-  count?: number | string | undefined;
+  count?: number | string;
   icon?: ReactNode;
   open?: boolean;
 } & HTMLProps<HTMLDetailsElement>) {
@@ -78,7 +78,7 @@ export function Section({
   title: string;
   children: any;
   className?: string;
-  count?: number | string | undefined;
+  count?: number | string;
 }) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDivElement>(name);
