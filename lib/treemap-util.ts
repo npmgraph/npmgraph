@@ -15,8 +15,6 @@ export type TreemapLeaf = {
   rank: number;
 };
 
-const MIN_LEAF_SIZE = 2;
-
 // Lay out the dependencies as a treemap, sized by their share of the module size
 export function layoutTreemap(
   data: BundlePhobiaData,
@@ -56,14 +54,7 @@ export function layoutTreemap(
 
     treemap<Dependency>().size([w, h]).padding(2)(root);
 
-    // Leaves without room for their margins would be drawn outside the treemap
-    const visible = root.leaves().filter(d => {
-      const { x0, x1, y0, y1 } =
-        d as unknown as HierarchyRectangularNode<Dependency>;
-      return x1 - x0 > MIN_LEAF_SIZE && y1 - y0 > MIN_LEAF_SIZE;
-    });
-
-    return visible.map((d, i, a) => {
+    return root.leaves().map((d, i, a) => {
       // Cast to rectangular node so we can get dimensions,
       const rd = d as unknown as HierarchyRectangularNode<Dependency>;
       return {
