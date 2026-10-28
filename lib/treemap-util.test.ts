@@ -12,6 +12,23 @@ const data = {
 } as BundlePhobiaData;
 
 describe('layoutTreemap', () => {
+  it('omits modules too small to be drawn', () => {
+    const leaves = layoutTreemap(
+      {
+        size: 1000,
+        dependencySizes: [
+          { name: 'big', approximateSize: 1000 },
+          { name: 'tiny', approximateSize: 1 },
+          { name: 'empty', approximateSize: 0 },
+        ],
+      } as BundlePhobiaData,
+      300,
+      150,
+    );
+
+    expect(leaves.map(leaf => leaf.name)).toEqual(['big']);
+  });
+
   it('has a leaf per dependency, largest first', () => {
     const leaves = layoutTreemap(data, 1200, 600);
 
