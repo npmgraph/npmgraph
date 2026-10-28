@@ -18,7 +18,6 @@ type Advisory = {
   cvss: { score: number; vectorString: string };
 };
 
-
 const SEVERITY_RANK = {
   none: 0,
   info: 1,

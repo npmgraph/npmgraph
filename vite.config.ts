@@ -3,7 +3,6 @@ import { playwright } from '@vitest/browser-playwright';
 import svgr from 'vite-plugin-svgr';
 import { configDefaults, defineConfig } from 'vitest/config';
 
- 
 export default defineConfig({
   // Relative base so the site can be served from any subfolder
   base: './',

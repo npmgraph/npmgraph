@@ -1,6 +1,5 @@
 import type { PackumentVersion } from '@npm/types';
 
-
 export function isHttpModule(moduleKey: string) {
   return /^https?:\/\//.test(moduleKey);
 }

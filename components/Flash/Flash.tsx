@@ -11,7 +11,6 @@ import { $optional } from 'select-dom';
 
 const FLASH_GAP = 10;
 
-
 export default function Flash() {
   type FlashViewEntry = FlashEntry;
   const [entries, setEntries] = useState<FlashViewEntry[]>([]);
