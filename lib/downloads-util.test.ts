@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  formatWeeklyDownloads,
-  getPopularityTier,
-} from './ModuleDownloads.tsx';
+import { formatWeeklyDownloads, getPopularityTier } from './downloads-util.ts';
 
 describe('formatWeeklyDownloads', () => {
   it('formats large numbers cleanly with compact units', () => {

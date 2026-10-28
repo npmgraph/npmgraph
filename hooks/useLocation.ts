@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/no-top-level-side-effects -- meh */
 import { setGlobalState, useGlobalState } from '../lib/GlobalStore.ts';
 import { syncPackagesHash } from '../lib/ModuleCache.ts';
 import { urlPatch } from '../lib/url-util.ts';
