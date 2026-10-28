@@ -4,7 +4,7 @@ export const DEFAULT_CUSTOM_MODULE_LINKS = [
   'npm, https://www.npmjs.com/package/{+name}/v/{version}',
   'repo, {repository}',
   'website, {homepage}',
-  'package.json, https://cdn.jsdelivr.net/npm/{+name}@{version}/package.json',
+  'package.json, https://unpkg.com/{+name}@{version}/package.json',
 ].join('\n');
 
 const STORAGE_KEY = 'npmgraph-module-link-providers';
