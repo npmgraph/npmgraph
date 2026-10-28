@@ -250,7 +250,7 @@ describe('panes', () => {
       expect(defaultConfig).toContain('repo, {repository}');
       expect(defaultConfig).toContain('website, {homepage}');
       expect(defaultConfig).toContain(
-        'package.json, https://cdn.jsdelivr.net/npm/{+name}@{version}/package.json',
+        'package.json, https://unpkg.com/{+name}@{version}/package.json',
       );
       const previewButtons = $$(
         '[aria-label="Preview of Module tab link buttons"] button',

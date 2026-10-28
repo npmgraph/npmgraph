@@ -4,6 +4,7 @@ import {
   type PaneTypes,
   PaneType,
   PARAM_QUERY,
+  PARAM_TAB,
   TIGHT_SCREEN_QUERY,
 } from './constants.ts';
 import type Module from './Module.ts';
@@ -21,6 +22,14 @@ type GlobalState = {
 function _getInitialPane() {
   if (!searchGet(PARAM_QUERY)) {
     return PaneType.INFO;
+  }
+
+  const tab = hashGet(PARAM_TAB);
+  const tabPane = Object.values(PaneType).find(
+    type => type === tab && type !== PaneType.GRAPH,
+  );
+  if (tabPane) {
+    return tabPane;
   }
 
   const select = hashGet('select')?.split(/[ ,]+/);
