@@ -12,6 +12,23 @@ const data = {
 } as BundlePhobiaData;
 
 describe('layoutTreemap', () => {
+  it('does not list the module itself as a dependency', () => {
+    const leaves = layoutTreemap(
+      {
+        name: 'wrapper',
+        size: 1000,
+        dependencySizes: [
+          { name: 'wrapper', approximateSize: 10 },
+          { name: 'dependency', approximateSize: 990 },
+        ],
+      } as BundlePhobiaData,
+      300,
+      150,
+    );
+
+    expect(leaves.map(leaf => leaf.name)).toEqual(['dependency']);
+  });
+
   it('has a leaf per dependency, largest first', () => {
     const leaves = layoutTreemap(data, 1200, 600);
 

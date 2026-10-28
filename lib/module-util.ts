@@ -55,12 +55,10 @@ export function resolveAlias(name: string, version: string) {
 }
 
 export function resolveDependencyAliases(pkg: PackumentVersion) {
-  for (const depType of [
-    'dependencies',
-    'devDependencies',
-    'optionalDependencies',
-    'peerDependencies',
-  ]) {
+  // Only peers are dereferenced because they're looked up by package name. The
+  // other types keep their declared names, which overrides match against; they
+  // get resolved by getDependencyEntries()
+  for (const depType of ['peerDependencies']) {
     type Dependencies = PackumentVersion['dependencies'];
     const deps = pkg[depType as keyof PackumentVersion] as Dependencies;
     if (!deps) {
