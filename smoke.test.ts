@@ -347,15 +347,20 @@ describe('panes', () => {
     );
   });
 
-  it('toggles dependency types', async () => {
-    await goto('?q=ms');
-    await nodeAppears();
-    await userEvent.click(tab('View'));
-    await userEvent.click(toggle('Include devDependencies'));
-    // hash value is "%2CdevDependencies" (leading empty entry), so match loosely
-    await hashHas('devDependencies');
-    await nodeAppears();
-  });
+  // Loading the devDependencies of `ms` takes longer than the default test timeout
+  it(
+    'toggles dependency types',
+    async () => {
+      await goto('?q=ms');
+      await nodeAppears();
+      await userEvent.click(tab('View'));
+      await userEvent.click(toggle('Include devDependencies'));
+      // hash value is "%2CdevDependencies" (leading empty entry), so match loosely
+      await hashHas('devDependencies');
+      await nodeAppears();
+    },
+    TIMEOUT,
+  );
 
   it('toggles module sizing', async () => {
     await goto('?q=debug');
