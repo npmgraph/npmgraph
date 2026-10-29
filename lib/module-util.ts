@@ -15,20 +15,17 @@ export function resolveGitHubShorthand(moduleKey: string) {
 }
 
 /**
-Short description of where a package.json URL points to, e.g. `repo: user/name`
+Short description of where a package.json URL points to: `user/repo` for GitHub repos, the URL without protocol otherwise
 */
 export function describeUrlSource(url: URL) {
   if (url.host === 'raw.githubusercontent.com') {
     const [owner, repo, ref, ...path] = url.pathname.split('/').filter(Boolean);
     if (owner && repo && ref && path.at(-1) === 'package.json') {
-      const directory = path.slice(0, -1).join('/');
-      const subpath = directory ? `/${directory}` : '';
-      const suffix = ref === 'HEAD' ? '' : `#${ref}`;
-      return `repo: ${owner}/${repo}${subpath}${suffix}`;
+      return `${owner}/${repo}`;
     }
   }
 
-  return `url: ${url.host}${url.pathname}`;
+  return url.href.replace(/^[a-z]+:\/\//i, '');
 }
 
 export function resolveModule(name: string, version?: string) {

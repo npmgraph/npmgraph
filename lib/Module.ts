@@ -63,14 +63,6 @@ export default class Module {
     return this.source ?? (this.isUnnamed ? UNNAMED_PACKAGE : this.name);
   }
 
-  /**
-  Record where a module that wasn't loaded from the registry came from. Named
-  modules also mention their name and version
-  */
-  setSource(source: string, hasName: boolean) {
-    this.source = hasName ? `${source} for ${this.key}` : source;
-  }
-
   get isStub() {
     return Boolean(this.stubError);
   }

@@ -86,11 +86,10 @@ async function fetchModuleFromURL(urlString: string) {
 
   const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
 
-  const hasName = Boolean(pkg.name);
   pkg.name ||= url.href;
 
   const module = new Module(pkg as PackumentVersion);
-  module.setSource(describeUrlSource(url), hasName);
+  module.source = describeUrlSource(url);
   return module;
 }
 
@@ -278,7 +277,9 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
   const module = new Module(pkg);
 
   module.isLocal = true;
-  module.setSource('upload: package.json', !module.isUnnamed);
+  module.source = module.isUnnamed
+    ? 'upload: package.json'
+    : `upload: ${module.key}`;
 
   // Put module in cache and local cache
   cacheModule(module);

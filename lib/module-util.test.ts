@@ -25,29 +25,29 @@ describe('resolveGitHubShorthand', () => {
 });
 
 describe('describeUrlSource', () => {
-  it('describes GitHub repos', () => {
+  it('describes GitHub repos as user/repo', () => {
     expect(
       describeUrlSource(
         new URL(
           'https://raw.githubusercontent.com/refined-github/refined-github/HEAD/package.json',
         ),
       ),
-    ).toBe('repo: refined-github/refined-github');
+    ).toBe('refined-github/refined-github');
   });
 
-  it('includes the directory and ref when they are not the default', () => {
+  it('ignores the directory and ref of GitHub repos', () => {
     expect(
       describeUrlSource(
         new URL(
           'https://raw.githubusercontent.com/user/repo/v1.0.0/packages/foo/package.json',
         ),
       ),
-    ).toBe('repo: user/repo/packages/foo#v1.0.0');
+    ).toBe('user/repo');
   });
 
-  it('describes other URLs', () => {
+  it('prints other URLs without the protocol', () => {
     expect(
       describeUrlSource(new URL('https://example.com/some/package.json')),
-    ).toBe('url: example.com/some/package.json');
+    ).toBe('example.com/some/package.json');
   });
 });
