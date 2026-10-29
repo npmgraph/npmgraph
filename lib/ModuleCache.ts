@@ -11,6 +11,7 @@ import {
 import { PARAM_PACKAGES } from './constants.ts';
 import fetchJson from './fetchJson.ts';
 import {
+  describeUrlSource,
   getModuleKey,
   isHttpModule,
   parseModuleKey,
@@ -85,9 +86,12 @@ async function fetchModuleFromURL(urlString: string) {
 
   const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
 
+  const named = Boolean(pkg.name);
   pkg.name ||= url.href;
 
-  return new Module(pkg as PackumentVersion);
+  const module = new Module(pkg as PackumentVersion);
+  module.setSource(describeUrlSource(url), named);
+  return module;
 }
 
 // Note: This method should not throw!  Errors should be returned as part of a
@@ -274,6 +278,7 @@ export function cacheLocalPackage(pkg: PackumentVersion) {
   const module = new Module(pkg);
 
   module.isLocal = true;
+  module.setSource('upload: package.json', !module.isUnnamed);
 
   // Put module in cache and local cache
   cacheModule(module);
