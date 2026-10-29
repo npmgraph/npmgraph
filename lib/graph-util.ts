@@ -109,7 +109,7 @@ function getDependencyEntries(
       }
 
       const [name, version] = resolveAlias(alias, range);
-      depEntries.add({ name, version, type });
+      depEntries.add({ alias, name, version, type });
     }
   }
 
@@ -194,11 +194,12 @@ export async function getGraphForQuery(
 
     // Walk downstream dependencies
     await Promise.allSettled(
-      [...downstreamEntries].map(async ({ name, version, type }) => {
-        // Apply version override if one exists for this dependency name and spec
-        const override = getVersionOverride(currentOverrides, name, version);
+      [...downstreamEntries].map(async ({ alias, name, version, type }) => {
+        // Apply version override if one exists for this dependency name and spec.
+        // Like npm, match the declared name: aliases aren't overridden by their target's name
+        const override = getVersionOverride(currentOverrides, alias, version);
         const [downstreamName, downstreamVersion] = override
-          ? resolveAlias(name, override)
+          ? resolveAlias(alias, override)
           : [name, version];
 
         const downstreamModule = await getModule(

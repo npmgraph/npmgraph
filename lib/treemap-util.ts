@@ -25,8 +25,12 @@ export function layoutTreemap(
 
   // Note: dependencySizes is *sometimes* undefined.  E.g.
   // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
-  // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- See note in BundlePhobiaData
-  const { size, dependencySizes = [] } = data;
+  const { size, name } = data;
+
+  // The module itself is listed among its dependencies
+  const dependencySizes = (data.dependencySizes ?? []).filter(
+    d => d.name !== name,
+  );
 
   // Without dependencies the placeholder root would be the only (and a full-size) leaf
   if (dependencySizes.length === 0) {
