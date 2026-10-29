@@ -113,11 +113,12 @@ export default function ModulePane(
 
       <ReleaseTimeline module={module} />
 
-      <ModuleSize module={module} />
+      {/* Modules loaded from elsewhere (e.g. a URL) have no registry data */}
+      {module.packument && <ModuleSize module={module} />}
 
       <ModuleDependents module={module} />
 
-      <ModuleMaintainers module={module} />
+      {module.packument && <ModuleMaintainers module={module} />}
     </Pane>
   );
 }
