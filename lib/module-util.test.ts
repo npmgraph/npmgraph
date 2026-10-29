@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveGitHubShorthand } from './module-util.ts';
+import { describeUrlSource, resolveGitHubShorthand } from './module-util.ts';
 
 describe('resolveGitHubShorthand', () => {
   it('converts user/repo to a package.json URL', () => {
@@ -21,5 +21,33 @@ describe('resolveGitHubShorthand', () => {
     './relative/path',
   ])('leaves %s alone', key => {
     expect(resolveGitHubShorthand(key)).toBe(key);
+  });
+});
+
+describe('describeUrlSource', () => {
+  it('describes GitHub repos', () => {
+    expect(
+      describeUrlSource(
+        new URL(
+          'https://raw.githubusercontent.com/refined-github/refined-github/HEAD/package.json',
+        ),
+      ),
+    ).toBe('repo: refined-github/refined-github');
+  });
+
+  it('includes the directory and ref when they are not the default', () => {
+    expect(
+      describeUrlSource(
+        new URL(
+          'https://raw.githubusercontent.com/user/repo/v1.0.0/packages/foo/package.json',
+        ),
+      ),
+    ).toBe('repo: user/repo/packages/foo#v1.0.0');
+  });
+
+  it('describes other URLs', () => {
+    expect(
+      describeUrlSource(new URL('https://example.com/some/package.json')),
+    ).toBe('url: example.com/some/package.json');
   });
 });

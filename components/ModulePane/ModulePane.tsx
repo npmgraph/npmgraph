@@ -63,7 +63,9 @@ export default function ModulePane(
       <Pane>
         <h2>
           <QueryLink query={module.key} reset={false}>
-            {module.isUnnamed ? module.displayName : module.key}
+            {module.isUnnamed || module.source
+              ? module.displayName
+              : module.key}
           </QueryLink>
         </h2>
         <p>
@@ -89,7 +91,7 @@ export default function ModulePane(
   return (
     <Pane {...props}>
       <div style={{ marginBlockEnd: '0.5em' }}>
-        <h2 style={{ display: 'inline' }}>{module.key}</h2>
+        <h2 style={{ display: 'inline' }}>{module.source ?? module.key}</h2>
         {!colorize || colorize === OutdatedColorizer.name ? (
           <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
         ) : null}

@@ -44,6 +44,30 @@ describe('Module', () => {
     });
   });
 
+  describe('setSource', () => {
+    it('labels unnamed modules by their source only', () => {
+      const module = new Module({
+        name: `${UNNAMED_PACKAGE_PREFIX}abc-123`,
+        version: '1.0.0',
+      } as PackumentVersion);
+      module.setSource('upload: package.json', false);
+
+      expect(module.displayName).toBe('upload: package.json');
+    });
+
+    it('adds the key of named modules', () => {
+      const module = new Module({
+        name: 'module-foo',
+        version: '1.0.0',
+      } as PackumentVersion);
+      module.setSource('upload: package.json', true);
+
+      expect(module.displayName).toBe(
+        'upload: package.json for module-foo@1.0.0',
+      );
+    });
+  });
+
   describe('constructor', () => {
     it('should throw if name is not provided', () => {
       expect(

@@ -67,8 +67,8 @@ export default class Module {
   Record where a module that wasn't loaded from the registry came from. Named
   modules also mention their name and version
   */
-  setSource(source: string, named: boolean) {
-    this.source = named ? `${source} for ${this.key}` : source;
+  setSource(source: string, hasName: boolean) {
+    this.source = hasName ? `${source} for ${this.key}` : source;
   }
 
   get isStub() {

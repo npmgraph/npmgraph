@@ -86,11 +86,11 @@ async function fetchModuleFromURL(urlString: string) {
 
   const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
 
-  const named = Boolean(pkg.name);
+  const hasName = Boolean(pkg.name);
   pkg.name ||= url.href;
 
   const module = new Module(pkg as PackumentVersion);
-  module.setSource(describeUrlSource(url), named);
+  module.setSource(describeUrlSource(url), hasName);
   return module;
 }
 
