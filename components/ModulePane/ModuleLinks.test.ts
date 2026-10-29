@@ -5,12 +5,43 @@ import {
 } from './module-links.ts';
 
 describe('parseCustomModuleLinks', () => {
+  it('omits links to the registry for modules not loaded from it', () => {
+    expect(
+      parseCustomModuleLinks(
+        'npm,https://www.npmjs.com/package/{+name}/v/{version}\nrepo,{repository}\nwebsite,{homepage}\npackage.json,https://unpkg.com/{+name}@{version}/package.json',
+        {
+          name: 'refined-github',
+          version: '0.0.0',
+          repository: 'https://github.com/refined-github/refined-github',
+          homepage: 'https://example.com',
+          fromRegistry: false,
+        },
+      ),
+    ).toEqual([
+      {
+        label: 'repo',
+        href: 'https://github.com/refined-github/refined-github',
+      },
+      { label: 'website', href: 'https://example.com/' },
+    ]);
+  });
+
+  it('keeps links to the registry for modules loaded from it', () => {
+    expect(
+      parseCustomModuleLinks(
+        'npm,https://www.npmjs.com/package/{+name}/v/{version}',
+        { name: 'express', version: '5.0.0', fromRegistry: true },
+      ),
+    ).toEqual([
+      { label: 'npm', href: 'https://www.npmjs.com/package/express/v/5.0.0' },
+    ]);
+  });
+
   it('expands name and version as RFC 6570 simple variables', () => {
     expect(
       parseCustomModuleLinks(
         'npmx,https://npmx.dev/package/{name}@{version}\nencoded,https://example.com/{name}',
-        '@scope/name',
-        '1.2.3',
+        { name: '@scope/name', version: '1.2.3' },
       ),
     ).toEqual([
       {
@@ -28,8 +59,7 @@ describe('parseCustomModuleLinks', () => {
     expect(
       parseCustomModuleLinks(
         'encoded,https://example.com/{name}\nraw,https://example.com/{+name}',
-        '@eslint/css',
-        '1.2.3',
+        { name: '@eslint/css', version: '1.2.3' },
       ),
     ).toEqual([
       {
@@ -45,15 +75,12 @@ describe('parseCustomModuleLinks', () => {
 
   it('expands repository and homepage variables without encoding their URLs', () => {
     expect(
-      parseCustomModuleLinks(
-        'repo, {repository}\nwebsite, {homepage}',
-        '@eslint/css',
-        '1.2.3',
-        {
-          repository: 'https://github.com/eslint/css',
-          homepage: 'https://eslint.org',
-        },
-      ),
+      parseCustomModuleLinks('repo, {repository}\nwebsite, {homepage}', {
+        name: '@eslint/css',
+        version: '1.2.3',
+        repository: 'https://github.com/eslint/css',
+        homepage: 'https://eslint.org',
+      }),
     ).toEqual([
       {
         label: 'repo',
@@ -66,11 +93,10 @@ describe('parseCustomModuleLinks', () => {
     ]);
 
     expect(
-      parseCustomModuleLinks(
-        'repo, {repository}\nwebsite, {homepage}',
-        'react',
-        '18.2.0',
-      ),
+      parseCustomModuleLinks('repo, {repository}\nwebsite, {homepage}', {
+        name: 'react',
+        version: '18.2.0',
+      }),
     ).toEqual([]);
   });
 
@@ -78,8 +104,7 @@ describe('parseCustomModuleLinks', () => {
     expect(
       parseCustomModuleLinks(
         'npmx:https://npmx.dev/package/{name}\nbad,javascript:alert(1)\ninvalid',
-        'react',
-        '18.2.0',
+        { name: 'react', version: '18.2.0' },
       ),
     ).toEqual([]);
   });

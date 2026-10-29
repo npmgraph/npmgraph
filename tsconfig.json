@@ -5,6 +5,7 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
+    "exactOptionalPropertyTypes": false,
     "noEmit": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "types": ["node", "typed-query-selector"]
