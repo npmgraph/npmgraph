@@ -28,7 +28,11 @@ export function modulesOutdated({ outdated }: ModuleAnalysisState) {
         key={module.key}
         className={cn(styles.root, { [styles.striped]: index % 2 === 1 })}
       >
-        <Selectable value={module.key} className={styles.selectable} />
+        <Selectable
+          value={module.key}
+          label={module.label}
+          className={styles.selectable}
+        />
         {' → '}
         {status.latest}
       </div>

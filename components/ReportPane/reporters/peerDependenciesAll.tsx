@@ -28,7 +28,7 @@ export function peerDependenciesAll({
       <div key={sourceName}>
         <div className={styles.header}>
           <span>
-            <Selectable value={sourceName} />{' '}
+            <Selectable value={sourceName} label={pdis[0]!.source.label} />{' '}
           </span>
         </div>
         <div className={styles.section}>
