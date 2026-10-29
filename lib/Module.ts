@@ -63,6 +63,13 @@ export default class Module {
     return this.source ?? (this.isUnnamed ? UNNAMED_PACKAGE : this.name);
   }
 
+  /**
+  Full label of the module: where it was loaded from or its name and version
+  */
+  get label() {
+    return this.source ?? this.key;
+  }
+
   get isStub() {
     return Boolean(this.stubError);
   }

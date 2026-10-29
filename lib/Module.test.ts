@@ -65,6 +65,19 @@ describe('Module', () => {
     });
   });
 
+  describe('label', () => {
+    it('is the source or the key', () => {
+      const module = new Module({
+        name: 'module-foo',
+        version: '1.0.0',
+      } as PackumentVersion);
+      expect(module.label).toBe('module-foo@1.0.0');
+
+      module.source = 'user/repo';
+      expect(module.label).toBe('user/repo');
+    });
+  });
+
   describe('constructor', () => {
     it('should throw if name is not provided', () => {
       expect(
