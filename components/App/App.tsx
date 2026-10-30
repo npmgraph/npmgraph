@@ -4,6 +4,7 @@ import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import useReportOnly from '../../hooks/useReportOnly.ts';
 import useSyncTab from '../../hooks/useSyncTab.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
@@ -24,6 +25,7 @@ export default function App() {
   const isTightScreen = useIsTightScreen();
   const [pane, setPane] = useGlobalState('pane');
   const [tab] = useHashParam(PARAM_TAB);
+  const [isReportOnly] = useReportOnly();
   useExternalInput();
 
   // On mobile, auto-select the Graph tab whenever the query changes.
@@ -55,7 +57,8 @@ export default function App() {
 
   // On mobile the graph is a tab. It stays mounted when hidden, otherwise
   // it'd be laid out again every time the user comes back to it.
-  const isGraphHidden = isTightScreen && pane !== PaneType.GRAPH;
+  const isGraphHidden =
+    isReportOnly || (isTightScreen && pane !== PaneType.GRAPH);
 
   return (
     <>
@@ -63,7 +66,8 @@ export default function App() {
       <div
         className={cn(styles.root, {
           [styles.loading]: activity.total > 0,
-          [styles.fixedHeight]: isTightScreen && pane === PaneType.GRAPH,
+          [styles.fixedHeight]:
+            isTightScreen && pane === PaneType.GRAPH && !isReportOnly,
         })}
       >
         <div className={styles.stickyTop}>
