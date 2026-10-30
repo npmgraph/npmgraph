@@ -1,5 +1,6 @@
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
+import { Button } from '../Button.tsx';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import type { GraphState } from '../../lib/graph-util.ts';
 import { Pane } from '../ui/Pane.tsx';
@@ -49,15 +50,14 @@ export default function ReportPane({
     >
       {!isReportOnly && (
         <>
-          <button
-            type="button"
+          <Button
             className={styles.expand}
             onClick={() => {
               setReportOnly(true);
             }}
           >
-            Expand report
-          </button>
+            Expand
+          </Button>
           <CollapsedModules />
         </>
       )}

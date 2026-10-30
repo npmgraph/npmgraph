@@ -68,14 +68,12 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
           })}
       </div>
 
-      {!isReportOnly && (
-        <Splitter
-          isOpen={isInspectorOpen}
-          onClick={() => {
-            setHide(true);
-          }}
-        />
-      )}
+      <Splitter
+        isOpen={isInspectorOpen}
+        onClick={() => {
+          setHide(true);
+        }}
+      />
     </div>
   );
 }

@@ -1,36 +1,17 @@
+@use '../../lib/root.module.scss' as *;
+
 .expand {
   float: right;
   cursor: pointer;
   margin-bottom: 0.5em;
 }
 
-// GitHub README look
+// Centered column. No top padding so section headings stick to the edge
 .document {
-  --md-fg: #1f2328;
-  --md-fg-muted: #59636e;
-  --md-bg: #fff;
-  --md-border: #d1d9e0;
-  --md-link: #0969da;
+  padding: 0 max(16px, calc((100% - 980px) / 2)) 32px;
 
-  box-shadow: none;
-  background: var(--md-bg);
-  padding: 32px max(16px, calc((100% - 980px) / 2));
-  color: var(--md-fg);
-  font-size: 16px;
-  line-height: 1.5;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica,
-    Arial, sans-serif;
-
-  @media (prefers-color-scheme: dark) {
-    --md-fg: #f0f6fc;
-    --md-fg-muted: #9198a1;
-    --md-bg: #0d1117;
-    --md-border: #3d444d;
-    --md-link: #4493f8;
-  }
-
-  a {
-    color: var(--md-link);
+  // Section headings stick to the page, not to the pane
+  @include tight-screen {
+    overflow: clip;
   }
 }
