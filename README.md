@@ -64,11 +64,15 @@ https://npmgraph.js.org/?q=send#deps=peerDependencies
 
 ### `hide` (hash param)
 
-If present (e.g. `...#hide`), hides the inspector panel.
+If present (e.g. `...#hide`), hides the inspector panel. If `graph` (`...#hide=graph`), hides the graph and shows only the Report pane, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
 
 **Example**: Graph `send`, close the inspector
 
 https://npmgraph.js.org/?q=send@0.18.0#hide
+
+**Example**: Show only the report for `send`
+
+https://npmgraph.js.org/?q=send#hide=graph
 
 ### `packages` (hash param, **JSON-encoded**)
 
@@ -109,9 +113,15 @@ url.toString(); // Returns the above URL
 
 Name (lowercase title) of a section in the inspector. When opened, the matching section is expanded (if collapsible) and scrolled into view.
 
+Also used by the report-only view (`hide=graph`), where sections are always open and headings have a `#` link.
+
 **Example**: Show the release timeline of `formidable@1.0.17`
 
 https://npmgraph.js.org/?q=express@2.4.6#tab=module&section=release+timeline&select=exact%3Aformidable%401.0.17
+
+**Example**: Show only the report for `send`, at its licenses section
+
+https://npmgraph.js.org/?q=send#hide=graph&section=licenses
 
 ### `select` (hash param)
 

@@ -44,6 +44,40 @@ describe('Module', () => {
     });
   });
 
+  describe('displayName', () => {
+    it('prefers the source', () => {
+      const module = new Module({
+        name: 'module-foo',
+        version: '1.0.0',
+      } as PackumentVersion);
+      module.source = 'upload: module-foo@1.0.0';
+
+      expect(module.displayName).toBe('upload: module-foo@1.0.0');
+    });
+
+    it('falls back to the name', () => {
+      const module = new Module({
+        name: 'module-foo',
+        version: '1.0.0',
+      } as PackumentVersion);
+
+      expect(module.displayName).toBe('module-foo');
+    });
+  });
+
+  describe('label', () => {
+    it('is the source or the key', () => {
+      const module = new Module({
+        name: 'module-foo',
+        version: '1.0.0',
+      } as PackumentVersion);
+      expect(module.label).toBe('module-foo@1.0.0');
+
+      module.source = 'user/repo';
+      expect(module.label).toBe('user/repo');
+    });
+  });
+
   describe('constructor', () => {
     it('should throw if name is not provided', () => {
       expect(

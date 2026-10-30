@@ -12,7 +12,7 @@ export function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
     .toSorted((a, b) => a.key.localeCompare(b.key))
     .map(module => (
       <div key={module.key} className={reportItemStyles.zebraRow}>
-        <Selectable value={module.key} />
+        <Selectable value={module.key} label={module.label} />
       </div>
     ));
 

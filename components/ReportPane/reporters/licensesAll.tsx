@@ -40,6 +40,7 @@ export function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
               <Selectable
                 key={m.key}
                 value={m.key}
+                label={m.label}
                 className={styles.selectable}
               />
             ))}
