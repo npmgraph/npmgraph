@@ -1,4 +1,5 @@
 import { type ImgHTMLAttributes, Suspense, use } from 'react';
+import { SectionOpenedContext } from './SectionOpenedContext.ts';
 import usePromise from '../../hooks/usePromise.ts';
 
 const sha256 = async (text: string) => {
@@ -17,7 +18,13 @@ type GravatarProps = {
   size?: number;
 } & Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'>;
 
-export function Gravatar({ email, ...props }: GravatarProps) {
+export function Gravatar(props: GravatarProps) {
+  // Don't hash or load avatars that are inside a section nobody opened
+  const wasOpened = use(SectionOpenedContext);
+  return wasOpened ? <OpenGravatar {...props} /> : null;
+}
+
+function OpenGravatar({ email, ...props }: GravatarProps) {
   const hashPromise = usePromise(email, async () =>
     sha256(email.trim().toLowerCase()),
   );
