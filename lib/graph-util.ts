@@ -418,7 +418,9 @@ export function composeDOT({
 
     const link = new URL(location.pathname, location.origin);
     link.searchParams.append(PARAM_QUERY, module.key);
-    const label = module.isUnnamed ? UNNAMED_PACKAGE : undefined;
+    const customLabel =
+      module.source ?? (module.isUnnamed ? UNNAMED_PACKAGE : undefined);
+    const label = customLabel && dotEscape(customLabel);
     const style = isPeerOnly ? 'rounded,dashed' : undefined;
     const vs = { root: level === 0, fontsize, href: link.href, label, style };
 
@@ -498,7 +500,8 @@ export function composeMermaid({ graph }: { graph: GraphState }) {
   const roots: string[] = [];
   for (const [key, { module, level, downstream }] of entries) {
     const id = ids.get(key)!;
-    const label = module.isUnnamed ? UNNAMED_PACKAGE : module.key;
+    const label =
+      module.source ?? (module.isUnnamed ? UNNAMED_PACKAGE : module.key);
     nodes.push(`  ${id}["${mermaidEscape(label)}"]`);
     if (level === 0) {
       roots.push(id);

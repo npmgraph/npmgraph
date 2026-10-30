@@ -22,7 +22,7 @@ export function ModuleList({
 
   const query = canFilter ? filter.trim().toLowerCase() : '';
   const filteredModules = query
-    ? modules.filter(module => module.key.toLowerCase().includes(query))
+    ? modules.filter(module => module.label.toLowerCase().includes(query))
     : modules;
 
   return (
@@ -60,6 +60,7 @@ export function ModuleList({
               [styles.entry]: entryModules.has(module),
             })}
             value={module.key}
+            label={module.label}
           />
         </div>
       ))}

@@ -22,7 +22,11 @@ export function licensesKeyword(keyword: OSIKeyword) {
           key={module.key}
           className={cn(styles.row, reportItemStyles.zebraRow)}
         >
-          <Selectable className={cn(styles.name)} value={module.key} />
+          <Selectable
+            className={cn(styles.name)}
+            value={module.key}
+            label={module.label}
+          />
         </div>
       ));
 

@@ -14,6 +14,22 @@ export function resolveGitHubShorthand(moduleKey: string) {
     : moduleKey;
 }
 
+/**
+Short description of where a package.json URL points to: `user/repo` (plus `#ref`, unless it's the default branch) for GitHub repos, the URL without protocol otherwise
+*/
+export function describeUrlSource(url: URL) {
+  if (url.host === 'raw.githubusercontent.com') {
+    const [owner, repo, ref, ...path] = url.pathname.split('/').filter(Boolean);
+    if (owner && repo && ref && path.at(-1) === 'package.json') {
+      // HEAD is what GitHub shorthands resolve to, i.e. the default branch
+      const isDefaultRef = ['HEAD', 'main', 'master'].includes(ref);
+      return isDefaultRef ? `${owner}/${repo}` : `${owner}/${repo}#${ref}`;
+    }
+  }
+
+  return url.href.replace(/^[a-z]+:\/\//i, '');
+}
+
 export function resolveModule(name: string, version?: string) {
   if (version) {
     // Remove "git...#" repo URIs from version strings
