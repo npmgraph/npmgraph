@@ -22,6 +22,12 @@ describe('local packages', () => {
     expect(module.isLocal).toBe(true);
   });
 
+  it('are labeled by upload', () => {
+    expect(local({ name: 'labeled-module', version: '1.0.0' }).source).toBe(
+      'upload: labeled-module@1.0.0',
+    );
+  });
+
   it('reflect changes when re-added with the same name and version', async () => {
     const pkg = { name: 'edited-module', version: '1.0.0' };
     local({ ...pkg, dependencies: { a: '1' } });
@@ -63,5 +69,16 @@ describe('GitHub repos', () => {
     expect(String(vi.mocked(fetchJson).mock.calls[0]?.[0])).toBe(
       'https://raw.githubusercontent.com/some-user/some-repo/HEAD/package.json',
     );
+  });
+
+  it('are labeled by user/repo regardless of name and version', async () => {
+    vi.mocked(fetchJson).mockResolvedValueOnce({
+      name: 'labeled-package',
+      version: '2.0.0',
+    });
+
+    const module = await getModule('labeled-user/labeled-repo');
+
+    expect(module.source).toBe('labeled-user/labeled-repo');
   });
 });

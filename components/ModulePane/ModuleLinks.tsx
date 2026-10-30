@@ -76,9 +76,12 @@ export function ModuleExternalLinks({ module }: { module: Module }) {
   return (
     <div>
       <ButtonGroup className={styles.moduleLinks}>
-        {parseCustomModuleLinks(customLinks, module.name, module.version, {
+        {parseCustomModuleLinks(customLinks, {
+          name: module.name,
+          version: module.version,
           repository: repoUrl,
           homepage: homepageUrl,
+          fromRegistry: Boolean(module.packument),
         }).map(({ label, href }) => (
           <ExternalLink key={`${label}:${href}`} href={href}>
             {label}

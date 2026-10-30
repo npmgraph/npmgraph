@@ -1,0 +1,65 @@
+@use '../../lib/root.module.scss' as *;
+
+.root {
+  // Where headings stick: the top of the pane, or below the sticky header
+  --sticky-top: 0;
+  margin-bottom: 24px;
+  scroll-margin-top: var(--sticky-top);
+
+  @include tight-screen {
+    --sticky-top: 96px;
+  }
+
+  h2 {
+    position: sticky;
+    top: var(--sticky-top);
+    z-index: 1;
+    margin: 0;
+    border-bottom: 1px solid var(--bg1);
+    background-color: var(--bg0);
+    padding-block: 16px 0.3em;
+    font-weight: 600;
+    font-size: 1.5em;
+    line-height: 1.25;
+
+    @include tight-screen {
+      background-color: var(--bg-root);
+    }
+
+    & > span,
+    & > small {
+      vertical-align: middle;
+      margin-left: 0.4em;
+    }
+
+    & > small {
+      color: var(--text-dim);
+      font-weight: normal;
+      font-size: 0.6em;
+    }
+  }
+
+  h2 + * {
+    margin-top: 12px;
+  }
+
+  // Permalink sits left of the heading, visible on hover
+  .permalink {
+    position: absolute;
+    right: 100%;
+    opacity: 0;
+    padding-inline: 4px;
+    text-decoration: none;
+
+    &:focus-visible {
+      opacity: 1;
+    }
+    &:hover {
+      filter: brightness(1.5);
+    }
+  }
+
+  h2:hover .permalink {
+    opacity: 1;
+  }
+}

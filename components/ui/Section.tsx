@@ -1,5 +1,6 @@
 import type { HTMLProps, ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
+import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 
 import * as styles from './Section.module.scss';
 
@@ -23,8 +24,16 @@ export function CollapsibleSection({
   icon?: ReactNode;
   open?: boolean;
 } & HTMLProps<HTMLDetailsElement>) {
+  const name = sectionName(title);
+  const ref = useSectionTarget<HTMLDetailsElement>(name);
+
   return (
-    <details open={open} {...props} className={cn(className, styles.root)}>
+    <details
+      ref={ref}
+      open={open}
+      {...props}
+      className={cn(className, styles.root)}
+    >
       <summary>
         {title}
         {icon}
@@ -46,8 +55,11 @@ export function Section({
   className?: string;
   count?: number | string;
 }) {
+  const name = sectionName(title);
+  const ref = useSectionTarget<HTMLDivElement>(name);
+
   return (
-    <div className={cn(className, styles.root)}>
+    <div ref={ref} className={cn(className, styles.root)}>
       <h3>
         {title}
         <Count count={count} />

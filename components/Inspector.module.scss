@@ -20,3 +20,13 @@
     display: none;
   }
 }
+
+.inspector.only {
+  flex-grow: 1;
+  width: auto;
+
+  // Let section headings stick to the page
+  @include tight-screen {
+    overflow: clip;
+  }
+}

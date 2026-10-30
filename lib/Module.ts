@@ -26,6 +26,8 @@ export default class Module {
   package: PackumentVersion;
   packument?: Packument;
   isLocal = false;
+  // Where the module was loaded from, if not the registry, e.g. "repo: user/name"
+  source?: string;
   stubError?: Error;
 
   // TODO: This should take either PackumentVersion or PackageJSON... but need to
@@ -58,7 +60,14 @@ export default class Module {
   User-facing display name. Returns 'unnamed module' for unnamed packages
   */
   get displayName() {
-    return this.isUnnamed ? UNNAMED_PACKAGE : this.name;
+    return this.source ?? (this.isUnnamed ? UNNAMED_PACKAGE : this.name);
+  }
+
+  /**
+  Full label of the module: where it was loaded from or its name and version
+  */
+  get label() {
+    return this.source ?? this.key;
   }
 
   get isStub() {

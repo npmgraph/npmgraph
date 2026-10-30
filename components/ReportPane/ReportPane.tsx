@@ -1,4 +1,7 @@
 import { useMemo } from 'react';
+import useReportOnly from '../../hooks/useReportOnly.ts';
+import { cn } from '../../lib/dom.ts';
+import { Button } from '../Button.tsx';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import type { GraphState } from '../../lib/graph-util.ts';
 import { Pane } from '../ui/Pane.tsx';
@@ -23,12 +26,14 @@ import {
   peerDependenciesMissing,
 } from './reporters/peerDependenciesAll.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
+import * as styles from './ReportPane.module.scss';
 
 export default function ReportPane({
   graph,
+  className,
   ...props
 }: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
-  const { className, ...restProps } = props;
+  const [isReportOnly, setReportOnly] = useReportOnly();
 
   // Stable results, so reports aren't regenerated on every render
   const moduleAnalysis = useMemo(
@@ -53,9 +58,23 @@ export default function ReportPane({
   }
 
   return (
-    <Pane className={className} {...restProps}>
-      <CollapsedModules />
-
+    <Pane
+      className={cn(className, { [styles.document]: isReportOnly })}
+      {...props}
+    >
+      {!isReportOnly && (
+        <>
+          <Button
+            className={styles.expand}
+            onClick={() => {
+              setReportOnly(true);
+            }}
+          >
+            Report only
+          </Button>
+          <CollapsedModules />
+        </>
+      )}
       <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
       <ReportItem

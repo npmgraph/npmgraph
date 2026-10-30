@@ -1,8 +1,5 @@
 .root {
   margin-top: -1em;
-  & > summary {
-    border-top: 0 !important;
-  }
 }
 
 .list {
@@ -41,6 +38,7 @@
 }
 
 .collapseInfo {
+  margin-top: 0.5em; // Somewhat align with "Report only" button
   margin-bottom: 1em;
   color: var(--text-dim);
   font-size: 90%;

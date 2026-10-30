@@ -7,6 +7,8 @@ export type DependencyKey =
   | 'optionalDependencies';
 
 export type DependencyEntry = {
+  // Name the dependency is declared with, which differs from `name` for aliases
+  alias: string;
   name: string;
   version: string;
   type: DependencyKey;

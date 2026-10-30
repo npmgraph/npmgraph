@@ -22,7 +22,6 @@ export function Selectable({
     <button
       type="button"
       className={cn(styles.root, utilities.brightHover, className)}
-      title={label}
       onClick={() => {
         setGraphSelection(type, value);
       }}

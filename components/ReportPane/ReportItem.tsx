@@ -1,9 +1,11 @@
 import { Suspense, use, useDeferredValue, useState } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
+import useReportOnly from '../../hooks/useReportOnly.ts';
 
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import type { RenderedAnalysis } from './analyzers/Analyzer.tsx';
+import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.scss';
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
@@ -47,23 +49,33 @@ function ReportItemContent({
 }) {
   const analysis = use(promise);
   const [isOpen, setIsOpen] = useState(false);
+  const [isReportOnly] = useReportOnly();
 
   if (!analysis) {
     return null;
   }
 
   const { type, summary, count, details } = analysis;
+  const icon = SYMBOLS[type] && (
+    <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
+  );
+  const body = (
+    <>
+      {children ? <div className={styles.description}>{children}</div> : null}
+      <div className={styles.details}>
+        {isReportOnly || isOpen ? details : null}
+      </div>
+    </>
+  );
 
-  return (
+  return isReportOnly ? (
+    <DocumentSection title={summary} count={count} icon={icon}>
+      {body}
+    </DocumentSection>
+  ) : (
     <CollapsibleSection
       open={false}
-      icon={
-        SYMBOLS[type] && (
-          <span className={cn(styles.symbol, styles[type])}>
-            {SYMBOLS[type]}
-          </span>
-        )
-      }
+      icon={icon}
       title={summary}
       count={count}
       onToggle={event => {
@@ -71,8 +83,7 @@ function ReportItemContent({
       }}
       {...props}
     >
-      {children ? <div className={styles.description}>{children}</div> : null}
-      <div className={styles.details}>{isOpen ? details : null}</div>
+      {body}
     </CollapsibleSection>
   );
 }

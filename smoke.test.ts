@@ -250,7 +250,7 @@ describe('panes', () => {
       expect(defaultConfig).toContain('repo, {repository}');
       expect(defaultConfig).toContain('website, {homepage}');
       expect(defaultConfig).toContain(
-        'package.json, https://cdn.jsdelivr.net/npm/{+name}@{version}/package.json',
+        'package.json, https://unpkg.com/{+name}@{version}/package.json',
       );
       const previewButtons = $$(
         '[aria-label="Preview of Module tab link buttons"] button',
@@ -347,15 +347,20 @@ describe('panes', () => {
     );
   });
 
-  it('toggles dependency types', async () => {
-    await goto('?q=ms');
-    await nodeAppears();
-    await userEvent.click(tab('View'));
-    await userEvent.click(toggle('Include devDependencies'));
-    // hash value is "%2CdevDependencies" (leading empty entry), so match loosely
-    await hashHas('devDependencies');
-    await nodeAppears();
-  });
+  // Loading the devDependencies of `ms` takes longer than the default test timeout
+  it(
+    'toggles dependency types',
+    async () => {
+      await goto('?q=ms');
+      await nodeAppears();
+      await userEvent.click(tab('View'));
+      await userEvent.click(toggle('Include devDependencies'));
+      // hash value is "%2CdevDependencies" (leading empty entry), so match loosely
+      await hashHas('devDependencies');
+      await nodeAppears();
+    },
+    TIMEOUT,
+  );
 
   it('toggles module sizing', async () => {
     await goto('?q=debug');

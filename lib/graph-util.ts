@@ -109,7 +109,7 @@ function getDependencyEntries(
       }
 
       const [name, version] = resolveAlias(alias, range);
-      depEntries.add({ name, version, type });
+      depEntries.add({ alias, name, version, type });
     }
   }
 
@@ -194,11 +194,12 @@ export async function getGraphForQuery(
 
     // Walk downstream dependencies
     await Promise.allSettled(
-      [...downstreamEntries].map(async ({ name, version, type }) => {
-        // Apply version override if one exists for this dependency name and spec
-        const override = getVersionOverride(currentOverrides, name, version);
+      [...downstreamEntries].map(async ({ alias, name, version, type }) => {
+        // Apply version override if one exists for this dependency name and spec.
+        // Like npm, match the declared name: aliases aren't overridden by their target's name
+        const override = getVersionOverride(currentOverrides, alias, version);
         const [downstreamName, downstreamVersion] = override
-          ? resolveAlias(name, override)
+          ? resolveAlias(alias, override)
           : [name, version];
 
         const downstreamModule = await getModule(
@@ -417,7 +418,9 @@ export function composeDOT({
 
     const link = new URL(location.pathname, location.origin);
     link.searchParams.append(PARAM_QUERY, module.key);
-    const label = module.isUnnamed ? UNNAMED_PACKAGE : undefined;
+    const customLabel =
+      module.source ?? (module.isUnnamed ? UNNAMED_PACKAGE : undefined);
+    const label = customLabel && dotEscape(customLabel);
     const style = isPeerOnly ? 'rounded,dashed' : undefined;
     const vs = { root: level === 0, fontsize, href: link.href, label, style };
 
@@ -497,7 +500,8 @@ export function composeMermaid({ graph }: { graph: GraphState }) {
   const roots: string[] = [];
   for (const [key, { module, level, downstream }] of entries) {
     const id = ids.get(key)!;
-    const label = module.isUnnamed ? UNNAMED_PACKAGE : module.key;
+    const label =
+      module.source ?? (module.isUnnamed ? UNNAMED_PACKAGE : module.key);
     nodes.push(`  ${id}["${mermaidEscape(label)}"]`);
     if (level === 0) {
       roots.push(id);

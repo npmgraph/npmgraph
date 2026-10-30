@@ -87,7 +87,11 @@ export function moduleReplacementsNative({
           key={module.key}
           className={cn(styles.root, reportItemStyles.zebraRow)}
         >
-          <Selectable value={module.key} className={styles.selectable} />
+          <Selectable
+            value={module.key}
+            label={module.label}
+            className={styles.selectable}
+          />
           {': '}
           <div className={styles.body}>
             {replacements.length === 1 ? (
