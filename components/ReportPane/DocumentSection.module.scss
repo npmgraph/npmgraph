@@ -46,17 +46,16 @@
   // Permalink sits left of the heading, visible on hover
   .permalink {
     position: absolute;
-    top: 50%;
     right: 100%;
-    transform: translateY(-50%);
     opacity: 0;
     padding-inline: 4px;
-    font-weight: normal;
-    font-size: 0.8em;
     text-decoration: none;
 
     &:focus-visible {
       opacity: 1;
+    }
+    &:hover {
+      filter: brightness(1.5);
     }
   }
 

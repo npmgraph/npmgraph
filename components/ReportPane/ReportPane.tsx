@@ -56,7 +56,7 @@ export default function ReportPane({
               setReportOnly(true);
             }}
           >
-            Expand
+            Report only
           </Button>
           <CollapsedModules />
         </>
