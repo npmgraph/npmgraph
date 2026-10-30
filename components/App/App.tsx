@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { PaneType, PARAM_HIDE, PARAM_TAB } from '../../lib/constants.ts';
+import { PaneType, PARAM_TAB } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import useReportOnly from '../../hooks/useReportOnly.ts';
 import useSyncTab from '../../hooks/useSyncTab.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
@@ -24,8 +25,7 @@ export default function App() {
   const isTightScreen = useIsTightScreen();
   const [pane, setPane] = useGlobalState('pane');
   const [tab] = useHashParam(PARAM_TAB);
-  const [hide] = useHashParam(PARAM_HIDE);
-  const isReportOnly = hide === 'graph';
+  const [isReportOnly] = useReportOnly();
   useExternalInput();
 
   // On mobile, auto-select the Graph tab whenever the query changes.
@@ -33,11 +33,6 @@ export default function App() {
   // (unless a deep link specified a tab)
   const initialTabRef = useRef(tab);
   useEffect(() => {
-    if (isReportOnly) {
-      setPane(PaneType.REPORT);
-      return;
-    }
-
     if (initialTabRef.current !== null) {
       initialTabRef.current = null;
       return;
@@ -46,7 +41,7 @@ export default function App() {
     if (isTightScreen && query.length > 0) {
       setPane(PaneType.GRAPH);
     }
-  }, [query, isTightScreen, isReportOnly, setPane]);
+  }, [query, isTightScreen, setPane]);
 
   useSyncTab();
 
@@ -71,7 +66,8 @@ export default function App() {
       <div
         className={cn(styles.root, {
           [styles.loading]: activity.total > 0,
-          [styles.fixedHeight]: isTightScreen && pane === PaneType.GRAPH,
+          [styles.fixedHeight]:
+            isTightScreen && pane === PaneType.GRAPH && !isReportOnly,
         })}
       >
         <div className={styles.stickyTop}>

@@ -1,12 +1,11 @@
-import { Suspense, use, useDeferredValue, useEffect } from 'react';
-import useHashParam from '../../hooks/useHashParam.ts';
+import { Suspense, use, useDeferredValue } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
-import { PARAM_SECTION } from '../../lib/constants.ts';
+import useReportOnly from '../../hooks/useReportOnly.ts';
 
 import { cn } from '../../lib/dom.ts';
-import { CollapsibleSection, sectionName } from '../ui/Section.tsx';
+import { CollapsibleSection } from '../ui/Section.tsx';
 import type { RenderedAnalysis } from './analyzers/Analyzer.tsx';
-import { getHeadingId, ReportLayoutContext } from './ReportLayout.ts';
+import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.scss';
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
@@ -49,13 +48,16 @@ function ReportItemContent({
   promise: Promise<RenderedAnalysis | undefined>;
 }) {
   const analysis = use(promise);
-  const layout = use(ReportLayoutContext);
+  const [isReportOnly] = useReportOnly();
 
   if (!analysis) {
     return null;
   }
 
   const { type, summary, count, details } = analysis;
+  const icon = SYMBOLS[type] && (
+    <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
+  );
   const body = (
     <>
       {children ? <div className={styles.description}>{children}</div> : null}
@@ -63,89 +65,19 @@ function ReportItemContent({
     </>
   );
 
-  if (layout === 'document') {
-    return (
-      <DocumentSection
-        summary={summary}
-        count={count}
-        icon={
-          SYMBOLS[type] && (
-            <span className={cn(styles.symbol, styles[type])}>
-              {SYMBOLS[type]}
-            </span>
-          )
-        }
-      >
-        {body}
-      </DocumentSection>
-    );
-  }
-
-  return (
+  return isReportOnly ? (
+    <DocumentSection title={summary} count={count} icon={icon}>
+      {body}
+    </DocumentSection>
+  ) : (
     <CollapsibleSection
       open={false}
-      icon={
-        SYMBOLS[type] && (
-          <span className={cn(styles.symbol, styles[type])}>
-            {SYMBOLS[type]}
-          </span>
-        )
-      }
+      icon={icon}
       title={summary}
       count={count}
       {...props}
     >
       {body}
     </CollapsibleSection>
-  );
-}
-
-function getSectionHref(name: string) {
-  const parameters = new URLSearchParams(location.hash.replace(/^#/v, ''));
-  parameters.set(PARAM_SECTION, name);
-  return `#${parameters}`;
-}
-
-function DocumentSection({
-  summary,
-  count,
-  icon,
-  children,
-}: {
-  summary: string;
-  count?: number | string;
-  icon: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  const id = getHeadingId(summary);
-  const name = sectionName(summary);
-  const [section, setSection] = useHashParam(PARAM_SECTION);
-
-  // Sections render asynchronously, so scroll once the linked one exists
-  useEffect(() => {
-    if (section === name) {
-      document.getElementById(id)?.scrollIntoView();
-    }
-  }, [section, name, id]);
-
-  return (
-    <section>
-      <h2 id={id}>
-        <a
-          href={getSectionHref(name)}
-          aria-label={`Link to ${summary}`}
-          onClick={event => {
-            event.preventDefault();
-            setSection(name);
-          }}
-        >
-          #
-        </a>
-        {summary}
-        {icon}
-        {count !== undefined && <small>{count}</small>}
-      </h2>
-      {children}
-    </section>
   );
 }

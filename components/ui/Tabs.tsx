@@ -3,6 +3,7 @@ import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import useReportOnly from '../../hooks/useReportOnly.ts';
 import * as utilities from './utilities.module.scss';
 
 import { Splitter } from './Splitter.tsx';
@@ -10,11 +11,13 @@ import * as styles from './Tabs.module.scss';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
-  const [currentPane, setCurrentPane] = useGlobalState('pane');
+  const [pane, setPane] = useGlobalState('pane');
   const isTightScreen = useIsTightScreen();
   const [hide, setHide] = useHashParam(PARAM_HIDE);
-  const isReportOnly = hide === 'graph';
+  const [isReportOnly] = useReportOnly();
   const isInspectorOpen = hide === null || isReportOnly;
+  // The report-only view doesn't change the stored pane
+  const currentPane = isReportOnly ? PaneType.REPORT : pane;
 
   const tabs = [
     {
@@ -50,7 +53,8 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   className={utilities.brightHover}
                   onClick={() => {
                     setHide(null);
-                    setCurrentPane(
+                    // The graph isn't a tab on wide screens, so go back to the report
+                    setPane(
                       !isTightScreen && tabPane === PaneType.GRAPH
                         ? PaneType.REPORT
                         : tabPane,

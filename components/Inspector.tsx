@@ -3,6 +3,7 @@ import { useGlobalState } from '../lib/GlobalStore.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
 import useHashParam from '../hooks/useHashParam.ts';
+import useReportOnly from '../hooks/useReportOnly.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import ViewPane from './ViewPane/ViewPane.tsx';
@@ -22,23 +23,14 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [graph] = useGlobalState('graph');
 
   const [hide] = useHashParam(PARAM_HIDE);
+  const [isReportOnly] = useReportOnly();
 
-  if (hide === 'graph') {
-    return (
-      <div className={cn(styles.inspector, styles.only, className)}>
-        <Suspense fallback={null}>
-          <ReportPane graph={graph} />
-        </Suspense>
-      </div>
-    );
-  }
-
-  if (hide !== null) {
+  if (hide !== null && !isReportOnly) {
     return null;
   }
 
   let paneComponent;
-  switch (deferredPane) {
+  switch (isReportOnly ? PaneType.REPORT : deferredPane) {
     case PaneType.MODULE:
       paneComponent = <ModulePane />;
       break;
@@ -57,7 +49,14 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   }
 
   return (
-    <div className={cn(styles.inspector, className)} {...restProps}>
+    <div
+      className={cn(
+        styles.inspector,
+        { [styles.only]: isReportOnly },
+        className,
+      )}
+      {...restProps}
+    >
       <Suspense fallback={null}>{paneComponent}</Suspense>
     </div>
   );
