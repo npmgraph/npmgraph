@@ -21,7 +21,7 @@
     text-overflow: ellipsis;
   }
 
-  > img {
+  > [role='img'] {
     flex-grow: 0;
     margin-inline-start: 0.5rem;
     border-radius: 0.3rem;

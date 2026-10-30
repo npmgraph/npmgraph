@@ -21,8 +21,7 @@
   padding: 0;
   height: 32px;
 
-  img {
-    vertical-align: middle;
+  [role='img'] {
     margin-right: 4px;
   }
 }

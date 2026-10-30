@@ -1,5 +1,7 @@
-import { type ImgHTMLAttributes, Suspense, use } from 'react';
+import { type HTMLAttributes, Suspense, use } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
+import { cn } from '../../lib/dom.ts';
+import * as styles from './Gravatar.module.scss';
 
 const sha256 = async (text: string) => {
   const buf = await crypto.subtle.digest(
@@ -15,7 +17,7 @@ type GravatarProps = {
   email: string;
   username: string;
   size?: number;
-} & Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'>;
+} & Omit<HTMLAttributes<HTMLSpanElement>, 'role' | 'aria-label'>;
 
 export function Gravatar({ email, ...props }: GravatarProps) {
   const hashPromise = usePromise(email, async () =>
@@ -29,21 +31,28 @@ export function Gravatar({ email, ...props }: GravatarProps) {
   );
 }
 
+// Not an <img> because React attaches load and error listeners to every one of them
 function GravatarImage({
   hashPromise,
   username,
   size = 32,
+  className,
+  style,
   ...props
 }: Omit<GravatarProps, 'email'> & { hashPromise: Promise<string> }) {
   const hash = use(hashPromise);
 
   return (
-    <img
-      loading="lazy"
-      width={size}
-      height={size}
-      alt={`${username}'s avatar`}
-      src={`https://www.gravatar.com/avatar/${hash}?s=${size * 2}`}
+    <span
+      role="img"
+      aria-label={`${username}'s avatar`}
+      className={cn(styles.root, className)}
+      style={{
+        width: size,
+        height: size,
+        backgroundImage: `url(https://www.gravatar.com/avatar/${hash}?s=${size * 2})`,
+        ...style,
+      }}
       {...props}
     />
   );
