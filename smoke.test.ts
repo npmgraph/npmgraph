@@ -374,6 +374,9 @@ describe('panes', () => {
     await userEvent.click(app().getByRole('link', { name: 'Some link' }));
     await appears('[data-link-status-blocker]');
 
+    // Scrolling makes WebKit re-check what's under the cursor, to hide the link status
+    expect($('[data-link-status-blocker]', doc()).scrollTop).toBeGreaterThan(0);
+
     // The blocker disappears once the cursor moves away
     await userEvent.hover(tab('View'));
     await vi.waitFor(() => {
