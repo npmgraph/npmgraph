@@ -4,6 +4,7 @@ import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import useHideLinkStatus from '../../hooks/useHideLinkStatus.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import useSyncTab from '../../hooks/useSyncTab.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
@@ -27,6 +28,7 @@ export default function App() {
   const [tab] = useHashParam(PARAM_TAB);
   const [isReportOnly] = useReportOnly();
   useExternalInput();
+  useHideLinkStatus();
 
   // On mobile, auto-select the Graph tab whenever the query changes.
   // This handles both deep links (initial load) and new queries during a session.
