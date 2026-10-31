@@ -1,7 +1,19 @@
 @use '../../lib/root.module.scss' as *;
 
+// A row instead of a float, which would narrow the section that follows it
+.toolbar {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+
+  > :first-child {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
 .expand {
-  float: right;
+  flex: none;
   cursor: pointer;
   margin-bottom: 1em; // Matches the sidebar's padding: 1em
 }
