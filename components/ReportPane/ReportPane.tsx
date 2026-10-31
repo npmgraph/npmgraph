@@ -49,8 +49,7 @@ export default function ReportPane({
       {...props}
     >
       {!isReportOnly && (
-        <div className={styles.toolbar}>
-          <CollapsedModules />
+        <>
           <Button
             className={styles.expand}
             onClick={() => {
@@ -59,7 +58,8 @@ export default function ReportPane({
           >
             Report only
           </Button>
-        </div>
+          <CollapsedModules />
+        </>
       )}
       <ReportItem data={moduleAnalysis} reporter={modulesAll} />
 
