@@ -380,6 +380,28 @@ describe('panes', () => {
     TIMEOUT,
   );
 
+  it('puts a blocker under the cursor after clicking a link', async () => {
+    await goto('?q=debug');
+    await nodeAppears();
+    const link = doc().createElement('a');
+    link.href = '#some-link';
+    link.textContent = 'Some link';
+    link.style.cssText = 'position:fixed;left:40px;bottom:100px;z-index:1000';
+    doc().body.append(link);
+
+    await userEvent.click(app().getByRole('link', { name: 'Some link' }));
+    await appears('[data-link-status-blocker]');
+
+    // Scrolling makes WebKit re-check what's under the cursor, to hide the link status
+    expect($('[data-link-status-blocker]', doc()).scrollTop).toBeGreaterThan(0);
+
+    // The blocker disappears once the cursor moves away
+    await userEvent.hover(tab('View'));
+    await vi.waitFor(() => {
+      expect($$optional('[data-link-status-blocker]', doc())).toHaveLength(0);
+    });
+  });
+
   it('toggles module sizing', async () => {
     await goto('?q=debug');
     await nodeAppears();
