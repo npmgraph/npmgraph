@@ -365,6 +365,24 @@ describe('panes', () => {
     );
   });
 
+  it('does not narrow the report sections next to the "Report only" button', async () => {
+    await goto('?q=ms');
+    await nodeAppears();
+    await userEvent.click(tab('Report'));
+    await appears('details > summary', /Modules/);
+
+    const button = $$('button', doc()).find(
+      element => element.textContent.trim() === 'Report only',
+    )!;
+    const summary = $$('details > summary', doc()).find(element =>
+      element.textContent.includes('Modules'),
+    )!;
+
+    expect(summary.getBoundingClientRect().right).toBeGreaterThanOrEqual(
+      button.getBoundingClientRect().right,
+    );
+  });
+
   // Loading the devDependencies of `ms` takes longer than the default test timeout
   it(
     'toggles dependency types',
