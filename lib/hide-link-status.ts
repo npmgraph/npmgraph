@@ -44,8 +44,15 @@ export function hideLinkStatusAfterClick() {
         width: `${BLOCKER_SIZE}px`,
         height: `${BLOCKER_SIZE}px`,
         cursor: getComputedStyle(link).cursor,
+        overflow: 'hidden',
       });
+      const spacer = document.createElement('div');
+      spacer.style.height = `${BLOCKER_SIZE * 2}px`;
+      blocker.append(spacer);
       document.body.append(blocker);
+      // WebKit only re-checks what's under a still cursor after something
+      // scrolls, otherwise it keeps showing the link status
+      blocker.scrollTop = 1;
 
       const cleanup = new AbortController();
       const timeout = setTimeout(() => removeBlocker?.(), BLOCKER_MAX_MS);
