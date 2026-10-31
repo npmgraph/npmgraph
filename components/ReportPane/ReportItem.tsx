@@ -1,4 +1,4 @@
-import { Suspense, use, useDeferredValue, useState } from 'react';
+import { Suspense, use, useDeferredValue } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 
@@ -48,7 +48,6 @@ function ReportItemContent({
   promise: Promise<RenderedAnalysis | undefined>;
 }) {
   const analysis = use(promise);
-  const [isOpen, setIsOpen] = useState(false);
   const [isReportOnly] = useReportOnly();
 
   if (!analysis) {
@@ -62,9 +61,7 @@ function ReportItemContent({
   const body = (
     <>
       {children ? <div className={styles.description}>{children}</div> : null}
-      <div className={styles.details}>
-        {isReportOnly || isOpen ? details : null}
-      </div>
+      <div className={styles.details}>{details}</div>
     </>
   );
 
@@ -78,9 +75,6 @@ function ReportItemContent({
       icon={icon}
       title={summary}
       count={count}
-      onToggle={event => {
-        setIsOpen(event.currentTarget.open);
-      }}
       {...props}
     >
       {body}

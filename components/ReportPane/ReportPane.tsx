@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
 import { Button } from '../Button.tsx';
@@ -35,27 +34,14 @@ export default function ReportPane({
 }: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
   const [isReportOnly, setReportOnly] = useReportOnly();
 
-  // Stable results, so reports aren't regenerated on every render
-  const moduleAnalysis = useMemo(
-    () => graph?.moduleInfos && analyzeModules(graph),
-    [graph],
-  );
-  const peerDependencyAnalysis = useMemo(
-    () => graph?.moduleInfos && analyzePeerDependencies(graph),
-    [graph],
-  );
-  const maintainersAnalysis = useMemo(
-    () => graph?.moduleInfos && analyzeMaintainers(graph),
-    [graph],
-  );
-  const licensesAnalysis = useMemo(
-    () => graph?.moduleInfos && analyzeLicenses(graph),
-    [graph],
-  );
-
   if (!graph?.moduleInfos) {
     return <div>Loading</div>;
   }
+
+  const moduleAnalysis = analyzeModules(graph);
+  const peerDependencyAnalysis = analyzePeerDependencies(graph);
+  const maintainersAnalysis = analyzeMaintainers(graph);
+  const licensesAnalysis = analyzeLicenses(graph);
 
   return (
     <Pane

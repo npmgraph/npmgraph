@@ -1,15 +1,6 @@
-import { type ImgHTMLAttributes, Suspense, use } from 'react';
-import usePromise from '../../hooks/usePromise.ts';
-
-const sha256 = async (text: string) => {
-  const buf = await crypto.subtle.digest(
-    'SHA-256',
-    new TextEncoder().encode(text),
-  );
-  return [...new Uint8Array(buf)]
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-};
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+import type { ImgHTMLAttributes } from 'react';
 
 type GravatarProps = {
   email: string;
@@ -17,25 +8,14 @@ type GravatarProps = {
   size?: number;
 } & Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'>;
 
-export function Gravatar({ email, ...props }: GravatarProps) {
-  const hashPromise = usePromise(email, async () =>
-    sha256(email.trim().toLowerCase()),
-  );
-
-  return (
-    <Suspense fallback={null}>
-      <GravatarImage hashPromise={hashPromise} {...props} />
-    </Suspense>
-  );
-}
-
-function GravatarImage({
-  hashPromise,
+export function Gravatar({
+  email,
   username,
   size = 32,
   ...props
-}: Omit<GravatarProps, 'email'> & { hashPromise: Promise<string> }) {
-  const hash = use(hashPromise);
+}: GravatarProps) {
+  const normalized = email.trim().toLowerCase();
+  const hash = bytesToHex(sha256(utf8ToBytes(normalized)));
 
   return (
     <img
