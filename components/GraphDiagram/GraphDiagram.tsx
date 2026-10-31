@@ -166,7 +166,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   return (
     <TransformWrapper
       ref={transformRef}
-      centerOnInit
       minScale={minScale}
       maxScale={4}
       zoomAnimation={{ size: 0 }}
