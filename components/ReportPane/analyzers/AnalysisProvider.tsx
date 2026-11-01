@@ -7,7 +7,11 @@ import { analyzePeerDependencies } from './analyzePeerDependencies.ts';
 import { AnalysisContext } from './useAnalysis.ts';
 
 // Analyzes the graph once, for all the reports to share
-export function AnalysisProvider({ children }: { children: ReactNode }) {
+export default function AnalysisProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const graph = useGraph();
   const analysis = useMemo(
     () => ({

@@ -62,7 +62,7 @@ function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function LicensesAllReport() {
+export default function LicensesAll() {
   const data = useLicenseAnalysis();
 
   return <ReportItem data={data} reporter={licensesAll} />;

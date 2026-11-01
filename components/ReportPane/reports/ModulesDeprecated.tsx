@@ -38,7 +38,7 @@ function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function ModulesDeprecatedReport() {
+export default function ModulesDeprecated() {
   const data = useModuleAnalysis();
 
   return (

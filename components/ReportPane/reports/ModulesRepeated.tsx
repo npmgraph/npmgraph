@@ -43,7 +43,7 @@ function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function ModulesRepeatedReport() {
+export default function ModulesRepeated() {
   const data = useModuleAnalysis();
 
   return (

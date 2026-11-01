@@ -120,7 +120,7 @@ async function moduleVulnerabilities({ moduleInfos }: ModuleAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function ModuleVulnerabilitiesReport() {
+export default function ModuleVulnerabilities() {
   const data = useModuleAnalysis();
 
   return (

@@ -25,7 +25,7 @@ function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function LicensesMissingReport() {
+export default function LicensesMissing() {
   const data = useLicenseAnalysis();
 
   return (

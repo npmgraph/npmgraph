@@ -22,7 +22,7 @@ function peerDependenciesMissing({
   } as RenderedAnalysis;
 }
 
-export function PeerDependenciesMissingReport() {
+export default function PeerDependenciesMissing() {
   const data = usePeerDependencyAnalysis();
 
   return <ReportItem data={data} reporter={peerDependenciesMissing} />;

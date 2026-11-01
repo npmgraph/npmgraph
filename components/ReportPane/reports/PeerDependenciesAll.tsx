@@ -76,7 +76,7 @@ export function peerDependenciesAll({
   } as RenderedAnalysis;
 }
 
-export function PeerDependenciesAllReport() {
+export default function PeerDependenciesAll() {
   const data = usePeerDependencyAnalysis();
 
   return <ReportItem data={data} reporter={peerDependenciesAll} />;

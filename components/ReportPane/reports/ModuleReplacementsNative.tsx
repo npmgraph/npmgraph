@@ -126,7 +126,7 @@ function moduleReplacementsNative({
   } as RenderedAnalysis;
 }
 
-export function ModuleReplacementsNativeReport() {
+export default function ModuleReplacementsNative() {
   const data = useModuleAnalysis();
 
   return (

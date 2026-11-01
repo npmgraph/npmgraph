@@ -29,7 +29,7 @@ function maintainersSolo({
   } as RenderedAnalysis;
 }
 
-export function MaintainersSoloReport() {
+export default function MaintainersSolo() {
   const data = useMaintainerAnalysis();
 
   return (

@@ -3,7 +3,7 @@ import { ReportItem } from '../ReportItem.tsx';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { licensesKeyword } from './LicensesKeyword.tsx';
 
-export function LicensesObsoleteReport() {
+export default function LicensesObsolete() {
   const data = useLicenseAnalysis();
 
   return (

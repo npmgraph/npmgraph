@@ -28,7 +28,7 @@ function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function ModulesAllReport() {
+export default function ModulesAll() {
   const data = useModuleAnalysis();
 
   return <ReportItem data={data} reporter={modulesAll} />;

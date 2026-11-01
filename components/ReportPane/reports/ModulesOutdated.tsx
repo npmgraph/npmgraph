@@ -48,7 +48,7 @@ function modulesOutdated({ outdated }: ModuleAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function ModulesOutdatedReport() {
+export default function ModulesOutdated() {
   const data = useModuleAnalysis();
 
   return (

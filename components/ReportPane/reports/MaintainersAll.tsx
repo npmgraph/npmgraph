@@ -50,7 +50,7 @@ export function maintainersAll({
   } as RenderedAnalysis;
 }
 
-export function MaintainersAllReport() {
+export default function MaintainersAll() {
   const data = useMaintainerAnalysis();
 
   return <ReportItem data={data} reporter={maintainersAll} />;
