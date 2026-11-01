@@ -4,6 +4,7 @@ import { type ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModulesDeprecated.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
@@ -39,10 +40,10 @@ function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
 }
 
 export default function ModulesDeprecated() {
-  const data = useModuleAnalysis();
+  const report = useReport(useModuleAnalysis(), modulesDeprecated);
 
   return (
-    <ReportItem data={data} reporter={modulesDeprecated}>
+    <ReportItem report={report}>
       Deprecated modules are unsupported and may have unpatched security
       vulnerabilities. See the deprecation notes below for module-specific
       instructions.

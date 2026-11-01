@@ -1,6 +1,7 @@
 import type { PeerDependenciesState } from '../analyzers/analyzePeerDependencies.ts';
 import { peerDependenciesDetails } from './peerDependenciesDetails.tsx';
 import { usePeerDependencyAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function peerDependenciesAll({ peerDependencyInfos }: PeerDependenciesState) {
@@ -19,7 +20,7 @@ function peerDependenciesAll({ peerDependencyInfos }: PeerDependenciesState) {
 }
 
 export default function PeerDependenciesAll() {
-  const data = usePeerDependencyAnalysis();
+  const report = useReport(usePeerDependencyAnalysis(), peerDependenciesAll);
 
-  return <ReportItem data={data} reporter={peerDependenciesAll} />;
+  return <ReportItem report={report} />;
 }

@@ -1,6 +1,7 @@
 import { type MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.ts';
 import { maintainersDetails } from './maintainersDetails.tsx';
 import { useMaintainerAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function maintainersAll({
@@ -25,7 +26,7 @@ function maintainersAll({
 }
 
 export default function MaintainersAll() {
-  const data = useMaintainerAnalysis();
+  const report = useReport(useMaintainerAnalysis(), maintainersAll);
 
-  return <ReportItem data={data} reporter={maintainersAll} />;
+  return <ReportItem report={report} />;
 }

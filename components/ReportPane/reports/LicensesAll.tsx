@@ -6,6 +6,7 @@ import { type LicenseAnalysisState } from '../analyzers/analyzeLicenses.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './LicensesAll.module.scss';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
@@ -63,7 +64,7 @@ function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
 }
 
 export default function LicensesAll() {
-  const data = useLicenseAnalysis();
+  const report = useReport(useLicenseAnalysis(), licensesAll);
 
-  return <ReportItem data={data} reporter={licensesAll} />;
+  return <ReportItem report={report} />;
 }

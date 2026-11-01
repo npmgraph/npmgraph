@@ -2,6 +2,7 @@ import simplur from 'simplur';
 import { type ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import { ModuleList } from './ModuleList.tsx';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
@@ -29,7 +30,7 @@ function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
 }
 
 export default function ModulesAll() {
-  const data = useModuleAnalysis();
+  const report = useReport(useModuleAnalysis(), modulesAll);
 
-  return <ReportItem data={data} reporter={modulesAll} />;
+  return <ReportItem report={report} />;
 }

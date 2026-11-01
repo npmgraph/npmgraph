@@ -3,6 +3,7 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import { type ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as styles from './ModulesRepeated.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
@@ -44,10 +45,10 @@ function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
 }
 
 export default function ModulesRepeated() {
-  const data = useModuleAnalysis();
+  const report = useReport(useModuleAnalysis(), modulesRepeated);
 
   return (
-    <ReportItem data={data} reporter={modulesRepeated}>
+    <ReportItem report={report}>
       Module repetition is a result of incompatible version constraints, and may
       lead to increased bundle and <code>node_modules</code> directory size.
       Consider asking <em>upstream</em> module owners to update to the latest

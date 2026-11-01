@@ -2,6 +2,7 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import { type LicenseAnalysisState } from '../analyzers/analyzeLicenses.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
@@ -26,10 +27,10 @@ function licensesMissing({ unlicensedModules }: LicenseAnalysisState) {
 }
 
 export default function LicensesMissing() {
-  const data = useLicenseAnalysis();
+  const report = useReport(useLicenseAnalysis(), licensesMissing);
 
   return (
-    <ReportItem data={data} reporter={licensesMissing} type="warn">
+    <ReportItem report={report} type="warn">
       Modules without a declared license, or that are explicitely "UNLICENSED",
       are not opensource and may infringe on the owner's copyright. Consider
       contacting the owner to clarify licensing terms.

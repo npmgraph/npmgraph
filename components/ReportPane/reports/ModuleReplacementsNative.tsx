@@ -10,6 +10,7 @@ import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModuleReplacementsNative.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function getReplacements(moduleName: string) {
@@ -127,10 +128,10 @@ function moduleReplacementsNative({
 }
 
 export default function ModuleReplacementsNative() {
-  const data = useModuleAnalysis();
+  const report = useReport(useModuleAnalysis(), moduleReplacementsNative);
 
   return (
-    <ReportItem data={data} reporter={moduleReplacementsNative}>
+    <ReportItem report={report}>
       From the{' '}
       <ExternalLink href="https://github.com/e18e/module-replacements">
         module-replacements

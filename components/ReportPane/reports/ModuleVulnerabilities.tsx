@@ -6,6 +6,7 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import { type ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as styles from './ModuleVulnerabilities.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 const SEVERITY_RANK = {
@@ -121,10 +122,10 @@ async function moduleVulnerabilities({ moduleInfos }: ModuleAnalysisState) {
 }
 
 export default function ModuleVulnerabilities() {
-  const data = useModuleAnalysis();
+  const report = useReport(useModuleAnalysis(), moduleVulnerabilities);
 
   return (
-    <ReportItem data={data} reporter={moduleVulnerabilities}>
+    <ReportItem report={report}>
       Security advisories per <code>npm audit</code>. Data sourced from the npm
       registry. See{' '}
       <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">

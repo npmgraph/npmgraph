@@ -1,6 +1,7 @@
 import { type MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.ts';
 import { maintainersDetails } from './maintainersDetails.tsx';
 import { useMaintainerAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 
@@ -28,10 +29,10 @@ function maintainersSolo({
 }
 
 export default function MaintainersSolo() {
-  const data = useMaintainerAnalysis();
+  const report = useReport(useMaintainerAnalysis(), maintainersSolo);
 
   return (
-    <ReportItem data={data} reporter={maintainersSolo}>
+    <ReportItem report={report}>
       Modules with a single maintainer are at risk of "unplanned abandonment".
       See{' '}
       <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">

@@ -6,6 +6,7 @@ import {
 } from '../analyzers/analyzeModules.ts';
 import * as styles from './ModulesOutdated.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
+import useReport from '../useReport.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 const levelTitles = {
@@ -49,10 +50,10 @@ function modulesOutdated({ outdated }: ModuleAnalysisState) {
 }
 
 export default function ModulesOutdated() {
-  const data = useModuleAnalysis();
+  const report = useReport(useModuleAnalysis(), modulesOutdated);
 
   return (
-    <ReportItem data={data} reporter={modulesOutdated}>
+    <ReportItem report={report}>
       These modules are behind the <code>latest</code> version on npm. Newer
       versions may include bug and security fixes. If an update is held back by
       the version constraint of another module, consider asking{' '}

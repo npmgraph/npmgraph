@@ -1,5 +1,4 @@
 import { Suspense, use, useDeferredValue, type ReactElement } from 'react';
-import usePromise from '../../hooks/usePromise.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 
 import { cn } from '../../lib/dom.ts';
@@ -16,44 +15,27 @@ export type RenderedAnalysis = {
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
 
-type ReportItemProps<T> = {
-  data?: T;
-  reporter: (
-    state: T,
-  ) => Promise<RenderedAnalysis | undefined> | RenderedAnalysis | undefined;
+export type Report =
+  RenderedAnalysis | undefined | Promise<RenderedAnalysis | undefined>;
+
+type ReportItemProps = {
+  report: Report;
   type?: 'info' | 'warn' | 'error';
 } & React.HTMLAttributes<HTMLDetailsElement>;
 
-export function ReportItem<T>({ data, ...props }: ReportItemProps<T>) {
-  // There's nothing to report until there's data
-  return data ? <LoadedReportItem data={data} {...props} /> : null;
-}
-
-function LoadedReportItem<T>({
-  data,
-  reporter,
-  ...props
-}: ReportItemProps<T> & { data: T }) {
-  const promise = usePromise(data, async () => reporter(data));
-
+export function ReportItem({ report, ...props }: ReportItemProps) {
   // Keep showing the previous report (and its open state) while the next one loads
-  const deferredPromise = useDeferredValue(promise);
+  const deferredReport = useDeferredValue(report);
 
   return (
     <Suspense fallback={null}>
-      <ReportItemContent promise={deferredPromise} {...props} />
+      <ReportItemContent report={deferredReport} {...props} />
     </Suspense>
   );
 }
 
-function ReportItemContent({
-  promise,
-  children,
-  ...props
-}: Omit<ReportItemProps<unknown>, 'data' | 'reporter'> & {
-  promise: Promise<RenderedAnalysis | undefined>;
-}) {
-  const analysis = use(promise);
+function ReportItemContent({ report, children, ...props }: ReportItemProps) {
+  const analysis = report instanceof Promise ? use(report) : report;
   const [isReportOnly] = useReportOnly();
 
   if (!analysis) {
