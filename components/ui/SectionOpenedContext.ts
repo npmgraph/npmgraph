@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
 /**
-Whether the enclosing section has been opened at least once. Content that is
-expensive to mount and only useful when visible can wait for it.
+Resolves when the enclosing section is first opened (immediately if there isn't
+one). Work that is only useful once the content is visible can wait for it.
 */
-export const SectionOpenedContext = createContext(true);
+export const SectionOpenedContext = createContext(Promise.resolve());

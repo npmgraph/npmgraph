@@ -28,7 +28,14 @@ export function CollapsibleSection({
 } & HTMLProps<HTMLDetailsElement>) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDetailsElement>(name);
-  const [wasOpened, setWasOpened] = useState(open);
+  const [opened] = useState(() => {
+    const deferred = Promise.withResolvers<void>();
+    if (open) {
+      deferred.resolve();
+    }
+
+    return deferred;
+  });
 
   return (
     <details
@@ -38,7 +45,7 @@ export function CollapsibleSection({
       className={cn(className, styles.root)}
       onToggle={event => {
         if (event.currentTarget.open) {
-          setWasOpened(true);
+          opened.resolve();
         }
 
         onToggle?.(event);
@@ -49,7 +56,9 @@ export function CollapsibleSection({
         {icon}
         <Count count={count} />
       </summary>
-      <SectionOpenedContext value={wasOpened}>{children}</SectionOpenedContext>
+      <SectionOpenedContext value={opened.promise}>
+        {children}
+      </SectionOpenedContext>
     </details>
   );
 }
