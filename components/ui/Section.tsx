@@ -1,7 +1,8 @@
-import type { HTMLProps, ReactNode } from 'react';
+import { useState, type HTMLProps, type ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 
+import { SectionOpenedContext } from './SectionOpenedContext.ts';
 import * as styles from './Section.module.scss';
 
 function Count({ count }: { count?: number | string }) {
@@ -17,6 +18,7 @@ export function CollapsibleSection({
   className,
   children,
   open = true,
+  onToggle,
   ...props
 }: {
   title: string;
@@ -26,6 +28,14 @@ export function CollapsibleSection({
 } & HTMLProps<HTMLDetailsElement>) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDetailsElement>(name);
+  const [opened] = useState(() => {
+    const deferred = Promise.withResolvers<void>();
+    if (open) {
+      deferred.resolve();
+    }
+
+    return deferred;
+  });
 
   return (
     <details
@@ -33,13 +43,22 @@ export function CollapsibleSection({
       open={open}
       {...props}
       className={cn(className, styles.root)}
+      onToggle={event => {
+        if (event.currentTarget.open) {
+          opened.resolve();
+        }
+
+        onToggle?.(event);
+      }}
     >
       <summary>
         {title}
         {icon}
         <Count count={count} />
       </summary>
-      {children}
+      <SectionOpenedContext value={opened.promise}>
+        {children}
+      </SectionOpenedContext>
     </details>
   );
 }
