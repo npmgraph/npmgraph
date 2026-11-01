@@ -2,13 +2,10 @@ import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import { LICENSES } from '../../../lib/licenses.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import {
-  type LicenseAnalysisState,
-  analyzeLicenses,
-} from '../analyzers/analyzeLicenses.ts';
+import { type LicenseAnalysisState } from '../analyzers/analyzeLicenses.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './LicensesAll.module.scss';
-import type { GraphState } from '../../../lib/graph-util.ts';
+import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
@@ -65,6 +62,8 @@ function licensesAll({ modulesByLicense }: LicenseAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function LicensesAllReport({ graph }: { graph: GraphState }) {
-  return <ReportItem data={analyzeLicenses(graph)} reporter={licensesAll} />;
+export function LicensesAllReport() {
+  const data = useLicenseAnalysis();
+
+  return <ReportItem data={data} reporter={licensesAll} />;
 }

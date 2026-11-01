@@ -3,10 +3,9 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import {
   groupOutdatedByLevel,
   type ModuleAnalysisState,
-  analyzeModules,
 } from '../analyzers/analyzeModules.ts';
 import * as styles from './ModulesOutdated.module.scss';
-import type { GraphState } from '../../../lib/graph-util.ts';
+import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 const levelTitles = {
@@ -49,9 +48,11 @@ function modulesOutdated({ outdated }: ModuleAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function ModulesOutdatedReport({ graph }: { graph: GraphState }) {
+export function ModulesOutdatedReport() {
+  const data = useModuleAnalysis();
+
   return (
-    <ReportItem data={analyzeModules(graph)} reporter={modulesOutdated}>
+    <ReportItem data={data} reporter={modulesOutdated}>
       These modules are behind the <code>latest</code> version on npm. Newer
       versions may include bug and security fixes. If an update is held back by
       the version constraint of another module, consider asking{' '}

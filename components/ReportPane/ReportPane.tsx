@@ -1,8 +1,9 @@
+import useGraph from '../../hooks/useGraph.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
-import type { GraphState } from '../../lib/graph-util.ts';
 import { Button } from '../Button.tsx';
 import { Pane } from '../ui/Pane.tsx';
+import { AnalysisProvider } from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
 import * as styles from './ReportPane.module.scss';
 import { LicensesAllReport } from './reports/LicensesAll.tsx';
@@ -21,13 +22,13 @@ import { PeerDependenciesAllReport } from './reports/PeerDependenciesAll.tsx';
 import { PeerDependenciesMissingReport } from './reports/PeerDependenciesMissing.tsx';
 
 export default function ReportPane({
-  graph,
   className,
   ...props
-}: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const graph = useGraph();
   const [isReportOnly, setReportOnly] = useReportOnly();
 
-  if (!graph?.moduleInfos) {
+  if (!graph.moduleInfos) {
     return <div>Loading</div>;
   }
 
@@ -49,22 +50,24 @@ export default function ReportPane({
           <CollapsedModules />
         </>
       )}
-      <ModulesAllReport graph={graph} />
-      <PeerDependenciesAllReport graph={graph} />
-      <MaintainersAllReport graph={graph} />
-      <LicensesAllReport graph={graph} />
-      <LicensesObsoleteReport graph={graph} />
+      <AnalysisProvider>
+        <ModulesAllReport />
+        <PeerDependenciesAllReport />
+        <MaintainersAllReport />
+        <LicensesAllReport />
+        <LicensesObsoleteReport />
 
-      <ModuleVulnerabilitiesReport graph={graph} />
-      <ModulesRepeatedReport graph={graph} />
-      <ModulesDeprecatedReport graph={graph} />
-      <ModulesOutdatedReport graph={graph} />
+        <ModuleVulnerabilitiesReport />
+        <ModulesRepeatedReport />
+        <ModulesDeprecatedReport />
+        <ModulesOutdatedReport />
 
-      <MaintainersSoloReport graph={graph} />
-      <LicensesMissingReport graph={graph} />
-      <LicensesDiscouragedReport graph={graph} />
-      <ModuleReplacementsNativeReport graph={graph} />
-      <PeerDependenciesMissingReport graph={graph} />
+        <MaintainersSoloReport />
+        <LicensesMissingReport />
+        <LicensesDiscouragedReport />
+        <ModuleReplacementsNativeReport />
+        <PeerDependenciesMissingReport />
+      </AnalysisProvider>
     </Pane>
   );
 }

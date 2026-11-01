@@ -2,7 +2,6 @@ import type Module from '../../../lib/Module.ts';
 import type { Maintainer } from '../../../lib/Module.ts';
 import { report } from '../../../lib/bugsnag.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
-import { memoizeByGraph } from './memoizeByGraph.ts';
 
 export type MaintainerAnalysisState = {
   modulesByMaintainer: Map<string, Set<Module>>;
@@ -19,80 +18,76 @@ function normalizeMaintainer(
     : maintainer;
 }
 
-export const analyzeMaintainers = memoizeByGraph(
-  ({ moduleInfos }: GraphState): MaintainerAnalysisState => {
-    const modulesByMaintainer = new Map<string, Set<Module>>();
-    const emailByMaintainer = new Map<string, string>();
+export function analyzeMaintainers({
+  moduleInfos,
+}: GraphState): MaintainerAnalysisState {
+  const modulesByMaintainer = new Map<string, Set<Module>>();
+  const emailByMaintainer = new Map<string, string>();
 
-    let soloModulesCount = 0;
-    const modules = [...moduleInfos.values()].map(({ module }) => module);
+  let soloModulesCount = 0;
+  const modules = [...moduleInfos.values()].map(({ module }) => module);
 
-    // Find modules that have a single maintainer, group by maintainer
-    //
-    // @ts-expect-error TODO: unignore once Map.groupBy lands in TS types
-    const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
-      modules,
-      (module: Module) => {
-        const { maintainers } = module;
-
-        // Group modules we aren't interested in under "" (removed below)
-        if (
-          module.isStub ||
-          module.package.private ||
-          maintainers.length !== 1
-        ) {
-          return '';
-        }
-
-        soloModulesCount++;
-        return maintainers[0]?.name;
-      },
-    );
-
-    // Remove the "" key (modules we're not interested in)
-    soloModulesByMaintainer.delete('');
-
-    for (const { module } of moduleInfos.values()) {
-      if (module.isStub) {
-        continue;
-      }
-
+  // Find modules that have a single maintainer, group by maintainer
+  //
+  // @ts-expect-error TODO: unignore once Map.groupBy lands in TS types
+  const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
+    modules,
+    (module: Module) => {
       const { maintainers } = module;
 
-      for (const m of maintainers) {
-        const maintainer = normalizeMaintainer(m);
-
-        // Combine information maintainer info from across multiple modules
-        // (increases the odds of us having an email to generate gravatar image
-        // from)
-        if (maintainer.email && maintainer.name) {
-          emailByMaintainer.set(maintainer.name, maintainer.email);
-        }
-
-        if (!maintainer.name) {
-          report.error(
-            new Error(
-              `Nameless maintainer ${JSON.stringify(m)} in ${module.key}`,
-            ),
-          );
-          maintainer.name = '\u{26A0}\u{FE0F} (unnamed maintainer)';
-        }
-
-        let modules = modulesByMaintainer.get(maintainer.name);
-        if (!modules) {
-          modules = new Set();
-          modulesByMaintainer.set(maintainer.name, modules);
-        }
-
-        modules.add(module);
+      // Group modules we aren't interested in under "" (removed below)
+      if (module.isStub || module.package.private || maintainers.length !== 1) {
+        return '';
       }
+
+      soloModulesCount++;
+      return maintainers[0]?.name;
+    },
+  );
+
+  // Remove the "" key (modules we're not interested in)
+  soloModulesByMaintainer.delete('');
+
+  for (const { module } of moduleInfos.values()) {
+    if (module.isStub) {
+      continue;
     }
 
-    return {
-      modulesByMaintainer,
-      soloModulesByMaintainer,
-      soloModulesCount,
-      emailByMaintainer,
-    };
-  },
-);
+    const { maintainers } = module;
+
+    for (const m of maintainers) {
+      const maintainer = normalizeMaintainer(m);
+
+      // Combine information maintainer info from across multiple modules
+      // (increases the odds of us having an email to generate gravatar image
+      // from)
+      if (maintainer.email && maintainer.name) {
+        emailByMaintainer.set(maintainer.name, maintainer.email);
+      }
+
+      if (!maintainer.name) {
+        report.error(
+          new Error(
+            `Nameless maintainer ${JSON.stringify(m)} in ${module.key}`,
+          ),
+        );
+        maintainer.name = '\u{26A0}\u{FE0F} (unnamed maintainer)';
+      }
+
+      let modules = modulesByMaintainer.get(maintainer.name);
+      if (!modules) {
+        modules = new Set();
+        modulesByMaintainer.set(maintainer.name, modules);
+      }
+
+      modules.add(module);
+    }
+  }
+
+  return {
+    modulesByMaintainer,
+    soloModulesByMaintainer,
+    soloModulesCount,
+    emailByMaintainer,
+  };
+}

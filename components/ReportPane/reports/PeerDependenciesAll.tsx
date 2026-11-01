@@ -4,9 +4,8 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import {
   type PeerDependenciesState,
   type PeerDependencyInfo,
-  analyzePeerDependencies,
 } from '../analyzers/analyzePeerDependencies.ts';
-import type { GraphState } from '../../../lib/graph-util.ts';
+import { usePeerDependencyAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './PeerDependenciesAll.module.scss';
@@ -77,11 +76,8 @@ export function peerDependenciesAll({
   } as RenderedAnalysis;
 }
 
-export function PeerDependenciesAllReport({ graph }: { graph: GraphState }) {
-  return (
-    <ReportItem
-      data={analyzePeerDependencies(graph)}
-      reporter={peerDependenciesAll}
-    />
-  );
+export function PeerDependenciesAllReport() {
+  const data = usePeerDependencyAnalysis();
+
+  return <ReportItem data={data} reporter={peerDependenciesAll} />;
 }

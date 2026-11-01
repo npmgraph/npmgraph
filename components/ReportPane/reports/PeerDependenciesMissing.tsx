@@ -1,9 +1,6 @@
-import type { GraphState } from '../../../lib/graph-util.ts';
+import { usePeerDependencyAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
-import {
-  analyzePeerDependencies,
-  type PeerDependenciesState,
-} from '../analyzers/analyzePeerDependencies.ts';
+import type { PeerDependenciesState } from '../analyzers/analyzePeerDependencies.ts';
 import { peerDependenciesAll } from './PeerDependenciesAll.tsx';
 
 function peerDependenciesMissing({
@@ -25,15 +22,8 @@ function peerDependenciesMissing({
   } as RenderedAnalysis;
 }
 
-export function PeerDependenciesMissingReport({
-  graph,
-}: {
-  graph: GraphState;
-}) {
-  return (
-    <ReportItem
-      data={analyzePeerDependencies(graph)}
-      reporter={peerDependenciesMissing}
-    />
-  );
+export function PeerDependenciesMissingReport() {
+  const data = usePeerDependencyAnalysis();
+
+  return <ReportItem data={data} reporter={peerDependenciesMissing} />;
 }

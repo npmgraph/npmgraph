@@ -6,13 +6,10 @@ import {
 import { cn } from '../../../lib/dom.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import {
-  type ModuleAnalysisState,
-  analyzeModules,
-} from '../analyzers/analyzeModules.ts';
+import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModuleReplacementsNative.module.scss';
-import type { GraphState } from '../../../lib/graph-util.ts';
+import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function getReplacements(moduleName: string) {
@@ -129,16 +126,11 @@ function moduleReplacementsNative({
   } as RenderedAnalysis;
 }
 
-export function ModuleReplacementsNativeReport({
-  graph,
-}: {
-  graph: GraphState;
-}) {
+export function ModuleReplacementsNativeReport() {
+  const data = useModuleAnalysis();
+
   return (
-    <ReportItem
-      data={analyzeModules(graph)}
-      reporter={moduleReplacementsNative}
-    >
+    <ReportItem data={data} reporter={moduleReplacementsNative}>
       From the{' '}
       <ExternalLink href="https://github.com/e18e/module-replacements">
         module-replacements

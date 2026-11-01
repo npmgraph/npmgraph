@@ -3,12 +3,9 @@ import { cn } from '../../../lib/dom.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import {
-  type ModuleAnalysisState,
-  analyzeModules,
-} from '../analyzers/analyzeModules.ts';
+import { type ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as styles from './ModuleVulnerabilities.module.scss';
-import type { GraphState } from '../../../lib/graph-util.ts';
+import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 const SEVERITY_RANK = {
@@ -123,9 +120,11 @@ async function moduleVulnerabilities({ moduleInfos }: ModuleAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function ModuleVulnerabilitiesReport({ graph }: { graph: GraphState }) {
+export function ModuleVulnerabilitiesReport() {
+  const data = useModuleAnalysis();
+
   return (
-    <ReportItem data={analyzeModules(graph)} reporter={moduleVulnerabilities}>
+    <ReportItem data={data} reporter={moduleVulnerabilities}>
       Security advisories per <code>npm audit</code>. Data sourced from the npm
       registry. See{' '}
       <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">

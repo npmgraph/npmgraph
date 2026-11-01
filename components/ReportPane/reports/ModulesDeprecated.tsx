@@ -1,12 +1,9 @@
 import { cn } from '../../../lib/dom.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import {
-  type ModuleAnalysisState,
-  analyzeModules,
-} from '../analyzers/analyzeModules.ts';
+import { type ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModulesDeprecated.module.scss';
-import type { GraphState } from '../../../lib/graph-util.ts';
+import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
@@ -41,9 +38,11 @@ function modulesDeprecated({ deprecated }: ModuleAnalysisState) {
   } as RenderedAnalysis;
 }
 
-export function ModulesDeprecatedReport({ graph }: { graph: GraphState }) {
+export function ModulesDeprecatedReport() {
+  const data = useModuleAnalysis();
+
   return (
-    <ReportItem data={analyzeModules(graph)} reporter={modulesDeprecated}>
+    <ReportItem data={data} reporter={modulesDeprecated}>
       Deprecated modules are unsupported and may have unpatched security
       vulnerabilities. See the deprecation notes below for module-specific
       instructions.
