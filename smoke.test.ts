@@ -140,6 +140,24 @@ describe('graph', () => {
     await nodeAppears();
     await appears('button', /^Info$/);
   });
+
+  it(
+    'shows the root module when loading a graph larger than the viewport',
+    async () => {
+      await goto('?q=express');
+      await nodeAppears();
+      // The viewport can move the graph again right after it's rendered
+      await new Promise(resolve => {
+        setTimeout(resolve, 500);
+      });
+
+      const root = $('svg g.node', doc()).getBoundingClientRect();
+      const view = $('.react-transform-wrapper', doc()).getBoundingClientRect();
+      expect(root.left).toBeGreaterThanOrEqual(view.left);
+      expect(root.right).toBeLessThanOrEqual(view.right);
+    },
+    TIMEOUT,
+  );
 });
 
 describe('navigation', () => {

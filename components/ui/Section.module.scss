@@ -1,4 +1,5 @@
 .root {
+  clear: both; // Don't get narrowed by floats, e.g. the "Report only" button
   line-height: 1.7;
   &:is(div, [open]) {
     padding-bottom: 1em;
