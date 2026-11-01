@@ -1,5 +1,5 @@
 import { type MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.ts';
-import { maintainersAll } from './MaintainersAll.tsx';
+import { maintainersDetails } from './maintainersDetails.tsx';
 import { useMaintainerAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
@@ -9,15 +9,13 @@ function maintainersSolo({
   soloModulesCount,
   emailByMaintainer,
 }: MaintainerAnalysisState) {
-  // Use renderAll logic, but with only the subset of data for solo maintainers
-  const results = maintainersAll({
+  // Same as all maintainers, but only the subset of data for solo maintainers
+  const details = maintainersDetails({
     modulesByMaintainer: soloModulesByMaintainer,
-    soloModulesByMaintainer,
-    soloModulesCount,
     emailByMaintainer,
   });
 
-  if (!results) {
+  if (details.length === 0) {
     return;
   }
 
@@ -25,7 +23,7 @@ function maintainersSolo({
     type: 'warn',
     summary: 'Modules with only one maintainer',
     count: soloModulesCount,
-    details: results.details,
+    details,
   } as RenderedAnalysis;
 }
 

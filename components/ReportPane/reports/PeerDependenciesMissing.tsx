@@ -1,7 +1,7 @@
 import { usePeerDependencyAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 import type { PeerDependenciesState } from '../analyzers/analyzePeerDependencies.ts';
-import { peerDependenciesAll } from './PeerDependenciesAll.tsx';
+import { peerDependenciesDetails } from './peerDependenciesDetails.tsx';
 
 function peerDependenciesMissing({
   peerDependencyInfos,
@@ -9,8 +9,7 @@ function peerDependenciesMissing({
   const missingInfos = peerDependencyInfos.filter(
     pdi => !pdi.destination && !pdi.optional,
   );
-  const result = peerDependenciesAll({ peerDependencyInfos: missingInfos });
-  if (!result) {
+  if (missingInfos.length === 0) {
     return;
   }
 
@@ -18,7 +17,7 @@ function peerDependenciesMissing({
     type: 'warn',
     summary: 'Missing peer dependencies',
     count: missingInfos.length,
-    details: result?.details,
+    details: peerDependenciesDetails(missingInfos),
   } as RenderedAnalysis;
 }
 

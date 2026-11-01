@@ -67,6 +67,15 @@ export default defineConfig([
     },
   },
   reactDoctor.configs.recommended,
+  {
+    // Warnings are ignored, so make them fail
+    rules: Object.fromEntries(
+      Object.keys(reactDoctor.configs.recommended.rules).map(rule => [
+        rule,
+        'error',
+      ]),
+    ),
+  },
   reactYouMightNotNeedAnEffect.configs.strict,
   {
     plugins: { 'select-dom': selectDom },
