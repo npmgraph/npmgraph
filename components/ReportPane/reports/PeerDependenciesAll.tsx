@@ -1,13 +1,15 @@
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
-import type {
-  PeerDependenciesState,
-  PeerDependencyInfo,
-} from '../analyzers/analyzePeerDependencies.tsx';
+import {
+  type PeerDependenciesState,
+  type PeerDependencyInfo,
+  analyzePeerDependencies,
+} from '../analyzers/analyzePeerDependencies.ts';
+import type { GraphState } from '../../../lib/graph-util.ts';
+import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './peerDependenciesAll.module.scss';
+import * as styles from './PeerDependenciesAll.module.scss';
 
 export function peerDependenciesAll({
   peerDependencyInfos,
@@ -75,21 +77,11 @@ export function peerDependenciesAll({
   } as RenderedAnalysis;
 }
 
-export function peerDependenciesMissing({
-  peerDependencyInfos,
-}: PeerDependenciesState) {
-  const missingInfos = peerDependencyInfos.filter(
-    pdi => !pdi.destination && !pdi.optional,
+export function PeerDependenciesAllReport({ graph }: { graph: GraphState }) {
+  return (
+    <ReportItem
+      data={analyzePeerDependencies(graph)}
+      reporter={peerDependenciesAll}
+    />
   );
-  const result = peerDependenciesAll({ peerDependencyInfos: missingInfos });
-  if (!result) {
-    return;
-  }
-
-  return {
-    type: 'warn',
-    summary: 'Missing peer dependencies',
-    count: missingInfos.length,
-    details: result?.details,
-  } as RenderedAnalysis;
 }

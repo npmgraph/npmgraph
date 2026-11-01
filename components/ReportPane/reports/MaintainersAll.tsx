@@ -2,10 +2,14 @@ import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import { Gravatar } from '../../ui/Gravatar.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
-import type { MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.tsx';
+import {
+  type MaintainerAnalysisState,
+  analyzeMaintainers,
+} from '../analyzers/analyzeMaintainers.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './maintainersAll.module.scss';
+import * as styles from './MaintainersAll.module.scss';
+import type { GraphState } from '../../../lib/graph-util.ts';
+import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 export function maintainersAll({
   modulesByMaintainer,
@@ -47,4 +51,10 @@ export function maintainersAll({
     count: details.length,
     details,
   } as RenderedAnalysis;
+}
+
+export function MaintainersAllReport({ graph }: { graph: GraphState }) {
+  return (
+    <ReportItem data={analyzeMaintainers(graph)} reporter={maintainersAll} />
+  );
 }

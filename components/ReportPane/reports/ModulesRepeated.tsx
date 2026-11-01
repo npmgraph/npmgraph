@@ -1,10 +1,14 @@
 import { getModuleKey } from '../../../lib/module-util.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
-import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
-import * as styles from './modulesRepeated.module.scss';
+import {
+  type ModuleAnalysisState,
+  analyzeModules,
+} from '../analyzers/analyzeModules.ts';
+import * as styles from './ModulesRepeated.module.scss';
+import type { GraphState } from '../../../lib/graph-util.ts';
+import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
-export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
+function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
   const versionsByName: Record<string, string[]> = {};
 
   for (const { module } of moduleInfos.values()) {
@@ -40,4 +44,15 @@ export function modulesRepeated({ moduleInfos }: ModuleAnalysisState) {
     count: details.length,
     details,
   } as RenderedAnalysis;
+}
+
+export function ModulesRepeatedReport({ graph }: { graph: GraphState }) {
+  return (
+    <ReportItem data={analyzeModules(graph)} reporter={modulesRepeated}>
+      Module repetition is a result of incompatible version constraints, and may
+      lead to increased bundle and <code>node_modules</code> directory size.
+      Consider asking <em>upstream</em> module owners to update to the latest
+      version or loosen the version constraint.
+    </ReportItem>
+  );
 }

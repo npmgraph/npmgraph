@@ -1,10 +1,10 @@
 import { cn } from '../../../lib/dom.ts';
 import type { OSIKeyword } from '../../../lib/licenses.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { LicenseAnalysisState } from '../analyzers/analyzeLicenses.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModuleList.module.scss';
+import type { RenderedAnalysis } from '../ReportItem.tsx';
 
 export function licensesKeyword(keyword: OSIKeyword) {
   return function ({ modulesByKeyword }: LicenseAnalysisState) {

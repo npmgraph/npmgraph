@@ -3,9 +3,13 @@ import { cn } from '../../../lib/dom.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
-import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
-import * as styles from './moduleVulnerabilities.module.scss';
+import {
+  type ModuleAnalysisState,
+  analyzeModules,
+} from '../analyzers/analyzeModules.ts';
+import * as styles from './ModuleVulnerabilities.module.scss';
+import type { GraphState } from '../../../lib/graph-util.ts';
+import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 const SEVERITY_RANK = {
   none: 0,
@@ -16,9 +20,7 @@ const SEVERITY_RANK = {
   critical: 5,
 };
 
-export async function moduleVulnerabilities({
-  moduleInfos,
-}: ModuleAnalysisState) {
+async function moduleVulnerabilities({ moduleInfos }: ModuleAnalysisState) {
   type Advisory = {
     packageName?: string;
     id: number;
@@ -119,4 +121,16 @@ export async function moduleVulnerabilities({
     count: details.length,
     details,
   } as RenderedAnalysis;
+}
+
+export function ModuleVulnerabilitiesReport({ graph }: { graph: GraphState }) {
+  return (
+    <ReportItem data={analyzeModules(graph)} reporter={moduleVulnerabilities}>
+      Security advisories per <code>npm audit</code>. Data sourced from the npm
+      registry. See{' '}
+      <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">
+        npm audit documentation
+      </ExternalLink>
+    </ReportItem>
+  );
 }

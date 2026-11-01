@@ -1,11 +1,13 @@
 import { cn } from '../../../lib/dom.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import {
   groupOutdatedByLevel,
   type ModuleAnalysisState,
+  analyzeModules,
 } from '../analyzers/analyzeModules.ts';
-import * as styles from './modulesOutdated.module.scss';
+import * as styles from './ModulesOutdated.module.scss';
+import type { GraphState } from '../../../lib/graph-util.ts';
+import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 const levelTitles = {
   major: 'Major',
@@ -13,7 +15,7 @@ const levelTitles = {
   patch: 'Patch',
 };
 
-export function modulesOutdated({ outdated }: ModuleAnalysisState) {
+function modulesOutdated({ outdated }: ModuleAnalysisState) {
   const groups = groupOutdatedByLevel(outdated);
   if (groups.length === 0) {
     return;
@@ -45,4 +47,15 @@ export function modulesOutdated({ outdated }: ModuleAnalysisState) {
     count: groups.reduce((total, [, modules]) => total + modules.length, 0),
     details,
   } as RenderedAnalysis;
+}
+
+export function ModulesOutdatedReport({ graph }: { graph: GraphState }) {
+  return (
+    <ReportItem data={analyzeModules(graph)} reporter={modulesOutdated}>
+      These modules are behind the <code>latest</code> version on npm. Newer
+      versions may include bug and security fixes. If an update is held back by
+      the version constraint of another module, consider asking{' '}
+      <em>upstream</em> module owners to update.
+    </ReportItem>
+  );
 }

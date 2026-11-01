@@ -1,12 +1,18 @@
-import { Suspense, use, useDeferredValue } from 'react';
+import { Suspense, use, useDeferredValue, type ReactElement } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
-import type { RenderedAnalysis } from './analyzers/Analyzer.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.scss';
+
+export type RenderedAnalysis = {
+  type: 'info' | 'warn' | 'error';
+  summary: string;
+  count?: number | string;
+  details: ReactElement[];
+};
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
 

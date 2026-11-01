@@ -1,9 +1,13 @@
 import simplur from 'simplur';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
-import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
+import {
+  type ModuleAnalysisState,
+  analyzeModules,
+} from '../analyzers/analyzeModules.ts';
 import { ModuleList } from './ModuleList.tsx';
+import type { GraphState } from '../../../lib/graph-util.ts';
+import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
-export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
+function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
   if (moduleInfos.size === 0) {
     return;
   }
@@ -25,4 +29,8 @@ export function modulesAll({ moduleInfos, entryModules }: ModuleAnalysisState) {
     count,
     details,
   } as RenderedAnalysis;
+}
+
+export function ModulesAllReport({ graph }: { graph: GraphState }) {
+  return <ReportItem data={analyzeModules(graph)} reporter={modulesAll} />;
 }

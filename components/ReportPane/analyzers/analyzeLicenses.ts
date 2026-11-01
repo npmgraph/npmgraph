@@ -1,6 +1,7 @@
 import type Module from '../../../lib/Module.ts';
 import { type OSIKeyword, LICENSES } from '../../../lib/licenses.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
+import { memoizeByGraph } from './memoizeByGraph.ts';
 
 export type LicenseAnalysisState = {
   modulesByLicense: Map<string, Module[]>;
@@ -8,7 +9,7 @@ export type LicenseAnalysisState = {
   modulesByKeyword: Map<OSIKeyword, Module[]>;
 };
 
-export function analyzeLicenses({ moduleInfos }: GraphState) {
+export const analyzeLicenses = memoizeByGraph(({ moduleInfos }: GraphState) => {
   const modulesByLicense = new Map<string, Module[]>();
   const unlicensedModules: Module[] = [];
   const modulesByKeyword = new Map<OSIKeyword, Module[]>();
@@ -61,4 +62,4 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
     unlicensedModules,
     modulesByKeyword,
   };
-}
+});

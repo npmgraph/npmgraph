@@ -6,10 +6,14 @@ import {
 import { cn } from '../../../lib/dom.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
-import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
+import {
+  type ModuleAnalysisState,
+  analyzeModules,
+} from '../analyzers/analyzeModules.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './moduleReplacements.module.scss';
+import * as styles from './ModuleReplacementsNative.module.scss';
+import type { GraphState } from '../../../lib/graph-util.ts';
+import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
 
 function getReplacements(moduleName: string) {
   const mapping = all.mappings[moduleName];
@@ -68,7 +72,7 @@ function renderDetail(replacement: ModuleReplacement) {
   }
 }
 
-export function moduleReplacementsNative({
+function moduleReplacementsNative({
   moduleInfos,
   // entryModules,
 }: ModuleAnalysisState) {
@@ -123,4 +127,24 @@ export function moduleReplacementsNative({
     count: details.length,
     details,
   } as RenderedAnalysis;
+}
+
+export function ModuleReplacementsNativeReport({
+  graph,
+}: {
+  graph: GraphState;
+}) {
+  return (
+    <ReportItem
+      data={analyzeModules(graph)}
+      reporter={moduleReplacementsNative}
+    >
+      From the{' '}
+      <ExternalLink href="https://github.com/e18e/module-replacements">
+        module-replacements
+      </ExternalLink>{' '}
+      project, these modules can be removed or replaced with more modern,
+      streamlined alternatives
+    </ReportItem>
+  );
 }
