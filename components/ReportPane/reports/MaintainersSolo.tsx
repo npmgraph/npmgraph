@@ -1,44 +1,34 @@
-import { type MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.ts';
-import { maintainersDetails } from './maintainersDetails.tsx';
 import { useMaintainerAnalysis } from '../analyzers/useAnalysis.ts';
-import useReport from '../useReport.ts';
-import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
+import { ReportItem } from '../ReportItem.tsx';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
-
-function maintainersSolo({
-  soloModulesByMaintainer,
-  soloModulesCount,
-  emailByMaintainer,
-}: MaintainerAnalysisState) {
-  // Same as all maintainers, but only the subset of data for solo maintainers
-  const details = maintainersDetails({
-    modulesByMaintainer: soloModulesByMaintainer,
-    emailByMaintainer,
-  });
-
-  if (details.length === 0) {
-    return;
-  }
-
-  return {
-    type: 'warn',
-    summary: 'Modules with only one maintainer',
-    count: soloModulesCount,
-    details,
-  } as RenderedAnalysis;
-}
+import { MaintainerRows } from './MaintainerRows.tsx';
 
 export default function MaintainersSolo() {
-  const report = useReport(useMaintainerAnalysis(), maintainersSolo);
+  const { soloModulesByMaintainer, soloModulesCount, emailByMaintainer } =
+    useMaintainerAnalysis();
+
+  if (soloModulesByMaintainer.size === 0) {
+    return null;
+  }
 
   return (
-    <ReportItem report={report}>
-      Modules with a single maintainer are at risk of "unplanned abandonment".
-      See{' '}
-      <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
-        Bus factor
-      </ExternalLink>
-      .
+    <ReportItem
+      type="warn"
+      title="Modules with only one maintainer"
+      count={soloModulesCount}
+    >
+      <p>
+        Modules with a single maintainer are at risk of "unplanned abandonment".
+        See{' '}
+        <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
+          Bus factor
+        </ExternalLink>
+        .
+      </p>
+      <MaintainerRows
+        modulesByMaintainer={soloModulesByMaintainer}
+        emailByMaintainer={emailByMaintainer}
+      />
     </ReportItem>
   );
 }

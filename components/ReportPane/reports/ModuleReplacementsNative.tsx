@@ -6,12 +6,13 @@ import {
 import { cn } from '../../../lib/dom.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
+import type Module from '../../../lib/Module.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModuleReplacementsNative.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
-import useReport from '../useReport.ts';
-import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
+import { ReportItem } from '../ReportItem.tsx';
+
+type Mapping = (typeof all.mappings)[string];
 
 function getReplacements(moduleName: string) {
   const mapping = all.mappings[moduleName];
@@ -25,7 +26,7 @@ function getReplacements(moduleName: string) {
   };
 }
 
-function renderDetail(replacement: ModuleReplacement) {
+function Replacement({ replacement }: { replacement: ModuleReplacement }) {
   switch (replacement.type) {
     case 'native': {
       const url = resolveDocUrl(replacement.url)!;
@@ -70,74 +71,76 @@ function renderDetail(replacement: ModuleReplacement) {
   }
 }
 
-function moduleReplacementsNative({
-  moduleInfos,
-  // entryModules,
-}: ModuleAnalysisState) {
-  const details = [...moduleInfos.values()]
-    .map(({ module }) => ({
-      module,
-      ...getReplacements(module.name),
-    }))
-    .toSorted((a, b) => a.module.key.localeCompare(b.module.key))
-    .filter(detail => detail.mapping !== null && detail.mapping !== undefined)
-    .map(({ module, mapping, replacements }) => {
-      const mappingURL = resolveDocUrl(mapping.url);
+function Row({
+  module,
+  mapping,
+  replacements,
+}: {
+  module: Module;
+  mapping: Mapping;
+  replacements: Array<ModuleReplacement | undefined>;
+}) {
+  const mappingURL = resolveDocUrl(mapping.url);
 
-      return (
-        <div
-          key={module.key}
-          className={cn(styles.root, reportItemStyles.zebraRow)}
-        >
-          <Selectable
-            value={module.key}
-            label={module.label}
-            className={styles.selectable}
-          />
-          {': '}
-          <div className={styles.body}>
-            {replacements.length === 1 ? (
-              renderDetail(replacements[0]!)
-            ) : (
-              <ul>
-                {replacements.map(r => (
-                  <li key={r!.id}>{renderDetail(r!)}</li>
-                ))}
-              </ul>
-            )}
-          </div>
-          {mappingURL && (
-            <ExternalLink href={mappingURL} className={styles.body}>
-              Learn more
-            </ExternalLink>
-          )}
-        </div>
-      );
-    });
-
-  if (details.length === 0) {
-    return;
-  }
-
-  return {
-    type: 'warn',
-    summary: 'Suggested replacements',
-    count: details.length,
-    details,
-  } as RenderedAnalysis;
+  return (
+    <div className={cn(styles.root, reportItemStyles.zebraRow)}>
+      <Selectable
+        value={module.key}
+        label={module.label}
+        className={styles.selectable}
+      />
+      {': '}
+      <div className={styles.body}>
+        {replacements.length === 1 ? (
+          <Replacement replacement={replacements[0]!} />
+        ) : (
+          <ul>
+            {replacements.map(r => (
+              <li key={r!.id}>
+                <Replacement replacement={r!} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      {mappingURL && (
+        <ExternalLink href={mappingURL} className={styles.body}>
+          Learn more
+        </ExternalLink>
+      )}
+    </div>
+  );
 }
 
 export default function ModuleReplacementsNative() {
-  const report = useReport(useModuleAnalysis(), moduleReplacementsNative);
+  const { moduleInfos } = useModuleAnalysis();
+  const rows = [...moduleInfos.values()]
+    .map(({ module }) => ({ module, ...getReplacements(module.name) }))
+    .toSorted((a, b) => a.module.key.localeCompare(b.module.key))
+    .filter(row => row.mapping !== null && row.mapping !== undefined);
+
+  if (rows.length === 0) {
+    return null;
+  }
 
   return (
-    <ReportItem report={report}>
-      From the{' '}
-      <ExternalLink href="https://github.com/e18e/module-replacements">
-        module-replacements
-      </ExternalLink>{' '}
-      project, these modules can be removed or replaced with more modern,
-      streamlined alternatives
+    <ReportItem type="warn" title="Suggested replacements" count={rows.length}>
+      <p>
+        From the{' '}
+        <ExternalLink href="https://github.com/e18e/module-replacements">
+          module-replacements
+        </ExternalLink>{' '}
+        project, these modules can be removed or replaced with more modern,
+        streamlined alternatives
+      </p>
+      {rows.map(({ module, mapping, replacements }) => (
+        <Row
+          key={module.key}
+          module={module}
+          mapping={mapping}
+          replacements={replacements}
+        />
+      ))}
     </ReportItem>
   );
 }

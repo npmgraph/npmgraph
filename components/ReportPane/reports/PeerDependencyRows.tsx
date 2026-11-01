@@ -5,9 +5,11 @@ import type { PeerDependencyInfo } from '../analyzers/analyzePeerDependencies.ts
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './PeerDependenciesAll.module.scss';
 
-export function peerDependenciesDetails(
-  peerDependencyInfos: PeerDependencyInfo[],
-) {
+export function PeerDependencyRows({
+  peerDependencyInfos,
+}: {
+  peerDependencyInfos: PeerDependencyInfo[];
+}) {
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
     peerDependencyInfos,
     (pdi: PeerDependencyInfo) => pdi.source.key,

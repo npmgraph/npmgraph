@@ -6,7 +6,7 @@ import type { MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.ts
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './MaintainersAll.module.scss';
 
-export function maintainersDetails({
+export function MaintainerRows({
   modulesByMaintainer,
   emailByMaintainer,
 }: Pick<MaintainerAnalysisState, 'modulesByMaintainer' | 'emailByMaintainer'>) {

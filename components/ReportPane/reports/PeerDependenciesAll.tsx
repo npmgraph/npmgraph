@@ -1,26 +1,18 @@
-import type { PeerDependenciesState } from '../analyzers/analyzePeerDependencies.ts';
-import { peerDependenciesDetails } from './peerDependenciesDetails.tsx';
 import { usePeerDependencyAnalysis } from '../analyzers/useAnalysis.ts';
-import useReport from '../useReport.ts';
-import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
-
-function peerDependenciesAll({ peerDependencyInfos }: PeerDependenciesState) {
-  if (peerDependencyInfos.length === 0) {
-    return;
-  }
-
-  const details = peerDependenciesDetails(peerDependencyInfos);
-
-  return {
-    type: 'info',
-    summary: 'Peer dependencies',
-    count: peerDependencyInfos.length,
-    details,
-  } as RenderedAnalysis;
-}
+import { ReportItem } from '../ReportItem.tsx';
+import { PeerDependencyRows } from './PeerDependencyRows.tsx';
 
 export default function PeerDependenciesAll() {
-  const report = useReport(usePeerDependencyAnalysis(), peerDependenciesAll);
+  const peerDependencyInfos =
+    usePeerDependencyAnalysis()?.peerDependencyInfos ?? [];
 
-  return <ReportItem report={report} />;
+  if (peerDependencyInfos.length === 0) {
+    return null;
+  }
+
+  return (
+    <ReportItem title="Peer dependencies" count={peerDependencyInfos.length}>
+      <PeerDependencyRows peerDependencyInfos={peerDependencyInfos} />
+    </ReportItem>
+  );
 }

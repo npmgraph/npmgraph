@@ -1,32 +1,20 @@
-import { type MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.ts';
-import { maintainersDetails } from './maintainersDetails.tsx';
 import { useMaintainerAnalysis } from '../analyzers/useAnalysis.ts';
-import useReport from '../useReport.ts';
-import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
-
-function maintainersAll({
-  modulesByMaintainer,
-  emailByMaintainer,
-}: MaintainerAnalysisState) {
-  const details = maintainersDetails({
-    modulesByMaintainer,
-    emailByMaintainer,
-  });
-
-  if (details.length === 0) {
-    return;
-  }
-
-  return {
-    type: 'info',
-    summary: 'Maintainers',
-    count: details.length,
-    details,
-  } as RenderedAnalysis;
-}
+import { ReportItem } from '../ReportItem.tsx';
+import { MaintainerRows } from './MaintainerRows.tsx';
 
 export default function MaintainersAll() {
-  const report = useReport(useMaintainerAnalysis(), maintainersAll);
+  const { modulesByMaintainer, emailByMaintainer } = useMaintainerAnalysis();
 
-  return <ReportItem report={report} />;
+  if (modulesByMaintainer.size === 0) {
+    return null;
+  }
+
+  return (
+    <ReportItem title="Maintainers" count={modulesByMaintainer.size}>
+      <MaintainerRows
+        modulesByMaintainer={modulesByMaintainer}
+        emailByMaintainer={emailByMaintainer}
+      />
+    </ReportItem>
+  );
 }

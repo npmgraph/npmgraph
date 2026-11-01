@@ -1,32 +1,23 @@
 import { usePeerDependencyAnalysis } from '../analyzers/useAnalysis.ts';
-import useReport from '../useReport.ts';
-import { ReportItem, type RenderedAnalysis } from '../ReportItem.tsx';
-import type { PeerDependenciesState } from '../analyzers/analyzePeerDependencies.ts';
-import { peerDependenciesDetails } from './peerDependenciesDetails.tsx';
-
-function peerDependenciesMissing({
-  peerDependencyInfos,
-}: PeerDependenciesState) {
-  const missingInfos = peerDependencyInfos.filter(
-    pdi => !pdi.destination && !pdi.optional,
-  );
-  if (missingInfos.length === 0) {
-    return;
-  }
-
-  return {
-    type: 'warn',
-    summary: 'Missing peer dependencies',
-    count: missingInfos.length,
-    details: peerDependenciesDetails(missingInfos),
-  } as RenderedAnalysis;
-}
+import { ReportItem } from '../ReportItem.tsx';
+import { PeerDependencyRows } from './PeerDependencyRows.tsx';
 
 export default function PeerDependenciesMissing() {
-  const report = useReport(
-    usePeerDependencyAnalysis(),
-    peerDependenciesMissing,
-  );
+  const missing = (
+    usePeerDependencyAnalysis()?.peerDependencyInfos ?? []
+  ).filter(pdi => !pdi.destination && !pdi.optional);
 
-  return <ReportItem report={report} />;
+  if (missing.length === 0) {
+    return null;
+  }
+
+  return (
+    <ReportItem
+      type="warn"
+      title="Missing peer dependencies"
+      count={missing.length}
+    >
+      <PeerDependencyRows peerDependencyInfos={missing} />
+    </ReportItem>
+  );
 }

@@ -1,40 +1,46 @@
+import type { ReactNode } from 'react';
 import { cn } from '../../../lib/dom.ts';
 import type { OSIKeyword } from '../../../lib/licenses.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { LicenseAnalysisState } from '../analyzers/analyzeLicenses.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
 import * as styles from './ModuleList.module.scss';
-import type { RenderedAnalysis } from '../ReportItem.tsx';
+import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
+import { ReportItem } from '../ReportItem.tsx';
 
-export function licensesKeyword(keyword: OSIKeyword) {
-  return function ({ modulesByKeyword }: LicenseAnalysisState) {
-    const modules = modulesByKeyword.get(keyword);
-    if (!modules) {
-      return undefined;
-    }
+export default function LicensesKeyword({
+  keyword,
+  children,
+}: {
+  keyword: OSIKeyword;
+  children: ReactNode;
+}) {
+  const modules = useLicenseAnalysis().modulesByKeyword.get(keyword);
 
-    const summary = `Modules with "${keyword}" license`;
+  if (!modules) {
+    return null;
+  }
 
-    const details = modules
-      .toSorted((a, b) => a.key.localeCompare(b.key))
-      .map(module => (
-        <div
-          key={module.key}
-          className={cn(styles.row, reportItemStyles.zebraRow)}
-        >
-          <Selectable
-            className={cn(styles.name)}
-            value={module.key}
-            label={module.label}
-          />
-        </div>
-      ));
-
-    return {
-      type: 'warn',
-      summary,
-      count: modules.length,
-      details,
-    } as RenderedAnalysis;
-  };
+  return (
+    <ReportItem
+      type="warn"
+      title={`Modules with "${keyword}" license`}
+      count={modules.length}
+    >
+      <p>{children}</p>
+      {modules
+        .toSorted((a, b) => a.key.localeCompare(b.key))
+        .map(module => (
+          <div
+            key={module.key}
+            className={cn(styles.row, reportItemStyles.zebraRow)}
+          >
+            <Selectable
+              className={cn(styles.name)}
+              value={module.key}
+              label={module.label}
+            />
+          </div>
+        ))}
+    </ReportItem>
+  );
 }
