@@ -7,9 +7,8 @@ import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
 import * as styles from './ReportPane.module.scss';
 import LicensesAll from './reports/LicensesAll.tsx';
-import LicensesDiscouraged from './reports/LicensesDiscouraged.tsx';
 import LicensesMissing from './reports/LicensesMissing.tsx';
-import LicensesObsolete from './reports/LicensesObsolete.tsx';
+import LicensesKeyword from './reports/LicensesKeyword.tsx';
 import MaintainersAll from './reports/MaintainersAll.tsx';
 import MaintainersSolo from './reports/MaintainersSolo.tsx';
 import ModuleReplacementsNative from './reports/ModuleReplacementsNative.tsx';
@@ -55,7 +54,7 @@ export default function ReportPane({
         <PeerDependenciesAll />
         <MaintainersAll />
         <LicensesAll />
-        <LicensesObsolete />
+        <LicensesKeyword keyword="obsolete" />
 
         <ModuleVulnerabilities />
         <ModulesRepeated />
@@ -64,7 +63,7 @@ export default function ReportPane({
 
         <MaintainersSolo />
         <LicensesMissing />
-        <LicensesDiscouraged />
+        <LicensesKeyword keyword="discouraged" />
         <ModuleReplacementsNative />
         <PeerDependenciesMissing />
       </AnalysisProvider>
