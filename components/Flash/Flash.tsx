@@ -66,7 +66,8 @@ function subscribeToResize(callback: () => void) {
 }
 
 function getMaxWidth() {
-  const graph = $optional(`.${graphDiagramStyles.graph}`);
+  // The root fills the pane, whereas .graph only wraps the (possibly tiny) SVG
+  const graph = $optional(`.${graphDiagramStyles.root}`);
 
   const graphWidth = graph instanceof HTMLElement ? graph.offsetWidth : 0;
   return Math.max(
