@@ -136,8 +136,11 @@ export async function getModule(moduleKey: string): Promise<Module> {
 
   void promise
     .catch(error => {
+      // Same message for every failure, with the key the user entered (not the rewritten URL)
       if (error instanceof HttpError) {
-        error.message = `Fetch failed for ${moduleKey} (code = ${error.code})`;
+        error.message = `Failed to get ${moduleKey} (code = ${error.code})`;
+      } else if (isHttpModule(moduleKey) && error instanceof Error) {
+        error.message = `Failed to get ${moduleKey}`;
       }
 
       return Module.stub(moduleKey, error);
