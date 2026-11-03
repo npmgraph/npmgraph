@@ -19,32 +19,30 @@ export default function ErrorsBox() {
     return null;
   }
 
+  const urls = errors.flatMap(([key]) => URL.parse(key) ?? []);
+  const hosts = [...new Set(urls.map(url => url.host))];
+
   return (
     <div className={styles.error}>
-      {errors.map(([key, error]) => {
-        const url = URL.parse(key);
-        return (
-          <div key={key}>
-            <p>{error.message}</p>
-            {url ? (
-              <p>
-                {url.host} must allow CORS requests from the {location.host}{' '}
-                domain for this to work.
-              </p>
-            ) : null}
-            {url && isGithubUrl(url) ? (
-              <p>
-                URLs that refer to private GitHub repos or gists should use the
-                URL shown when{' '}
-                <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-and-understanding-files#viewing-or-copying-the-raw-file-content">
-                  viewing the "Raw" file
-                </ExternalLink>
-                .
-              </p>
-            ) : null}
-          </div>
-        );
-      })}
+      {errors.map(([key, error]) => (
+        <p key={key}>{error.message}</p>
+      ))}
+      {hosts.length > 0 && (
+        <p>
+          {hosts.join(', ')} must allow CORS requests from the {location.host}{' '}
+          domain for this to work.
+        </p>
+      )}
+      {urls.some(url => isGithubUrl(url)) && (
+        <p>
+          URLs that refer to private GitHub repos or gists should use the URL
+          shown when{' '}
+          <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-and-understanding-files#viewing-or-copying-the-raw-file-content">
+            viewing the "Raw" file
+          </ExternalLink>
+          .
+        </p>
+      )}
     </div>
   );
 }
