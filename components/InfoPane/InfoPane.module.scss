@@ -1,8 +1,12 @@
-.tip {
+.error {
+  margin-block: 1em;
   border-radius: 0.5em;
-  padding: 0.5em;
-  color: var(--text-dim);
-  font-style: italic;
+  background-color: var(--bg-red);
+  padding: 0.5em 1em;
   font-size: 0.85em;
   line-height: 1.5em;
+
+  p {
+    margin: 0.5em 0;
+  }
 }

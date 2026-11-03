@@ -1,5 +1,6 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../../lib/dom.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useParsedQuery } from '../../hooks/useQuery.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { Pane } from '../ui/Pane.tsx';
@@ -14,27 +15,11 @@ function isGithubUrl(url: URL | null) {
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   const [value] = useParsedQuery();
+  const [graph] = useGlobalState('graph');
   const valueAsURL = URL.parse(value.trim());
 
   return (
     <Pane {...props}>
-      {isGithubUrl(valueAsURL) ? (
-        <div className={styles.tip}>
-          Note: URLs that refer to private GitHub repos or gists should use the
-          URL shown when{' '}
-          <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">
-            viewing the "Raw" file
-          </ExternalLink>
-          .
-        </div>
-      ) : null}
-      {valueAsURL ? (
-        <div className={styles.tip}>
-          Note: {valueAsURL.host} must allow CORS requests from the{' '}
-          {location.host} domain for this to work
-        </div>
-      ) : null}
-
       <InputHelp heading="npmgraph supports looking up:" />
 
       <p>It also accepts package.json:</p>
@@ -45,6 +30,25 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
           <FilePicker label="Choose file" /> from your computer
         </li>
       </ul>
+
+      {valueAsURL && graph.failedEntryModules.has(value.trim()) ? (
+        <div className={styles.error}>
+          <p>
+            Failed to fetch {valueAsURL.href}. {valueAsURL.host} must allow CORS
+            requests from the {location.host} domain for this to work.
+          </p>
+          {isGithubUrl(valueAsURL) ? (
+            <p>
+              URLs that refer to private GitHub repos or gists should use the
+              URL shown when{' '}
+              <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-and-understanding-files#viewing-or-copying-the-raw-file-content">
+                viewing the "Raw" file
+              </ExternalLink>
+              .
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       <hr />
       <footer>
