@@ -7,19 +7,11 @@ export default function CollapsedModules() {
   const [collapse, setCollapse] = useCollapse();
 
   if (collapse.length === 0) {
-    return (
-      <div className={styles.collapseInfo}>
-        (Shift-click modules in graph to expand/collapse)
-      </div>
-    );
+    return null;
   }
 
   return (
-    <CollapsibleSection
-      title="Collapsed modules"
-      count={collapse.length}
-      className={styles.root}
-    >
+    <CollapsibleSection title="Collapsed modules" count={collapse.length}>
       <ul className={styles.list}>
         {collapse.map(name => (
           <li key={name} className={styles.item}>

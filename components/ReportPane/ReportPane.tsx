@@ -38,6 +38,14 @@ export default function ReportPane({
     return <div>Loading</div>;
   }
 
+  if (graph.moduleInfos.size === 0) {
+    return (
+      <Pane className={cn(className, styles.centered)} {...props}>
+        <p>No modules to report on.</p>
+      </Pane>
+    );
+  }
+
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
   const maintainersAnalysis = analyzeMaintainers(graph);
@@ -50,14 +58,18 @@ export default function ReportPane({
     >
       {!isReportOnly && (
         <>
-          <Button
-            className={styles.expand}
-            onClick={() => {
-              setReportOnly(true);
-            }}
-          >
-            Report only
-          </Button>
+          <div className={styles.toolbar}>
+            <div className={styles.collapseInfo}>
+              Shift-click modules in graph to expand/collapse
+            </div>
+            <Button
+              onClick={() => {
+                setReportOnly(true);
+              }}
+            >
+              Report only
+            </Button>
+          </div>
           <CollapsedModules />
         </>
       )}
