@@ -23,8 +23,6 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       {valueAsURL && graph.failedEntryModules.has(value.trim()) ? (
         <div className={styles.error}>
           <p>
-            Failed to fetch {valueAsURL.href}
-            <br />
             {valueAsURL.host} must allow CORS requests from the {location.host}{' '}
             domain for this to work.
           </p>
