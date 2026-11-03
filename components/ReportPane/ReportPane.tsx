@@ -52,7 +52,7 @@ export default function ReportPane({
         <>
           <div className={styles.toolbar}>
             <div className={styles.collapseInfo}>
-              (Shift-click modules in graph to expand/collapse)
+              Shift-click modules in graph to expand/collapse
             </div>
             <Button
               onClick={() => {
