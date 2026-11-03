@@ -7,11 +7,7 @@ export default function CollapsedModules() {
   const [collapse, setCollapse] = useCollapse();
 
   if (collapse.length === 0) {
-    return (
-      <div className={styles.collapseInfo}>
-        (Shift-click modules in graph to expand/collapse)
-      </div>
-    );
+    return null;
   }
 
   return (

@@ -50,14 +50,18 @@ export default function ReportPane({
     >
       {!isReportOnly && (
         <>
-          <Button
-            className={styles.expand}
-            onClick={() => {
-              setReportOnly(true);
-            }}
-          >
-            Report only
-          </Button>
+          <div className={styles.toolbar}>
+            <div className={styles.collapseInfo}>
+              (Shift-click modules in graph to expand/collapse)
+            </div>
+            <Button
+              onClick={() => {
+                setReportOnly(true);
+              }}
+            >
+              Report only
+            </Button>
+          </div>
           <CollapsedModules />
         </>
       )}

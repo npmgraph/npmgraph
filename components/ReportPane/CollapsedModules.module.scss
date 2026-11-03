@@ -37,13 +37,6 @@
   background: color-mix(in srgb, currentColor 10%, transparent);
 }
 
-.collapseInfo {
-  margin-top: 0.5em; // Somewhat align with "Report only" button
-  margin-bottom: 1em;
-  color: var(--text-dim);
-  font-size: 90%;
-}
-
 .expandAll {
   @extend .remove;
   margin-top: 1em;

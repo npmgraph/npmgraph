@@ -1,9 +1,21 @@
 @use '../../lib/root.module.scss' as *;
 
-.expand {
-  float: right;
-  cursor: pointer;
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
   margin-bottom: 1em; // Matches the sidebar's padding: 1em
+
+  button {
+    flex: none;
+    cursor: pointer;
+  }
+}
+
+.collapseInfo {
+  color: var(--text-dim);
+  font-size: 90%;
 }
 
 // Centered column
