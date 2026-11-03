@@ -1,7 +1,7 @@
 import type { HTMLProps } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { useParsedQuery } from '../../hooks/useQuery.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import InputHelp from '../InputHelp.tsx';
@@ -14,19 +14,22 @@ function isGithubUrl(url: URL | null) {
 }
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
-  const [value] = useParsedQuery();
+  const [query] = useQuery();
   const [graph] = useGlobalState('graph');
-  const valueAsURL = URL.parse(value.trim());
+  const failedUrl = query
+    .filter(key => graph.failedEntryModules.has(key))
+    .map(key => URL.parse(key))
+    .find(Boolean);
 
   return (
     <Pane {...props}>
-      {valueAsURL && graph.failedEntryModules.has(value.trim()) ? (
+      {failedUrl ? (
         <div className={styles.error}>
           <p>
-            {valueAsURL.host} must allow CORS requests from the {location.host}{' '}
+            {failedUrl.host} must allow CORS requests from the {location.host}{' '}
             domain for this to work.
           </p>
-          {isGithubUrl(valueAsURL) ? (
+          {isGithubUrl(failedUrl) ? (
             <p>
               URLs that refer to private GitHub repos or gists should use the
               URL shown when{' '}
