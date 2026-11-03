@@ -20,22 +20,13 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
 
   return (
     <Pane {...props}>
-      <InputHelp heading="npmgraph supports looking up:" />
-
-      <p>It also accepts package.json:</p>
-      <ul>
-        <li>Drag and drop a file anywhere on the page</li>
-        <li>Paste package.json (file or text)</li>
-        <li>
-          <FilePicker label="Choose file" /> from your computer
-        </li>
-      </ul>
-
       {valueAsURL && graph.failedEntryModules.has(value.trim()) ? (
         <div className={styles.error}>
           <p>
-            Failed to fetch {valueAsURL.href}. {valueAsURL.host} must allow CORS
-            requests from the {location.host} domain for this to work.
+            Failed to fetch {valueAsURL.href}
+            <br />
+            {valueAsURL.host} must allow CORS requests from the {location.host}{' '}
+            domain for this to work.
           </p>
           {isGithubUrl(valueAsURL) ? (
             <p>
@@ -49,6 +40,17 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
           ) : null}
         </div>
       ) : null}
+
+      <InputHelp heading="npmgraph supports looking up:" />
+
+      <p>It also accepts package.json:</p>
+      <ul>
+        <li>Drag and drop a file anywhere on the page</li>
+        <li>Paste package.json (file or text)</li>
+        <li>
+          <FilePicker label="Choose file" /> from your computer
+        </li>
+      </ul>
 
       <hr />
       <footer>

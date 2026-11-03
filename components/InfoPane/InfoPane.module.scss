@@ -1,12 +1,13 @@
 .error {
-  margin-block: 1em;
-  border-radius: 0.5em;
-  background-color: var(--bg-red);
+  margin: -1em -1em 1em;
+  background-color: var(--accent);
   padding: 0.5em 1em;
-  font-size: 0.85em;
-  line-height: 1.5em;
 
   p {
     margin: 0.5em 0;
+  }
+
+  a {
+    color: inherit;
   }
 }
