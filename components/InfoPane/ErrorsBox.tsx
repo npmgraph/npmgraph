@@ -40,7 +40,6 @@ export default function ErrorsBox() {
           <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-and-understanding-files#viewing-or-copying-the-raw-file-content">
             viewing the "Raw" file
           </ExternalLink>
-          .
         </p>
       )}
     </div>
