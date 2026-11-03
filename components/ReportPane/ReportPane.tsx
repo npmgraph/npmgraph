@@ -38,6 +38,14 @@ export default function ReportPane({
     return <div>Loading</div>;
   }
 
+  if (graph.moduleInfos.size === 0) {
+    return (
+      <Pane className={cn(className, styles.centered)} {...props}>
+        <p>No modules to report on.</p>
+      </Pane>
+    );
+  }
+
   const moduleAnalysis = analyzeModules(graph);
   const peerDependencyAnalysis = analyzePeerDependencies(graph);
   const maintainersAnalysis = analyzeMaintainers(graph);

@@ -17,6 +17,14 @@
   font-size: 90%;
 }
 
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-wrap: pretty;
+}
+
 // Centered column
 .document {
   padding: 40px max(16px, calc((100% - 980px) / 2)) 32px;
