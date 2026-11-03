@@ -4,7 +4,6 @@ import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { PaneType, PARAM_PACKAGES } from '../../lib/constants.ts';
-import { createAbortable } from '../../lib/createAbortable.ts';
 import { celebrate } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { getGraphForQuery, type GraphState } from '../../lib/graph-util.ts';
@@ -42,27 +41,32 @@ export default function useLoadGraph(
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
 
   useEffect(() => {
-    const { signal, abort } = createAbortable();
-    void getGraphForQuery(sortedQuery, dependencyTypes, isModuleVisible).then(
-      newGraph => {
-        // Check after async
-        if (signal.aborted) {
-          return;
-        }
+    const controller = new AbortController();
+    void getGraphForQuery(
+      sortedQuery,
+      dependencyTypes,
+      isModuleVisible,
+      controller.signal,
+    ).then(newGraph => {
+      // Check after async
+      if (controller.signal.aborted) {
+        return;
+      }
 
-        celebrateZeroDependencies(newGraph, isModuleVisible);
-        setGraph(newGraph);
+      celebrateZeroDependencies(newGraph, isModuleVisible);
+      setGraph(newGraph);
 
-        if (
-          newGraph.entryModules.size === 0 &&
-          newGraph.failedEntryModules.size > 0
-        ) {
-          setPane(PaneType.INFO);
-        }
-      },
-    );
+      if (
+        newGraph.entryModules.size === 0 &&
+        newGraph.failedEntryModules.size > 0
+      ) {
+        setPane(PaneType.INFO);
+      }
+    });
 
-    return abort;
+    return () => {
+      controller.abort();
+    };
   }, [
     sortedQuery,
     dependencyTypes,

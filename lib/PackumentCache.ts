@@ -11,7 +11,9 @@ type PackumentCacheEntry = PromiseWithResolvers<Packument | undefined> & {
 
 export async function getNPMPackument(
   moduleName: string,
+  signal?: AbortSignal,
 ): PackumentCacheEntry['promise'] {
+  signal?.throwIfAborted();
   const registry = getRegistry();
 
   let cacheEntry = packumentCache.get(moduleName);
@@ -25,6 +27,18 @@ export async function getNPMPackument(
     cacheEntry.registry = registry;
     packumentCache.set(moduleName, cacheEntry);
     const entry = cacheEntry;
+    let isPending = true;
+
+    // Don't leave an aborted request in the cache for the next query to find
+    signal?.addEventListener(
+      'abort',
+      () => {
+        if (isPending && packumentCache.get(moduleName) === entry) {
+          packumentCache.delete(moduleName);
+        }
+      },
+      { once: true },
+    );
 
     await fetchJson<Packument>(`${registry}/${moduleName}`, {
       // Per
@@ -39,12 +53,17 @@ export async function getNPMPackument(
       // and we get full "version" objects, so we don't have to send follow-up
       // requests.
       headers: { Accept: 'application/json' },
+      signal,
     })
       .catch(error => {
-        console.warn('Failed to fetch packument', moduleName, error.message);
+        if (!signal?.aborted) {
+          console.warn('Failed to fetch packument', moduleName, error.message);
+        }
+
         return undefined;
       })
       .then(packument => {
+        isPending = false;
         entry.packument = packument;
         entry.resolve(packument);
       });

@@ -23,26 +23,25 @@ beforeEach(() => {
   requests.clear();
   hanging.clear();
 
-  vi.mocked(fetchJson).mockImplementation((async (
-    input: URL | string,
-    init?: RequestInit,
-  ) => {
-    const name = String(input).replace('test://registry/', '');
-    requests.set(name, init);
+  vi.mocked(fetchJson).mockImplementation(
+    async (input: URL | string, init?: RequestInit) => {
+      const name = String(input).replace('test://registry/', '');
+      requests.set(name, init);
 
-    if (hanging.has(name)) {
-      return new Promise((_resolve, reject) => {
-        init?.signal?.addEventListener('abort', () => {
-          reject(new DOMException('Aborted', 'AbortError'));
+      if (hanging.has(name)) {
+        return new Promise((_resolve, reject) => {
+          init?.signal?.addEventListener('abort', () => {
+            reject(new DOMException('Aborted', 'AbortError'));
+          });
         });
-      });
-    }
+      }
 
-    return packument(
-      name,
-      /^xo-[a-c]$/.test(name) ? { [`${name}-dep`]: '1' } : {},
-    );
-  }) as never);
+      return packument(
+        name,
+        /^xo-[a-c]$/.test(name) ? { [`${name}-dep`]: '1' } : {},
+      );
+    },
+  );
 });
 
 describe('getGraphForQuery signal', () => {
