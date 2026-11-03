@@ -5,7 +5,6 @@ import Tabs from './ui/Tabs.tsx';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import { QueryLink } from './ui/QueryLink.tsx';
-import ErrorsBanner from './ErrorsBanner.tsx';
 
 export default function AppHeader() {
   useKeyboardShortcuts();
@@ -18,7 +17,6 @@ export default function AppHeader() {
       </QueryLink>
       <QueryInput variant="header" />
       {isTightScreen ? null : <Tabs />}
-      <ErrorsBanner />
     </div>
   );
 }
