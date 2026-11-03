@@ -1,11 +1,8 @@
 .error {
+  display: flow-root;
   margin: -1em -1em 1em;
   background-color: var(--accent);
-  padding: 1px 1em;
-
-  p {
-    margin-block: 0 1em;
-  }
+  padding-inline: 1em;
 
   a {
     color: inherit;
