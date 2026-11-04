@@ -27,6 +27,7 @@ import { cn } from '../../lib/dom.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import * as styles from './GraphDiagram.module.scss';
@@ -64,14 +65,18 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
 function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph] = useGlobalState('graph');
+  const [query] = useQuery();
   const [collapse] = useCollapse();
   const [colorize] = useHashParam(PARAM_COLORIZE);
 
   const handleGraphClick = useGraphClick();
 
   // Nothing to show: every requested module failed to load
+  // (the graph can still be the one of the previous query while loading)
   const isNotFound =
-    graph?.entryModules.size === 0 && graph.failedEntryModules.size > 0;
+    graph?.entryModules.size === 0 &&
+    query.length > 0 &&
+    query.every(key => graph.failedEntryModules.has(key));
 
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   const [minScale, setMinScale] = useState(0.05);
