@@ -47,8 +47,9 @@ function isCurrent(entry: ModuleCacheEntry) {
 async function fetchModuleFromNPM(
   moduleName: string,
   version?: string,
+  signal?: AbortSignal,
 ): Promise<Module> {
-  const packument = await getNPMPackument(moduleName);
+  const packument = await getNPMPackument(moduleName, signal);
 
   if (!packument) {
     throw new Error(`Could not find ${moduleName} module`);
@@ -73,7 +74,7 @@ async function fetchModuleFromNPM(
   return new Module(packumentVersion, packument);
 }
 
-async function fetchModuleFromURL(urlString: string) {
+async function fetchModuleFromURL(urlString: string, signal?: AbortSignal) {
   const url = new URL(urlString);
 
   // TODO: We should probably be fetching github content via their REST API, but
@@ -84,7 +85,7 @@ async function fetchModuleFromURL(urlString: string) {
     url.pathname = url.pathname.replace('/blob', '');
   }
 
-  const pkg: PackageJSON = await fetchJson<PackageJSON>(url);
+  const pkg: PackageJSON = await fetchJson<PackageJSON>(url, { signal });
 
   pkg.name ||= url.href;
 
@@ -95,10 +96,15 @@ async function fetchModuleFromURL(urlString: string) {
 
 // Note: This method should not throw!  Errors should be returned as part of a
 // stub module
-export async function getModule(moduleKey: string): Promise<Module> {
+export async function getModule(
+  moduleKey: string,
+  signal?: AbortSignal,
+): Promise<Module> {
   if (!moduleKey) {
     throw new Error('Undefined module name');
   }
+
+  signal?.throwIfAborted();
 
   moduleKey = resolveGitHubShorthand(moduleKey);
   let [name, version] = parseModuleKey(moduleKey);
@@ -124,14 +130,25 @@ export async function getModule(moduleKey: string): Promise<Module> {
   const cacheEntry = Promise.withResolvers() as ModuleCacheEntry;
   moduleCache.set(moduleKey, cacheEntry);
 
+  // Don't leave an aborted request in the cache for the next query to find
+  signal?.addEventListener(
+    'abort',
+    () => {
+      if (!cacheEntry.module && moduleCache.get(moduleKey) === cacheEntry) {
+        moduleCache.delete(moduleKey);
+      }
+    },
+    { once: true },
+  );
+
   let promise: Promise<Module>;
 
   // Fetch module based on type
   if (isHttpModule(moduleKey)) {
-    promise = fetchModuleFromURL(moduleKey);
+    promise = fetchModuleFromURL(moduleKey, signal);
   } else {
     cacheEntry.registry = getRegistry();
-    promise = fetchModuleFromNPM(name, version);
+    promise = fetchModuleFromNPM(name, version, signal);
   }
 
   void promise
@@ -149,7 +166,9 @@ export async function getModule(moduleKey: string): Promise<Module> {
       cacheEntry.module = module;
 
       // Add cache entry for module's computed key
-      moduleCache.set(module.key, cacheEntry);
+      if (!signal?.aborted) {
+        moduleCache.set(module.key, cacheEntry);
+      }
 
       // Resolve promise
       cacheEntry.resolve(module);
