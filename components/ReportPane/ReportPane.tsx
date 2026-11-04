@@ -66,18 +66,17 @@ export default function ReportPane({
         <PeerDependenciesAll />
         <MaintainersAll />
         <LicensesAll />
-        <LicensesKeyword keyword="obsolete" />
 
         <ModuleVulnerabilities />
-        <ModulesRepeated />
         <ModulesDeprecated />
         <ModulesOutdated />
-
+        <ModulesRepeated />
+        <PeerDependenciesMissing />
         <MaintainersSolo />
         <LicensesMissing />
+        <LicensesKeyword keyword="obsolete" />
         <LicensesKeyword keyword="discouraged" />
         <ModuleReplacementsNative />
-        <PeerDependenciesMissing />
       </AnalysisProvider>
     </Pane>
   );
