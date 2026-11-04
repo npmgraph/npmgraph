@@ -59,7 +59,7 @@ export function notifyFlashElementReady(id: number, element: HTMLElement) {
 }
 
 export async function celebrate(message: string) {
-  const id = flash(`🎉 ${message} 🎉`, 'transparent');
+  const id = flash(`🎉 ${message} 🎉`, 'var(--bg-root)');
   const element = await waitForFlashElement(id);
 
   const y = element

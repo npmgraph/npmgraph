@@ -13,7 +13,8 @@
   animation:
     flashIn 0.7s ease,
     flashOut 0.7s ease 5s forwards;
-  border-radius: var(--rad-sm);
+  box-shadow: 2px 2px 10px 5px var(--bg-root);
+  border-bottom-right-radius: 1em;
   padding: 4px;
   white-space: pre-wrap;
 }
