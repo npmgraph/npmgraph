@@ -1,40 +1,33 @@
+import useGraph from '../../hooks/useGraph.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
 import { Button } from '../Button.tsx';
-import { ExternalLink } from '../ui/ExternalLink.tsx';
-import type { GraphState } from '../../lib/graph-util.ts';
 import { Pane } from '../ui/Pane.tsx';
-import { ReportItem } from './ReportItem.tsx';
-import { analyzeLicenses } from './analyzers/analyzeLicenses.ts';
-import { analyzeMaintainers } from './analyzers/analyzeMaintainers.tsx';
-import { analyzeModules } from './analyzers/analyzeModules.ts';
-import { analyzePeerDependencies } from './analyzers/analyzePeerDependencies.tsx';
-import { licensesAll } from './reporters/licensesAll.tsx';
-import { licensesKeyword } from './reporters/licensesKeyword.tsx';
-import { licensesMissing } from './reporters/licensesMissing.tsx';
-import { maintainersAll } from './reporters/maintainersAll.tsx';
-import { maintainersSolo } from './reporters/maintainersSolo.tsx';
-import { moduleReplacementsNative } from './reporters/moduleReplacements.tsx';
-import { moduleVulnerabilities } from './reporters/moduleVulnerabilities.tsx';
-import { modulesAll } from './reporters/modulesAll.tsx';
-import { modulesDeprecated } from './reporters/modulesDeprecated.tsx';
-import { modulesOutdated } from './reporters/modulesOutdated.tsx';
-import { modulesRepeated } from './reporters/modulesRepeated.tsx';
-import {
-  peerDependenciesAll,
-  peerDependenciesMissing,
-} from './reporters/peerDependenciesAll.tsx';
+import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
 import * as styles from './ReportPane.module.scss';
+import LicensesAll from './reports/LicensesAll.tsx';
+import LicensesMissing from './reports/LicensesMissing.tsx';
+import LicensesKeyword from './reports/LicensesKeyword.tsx';
+import MaintainersAll from './reports/MaintainersAll.tsx';
+import MaintainersSolo from './reports/MaintainersSolo.tsx';
+import ModuleReplacementsNative from './reports/ModuleReplacementsNative.tsx';
+import ModuleVulnerabilities from './reports/ModuleVulnerabilities.tsx';
+import ModulesAll from './reports/ModulesAll.tsx';
+import ModulesDeprecated from './reports/ModulesDeprecated.tsx';
+import ModulesOutdated from './reports/ModulesOutdated.tsx';
+import ModulesRepeated from './reports/ModulesRepeated.tsx';
+import PeerDependenciesAll from './reports/PeerDependenciesAll.tsx';
+import PeerDependenciesMissing from './reports/PeerDependenciesMissing.tsx';
 
 export default function ReportPane({
-  graph,
   className,
   ...props
-}: { graph: GraphState | undefined } & React.HTMLAttributes<HTMLDivElement>) {
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const graph = useGraph();
   const [isReportOnly, setReportOnly] = useReportOnly();
 
-  if (!graph?.moduleInfos) {
+  if (!graph.moduleInfos) {
     return <div>Loading</div>;
   }
 
@@ -45,11 +38,6 @@ export default function ReportPane({
       </Pane>
     );
   }
-
-  const moduleAnalysis = analyzeModules(graph);
-  const peerDependencyAnalysis = analyzePeerDependencies(graph);
-  const maintainersAnalysis = analyzeMaintainers(graph);
-  const licensesAnalysis = analyzeLicenses(graph);
 
   return (
     <Pane
@@ -73,100 +61,24 @@ export default function ReportPane({
           <CollapsedModules />
         </>
       )}
-      <ReportItem data={moduleAnalysis} reporter={modulesAll} />
+      <AnalysisProvider>
+        <ModulesAll />
+        <PeerDependenciesAll />
+        <MaintainersAll />
+        <LicensesAll />
+        <LicensesKeyword keyword="obsolete" />
 
-      <ReportItem
-        data={peerDependencyAnalysis}
-        reporter={peerDependenciesAll}
-      />
+        <ModuleVulnerabilities />
+        <ModulesRepeated />
+        <ModulesDeprecated />
+        <ModulesOutdated />
 
-      <ReportItem data={maintainersAnalysis} reporter={maintainersAll} />
-
-      <ReportItem data={licensesAnalysis} reporter={licensesAll} />
-
-      <ReportItem
-        type="warn"
-        data={licensesAnalysis}
-        reporter={licensesKeyword('obsolete')}
-      >
-        "Obsolete" licenses have a newer version available. Consider asking the
-        module owner to update to a more recent version. See{' '}
-        <ExternalLink href="https://opensource.org/licenses/">
-          OSI Licenses
-        </ExternalLink>
-        .
-      </ReportItem>
-      <ReportItem data={moduleAnalysis} reporter={moduleVulnerabilities}>
-        Security advisories per <code>npm audit</code>. Data sourced from the
-        npm registry. See{' '}
-        <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">
-          npm audit documentation
-        </ExternalLink>
-      </ReportItem>
-
-      <ReportItem data={moduleAnalysis} reporter={modulesRepeated}>
-        Module repetition is a result of incompatible version constraints, and
-        may lead to increased bundle and <code>node_modules</code> directory
-        size. Consider asking <em>upstream</em> module owners to update to the
-        latest version or loosen the version constraint.
-      </ReportItem>
-
-      <ReportItem data={moduleAnalysis} reporter={modulesDeprecated}>
-        Deprecated modules are unsupported and may have unpatched security
-        vulnerabilities. See the deprecation notes below for module-specific
-        instructions.
-      </ReportItem>
-
-      <ReportItem data={moduleAnalysis} reporter={modulesOutdated}>
-        These modules are behind the <code>latest</code> version on npm. Newer
-        versions may include bug and security fixes. If an update is held back
-        by the version constraint of another module, consider asking{' '}
-        <em>upstream</em> module owners to update.
-      </ReportItem>
-
-      <ReportItem data={maintainersAnalysis} reporter={maintainersSolo}>
-        Modules with a single maintainer are at risk of "unplanned abandonment".
-        See{' '}
-        <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
-          Bus factor
-        </ExternalLink>
-        .
-      </ReportItem>
-      <ReportItem
-        type="warn"
-        data={licensesAnalysis}
-        reporter={licensesMissing}
-      >
-        Modules without a declared license, or that are explicitely
-        "UNLICENSED", are not opensource and may infringe on the owner's
-        copyright. Consider contacting the owner to clarify licensing terms.
-      </ReportItem>
-
-      <ReportItem
-        type="warn"
-        data={licensesAnalysis}
-        reporter={licensesKeyword('discouraged')}
-      >
-        "Discouraged" licenses typically have a more popular alternative. See{' '}
-        <ExternalLink href="https://opensource.org/licenses/">
-          OSI Licenses
-        </ExternalLink>
-        .
-      </ReportItem>
-
-      <ReportItem data={moduleAnalysis} reporter={moduleReplacementsNative}>
-        From the{' '}
-        <ExternalLink href="https://github.com/e18e/module-replacements">
-          module-replacements
-        </ExternalLink>{' '}
-        project, these modules can be removed or replaced with more modern,
-        streamlined alternatives
-      </ReportItem>
-
-      <ReportItem
-        data={peerDependencyAnalysis}
-        reporter={peerDependenciesMissing}
-      />
+        <MaintainersSolo />
+        <LicensesMissing />
+        <LicensesKeyword keyword="discouraged" />
+        <ModuleReplacementsNative />
+        <PeerDependenciesMissing />
+      </AnalysisProvider>
     </Pane>
   );
 }

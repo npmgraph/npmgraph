@@ -3,7 +3,8 @@
   padding-left: 1rem;
 }
 
-.zebraRow:nth-child(even) {
+// Of type, so that the description paragraph doesn't shift the rows
+.zebraRow:nth-of-type(even) {
   background-color: rgba(127, 127, 127, 0.05);
 }
 
@@ -25,9 +26,11 @@
   }
 }
 
-.description {
+// The description of the report, before the rows
+.details > p {
   margin-block-start: 0.5rem;
   margin-block-end: 0.5rem;
+  padding-inline: 0;
   color: rgba(127, 127, 127, 0.85);
   font-size: 0.9rem;
   line-height: 1.3rem;

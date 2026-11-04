@@ -1,5 +1,6 @@
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { queryModuleCache } from '../../lib/ModuleCache.ts';
+import type Module from '../../lib/Module.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
@@ -15,14 +16,11 @@ import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
 
-export default function ModulePane(
-  props: React.HTMLAttributes<HTMLDivElement>,
-) {
-  const [colorize] = useHashParam(PARAM_COLORIZE);
+function useSelectedModules() {
   const [graph] = useGlobalState('graph');
   const [queryType, queryValue] = useGraphSelection();
 
-  let selectedModules = queryModuleCache(queryType, queryValue);
+  const selectedModules = queryModuleCache(queryType, queryValue);
 
   // Fall back to the top-level module if nothing is selected
   const [entryModule] = graph.entryModules;
@@ -31,61 +29,43 @@ export default function ModulePane(
     graph.entryModules.size === 1 &&
     selectedModules.size === 0
   ) {
-    selectedModules = new Map([[entryModule.key, entryModule]]);
+    return new Map([[entryModule.key, entryModule]]);
   }
 
-  const nSelected = selectedModules.size;
+  return selectedModules;
+}
 
-  if (nSelected === 0) {
-    return (
-      <Pane className={styles.centered}>
-        <p>No modules selected.</p>
-      </Pane>
-    );
-  }
+function LocalModulePane({ module }: { module: Module }) {
+  return (
+    <Pane>
+      <h2>
+        <QueryLink query={module.key} reset={false}>
+          {module.isUnnamed || module.source ? module.displayName : module.key}
+        </QueryLink>
+      </h2>
+      <p>
+        This is a locally-defined module. Additional information is not
+        available at this time.
+      </p>
+    </Pane>
+  );
+}
 
-  if (nSelected > 1) {
-    return (
-      <Pane className={styles.centered}>
-        Multiple modules selected. Click a single module in the graph to see
-        details.
-      </Pane>
-    );
-  }
+function StubModulePane({ module }: { module: Module }) {
+  return (
+    <Pane>
+      <h2>{module.name}</h2>
+      <p>Sorry, but info for this module isn't available. 😢</p>
+      <p className={styles.stubError}>{module.stubError?.message}</p>
+    </Pane>
+  );
+}
 
-  const module = selectedModules.values().next().value;
-  if (!module) {
-    return null;
-  }
-
-  if (module.isLocal) {
-    return (
-      <Pane>
-        <h2>
-          <QueryLink query={module.key} reset={false}>
-            {module.isUnnamed || module.source
-              ? module.displayName
-              : module.key}
-          </QueryLink>
-        </h2>
-        <p>
-          This is a locally-defined module. Additional information is not
-          available at this time.
-        </p>
-      </Pane>
-    );
-  }
-
-  if (module.isStub) {
-    return (
-      <Pane>
-        <h2>{module.name}</h2>
-        <p>Sorry, but info for this module isn't available. 😢</p>
-        <p className={styles.stubError}>{module.stubError?.message}</p>
-      </Pane>
-    );
-  }
-
+function ModuleDetailsPane({
+  module,
+  ...props
+}: { module: Module } & React.HTMLAttributes<HTMLDivElement>) {
+  const [colorize] = useHashParam(PARAM_COLORIZE);
   const pkg = module.package;
 
   return (
@@ -121,4 +101,42 @@ export default function ModulePane(
       {module.packument && <ModuleMaintainers module={module} />}
     </Pane>
   );
+}
+
+export default function ModulePane(
+  props: React.HTMLAttributes<HTMLDivElement>,
+) {
+  const selectedModules = useSelectedModules();
+
+  if (selectedModules.size === 0) {
+    return (
+      <Pane className={styles.centered}>
+        <p>No modules selected.</p>
+      </Pane>
+    );
+  }
+
+  if (selectedModules.size > 1) {
+    return (
+      <Pane className={styles.centered}>
+        Multiple modules selected. Click a single module in the graph to see
+        details.
+      </Pane>
+    );
+  }
+
+  const module = selectedModules.values().next().value;
+  if (!module) {
+    return null;
+  }
+
+  if (module.isLocal) {
+    return <LocalModulePane module={module} />;
+  }
+
+  if (module.isStub) {
+    return <StubModulePane module={module} />;
+  }
+
+  return <ModuleDetailsPane module={module} {...props} />;
 }

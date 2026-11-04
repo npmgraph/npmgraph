@@ -20,7 +20,6 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [pane] = useGlobalState('pane');
   // The store updates synchronously, so defer the pane to keep showing the previous one while the next suspends
   const deferredPane = useDeferredValue(pane);
-  const [graph] = useGlobalState('graph');
 
   const [hide] = useHashParam(PARAM_HIDE);
   const [isReportOnly] = useReportOnly();
@@ -35,7 +34,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       paneComponent = <ModulePane />;
       break;
     case PaneType.REPORT:
-      paneComponent = <ReportPane graph={graph} />;
+      paneComponent = <ReportPane />;
       break;
     case PaneType.GRAPH:
       // The graph is rendered by App, so it doesn't change when switching tabs

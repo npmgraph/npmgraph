@@ -1,27 +1,21 @@
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
-import type {
-  PeerDependenciesState,
-  PeerDependencyInfo,
-} from '../analyzers/analyzePeerDependencies.tsx';
+import type { PeerDependencyInfo } from '../analyzers/analyzePeerDependencies.ts';
 import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './peerDependenciesAll.module.scss';
+import * as styles from './PeerDependenciesAll.module.scss';
 
-export function peerDependenciesAll({
+export function PeerDependencyRows({
   peerDependencyInfos,
-}: PeerDependenciesState) {
-  if (peerDependencyInfos.length === 0) {
-    return;
-  }
-
+}: {
+  peerDependencyInfos: PeerDependencyInfo[];
+}) {
   const peerDepsBySource: Map<string, PeerDependencyInfo[]> = Map.groupBy(
     peerDependencyInfos,
     (pdi: PeerDependencyInfo) => pdi.source.key,
   );
 
-  const details = [...peerDepsBySource.keys()].toSorted().map(sourceName => {
+  return [...peerDepsBySource.keys()].toSorted().map(sourceName => {
     const pdis = peerDepsBySource.get(sourceName)!;
 
     return (
@@ -66,30 +60,4 @@ export function peerDependenciesAll({
       </div>
     );
   });
-
-  return {
-    type: 'info',
-    summary: 'Peer dependencies',
-    count: peerDependencyInfos.length,
-    details,
-  } as RenderedAnalysis;
-}
-
-export function peerDependenciesMissing({
-  peerDependencyInfos,
-}: PeerDependenciesState) {
-  const missingInfos = peerDependencyInfos.filter(
-    pdi => !pdi.destination && !pdi.optional,
-  );
-  const result = peerDependenciesAll({ peerDependencyInfos: missingInfos });
-  if (!result) {
-    return;
-  }
-
-  return {
-    type: 'warn',
-    summary: 'Missing peer dependencies',
-    count: missingInfos.length,
-    details: result?.details,
-  } as RenderedAnalysis;
 }

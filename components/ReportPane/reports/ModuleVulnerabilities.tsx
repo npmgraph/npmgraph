@@ -1,11 +1,13 @@
+import { Suspense, use, useDeferredValue, useMemo } from 'react';
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { RenderedAnalysis } from '../analyzers/Analyzer.tsx';
 import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
-import * as styles from './moduleVulnerabilities.module.scss';
+import * as styles from './ModuleVulnerabilities.module.scss';
+import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
+import { ReportItem } from '../ReportItem.tsx';
 
 const SEVERITY_RANK = {
   none: 0,
@@ -16,19 +18,18 @@ const SEVERITY_RANK = {
   critical: 5,
 };
 
-export async function moduleVulnerabilities({
-  moduleInfos,
-}: ModuleAnalysisState) {
-  type Advisory = {
-    packageName?: string;
-    id: number;
-    url: string;
-    title: string;
-    severity: 'none' | 'info' | 'low' | 'moderate' | 'high' | 'critical';
-    vulnerable_versions: string;
-    cwe: string[]; // CWE codes
-    cvss: { score: number; vectorString: string };
-  };
+type Advisory = {
+  packageName?: string;
+  id: number;
+  url: string;
+  title: string;
+  severity: 'none' | 'info' | 'low' | 'moderate' | 'high' | 'critical';
+  vulnerable_versions: string;
+  cwe: string[]; // CWE codes
+  cvss: { score: number; vectorString: string };
+};
+
+async function fetchAdvisories({ moduleInfos }: ModuleAnalysisState) {
   type BulkAdvisories = Record<string, Advisory[]>;
   const versionsByName: Record<string, string[]> = {};
 
@@ -84,8 +85,12 @@ export async function moduleVulnerabilities({
       : rank;
   });
 
-  const details = advisories.map(advisory => (
-    <div key={advisory.id}>
+  return advisories;
+}
+
+function Row({ advisory }: { advisory: Advisory }) {
+  return (
+    <div>
       <div
         className={cn(
           styles.header,
@@ -107,16 +112,49 @@ export async function moduleVulnerabilities({
         <ExternalLink href={advisory.url}>details</ExternalLink>
       </div>
     </div>
-  ));
+  );
+}
 
-  if (details.length === 0) {
-    return;
+function Vulnerabilities({
+  advisories: advisoriesPromise,
+}: {
+  advisories: Promise<Advisory[]>;
+}) {
+  const advisories = use(advisoriesPromise);
+
+  if (advisories.length === 0) {
+    return null;
   }
 
-  return {
-    type: 'warn',
-    summary: 'Vulnerabilities',
-    count: details.length,
-    details,
-  } as RenderedAnalysis;
+  return (
+    <ReportItem type="warn" title="Vulnerabilities" count={advisories.length}>
+      <p>
+        Security advisories per <code>npm audit</code>. Data sourced from the
+        npm registry. See{' '}
+        <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">
+          npm audit documentation
+        </ExternalLink>
+      </p>
+      {advisories.map(advisory => (
+        <Row key={advisory.id} advisory={advisory} />
+      ))}
+    </ReportItem>
+  );
+}
+
+export default function ModuleVulnerabilities() {
+  const analysis = useModuleAnalysis();
+  // The request is made here, outside of the suspending component, so that it
+  // isn't made again when that one suspends. The deferred promise keeps the
+  // previous advisories (and the open state) on screen while the next ones load
+  const advisories = useDeferredValue(
+    // eslint-disable-next-line @typescript-eslint/promise-function-async -- useMemo() can't take an async callback
+    useMemo(() => fetchAdvisories(analysis), [analysis]),
+  );
+
+  return (
+    <Suspense fallback={null}>
+      <Vulnerabilities advisories={advisories} />
+    </Suspense>
+  );
 }
