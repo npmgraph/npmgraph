@@ -16,7 +16,9 @@ export default async function fetchJson<T>(
   const url = String(input);
   const cacheKey = `${url} ${JSON.stringify(init)}`;
 
-  if (requestCache.has(cacheKey)) {
+  // Requests with a signal aren't shared: aborting one would fail whoever gets it next
+  const isCacheable = !init?.signal;
+  if (isCacheable && requestCache.has(cacheKey)) {
     return requestCache.get(cacheKey) as Promise<T>;
   }
 
@@ -63,7 +65,9 @@ export default async function fetchJson<T>(
       finish?.();
     });
 
-  requestCache.set(cacheKey, p);
+  if (isCacheable) {
+    requestCache.set(cacheKey, p);
+  }
 
   return p as Promise<T>;
 }

@@ -136,6 +136,8 @@ export async function getGraphForQuery(
   dependencyTypes: Set<DependencyKey>,
   // eslint-disable-next-line unicorn/consistent-boolean-name
   moduleFilter: (m: Module) => boolean,
+  // Stops the loading of modules. The graph returned after aborting is incomplete
+  signal?: AbortSignal,
 ) {
   const graphState: GraphState = {
     moduleInfos: new Map(),
@@ -204,6 +206,7 @@ export async function getGraphForQuery(
 
         const downstreamModule = await getModule(
           getModuleKey(downstreamName, downstreamVersion),
+          signal,
         );
 
         // Compute the overrides context to pass into this child's subtree
@@ -232,7 +235,7 @@ export async function getGraphForQuery(
   // deep-resolve all modules in query
   await Promise.allSettled(
     query.map(async moduleKey => {
-      const m = await getModule(moduleKey);
+      const m = await getModule(moduleKey, signal);
       if (m.isStub) {
         graphState.failedEntryModules.set(
           moduleKey,
@@ -254,6 +257,10 @@ export async function getGraphForQuery(
       }
     }),
   );
+
+  if (signal?.aborted) {
+    return graphState;
+  }
 
   // Second pass: resolve peer dependencies.
   // Build a name → Module[] index for O(1) lookups of already-present modules.
@@ -299,7 +306,10 @@ export async function getGraphForQuery(
             if (!peerModule) {
               // Not yet in graph — fetch and traverse the resolved version.
               try {
-                peerModule = await getModule(getModuleKey(name, versionRange));
+                peerModule = await getModule(
+                  getModuleKey(name, versionRange),
+                  signal,
+                );
                 if (peerModule.isStub) {
                   return;
                 }
