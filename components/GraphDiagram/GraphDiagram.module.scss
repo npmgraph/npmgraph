@@ -102,13 +102,13 @@
   pointer-events: none;
 
   img {
-    animation: appear 1s ease-out;
+    animation: appear 2s ease-out;
   }
 }
 
 @keyframes appear {
   from {
-    transform: scale(0.8);
+    scale: 0.9;
     opacity: 0;
   }
 }
