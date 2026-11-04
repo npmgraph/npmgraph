@@ -22,10 +22,6 @@
     font-size: 1.5em;
     line-height: 1.25;
 
-    @include tight-screen {
-      background-color: var(--bg-root);
-    }
-
     & > span,
     & > small {
       vertical-align: middle;
