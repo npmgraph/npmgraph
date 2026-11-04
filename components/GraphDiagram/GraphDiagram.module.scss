@@ -102,14 +102,15 @@
   pointer-events: none;
 
   img {
-    animation: fade-in 1s;
+    animation: appear 1s ease-out;
     width: 110px;
     height: 90px;
   }
 }
 
-@keyframes fade-in {
+@keyframes appear {
   from {
+    transform: scale(0.8);
     opacity: 0;
   }
 }
