@@ -92,3 +92,17 @@
     color: var(--stroke-red);
   }
 }
+
+.notFound {
+  display: grid;
+  position: absolute;
+  place-items: center;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+
+  img {
+    width: min(26rem, 80%);
+    max-height: 60%;
+  }
+}

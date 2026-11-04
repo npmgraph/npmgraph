@@ -41,6 +41,8 @@ import { clampPosition, getFitScale } from './viewport-util.ts';
 import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
 
+const notFoundUrl = new URL('../../images/not-found.svg', import.meta.url);
+
 const idSeen = new Set<unknown>();
 
 export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
@@ -66,6 +68,10 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
 
   const handleGraphClick = useGraphClick();
+
+  // Nothing to show: every requested module failed to load
+  const isNotFound =
+    graph?.entryModules.size === 0 && graph.failedEntryModules.size > 0;
 
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   const [minScale, setMinScale] = useState(0.05);
@@ -219,10 +225,16 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           handleGraphClick(event);
         }}
       >
-        <div className={styles.graphControls}>
-          <GraphDiagramZoomButtons />
-          <GraphDiagramExportButtons />
-        </div>
+        {isNotFound ? (
+          <div className={styles.notFound}>
+            <img src={notFoundUrl.href} alt="Module not found" />
+          </div>
+        ) : (
+          <div className={styles.graphControls}>
+            <GraphDiagramZoomButtons />
+            <GraphDiagramExportButtons />
+          </div>
+        )}
         <TransformComponent
           wrapperClass={styles.viewport}
           wrapperStyle={{ width: '100%', height: '100%' }}
