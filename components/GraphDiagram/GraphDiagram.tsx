@@ -227,7 +227,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       >
         {isNotFound ? (
           <div className={styles.notFound}>
-            <img src={notFoundUrl.href} alt="Module not found" />
+            <img src={notFoundUrl.href} width={110} alt="Module not found" />
           </div>
         ) : (
           <div className={styles.graphControls}>
