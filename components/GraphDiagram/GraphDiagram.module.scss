@@ -102,7 +102,14 @@
   pointer-events: none;
 
   img {
-    width: min(26rem, 80%);
-    max-height: 60%;
+    animation: fade-in 1s;
+    width: 110px;
+    height: 90px;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
 }
