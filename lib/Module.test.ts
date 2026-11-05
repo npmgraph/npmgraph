@@ -9,7 +9,7 @@ describe('Module', () => {
       const module = new Module({
         name: 'my-package',
         version: '1.0.0',
-      } as PackumentVersion);
+      });
 
       expect(module.isUnnamed).toBe(false);
     });
@@ -18,7 +18,7 @@ describe('Module', () => {
       const module = new Module({
         name: `${UNNAMED_PACKAGE_PREFIX}abc-123`,
         version: '1.0.0',
-      } as PackumentVersion);
+      });
 
       expect(module.isUnnamed).toBe(true);
     });
@@ -29,7 +29,7 @@ describe('Module', () => {
       const module = new Module({
         name: 'my-package',
         version: '1.0.0',
-      } as PackumentVersion);
+      });
 
       expect(module.displayName).toBe('my-package');
     });
@@ -38,7 +38,7 @@ describe('Module', () => {
       const module = new Module({
         name: `${UNNAMED_PACKAGE_PREFIX}abc-123`,
         version: '1.0.0',
-      } as PackumentVersion);
+      });
 
       expect(module.displayName).toBe(UNNAMED_PACKAGE);
     });
@@ -49,7 +49,7 @@ describe('Module', () => {
       const module = new Module({
         name: 'module-foo',
         version: '1.0.0',
-      } as PackumentVersion);
+      });
       module.source = 'upload: module-foo@1.0.0';
 
       expect(module.displayName).toBe('upload: module-foo@1.0.0');
@@ -59,7 +59,7 @@ describe('Module', () => {
       const module = new Module({
         name: 'module-foo',
         version: '1.0.0',
-      } as PackumentVersion);
+      });
 
       expect(module.displayName).toBe('module-foo');
     });
@@ -70,7 +70,7 @@ describe('Module', () => {
       const module = new Module({
         name: 'module-foo',
         version: '1.0.0',
-      } as PackumentVersion);
+      });
       expect(module.label).toBe('module-foo@1.0.0');
 
       module.source = 'user/repo';

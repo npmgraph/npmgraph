@@ -1,4 +1,3 @@
-import type { PackumentVersion } from '@npm/types';
 import { describe, expect, it } from 'vitest';
 import Module from './Module.ts';
 import { getRepoUrlForModule } from './repo-util.ts';
@@ -12,7 +11,7 @@ describe('getRepoUrlForModule', () => {
         type: 'git',
         url: 'https://github.com/facebook/react.git',
       },
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/facebook/react');
@@ -23,7 +22,7 @@ describe('getRepoUrlForModule', () => {
       name: 'test',
       version: '1.0.0',
       repository: 'github:user/repo',
-    } as unknown as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/user/repo');
@@ -34,7 +33,7 @@ describe('getRepoUrlForModule', () => {
       name: 'test',
       version: '1.0.0',
       homepage: 'https://github.com/user/repo',
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/user/repo');
@@ -47,7 +46,7 @@ describe('getRepoUrlForModule', () => {
       bugs: {
         url: 'https://github.com/user/repo/issues',
       },
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/user/repo');
@@ -62,7 +61,7 @@ describe('getRepoUrlForModule', () => {
         url: 'https://github.com/real/repo.git',
       },
       homepage: 'https://github.com/other/repo',
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/real/repo');
@@ -73,7 +72,7 @@ describe('getRepoUrlForModule', () => {
       name: 'test',
       version: '1.0.0',
       homepage: 'https://example.com',
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe(undefined);
@@ -87,7 +86,7 @@ describe('getRepoUrlForModule', () => {
         type: 'git',
         url: 'https://gitlab.com/user/repo.git',
       },
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://gitlab.com/user/repo');
@@ -101,7 +100,7 @@ describe('getRepoUrlForModule', () => {
         type: 'git',
         url: 'git@github.com:user/repo.git',
       },
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/user/repo');
@@ -115,7 +114,7 @@ describe('getRepoUrlForModule', () => {
         type: 'git',
         url: 'https://github.com/drewyoung1/armyjs.git',
       },
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/drewyoung1/armyjs');
@@ -129,7 +128,7 @@ describe('getRepoUrlForModule', () => {
         type: 'git',
         url: 'https://github.com/uuidjs/uuid.git',
       },
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/uuidjs/uuid');
@@ -143,7 +142,7 @@ describe('getRepoUrlForModule', () => {
         type: 'git',
         url: 'https://bitbucket.org/user/repo.git',
       },
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://bitbucket.org/user/repo');
@@ -154,7 +153,7 @@ describe('getRepoUrlForModule', () => {
       name: 'test',
       version: '1.0.0',
       homepage: 'https://github.com/user/repo/pulls',
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/user/repo');
@@ -165,7 +164,7 @@ describe('getRepoUrlForModule', () => {
       name: 'test',
       version: '1.0.0',
       homepage: 'https://github.com/user/repo/wiki',
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/user/repo');
@@ -175,7 +174,7 @@ describe('getRepoUrlForModule', () => {
     const module = new Module({
       name: 'test',
       version: '1.0.0',
-    } as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe(undefined);
@@ -186,7 +185,7 @@ describe('getRepoUrlForModule', () => {
       name: 'test',
       version: '1.0.0',
       bugs: 'https://github.com/user/repo/issues',
-    } as unknown as PackumentVersion);
+    });
 
     const result = getRepoUrlForModule(module);
     expect(result).toBe('https://github.com/user/repo');

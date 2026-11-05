@@ -18,8 +18,7 @@ export function Button({
   return 'href' in props && typeof props.href === 'string' ? (
     <a {...props}>{children}</a>
   ) : (
-    // @ts-expect-error This is for Claude to fix
-    <button type="button" {...props}>
+    <button type="button" {...(props as React.JSX.IntrinsicElements['button'])}>
       {children}
     </button>
   );

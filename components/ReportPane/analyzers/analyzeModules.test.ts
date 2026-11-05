@@ -44,7 +44,7 @@ describe('analyzeModules', () => {
     const noPackument = new Module({
       name: 'bare',
       version: '1.0.0',
-    } as PackumentVersion);
+    });
 
     expect(analyze([local, noPackument]).outdated).toEqual([]);
   });
