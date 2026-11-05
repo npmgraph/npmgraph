@@ -4,7 +4,6 @@ import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 
 import { SectionOpenedContext } from './SectionOpenedContext.ts';
 import * as styles from './Section.module.scss';
-import * as utilities from './utilities.module.scss';
 
 export function SectionBody({ children }: { children: ReactNode }) {
   return <div className={styles.body}>{children}</div>;
@@ -56,7 +55,7 @@ export function CollapsibleSection({
         onToggle?.(event);
       }}
     >
-      <summary className={utilities.brightHover}>
+      <summary>
         {title}
         <Count count={count} />
         {icon}
