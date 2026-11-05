@@ -16,8 +16,15 @@
     line-height: normal;
   }
 
-  > summary:is(:hover, :focus-visible) {
+  > summary:focus-visible {
     background: color-mix(in srgb, currentColor 10%, transparent);
+  }
+
+  // Touch screens keep :hover after a tap
+  @media (hover: hover) {
+    > summary:hover {
+      background: color-mix(in srgb, currentColor 10%, transparent);
+    }
   }
 
   // Move triangle to the right
