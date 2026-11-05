@@ -1,4 +1,5 @@
-import type { Packument, PackumentVersion } from '@npm/types';
+import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
+import hostedGitInfo from 'hosted-git-info';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
 import { isDefined } from './guards.ts';
 import {
@@ -30,15 +31,22 @@ export default class Module {
   source?: string;
   stubError?: Error;
 
-  // TODO: This should take either PackumentVersion or PackageJSON... but need to
-  // be clear about the differences between the two!
-  constructor(pkg: PackumentVersion, packument?: Packument) {
+  /**
+  Wraps a package manifest, whether it came from the registry or a package.json.
+
+  @param pkg Either a registry `PackumentVersion` (normalized by npm: has `_id`,
+  `dist` and `_npmVersion`, and `author`, `bugs`, `maintainers` and `repository`
+  are always objects) or a raw `PackageJSON` from a URL or upload (loose: those
+  fields may also be strings, and there's no registry metadata)
+  @param packument The registry packument `pkg` came from, if any
+  */
+  constructor(pkg: PackumentVersion | PackageJSON, packument?: Packument) {
     if (!pkg.name) {
       throw new Error(`Package name is required`);
     }
 
     this.packument = packument;
-    this.package = resolveDependencyAliases(pkg);
+    this.package = resolveDependencyAliases(pkg as PackumentVersion);
   }
 
   get key() {
@@ -116,9 +124,9 @@ export default class Module {
   }
 
   get repository() {
-    // TODO: Handle non-github repositories
     const { repository } = this.package;
-    return typeof repository === 'string' ? repository : repository?.url;
+    const url = typeof repository === 'string' ? repository : repository?.url;
+    return url && (hostedGitInfo.fromUrl(url)?.browse() ?? url);
   }
 
   get githubPath() {
