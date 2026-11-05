@@ -15,6 +15,20 @@ export type TreemapLeaf = {
   rank: number;
 };
 
+// Note: dependencySizes is *sometimes* undefined.  E.g.
+// https://bundlephobia.com/api/size?package=string_decoder%401.1.1
+// The module itself is listed among its dependencies, so it's left out
+function getDependencySizes({
+  dependencySizes,
+  name,
+}: BundlePhobiaData): BundlePhobiaData['dependencySizes'] {
+  return (dependencySizes ?? []).filter(d => d.name !== name);
+}
+
+export function hasTreemap(data: BundlePhobiaData): boolean {
+  return getDependencySizes(data).length > 0;
+}
+
 // Lay out the dependencies as a treemap, sized by their share of the module size
 export function layoutTreemap(
   data: BundlePhobiaData,
@@ -23,14 +37,8 @@ export function layoutTreemap(
 ): TreemapLeaf[] {
   type Dependency = BundlePhobiaData['dependencySizes'][number];
 
-  // Note: dependencySizes is *sometimes* undefined.  E.g.
-  // https://bundlephobia.com/api/size?package=string_decoder%401.1.1
-  const { size, name } = data;
-
-  // The module itself is listed among its dependencies
-  const dependencySizes = (data.dependencySizes ?? []).filter(
-    d => d.name !== name,
-  );
+  const { size } = data;
+  const dependencySizes = getDependencySizes(data);
 
   // Without dependencies the placeholder root would be the only (and a full-size) leaf
   if (dependencySizes.length === 0) {
