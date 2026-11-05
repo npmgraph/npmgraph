@@ -3,12 +3,10 @@ import {
   resolveDocUrl,
   type ModuleReplacement,
 } from 'module-replacements';
-import { cn } from '../../../lib/dom.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
+import { Row, RowNote, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type Module from '../../../lib/Module.ts';
-import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './ModuleReplacementsNative.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 
@@ -71,7 +69,7 @@ function Replacement({ replacement }: { replacement: ModuleReplacement }) {
   }
 }
 
-function Row({
+function ReplacementRow({
   module,
   mapping,
   replacements,
@@ -83,14 +81,9 @@ function Row({
   const mappingURL = resolveDocUrl(mapping.url);
 
   return (
-    <div className={cn(styles.root, reportItemStyles.zebraRow)}>
-      <Selectable
-        value={module.key}
-        label={module.label}
-        className={styles.selectable}
-      />
-      {': '}
-      <div className={styles.body}>
+    <Row>
+      <Selectable value={module.key} label={module.label} />
+      <RowNote>
         {replacements.length === 1 ? (
           <Replacement replacement={replacements[0]!} />
         ) : (
@@ -102,13 +95,9 @@ function Row({
             ))}
           </ul>
         )}
-      </div>
-      {mappingURL && (
-        <ExternalLink href={mappingURL} className={styles.body}>
-          Learn more
-        </ExternalLink>
-      )}
-    </div>
+      </RowNote>
+      {mappingURL && <ExternalLink href={mappingURL}>Learn more</ExternalLink>}
+    </Row>
   );
 }
 
@@ -124,23 +113,31 @@ export default function ModuleReplacementsNative() {
   }
 
   return (
-    <ReportItem type="warn" title="Suggested replacements" count={rows.length}>
-      <p>
-        From the{' '}
-        <ExternalLink href="https://github.com/e18e/module-replacements">
-          module-replacements
-        </ExternalLink>{' '}
-        project, these modules can be removed or replaced with more modern,
-        streamlined alternatives
-      </p>
-      {rows.map(({ module, mapping, replacements }) => (
-        <Row
-          key={module.key}
-          module={module}
-          mapping={mapping}
-          replacements={replacements}
-        />
-      ))}
+    <ReportItem
+      type="warn"
+      title="Suggested replacements"
+      count={rows.length}
+      description={
+        <>
+          From the{' '}
+          <ExternalLink href="https://github.com/e18e/module-replacements">
+            module-replacements
+          </ExternalLink>{' '}
+          project, these modules can be removed or replaced with more modern,
+          streamlined alternatives
+        </>
+      }
+    >
+      <Rows>
+        {rows.map(({ module, mapping, replacements }) => (
+          <ReplacementRow
+            key={module.key}
+            module={module}
+            mapping={mapping}
+            replacements={replacements}
+          />
+        ))}
+      </Rows>
     </ReportItem>
   );
 }

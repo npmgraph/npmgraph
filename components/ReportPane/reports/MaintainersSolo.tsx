@@ -16,15 +16,17 @@ export default function MaintainersSolo() {
       type="warn"
       title="Modules with only one maintainer"
       count={soloModulesCount}
+      description={
+        <>
+          Modules with a single maintainer are at risk of "unplanned
+          abandonment". See{' '}
+          <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
+            Bus factor
+          </ExternalLink>
+          .
+        </>
+      }
     >
-      <p>
-        Modules with a single maintainer are at risk of "unplanned abandonment".
-        See{' '}
-        <ExternalLink href="https://en.wikipedia.org/wiki/Bus_factor">
-          Bus factor
-        </ExternalLink>
-        .
-      </p>
       <MaintainerRows
         modulesByMaintainer={soloModulesByMaintainer}
         emailByMaintainer={emailByMaintainer}

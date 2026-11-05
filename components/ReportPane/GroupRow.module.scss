@@ -1,0 +1,24 @@
+.group {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.heading {
+  display: flex;
+  flex: 0 0 17ch;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25em 0.4em;
+  min-width: 0;
+
+  [data-gravatar] {
+    border-radius: 0.3rem;
+  }
+}
+
+.modules {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}

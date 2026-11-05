@@ -3,7 +3,9 @@ import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
+import { Row, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
+import * as utilities from '../../ui/utilities.module.scss';
 import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as styles from './ModuleVulnerabilities.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
@@ -88,30 +90,27 @@ async function fetchAdvisories({ moduleInfos }: ModuleAnalysisState) {
   return advisories;
 }
 
-function Row({ advisory }: { advisory: Advisory }) {
+function AdvisoryRow({ advisory }: { advisory: Advisory }) {
   return (
-    <div>
-      <div
-        className={cn(
-          styles.header,
-          styles.severity,
-          styles[advisory.severity as keyof typeof styles] as string,
-        )}
-      >
-        <span className={styles.module}>
-          <Selectable
-            className={styles.name}
-            type={QueryType.Default}
-            value={`${advisory.packageName}@${advisory.vulnerable_versions}`}
-          />{' '}
-        </span>
+    <Row
+      className={cn(
+        styles.advisory,
+        styles[advisory.severity as keyof typeof styles] as string,
+      )}
+    >
+      <div className={styles.header}>
+        <Selectable
+          className={utilities.mono}
+          type={QueryType.Default}
+          value={`${advisory.packageName}@${advisory.vulnerable_versions}`}
+        />
         <span className={styles.severity}>{advisory.severity}</span>
       </div>
       <div>
         {advisory.title}{' '}
         <ExternalLink href={advisory.url}>details</ExternalLink>
       </div>
-    </div>
+    </Row>
   );
 }
 
@@ -127,17 +126,25 @@ function Vulnerabilities({
   }
 
   return (
-    <ReportItem type="warn" title="Vulnerabilities" count={advisories.length}>
-      <p>
-        Security advisories per <code>npm audit</code>. Data sourced from the
-        npm registry. See{' '}
-        <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">
-          npm audit documentation
-        </ExternalLink>
-      </p>
-      {advisories.map(advisory => (
-        <Row key={advisory.id} advisory={advisory} />
-      ))}
+    <ReportItem
+      type="warn"
+      title="Vulnerabilities"
+      count={advisories.length}
+      description={
+        <>
+          Security advisories per <code>npm audit</code>. Data sourced from the
+          npm registry. See{' '}
+          <ExternalLink href="https://docs.npmjs.com/cli/v9/commands/npm-audit">
+            npm audit documentation
+          </ExternalLink>
+        </>
+      }
+    >
+      <Rows>
+        {advisories.map(advisory => (
+          <AdvisoryRow key={advisory.id} advisory={advisory} />
+        ))}
+      </Rows>
     </ReportItem>
   );
 }

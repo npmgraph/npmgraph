@@ -1,11 +1,8 @@
 import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type Module from '../../lib/Module.ts';
-import { cn } from '../../lib/dom.ts';
-import { Selectable } from '../ui/Selectable.tsx';
+import { ModuleRows } from '../ui/Row.tsx';
 import { Section } from '../ui/Section.tsx';
-import * as reportItemStyles from '../ReportPane/ReportItem.module.scss';
-import * as styles from '../ReportPane/reports/ModuleList.module.scss';
 
 export function ModuleDependents({ module }: { module: Module }) {
   const [graph] = useGlobalState('graph');
@@ -23,11 +20,7 @@ export function ModuleDependents({ module }: { module: Module }) {
 
   return (
     <Section title={simplur`${dependents.length} Dependent[|s]`}>
-      {dependents.map(({ key }) => (
-        <div key={key} className={cn(styles.row, reportItemStyles.zebraRow)}>
-          <Selectable className={styles.name} value={key} />
-        </div>
-      ))}
+      <ModuleRows modules={dependents} />
     </Section>
   );
 }

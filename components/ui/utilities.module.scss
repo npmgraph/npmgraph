@@ -1,7 +1,3 @@
-.dBlock {
-  display: block !important;
-}
-
 .brightHover {
   transition: filter 0.2s;
   will-change: filter;
@@ -10,4 +6,9 @@
     filter: brightness(125%);
     transition-duration: 0.1s;
   }
+}
+
+.mono {
+  font-size: 0.9rem;
+  font-family: monospace;
 }

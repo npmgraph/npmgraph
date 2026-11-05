@@ -1,5 +1,4 @@
 .list {
-  margin: 0;
   padding: 0;
   list-style: none;
 }
@@ -8,7 +7,6 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.25rem 0;
 }
 
 .remove {
@@ -26,17 +24,13 @@
   font: inherit;
   font-size: 1.25rem;
   line-height: 1;
-}
 
-.remove:hover,
-.remove:focus-visible {
-  background: color-mix(in srgb, currentColor 10%, transparent);
+  &:hover,
+  &:focus-visible {
+    background: color-mix(in srgb, currentColor 10%, transparent);
+  }
 }
 
 .expandAll {
-  @extend .remove;
-  margin-top: 1em;
-  padding: 0.25rem 0.5rem;
-  width: auto;
-  font: inherit;
+  align-self: flex-start;
 }
