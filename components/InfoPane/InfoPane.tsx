@@ -1,10 +1,10 @@
 import type { HTMLProps } from 'react';
-import { cn } from '../../lib/dom.ts';
+import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import InputHelp from '../InputHelp.tsx';
-import * as utilities from '../ui/utilities.module.scss';
 import FilePicker from './FilePicker.tsx';
 import ErrorsBox from './ErrorsBox.tsx';
+import * as styles from './InfoPane.module.scss';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
@@ -23,26 +23,13 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       </ul>
 
       <hr />
-      <footer>
-        <p>
-          <a
-            href="https://github.com/npmgraph/npmgraph"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(utilities.brightHover, 'external-link')}
-          >
-            GitHub repo
-          </a>
-          {' | '}
-          <a
-            href="https://github.com/sponsors/broofa"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(utilities.brightHover, 'external-link')}
-          >
-            Sponsor
-          </a>
-        </p>
+      <footer className={styles.footer}>
+        <ExternalLink href="https://github.com/npmgraph/npmgraph">
+          GitHub repo
+        </ExternalLink>
+        <ExternalLink href="https://github.com/sponsors/broofa">
+          Sponsor
+        </ExternalLink>
       </footer>
     </Pane>
   );

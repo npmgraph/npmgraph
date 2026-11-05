@@ -58,7 +58,6 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
     <Pane {...props}>
       <Toggle
         checked={isIncludeDev}
-        style={{ marginTop: '1rem' }}
         onChange={() => {
           setDependencyType('devDependencies', !isIncludeDev);
         }}
@@ -68,7 +67,6 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
 
       <Toggle
         checked={isIncludePeer}
-        style={{ marginTop: '1rem' }}
         onChange={() => {
           setDependencyType('peerDependencies', !isIncludePeer);
         }}
@@ -78,7 +76,6 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
 
       <Toggle
         checked={sizing === ''}
-        style={{ marginTop: '1rem' }}
         onChange={() => {
           setSizing(sizing === null);
         }}
@@ -97,7 +94,6 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
       <CollapsibleSection
         title="Local preferences"
         open={shouldOpenPreferences}
-        className={styles.localPreferences}
       >
         <div className={styles.customLinksHeader}>
           <label htmlFor={customLinksId}>

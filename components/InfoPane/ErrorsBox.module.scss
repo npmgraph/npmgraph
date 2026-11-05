@@ -1,8 +1,9 @@
 .error {
-  display: flow-root;
-  margin: -1em -1em 1em;
+  display: grid;
+  gap: 0.5em;
+  margin: calc(-1 * var(--pane-padding)) calc(-1 * var(--pane-padding)) 0;
   background-color: var(--accent);
-  padding-inline: 1em;
+  padding: 0.75em var(--pane-padding);
   color: white;
 
   a {

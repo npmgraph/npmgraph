@@ -24,9 +24,8 @@ export default function ColorizeInput() {
   return (
     <>
       <label className={styles.colorizeUi}>
-        <span style={{ flexGrow: 0 }}>Colorize by:</span>
+        <span>Colorize by:</span>
         <select
-          style={{ flexGrow: 1 }}
           value={colorize ?? ''}
           onChange={event => {
             setColorize(event.target.value);
@@ -36,7 +35,7 @@ export default function ColorizeInput() {
         </select>
       </label>
 
-      {legend ? <div className={styles.colorizeKey}>{legend}</div> : null}
+      {legend}
     </>
   );
 }

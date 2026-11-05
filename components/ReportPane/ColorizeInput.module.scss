@@ -1,15 +1,12 @@
 .colorizeUi {
   display: flex;
   align-items: baseline;
+  gap: 0.5em;
 
   select {
-    margin-left: 0.5em;
-    border: solid 0.1rem var(--bg1);
-    border-radius: 0.3rem;
-    padding: 0.3rem;
+    flex-grow: 1;
+    border: solid 1px var(--bg1);
+    border-radius: var(--rad-sm);
+    padding: 0.3em;
   }
-}
-
-.colorizeKey {
-  margin-top: 1rem;
 }

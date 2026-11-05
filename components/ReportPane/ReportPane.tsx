@@ -33,7 +33,7 @@ export default function ReportPane({
 
   if (graph.moduleInfos.size === 0) {
     return (
-      <Pane className={cn(className, styles.centered)} {...props}>
+      <Pane centered className={className} {...props}>
         <p>No modules to report on.</p>
       </Pane>
     );
