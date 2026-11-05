@@ -1,7 +1,6 @@
 import { getModuleKey } from '../../../lib/module-util.ts';
 import { Row, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import * as utilities from '../../ui/utilities.module.scss';
 import * as styles from './ModulesRepeated.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
@@ -43,7 +42,6 @@ export default function ModulesRepeated() {
             {versions.map(version => (
               <Selectable
                 key={version}
-                className={utilities.mono}
                 label={version}
                 value={getModuleKey(name, version)}
               />

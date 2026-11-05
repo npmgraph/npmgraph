@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import type Module from '../../lib/Module.ts';
 import { ModuleRows } from '../ui/Row.tsx';
@@ -19,7 +18,7 @@ export function ModuleDependents({ module }: { module: Module }) {
   }
 
   return (
-    <Section title={simplur`${dependents.length} Dependent[|s]`}>
+    <Section title="Dependents" count={dependents.length}>
       <ModuleRows modules={dependents} />
     </Section>
   );

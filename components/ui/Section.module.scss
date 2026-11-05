@@ -6,7 +6,7 @@
     gap: 0.5rem;
     margin-inline: calc(-1 * var(--pane-padding));
     border-top: solid 1px var(--bg1);
-    padding: 0.75em var(--pane-padding);
+    padding: 1em var(--pane-padding);
 
     // Match native H3 style
     font-weight: bold;
@@ -27,13 +27,17 @@
   &[open] summary:after {
     content: '▼';
   }
+
+  // The heading's padding already separates it from what follows
+  &:is(details):not([open]) {
+    margin-block-end: calc(-1 * var(--pane-gap));
+  }
 }
 
 .body {
   display: flex;
   flex-direction: column;
   gap: 0.5em;
-  line-height: 1.5;
 }
 
 .count {

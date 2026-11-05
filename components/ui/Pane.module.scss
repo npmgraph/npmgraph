@@ -2,11 +2,12 @@
 
 .pane {
   --pane-padding: 1em;
+  --pane-gap: 1lh;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   flex-grow: 1;
   align-content: start;
-  gap: 0.75em;
+  gap: var(--pane-gap);
   box-sizing: border-box;
   box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
   background-color: var(--bg0);
@@ -14,6 +15,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   color: var(--text);
+  line-height: 1.3;
 
   // Zero specificity so link-styled components like Button can override it
   :where(&) a {
@@ -26,7 +28,6 @@
   }
 
   :where(&) p {
-    line-height: 1.5;
     text-wrap: pretty;
   }
 

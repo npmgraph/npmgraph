@@ -1,9 +1,7 @@
 import type { ReactNode } from 'react';
 import type Module from '../../lib/Module.ts';
-import { cn } from '../../lib/dom.ts';
 import { Row } from '../ui/Row.tsx';
 import { Selectable } from '../ui/Selectable.tsx';
-import * as utilities from '../ui/utilities.module.scss';
 import * as styles from './GroupRow.module.scss';
 
 // A heading (e.g. a license or a maintainer) next to the modules it applies to
@@ -17,7 +15,7 @@ export function GroupRow({
   return (
     <Row className={styles.group}>
       <div className={styles.heading}>{heading}</div>
-      <div className={cn(styles.modules, utilities.mono)}>
+      <div className={styles.modules}>
         {[...modules].map(module => (
           <Selectable
             key={module.key}

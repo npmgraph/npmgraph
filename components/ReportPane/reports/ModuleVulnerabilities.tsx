@@ -5,7 +5,6 @@ import fetchJson from '../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Row, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import * as utilities from '../../ui/utilities.module.scss';
 import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import * as styles from './ModuleVulnerabilities.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
@@ -100,7 +99,6 @@ function AdvisoryRow({ advisory }: { advisory: Advisory }) {
     >
       <div className={styles.header}>
         <Selectable
-          className={utilities.mono}
           type={QueryType.Default}
           value={`${advisory.packageName}@${advisory.vulnerable_versions}`}
         />
