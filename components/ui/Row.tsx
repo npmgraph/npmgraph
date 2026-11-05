@@ -1,15 +1,28 @@
-import type { HTMLProps } from 'react';
+import type { HTMLAttributes, HTMLProps } from 'react';
 import type Module from '../../lib/Module.ts';
 import { cn } from '../../lib/dom.ts';
 import { Selectable } from './Selectable.tsx';
 import * as styles from './Row.module.scss';
 
-export function Rows({ className, ...props }: HTMLProps<HTMLDivElement>) {
-  return <div className={cn(styles.rows, className)} {...props} />;
+export function Rows({
+  as: Tag = 'div',
+  className,
+  ...props
+}: HTMLAttributes<HTMLElement> & { as?: 'div' | 'dl' }) {
+  return <Tag className={cn(styles.rows, className)} {...props} />;
 }
 
-export function Row({ className, ...props }: HTMLProps<HTMLDivElement>) {
-  return <div className={cn(styles.row, className)} {...props} />;
+export function Row({
+  stacked,
+  className,
+  ...props
+}: HTMLProps<HTMLDivElement> & { stacked?: boolean }) {
+  return (
+    <div
+      className={cn(styles.row, { [styles.stacked]: stacked }, className)}
+      {...props}
+    />
+  );
 }
 
 export function RowNote({ className, ...props }: HTMLProps<HTMLDivElement>) {

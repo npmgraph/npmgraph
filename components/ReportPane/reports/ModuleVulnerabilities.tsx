@@ -1,6 +1,5 @@
 import { Suspense, use, useDeferredValue, useMemo } from 'react';
 import { QueryType } from '../../../lib/ModuleCache.ts';
-import { cn } from '../../../lib/dom.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Row, Rows } from '../../ui/Row.tsx';
@@ -92,10 +91,8 @@ async function fetchAdvisories({ moduleInfos }: ModuleAnalysisState) {
 function AdvisoryRow({ advisory }: { advisory: Advisory }) {
   return (
     <Row
-      className={cn(
-        styles.advisory,
-        styles[advisory.severity as keyof typeof styles] as string,
-      )}
+      stacked
+      className={styles[advisory.severity as keyof typeof styles] as string}
     >
       <div className={styles.header}>
         <Selectable

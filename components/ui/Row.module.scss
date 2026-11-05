@@ -5,7 +5,7 @@
   flex-direction: column;
 
   // Stripes extend past the text edge, so the text lines up with the headings
-  margin-inline: calc(-1 * var(--row-inset));
+  margin: 0 calc(-1 * var(--row-inset));
 }
 
 .row {
@@ -21,11 +21,30 @@
   }
 }
 
+// One child per line, e.g. a term and its definition
+.stacked {
+  flex-direction: column;
+  align-items: stretch;
+  padding-block: 0.25em;
+
+  dd,
+  dt {
+    margin: 0;
+  }
+
+  > .note {
+    padding-inline-start: 1em;
+  }
+}
+
 // Secondary text of a row, e.g. why a module is deprecated
 .note {
-  flex: 1 1 20ch;
   min-width: 0;
   font-style: italic;
+
+  .row:not(.stacked) > & {
+    flex: 1 1 20ch;
+  }
 
   code {
     color: var(--text-dim);
