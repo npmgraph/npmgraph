@@ -35,9 +35,7 @@ export function resolveModule(name: string, version?: string) {
     // Remove "git...#" repo URIs from version strings
     const gitless = version?.replace(/git.*#.*/v, '');
     if (version && gitless !== version) {
-      // Real-world examples: ember-backstop@1.5.3 depends on
-      // "backstopjs": "github:garris/BackstopJS#d4536fa…" and ember-cli-nprogress@0.3.1
-      // on "nprogress": "github:alexlafroscia/nprogress#allow-alternate-scheduler"
+      // TODO: Update why this check is needed once we have real-world examples
       console.warn('Found git-based version string');
       version = gitless;
     }
