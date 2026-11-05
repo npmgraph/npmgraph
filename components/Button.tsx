@@ -1,24 +1,27 @@
 import { cn } from '../lib/dom.ts';
 import * as styles from './Button.module.scss';
 
+type ButtonProps = { selected?: boolean } & (
+  | React.JSX.IntrinsicElements['button']
+  // `href` enables union discrimination
+  | (React.JSX.IntrinsicElements['a'] & { href: string })
+);
+
 export function Button({
   selected,
   children,
   ...props
-}: {
-  selected?: boolean;
-} & (
-  React.JSX.IntrinsicElements['a'] | React.JSX.IntrinsicElements['button']
-)): React.JSX.Element {
+}: ButtonProps): React.JSX.Element {
   props.className = cn(
     styles.button,
     selected && styles.selected,
     props.className,
   );
-  return 'href' in props && typeof props.href === 'string' ? (
+
+  return 'href' in props ? (
     <a {...props}>{children}</a>
   ) : (
-    <button type="button" {...(props as React.JSX.IntrinsicElements['button'])}>
+    <button type="button" {...props}>
       {children}
     </button>
   );
