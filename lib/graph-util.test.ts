@@ -119,7 +119,7 @@ const { hasDependencies } = await import('./graph-util.ts');
 
 describe('hasDependencies', () => {
   const createModule = (extra: Partial<PackumentVersion>) =>
-    new Module({ name: 'a', version: '1.0.0', ...extra } as PackumentVersion);
+    new Module({ name: 'a', version: '1.0.0', ...extra });
   const types = new Set(['dependencies', 'optionalDependencies'] as const);
 
   it('is false for a module without dependencies', () => {

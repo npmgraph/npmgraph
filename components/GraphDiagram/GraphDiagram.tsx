@@ -196,7 +196,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         excluded: ['node'],
       }}
     >
-      {/* eslint-disable-next-line react-doctor/no-static-element-interactions -- Already handled by onEsc() */}
+      {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- Already handled by onEsc() */}
       <div
         className={styles.root}
         onPointerDown={() => {

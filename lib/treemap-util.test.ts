@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { BundlePhobiaData } from './fetch-types.ts';
-import { layoutTreemap } from './treemap-util.ts';
+import { hasTreemap, layoutTreemap } from './treemap-util.ts';
 
 const data = {
   size: 1000,
@@ -120,5 +120,40 @@ describe('layoutTreemap', () => {
     const [large, medium, small] = layoutTreemap(data, 1200, 600);
     expect(large!.coverage).toBeGreaterThan(medium!.coverage);
     expect(medium!.coverage).toBeGreaterThan(small!.coverage);
+  });
+});
+
+describe('hasTreemap', () => {
+  const glob = { name: 'glob', size: 1000, dependencyCount: 5 };
+
+  it('is true when there are dependencies to show', () => {
+    expect(
+      hasTreemap({
+        ...glob,
+        dependencySizes: [
+          { name: 'glob', approximateSize: 10 },
+          { name: 'minimatch', approximateSize: 990 },
+        ],
+      } as BundlePhobiaData),
+    ).toBe(true);
+  });
+
+  it('is false when only the module itself is listed', () => {
+    expect(
+      hasTreemap({
+        ...glob,
+        dependencySizes: [{ name: 'glob', approximateSize: 1000 }],
+      } as BundlePhobiaData),
+    ).toBe(false);
+  });
+
+  it('is false when dependencySizes is empty or missing', () => {
+    expect(
+      hasTreemap({
+        ...glob,
+        dependencySizes: [],
+      } as unknown as BundlePhobiaData),
+    ).toBe(false);
+    expect(hasTreemap(glob as unknown as BundlePhobiaData)).toBe(false);
   });
 });

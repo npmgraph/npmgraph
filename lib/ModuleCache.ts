@@ -89,7 +89,7 @@ async function fetchModuleFromURL(urlString: string, signal?: AbortSignal) {
 
   pkg.name ||= url.href;
 
-  const module = new Module(pkg as PackumentVersion);
+  const module = new Module(pkg);
   module.source = describeUrlSource(url);
   return module;
 }
