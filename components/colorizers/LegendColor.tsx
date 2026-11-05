@@ -9,7 +9,7 @@ export function LegendColor({
   color = COLORIZE_COLORS[Number(color)] ?? color;
 
   return (
-    <div {...props} style={{ margin: '.3rem 0' }}>
+    <div {...props}>
       <span style={{ color, marginRight: '0.5rem' }}>{'\u{2B24}'}</span>
       {children}
     </div>

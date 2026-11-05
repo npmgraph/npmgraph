@@ -35,7 +35,7 @@ export default function ColorizeInput() {
         </select>
       </label>
 
-      {legend}
+      {legend && <div className={styles.legend}>{legend}</div>}
     </>
   );
 }
