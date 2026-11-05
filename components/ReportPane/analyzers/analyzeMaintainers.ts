@@ -5,7 +5,7 @@ import type { GraphState } from '../../../lib/graph-util.ts';
 
 export type MaintainerAnalysisState = {
   modulesByMaintainer: Map<string, Set<Module>>;
-  soloModulesByMaintainer: Map<string, Set<Module>>;
+  soloModulesByMaintainer: Map<string, Module[]>;
   soloModulesCount: number;
   emailByMaintainer: Map<string, string>;
 };
@@ -25,12 +25,10 @@ export function analyzeMaintainers({
   const emailByMaintainer = new Map<string, string>();
 
   let soloModulesCount = 0;
-  const modules = [...moduleInfos.values()].map(({ module }) => module);
+  const modules = new Set([...moduleInfos.values()].map(({ module }) => module));
 
   // Find modules that have a single maintainer, group by maintainer
-  //
-  // @ts-expect-error TODO: unignore once Map.groupBy lands in TS types
-  const soloModulesByMaintainer: typeof modulesByMaintainer = Map.groupBy(
+  const soloModulesByMaintainer = Map.groupBy(
     modules,
     (module: Module) => {
       const { maintainers } = module;
@@ -41,7 +39,7 @@ export function analyzeMaintainers({
       }
 
       soloModulesCount++;
-      return maintainers[0]?.name;
+      return maintainers[0]?.name ?? '';
     },
   );
 
