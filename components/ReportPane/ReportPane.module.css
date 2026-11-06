@@ -1,0 +1,35 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1em; /* Matches the sidebar's padding: 1em */
+
+  button {
+    flex: none;
+  }
+}
+
+.collapseInfo {
+  color: var(--text-dim);
+  font-size: 90%;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+/* Centered column */
+.document {
+  padding: 40px max(16px, (100% - 980px) / 2) 32px;
+  overflow: visible; /* Reset .Pane's overflow and let the page scroll take precedence */
+
+  /* Section headings stick to the page, not to the pane */
+  @media (aspect-ratio <= 2/3), (width <= 700px) {
+    overflow: clip;
+  }
+}

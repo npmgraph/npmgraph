@@ -3,8 +3,8 @@ import { cn } from '../../../lib/dom.ts';
 import { Gravatar } from '../../ui/Gravatar.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.ts';
-import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './MaintainersAll.module.scss';
+import * as reportItemStyles from '../ReportItem.module.css';
+import * as styles from './MaintainersAll.module.css';
 
 export function MaintainerRows({
   modulesByMaintainer,

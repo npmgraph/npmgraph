@@ -1,5 +1,5 @@
 import { Selectable } from '../../ui/Selectable.tsx';
-import * as reportItemStyles from '../ReportItem.module.scss';
+import * as reportItemStyles from '../ReportItem.module.css';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 

@@ -2,7 +2,7 @@ import type { HTMLProps } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { Pane } from '../ui/Pane.tsx';
 import InputHelp from '../InputHelp.tsx';
-import * as utilities from '../ui/utilities.module.scss';
+import * as utilities from '../ui/utilities.module.css';
 import FilePicker from './FilePicker.tsx';
 import ErrorsBox from './ErrorsBox.tsx';
 

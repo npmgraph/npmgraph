@@ -1,0 +1,31 @@
+.tags {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.tag {
+  border: 0;
+  border-radius: var(--rad-lg);
+  background: none;
+  background-color: var(--bg1);
+  padding: 0;
+  padding: 2px 8px;
+  overflow: hidden;
+  color: inherit;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.maintainer {
+  padding: 0;
+  height: 32px;
+
+  [data-gravatar] {
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+}

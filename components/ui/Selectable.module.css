@@ -1,0 +1,14 @@
+.root {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  text-align: left;
+  --selectable: #840;
+  color: var(--selectable);
+  text-wrap: nowrap;
+
+  @media (prefers-color-scheme: dark) {
+    --selectable: #fc9;
+  }
+}

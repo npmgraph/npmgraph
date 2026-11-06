@@ -1,0 +1,24 @@
+.pane {
+  flex-grow: 1;
+  box-sizing: border-box;
+  box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
+  background-color: var(--bg0);
+  padding: 1em;
+  overflow: hidden auto;
+  color: var(--text);
+
+  /* Zero specificity so link-styled components like Button can override it */
+  :where(&) a {
+    color: var(--accent);
+  }
+
+  hr {
+    margin-inline: -1em;
+  }
+
+  @media (aspect-ratio <= 2/3), (width <= 700px) {
+    box-shadow: none;
+    padding-bottom: 1em;
+    min-height: 200px;
+  }
+}

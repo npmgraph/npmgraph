@@ -2,7 +2,7 @@ import { appVersion, releaseStage } from '../lib/bugsnag.ts';
 import GitHubCorner from './GitHubCorner.tsx';
 import QueryInput from './InfoPane/QueryInput.tsx';
 import InputHelp from './InputHelp.tsx';
-import * as styles from './Intro.module.scss';
+import * as styles from './Intro.module.css';
 import Logo from './Logo.tsx';
 import StickerFarm from './StickerFarm.tsx';
 

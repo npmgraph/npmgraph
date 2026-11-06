@@ -1,7 +1,7 @@
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
-import * as styles from './ErrorsBox.module.scss';
+import * as styles from './ErrorsBox.module.css';
 
 function isGithubUrl(url: URL) {
   return /^github.com$|\.github.com$/.test(url.host);

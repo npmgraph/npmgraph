@@ -1,5 +1,5 @@
 import { cn } from '../lib/dom.ts';
-import * as styles from './Button.module.scss';
+import * as styles from './Button.module.css';
 
 type ButtonProps = { selected?: boolean } & (
   | React.JSX.IntrinsicElements['button']

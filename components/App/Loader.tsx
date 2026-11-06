@@ -1,6 +1,6 @@
 import type { HTMLProps } from 'react';
 import type LoadActivity from '../../lib/LoadActivity.ts';
-import * as styles from './Loader.module.scss';
+import * as styles from './Loader.module.css';
 
 export function Loader({
   activity,

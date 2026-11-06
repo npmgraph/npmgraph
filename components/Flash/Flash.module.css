@@ -1,0 +1,48 @@
+.root {
+  display: flex;
+  position: fixed;
+  left: 10px;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.flash {
+  position: relative;
+  animation:
+    flashIn 0.7s,
+    flashOut 0.7s 5s forwards;
+  box-shadow: 2px 2px 10px 5px var(--bg-root);
+  border-bottom-right-radius: 1em;
+  padding: 4px;
+  white-space: pre-wrap;
+}
+
+.error {
+  color: white;
+}
+
+@keyframes flashIn {
+  from {
+    transform: translateX(calc(-100% - 10px));
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes flashOut {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-100% - 10px));
+  }
+}
+
+:export {
+  flashOut: flashOut;
+}

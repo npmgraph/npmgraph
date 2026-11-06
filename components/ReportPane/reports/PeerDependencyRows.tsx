@@ -2,8 +2,8 @@ import { QueryType } from '../../../lib/ModuleCache.ts';
 import { cn } from '../../../lib/dom.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { PeerDependencyInfo } from '../analyzers/analyzePeerDependencies.ts';
-import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './PeerDependenciesAll.module.scss';
+import * as reportItemStyles from '../ReportItem.module.css';
+import * as styles from './PeerDependenciesAll.module.css';
 
 export function PeerDependencyRows({
   peerDependencyInfos,

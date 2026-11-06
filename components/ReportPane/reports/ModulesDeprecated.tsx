@@ -1,8 +1,8 @@
 import { cn } from '../../../lib/dom.ts';
 import type Module from '../../../lib/Module.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './ModulesDeprecated.module.scss';
+import * as reportItemStyles from '../ReportItem.module.css';
+import * as styles from './ModulesDeprecated.module.css';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 

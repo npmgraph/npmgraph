@@ -1,0 +1,53 @@
+.root {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  height: 100svh;
+  --loader-height: 2em;
+
+  &.loading {
+    --graph-controls-opacity: 0;
+    --graph-controls-visibility: hidden;
+  }
+}
+
+.stickyTop {
+  flex-shrink: 0;
+}
+
+.content {
+  display: flex;
+  position: relative;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+/* Doesn't create a box, so the graph is laid out as a child of .content */
+.graph {
+  display: contents;
+}
+
+@media (aspect-ratio <= 2/3), (width <= 700px) {
+  html,
+  body,
+  .root {
+    height: auto;
+    min-height: 100svh;
+  }
+  .root {
+    --inspector-size: auto;
+
+    /* The graph pans and zooms in place, so it fills the screen instead of the page scrolling */
+    &.fixedHeight {
+      height: 100svh;
+    }
+  }
+  .stickyTop {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .content {
+    flex-direction: column;
+  }
+}

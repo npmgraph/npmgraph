@@ -1,0 +1,36 @@
+.root svg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  fill: var(--accent);
+  border: 0;
+  color: #fff;
+}
+.root :global(.arm) {
+  transform-origin: 130px 106px;
+}
+.root:hover :global(.arm) {
+  animation: octocat-wave 560ms ease-in-out;
+}
+@keyframes octocat-wave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20%,
+  60% {
+    transform: rotate(-25deg);
+  }
+  40%,
+  80% {
+    transform: rotate(10deg);
+  }
+}
+@media (width <= 500px) {
+  .root:hover :global(.arm) {
+    animation: none;
+  }
+  .root :global(.arm) {
+    animation: octocat-wave 560ms ease-in-out;
+  }
+}

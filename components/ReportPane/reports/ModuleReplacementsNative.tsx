@@ -7,8 +7,8 @@ import { cn } from '../../../lib/dom.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type Module from '../../../lib/Module.ts';
-import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './ModuleReplacementsNative.module.scss';
+import * as reportItemStyles from '../ReportItem.module.css';
+import * as styles from './ModuleReplacementsNative.module.css';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 

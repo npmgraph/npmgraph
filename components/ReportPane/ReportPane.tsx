@@ -5,7 +5,7 @@ import { Button } from '../Button.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
-import * as styles from './ReportPane.module.scss';
+import * as styles from './ReportPane.module.css';
 import LicensesAll from './reports/LicensesAll.tsx';
 import LicensesMissing from './reports/LicensesMissing.tsx';
 import LicensesKeyword from './reports/LicensesKeyword.tsx';

@@ -16,7 +16,7 @@ import Intro from '../Intro.tsx';
 import PreviewWidget from '../PreviewWidget.tsx';
 import Tabs from '../ui/Tabs.tsx';
 import useExternalInput from '../../hooks/useExternalInput.ts';
-import * as styles from './App.module.scss';
+import * as styles from './App.module.css';
 import { Loader } from './Loader.tsx';
 
 export default function App() {

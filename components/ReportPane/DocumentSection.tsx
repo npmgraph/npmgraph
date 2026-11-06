@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PARAM_SECTION } from '../../lib/constants.ts';
-import * as styles from './DocumentSection.module.scss';
+import * as styles from './DocumentSection.module.css';
 
 function getSectionHref(name: string) {
   const parameters = new URLSearchParams(location.hash.replace(/^#/v, ''));

@@ -3,8 +3,8 @@ import type Module from '../../../lib/Module.ts';
 import { cn } from '../../../lib/dom.ts';
 import { LICENSES } from '../../../lib/licenses.ts';
 import { Selectable } from '../../ui/Selectable.tsx';
-import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './LicensesAll.module.scss';
+import * as reportItemStyles from '../ReportItem.module.css';
+import * as styles from './LicensesAll.module.css';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 

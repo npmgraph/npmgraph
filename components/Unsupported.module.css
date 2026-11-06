@@ -1,0 +1,28 @@
+.root {
+  position: relative;
+  margin: 2rem auto;
+  border: 1px solid black;
+  border-radius: 10px;
+
+  padding: 1rem;
+  max-width: 40rem;
+  h1 {
+    text-align: center;
+  }
+
+  code {
+    border-radius: 3px;
+    padding: 0.1rem 0.3rem;
+    color: var(--stroke-orange);
+  }
+}
+
+.footer {
+  text-align: right;
+}
+
+.sadKilroy {
+  position: absolute;
+  bottom: -10px;
+  left: 100px;
+}

@@ -1,0 +1,21 @@
+.root {
+  path:nth-child(4) {
+    fill: color-mix(in srgb, var(--text), var(--accent) 48%);
+  }
+
+  path:nth-child(5) {
+    fill: color-mix(in srgb, var(--text), var(--accent) 60%);
+  }
+
+  path:nth-child(6) {
+    fill: color-mix(in srgb, var(--text), var(--accent) 72%);
+  }
+
+  path:nth-child(7) {
+    fill: color-mix(in srgb, var(--text), var(--accent) 84%);
+  }
+
+  path:nth-child(8) {
+    fill: color-mix(in srgb, var(--text), var(--accent) 96%);
+  }
+}

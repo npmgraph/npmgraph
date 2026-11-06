@@ -8,7 +8,7 @@ import {
 } from '../../lib/downloads-util.ts';
 import fetchJson from '../../lib/fetchJson.ts';
 import type Module from '../../lib/Module.ts';
-import * as styles from './ModuleDownloads.module.scss';
+import * as styles from './ModuleDownloads.module.css';
 
 const METER_BAR_HEIGHTS = [4, 7, 10, 13, 16];
 

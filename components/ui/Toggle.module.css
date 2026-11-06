@@ -1,0 +1,30 @@
+.toggle {
+  display: block;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+
+  > span {
+    display: inline-block;
+    margin-right: 0.5em;
+    border-radius: 1em;
+    background-color: var(--bg2);
+    width: 4em;
+    > span {
+      display: block;
+      transition: 0.15s;
+      margin-left: 0;
+      border-radius: 1em;
+      background-color: var(--bg1);
+      width: 3em;
+      text-align: center;
+    }
+  }
+  &.checked > span > span {
+    margin-left: 1em;
+    background-color: var(--bg-green);
+  }
+}

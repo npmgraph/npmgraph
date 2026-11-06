@@ -1,0 +1,30 @@
+.inspector {
+  display: flex;
+  flex-shrink: 1;
+  flex-direction: column;
+  width: var(--inspector-size);
+  overflow: auto;
+  color: var(--text);
+
+  ul {
+    margin-top: 0;
+  }
+
+  @media (aspect-ratio <= 2/3), (width <= 700px) {
+    flex-grow: 1;
+  }
+
+  @media print {
+    display: none;
+  }
+
+  &.only {
+    flex-grow: 1;
+    width: auto;
+
+    /* Let section headings stick to the page */
+    @media (aspect-ratio <= 2/3), (width <= 700px) {
+      overflow: clip;
+    }
+  }
+}

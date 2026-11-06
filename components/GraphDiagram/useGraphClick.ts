@@ -6,7 +6,7 @@ import { toggleItem } from '../../lib/array-util.ts';
 import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
-import * as styles from './GraphDiagram.module.scss';
+import * as styles from './GraphDiagram.module.css';
 
 // Select a module (or deselect with an empty click), or collapse it with Shift
 export default function useGraphClick() {

@@ -9,7 +9,7 @@ import useMeasure from '../../hooks/useMeasure.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { ModuleDownloads } from './ModuleDownloads.tsx';
-import * as styles from './ReleaseTimeline.module.scss';
+import * as styles from './ReleaseTimeline.module.css';
 
 function timestring(t: number) {
   return new Date(t).toISOString().replace(/T.*/v, '');

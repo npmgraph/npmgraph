@@ -5,7 +5,7 @@ import { cn } from '../lib/dom.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
-import * as styles from './Inspector.module.scss';
+import * as styles from './Inspector.module.css';
 import ViewPane from './ViewPane/ViewPane.tsx';
 
 // Keep these panes in secondary bundles but start loading them eagerly

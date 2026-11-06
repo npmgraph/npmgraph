@@ -3,8 +3,8 @@ import type { HTMLProps } from 'react';
 import { cn } from '../../lib/dom.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { Gravatar } from './Gravatar.tsx';
-import * as styles from './Tag.module.scss';
-import * as utilities from './utilities.module.scss';
+import * as styles from './Tag.module.css';
+import * as utilities from './utilities.module.css';
 
 export function Tags({
   children,

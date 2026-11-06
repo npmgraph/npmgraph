@@ -5,7 +5,7 @@ import {
   groupOutdatedByLevel,
   type OutdatedModule,
 } from '../analyzers/analyzeModules.ts';
-import * as styles from './ModulesOutdated.module.scss';
+import * as styles from './ModulesOutdated.module.css';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 

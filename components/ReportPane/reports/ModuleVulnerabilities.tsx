@@ -5,7 +5,7 @@ import fetchJson from '../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
-import * as styles from './ModuleVulnerabilities.module.scss';
+import * as styles from './ModuleVulnerabilities.module.css';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 

@@ -3,7 +3,7 @@ import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
 
 import { percent } from '../../lib/dom.ts';
-import * as styles from './ModuleTreeMap.module.scss';
+import * as styles from './ModuleTreeMap.module.css';
 import { type TreemapLeaf, layoutTreemap } from '../../lib/treemap-util.js';
 
 export function ModuleTreeMap({
