@@ -1,4 +1,3 @@
-// eslint-disable-next-line import-x/order -- https://github.com/un-ts/eslint-plugin-import-x/pull/504
 import '../index.scss';
 
 import type { ReactElement } from 'react';
