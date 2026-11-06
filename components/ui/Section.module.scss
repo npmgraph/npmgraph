@@ -16,13 +16,9 @@
     line-height: normal;
   }
 
-  > summary:focus-visible {
-    background: color-mix(in srgb, currentColor 10%, transparent);
-  }
-
-  // Touch screens keep :hover after a tap
-  @media (hover: hover) {
-    > summary:hover {
+  &:not([open]) > summary {
+    &:hover,
+    &:focus-visible {
       background: color-mix(in srgb, currentColor 10%, transparent);
     }
   }
