@@ -1,11 +1,9 @@
 import { use } from 'react';
 import useReportOnly from '../../../hooks/useReportOnly.ts';
-import { cn } from '../../../lib/dom.ts';
 import type Module from '../../../lib/Module.ts';
-import { Selectable } from '../../ui/Selectable.tsx';
 import { ModuleFilterContext } from '../ModuleFilterContext.ts';
-import * as reportItemStyles from '../ReportItem.module.scss';
-import * as styles from './ModuleList.module.scss';
+import { ModuleRows } from '../../ui/Row.tsx';
+import * as styles from './ModuleList.module.css';
 
 export function ModuleList({
   modules,
@@ -28,20 +26,7 @@ export function ModuleList({
         <div className={styles.empty}>No modules match</div>
       )}
 
-      {filteredModules.map(module => (
-        <div
-          key={module.key}
-          className={cn(styles.row, reportItemStyles.zebraRow)}
-        >
-          <Selectable
-            className={cn(styles.name, {
-              [styles.entry]: entryModules.has(module),
-            })}
-            value={module.key}
-            label={module.label}
-          />
-        </div>
-      ))}
+      <ModuleRows modules={filteredModules} bold={entryModules} />
     </>
   );
 }

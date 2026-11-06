@@ -1,9 +1,9 @@
 import type { Packument } from '@npm/types';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { DependencyKey } from './graph-types.ts';
 import { serializeGraph } from './graph-serialize.ts';
 import { getGraphForQuery } from './graph-util.ts';
 import { clearModuleCache } from './ModuleCache.ts';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const { packuments } = vi.hoisted(() => ({
   packuments: new Map<string, Packument>(),

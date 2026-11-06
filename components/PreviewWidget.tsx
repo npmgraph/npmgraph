@@ -4,7 +4,7 @@ import GithubIcon from '../images/icons/github.svg?react';
 import OffsiteLinkIcon from '../images/icons/offsite-link.svg?react';
 import XIcon from '../images/icons/x.svg?react';
 import * as utilities from './ui/utilities.module.scss';
-import * as styles from './PreviewWidget.module.scss';
+import * as styles from './PreviewWidget.module.css';
 import { Button, ButtonGroup } from './Button.tsx';
 
 function getNpmgraphJsOrgUrl(locationUrl: URL) {

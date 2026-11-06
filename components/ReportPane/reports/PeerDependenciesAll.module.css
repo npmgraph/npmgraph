@@ -1,0 +1,15 @@
+.source {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+
+.headerRow {
+  display: flex;
+  gap: 0.75em;
+  font-weight: bold;
+}
+
+.wants {
+  flex-grow: 1;
+}

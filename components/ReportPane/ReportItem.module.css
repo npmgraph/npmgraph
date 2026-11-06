@@ -1,0 +1,16 @@
+.symbol {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1.3rem;
+  line-height: 1;
+
+  &.warn {
+    color: var(--stroke-yellow);
+  }
+}
+
+/* The description of the report, before the rows */
+.description {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+}

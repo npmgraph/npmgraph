@@ -1,0 +1,12 @@
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+
+.level {
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}

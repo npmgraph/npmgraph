@@ -11,7 +11,7 @@ import { QueryLink } from '../ui/QueryLink.tsx';
 import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
 import { ModuleDependents } from './ModuleDependents.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
-import * as styles from './ModulePane.module.scss';
+import * as styles from './ModulePane.module.css';
 import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
@@ -70,10 +70,10 @@ function ModuleDetailsPane({
 
   return (
     <Pane {...props}>
-      <div style={{ marginBlockEnd: '0.5em' }}>
-        <h2 style={{ display: 'inline' }}>{module.source ?? module.key}</h2>
+      <div className={styles.title}>
+        <h2>{module.source ?? module.key}</h2>
         {!colorize || colorize === OutdatedColorizer.name ? (
-          <ModuleVersionInfo module={module} style={{ flexGrow: 1 }} />
+          <ModuleVersionInfo module={module} />
         ) : null}
       </div>
 
@@ -84,7 +84,7 @@ function ModuleDetailsPane({
         </div>
       ) : null}
 
-      <p style={{ marginTop: 0 }}>{pkg?.description}</p>
+      <p>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
         <ModuleActions module={module} />
@@ -110,7 +110,7 @@ export default function ModulePane(
 
   if (selectedModules.size === 0) {
     return (
-      <Pane className={styles.centered}>
+      <Pane centered>
         <p>No modules selected.</p>
       </Pane>
     );
@@ -118,7 +118,7 @@ export default function ModulePane(
 
   if (selectedModules.size > 1) {
     return (
-      <Pane className={styles.centered}>
+      <Pane centered>
         Multiple modules selected. Click a single module in the graph to see
         details.
       </Pane>

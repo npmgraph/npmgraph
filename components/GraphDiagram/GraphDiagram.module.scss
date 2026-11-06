@@ -17,8 +17,8 @@
     cursor: grabbing;
   }
 
-  // Focusable for the keyboard controls, but the library focuses it when clicked
-  // and the browser then treats it as :focus-visible, so :focus is all we can use
+  /* Focusable for the keyboard controls, but the library focuses it when clicked */
+  /* and the browser then treats it as :focus-visible, so :focus is all we can use */
   &:focus {
     outline: none;
   }
@@ -44,10 +44,7 @@
   &.graphvizFailed {
     color: var(--stroke-red);
   }
-}
-
-@media (prefers-color-scheme: dark) {
-  .graph {
+  @media (prefers-color-scheme: dark) {
     --warning0: #101010;
     --warning1: #660;
   }
@@ -57,7 +54,7 @@
   display: flex;
   position: absolute;
   gap: 1em;
-  // Hidden while the loader is shown, since it covers the same area
+  /* Hidden while the loader is shown, since it covers the same area */
   visibility: var(--graph-controls-visibility, visible);
   opacity: var(--graph-controls-opacity, 1);
   z-index: 1;

@@ -1,7 +1,7 @@
 import { type ImgHTMLAttributes, Suspense, use } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
 import { SectionOpenedContext } from './SectionOpenedContext.ts';
-import * as styles from './Gravatar.module.scss';
+import * as styles from './Gravatar.module.css';
 
 const sha256 = async (text: string) => {
   const buf = await crypto.subtle.digest(

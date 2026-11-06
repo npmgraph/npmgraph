@@ -6,10 +6,10 @@ import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
-import { parseCustomModuleLinks } from './module-links.ts';
-import * as styles from './ModulePane.module.scss';
 import { Button, ButtonCheckbox, ButtonGroup } from '../Button.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
+import { parseCustomModuleLinks } from './module-links.ts';
+import * as styles from './ModulePane.module.css';
 
 function ExternalLink({
   href,

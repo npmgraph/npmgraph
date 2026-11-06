@@ -3,7 +3,11 @@
 .root {
   @include button-reset;
   --selectable: #840;
+  // Long names are truncated instead of overflowing the pane
+  min-width: 0;
+  overflow: hidden;
   color: var(--selectable);
+  text-overflow: ellipsis;
   text-wrap: nowrap;
 
   @media (prefers-color-scheme: dark) {

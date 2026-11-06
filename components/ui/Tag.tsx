@@ -1,5 +1,5 @@
-import { type QueryTypeValue, QueryType } from '../../lib/ModuleCache.ts';
 import type { HTMLProps } from 'react';
+import { type QueryTypeValue, QueryType } from '../../lib/ModuleCache.ts';
 import { cn } from '../../lib/dom.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { Gravatar } from './Gravatar.tsx';

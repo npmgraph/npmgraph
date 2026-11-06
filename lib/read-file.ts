@@ -1,4 +1,6 @@
 import type { PackageJSON, PackumentVersion } from '@npm/types';
+import { getActivity } from '../hooks/useActivity.ts';
+import { patchLocation } from '../hooks/useLocation.ts';
 import { flash } from './flash.ts';
 import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.ts';
 import {
@@ -7,8 +9,6 @@ import {
   UNNAMED_PACKAGE_PREFIX,
 } from './constants.ts';
 import { hashSet, searchSet } from './url-util.ts';
-import { getActivity } from '../hooks/useActivity.ts';
-import { patchLocation } from '../hooks/useLocation.ts';
 
 export function isValidJson(text: string): boolean {
   try {

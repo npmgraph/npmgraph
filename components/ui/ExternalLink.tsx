@@ -1,9 +1,8 @@
-import OffsiteLinkIcon from '../../images/icons/offsite-link.svg?react';
 import type { ComponentType, HTMLProps, SVGProps } from 'react';
+import OffsiteLinkIcon from '../../images/icons/offsite-link.svg?react';
 import { cn } from '../../lib/dom.ts';
 import * as utilities from './utilities.module.scss';
-
-import * as styles from './ExternalLink.module.scss';
+import * as styles from './ExternalLink.module.css';
 
 export function ExternalLink({
   href,
@@ -27,7 +26,6 @@ export function ExternalLink({
       <IconComponent
         // svgo.config.json removes the viewBox of the files, which is needed to resize them
         viewBox="0 0 16 16"
-        style={{ marginLeft: '0.3rem', verticalAlign: '-0.1em' }}
         width={12}
         height={12}
       />

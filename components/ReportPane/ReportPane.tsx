@@ -41,7 +41,7 @@ export default function ReportPane({
 
   if (graph.moduleInfos.size === 0) {
     return (
-      <Pane className={cn(className, styles.centered)} {...props}>
+      <Pane centered className={className} {...props}>
         <p>No modules to report on.</p>
       </Pane>
     );
@@ -92,18 +92,17 @@ export default function ReportPane({
           <PeerDependenciesAll />
           <MaintainersAll />
           <LicensesAll />
-          <LicensesKeyword keyword="obsolete" />
 
           <ModuleVulnerabilities />
-          <ModulesRepeated />
           <ModulesDeprecated />
           <ModulesOutdated />
-
+          <ModulesRepeated />
+          <PeerDependenciesMissing />
           <MaintainersSolo />
           <LicensesMissing />
+          <LicensesKeyword keyword="obsolete" />
           <LicensesKeyword keyword="discouraged" />
           <ModuleReplacementsNative />
-          <PeerDependenciesMissing />
         </AnalysisProvider>
       </ModuleFilterContext>
     </Pane>

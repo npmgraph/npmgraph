@@ -1,0 +1,13 @@
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.keyword {
+  border-radius: 1rem;
+  background-color: rgb(127 127 127 / 30%);
+  padding: 0.1rem 0.5rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}

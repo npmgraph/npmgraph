@@ -1,0 +1,4 @@
+.empty {
+  color: var(--text-dim);
+  font-style: italic;
+}

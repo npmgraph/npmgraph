@@ -1,13 +1,13 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { $optional } from 'select-dom';
 import * as appStyles from '../App/App.module.scss';
 import * as graphDiagramStyles from '../GraphDiagram/GraphDiagram.module.scss';
-import * as flashStyles from './Flash.module.scss';
 import {
   notifyFlashElementReady,
   subscribeFlash,
   type FlashEntry,
 } from '../../lib/flash.ts';
-import { $optional } from 'select-dom';
+import * as flashStyles from './Flash.module.css';
 
 const FLASH_GAP = 10;
 
