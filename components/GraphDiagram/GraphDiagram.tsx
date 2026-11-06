@@ -1,5 +1,4 @@
 import './graphviz.css';
-
 import { select } from 'd3-selection';
 import {
   Suspense,
