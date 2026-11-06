@@ -1,27 +1,60 @@
 @use '../../lib/root.module.scss' as *;
 
 .pane {
+  --pane-spacing-inline: 1em;
+  --pane-spacing-block: 1lh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   flex-grow: 1;
+  align-content: start;
+  gap: var(--pane-spacing-block);
   box-sizing: border-box;
   box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
   background-color: var(--bg0);
-  padding: 1em;
+  padding: var(--pane-spacing-block) var(--pane-spacing-inline);
   overflow-x: hidden;
   overflow-y: auto;
   color: var(--text);
+  line-height: 1.3;
 
   // Zero specificity so link-styled components like Button can override it
   :where(&) a {
     color: var(--accent);
   }
 
-  hr {
-    margin-inline: -1em;
+  // Spacing comes from `gap`, not margins
+  :where(&) :is(p, ul, ol, h2, h3, h4) {
+    margin: 0;
+  }
+
+  :where(&) p {
+    text-wrap: pretty;
+  }
+
+  :where(&) :is(ul, ol) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    padding-inline-start: 1.25em;
+  }
+
+  // Same full-bleed divider as the sections
+  :where(&) hr {
+    margin: 0 calc(-1 * var(--pane-spacing-inline));
+    border: none;
+    border-top: solid 1px var(--bg1);
   }
 
   @include tight-screen {
     box-shadow: none;
-    padding-bottom: 1em;
     min-height: 200px;
   }
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-wrap: pretty;
 }

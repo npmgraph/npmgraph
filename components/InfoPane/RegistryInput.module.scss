@@ -1,11 +1,7 @@
 .root {
+  display: flex;
   align-items: center;
-
-  > span {
-    display: inline-block;
-    flex-grow: 0;
-    margin-right: 0.5rem;
-  }
+  gap: 0.5em;
 
   > input {
     flex-grow: 1;
@@ -14,14 +10,10 @@
     border: solid 1px var(--text-dim);
     border-radius: 4px;
     padding: 0.3em 0.7em;
-    field-sizing: content;
     font: inherit;
   }
 }
 
 .status {
-  display: inline-block;
-  flex-grow: 0;
-  margin-left: 0.5rem;
   color: var(--text-dim);
 }

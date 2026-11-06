@@ -3,7 +3,10 @@
 .root {
   // Where headings stick: the top of the pane, or below the sticky header
   --sticky-top: 0;
-  margin-bottom: 24px;
+  // Not a grid, so the heading can stick for the whole section
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   scroll-margin-top: var(--sticky-top);
 
   @include tight-screen {
@@ -14,7 +17,10 @@
     position: sticky;
     top: var(--sticky-top);
     z-index: 1;
+    clip-path: inset(0 -100vmax);
     margin: 0;
+    // Extend the background to the page edges, so rows don't show beside the heading
+    box-shadow: 0 0 0 100vmax var(--bg0);
     border-bottom: 1px solid var(--bg1);
     background-color: var(--bg0);
     padding-block: 16px 0.3em;
@@ -33,10 +39,6 @@
       font-weight: normal;
       font-size: 0.6em;
     }
-  }
-
-  h2 + * {
-    margin-top: 12px;
   }
 
   // Permalink sits left of the heading, visible on hover
