@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import useGraph from '../../hooks/useGraph.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
+import { QueryType } from '../../lib/ModuleCache.ts';
 import { Button } from '../Button.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
@@ -28,7 +30,10 @@ export default function ReportPane({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const graph = useGraph();
   const [isReportOnly, setReportOnly] = useReportOnly();
-  const [filter, setFilter] = useState('');
+  const [selectType, selectValue, setGraphSelection] = useGraphSelection();
+  const [filter, setFilter] = useState(
+    selectType === QueryType.Search ? selectValue : '',
+  );
 
   if (!graph.moduleInfos) {
     return <div>Loading</div>;
@@ -50,20 +55,6 @@ export default function ReportPane({
       {!isReportOnly && (
         <>
           <div className={styles.toolbar}>
-            <input
-              type="search"
-              className={styles.filter}
-              placeholder="Filter modules…"
-              aria-label="Filter modules"
-              value={filter}
-              autoCapitalize="off"
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck="false"
-              onChange={event => {
-                setFilter(event.target.value);
-              }}
-            />
             <Button
               onClick={() => {
                 setReportOnly(true);
@@ -73,6 +64,26 @@ export default function ReportPane({
             </Button>
           </div>
           <CollapsedModules />
+          <input
+            type="search"
+            className={styles.filter}
+            placeholder="Filter modules…"
+            aria-label="Filter modules"
+            value={filter}
+            autoCapitalize="off"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck="false"
+            onChange={event => {
+              const { value } = event.target;
+              setFilter(value);
+              // Highlight the matches in the graph too
+              setGraphSelection(
+                value.trim() ? QueryType.Search : QueryType.Default,
+                value.trim(),
+              );
+            }}
+          />
         </>
       )}
       <ModuleFilterContext value={filter}>

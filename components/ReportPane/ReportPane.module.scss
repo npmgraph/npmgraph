@@ -2,7 +2,7 @@
 
 .toolbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   gap: 1em;
   margin-bottom: 1em; // Matches the sidebar's padding: 1em
@@ -15,7 +15,7 @@
 .filter {
   @include search-input;
 
-  flex: 1;
+  margin-bottom: 1em;
   padding-block: 0.2em;
 }
 

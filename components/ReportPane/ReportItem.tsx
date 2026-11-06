@@ -12,11 +12,13 @@ export function ReportItem({
   title,
   count,
   type = 'info',
+  open = false,
   children,
 }: {
   title: string;
   count?: number | string;
   type?: 'info' | 'warn' | 'error';
+  open?: boolean;
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
@@ -30,7 +32,7 @@ export function ReportItem({
       {body}
     </DocumentSection>
   ) : (
-    <CollapsibleSection open={false} icon={icon} title={title} count={count}>
+    <CollapsibleSection open={open} icon={icon} title={title} count={count}>
       {body}
     </CollapsibleSection>
   );
