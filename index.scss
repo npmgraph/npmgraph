@@ -2,17 +2,12 @@
   accent-color: var(--accent);
   color-scheme: light dark;
 
-  --grey0: light-dark(oklch(0% 0 0), oklch(100% 0 0));
-  --grey10: light-dark(oklch(10% 0 0), oklch(90% 0 0));
-  --grey20: light-dark(oklch(20% 0 0), oklch(80% 0 0));
-  --grey30: light-dark(oklch(30% 0 0), oklch(70% 0 0));
-  --grey40: light-dark(oklch(40% 0 0), oklch(60% 0 0));
-  --grey50: oklch(50% 0 0);
-  --grey60: light-dark(oklch(60% 0 0), oklch(40% 0 0));
-  --grey70: light-dark(oklch(70% 0 0), oklch(30% 0 0));
-  --grey80: light-dark(oklch(80% 0 0), oklch(20% 0 0));
-  --grey90: light-dark(oklch(90% 0 0), oklch(10% 0 0));
-  --grey100: light-dark(oklch(100% 0 0), oklch(0% 0 0));
+  @for $i from 0 through 10 {
+    --grey#{$i * 10}: light-dark(
+      oklch(#{$i * 10%} 0 0),
+      oklch(#{(10 - $i) * 10%} 0 0)
+    );
+  }
 
   --root-color: light-dark(
     white,
