@@ -67,7 +67,7 @@ export default defineConfig([
       'import-x/order': [
         'error',
         {
-          warnOnUnassignedImports: 'top',
+          warnOnUnassignedImports: true,
           'newlines-between': 'never',
         },
       ],

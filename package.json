@@ -79,7 +79,6 @@
     "eslint-config-xo": "^7.0.0",
     "eslint-config-xo-react": "^0.32.0",
     "eslint-formatter-unix": "^9.0.1",
-    "eslint-plugin-import-x": "^4.18.0",
     "eslint-plugin-react-doctor": "^0.9.22",
     "eslint-plugin-react-you-might-not-need-an-effect": "^1.1.0",
     "lefthook": "^2.2.2",
