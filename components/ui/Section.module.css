@@ -1,19 +1,12 @@
 .root {
-  line-height: 1.7;
-  &[open],
-  &:is(div) {
-    padding-bottom: 1em;
-  }
-
   > summary,
   > h3 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin: -1em;
-    margin-block: 0;
+    margin-inline: calc(-1 * var(--pane-spacing-inline));
     border-top: solid 1px var(--bg1);
-    padding: 1em;
+    padding: 1em var(--pane-spacing-inline);
 
     /* Match native H3 style */
     font-weight: bold;
@@ -23,8 +16,15 @@
     line-height: normal;
   }
 
-  /* Move triangle to the right */
-  & summary::-webkit-details-marker {
+  &:not([open]) > summary {
+    &:hover,
+    &:focus-visible {
+      background: color-mix(in srgb, currentColor 10%, transparent);
+    }
+  }
+
+  // Move triangle to the right
+  summary::-webkit-details-marker {
     display: none;
   }
   & summary::after {
@@ -34,6 +34,17 @@
   &[open] summary::after {
     content: '▼';
   }
+
+  // The heading's padding already separates it from what follows
+  &:is(details):not([open]) {
+    margin-block-end: calc(-1 * var(--pane-spacing-block));
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
 
 .count {

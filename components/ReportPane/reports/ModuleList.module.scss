@@ -1,31 +1,11 @@
 @use '../../../lib/root.module.scss' as *;
 
-.row {
-  display: flex;
-  line-height: 1.5rem;
-}
-
-.name {
-  flex-grow: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.entry {
-  font-weight: bold;
-}
-
-.filter {
-  padding-block: 0.3rem 0.5rem;
-}
-
 .input {
   @include search-input;
   padding-block: 0.2em;
 }
 
 .empty {
-  color: rgb(127 127 127 / 85%);
+  color: var(--text-dim);
   font-style: italic;
-  line-height: 1.5rem;
 }

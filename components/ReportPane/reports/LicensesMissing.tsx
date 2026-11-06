@@ -1,5 +1,4 @@
-import { Selectable } from '../../ui/Selectable.tsx';
-import * as reportItemStyles from '../ReportItem.module.css';
+import { ModuleRows } from '../../ui/Row.tsx';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 
@@ -15,19 +14,19 @@ export default function LicensesMissing() {
       type="warn"
       title="Unlicensed modules"
       count={unlicensedModules.length}
+      description={
+        <>
+          Modules without a declared license, or that are explicitely
+          "UNLICENSED", are not opensource and may infringe on the owner's
+          copyright. Consider contacting the owner to clarify licensing terms.
+        </>
+      }
     >
-      <p>
-        Modules without a declared license, or that are explicitely
-        "UNLICENSED", are not opensource and may infringe on the owner's
-        copyright. Consider contacting the owner to clarify licensing terms.
-      </p>
-      {unlicensedModules
-        .toSorted((a, b) => a.key.localeCompare(b.key))
-        .map(module => (
-          <div key={module.key} className={reportItemStyles.zebraRow}>
-            <Selectable value={module.key} label={module.label} />
-          </div>
-        ))}
+      <ModuleRows
+        modules={unlicensedModules.toSorted((a, b) =>
+          a.key.localeCompare(b.key),
+        )}
+      />
     </ReportItem>
   );
 }

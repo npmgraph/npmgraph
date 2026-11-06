@@ -12,18 +12,25 @@ export function ReportItem({
   title,
   count,
   type = 'info',
+  description,
   children,
 }: {
   title: string;
   count?: number | string;
   type?: 'info' | 'warn' | 'error';
+  description?: ReactNode;
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
   const icon = SYMBOLS[type] && (
     <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
   );
-  const body = <div className={styles.details}>{children}</div>;
+  const body = (
+    <>
+      {description ? <p className={styles.description}>{description}</p> : null}
+      {children}
+    </>
+  );
 
   return isReportOnly ? (
     <DocumentSection title={title} count={count} icon={icon}>

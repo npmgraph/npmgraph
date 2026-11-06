@@ -8,10 +8,6 @@
   overflow: auto;
   color: var(--text);
 
-  ul {
-    margin-top: 0;
-  }
-
   @include tight-screen {
     flex-grow: 1;
   }

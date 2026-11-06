@@ -36,6 +36,7 @@ function getOutdatedMessage({
 
 export function ModuleVersionInfo({
   module,
+  className,
   ...props
 }: { module: Module } & React.HTMLAttributes<HTMLDivElement>) {
   if (!module.packument) {
@@ -72,8 +73,8 @@ export function ModuleVersionInfo({
 
   return (
     <p
-      className={cn(styles.moduleVersion, updateClassName, props.className)}
       {...props}
+      className={cn(styles.moduleVersion, updateClassName, className)}
     >
       {content}
     </p>

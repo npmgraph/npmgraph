@@ -1,4 +1,3 @@
-import simplur from 'simplur';
 import type Module from '../../lib/Module.ts';
 import type { Maintainer } from '../../lib/Module.ts';
 import { QueryType } from '../../lib/ModuleCache.ts';
@@ -9,9 +8,7 @@ export function ModuleMaintainers({ module }: { module: Module }) {
   const { maintainers } = module;
 
   return (
-    <Section
-      title={simplur`${Object.entries(maintainers).length} Maintainer[|s]`}
-    >
+    <Section title="Maintainers" count={maintainers.length}>
       <Tags>
         {maintainers.map(
           // eslint-disable-next-line @typescript-eslint/no-useless-default-assignment -- Incorrect types

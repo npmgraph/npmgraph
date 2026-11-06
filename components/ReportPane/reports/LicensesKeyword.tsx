@@ -1,8 +1,5 @@
-import { cn } from '../../../lib/dom.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
-import { Selectable } from '../../ui/Selectable.tsx';
-import * as reportItemStyles from '../ReportItem.module.css';
-import * as styles from './ModuleList.module.scss';
+import { ModuleRows } from '../../ui/Row.tsx';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 
@@ -29,28 +26,19 @@ export default function LicensesKeyword({
       type="warn"
       title={`Modules with "${keyword}" license`}
       count={modules.length}
+      description={
+        <>
+          {descriptions[keyword]} See{' '}
+          <ExternalLink href="https://opensource.org/licenses/">
+            OSI Licenses
+          </ExternalLink>
+          .
+        </>
+      }
     >
-      <p>
-        {descriptions[keyword]} See{' '}
-        <ExternalLink href="https://opensource.org/licenses/">
-          OSI Licenses
-        </ExternalLink>
-        .
-      </p>
-      {modules
-        .toSorted((a, b) => a.key.localeCompare(b.key))
-        .map(module => (
-          <div
-            key={module.key}
-            className={cn(styles.row, reportItemStyles.zebraRow)}
-          >
-            <Selectable
-              className={cn(styles.name)}
-              value={module.key}
-              label={module.label}
-            />
-          </div>
-        ))}
+      <ModuleRows
+        modules={modules.toSorted((a, b) => a.key.localeCompare(b.key))}
+      />
     </ReportItem>
   );
 }

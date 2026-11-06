@@ -1,36 +1,16 @@
-.details > * {
-  padding-right: 1rem;
-  padding-left: 1rem;
-}
-
-/* Of type, so that the description paragraph doesn't shift the rows */
-.zebraRow:nth-of-type(even) {
-  background-color: rgb(127 127 127 / 5%);
-}
-
 .symbol {
   display: inline-block;
   vertical-align: middle;
-  width: 1rem;
   font-size: 1.3rem;
-  text-align: left;
+  line-height: 1;
 
-  &.info {
-    color: green;
-  }
   &.warn {
     color: var(--stroke-yellow);
   }
-  &.error {
-    color: green;
-  }
 }
 
-/* The description of the report, before the rows */
-.details > p {
-  margin-block: 0.5rem;
-  padding-inline: 0;
-  color: rgb(127 127 127 / 85%);
+// The description of the report, before the rows
+.description {
+  color: var(--text-dim);
   font-size: 0.9rem;
-  line-height: 1.3rem;
 }

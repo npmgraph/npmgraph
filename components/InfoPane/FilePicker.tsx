@@ -13,7 +13,7 @@ function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {
 
 export default function FilePicker({ label }: { label: string }) {
   return (
-    <label className={styles.link} style={{ display: 'inline' }}>
+    <label className={styles.link}>
       {label}
       <input hidden type="file" accept=".json" onChange={onSelect} />
     </label>

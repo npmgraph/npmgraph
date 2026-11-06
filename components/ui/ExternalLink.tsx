@@ -27,7 +27,6 @@ export function ExternalLink({
       <IconComponent
         // svgo.config.json removes the viewBox of the files, which is needed to resize them
         viewBox="0 0 16 16"
-        style={{ marginLeft: '0.3rem', verticalAlign: '-0.1em' }}
         width={12}
         height={12}
       />

@@ -7,7 +7,7 @@ import { scaleLinear, scaleTime } from '@visx/scale';
 import { type ReactElement, useState } from 'react';
 import useMeasure from '../../hooks/useMeasure.ts';
 import { isDefined } from '../../lib/guards.ts';
-import { CollapsibleSection } from '../ui/Section.tsx';
+import { Section } from '../ui/Section.tsx';
 import { ModuleDownloads } from './ModuleDownloads.tsx';
 import * as styles from './ReleaseTimeline.module.css';
 
@@ -247,7 +247,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
   }
 
   return (
-    <CollapsibleSection title="Release Timeline">
+    <Section title="Release Timeline">
       <svg ref={ref} viewBox={`0 0 ${w} ${h}`} className={styles.root}>
         <GridColumns
           scale={xScale}
@@ -300,6 +300,6 @@ export function ReleaseTimeline({ module }: { module: Module }) {
       </svg>
 
       <ModuleDownloads module={module} />
-    </CollapsibleSection>
+    </Section>
   );
 }
