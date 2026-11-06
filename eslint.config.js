@@ -14,6 +14,7 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-member-access',
   '@typescript-eslint/no-unsafe-type-assertion',
   '@typescript-eslint/prefer-nullish-coalescing',
+  '@typescript-eslint/use-unknown-in-catch-callback-variable',
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
