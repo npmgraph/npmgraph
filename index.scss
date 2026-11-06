@@ -1,42 +1,42 @@
+@use './lib/root.module.scss' as *;
+
 :root {
   accent-color: var(--accent);
   color-scheme: light dark;
 
   @for $i from 0 through 10 {
-    --grey#{$i * 10}: light-dark(
-      oklch(#{$i * 10%} 0 0),
-      oklch(#{(10 - $i) * 10%} 0 0)
-    );
+    --grey#{($i) * 10}: oklch(#{$i * 10%} 0 0);
   }
 
-  --root-color: light-dark(
-    white,
-    black
-  ); /* Don't change, it's used to mix colors on light/dark schemes */
+  --root-color: white; // Don't change, it's used to mix colors on light/dark schemes
   --rad-sm: 5px;
   --rad-lg: 10px;
   --inspector-size: 32em;
-  --bg-gradient: linear-gradient(rgb(255 255 255 / 20%), transparent);
+  --bg-gradient: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.2),
+    transparent 100%
+  );
 
-  --text: light-dark(#020303, #f3f3f3);
-  --text-dim: light-dark(#999, #766);
-  --bg-root: light-dark(#fff, #111);
-  --bg0: light-dark(#f1f4f4, #262222);
-  --bg1: light-dark(#bbb, #696666);
-  --bg2: light-dark(#ddd, #333);
+  --text: #020303;
+  --text-dim: #999;
+  --bg-root: #fff;
+  --bg0: #f1f4f4;
+  --bg1: #bbb;
+  --bg2: #ddd;
 
   --header-padding: 12px;
-  --tabs-bg: rgb(90 83 79);
+  --tabs-bg: rgb(90, 83, 79);
   --tabs-text: #fff;
-  --tabs-border: rgb(203 203 203 / 79.6%);
+  --tabs-border: rgba(203, 203, 203, 0.796);
 
   --accent: #da6200;
   --text-on-accent: #fff;
 
-  /* Shadow colors depend on the background color */
+  // Shadow colors depend on the background color
   --bg0-shadow-color: color-mix(in oklch, var(--bg0) 90%, black);
 
-  /* Named stroke colors (for borders and lines that should contrast well with background colors) */
+  // Named stroke colors (for borders and lines that should contrast well with background colors)
   --stroke-L: 70%;
   --stroke-C: 100%;
   --stroke-red: oklch(var(--stroke-L) var(--stroke-C) 20);
@@ -56,8 +56,22 @@
   --bg-violet: oklch(var(--bg-L) var(--bg-C) 280);
 
   --transition-duration: 0.5s;
+}
 
-  @media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {
+  :root {
+    @for $i from 0 through 10 {
+      --grey#{(10-$i) * 10}: oklch(#{$i * 10%} 0 0);
+    }
+
+    --root-color: black; // Don't change, it's used to mix colors on light/dark schemes
+    --text: #f3f3f3;
+    --text-dim: #766;
+    --bg-root: #111;
+    --bg0: #262222;
+    --bg1: #696666;
+    --bg2: #333;
+
     --stroke-L: 80%;
     --bg-L: 50%;
     --bg-C: 50%;
