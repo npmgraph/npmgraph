@@ -1,6 +1,5 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import svgDefs from './GraphDiagram.defs.svg?raw';
 import { use, useEffect, useState } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -13,6 +12,7 @@ import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
+import svgDefs from './GraphDiagram.defs.svg?raw';
 import * as styles from './GraphDiagram.module.scss';
 
 function getDiagramElement() {

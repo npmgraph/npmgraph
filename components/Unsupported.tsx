@@ -1,7 +1,6 @@
 import type { ReactElement } from 'react';
-import { ExternalLink } from './ui/ExternalLink.tsx';
 import GithubIcon from '../images/icons/github.svg?react';
-
+import { ExternalLink } from './ui/ExternalLink.tsx';
 import * as styles from './Unsupported.module.css';
 
 const imageUrl = new URL('../images/sad-kilroy.png', import.meta.url);

@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import useReportOnly from '../../hooks/useReportOnly.ts';
-
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';

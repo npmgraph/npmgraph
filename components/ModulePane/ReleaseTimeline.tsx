@@ -1,10 +1,9 @@
 import { type SemVer, tryParse } from 'verkit';
-import type Module from '../../lib/Module.ts';
-
 import { AxisBottom } from '@visx/axis';
 import { GridColumns } from '@visx/grid';
 import { scaleLinear, scaleTime } from '@visx/scale';
 import { type ReactElement, useState } from 'react';
+import type Module from '../../lib/Module.ts';
 import useMeasure from '../../hooks/useMeasure.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { Section } from '../ui/Section.tsx';

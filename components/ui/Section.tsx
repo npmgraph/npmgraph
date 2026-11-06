@@ -1,7 +1,6 @@
 import { useState, type HTMLProps, type ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
-
 import { SectionOpenedContext } from './SectionOpenedContext.ts';
 import * as styles from './Section.module.css';
 

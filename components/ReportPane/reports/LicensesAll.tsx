@@ -4,9 +4,9 @@ import { LICENSES } from '../../../lib/licenses.ts';
 import { Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import { GroupRow } from '../GroupRow.tsx';
-import * as styles from './LicensesAll.module.css';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
+import * as styles from './LicensesAll.module.css';
 
 function LicenseRow({
   license,
