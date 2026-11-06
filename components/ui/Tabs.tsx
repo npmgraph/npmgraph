@@ -55,15 +55,11 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   onClick={() => {
                     // Like mobile apps, tapping the current tab scrolls to the top
                     if (isSelected && tabPane !== PaneType.GRAPH) {
-                      // The page scrolls on mobile, the inspector and its pane on desktop
-                      const inspector = $('#inspector', document);
-                      for (const element of [
-                        document.documentElement,
-                        inspector,
-                        inspector?.firstElementChild,
-                      ]) {
-                        element?.scrollTo({ top: 0, behavior: 'smooth' });
-                      }
+                      // The page scrolls on tight screens, the inspector otherwise
+                      const scroller = isTightScreen
+                        ? document.documentElement
+                        : $('#inspector');
+                      scroller?.scrollTo({ top: 0, behavior: 'smooth' });
 
                       return;
                     }
