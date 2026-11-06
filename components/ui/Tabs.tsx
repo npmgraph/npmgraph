@@ -52,6 +52,12 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   aria-selected={isSelected}
                   className={utilities.brightHover}
                   onClick={() => {
+                    // Like mobile apps, tapping the current tab scrolls to the top
+                    if (isSelected && tabPane !== PaneType.GRAPH) {
+                      globalThis.scrollTo({ top: 0, behavior: 'smooth' });
+                      return;
+                    }
+
                     setHide(null);
                     // The graph isn't a tab on wide screens, so go back to the report
                     setPane(
