@@ -14,8 +14,6 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-member-access',
   '@typescript-eslint/no-unsafe-type-assertion',
   '@typescript-eslint/prefer-nullish-coalescing',
-  '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'import-x/order', // TODO: https://github.com/un-ts/eslint-plugin-import-x/pull/504 https://github.com/un-ts/eslint-plugin-import-x/pull/514
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
@@ -62,6 +60,13 @@ export default defineConfig([
             camelCase: true,
             pascalCase: true,
           },
+        },
+      ],
+
+      'import-x/order': [
+        'error',
+        {
+          warnOnUnassignedImports: true,
         },
       ],
     },
