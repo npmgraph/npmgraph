@@ -6,7 +6,8 @@ export default function useReportOnly() {
   const [hide, setHide] = useHashParam(PARAM_HIDE);
 
   const setReportOnly = (isEnabled: boolean) => {
-    setHide(isEnabled ? 'graph' : null);
+    // Entering pushes a history entry so Back returns to the graph
+    setHide(isEnabled ? 'graph' : null, !isEnabled);
   };
 
   return [hide === 'graph', setReportOnly] as const;
