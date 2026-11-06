@@ -75,7 +75,7 @@
   display: grid;
   flex: 1;
   place-items: center;
-  color: gray;
+  color: var(--text-dim);
 
   &.failed {
     color: var(--stroke-red);

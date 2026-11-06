@@ -1,7 +1,7 @@
 .root {
   position: relative;
   margin: 2rem auto;
-  border: 1px solid black;
+  border: 1px solid var(--text);
   border-radius: 10px;
 
   padding: 1rem;

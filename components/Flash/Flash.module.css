@@ -19,10 +19,6 @@
   white-space: pre-wrap;
 }
 
-.error {
-  color: white;
-}
-
 @keyframes flashIn {
   from {
     transform: translateX(calc(-100% - 10px));
