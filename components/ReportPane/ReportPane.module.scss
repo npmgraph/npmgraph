@@ -12,9 +12,11 @@
   }
 }
 
-.collapseInfo {
-  color: var(--text-dim);
-  font-size: 90%;
+.filter {
+  @include search-input;
+
+  flex: 1;
+  padding-block: 0.2em;
 }
 
 .centered {

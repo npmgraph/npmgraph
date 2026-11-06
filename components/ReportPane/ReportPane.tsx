@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import useGraph from '../../hooks/useGraph.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
@@ -5,6 +6,7 @@ import { Button } from '../Button.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
+import { ModuleFilterContext } from './ModuleFilterContext.ts';
 import * as styles from './ReportPane.module.scss';
 import LicensesAll from './reports/LicensesAll.tsx';
 import LicensesMissing from './reports/LicensesMissing.tsx';
@@ -26,6 +28,7 @@ export default function ReportPane({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const graph = useGraph();
   const [isReportOnly, setReportOnly] = useReportOnly();
+  const [filter, setFilter] = useState('');
 
   if (!graph.moduleInfos) {
     return <div>Loading</div>;
@@ -47,9 +50,20 @@ export default function ReportPane({
       {!isReportOnly && (
         <>
           <div className={styles.toolbar}>
-            <div className={styles.collapseInfo}>
-              Shift-click modules in graph to expand/collapse
-            </div>
+            <input
+              type="search"
+              className={styles.filter}
+              placeholder="Filter modules…"
+              aria-label="Filter modules"
+              value={filter}
+              autoCapitalize="off"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck="false"
+              onChange={event => {
+                setFilter(event.target.value);
+              }}
+            />
             <Button
               onClick={() => {
                 setReportOnly(true);
@@ -61,24 +75,26 @@ export default function ReportPane({
           <CollapsedModules />
         </>
       )}
-      <AnalysisProvider>
-        <ModulesAll />
-        <PeerDependenciesAll />
-        <MaintainersAll />
-        <LicensesAll />
-        <LicensesKeyword keyword="obsolete" />
+      <ModuleFilterContext value={filter}>
+        <AnalysisProvider>
+          <ModulesAll />
+          <PeerDependenciesAll />
+          <MaintainersAll />
+          <LicensesAll />
+          <LicensesKeyword keyword="obsolete" />
 
-        <ModuleVulnerabilities />
-        <ModulesRepeated />
-        <ModulesDeprecated />
-        <ModulesOutdated />
+          <ModuleVulnerabilities />
+          <ModulesRepeated />
+          <ModulesDeprecated />
+          <ModulesOutdated />
 
-        <MaintainersSolo />
-        <LicensesMissing />
-        <LicensesKeyword keyword="discouraged" />
-        <ModuleReplacementsNative />
-        <PeerDependenciesMissing />
-      </AnalysisProvider>
+          <MaintainersSolo />
+          <LicensesMissing />
+          <LicensesKeyword keyword="discouraged" />
+          <ModuleReplacementsNative />
+          <PeerDependenciesMissing />
+        </AnalysisProvider>
+      </ModuleFilterContext>
     </Pane>
   );
 }

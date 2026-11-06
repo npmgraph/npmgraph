@@ -15,16 +15,6 @@
   font-weight: bold;
 }
 
-.filter {
-  padding-block: 0.3rem 0.5rem;
-}
-
-.input {
-  @include search-input;
-
-  padding-block: 0.2em;
-}
-
 .empty {
   color: rgba(127, 127, 127, 0.85);
   font-style: italic;
