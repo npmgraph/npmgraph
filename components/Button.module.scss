@@ -1,8 +1,9 @@
+@use './ui/utilities.module.scss' as *;
+
 .button {
+  @extend .brightHover;
   display: inline-block;
   position: relative;
-  transition: filter 0.2s;
-  will-change: filter;
   margin: 0;
   border: solid 1px var(--bg1);
   border-radius: var(--rad-sm);
@@ -11,11 +12,6 @@
   color: var(--text);
   user-select: none;
   text-decoration: none;
-
-  &:hover {
-    filter: brightness(125%);
-    transition-duration: 0.1s;
-  }
 
   svg {
     display: block;

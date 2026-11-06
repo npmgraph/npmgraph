@@ -13,7 +13,7 @@ import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
-import * as styles from './GraphDiagram.module.css';
+import * as styles from './GraphDiagram.module.scss';
 
 function getDiagramElement() {
   return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);

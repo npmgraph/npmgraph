@@ -30,7 +30,7 @@ import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
-import * as styles from './GraphDiagram.module.css';
+import * as styles from './GraphDiagram.module.scss';
 import './graphviz.css';
 
 import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';

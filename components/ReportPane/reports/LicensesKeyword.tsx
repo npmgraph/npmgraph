@@ -2,7 +2,7 @@ import { cn } from '../../../lib/dom.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import * as reportItemStyles from '../ReportItem.module.css';
-import * as styles from './ModuleList.module.css';
+import * as styles from './ModuleList.module.scss';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 

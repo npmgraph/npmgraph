@@ -1,6 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import * as appStyles from '../App/App.module.css';
-import * as graphDiagramStyles from '../GraphDiagram/GraphDiagram.module.css';
+import * as appStyles from '../App/App.module.scss';
+import * as graphDiagramStyles from '../GraphDiagram/GraphDiagram.module.scss';
 import * as flashStyles from './Flash.module.css';
 import {
   notifyFlashElementReady,

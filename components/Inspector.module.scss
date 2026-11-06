@@ -1,3 +1,5 @@
+@use '../lib/root.module.scss' as *;
+
 .inspector {
   display: flex;
   flex-shrink: 1;
@@ -10,7 +12,7 @@
     margin-top: 0;
   }
 
-  @media (aspect-ratio <= 2/3), (width <= 700px) {
+  @include tight-screen {
     flex-grow: 1;
   }
 
@@ -23,7 +25,7 @@
     width: auto;
 
     /* Let section headings stick to the page */
-    @media (aspect-ratio <= 2/3), (width <= 700px) {
+    @include tight-screen {
       overflow: clip;
     }
   }

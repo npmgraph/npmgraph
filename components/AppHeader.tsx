@@ -1,6 +1,6 @@
 import QueryInput from './InfoPane/QueryInput.tsx';
 import Logo from './Logo.tsx';
-import * as styles from './AppHeader.module.css';
+import * as styles from './AppHeader.module.scss';
 import Tabs from './ui/Tabs.tsx';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';

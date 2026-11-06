@@ -11,8 +11,7 @@
   padding: 0.25rem 0;
 }
 
-.remove,
-.expandAll {
+.remove {
   display: inline-flex;
   flex: 0 0 auto;
   justify-content: center;
@@ -34,6 +33,7 @@
 }
 
 .expandAll {
+  @extend .remove;
   margin-top: 1em;
   padding: 0.25rem 0.5rem;
   width: auto;

@@ -86,6 +86,7 @@
     "playwright": "^1.64.1",
     "prettier": "^3.9.10",
     "prettier-plugin-css-order": "^2.2.0",
+    "sass": "^1.108.0",
     "svgo": "^4.1.0",
     "typed-query-selector": "^2.12.3",
     "typescript": "npm:@typescript/typescript6@^6.0.2",

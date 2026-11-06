@@ -1,3 +1,5 @@
+@use '../lib/root.module.scss' as *;
+
 .root {
   display: flex;
   flex-shrink: 0;
@@ -13,7 +15,7 @@
   /* Override --text so the Logo's color-mix renders in light colors on the dark header */
   --text: var(--tabs-text);
 
-  @media (aspect-ratio <= 2/3), (width <= 700px) {
+  @include tight-screen {
     border-right: none;
     background-image: linear-gradient(
       rgb(255 255 255 / 20%),

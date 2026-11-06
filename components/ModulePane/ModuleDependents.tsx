@@ -5,7 +5,7 @@ import { cn } from '../../lib/dom.ts';
 import { Selectable } from '../ui/Selectable.tsx';
 import { Section } from '../ui/Section.tsx';
 import * as reportItemStyles from '../ReportPane/ReportItem.module.css';
-import * as styles from '../ReportPane/reports/ModuleList.module.css';
+import * as styles from '../ReportPane/reports/ModuleList.module.scss';
 
 export function ModuleDependents({ module }: { module: Module }) {
   const [graph] = useGlobalState('graph');

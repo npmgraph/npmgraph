@@ -1,3 +1,5 @@
+@use '../../lib/root.module.scss' as *;
+
 .root,
 .list {
   display: flex;
@@ -11,7 +13,7 @@
 }
 
 .list {
-  @media (aspect-ratio <= 2/3), (width <= 700px) {
+  @include tight-screen {
     flex-grow: 1;
   }
 }
@@ -24,7 +26,7 @@
   font-weight: 600;
   font-size: 12pt;
 
-  @media (aspect-ratio <= 2/3), (width <= 700px) {
+  @include tight-screen {
     border-right: none;
   }
 

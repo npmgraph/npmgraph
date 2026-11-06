@@ -1,3 +1,5 @@
+@use '../../lib/root.module.scss' as *;
+
 .pane {
   flex-grow: 1;
   box-sizing: border-box;
@@ -16,7 +18,7 @@
     margin-inline: -1em;
   }
 
-  @media (aspect-ratio <= 2/3), (width <= 700px) {
+  @include tight-screen {
     box-shadow: none;
     padding-bottom: 1em;
     min-height: 200px;

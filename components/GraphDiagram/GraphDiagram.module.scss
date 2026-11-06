@@ -1,3 +1,5 @@
+@use '../../lib/root.module.scss' as *;
+
 .root {
   display: flex;
   position: relative;
@@ -61,7 +63,7 @@
     visibility 0.15s;
   inset: auto auto 1em 1em;
 
-  @media (aspect-ratio <= 2/3), (width <= 700px) {
+  @include tight-screen {
     position: fixed;
     z-index: 20;
   }

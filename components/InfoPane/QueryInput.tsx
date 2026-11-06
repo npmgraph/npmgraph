@@ -7,7 +7,7 @@ import { getCachedModule } from '../../lib/ModuleCache.ts';
 import { searchSet } from '../../lib/url-util.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
-import * as styles from './QueryInput.module.css';
+import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
 const hasSoftKeyboard = 'ontouchstart' in document.documentElement;

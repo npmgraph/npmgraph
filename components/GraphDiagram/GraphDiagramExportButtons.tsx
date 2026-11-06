@@ -10,7 +10,7 @@ import { flash } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeMermaid } from '../../lib/graph-util.ts';
 import { Button, ButtonGroup } from '../Button.tsx';
-import * as graphStyles from './GraphDiagram.module.css';
+import * as graphStyles from './GraphDiagram.module.scss';
 
 type DownloadExtension = 'svg' | 'png';
 
