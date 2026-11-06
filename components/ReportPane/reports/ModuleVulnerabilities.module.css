@@ -11,20 +11,19 @@
   width: 5em;
   color: var(--text);
   text-align: center;
-}
-
-.none .severity {
-  background-color: var(--bg-green);
-}
-.low .severity {
-  background-color: var(--bg-yellow);
-}
-.moderate .severity {
-  background-color: var(--bg-orange);
-}
-.high .severity {
-  background-color: var(--bg-red);
-}
-.critical .severity {
-  background-color: var(--bg-violet);
+  .none & {
+    background-color: var(--bg-green);
+  }
+  .low & {
+    background-color: var(--bg-yellow);
+  }
+  .moderate & {
+    background-color: var(--bg-orange);
+  }
+  .high & {
+    background-color: var(--bg-red);
+  }
+  .critical & {
+    background-color: var(--bg-violet);
+  }
 }
