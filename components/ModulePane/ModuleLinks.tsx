@@ -9,7 +9,7 @@ import { getRepoUrlForModule } from '../../lib/repo-util.ts';
 import { Button, ButtonCheckbox, ButtonGroup } from '../Button.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import { parseCustomModuleLinks } from './module-links.ts';
-import * as styles from './ModulePane.module.scss';
+import * as styles from './ModulePane.module.css';
 
 function ExternalLink({
   href,

@@ -7,7 +7,7 @@ import {
   subscribeFlash,
   type FlashEntry,
 } from '../../lib/flash.ts';
-import * as flashStyles from './Flash.module.scss';
+import * as flashStyles from './Flash.module.css';
 
 const FLASH_GAP = 10;
 

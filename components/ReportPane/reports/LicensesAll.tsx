@@ -6,7 +6,7 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import { GroupRow } from '../GroupRow.tsx';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
-import * as styles from './LicensesAll.module.scss';
+import * as styles from './LicensesAll.module.css';
 
 function LicenseRow({
   license,

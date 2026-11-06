@@ -2,7 +2,7 @@ import type { ComponentType, HTMLProps, SVGProps } from 'react';
 import OffsiteLinkIcon from '../../images/icons/offsite-link.svg?react';
 import { cn } from '../../lib/dom.ts';
 import * as utilities from './utilities.module.scss';
-import * as styles from './ExternalLink.module.scss';
+import * as styles from './ExternalLink.module.css';
 
 export function ExternalLink({
   href,

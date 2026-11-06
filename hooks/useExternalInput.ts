@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { isValidJson, loadPackageJson, readFile } from '../lib/read-file.ts';
 import { SEARCH_FIELD_ID } from '../lib/constants.ts';
-import * as styles from './useExternalInput.module.scss';
+import * as styles from './useExternalInput.module.css';
 
 let dragEnterCounter = 0;
 
