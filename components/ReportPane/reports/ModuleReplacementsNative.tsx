@@ -35,25 +35,20 @@ function Replacement({ replacement }: { replacement: ModuleReplacement }) {
       )?.minVersion;
 
       return (
-        <>
-          <span>
-            Replaceable with{' '}
-            <code>{replacement.description ?? replacement.id}</code>{' '}
-            {nodeVersion && `available since Node ${nodeVersion} `}
-          </span>
+        <span>
+          →{' '}
           <ExternalLink href={url}>
-            {typeof replacement.url === 'string'
-              ? 'Open link'
-              : `Open on ${replacement.url.type}`}
+            <code>{replacement.description ?? replacement.id}</code>
           </ExternalLink>
-        </>
+          {nodeVersion && ` Node ${nodeVersion}+`}
+        </span>
       );
     }
 
     case 'documented':
       return (
         <span>
-          Replaceable with{' '}
+          →{' '}
           <ExternalLink
             href={`https://www.npmjs.com/package/${replacement.replacementModule}`}
           >
@@ -63,10 +58,8 @@ function Replacement({ replacement }: { replacement: ModuleReplacement }) {
       );
 
     case 'simple':
-      return <span>{replacement.description}</span>;
-
     case 'removal':
-      return <span>{replacement.description}</span>;
+      return <span>→ {replacement.description}</span>;
   }
 }
 
@@ -126,12 +119,10 @@ export default function ModuleReplacementsNative() {
       count={rows.length}
       description={
         <>
-          From the{' '}
+          Modules that can be removed or replaced, from{' '}
           <ExternalLink href="https://github.com/e18e/module-replacements">
             module-replacements
-          </ExternalLink>{' '}
-          project, these modules can be removed or replaced with more modern,
-          streamlined alternatives
+          </ExternalLink>
         </>
       }
     >

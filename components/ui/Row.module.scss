@@ -51,6 +51,13 @@
     font-style: normal;
     font-weight: bold;
   }
+
+  // Multiple items, one per line, without bullets
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 }
 
 .bold {
