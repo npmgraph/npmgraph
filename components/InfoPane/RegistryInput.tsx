@@ -3,7 +3,7 @@ import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
 import useDebouncedValue from '../../hooks/useDebouncedValue.ts';
 import usePromise from '../../hooks/usePromise.ts';
 import useRegistry from '../../hooks/useRegistry.ts';
-import * as styles from './RegistryInput.module.scss';
+import * as styles from './RegistryInput.module.css';
 
 const CHECKING = 'Checking...';
 

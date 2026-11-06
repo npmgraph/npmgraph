@@ -2,7 +2,7 @@ import { QueryType } from '../../../lib/ModuleCache.ts';
 import { Row, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { PeerDependencyInfo } from '../analyzers/analyzePeerDependencies.ts';
-import * as styles from './PeerDependenciesAll.module.scss';
+import * as styles from './PeerDependenciesAll.module.css';
 
 export function PeerDependencyRows({
   peerDependencyInfos,

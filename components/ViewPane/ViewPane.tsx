@@ -17,7 +17,7 @@ import { Pane } from '../ui/Pane.tsx';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
 import { Button, ButtonGroup } from '../Button.tsx';
-import * as styles from './ViewPane.module.scss';
+import * as styles from './ViewPane.module.css';
 
 export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
   const [customLinks, setCustomLinks] = useCustomModuleLinks();

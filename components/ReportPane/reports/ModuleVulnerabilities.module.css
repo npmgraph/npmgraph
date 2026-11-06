@@ -1,0 +1,29 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1em;
+}
+
+.severity {
+  flex: none;
+  border-radius: var(--rad-sm);
+  width: 5em;
+  color: var(--text);
+  text-align: center;
+  .none & {
+    background-color: var(--bg-green);
+  }
+  .low & {
+    background-color: var(--bg-yellow);
+  }
+  .moderate & {
+    background-color: var(--bg-orange);
+  }
+  .high & {
+    background-color: var(--bg-red);
+  }
+  .critical & {
+    background-color: var(--bg-violet);
+  }
+}

@@ -12,16 +12,16 @@
   color: var(--tabs-text);
   color-scheme: dark;
 
+  /* Override --text so the Logo's color-mix renders in light colors on the dark header */
+  --text: var(--tabs-text);
+
   @include tight-screen {
     border-right: none;
     background-image: linear-gradient(
-      rgba(255, 255, 255, 0.2),
-      rgba(255, 255, 255, 0.2)
+      rgb(255 255 255 / 20%),
+      rgb(255 255 255 / 20%)
     );
   }
-
-  // Override --text so the Logo's color-mix renders in light colors on the dark header
-  --text: var(--tabs-text);
 
   svg {
     flex-shrink: 0;

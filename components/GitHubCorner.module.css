@@ -26,7 +26,7 @@
     transform: rotate(10deg);
   }
 }
-@media (max-width: 500px) {
+@media (width <= 500px) {
   .root:hover :global(.arm) {
     animation: none;
   }

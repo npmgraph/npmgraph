@@ -1,3 +1,4 @@
+/* eslint-disable cssicorn/no-declarations-after-nested-rules -- eslint/css bug, needs `tolerant` and then breaks rules */
 .root {
   > summary,
   > h3 {
@@ -8,34 +9,36 @@
     border-top: solid 1px var(--bg1);
     padding: 1em var(--pane-spacing-inline);
 
-    // Match native H3 style
+    /* Match native H3 style */
     font-weight: bold;
     font-size: 1.17em;
 
-    // Reset line-height to match the spacing of native H3
+    /* Reset line-height to match the spacing of native H3 */
     line-height: normal;
   }
 
   &:not([open]) > summary {
     &:hover,
     &:focus-visible {
-      background: color-mix(in srgb, currentColor 10%, transparent);
+      background: color-mix(in srgb, currentcolor 10%, transparent);
     }
   }
 
-  // Move triangle to the right
+  /* Move triangle to the right */
   summary::-webkit-details-marker {
     display: none;
   }
+
   summary::after {
     margin-left: auto;
     content: '◀';
   }
-  &[open] summary:after {
+
+  &[open] summary::after {
     content: '▼';
   }
 
-  // The heading's padding already separates it from what follows
+  /* The heading's padding already separates it from what follows */
   &:is(details):not([open]) {
     margin-block-end: calc(-1 * var(--pane-spacing-block));
   }

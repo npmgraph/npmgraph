@@ -1,5 +1,3 @@
-@use '../../lib/root.module.scss' as *;
-
 .downloads {
   display: flex;
   align-items: center;

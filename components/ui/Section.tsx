@@ -3,7 +3,7 @@ import { cn } from '../../lib/dom.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 
 import { SectionOpenedContext } from './SectionOpenedContext.ts';
-import * as styles from './Section.module.scss';
+import * as styles from './Section.module.css';
 
 export function SectionBody({ children }: { children: ReactNode }) {
   return <div className={styles.body}>{children}</div>;

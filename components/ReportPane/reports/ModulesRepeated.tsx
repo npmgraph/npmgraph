@@ -1,7 +1,7 @@
 import { getModuleKey } from '../../../lib/module-util.ts';
 import { Row, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import * as styles from './ModulesRepeated.module.scss';
+import * as styles from './ModulesRepeated.module.css';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 

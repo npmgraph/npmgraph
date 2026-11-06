@@ -22,7 +22,7 @@
   padding: 40px max(16px, calc((100% - 980px) / 2)) 32px;
   overflow: visible; // Reset .Pane's overflow and let the page scroll take precedence
 
-  // Section headings stick to the page, not to the pane
+  /* Section headings stick to the page, not to the pane */
   @include tight-screen {
     overflow: clip;
   }
