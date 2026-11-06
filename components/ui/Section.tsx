@@ -1,9 +1,12 @@
 import { useState, type HTMLProps, type ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
-
 import { SectionOpenedContext } from './SectionOpenedContext.ts';
-import * as styles from './Section.module.scss';
+import * as styles from './Section.module.css';
+
+export function SectionBody({ children }: { children: ReactNode }) {
+  return <div className={styles.body}>{children}</div>;
+}
 
 function Count({ count }: { count?: number | string }) {
   return count === undefined ? null : (
@@ -53,11 +56,11 @@ export function CollapsibleSection({
     >
       <summary>
         {title}
-        {icon}
         <Count count={count} />
+        {icon}
       </summary>
       <SectionOpenedContext value={opened.promise}>
-        {children}
+        <SectionBody>{children}</SectionBody>
       </SectionOpenedContext>
     </details>
   );
@@ -83,7 +86,7 @@ export function Section({
         {title}
         <Count count={count} />
       </h3>
-      {children}
+      <SectionBody>{children}</SectionBody>
     </div>
   );
 }

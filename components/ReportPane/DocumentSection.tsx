@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PARAM_SECTION } from '../../lib/constants.ts';
+import { SectionBody } from '../ui/Section.tsx';
 import * as styles from './DocumentSection.module.scss';
 
 function getSectionHref(name: string) {
@@ -38,7 +39,7 @@ export function DocumentSection({
         {icon}
         {count !== undefined && <small>{count}</small>}
       </h2>
-      {children}
+      <SectionBody>{children}</SectionBody>
     </section>
   );
 }

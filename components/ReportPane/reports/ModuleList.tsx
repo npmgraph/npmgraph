@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import useReportOnly from '../../../hooks/useReportOnly.ts';
-import { cn } from '../../../lib/dom.ts';
 import type Module from '../../../lib/Module.ts';
-import { Selectable } from '../../ui/Selectable.tsx';
-import * as reportItemStyles from '../ReportItem.module.scss';
+import { ModuleRows } from '../../ui/Row.tsx';
 import * as styles from './ModuleList.module.scss';
 
 const MIN_MODULES_FOR_FILTER = 10;
@@ -28,42 +26,27 @@ export function ModuleList({
   return (
     <>
       {canFilter && (
-        <div className={styles.filter}>
-          <input
-            type="search"
-            className={styles.input}
-            placeholder="Filter modules…"
-            aria-label="Filter modules"
-            value={filter}
-            autoCapitalize="off"
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck="false"
-            onChange={event => {
-              setFilter(event.target.value);
-            }}
-          />
-        </div>
+        <input
+          type="search"
+          className={styles.input}
+          placeholder="Filter modules…"
+          aria-label="Filter modules"
+          value={filter}
+          autoCapitalize="off"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          onChange={event => {
+            setFilter(event.target.value);
+          }}
+        />
       )}
 
       {filteredModules.length === 0 && (
         <div className={styles.empty}>No modules match</div>
       )}
 
-      {filteredModules.map(module => (
-        <div
-          key={module.key}
-          className={cn(styles.row, reportItemStyles.zebraRow)}
-        >
-          <Selectable
-            className={cn(styles.name, {
-              [styles.entry]: entryModules.has(module),
-            })}
-            value={module.key}
-            label={module.label}
-          />
-        </div>
-      ))}
+      <ModuleRows modules={filteredModules} bold={entryModules} />
     </>
   );
 }

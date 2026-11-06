@@ -5,19 +5,18 @@
 .warning {
   background: repeating-linear-gradient(
     -45deg,
-    rgba(128, 128, 0, 0.1),
-    rgba(128, 128, 0, 0.1) 10px,
-    rgba(0, 0, 0, 0.1) 10px,
-    rgba(0, 0, 0, 0.1) 20px
+    rgb(128 128 0 / 10%),
+    rgb(128 128 0 / 10%) 10px,
+    rgb(0 0 0 / 10%) 10px,
+    rgb(0 0 0 / 10%) 20px
   );
 }
 
-.centered {
+.title {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  text-wrap: pretty;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25em 0.75em;
 }
 
 .moduleHeader {
@@ -25,9 +24,6 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 1em;
-  // Optical alignment, give more space
-  margin-inline: -4px;
 }
 
 .moduleLinks {
@@ -35,12 +31,13 @@
 }
 
 .deprecatedBox {
+  display: grid;
+  gap: 0.25em;
   border-radius: 0.5em;
   padding: 0.5em;
 }
 
 .deprecatedTitle {
-  margin-top: 0;
   color: darkred;
 }
 

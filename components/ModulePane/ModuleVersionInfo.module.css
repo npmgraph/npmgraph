@@ -1,14 +1,15 @@
 .moduleVersion {
-  border: solid 1px;
+  flex: 1 0 100%;
+  border: 1px solid;
   border-radius: 0.3rem;
   padding: 0.1rem 0;
   font-size: 0.85rem;
   text-align: center;
 
   &.distTag {
-    display: inline;
-    margin-left: 1em;
+    flex: none;
     border: none;
+    padding: 0;
     text-align: inherit;
   }
 

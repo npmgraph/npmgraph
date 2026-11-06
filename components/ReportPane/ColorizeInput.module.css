@@ -1,0 +1,18 @@
+.colorizeUi {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+
+  select {
+    flex-grow: 1;
+    border: solid 1px var(--bg1);
+    border-radius: var(--rad-sm);
+    padding: 0.3em;
+  }
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}

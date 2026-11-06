@@ -5,7 +5,6 @@
   justify-content: space-between;
   align-items: center;
   gap: 1em;
-  margin-bottom: 1em; // Matches the sidebar's padding: 1em
 
   button {
     flex: none;
@@ -17,15 +16,8 @@
   font-size: 90%;
 }
 
-.centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  text-wrap: pretty;
-}
-
 // Centered column
 .document {
+  gap: 24px;
   padding: 40px max(16px, calc((100% - 980px) / 2)) 32px;
 }

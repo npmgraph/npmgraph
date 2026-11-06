@@ -1,5 +1,5 @@
 import { readFile } from '../../lib/read-file.ts';
-import * as styles from './FilePicker.module.scss';
+import * as styles from './FilePicker.module.css';
 
 function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {
   const file = ev.target.files?.item(0);
@@ -13,7 +13,7 @@ function onSelect(ev: React.ChangeEvent<HTMLInputElement>) {
 
 export default function FilePicker({ label }: { label: string }) {
   return (
-    <label className={styles.link} style={{ display: 'inline' }}>
+    <label className={styles.link}>
       {label}
       <input hidden type="file" accept=".json" onChange={onSelect} />
     </label>

@@ -1,3 +1,6 @@
+// eslint-disable-next-line import-x/order -- https://github.com/un-ts/eslint-plugin-import-x/pull/504
+import './graphviz.css';
+
 import { select } from 'd3-selection';
 import {
   Suspense,
@@ -30,17 +33,15 @@ import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
-import * as styles from './GraphDiagram.module.scss';
-import './graphviz.css';
-
-import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
-import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
-import useGraphClick from './useGraphClick.ts';
-import useLoadGraph from './useLoadGraph.ts';
-import useRenderDiagram from './useRenderDiagram.ts';
-import { clampPosition, getFitScale } from './viewport-util.ts';
 import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
+import { clampPosition, getFitScale } from './viewport-util.ts';
+import useRenderDiagram from './useRenderDiagram.ts';
+import useLoadGraph from './useLoadGraph.ts';
+import useGraphClick from './useGraphClick.ts';
+import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
+import * as styles from './GraphDiagram.module.scss';
 
 const notFoundUrl = new URL('../../images/not-found.svg', import.meta.url);
 

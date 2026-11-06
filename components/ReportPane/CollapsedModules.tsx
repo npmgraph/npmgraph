@@ -1,5 +1,6 @@
 import useCollapse from '../../hooks/useCollapse.ts';
 import { toggleItem } from '../../lib/array-util.ts';
+import { Button } from '../Button.tsx';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import * as styles from './CollapsedModules.module.scss';
 
@@ -30,15 +31,14 @@ export default function CollapsedModules() {
         ))}
       </ul>
       {collapse.length > 1 && (
-        <button
+        <Button
           className={styles.expandAll}
-          type="button"
           onClick={() => {
             setCollapse([]);
           }}
         >
           Expand All
-        </button>
+        </Button>
       )}
     </CollapsibleSection>
   );

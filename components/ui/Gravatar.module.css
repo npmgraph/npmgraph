@@ -1,0 +1,4 @@
+.placeholder {
+  display: inline-block;
+  background: color-mix(in srgb, currentcolor 10%, transparent);
+}

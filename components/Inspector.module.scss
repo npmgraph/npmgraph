@@ -12,10 +12,6 @@
   overflow-y: auto;
   color: var(--text);
 
-  ul {
-    margin-top: 0;
-  }
-
   // The page scrolls instead, which also lets section headings stick to it
   @include tight-screen {
     flex-grow: 1;
@@ -26,9 +22,9 @@
   @media print {
     display: none;
   }
-}
 
-.inspector.only {
-  flex-grow: 1;
-  width: auto;
+  &.only {
+    flex-grow: 1;
+    width: auto;
+  }
 }

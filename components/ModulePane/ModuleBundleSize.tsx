@@ -4,8 +4,8 @@ import type Module from '../../lib/Module.ts';
 import fetchJson from '../../lib/fetchJson.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
-import { ModuleBundleStats } from './ModuleBundleStats.tsx';
 import { hasTreemap } from '../../lib/treemap-util.ts';
+import { ModuleBundleStats } from './ModuleBundleStats.tsx';
 import { ModuleTreeMap } from './ModuleTreeMap.tsx';
 
 export default function ModuleBundleSize({ module }: { module: Module }) {
@@ -74,7 +74,9 @@ function BundleInfo({
             style={{ height: '150px', marginBlock: '1em' }}
             data={bundleInfo}
           />
-          Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
+          <p>
+            Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
+          </p>
         </>
       ) : null}
     </>
