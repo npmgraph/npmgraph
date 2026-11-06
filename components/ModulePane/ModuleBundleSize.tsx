@@ -74,7 +74,9 @@ function BundleInfo({
             style={{ height: '150px', marginBlock: '1em' }}
             data={bundleInfo}
           />
-          Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
+          <p>
+            Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
+          </p>
         </>
       ) : null}
     </>
