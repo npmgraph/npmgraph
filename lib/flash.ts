@@ -29,7 +29,7 @@ export function subscribeFlash(listener: FlashListener) {
   };
 }
 
-export function flash(wat: unknown, bg = '#f80') {
+export function flash(wat: unknown, bg = 'var(--bg-orange)') {
   const entry: FlashEntry = {
     id: nextFlashId++,
     message: toFlashMessage(wat),
@@ -77,7 +77,7 @@ export async function celebrate(message: string) {
 }
 
 function normalizeBackgroundColor(bg: string) {
-  return bg === 'error' ? '#b3261e' : bg;
+  return bg === 'error' ? 'var(--bg-red)' : bg;
 }
 
 function toFlashMessage(wat: unknown) {

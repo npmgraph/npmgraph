@@ -18,8 +18,8 @@
   @include tight-screen {
     border-right: none;
     background-image: linear-gradient(
-      rgb(255 255 255 / 20%),
-      rgb(255 255 255 / 20%)
+      color-mix(in srgb, var(--tabs-text) 20%, transparent),
+      color-mix(in srgb, var(--tabs-text) 20%, transparent)
     );
   }
 

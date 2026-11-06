@@ -25,16 +25,12 @@
 }
 
 .graph {
+  display: flex;
   position: relative;
   flex: 1;
   min-width: 0;
   user-select: none;
   -webkit-user-select: none;
-
-  --warning0: #f6f6e0;
-  --warning1: #d9d9d9;
-  --stub: #f00;
-  display: flex;
 
   &.graphvizLoading,
   &.graphvizFailed {
@@ -43,10 +39,6 @@
   }
   &.graphvizFailed {
     color: var(--stroke-red);
-  }
-  @media (prefers-color-scheme: dark) {
-    --warning0: #101010;
-    --warning1: #660;
   }
 }
 

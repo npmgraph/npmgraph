@@ -5,10 +5,10 @@
 .warning {
   background: repeating-linear-gradient(
     -45deg,
-    rgb(128 128 0 / 10%),
-    rgb(128 128 0 / 10%) 10px,
-    rgb(0 0 0 / 10%) 10px,
-    rgb(0 0 0 / 10%) 20px
+    var(--warning0),
+    var(--warning0) 10px,
+    var(--warning1) 10px,
+    var(--warning1) 20px
   );
 }
 

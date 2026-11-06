@@ -19,7 +19,7 @@ g {
     opacity: 0.6;
 
     > path {
-      stroke: var(--stub);
+      stroke: var(--stroke-red);
       stroke-dasharray: 4, 4;
     }
   }

@@ -55,6 +55,10 @@
   --bg-blue: oklch(var(--bg-L) var(--bg-C) 220);
   --bg-violet: oklch(var(--bg-L) var(--bg-C) 280);
 
+  // Diagonal stripes for warnings
+  --warning0: color-mix(in oklch, var(--bg-yellow) 15%, var(--bg-root));
+  --warning1: color-mix(in oklch, var(--bg-yellow) 40%, var(--bg-root));
+
   --transition-duration: 0.5s;
 }
 
