@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type Module from '../../lib/Module.ts';
 import { Row } from '../ui/Row.tsx';
 import { Selectable } from '../ui/Selectable.tsx';
-import * as styles from './GroupRow.module.scss';
+import * as styles from './GroupRow.module.css';
 
 // A heading (e.g. a license or a maintainer) next to the modules it applies to
 export function GroupRow({

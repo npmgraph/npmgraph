@@ -1,9 +1,11 @@
+import css from '@eslint/css';
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import reactDoctor from 'eslint-plugin-react-doctor';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 import { defineConfig } from 'eslint/config';
 import selectDom from 'select-dom/eslint-plugin';
+import noUnnecessaryScss from './eslint-rules/no-unnecessary-scss.js';
 
 const disabledRules = [
   // TODO: Gradually review and enable
@@ -87,6 +89,16 @@ export default defineConfig([
   {
     plugins: { 'select-dom': selectDom },
     rules: { 'select-dom/prefer': 'error' },
+  },
+  {
+    files: ['**/*.scss'],
+    plugins: {
+      css,
+      local: { rules: { 'no-unnecessary-scss': noUnnecessaryScss } },
+    },
+    language: 'css/css',
+    languageOptions: { tolerant: true },
+    rules: { 'local/no-unnecessary-scss': 'error' },
   },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),

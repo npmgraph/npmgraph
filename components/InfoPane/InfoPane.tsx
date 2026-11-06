@@ -3,7 +3,7 @@ import { Pane } from '../ui/Pane.tsx';
 import InputHelp from '../InputHelp.tsx';
 import FilePicker from './FilePicker.tsx';
 import ErrorsBox from './ErrorsBox.tsx';
-import * as styles from './InfoPane.module.scss';
+import * as styles from './InfoPane.module.css';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
