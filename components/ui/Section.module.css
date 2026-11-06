@@ -23,7 +23,7 @@
     }
   }
 
-  // Move triangle to the right
+  /* Move triangle to the right */
   summary::-webkit-details-marker {
     display: none;
   }
@@ -35,7 +35,7 @@
     content: '▼';
   }
 
-  // The heading's padding already separates it from what follows
+  /* The heading's padding already separates it from what follows */
   &:is(details):not([open]) {
     margin-block-end: calc(-1 * var(--pane-spacing-block));
   }

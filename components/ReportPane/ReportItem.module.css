@@ -9,7 +9,7 @@
   }
 }
 
-// The description of the report, before the rows
+/* The description of the report, before the rows */
 .description {
   color: var(--text-dim);
   font-size: 0.9rem;
