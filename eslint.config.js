@@ -66,6 +66,13 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['**/*.css'],
+    language: 'css/css',
+    languageOptions: {
+      tolerant: true, // Enables loose parsing / browser-style error recovery
+    },
+  },
   reactDoctor.configs.recommended,
   {
     // Warnings are ignored, so make them fail

@@ -1,4 +1,23 @@
 .root {
+  /* Move triangle to the right */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::after {
+    margin-left: auto;
+    content: '◀';
+  }
+
+  &[open] summary::after {
+    content: '▼';
+  }
+
+  /* The heading's padding already separates it from what follows */
+  &:is(details):not([open]) {
+    margin-block-end: calc(-1 * var(--pane-spacing-block));
+  }
+
   > summary,
   > h3 {
     display: flex;
@@ -19,25 +38,8 @@
   &:not([open]) > summary {
     &:hover,
     &:focus-visible {
-      background: color-mix(in srgb, currentColor 10%, transparent);
+      background: color-mix(in srgb, currentcolor 10%, transparent);
     }
-  }
-
-  /* Move triangle to the right */
-  summary::-webkit-details-marker {
-    display: none;
-  }
-  & summary::after {
-    margin-left: auto;
-    content: '◀';
-  }
-  &[open] summary::after {
-    content: '▼';
-  }
-
-  /* The heading's padding already separates it from what follows */
-  &:is(details):not([open]) {
-    margin-block-end: calc(-1 * var(--pane-spacing-block));
   }
 }
 
