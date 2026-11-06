@@ -9,6 +9,7 @@ import * as utilities from './utilities.module.scss';
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
+import { $ } from 'select-dom';
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [pane, setPane] = useGlobalState('pane');
@@ -54,7 +55,16 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   onClick={() => {
                     // Like mobile apps, tapping the current tab scrolls to the top
                     if (isSelected && tabPane !== PaneType.GRAPH) {
-                      globalThis.scrollTo({ top: 0, behavior: 'smooth' });
+                      // The page scrolls on mobile, the inspector and its pane on desktop
+                      const inspector = $('#inspector', document);
+                      for (const element of [
+                        document.documentElement,
+                        inspector,
+                        inspector?.firstElementChild,
+                      ]) {
+                        element?.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+
                       return;
                     }
 
