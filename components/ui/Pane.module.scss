@@ -1,17 +1,17 @@
 @use '../../lib/root.module.scss' as *;
 
 .pane {
-  --pane-padding: 1em;
-  --pane-gap: 1lh;
+  --pane-spacing-inline: 1em;
+  --pane-spacing-block: 1lh;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   flex-grow: 1;
   align-content: start;
-  gap: var(--pane-gap);
+  gap: var(--pane-spacing-block);
   box-sizing: border-box;
   box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
   background-color: var(--bg0);
-  padding: var(--pane-gap) var(--pane-padding);
+  padding: var(--pane-spacing-block) var(--pane-spacing-inline);
   overflow-x: hidden;
   overflow-y: auto;
   color: var(--text);
@@ -40,7 +40,7 @@
 
   // Same full-bleed divider as the sections
   :where(&) hr {
-    margin: 0 calc(-1 * var(--pane-padding));
+    margin: 0 calc(-1 * var(--pane-spacing-inline));
     border: none;
     border-top: solid 1px var(--bg1);
   }

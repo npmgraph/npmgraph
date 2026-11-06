@@ -4,9 +4,9 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-inline: calc(-1 * var(--pane-padding));
+    margin-inline: calc(-1 * var(--pane-spacing-inline));
     border-top: solid 1px var(--bg1);
-    padding: 1em var(--pane-padding);
+    padding: 1em var(--pane-spacing-inline);
 
     // Match native H3 style
     font-weight: bold;
@@ -37,7 +37,7 @@
 
   // The heading's padding already separates it from what follows
   &:is(details):not([open]) {
-    margin-block-end: calc(-1 * var(--pane-gap));
+    margin-block-end: calc(-1 * var(--pane-spacing-block));
   }
 }
 
