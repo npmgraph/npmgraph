@@ -6,7 +6,6 @@ import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import * as utilities from './utilities.module.scss';
-
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
 

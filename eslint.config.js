@@ -68,6 +68,7 @@ export default defineConfig([
         'error',
         {
           warnOnUnassignedImports: true,
+          'newlines-between': 'never',
         },
       ],
     },
