@@ -1,7 +1,11 @@
 // Zebra-striped list rows, shared by the report sections and the module pane
 .rows {
+  --row-inset: 0.5em;
   display: flex;
   flex-direction: column;
+
+  // Stripes extend past the text edge, so the text lines up with the headings
+  margin: 0 calc(-1 * var(--row-inset));
 }
 
 .row {
@@ -9,16 +13,8 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0 0.75em;
-  padding-block: 0.05em;
+  padding: 0.05em var(--row-inset);
   min-width: 0;
-}
-
-.striped {
-  --row-inset: 0.5em;
-
-  // Stripes extend past the text edge, so the text lines up with the headings
-  margin-inline: calc(-1 * var(--row-inset));
-  padding-inline: var(--row-inset);
 
   &:nth-child(even) {
     background-color: rgba(127, 127, 127, 0.06);

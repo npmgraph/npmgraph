@@ -92,7 +92,6 @@ function AdvisoryRow({ advisory }: { advisory: Advisory }) {
   return (
     <Row
       stacked
-      striped
       className={styles[advisory.severity as keyof typeof styles] as string}
     >
       <div className={styles.header}>

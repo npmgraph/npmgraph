@@ -40,7 +40,7 @@ export default function ModulesOutdated() {
           </h4>
           <Rows>
             {modules.map(({ module, status }) => (
-              <Row key={module.key} striped>
+              <Row key={module.key}>
                 <Selectable value={module.key} label={module.label} />
                 <span>→ {status.latest}</span>
               </Row>
