@@ -4,12 +4,11 @@ import {
   type ModuleReplacement,
 } from 'module-replacements';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
-import { Row, Rows } from '../../ui/Row.tsx';
-import * as rowStyles from '../../ui/Row.module.scss';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type Module from '../../../lib/Module.ts';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
+import * as styles from './ModuleReplacementsNative.module.css';
 
 type Mapping = (typeof all.mappings)[string];
 
@@ -25,6 +24,15 @@ function getReplacements(moduleName: string) {
   };
 }
 
+// Render `backticked` parts as code
+function InlineCode({ text }: { text: string }) {
+  return text
+    .split(/`(?<code>[^`]+)`/v)
+    .map((part, index) =>
+      index % 2 === 0 ? part : <code key={part}>{part}</code>,
+    );
+}
+
 function Replacement({ replacement }: { replacement: ModuleReplacement }) {
   switch (replacement.type) {
     case 'native': {
@@ -36,37 +44,37 @@ function Replacement({ replacement }: { replacement: ModuleReplacement }) {
 
       return (
         <>
-          <span>
-            Replaceable with{' '}
-            <code>{replacement.description ?? replacement.id}</code>{' '}
-            {nodeVersion && `available since Node ${nodeVersion} `}
-          </span>
-          <ExternalLink href={url}>
-            {typeof replacement.url === 'string'
-              ? 'Open link'
-              : `Open on ${replacement.url.type}`}
-          </ExternalLink>
+          {replacement.description ? (
+            <>
+              <InlineCode text={replacement.description} />{' '}
+              <ExternalLink href={url}>
+                {typeof replacement.url === 'string'
+                  ? 'link'
+                  : replacement.url.type}
+              </ExternalLink>
+            </>
+          ) : (
+            <ExternalLink href={url}>
+              <code>{replacement.id}</code>
+            </ExternalLink>
+          )}
+          {nodeVersion && ` Node ${nodeVersion}+`}
         </>
       );
     }
 
     case 'documented':
       return (
-        <span>
-          Replaceable with{' '}
-          <ExternalLink
-            href={`https://www.npmjs.com/package/${replacement.replacementModule}`}
-          >
-            {replacement.replacementModule}
-          </ExternalLink>
-        </span>
+        <ExternalLink
+          href={`https://www.npmjs.com/package/${replacement.replacementModule}`}
+        >
+          {replacement.replacementModule}
+        </ExternalLink>
       );
 
     case 'simple':
-      return <span>{replacement.description}</span>;
-
     case 'removal':
-      return <span>{replacement.description}</span>;
+      return <InlineCode text={replacement.description} />;
   }
 }
 
@@ -82,29 +90,26 @@ function ReplacementRow({
   const mappingURL = resolveDocUrl(mapping.url);
 
   return (
-    <Row stacked>
+    <div>
       <dt>
         <Selectable value={module.key} label={module.label} />
-      </dt>
-      <dd className={rowStyles.note}>
-        {replacements.length === 1 ? (
-          <Replacement replacement={replacements[0]!} />
-        ) : (
-          <ul>
-            {replacements.map(r => (
-              <li key={r!.id}>
-                <Replacement replacement={r!} />
-              </li>
-            ))}
-          </ul>
+        {mappingURL && (
+          <>
+            {' • '}
+            <ExternalLink href={mappingURL}>learn more</ExternalLink>
+          </>
         )}
+      </dt>
+      <dd className={styles.replacements}>
+        <ul>
+          {replacements.map(r => (
+            <li key={r!.id}>
+              <Replacement replacement={r!} />
+            </li>
+          ))}
+        </ul>
       </dd>
-      {mappingURL && (
-        <dd className={rowStyles.note}>
-          <ExternalLink href={mappingURL}>Learn more</ExternalLink>
-        </dd>
-      )}
-    </Row>
+    </div>
   );
 }
 
@@ -126,16 +131,14 @@ export default function ModuleReplacementsNative() {
       count={rows.length}
       description={
         <>
-          From the{' '}
+          Modules that can be removed or replaced, from{' '}
           <ExternalLink href="https://github.com/e18e/module-replacements">
             module-replacements
-          </ExternalLink>{' '}
-          project, these modules can be removed or replaced with more modern,
-          streamlined alternatives
+          </ExternalLink>
         </>
       }
     >
-      <Rows as="dl">
+      <dl className={styles.list}>
         {rows.map(({ module, mapping, replacements }) => (
           <ReplacementRow
             key={module.key}
@@ -144,7 +147,7 @@ export default function ModuleReplacementsNative() {
             replacements={replacements}
           />
         ))}
-      </Rows>
+      </dl>
     </ReportItem>
   );
 }
