@@ -1,4 +1,30 @@
 /* Not striped, just a gap between modules */
-.rows {
+.list {
+  display: flex;
+  flex-direction: column;
   gap: 0.5em;
+
+  dt,
+  dd {
+    margin: 0;
+  }
+}
+
+.replacements {
+  padding-inline-start: 1em;
+  min-width: 0;
+  font-style: italic;
+
+  /* Blend in with the text, only the font family differs */
+  code {
+    font: inherit;
+    font-family: ui-monospace, monospace;
+  }
+
+  /* One item per line, marked with an arrow */
+  ul {
+    margin: 0;
+    padding: 0 0 0 2ch;
+    list-style: '→ ';
+  }
 }

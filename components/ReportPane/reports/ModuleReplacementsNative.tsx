@@ -4,8 +4,6 @@ import {
   type ModuleReplacement,
 } from 'module-replacements';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
-import { Row, Rows } from '../../ui/Row.tsx';
-import * as rowStyles from '../../ui/Row.module.scss';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type Module from '../../../lib/Module.ts';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
@@ -92,7 +90,7 @@ function ReplacementRow({
   const mappingURL = resolveDocUrl(mapping.url);
 
   return (
-    <Row stacked>
+    <div>
       <dt>
         <Selectable value={module.key} label={module.label} />
         {mappingURL && (
@@ -102,7 +100,7 @@ function ReplacementRow({
           </>
         )}
       </dt>
-      <dd className={rowStyles.note}>
+      <dd className={styles.replacements}>
         <ul>
           {replacements.map(r => (
             <li key={r!.id}>
@@ -111,7 +109,7 @@ function ReplacementRow({
           ))}
         </ul>
       </dd>
-    </Row>
+    </div>
   );
 }
 
@@ -140,7 +138,7 @@ export default function ModuleReplacementsNative() {
         </>
       }
     >
-      <Rows as="dl" className={styles.rows}>
+      <dl className={styles.list}>
         {rows.map(({ module, mapping, replacements }) => (
           <ReplacementRow
             key={module.key}
@@ -149,7 +147,7 @@ export default function ModuleReplacementsNative() {
             replacements={replacements}
           />
         ))}
-      </Rows>
+      </dl>
     </ReportItem>
   );
 }

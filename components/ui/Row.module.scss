@@ -50,17 +50,10 @@
     flex: 1 1 20ch;
   }
 
-  // Blend in with the text, only the font family differs
   code {
-    font: inherit;
-    font-family: ui-monospace, monospace;
-  }
-
-  // Items, one per line, marked with an arrow
-  ul {
-    margin: 0;
-    padding: 0 0 0 2ch;
-    list-style: '→ ';
+    color: var(--text-dim);
+    font-style: normal;
+    font-weight: bold;
   }
 }
 
