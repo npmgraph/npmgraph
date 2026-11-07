@@ -46,8 +46,8 @@ export function ModuleRows({
     <Rows>
       {[...modules].map(module => (
         <Row
-          striped
           key={module.key}
+          striped
           className={cn({ [styles.bold]: bold?.has(module) })}
         >
           <Selectable value={module.key} label={module.label} />

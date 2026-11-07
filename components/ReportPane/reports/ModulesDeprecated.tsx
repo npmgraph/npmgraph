@@ -21,7 +21,7 @@ export default function ModulesDeprecated() {
         {deprecated
           .toSorted((a, b) => a.name.localeCompare(b.name))
           .map(module => (
-            <Row striped key={module.key}>
+            <Row key={module.key} striped>
               <Selectable value={module.key} label={module.label} />
               <RowNote>&ldquo;{module.package.deprecated}&rdquo;</RowNote>
             </Row>

@@ -29,7 +29,7 @@ export function PeerDependencyRows({
           {pdis.map(pdi => {
             const { name, optional, versionRange, destination } = pdi;
             return (
-              <Row striped key={`${pdi.name}${pdi.versionRange}`}>
+              <Row key={`${pdi.name}${pdi.versionRange}`} striped>
                 <span className={styles.wants}>
                   {name}@{versionRange}
                   {optional ? <i>(optional)</i> : ''}
