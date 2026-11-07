@@ -35,7 +35,7 @@ export default function PreviewWidget() {
   }
 
   return (
-    <ButtonGroup vertical className={styles.root}>
+    <ButtonGroup square vertical className={styles.root}>
       {prUrl ? (
         <Button
           href={prUrl}
