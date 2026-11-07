@@ -1,0 +1,21 @@
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.badges {
+  display: flex;
+  gap: 0.25em;
+}
+
+.badge {
+  opacity: 0.7;
+  font-size: 0.85em;
+  text-decoration: line-through;
+}
+
+.warnIcon {
+  opacity: 0.8;
+  font-size: 0.9em;
+}

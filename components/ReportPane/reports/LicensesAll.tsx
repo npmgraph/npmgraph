@@ -6,6 +6,9 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import { GroupRow } from '../GroupRow.tsx';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
+import * as styles from './LicensesAll.module.css';
+
+const WARN_SYMBOL = '\u{26A0}';
 
 const issueBadges: Record<LicenseIssue, string> = {
   'no-osi': 'OSI',
@@ -26,23 +29,19 @@ function LicenseRow({
     <GroupRow
       modules={modules}
       heading={
-        <div style={{ display: 'flex', gap: '0.5em', alignItems: 'center' }}>
+        <div className={styles.heading}>
+          {issues && issues.length > 0 && (
+            <span className={styles.warnIcon}>{WARN_SYMBOL}</span>
+          )}
           <Selectable
             type={QueryType.License}
             value={license}
             label={license || '(unlicensed)'}
           />
           {issues && issues.length > 0 && (
-            <div style={{ display: 'flex', gap: '0.25em' }}>
+            <div className={styles.badges}>
               {issues.map(issue => (
-                <span
-                  key={issue}
-                  style={{
-                    fontSize: '0.85em',
-                    opacity: 0.7,
-                    textDecoration: 'line-through',
-                  }}
-                >
+                <span key={issue} className={styles.badge}>
                   {issueBadges[issue]}
                 </span>
               ))}
@@ -61,8 +60,14 @@ export default function LicensesAll() {
     return null;
   }
 
+  const hasIssues = licenseIssuesByLicense.size > 0;
+
   return (
-    <ReportItem title="Licenses" count={modulesByLicense.size}>
+    <ReportItem
+      title="Licenses"
+      count={modulesByLicense.size}
+      type={hasIssues ? 'warn' : 'info'}
+    >
       <Rows>
         {[...modulesByLicense]
           .toSorted(([a], [b]) => a.localeCompare(b))

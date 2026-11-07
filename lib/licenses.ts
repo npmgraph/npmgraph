@@ -10,7 +10,7 @@ export type SPDXLicense = {
   licenseId: string;
   seeAlso: string[];
   isOsiApproved: boolean;
-  isFSFLibre?: boolean;
+  isFsfLibre?: boolean;
 };
 
 export type SPDXLicenseList = {
@@ -66,7 +66,7 @@ export function getLicenseIssues(spdxLicense: SPDXLicense): LicenseIssue[] {
     issues.push('no-osi');
   }
 
-  if (spdxLicense.isFSFLibre === false) {
+  if (spdxLicense.isFsfLibre === false) {
     issues.push('no-fsf');
   }
 
