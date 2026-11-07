@@ -50,8 +50,8 @@ export function ReportItem({
       onToggle={() => {
         // Like in the report-only view, a single open section is linkable
         const opened = $$optional('details[data-report-item][open]');
-        // Also update when closing, since the one left open may be a different section
         setSection(
+          // Also update when closing, since the one left open may be a different section
           opened.length === 1 ? opened[0]!.dataset['reportItem'] : null,
         );
       }}
