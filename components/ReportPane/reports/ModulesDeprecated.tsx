@@ -1,7 +1,7 @@
-import { Row, RowNote, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
+import * as styles from './ModuleList.module.css';
 
 export default function ModulesDeprecated() {
   const { deprecated } = useModuleAnalysis();
@@ -17,16 +17,18 @@ export default function ModulesDeprecated() {
       count={deprecated.length}
       description="Deprecated modules are unsupported and may have unpatched security vulnerabilities. See the deprecation notes below for module-specific instructions."
     >
-      <Rows>
+      <dl className={styles.list}>
         {deprecated
           .toSorted((a, b) => a.name.localeCompare(b.name))
           .map(module => (
-            <Row key={module.key}>
-              <Selectable value={module.key} label={module.label} />
-              <RowNote>&ldquo;{module.package.deprecated}&rdquo;</RowNote>
-            </Row>
+            <div key={module.key}>
+              <dt>
+                <Selectable value={module.key} label={module.label} />
+              </dt>
+              <dd className={styles.details}>{module.package.deprecated}</dd>
+            </div>
           ))}
-      </Rows>
+      </dl>
     </ReportItem>
   );
 }
