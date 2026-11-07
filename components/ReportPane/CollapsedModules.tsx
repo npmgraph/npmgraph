@@ -15,6 +15,7 @@ export default function CollapsedModules() {
     <ReportItem
       title="Collapsed modules"
       count={collapse.length}
+      open
       description="Shift-click modules in graph to expand/collapse"
     >
       <ul className={styles.list}>
