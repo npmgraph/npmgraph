@@ -151,7 +151,8 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       return;
     }
 
-    updateSelection(graph, selectedModules, transformRef.current, {
+    updateSelection(graph, selectedModules, {
+      transform: transformRef.current,
       shouldScrollToSelected:
         selectedModules.size > 0 || (previousSelection?.size ?? 0) === 0,
       // Filtering highlights only the matches, not their dependencies
@@ -342,8 +343,15 @@ function updateEdgeSelection(si: SelectionInfo, isSelection: boolean) {
 function updateSelection(
   graph: GraphState,
   modules: Map<string, Module>,
-  transform: ReactZoomPanPinchContentRef | null = null,
-  { shouldScrollToSelected = true, shouldIncludeRelated = true } = {},
+  {
+    transform = null,
+    shouldScrollToSelected = true,
+    shouldIncludeRelated = true,
+  }: {
+    transform?: ReactZoomPanPinchContentRef | null;
+    shouldScrollToSelected?: boolean;
+    shouldIncludeRelated?: boolean;
+  } = {},
 ) {
   // Get selection info
   const si = gatherSelectionInfo(graph, modules.values(), shouldIncludeRelated);
