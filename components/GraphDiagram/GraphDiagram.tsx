@@ -151,13 +151,14 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       return;
     }
 
-    updateSelection(
-      graph,
-      selectedModules,
-      selectedModules.size > 0 || (previousSelection?.size ?? 0) === 0,
-      transformRef.current,
-    );
-  }, [diagramElement, graph, selectedModules, previousSelection]);
+    updateSelection(graph, selectedModules, {
+      transform: transformRef.current,
+      shouldScrollToSelected:
+        selectedModules.size > 0 || (previousSelection?.size ?? 0) === 0,
+      // Filtering highlights only the matches, not their dependencies
+      shouldIncludeRelated: selectType !== QueryType.Search,
+    });
+  }, [diagramElement, graph, selectedModules, previousSelection, selectType]);
 
   // Effect: Colorize nodes
   useEffect(() => {
@@ -342,11 +343,18 @@ function updateEdgeSelection(si: SelectionInfo, isSelection: boolean) {
 function updateSelection(
   graph: GraphState,
   modules: Map<string, Module>,
-  shouldScrollToSelected = true,
-  transform: ReactZoomPanPinchContentRef | null = null,
+  {
+    transform = null,
+    shouldScrollToSelected = true,
+    shouldIncludeRelated = true,
+  }: {
+    transform?: ReactZoomPanPinchContentRef | null;
+    shouldScrollToSelected?: boolean;
+    shouldIncludeRelated?: boolean;
+  } = {},
 ) {
   // Get selection info
-  const si = gatherSelectionInfo(graph, modules.values());
+  const si = gatherSelectionInfo(graph, modules.values(), shouldIncludeRelated);
   const isSelection = modules.size > 0;
 
   // Set selection classes for node and edge elements
