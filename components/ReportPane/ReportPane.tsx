@@ -8,7 +8,7 @@ import CollapsedModules from './CollapsedModules.tsx';
 import * as styles from './ReportPane.module.scss';
 import LicensesAll from './reports/LicensesAll.tsx';
 import LicensesMissing from './reports/LicensesMissing.tsx';
-import LicensesKeyword from './reports/LicensesKeyword.tsx';
+import LicensesDeprecated from './reports/LicensesDeprecated.tsx';
 import MaintainersAll from './reports/MaintainersAll.tsx';
 import MaintainersSolo from './reports/MaintainersSolo.tsx';
 import ModuleReplacementsNative from './reports/ModuleReplacementsNative.tsx';
@@ -74,8 +74,7 @@ export default function ReportPane({
         <PeerDependenciesMissing />
         <MaintainersSolo />
         <LicensesMissing />
-        <LicensesKeyword keyword="obsolete" />
-        <LicensesKeyword keyword="discouraged" />
+        <LicensesDeprecated />
         <ModuleReplacementsNative />
       </AnalysisProvider>
     </Pane>

@@ -1,12 +1,10 @@
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import type Module from '../../../lib/Module.ts';
-import { LICENSES } from '../../../lib/licenses.ts';
 import { Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import { GroupRow } from '../GroupRow.tsx';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
-import * as styles from './LicensesAll.module.css';
 
 function LicenseRow({
   license,
@@ -15,28 +13,15 @@ function LicenseRow({
   license: string;
   modules: Module[];
 }) {
-  const keywords = LICENSES[license.toLowerCase()]?.keywords;
-
   return (
     <GroupRow
       modules={modules}
       heading={
-        <>
-          <Selectable
-            type={QueryType.License}
-            value={license}
-            label={license || '(unlicensed)'}
-          />
-          {keywords && (
-            <div className={styles.keywords}>
-              {keywords.map(k => (
-                <span key={k} className={styles.keyword}>
-                  {k}
-                </span>
-              ))}
-            </div>
-          )}
-        </>
+        <Selectable
+          type={QueryType.License}
+          value={license}
+          label={license || '(unlicensed)'}
+        />
       }
     />
   );

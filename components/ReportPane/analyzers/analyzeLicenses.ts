@@ -1,17 +1,19 @@
 import type Module from '../../../lib/Module.ts';
-import { type OSIKeyword, LICENSES } from '../../../lib/licenses.ts';
+import { getAllLicenses } from '../../../lib/licenses.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
 
 export type LicenseAnalysisState = {
   modulesByLicense: Map<string, Module[]>;
   unlicensedModules: Module[];
-  modulesByKeyword: Map<OSIKeyword, Module[]>;
+  deprecatedLicenseModules: Module[];
 };
 
-export function analyzeLicenses({ moduleInfos }: GraphState) {
+export async function analyzeLicenses({ moduleInfos }: GraphState) {
   const modulesByLicense = new Map<string, Module[]>();
   const unlicensedModules: Module[] = [];
-  const modulesByKeyword = new Map<OSIKeyword, Module[]>();
+  const deprecatedLicenseModules = new Set<Module>();
+
+  const spdxLicenses = await getAllLicenses();
 
   for (const { module } of moduleInfos.values()) {
     // Stub and private modules are not included in the license analysis
@@ -39,19 +41,10 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
       modulesByLicense.get(license)!.push(module);
 
-      // licensesRenderKeywords
-      const keywords = LICENSES[license]?.keywords;
-
-      if (!keywords) {
-        continue;
-      }
-
-      for (const keyword of keywords) {
-        if (!modulesByKeyword.has(keyword)) {
-          modulesByKeyword.set(keyword, []);
-        }
-
-        modulesByKeyword.get(keyword)!.push(module);
+      // licensesRenderDeprecated
+      const spdxLicense = spdxLicenses.get(license);
+      if (spdxLicense?.isDeprecatedLicenseId) {
+        deprecatedLicenseModules.add(module);
       }
     }
   }
@@ -59,6 +52,6 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
   return {
     modulesByLicense,
     unlicensedModules,
-    modulesByKeyword,
+    deprecatedLicenseModules: [...deprecatedLicenseModules],
   };
 }
