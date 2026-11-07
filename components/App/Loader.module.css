@@ -31,8 +31,8 @@
   inset: 0;
   background: repeating-linear-gradient(
     -45deg,
-    white 0,
-    white 20px,
+    var(--text-on-accent) 0,
+    var(--text-on-accent) 20px,
     var(--accent) 20px,
     var(--accent) 40px
   );

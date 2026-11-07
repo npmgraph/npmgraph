@@ -37,7 +37,7 @@ export default function Flash() {
               notifyFlashElementReady(entry.id, element);
             }
           }}
-          className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
+          className={flashStyles.flash}
           style={{
             maxWidth: `${maxWidth}px`,
             backgroundColor: entry.backgroundColor,
