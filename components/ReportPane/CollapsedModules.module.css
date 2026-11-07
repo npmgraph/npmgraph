@@ -35,9 +35,3 @@
 .expandAll {
   align-self: flex-start;
 }
-
-.hint {
-  margin: 0 0 0.5em;
-  color: var(--text-dim);
-  font-size: 90%;
-}

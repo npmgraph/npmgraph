@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import useGraph from '../../hooks/useGraph.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
@@ -8,7 +8,6 @@ import { Button } from '../Button.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
-import { ModuleFilterContext } from './ModuleFilterContext.ts';
 import * as styles from './ReportPane.module.scss';
 import LicensesAll from './reports/LicensesAll.tsx';
 import LicensesMissing from './reports/LicensesMissing.tsx';
@@ -31,6 +30,7 @@ export default function ReportPane({
   const graph = useGraph();
   const [isReportOnly, setReportOnly] = useReportOnly();
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
+  const filterListId = useId();
   const [filter, setFilter] = useState(
     selectType === QueryType.Search ? selectValue : '',
   );
@@ -71,6 +71,7 @@ export default function ReportPane({
             className={styles.filter}
             placeholder="Filter modules…"
             aria-label="Filter modules"
+            list={filterListId}
             value={filter}
             autoCapitalize="off"
             autoComplete="off"
@@ -86,28 +87,31 @@ export default function ReportPane({
               );
             }}
           />
+          <datalist id={filterListId}>
+            {[...graph.moduleInfos.values()].map(({ module }) => (
+              <option key={module.key} value={module.label} />
+            ))}
+          </datalist>
           <CollapsedModules />
         </>
       )}
-      <ModuleFilterContext value={filter}>
-        <AnalysisProvider>
-          <ModulesAll />
-          <PeerDependenciesAll />
-          <MaintainersAll />
-          <LicensesAll />
+      <AnalysisProvider>
+        <ModulesAll />
+        <PeerDependenciesAll />
+        <MaintainersAll />
+        <LicensesAll />
 
-          <ModuleVulnerabilities />
-          <ModulesDeprecated />
-          <ModulesOutdated />
-          <ModulesRepeated />
-          <PeerDependenciesMissing />
-          <MaintainersSolo />
-          <LicensesMissing />
-          <LicensesKeyword keyword="obsolete" />
-          <LicensesKeyword keyword="discouraged" />
-          <ModuleReplacementsNative />
-        </AnalysisProvider>
-      </ModuleFilterContext>
+        <ModuleVulnerabilities />
+        <ModulesDeprecated />
+        <ModulesOutdated />
+        <ModulesRepeated />
+        <PeerDependenciesMissing />
+        <MaintainersSolo />
+        <LicensesMissing />
+        <LicensesKeyword keyword="obsolete" />
+        <LicensesKeyword keyword="discouraged" />
+        <ModuleReplacementsNative />
+      </AnalysisProvider>
     </Pane>
   );
 }
