@@ -354,10 +354,13 @@ describe('panes', () => {
     TIMEOUT,
   );
 
-  it(
-    'keeps the Report tab after a refresh on mobile',
-    async () => {
-      await goto('?q=express', 400);
+  it.each([
+    ['desktop', 1280],
+    ['mobile', 400],
+  ])(
+    'keeps the Report tab after a refresh on %s',
+    async (_name, width) => {
+      await goto('?q=express', width);
       await nodeAppears();
       await userEvent.click(tab('Report'));
       await hashHas('tab=report');
