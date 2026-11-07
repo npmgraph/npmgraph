@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import useLocation from '../hooks/useLocation.ts';
-import OffsiteLinkIcon from '../images/icons/offsite-link.svg?react';
 import PullRequestIcon from '../images/icons/pull-request.svg?react';
 import XIcon from '../images/icons/x.svg?react';
 import * as utilities from './ui/utilities.module.css';
@@ -53,7 +52,7 @@ export default function PreviewWidget() {
         rel="noopener noreferrer"
         title="Compare to production npmgraph"
       >
-        <OffsiteLinkIcon />
+        <span className={styles.production}>JS.ORG</span>
       </Button>
       <Button
         className={utilities.brightHover}

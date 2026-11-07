@@ -3,4 +3,16 @@
   z-index: 30;
   /* Place it on the bottom left, above the graph controls if they are on screen */
   inset: auto auto 4.4em 1em;
+
+  & > * {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.production {
+  font:
+    300 11px/16px 'Roboto Condensed',
+    sans-serif;
+  letter-spacing: 0.02em;
 }
