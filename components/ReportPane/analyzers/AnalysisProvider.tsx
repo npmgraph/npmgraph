@@ -32,7 +32,5 @@ export default function AnalysisProvider({
 
   return analysis ? (
     <AnalysisContext value={analysis}>{children}</AnalysisContext>
-  ) : (
-    <>{children}</>
-  );
+  ) : null;
 }
