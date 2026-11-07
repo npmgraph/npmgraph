@@ -1,5 +1,9 @@
 import type { ReactNode } from 'react';
+import { $$optional } from 'select-dom';
+import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
+import { sectionName } from '../../hooks/useSectionTarget.ts';
+import { PARAM_SECTION } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
@@ -21,6 +25,7 @@ export function ReportItem({
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
+  const [, setSection] = useHashParam(PARAM_SECTION);
   const icon = SYMBOLS[type] && (
     <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
   );
@@ -36,7 +41,21 @@ export function ReportItem({
       {body}
     </DocumentSection>
   ) : (
-    <CollapsibleSection open={false} icon={icon} title={title} count={count}>
+    <CollapsibleSection
+      open={false}
+      icon={icon}
+      title={title}
+      count={count}
+      data-report-item={sectionName(title)}
+      onToggle={() => {
+        // Like in the report-only view, a single open section is linkable
+        const opened = $$optional('details[data-report-item][open]');
+        setSection(
+          // Also update when closing, since the one left open may be a different section
+          opened.length === 1 ? opened[0]!.dataset['reportItem'] : null,
+        );
+      }}
+    >
       {body}
     </CollapsibleSection>
   );
