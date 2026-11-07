@@ -57,10 +57,10 @@ const hashHas = async (s: string) =>
     },
   );
 
-async function goto(path: string) {
+async function goto(path: string, width = 1280) {
   errors = [];
   iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;inset:0;width:1280px;height:800px';
+  iframe.style.cssText = `position:fixed;inset:0;width:${width}px;height:800px`;
   document.body.append(iframe);
   iframe.src = `/index.html${path}`;
   await new Promise(resolve => {
@@ -350,6 +350,32 @@ describe('panes', () => {
       expect($$optional('a[href^="https://npmx.dev/"]', doc())).toHaveLength(0);
       win().localStorage.removeItem('npmgraph-custom-module-links');
       win().localStorage.removeItem('npmgraph-module-link-providers');
+    },
+    TIMEOUT,
+  );
+
+  it.each([
+    ['desktop', 1280],
+    ['mobile', 400],
+  ])(
+    'keeps the Report tab after a refresh on %s',
+    async (_name, width) => {
+      await goto('?q=express', width);
+      await nodeAppears();
+      await userEvent.click(tab('Report'));
+      await hashHas('tab=report');
+
+      win().location.reload();
+      await new Promise(resolve => {
+        iframe.addEventListener('load', resolve, { once: true });
+      });
+      // The graph stays mounted while hidden, so it's a sign the page settled
+      await nodeAppears();
+      await vi.waitFor(() => {
+        expect($('[role="tab"][aria-selected="true"]', doc()).textContent).toBe(
+          'Report',
+        );
+      });
     },
     TIMEOUT,
   );
