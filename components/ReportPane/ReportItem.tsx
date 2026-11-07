@@ -47,12 +47,9 @@ export function ReportItem({
       title={title}
       count={count}
       data-report-item={sectionName(title)}
-      onToggle={event => {
+      onToggle={() => {
         // Like in the report-only view, a single open section is linkable
-        const opened = $$(
-          'details[data-report-item][open]',
-          event.currentTarget.parentElement ?? document,
-        );
+        const opened = $$('details[data-report-item][open]');
         setSection(
           opened.length === 1 ? opened[0]!.dataset['reportItem'] : null,
         );
