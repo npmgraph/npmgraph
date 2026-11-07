@@ -1,18 +1,18 @@
-import { QueryType } from '../../../lib/ModuleCache.ts';
 import type Module from '../../../lib/Module.ts';
+import { QueryType } from '../../../lib/ModuleCache.ts';
 import type { LicenseIssue } from '../../../lib/licenses.ts';
 import { Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import { GroupRow } from '../GroupRow.tsx';
-import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
+import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import * as styles from './LicensesAll.module.css';
 
 const WARN_SYMBOL = '\u{26A0}';
 
 const issueBadges: Record<LicenseIssue, string> = {
-  'no-osi': 'OSI',
-  'no-fsf': 'FSF',
+  'no-osi': 'non-OSI',
+  'no-fsf': 'non-FSF',
   deprecated: 'Deprecated',
 };
 
@@ -30,9 +30,6 @@ function LicenseRow({
       modules={modules}
       heading={
         <div className={styles.heading}>
-          {issues && issues.length > 0 && (
-            <span className={styles.warnIcon}>{WARN_SYMBOL}</span>
-          )}
           <Selectable
             type={QueryType.License}
             value={license}
@@ -41,9 +38,10 @@ function LicenseRow({
           {issues && issues.length > 0 && (
             <div className={styles.badges}>
               {issues.map(issue => (
-                <span key={issue} className={styles.badge}>
-                  {issueBadges[issue]}
-                </span>
+                <div key={issue}>
+                  <span className={styles.warnIcon}>{WARN_SYMBOL}</span>
+                  <span className={styles.badge}>{issueBadges[issue]}</span>
+                </div>
               ))}
             </div>
           )}
