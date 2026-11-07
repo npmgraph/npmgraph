@@ -2,7 +2,7 @@ import useCollapse from '../../hooks/useCollapse.ts';
 import { toggleItem } from '../../lib/array-util.ts';
 import { Button } from '../Button.tsx';
 import { CollapsibleSection } from '../ui/Section.tsx';
-import * as styles from './CollapsedModules.module.scss';
+import * as styles from './CollapsedModules.module.css';
 
 export default function CollapsedModules() {
   const [collapse, setCollapse] = useCollapse();

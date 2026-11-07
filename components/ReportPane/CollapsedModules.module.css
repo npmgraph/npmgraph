@@ -28,7 +28,7 @@
 
   &:hover,
   &:focus-visible {
-    background: color-mix(in srgb, currentColor 10%, transparent);
+    background-color: color-mix(in srgb, currentcolor 10%, transparent);
   }
 }
 
