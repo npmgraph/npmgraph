@@ -1,4 +1,4 @@
-/* Not striped, just a gap between modules */
+/* Module list shared by reports: not striped, just a gap between modules */
 .list {
   display: flex;
   flex-direction: column;
@@ -10,7 +10,7 @@
   }
 }
 
-.replacements {
+.details {
   padding-inline-start: 1em;
   min-width: 0;
 
