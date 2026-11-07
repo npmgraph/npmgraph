@@ -8,7 +8,7 @@ import { Selectable } from '../../ui/Selectable.tsx';
 import type Module from '../../../lib/Module.ts';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
-import * as styles from './ModuleReplacementsNative.module.css';
+import * as styles from './ModuleList.module.css';
 
 type Mapping = (typeof all.mappings)[string];
 
@@ -100,7 +100,7 @@ function ReplacementRow({
           </>
         )}
       </dt>
-      <dd className={styles.replacements}>
+      <dd className={styles.details}>
         <ul>
           {replacements.map(r => (
             <li key={r!.id}>
