@@ -45,13 +45,20 @@ function Replacement({ replacement }: { replacement: ModuleReplacement }) {
 
       return (
         <>
-          <ExternalLink href={url}>
-            {replacement.description ? (
-              <InlineCode text={replacement.description} />
-            ) : (
+          {replacement.description ? (
+            <>
+              <InlineCode text={replacement.description} />{' '}
+              <ExternalLink href={url}>
+                {typeof replacement.url === 'string'
+                  ? 'link'
+                  : replacement.url.type}
+              </ExternalLink>
+            </>
+          ) : (
+            <ExternalLink href={url}>
               <code>{replacement.id}</code>
-            )}
-          </ExternalLink>
+            </ExternalLink>
+          )}
           {nodeVersion && ` Node ${nodeVersion}+`}
         </>
       );
