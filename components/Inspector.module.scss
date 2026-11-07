@@ -4,12 +4,19 @@
   display: flex;
   flex-shrink: 1;
   flex-direction: column;
+  box-shadow: inset 3px 2px 6px var(--bg0-shadow-color);
+  background-color: var(--bg0);
   width: var(--inspector-size);
-  overflow: auto;
+  // The only scroll container of the panes
+  overflow-x: hidden;
+  overflow-y: auto;
   color: var(--text);
 
+  // The page scrolls instead, which also lets section headings stick to it
   @include tight-screen {
     flex-grow: 1;
+    box-shadow: none;
+    overflow: clip;
   }
 
   @media print {
@@ -19,10 +26,5 @@
   &.only {
     flex-grow: 1;
     width: auto;
-
-    /* Let section headings stick to the page */
-    @include tight-screen {
-      overflow: clip;
-    }
   }
 }

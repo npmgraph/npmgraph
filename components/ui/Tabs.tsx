@@ -1,11 +1,12 @@
 import type { HTMLProps } from 'react';
+import { $ } from 'select-dom';
 import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
-import * as utilities from './utilities.module.scss';
+import * as utilities from './utilities.module.css';
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
 
@@ -51,6 +52,17 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   aria-selected={isSelected}
                   className={utilities.brightHover}
                   onClick={() => {
+                    // Like mobile apps, tapping the current tab scrolls to the top
+                    if (isSelected && tabPane !== PaneType.GRAPH) {
+                      // The page scrolls on tight screens, the inspector otherwise
+                      const scroller = isTightScreen
+                        ? document.documentElement
+                        : $('#inspector');
+                      scroller?.scrollTo({ top: 0, behavior: 'smooth' });
+
+                      return;
+                    }
+
                     setHide(null);
                     // The graph isn't a tab on wide screens, so go back to the report
                     setPane(

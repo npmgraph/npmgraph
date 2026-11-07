@@ -49,6 +49,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   return (
     <div
+      id="inspector"
       className={cn(
         styles.inspector,
         { [styles.only]: isReportOnly },
