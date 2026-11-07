@@ -30,6 +30,7 @@ export const QueryType = {
   Exact: 'exact',
   License: 'license',
   Maintainer: 'maintainer',
+  Search: 'search',
 } as const;
 
 export type QueryTypeValue = (typeof QueryType)[keyof typeof QueryType];
@@ -228,6 +229,12 @@ export function queryModuleCache(
         break;
       }
 
+      case QueryType.Search:
+        if (module.label.toLowerCase().includes(queryValue.toLowerCase())) {
+          results.set(module.key, module);
+        }
+
+        break;
       case QueryType.License:
         if (module.getLicenses().includes(queryValue.toLowerCase())) {
           results.set(module.key, module);

@@ -256,6 +256,8 @@ describe('panes', () => {
         $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),
       ).toBeDefined();
       await userEvent.click(tab('View'));
+      // The View pane can take longer than the locator's own wait to render
+      await appears('details > summary');
       await userEvent.click(app().getByCSS('details > summary'));
       const textarea = $(
         'textarea[aria-label="Custom link providers for Module tab"]',
