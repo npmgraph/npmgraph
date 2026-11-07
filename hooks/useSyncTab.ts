@@ -7,7 +7,7 @@ import {
   type PaneTypes,
 } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
-import { queryModuleCache } from '../lib/ModuleCache.ts';
+import { QueryType, queryModuleCache } from '../lib/ModuleCache.ts';
 import useGraphSelection from './useGraphSelection.ts';
 import { useQuery } from './useQuery.ts';
 import { patchLocation } from './useLocation.ts';
@@ -64,7 +64,8 @@ export default function useSyncTab() {
   let defaultPane: PaneTypes = PaneType.REPORT;
   if (graph.entryModules.size === 0) {
     defaultPane = PaneType.INFO;
-  } else if (nSelected === 1) {
+  } else if (nSelected === 1 && selectType !== QueryType.Search) {
+    // Filtering from the Report tab shouldn't switch to the Module tab
     defaultPane = PaneType.MODULE;
   }
 
