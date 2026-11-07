@@ -15,7 +15,6 @@ const sha256 = async (text: string) => {
 
 type GravatarProps = {
   email: string;
-  username: string;
   size?: number;
 } & Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'>;
 
@@ -44,7 +43,6 @@ export function Gravatar({ email, size = 32, ...props }: GravatarProps) {
 
 function GravatarImage({
   hashPromise,
-  username,
   size = 32,
   ...props
 }: Omit<GravatarProps, 'email'> & { hashPromise: Promise<string> }) {
@@ -56,7 +54,8 @@ function GravatarImage({
       loading="lazy"
       width={size}
       height={size}
-      alt={`${username}'s avatar`}
+      // Decorative, the name is always shown next to it
+      alt=""
       src={`https://www.gravatar.com/avatar/${hash}?s=${size * 2}`}
       {...props}
     />

@@ -25,7 +25,11 @@ export default function GraphDiagramExportButtons() {
   return (
     <>
       <ButtonGroup>
-        <Button title="Download graph as SVG" onClick={downloadSvg}>
+        <Button
+          title="Download graph as SVG"
+          aria-label="Download graph as SVG"
+          onClick={downloadSvg}
+        >
           <DownloadIcon />
         </Button>
       </ButtonGroup>
@@ -34,6 +38,7 @@ export default function GraphDiagramExportButtons() {
           <>
             <Button
               title="Copy graph as PNG"
+              aria-label="Copy graph as PNG"
               onClick={() => {
                 setIsCopying(false);
                 void copyPng();
@@ -43,6 +48,7 @@ export default function GraphDiagramExportButtons() {
             </Button>
             <Button
               title="Copy graph as Mermaid in Markdown"
+              aria-label="Copy graph as Mermaid in Markdown"
               onClick={() => {
                 setIsCopying(false);
                 if (
@@ -60,6 +66,7 @@ export default function GraphDiagramExportButtons() {
         ) : (
           <Button
             title="Copy graph"
+            aria-label="Copy graph"
             onClick={() => {
               setIsCopying(true);
             }}

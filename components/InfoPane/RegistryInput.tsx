@@ -1,4 +1,4 @@
-import { Suspense, use, useEffect, useState } from 'react';
+import { Suspense, use, useEffect, useId, useState } from 'react';
 import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
 import useDebouncedValue from '../../hooks/useDebouncedValue.ts';
 import usePromise from '../../hooks/usePromise.ts';
@@ -37,6 +37,7 @@ function RegistryStatus({
 }
 
 export default function RegistryInput() {
+  const inputId = useId();
   const [registry, setRegistry] = useRegistry();
   const [value, setValue] = useState(registry ?? '');
   const debouncedValue = useDebouncedValue(value, 1000);
@@ -54,15 +55,16 @@ export default function RegistryInput() {
 
   return (
     <div className={styles.root}>
-      <span>Registry:</span>
+      <label htmlFor={inputId}>Registry:</label>
       <input
+        id={inputId}
         type="text"
         value={value}
         placeholder={DEFAULT_NPM_REGISTRY}
         onChange={handleChange}
         onBlur={handleBlur}
       />
-      <span className={styles.status}>
+      <span className={styles.status} role="status">
         {value === debouncedValue ? (
           <Suspense fallback={CHECKING}>
             <RegistryStatus

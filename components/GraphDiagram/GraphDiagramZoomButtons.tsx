@@ -18,6 +18,7 @@ export function GraphDiagramZoomButtons() {
       </Button>
       <Button
         title="Zoom to fit"
+        aria-label="Zoom to fit"
         onClick={() => {
           void controls.fitToView({ maxScale: 1 });
         }}

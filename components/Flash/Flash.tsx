@@ -28,7 +28,7 @@ export default function Flash() {
   );
 
   return (
-    <div className={flashStyles.root} style={{ top: `${top}px` }}>
+    <div className={flashStyles.root} style={{ top: `${top}px` }} role="status">
       {entries.map(entry => (
         <div
           key={entry.id}
