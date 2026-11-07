@@ -17,6 +17,11 @@ export default function useSectionTarget<T extends HTMLElement>(name: string) {
     }
 
     if (ref.current instanceof HTMLDetailsElement) {
+      // Already open, e.g. the user just opened it, so don't jump
+      if (ref.current.open) {
+        return;
+      }
+
       ref.current.open = true;
     }
 
