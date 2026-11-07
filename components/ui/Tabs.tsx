@@ -16,7 +16,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [tab, selectTab] = useTab();
   const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const isTightScreen = useIsTightScreen();
-  const [isReportOnly, setReportOnly] = useReportOnly();
+  const [isReportOnly, , leaveReportOnly] = useReportOnly();
   const isInspectorOpen = isReportOnly || tab !== PaneType.NONE;
   // The report-only view doesn't change the selected tab
   const currentTab = isReportOnly ? PaneType.REPORT : tab;
@@ -80,17 +80,25 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                       return;
                     }
 
-                    if (id === GRAPH) {
-                      setReportOnly(false);
-                      if (tab === PaneType.NONE) {
-                        selectTab(null);
+                    const show = () => {
+                      if (id === GRAPH) {
+                        if (tab === PaneType.NONE) {
+                          selectTab(null);
+                        }
+
+                        setGraphVisible(true);
+                        return;
                       }
 
-                      setGraphVisible(true);
+                      selectTab(id);
+                    };
+
+                    if (isReportOnly) {
+                      leaveReportOnly(show);
                       return;
                     }
 
-                    selectTab(id);
+                    show();
                   }}
                 >
                   {label}
