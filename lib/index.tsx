@@ -11,6 +11,7 @@ import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
 import { disableBugsnag } from './bugsnag.ts';
 import { flash } from './flash.ts';
+import { handleGlobalError } from './global-errors.ts';
 
 // A deploy likely replaced the fingerprinted chunks this page references
 globalThis.addEventListener('vite:preloadError', event => {
@@ -84,10 +85,7 @@ function detectFeatures() {
   return unsupported;
 }
 
-globalThis.addEventListener('error', error => {
-  console.error(error);
-  flash(error.message);
-});
+globalThis.addEventListener('error', handleGlobalError);
 
 globalThis.addEventListener('unhandledrejection', error => {
   console.error(error);
