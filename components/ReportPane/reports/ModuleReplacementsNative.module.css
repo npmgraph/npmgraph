@@ -1,0 +1,4 @@
+/* Not striped, just a gap between modules */
+.rows {
+  gap: 0.5em;
+}

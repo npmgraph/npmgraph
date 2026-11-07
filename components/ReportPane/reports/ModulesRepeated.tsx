@@ -37,7 +37,7 @@ export default function ModulesRepeated() {
     >
       <Rows>
         {repeated.map(([name, versions]) => (
-          <Row key={name}>
+          <Row striped key={name}>
             <Selectable className={styles.name} value={name} />
             {versions.map(version => (
               <Selectable

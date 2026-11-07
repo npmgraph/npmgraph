@@ -15,10 +15,10 @@
   gap: 0 0.75em;
   padding: 0.05em var(--row-inset);
   min-width: 0;
+}
 
-  &:nth-child(even) {
-    background-color: rgba(127, 127, 127, 0.06);
-  }
+.striped:nth-child(even) {
+  background-color: rgba(127, 127, 127, 0.06);
 }
 
 // One child per line, e.g. a term and its definition

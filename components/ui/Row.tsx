@@ -14,12 +14,17 @@ export function Rows({
 
 export function Row({
   stacked,
+  striped,
   className,
   ...props
-}: HTMLProps<HTMLDivElement> & { stacked?: boolean }) {
+}: HTMLProps<HTMLDivElement> & { stacked?: boolean; striped?: boolean }) {
   return (
     <div
-      className={cn(styles.row, { [styles.stacked]: stacked }, className)}
+      className={cn(
+        styles.row,
+        { [styles.stacked]: stacked, [styles.striped]: striped },
+        className,
+      )}
       {...props}
     />
   );
@@ -41,6 +46,7 @@ export function ModuleRows({
     <Rows>
       {[...modules].map(module => (
         <Row
+          striped
           key={module.key}
           className={cn({ [styles.bold]: bold?.has(module) })}
         >

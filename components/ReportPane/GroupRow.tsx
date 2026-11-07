@@ -13,7 +13,7 @@ export function GroupRow({
   modules: Iterable<Module>;
 }) {
   return (
-    <Row className={styles.group}>
+    <Row striped className={styles.group}>
       <div className={styles.heading}>{heading}</div>
       <div className={styles.modules}>
         {[...modules].map(module => (

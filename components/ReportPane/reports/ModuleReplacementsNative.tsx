@@ -6,6 +6,7 @@ import {
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Row, Rows } from '../../ui/Row.tsx';
 import * as rowStyles from '../../ui/Row.module.scss';
+import * as styles from './ModuleReplacementsNative.module.css';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type Module from '../../../lib/Module.ts';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
@@ -139,7 +140,7 @@ export default function ModuleReplacementsNative() {
         </>
       }
     >
-      <Rows as="dl">
+      <Rows as="dl" className={styles.rows}>
         {rows.map(({ module, mapping, replacements }) => (
           <ReplacementRow
             key={module.key}
