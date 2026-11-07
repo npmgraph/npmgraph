@@ -2,13 +2,18 @@
 
 .toolbar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   gap: 1em;
 
   button {
     flex: none;
   }
+}
+
+.description {
+  color: var(--text-dim);
+  font-size: 90%;
 }
 
 .filter {

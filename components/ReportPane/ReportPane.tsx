@@ -55,6 +55,9 @@ export default function ReportPane({
       {!isReportOnly && (
         <>
           <div className={styles.toolbar}>
+            <div className={styles.description}>
+              Show the report as a full-page document, without the graph
+            </div>
             <Button
               onClick={() => {
                 setReportOnly(true);
@@ -63,7 +66,6 @@ export default function ReportPane({
               Report only
             </Button>
           </div>
-          <CollapsedModules />
           <input
             type="search"
             className={styles.filter}
@@ -84,6 +86,7 @@ export default function ReportPane({
               );
             }}
           />
+          <CollapsedModules />
         </>
       )}
       <ModuleFilterContext value={filter}>

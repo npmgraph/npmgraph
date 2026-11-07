@@ -7,11 +7,12 @@ import * as styles from './CollapsedModules.module.scss';
 export default function CollapsedModules() {
   const [collapse, setCollapse] = useCollapse();
 
+  if (collapse.length === 0) {
+    return null;
+  }
+
   return (
-    <CollapsibleSection
-      title="Collapsed modules"
-      count={collapse.length || undefined}
-    >
+    <CollapsibleSection title="Collapsed modules" count={collapse.length}>
       <p className={styles.hint}>
         Shift-click modules in graph to expand/collapse
       </p>
