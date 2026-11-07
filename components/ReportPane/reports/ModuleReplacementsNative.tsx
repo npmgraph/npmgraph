@@ -25,6 +25,15 @@ function getReplacements(moduleName: string) {
   };
 }
 
+// Render `backticked` parts as code
+function InlineCode({ text }: { text: string }) {
+  return text
+    .split(/`(?<code>[^`]+)`/v)
+    .map((part, index) =>
+      index % 2 === 0 ? part : <code key={part}>{part}</code>,
+    );
+}
+
 function Replacement({ replacement }: { replacement: ModuleReplacement }) {
   switch (replacement.type) {
     case 'native': {
@@ -37,7 +46,11 @@ function Replacement({ replacement }: { replacement: ModuleReplacement }) {
       return (
         <>
           <ExternalLink href={url}>
-            <code>{replacement.description ?? replacement.id}</code>
+            {replacement.description ? (
+              <InlineCode text={replacement.description} />
+            ) : (
+              <code>{replacement.id}</code>
+            )}
           </ExternalLink>
           {nodeVersion && ` Node ${nodeVersion}+`}
         </>
@@ -55,7 +68,7 @@ function Replacement({ replacement }: { replacement: ModuleReplacement }) {
 
     case 'simple':
     case 'removal':
-      return <span>{replacement.description}</span>;
+      return <InlineCode text={replacement.description} />;
   }
 }
 
@@ -74,6 +87,12 @@ function ReplacementRow({
     <Row stacked>
       <dt>
         <Selectable value={module.key} label={module.label} />
+        {mappingURL && (
+          <>
+            {' • '}
+            <ExternalLink href={mappingURL}>learn more</ExternalLink>
+          </>
+        )}
       </dt>
       <dd className={rowStyles.note}>
         <ul>
@@ -84,11 +103,6 @@ function ReplacementRow({
           ))}
         </ul>
       </dd>
-      {mappingURL && (
-        <dd className={rowStyles.note}>
-          <ExternalLink href={mappingURL}>Learn more</ExternalLink>
-        </dd>
-      )}
     </Row>
   );
 }
