@@ -9,6 +9,7 @@ import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
 import * as styles from './GraphDiagram.module.scss';
 
 // Select a module (or deselect with an empty click), or collapse it with Shift
+// Also used for Enter/Space on a focused node
 export default function useGraphClick() {
   const [, setPane] = useGlobalState('pane');
   const [, setZenMode] = useHashParam(PARAM_HIDE);
@@ -19,7 +20,7 @@ export default function useGraphClick() {
     setCollapse(toggleItem(collapse, name));
   }
 
-  return (event: React.MouseEvent) => {
+  return (event: React.MouseEvent | React.KeyboardEvent) => {
     const { target } = event;
     if (
       !(target instanceof Element) ||

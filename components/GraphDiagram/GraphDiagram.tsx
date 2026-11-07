@@ -196,7 +196,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         excluded: ['node'],
       }}
     >
-      {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- Already handled by onEsc() */}
+      {/* eslint-disable-next-line react-doctor/no-static-element-interactions -- Keyboard events are handled for the nodes inside */}
       <div
         className={styles.root}
         onPointerDown={() => {
@@ -210,6 +210,19 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         onDragStart={event => {
           // Dragging a node or link would start the browser's drag and drop
           event.preventDefault();
+        }}
+        onKeyDown={event => {
+          // Nodes are focusable buttons, but SVG elements don't turn Enter/Space into clicks
+          if (
+            (event.key !== 'Enter' && event.key !== ' ') ||
+            !(event.target instanceof Element) ||
+            !event.target.matches('g.node')
+          ) {
+            return;
+          }
+
+          event.preventDefault();
+          handleGraphClick(event);
         }}
         onClick={event => {
           const start = pointerDownPositionRef.current;
