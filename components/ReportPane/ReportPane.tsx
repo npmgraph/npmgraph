@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import useGraph from '../../hooks/useGraph.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
@@ -62,24 +61,22 @@ export default function ReportPane({
           <CollapsedModules />
         </>
       )}
-      <Suspense>
-        <AnalysisProvider>
-          <ModulesAll />
-          <PeerDependenciesAll />
-          <MaintainersAll />
-          <LicensesAll />
+      <AnalysisProvider>
+        <ModulesAll />
+        <PeerDependenciesAll />
+        <MaintainersAll />
+        <LicensesAll />
 
-          <ModuleVulnerabilities />
-          <ModulesDeprecated />
-          <ModulesOutdated />
-          <ModulesRepeated />
-          <PeerDependenciesMissing />
-          <MaintainersSolo />
-          <LicensesMissing />
-          <LicensesDeprecated />
-          <ModuleReplacementsNative />
-        </AnalysisProvider>
-      </Suspense>
+        <ModuleVulnerabilities />
+        <ModulesDeprecated />
+        <ModulesOutdated />
+        <ModulesRepeated />
+        <PeerDependenciesMissing />
+        <MaintainersSolo />
+        <LicensesMissing />
+        <LicensesDeprecated />
+        <ModuleReplacementsNative />
+      </AnalysisProvider>
     </Pane>
   );
 }
