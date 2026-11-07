@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { $$ } from 'select-dom';
+import { $$optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
@@ -49,7 +49,8 @@ export function ReportItem({
       data-report-item={sectionName(title)}
       onToggle={() => {
         // Like in the report-only view, a single open section is linkable
-        const opened = $$('details[data-report-item][open]');
+        const opened = $$optional('details[data-report-item][open]');
+        // Also update when closing, since the one left open may be a different section
         setSection(
           opened.length === 1 ? opened[0]!.dataset['reportItem'] : null,
         );
