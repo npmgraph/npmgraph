@@ -31,6 +31,10 @@
   dt {
     margin: 0;
   }
+
+  > .note {
+    padding-inline-start: 1em;
+  }
 }
 
 // Secondary text of a row, e.g. why a module is deprecated
