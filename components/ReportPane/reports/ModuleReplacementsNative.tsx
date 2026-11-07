@@ -35,31 +35,27 @@ function Replacement({ replacement }: { replacement: ModuleReplacement }) {
       )?.minVersion;
 
       return (
-        <span>
-          →{' '}
+        <>
           <ExternalLink href={url}>
             <code>{replacement.description ?? replacement.id}</code>
           </ExternalLink>
           {nodeVersion && ` Node ${nodeVersion}+`}
-        </span>
+        </>
       );
     }
 
     case 'documented':
       return (
-        <span>
-          →{' '}
-          <ExternalLink
-            href={`https://www.npmjs.com/package/${replacement.replacementModule}`}
-          >
-            {replacement.replacementModule}
-          </ExternalLink>
-        </span>
+        <ExternalLink
+          href={`https://www.npmjs.com/package/${replacement.replacementModule}`}
+        >
+          {replacement.replacementModule}
+        </ExternalLink>
       );
 
     case 'simple':
     case 'removal':
-      return <span>→ {replacement.description}</span>;
+      return <span>{replacement.description}</span>;
   }
 }
 
@@ -80,17 +76,13 @@ function ReplacementRow({
         <Selectable value={module.key} label={module.label} />
       </dt>
       <dd className={rowStyles.note}>
-        {replacements.length === 1 ? (
-          <Replacement replacement={replacements[0]!} />
-        ) : (
-          <ul>
-            {replacements.map(r => (
-              <li key={r!.id}>
-                <Replacement replacement={r!} />
-              </li>
-            ))}
-          </ul>
-        )}
+        <ul>
+          {replacements.map(r => (
+            <li key={r!.id}>
+              <Replacement replacement={r!} />
+            </li>
+          ))}
+        </ul>
       </dd>
       {mappingURL && (
         <dd className={rowStyles.note}>
