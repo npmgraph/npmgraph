@@ -42,8 +42,8 @@ function patchHash(updates: Record<string, string | null>) {
 
 // Keep the `tab` hash param and the current pane in sync.
 //
-// Each graph state has a default pane, which is represented by the absence of
-// the `tab` param:
+// Each graph state has a default pane, which is shown when the URL has no `tab`
+// param. Once a tab is shown it's always stored, so a refresh keeps it:
 // - Empty graph: info
 // - Exactly one module selected: module
 // - Otherwise: report
@@ -115,9 +115,11 @@ export default function useSyncTab() {
 
       // Page load: show the default tab unless the URL specifies one
       if (!wasPaneChanged && pane !== PaneType.GRAPH && !hasTabParameter()) {
-        setPane(defaultPane);
         state.pane = defaultPane;
-        return;
+        if (pane !== defaultPane) {
+          setPane(defaultPane);
+          return;
+        }
       }
     }
 
@@ -149,7 +151,7 @@ export default function useSyncTab() {
 
     // Sections belong to a tab, so drop the section when the tab changes
     const updates: Record<string, string | null> = {
-      [PARAM_TAB]: pane === defaultPane ? null : pane,
+      [PARAM_TAB]: pane,
     };
     if (pane !== state.pane) {
       updates[PARAM_SECTION] = null;
