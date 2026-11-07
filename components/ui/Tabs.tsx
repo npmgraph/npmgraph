@@ -14,7 +14,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [pane, setPane] = useGlobalState('pane');
   const isTightScreen = useIsTightScreen();
   const [hide, setHide] = useHashParam(PARAM_HIDE);
-  const [isReportOnly] = useReportOnly();
+  const [isReportOnly, , leaveReportOnly] = useReportOnly();
   const isInspectorOpen = hide === null || isReportOnly;
   // The report-only view doesn't change the stored pane
   const currentPane = isReportOnly ? PaneType.REPORT : pane;
@@ -63,13 +63,21 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                       return;
                     }
 
-                    setHide(null);
                     // The graph isn't a tab on wide screens, so go back to the report
-                    setPane(
+                    const nextPane =
                       !isTightScreen && tabPane === PaneType.GRAPH
                         ? PaneType.REPORT
-                        : tabPane,
-                    );
+                        : tabPane;
+
+                    if (isReportOnly) {
+                      leaveReportOnly(() => {
+                        setPane(nextPane);
+                      });
+                      return;
+                    }
+
+                    setHide(null);
+                    setPane(nextPane);
                   }}
                 >
                   {label}
