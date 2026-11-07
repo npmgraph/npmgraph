@@ -6,7 +6,7 @@ import {
   type VersionStatus,
 } from '../../lib/version-status.ts';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import * as styles from './ModuleVersionInfo.module.scss';
+import * as styles from './ModuleVersionInfo.module.css';
 
 const outdatedClassNames = {
   major: styles.majorUpdates,

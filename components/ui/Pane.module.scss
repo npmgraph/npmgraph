@@ -17,7 +17,7 @@
   color: var(--text);
   line-height: 1.3;
 
-  // Zero specificity so link-styled components like Button can override it
+  /* Zero specificity so link-styled components like Button can override it */
   :where(&) a {
     color: var(--accent);
   }

@@ -7,30 +7,29 @@
 }
 .input {
   @include search-input;
-
   margin-block: 0.6em;
 }
 
-// In the app header
+/* In the app header */
 .header {
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: rgb(255 255 255 / 30%);
   border-radius: 1000px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgb(255 255 255 / 15%);
   padding: 0.25em 0.6em;
   max-width: 400px;
   color: var(--tabs-text);
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgb(255 255 255 / 50%);
   }
 
   &:focus {
-    border-color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.25);
+    border-color: rgb(255 255 255 / 70%);
+    background-color: rgb(255 255 255 / 25%);
   }
 }
 
-// In the intro screen
+/* In the intro screen */
 .hero {
   margin-block: 0.8em;
   max-width: 20em;

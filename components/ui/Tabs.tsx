@@ -4,11 +4,10 @@ import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
-import * as utilities from './utilities.module.scss';
-
+import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
+import * as utilities from './utilities.module.css';
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
-import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [pane, setPane] = useGlobalState('pane');

@@ -1,5 +1,5 @@
-// Like a browser's status bar, so it doesn't cover the header on any screen size.
-// It's as long as the text needs, since it shows URLs.
+/* Like a browser's status bar, so it doesn't cover the header on any screen size. */
+/* It's as long as the text needs, since it shows URLs. */
 .loader {
   position: fixed;
   bottom: 0;
@@ -18,15 +18,6 @@
   line-height: var(--loader-height);
   text-overflow: ellipsis;
   white-space: nowrap;
-
-  @keyframes MOVE-BG {
-    from {
-      transform: translateX(-56.57px);
-    } // sqrt(2) * gradient_width
-    to {
-      transform: translateX(0);
-    }
-  }
 }
 
 .progressBar {
@@ -47,4 +38,13 @@
   );
   width: calc(100% + 57px);
   height: 2pt;
+}
+
+@keyframes MOVE-BG {
+  from {
+    transform: translateX(-56.57px); /* sqrt(2) * gradient_width */
+  }
+  to {
+    transform: translateX(0);
+  }
 }

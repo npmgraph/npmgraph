@@ -5,7 +5,7 @@ import { foreachDownstream, hasDependencies } from '../../lib/graph-util.ts';
 import human from '../../lib/human.ts';
 import { Section } from '../ui/Section.tsx';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
-import * as styles from './ModulePane.module.scss';
+import * as styles from './ModulePane.module.css';
 
 export function ModuleSize({ module }: { module: Module }) {
   const [graph] = useGlobalState('graph');

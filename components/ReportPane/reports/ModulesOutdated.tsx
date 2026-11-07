@@ -1,9 +1,9 @@
 import { Row, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import { groupOutdatedByLevel } from '../analyzers/analyzeModules.ts';
-import * as styles from './ModulesOutdated.module.scss';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
+import * as styles from './ModulesOutdated.module.css';
 
 const levelTitles = {
   major: 'Major',

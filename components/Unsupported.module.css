@@ -10,7 +10,7 @@
     text-align: center;
   }
 
-  & code {
+  code {
     border-radius: 3px;
     padding: 0.1rem 0.3rem;
     color: var(--stroke-orange);
