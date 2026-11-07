@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { $$ } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
@@ -48,11 +49,15 @@ export function ReportItem({
       data-report-item={sectionName(title)}
       onToggle={event => {
         // Like in the report-only view, a single open section is linkable
-        const opened =
-          event.currentTarget.parentElement?.querySelectorAll<HTMLElement>(
-            ':scope > details[data-report-item][open]',
-          );
-        setSection(opened?.length === 1 ? opened[0]!.dataset.reportItem : null);
+        const opened = $$(
+          'details[data-report-item][open]',
+          event.currentTarget.parentElement ?? document,
+        );
+        setSection(
+          opened.length === 1
+            ? opened[0]!.getAttribute('data-report-item')
+            : null,
+        );
       }}
     >
       {body}
