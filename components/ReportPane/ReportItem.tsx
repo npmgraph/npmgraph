@@ -54,9 +54,7 @@ export function ReportItem({
           event.currentTarget.parentElement ?? document,
         );
         setSection(
-          opened.length === 1
-            ? opened[0]!.getAttribute('data-report-item')
-            : null,
+          opened.length === 1 ? opened[0]!.dataset['reportItem'] : null,
         );
       }}
     >
