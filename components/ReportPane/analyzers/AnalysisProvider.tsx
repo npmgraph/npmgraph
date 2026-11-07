@@ -16,7 +16,11 @@ export default function AnalysisProvider({
   const modules = analyzeModules(graph);
   const peerDependencies = analyzePeerDependencies(graph);
   const maintainers = analyzeMaintainers(graph);
-  const licenses = use(analyzeLicenses(graph));
+
+  // Memoize the promise itself, not just the unwrapped value
+  // eslint-disable-next-line @typescript-eslint/promise-function-async
+  const licensesPromise = useMemo(() => analyzeLicenses(graph), [graph]);
+  const licenses = use(licensesPromise);
 
   const value = useMemo(
     () => ({
