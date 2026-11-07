@@ -56,7 +56,7 @@ export default function ReportPane({
         <>
           <div className={styles.toolbar}>
             <div className={styles.description}>
-              Show the report as a full-page document, without the graph
+              You can view a shareable report without the graph
             </div>
             <Button
               onClick={() => {
