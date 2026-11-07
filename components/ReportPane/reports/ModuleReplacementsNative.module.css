@@ -13,7 +13,6 @@
 .replacements {
   padding-inline-start: 1em;
   min-width: 0;
-  font-style: italic;
 
   /* Blend in with the text, only the font family differs */
   code {
