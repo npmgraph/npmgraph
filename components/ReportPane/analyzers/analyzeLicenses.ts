@@ -1,17 +1,23 @@
 import type Module from '../../../lib/Module.ts';
-import { type OSIKeyword, LICENSES } from '../../../lib/licenses.ts';
+import {
+  getAllLicenses,
+  getLicenseIssues,
+  type LicenseIssue,
+} from '../../../lib/licenses.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
 
 export type LicenseAnalysisState = {
   modulesByLicense: Map<string, Module[]>;
   unlicensedModules: Module[];
-  modulesByKeyword: Map<OSIKeyword, Module[]>;
+  licenseIssuesByLicense: Map<string, LicenseIssue[]>;
 };
 
-export function analyzeLicenses({ moduleInfos }: GraphState) {
+export async function analyzeLicenses({ moduleInfos }: GraphState) {
   const modulesByLicense = new Map<string, Module[]>();
   const unlicensedModules: Module[] = [];
-  const modulesByKeyword = new Map<OSIKeyword, Module[]>();
+  const licenseIssuesByLicense = new Map<string, LicenseIssue[]>();
+
+  const spdxLicenses = await getAllLicenses();
 
   for (const { module } of moduleInfos.values()) {
     // Stub and private modules are not included in the license analysis
@@ -21,7 +27,7 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
     const licenses = module.getLicenses();
 
-    // licensesRenderMissing
+    // Track unlicensed modules
     if (licenses.length === 0 || licenses[0] === 'unlicensed') {
       unlicensedModules.push(module);
     }
@@ -31,7 +37,7 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
     }
 
     for (let license of licenses) {
-      // licensesRenderAll
+      // Track by license
       license = license.toLowerCase();
       if (!modulesByLicense.has(license)) {
         modulesByLicense.set(license, []);
@@ -39,19 +45,19 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
 
       modulesByLicense.get(license)!.push(module);
 
-      // licensesRenderKeywords
-      const keywords = LICENSES[license]?.keywords;
-
-      if (!keywords) {
+      // Track license issues
+      if (licenseIssuesByLicense.has(license)) {
         continue;
       }
 
-      for (const keyword of keywords) {
-        if (!modulesByKeyword.has(keyword)) {
-          modulesByKeyword.set(keyword, []);
-        }
+      const spdxLicense = spdxLicenses.get(license);
+      if (!spdxLicense) {
+        continue;
+      }
 
-        modulesByKeyword.get(keyword)!.push(module);
+      const issues = getLicenseIssues(spdxLicense);
+      if (issues.length > 0) {
+        licenseIssuesByLicense.set(license, issues);
       }
     }
   }
@@ -59,6 +65,6 @@ export function analyzeLicenses({ moduleInfos }: GraphState) {
   return {
     modulesByLicense,
     unlicensedModules,
-    modulesByKeyword,
+    licenseIssuesByLicense,
   };
 }

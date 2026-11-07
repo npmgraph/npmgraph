@@ -1,3 +1,4 @@
+import type Module from '../../../lib/Module.ts';
 import { ModuleRows } from '../../ui/Row.tsx';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
@@ -23,7 +24,7 @@ export default function LicensesMissing() {
       }
     >
       <ModuleRows
-        modules={unlicensedModules.toSorted((a, b) =>
+        modules={unlicensedModules.toSorted((a: Module, b: Module) =>
           a.key.localeCompare(b.key),
         )}
       />
