@@ -10,6 +10,7 @@ export type SPDXLicense = {
   licenseId: string;
   seeAlso: string[];
   isOsiApproved: boolean;
+  isFSFLibre?: boolean;
 };
 
 export type SPDXLicenseList = {
@@ -17,6 +18,8 @@ export type SPDXLicenseList = {
   licenses: SPDXLicense[];
   releaseDate: string;
 };
+
+export type LicenseIssue = 'no-osi' | 'no-fsf' | 'deprecated';
 
 let cachedLicenses: Map<string, SPDXLicense> | null = null;
 
@@ -54,4 +57,22 @@ export async function getLicense(id: string): Promise<SPDXLicense | undefined> {
 
 export async function getAllLicenses(): Promise<Map<string, SPDXLicense>> {
   return fetchSPDXLicenses();
+}
+
+export function getLicenseIssues(spdxLicense: SPDXLicense): LicenseIssue[] {
+  const issues: LicenseIssue[] = [];
+
+  if (!spdxLicense.isOsiApproved) {
+    issues.push('no-osi');
+  }
+
+  if (spdxLicense.isFSFLibre === false) {
+    issues.push('no-fsf');
+  }
+
+  if (spdxLicense.isDeprecatedLicenseId) {
+    issues.push('deprecated');
+  }
+
+  return issues;
 }

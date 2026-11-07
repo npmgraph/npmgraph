@@ -1,17 +1,21 @@
 import type Module from '../../../lib/Module.ts';
-import { getAllLicenses } from '../../../lib/licenses.ts';
+import {
+  getAllLicenses,
+  getLicenseIssues,
+  type LicenseIssue,
+} from '../../../lib/licenses.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
 
 export type LicenseAnalysisState = {
   modulesByLicense: Map<string, Module[]>;
   unlicensedModules: Module[];
-  deprecatedLicenseModules: Module[];
+  licenseIssuesByLicense: Map<string, LicenseIssue[]>;
 };
 
 export async function analyzeLicenses({ moduleInfos }: GraphState) {
   const modulesByLicense = new Map<string, Module[]>();
   const unlicensedModules: Module[] = [];
-  const deprecatedLicenseModules = new Set<Module>();
+  const licenseIssuesByLicense = new Map<string, LicenseIssue[]>();
 
   const spdxLicenses = await getAllLicenses();
 
@@ -23,7 +27,7 @@ export async function analyzeLicenses({ moduleInfos }: GraphState) {
 
     const licenses = module.getLicenses();
 
-    // licensesRenderMissing
+    // Track unlicensed modules
     if (licenses.length === 0 || licenses[0] === 'unlicensed') {
       unlicensedModules.push(module);
     }
@@ -33,7 +37,7 @@ export async function analyzeLicenses({ moduleInfos }: GraphState) {
     }
 
     for (let license of licenses) {
-      // licensesRenderAll
+      // Track by license
       license = license.toLowerCase();
       if (!modulesByLicense.has(license)) {
         modulesByLicense.set(license, []);
@@ -41,10 +45,19 @@ export async function analyzeLicenses({ moduleInfos }: GraphState) {
 
       modulesByLicense.get(license)!.push(module);
 
-      // licensesRenderDeprecated
+      // Track license issues
+      if (licenseIssuesByLicense.has(license)) {
+        continue;
+      }
+
       const spdxLicense = spdxLicenses.get(license);
-      if (spdxLicense?.isDeprecatedLicenseId) {
-        deprecatedLicenseModules.add(module);
+      if (!spdxLicense) {
+        continue;
+      }
+
+      const issues = getLicenseIssues(spdxLicense);
+      if (issues.length > 0) {
+        licenseIssuesByLicense.set(license, issues);
       }
     }
   }
@@ -52,6 +65,6 @@ export async function analyzeLicenses({ moduleInfos }: GraphState) {
   return {
     modulesByLicense,
     unlicensedModules,
-    deprecatedLicenseModules: [...deprecatedLicenseModules],
+    licenseIssuesByLicense,
   };
 }
