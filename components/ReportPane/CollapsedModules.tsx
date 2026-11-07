@@ -1,7 +1,7 @@
 import useCollapse from '../../hooks/useCollapse.ts';
 import { toggleItem } from '../../lib/array-util.ts';
 import { Button } from '../Button.tsx';
-import { CollapsibleSection } from '../ui/Section.tsx';
+import { ReportItem } from './ReportItem.tsx';
 import * as styles from './CollapsedModules.module.css';
 
 export default function CollapsedModules() {
@@ -12,7 +12,12 @@ export default function CollapsedModules() {
   }
 
   return (
-    <CollapsibleSection title="Collapsed modules" count={collapse.length}>
+    <ReportItem
+      open
+      title="Collapsed modules"
+      count={collapse.length}
+      description="Shift-click modules in graph to expand/collapse"
+    >
       <ul className={styles.list}>
         {collapse.map(name => (
           <li key={name} className={styles.item}>
@@ -40,6 +45,6 @@ export default function CollapsedModules() {
           Expand All
         </Button>
       )}
-    </CollapsibleSection>
+    </ReportItem>
   );
 }

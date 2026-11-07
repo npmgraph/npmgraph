@@ -574,6 +574,7 @@ export function foreachDownstream(
 export function gatherSelectionInfo(
   graphState: GraphState,
   selectedModules: IterableIterator<Module>,
+  shouldIncludeRelated = true,
 ) {
   // Gather *string* identifiers used to identify the various DOM elements that
   // represent the selection
@@ -623,6 +624,10 @@ export function gatherSelectionInfo(
 
   for (const selectedModule of selectedModules) {
     selectedKeys.add(selectedModule.key);
+    if (!shouldIncludeRelated) {
+      continue;
+    }
+
     _visitUpstream(selectedModule);
     _visitDownstream(selectedModule);
   }
