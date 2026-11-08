@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import useLocation from '../hooks/useLocation.ts';
-import JsOrgIcon from '../images/icons/js-org.svg?react';
+import GlobeIcon from '../images/icons/globe.svg?react';
 import PullRequestIcon from '../images/icons/pull-request.svg?react';
 import XIcon from '../images/icons/x.svg?react';
 import * as utilities from './ui/utilities.module.css';
@@ -53,7 +53,7 @@ export default function PreviewWidget() {
         rel="noopener noreferrer"
         title="Compare to production npmgraph"
       >
-        <JsOrgIcon />
+        <GlobeIcon />
       </Button>
       <Button
         className={utilities.brightHover}
