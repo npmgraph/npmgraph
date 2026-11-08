@@ -2,11 +2,11 @@ import { type HTMLProps, useRef, useState } from 'react';
 import { PaneType, PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { cn } from '../../lib/dom.ts';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
 import { searchSet } from '../../lib/url-util.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
+import { useTab } from '../../hooks/useTab.ts';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
@@ -19,7 +19,7 @@ export default function QueryInput({
 }: HTMLProps<HTMLInputElement> & { variant?: 'header' | 'hero' }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
-  const [, setPane] = useGlobalState('pane');
+  const selectTab = useTab()[1];
   const inputValue = query
     .filter(key => !getCachedModule(key)?.isLocal)
     .join(', ');
@@ -63,7 +63,7 @@ export default function QueryInput({
   }
 
   function handleFocus() {
-    setPane(PaneType.INFO);
+    selectTab(PaneType.INFO);
   }
 
   return (
