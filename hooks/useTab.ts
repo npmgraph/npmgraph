@@ -67,11 +67,9 @@ export default function useTab(): PaneTypes {
     [graph, query, selection],
   );
 
-  if (isTightScreen && isGraphTabActive) {
-    return PaneType.GRAPH;
-  }
-
-  return parseTab(hashGet(PARAM_TAB, location)) ?? defaultTab;
+  return isTightScreen && isGraphTabActive
+    ? PaneType.GRAPH
+    : (parseTab(hashGet(PARAM_TAB, location)) ?? defaultTab);
 }
 
 // Select a tab and show the inspector. The default tab isn't stored in the URL.
@@ -95,7 +93,7 @@ export function selectTab(tab: PaneTypes) {
     parameters.delete(PARAM_SECTION);
   }
 
-  if (tab === PaneType.GRAPH || tab === defaultTab) {
+  if (tab === defaultTab || tab === PaneType.GRAPH) {
     parameters.delete(PARAM_TAB);
   } else {
     parameters.set(PARAM_TAB, tab);
