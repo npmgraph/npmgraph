@@ -29,7 +29,7 @@
     "types": "tsc --noEmit",
     "test:unit": "vitest run --project unit",
     "test": "run-p format:check lint types test:unit build",
-    "smoke": "bash ci-diag.sh",
+    "smoke": "vitest run --project smoke",
     "watch": "tsc --watch"
   },
   "keywords": [

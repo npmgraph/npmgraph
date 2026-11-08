@@ -22,11 +22,28 @@ export default defineConfig({
       {
         // Serve the built app (npm run build) at the dev server root
         publicDir: 'dist',
+        // Dependencies of the app that Vite would otherwise only find while
+        // tests run, which re-optimizes them and reloads the page mid-test
+        optimizeDeps: {
+          include: [
+            '@bugsnag/js',
+            '@hpcc-js/wasm-graphviz',
+            'canvas-confetti',
+            'copy-text-to-clipboard',
+            'd3-selection',
+            'filter-altered-clicks',
+            'hosted-git-info',
+            'react-dom/client',
+            'react-error-boundary',
+            'react-zoom-pan-pinch',
+            'simplur',
+            'verkit',
+          ],
+        },
         test: {
           name: 'smoke',
           include: ['smoke.test.ts'],
-          // Graphs are fetched from the registry, which can be slow on CI
-          testTimeout: 60_000,
+          testTimeout: 3000,
           browser: {
             enabled: true,
             headless: true,
