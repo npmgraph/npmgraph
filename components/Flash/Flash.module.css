@@ -1,7 +1,7 @@
 .root {
   display: flex;
   position: fixed;
-  left: 10px;
+  left: 5px;
   flex-direction: column;
   gap: 5px;
   z-index: 100;
@@ -14,7 +14,7 @@
     flashIn 0.7s,
     flashOut 0.7s 5s forwards;
   box-shadow: 2px 2px 10px 5px var(--bg-root);
-  background: var(--bg0);
+  background: var(--bg-root);
   padding: 4px;
   white-space: pre-wrap;
 }
@@ -27,7 +27,7 @@
 
 @keyframes flashIn {
   from {
-    transform: translateX(calc(-100% - 10px));
+    transform: translateX(calc(-100% - 5px));
   }
 
   to {
@@ -41,7 +41,7 @@
   }
 
   to {
-    transform: translateX(calc(-100% - 10px));
+    transform: translateX(calc(-100% - 5px));
   }
 }
 
