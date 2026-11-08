@@ -8,11 +8,13 @@ import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
+import { ModuleAdvisories } from './ModuleAdvisories.tsx';
 import { ModuleDependents } from './ModuleDependents.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.css';
 import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleDistTag } from './ModuleVersionInfo.tsx';
+import { ModuleWarnings } from './ModuleWarnings.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
 
 function useSelectedModules() {
@@ -75,8 +77,6 @@ function ModuleDetailsPane({
         {isShowStatus && <ModuleDistTag module={module} />}
       </div>
 
-      {pkg.deprecated ? <p>Deprecated: {pkg.deprecated}</p> : null}
-
       <p>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
@@ -84,7 +84,12 @@ function ModuleDetailsPane({
         <ModuleActions module={module} />
       </div>
 
-      <ReleaseTimeline module={module} showStatus={isShowStatus} />
+      <ModuleWarnings module={module} showOutdated={isShowStatus} />
+
+      {/* Modules loaded from elsewhere (e.g. a URL) have no registry data */}
+      {module.packument && <ModuleAdvisories module={module} />}
+
+      <ReleaseTimeline module={module} />
 
       {/* Modules loaded from elsewhere (e.g. a URL) have no registry data */}
       {module.packument && <ModuleSize module={module} />}

@@ -1,13 +1,12 @@
 import simplur from 'simplur';
 import { cn } from '../../lib/dom.ts';
 import type Module from '../../lib/Module.ts';
-import {
-  getVersionStatus,
-  type VersionStatus,
-} from '../../lib/version-status.ts';
+import type { VersionStatus } from '../../lib/version-status.ts';
 import WarningIcon from '../../images/icons/warning.svg?react';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import * as styles from './ModuleVersionInfo.module.css';
+import { getStatus } from './module-status.ts';
+import * as warningStyles from './ModuleWarnings.module.css';
 
 const outdatedClassNames = {
   major: styles.majorUpdates,
@@ -33,12 +32,6 @@ function getOutdatedMessage({
     case 'prerelease':
       return 'prerelease, behind';
   }
-}
-
-function getStatus(module: Module) {
-  return module.packument
-    ? getVersionStatus(module.version, module.packument['dist-tags'])
-    : undefined;
 }
 
 // Not outdated, so show the dist-tag the version is pinned to
@@ -67,14 +60,14 @@ export function ModuleOutdated({
     <p
       {...props}
       className={cn(
-        styles.outdated,
+        warningStyles.warning,
         outdatedClassNames[status.level],
         props.className,
       )}
     >
       <WarningIcon />
       <span>
-        {getOutdatedMessage(status)} <code>latest</code> (
+        Outdated: {getOutdatedMessage(status)} <code>latest</code> (
         <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
       </span>
     </p>

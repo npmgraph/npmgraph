@@ -3,24 +3,14 @@
   font-size: 0.85rem;
 }
 
-.outdated {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin: 0;
-  font-size: 0.85rem;
+.majorUpdates svg {
+  color: var(--stroke-red);
+}
 
-  svg {
-    flex-shrink: 0;
-  }
+.minorUpdates svg {
+  color: var(--stroke-orange);
+}
 
-  &.majorUpdates svg {
-    color: var(--stroke-red);
-  }
-  &.minorUpdates svg {
-    color: var(--stroke-orange);
-  }
-  &.patchUpdates svg {
-    color: var(--stroke-yellow);
-  }
+.patchUpdates svg {
+  color: var(--stroke-yellow);
 }

@@ -71,11 +71,13 @@ export function Section({
   children,
   className,
   count,
+  icon,
 }: {
   title: string;
   children: any;
   className?: string;
   count?: number | string;
+  icon?: ReactNode;
 }) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDivElement>(name);
@@ -85,6 +87,7 @@ export function Section({
       <h3>
         {title}
         <Count count={count} />
+        {icon}
       </h3>
       <SectionBody>{children}</SectionBody>
     </div>
