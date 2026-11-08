@@ -99,16 +99,14 @@ export default defineConfig([
     rules: { 'select-dom/prefer': 'error' },
   },
   {
-    files: ['**/*.scss'],
+    files: ['**/*.css', '**/*.scss'],
     plugins: { css, local },
     language: 'css/css',
     languageOptions: { tolerant: true },
-    rules: { 'local/no-unnecessary-scss': 'error' },
-  },
-  {
-    files: ['**/*.css', '**/*.scss'],
-    plugins: { local },
-    rules: { 'local/no-magic-colors': 'error' },
+    rules: {
+      'local/no-unnecessary-scss': 'error',
+      'local/no-magic-colors': 'error',
+    },
   },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
