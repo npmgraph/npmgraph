@@ -58,6 +58,14 @@ function decorateGraphNodes(
   }
 }
 
+// Only the graph uses this font, so load it here instead of blocking the document
+document.head.append(
+  Object.assign(document.createElement('link'), {
+    rel: 'stylesheet',
+    href: 'https://fonts.googleapis.com/css?family=Roboto+Condensed:400,700',
+  }),
+);
+
 // Keep graphviz in a secondary bundle but load it eagerly
 const graphvizPromise = (async () => {
   const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
