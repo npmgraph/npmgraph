@@ -72,6 +72,7 @@ export default function QueryInput({
         ref={inputRef}
         type="search"
         name="q"
+        aria-label="Search npm modules"
         id={SEARCH_FIELD_ID}
         className={cn(styles.input, variant && styles[variant], className)}
         placeholder="Search…"

@@ -22,7 +22,7 @@ export function MaintainerRows({
               modules={modules}
               heading={
                 <>
-                  {email && <Gravatar email={email} username={name} />}
+                  {email && <Gravatar email={email} />}
                   <Selectable type={QueryType.Maintainer} value={name} />
                 </>
               }

@@ -1,3 +1,4 @@
+/* eslint-disable local/no-magic-colors -- The theme variables are defined here */
 @use './lib/root.module.scss' as *;
 
 :root {
@@ -55,6 +56,10 @@
   --bg-blue: oklch(var(--bg-L) var(--bg-C) 220);
   --bg-violet: oklch(var(--bg-L) var(--bg-C) 280);
 
+  // Diagonal stripes for warnings
+  --warning0: color-mix(in oklch, var(--bg-yellow) 15%, var(--bg-root));
+  --warning1: color-mix(in oklch, var(--bg-yellow) 40%, var(--bg-root));
+
   --transition-duration: 0.5s;
 }
 
@@ -97,4 +102,14 @@ html {
 
 body {
   margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

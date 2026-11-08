@@ -17,10 +17,7 @@
 
   @include tight-screen {
     border-right: none;
-    background-image: linear-gradient(
-      rgb(255 255 255 / 20%),
-      rgb(255 255 255 / 20%)
-    );
+    background: color-mix(in srgb, var(--tabs-bg), var(--tabs-text) 20%);
   }
 
   svg {
