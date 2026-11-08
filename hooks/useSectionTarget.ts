@@ -2,11 +2,18 @@ import { useEffect, useRef } from 'react';
 import { PARAM_SECTION } from '../lib/constants.ts';
 import useHashParam from './useHashParam.ts';
 
+// The only section that gets scrolled to by itself is the one in the URL on page load
+const pageLoadSection = new URLSearchParams(location.hash.slice(1)).get(
+  PARAM_SECTION,
+);
+let hasScrolledToPageLoadSection = false;
+
 export function sectionName(title: string) {
   return title.toLowerCase();
 }
 
-// Open and scroll to the section named in the URL hash, if it's this one
+// Open the section named in the URL hash, if it's this one. Scroll to it only
+// on page load: later URL changes must not move the page under the user.
 export default function useSectionTarget<T extends HTMLElement>(name: string) {
   const [section] = useHashParam(PARAM_SECTION);
   const ref = useRef<T>(null);
@@ -20,7 +27,13 @@ export default function useSectionTarget<T extends HTMLElement>(name: string) {
       ref.current.open = true;
     }
 
-    ref.current.scrollIntoView?.({ block: 'start' });
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler -- Scrolls only once, for the section from the page load
+    if (name !== pageLoadSection || hasScrolledToPageLoadSection) {
+      return;
+    }
+
+    hasScrolledToPageLoadSection = true;
+    ref.current.scrollIntoView?.({ block: 'nearest' });
   }, [section, name]);
 
   return ref;
