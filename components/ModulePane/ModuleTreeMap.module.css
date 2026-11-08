@@ -2,10 +2,14 @@
   display: grid;
   position: absolute;
   place-content: center;
-  cursor: default;
+  cursor: pointer;
   box-sizing: border-box;
+  border: 0;
   border-radius: var(--rad-sm);
+  padding: 0;
   overflow: hidden;
+  color: inherit;
+  font-family: inherit;
   text-align: center;
   text-overflow: ellipsis;
   white-space: nowrap;
