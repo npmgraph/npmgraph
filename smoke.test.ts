@@ -1,6 +1,6 @@
 // Smoke tests: load the built app (dist/) in an iframe and check that graphs render.
 // Run `npm run build` first.
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, onTestFailed, vi } from 'vitest';
 import { type Locator, locators, page, userEvent } from 'vitest/browser';
 import { $, $$, $$optional } from 'select-dom';
 
@@ -85,9 +85,47 @@ const search = async (q: string) => {
   await userEvent.keyboard('{Enter}');
 };
 
+// TEMP-DIAG
+let diag = '';
+let t0 = 0;
+beforeEach(({ task }) => {
+  t0 = Date.now();
+  diag = '';
+  onTestFailed(result => {
+    console.log(
+      '::warning title=smoke-diag::' +
+        JSON.stringify({
+          test: task.name,
+          err: String(result.errors?.[0]?.message ?? '').slice(0, 200),
+          ...JSON.parse(diag || '{}'),
+        }),
+    );
+  });
+});
+
 afterEach(() => {
   iframe.remove();
   expect(errors).toEqual([]);
+});
+
+// TEMP-DIAG
+afterEach(() => {
+  try {
+    const w = win();
+    diag = JSON.stringify({
+      ms: Date.now() - t0,
+      url: w.location.href.slice(0, 120),
+      ready: doc().readyState,
+      nodes: $$optional('svg g.node', doc()).length,
+      tabs: [...doc().querySelectorAll('[role=tab]')].map(
+        e => `${e.textContent}:${e.getAttribute('aria-selected')}`,
+      ),
+      text: doc().body.innerText.replaceAll(/\s+/g, ' ').slice(0, 300),
+      errors,
+    });
+  } catch (error) {
+    diag = JSON.stringify({ diagFailed: String(error) });
+  }
 });
 
 describe('graph', () => {
