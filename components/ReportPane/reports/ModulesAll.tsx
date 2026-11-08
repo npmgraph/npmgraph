@@ -1,7 +1,7 @@
 import simplur from 'simplur';
+import { ModuleRows } from '../../ui/Row.tsx';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
-import { ModuleList } from './ModuleList.tsx';
 
 export default function ModulesAll() {
   const { moduleInfos, entryModules } = useModuleAnalysis();
@@ -21,7 +21,7 @@ export default function ModulesAll() {
         moduleInfos.size - entryModules.size
       } dependenc[y|ies]`}
     >
-      <ModuleList modules={modules} entryModules={entryModules} />
+      <ModuleRows modules={modules} bold={entryModules} />
     </ReportItem>
   );
 }
