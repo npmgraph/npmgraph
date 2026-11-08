@@ -3,10 +3,8 @@
 
 // The accent is the only hand-picked color. Neutrals use its hue and a fraction
 // of its chroma, so changing `--accent` re-tints the whole theme.
-@function neutral($lightness) {
-  @return oklch(
-    from var(--accent) #{$lightness} calc(c * var(--neutral-tint)) h
-  );
+@function neutral($lightness, $tint: 0.04) {
+  @return oklch(from var(--accent) #{$lightness} calc(c * #{$tint}) h);
 }
 
 :root {
@@ -15,7 +13,6 @@
 
   --accent: #da6200;
   --text-on-accent: #fff;
-  --neutral-tint: 0.04;
 
   // Neutral ramp, from text (0) to background (100)
   @for $i from 0 through 10 {
@@ -34,14 +31,14 @@
 
   --text: #{neutral(14%)};
   --text-dim: #{neutral(55%)};
-  --bg-root: #{neutral(99%)};
-  --bg0: #{neutral(96%)};
+  --bg-root: #{neutral(99%, 0.02)};
+  --bg0: #{neutral(96%, 0.025)};
   --bg1: #{neutral(80%)};
-  --bg2: #{neutral(90%)};
+  --bg2: #{neutral(90%, 0.03)};
 
   --header-padding: 12px;
-  --tabs-bg: #{neutral(45%)};
-  --tabs-text: #{neutral(99%)};
+  --tabs-bg: #{neutral(45%, 0.065)};
+  --tabs-text: #{neutral(99%, 0.02)};
   --tabs-border: oklch(from var(--tabs-bg) calc(l + 0.35) c h / 80%);
 
   // Shadow colors depend on the background color
@@ -82,10 +79,10 @@
     --root-color: black; // Don't change, it's used to mix colors on light/dark schemes
     --text: #{neutral(96%)};
     --text-dim: #{neutral(62%)};
-    --bg-root: #{neutral(18%)};
-    --bg0: #{neutral(25%)};
+    --bg-root: #{neutral(18%, 0.03)};
+    --bg0: #{neutral(25%, 0.035)};
     --bg1: #{neutral(48%)};
-    --bg2: #{neutral(31%)};
+    --bg2: #{neutral(31%, 0.035)};
 
     --stroke-L: 80%;
     --bg-L: 50%;
