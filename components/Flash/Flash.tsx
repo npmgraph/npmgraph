@@ -38,10 +38,7 @@ export default function Flash() {
             }
           }}
           className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
-          style={{
-            maxWidth: `${maxWidth}px`,
-            backgroundColor: entry.backgroundColor,
-          }}
+          style={{ maxWidth: `${maxWidth}px` }}
           onAnimationEnd={event => {
             if (event.animationName !== flashStyles.flashOut) {
               return;

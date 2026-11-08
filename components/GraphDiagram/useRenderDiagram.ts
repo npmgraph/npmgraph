@@ -6,7 +6,7 @@ import useHashParam from '../../hooks/useHashParam.ts';
 import { report } from '../../lib/bugsnag.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
-import { flash } from '../../lib/flash.ts';
+import { flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
@@ -85,7 +85,7 @@ function composeSvgMarkup(
     return layout(dotDoc, graphviz);
   } catch (error) {
     console.error(error);
-    flash('Error while rendering graph');
+    flashError('Error while rendering graph');
     return '<svg />';
   }
 }

@@ -14,12 +14,14 @@
     flashIn 0.7s,
     flashOut 0.7s 5s forwards;
   box-shadow: 2px 2px 10px 5px var(--bg-root);
-  border-bottom-right-radius: 1em;
+  background: var(--bg0);
   padding: 4px;
   white-space: pre-wrap;
 }
 
 .error {
+  box-shadow: none;
+  background: var(--accent);
   color: var(--text-on-accent);
 }
 

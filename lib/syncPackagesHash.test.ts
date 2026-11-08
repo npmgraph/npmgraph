@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { flash } from './flash.ts';
+import { flashError } from './flash.ts';
 import { getModule, syncPackagesHash } from './ModuleCache.ts';
 import { PARAM_PACKAGES } from './constants.ts';
 
-vi.mock('./flash.ts', () => ({ flash: vi.fn() }));
+vi.mock('./flash.ts', () => ({ flashError: vi.fn() }));
 vi.mock('./registry-util.ts', () => ({ getRegistry: () => 'test://registry' }));
 
 // Unchanged values are skipped, so every test needs a different one
@@ -17,7 +17,7 @@ const sync = (packages: unknown) => {
 };
 
 beforeEach(() => {
-  vi.mocked(flash).mockClear();
+  vi.mocked(flashError).mockClear();
 });
 
 afterEach(() => {
@@ -31,7 +31,7 @@ describe('syncPackagesHash', () => {
     await expect(getModule('hash-package@1.0.0')).resolves.toMatchObject({
       name: 'hash-package',
     });
-    expect(flash).not.toHaveBeenCalled();
+    expect(flashError).not.toHaveBeenCalled();
   });
 
   it('only keeps whitelisted fields', async () => {
@@ -51,6 +51,6 @@ describe('syncPackagesHash', () => {
     expect(() => {
       sync(value);
     }).not.toThrow();
-    expect(flash).toHaveBeenCalledOnce();
+    expect(flashError).toHaveBeenCalledOnce();
   });
 });
