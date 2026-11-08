@@ -29,7 +29,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const [isReportOnly] = useReportOnly();
 
   // The graph is rendered by App, so it doesn't change when switching tabs
-  if ((hide !== null || (isTightScreen && isGraphVisible)) && !isReportOnly) {
+  if (!isReportOnly && (hide !== null || (isTightScreen && isGraphVisible))) {
     return null;
   }
 

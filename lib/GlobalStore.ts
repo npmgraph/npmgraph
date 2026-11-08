@@ -14,7 +14,7 @@ type GlobalState = {
   selectedModules?: Map<string, Module>;
 };
 
-function _getInitialGraphVisible() {
+function _isGraphInitiallyVisible() {
   // A deep link to a tab shows that tab instead
   return (
     globalThis.window !== undefined &&
@@ -30,7 +30,7 @@ let globalState: GlobalState = {
     entryModules: new Set(),
     failedEntryModules: new Map(),
   },
-  isGraphVisible: _getInitialGraphVisible(),
+  isGraphVisible: _isGraphInitiallyVisible(),
   lastVisit: 0,
   location: new URL(location.href),
   selectedModules: new Map(),
