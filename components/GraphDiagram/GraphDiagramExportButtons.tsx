@@ -25,10 +25,7 @@ export default function GraphDiagramExportButtons() {
   return (
     <>
       <ButtonGroup>
-        <Button
-          title="Download graph as SVG"
-          onClick={downloadSvg}
-        >
+        <Button title="Download graph as SVG" onClick={downloadSvg}>
           <DownloadIcon />
         </Button>
       </ButtonGroup>
