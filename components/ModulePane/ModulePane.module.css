@@ -2,16 +2,6 @@
   color: var(--stroke-orange);
 }
 
-.warning {
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--warning0),
-    var(--warning0) 10px,
-    var(--warning1) 10px,
-    var(--warning1) 20px
-  );
-}
-
 .title {
   display: flex;
   flex-wrap: wrap;
@@ -28,17 +18,6 @@
 
 .moduleLinks {
   flex-wrap: wrap;
-}
-
-.deprecatedBox {
-  display: grid;
-  gap: 0.25em;
-  border-radius: 0.5em;
-  padding: 0.5em;
-}
-
-.deprecatedTitle {
-  color: color-mix(in oklch, var(--stroke-red) 60%, var(--text));
 }
 
 .sizeGrid {

@@ -5,6 +5,7 @@ import {
   getVersionStatus,
   type VersionStatus,
 } from '../../lib/version-status.ts';
+import WarningIcon from '../../images/icons/warning.svg?react';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import * as styles from './ModuleVersionInfo.module.css';
 
@@ -34,49 +35,48 @@ function getOutdatedMessage({
   }
 }
 
-export function ModuleVersionInfo({
+function getStatus(module: Module) {
+  return module.packument
+    ? getVersionStatus(module.version, module.packument['dist-tags'])
+    : undefined;
+}
+
+// Not outdated, so show the dist-tag the version is pinned to
+export function ModuleDistTag({
   module,
-  className,
   ...props
-}: { module: Module } & React.HTMLAttributes<HTMLDivElement>) {
-  if (!module.packument) {
-    return null;
-  }
+}: { module: Module } & React.HTMLAttributes<HTMLParagraphElement>) {
+  const status = getStatus(module);
+  return status?.type === 'tag' ? (
+    <p {...props} className={cn(styles.distTag, props.className)}>
+      (<code>{status.tag}</code>)
+    </p>
+  ) : null;
+}
 
-  const status = getVersionStatus(
-    module.version,
-    module.packument['dist-tags'],
-  );
-  if (!status || status.type === 'none') {
+export function ModuleOutdated({
+  module,
+  ...props
+}: { module: Module } & React.HTMLAttributes<HTMLParagraphElement>) {
+  const status = getStatus(module);
+  if (status?.type !== 'outdated' || !module.packument) {
     return null;
-  }
-
-  let content = null;
-  let updateClassName = '';
-  if (status.type === 'outdated') {
-    updateClassName = outdatedClassNames[status.level];
-    content = (
-      <>
-        {getOutdatedMessage(status)} <code>latest</code> (
-        <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
-      </>
-    );
-  } else if (status.type === 'tag') {
-    // Not outdated, so show the dist-tag the version is pinned to
-    updateClassName = styles.distTag;
-    content = (
-      <>
-        (<code>{status.tag}</code>)
-      </>
-    );
   }
 
   return (
     <p
       {...props}
-      className={cn(styles.moduleVersion, updateClassName, className)}
+      className={cn(
+        styles.outdated,
+        outdatedClassNames[status.level],
+        props.className,
+      )}
     >
-      {content}
+      <WarningIcon />
+      <span>
+        {getOutdatedMessage(status)} <code>latest</code> (
+        <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
+      </span>
     </p>
   );
 }

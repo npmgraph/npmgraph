@@ -8,6 +8,7 @@ import useMeasure from '../../hooks/useMeasure.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { Section } from '../ui/Section.tsx';
 import { ModuleDownloads } from './ModuleDownloads.tsx';
+import { ModuleOutdated } from './ModuleVersionInfo.tsx';
 import * as styles from './ReleaseTimeline.module.css';
 
 function timestring(t: number) {
@@ -190,7 +191,13 @@ function yearTicks(t0: number, t1: number, width: number) {
   return ticks;
 }
 
-export function ReleaseTimeline({ module }: { module: Module }) {
+export function ReleaseTimeline({
+  module,
+  showStatus = true,
+}: {
+  module: Module;
+  showStatus?: boolean;
+}) {
   const [ref, { width: w, height: h }] = useMeasure<SVGSVGElement>();
   const [tmax] = useState(() => Date.now());
   if (!module.packument?.versions) {
@@ -247,6 +254,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
 
   return (
     <Section title="Release Timeline">
+      {showStatus && <ModuleOutdated module={module} />}
       <svg ref={ref} viewBox={`0 0 ${w} ${h}`} className={styles.root}>
         <GridColumns
           scale={xScale}

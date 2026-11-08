@@ -1,25 +1,26 @@
-.moduleVersion {
-  flex: 1 0 100%;
-  border: 1px solid;
-  border-radius: 0.3rem;
-  padding: 0.1rem 0;
+.distTag {
+  margin: 0;
   font-size: 0.85rem;
-  text-align: center;
+}
 
-  &.distTag {
-    flex: none;
-    border: none;
-    padding: 0;
-    text-align: inherit;
+.outdated {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-size: 0.85rem;
+
+  svg {
+    flex-shrink: 0;
   }
 
-  &.majorUpdates {
-    border-color: var(--stroke-red);
+  &.majorUpdates svg {
+    color: var(--stroke-red);
   }
-  &.minorUpdates {
-    border-color: var(--stroke-orange);
+  &.minorUpdates svg {
+    color: var(--stroke-orange);
   }
-  &.patchUpdates {
-    border-color: var(--stroke-yellow);
+  &.patchUpdates svg {
+    color: var(--stroke-yellow);
   }
 }
