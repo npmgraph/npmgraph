@@ -106,9 +106,7 @@ export default defineConfig([
     rules: { 'local/no-unnecessary-scss': 'error' },
   },
   {
-    // The theme variables are defined in index.scss
     files: ['**/*.css', '**/*.scss'],
-    ignores: ['index.scss'],
     plugins: { local },
     rules: { 'local/no-magic-colors': 'error' },
   },
