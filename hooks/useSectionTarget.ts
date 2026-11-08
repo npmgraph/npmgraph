@@ -2,6 +2,12 @@ import { useEffect, useRef } from 'react';
 import { PARAM_SECTION } from '../lib/constants.ts';
 import useHashParam from './useHashParam.ts';
 
+// The only section that gets scrolled to by itself is the one in the URL on page load
+const pageLoadSection = new URLSearchParams(location.hash.slice(1)).get(
+  PARAM_SECTION,
+);
+let hasScrolledToPageLoadSection = false;
+
 export function sectionName(title: string) {
   return title.toLowerCase();
 }
@@ -23,7 +29,7 @@ function getScrollParent(element: HTMLElement) {
 }
 
 // Scroll just enough to show MIN_VISIBLE px of the element; don't touch the scroll if that much is already visible
-function revealElement(element: HTMLElement) {
+export function revealElement(element: HTMLElement) {
   const parent = getScrollParent(element);
   const bounds = parent?.getBoundingClientRect() ?? {
     top: 0,
@@ -39,7 +45,8 @@ function revealElement(element: HTMLElement) {
   }
 }
 
-// Open and scroll to the section named in the URL hash, if it's this one
+// Open the section named in the URL hash, if it's this one. Scroll to it only
+// on page load: later URL changes must not move the page under the user.
 export default function useSectionTarget<T extends HTMLElement>(name: string) {
   const [section] = useHashParam(PARAM_SECTION);
   const ref = useRef<T>(null);
@@ -53,7 +60,10 @@ export default function useSectionTarget<T extends HTMLElement>(name: string) {
       ref.current.open = true;
     }
 
-    revealElement(ref.current);
+    if (name === pageLoadSection && !hasScrolledToPageLoadSection) {
+      hasScrolledToPageLoadSection = true;
+      revealElement(ref.current);
+    }
   }, [section, name]);
 
   return ref;

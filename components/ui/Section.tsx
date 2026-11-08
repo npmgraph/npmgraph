@@ -1,6 +1,9 @@
-import { useState, type HTMLProps, type ReactNode } from 'react';
+import { useRef, useState, type HTMLProps, type ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
-import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
+import useSectionTarget, {
+  revealElement,
+  sectionName,
+} from '../../hooks/useSectionTarget.ts';
 import { SectionOpenedContext } from './SectionOpenedContext.ts';
 import * as styles from './Section.module.css';
 
@@ -31,6 +34,7 @@ export function CollapsibleSection({
 } & HTMLProps<HTMLDetailsElement>) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDetailsElement>(name);
+  const isOpeningByClickRef = useRef(false);
   const [opened] = useState(() => {
     const deferred = Promise.withResolvers<void>();
     if (open) {
@@ -46,10 +50,23 @@ export function CollapsibleSection({
       open={open}
       {...props}
       className={cn(className, styles.root)}
+      onClick={event => {
+        // Only a click on the summary counts as the user opening the section
+        isOpeningByClickRef.current =
+          !event.currentTarget.open &&
+          event.target instanceof Element &&
+          event.target.closest('summary') !== null;
+      }}
       onToggle={event => {
         if (event.currentTarget.open) {
           opened.resolve();
+
+          if (isOpeningByClickRef.current) {
+            revealElement(event.currentTarget);
+          }
         }
+
+        isOpeningByClickRef.current = false;
 
         onToggle?.(event);
       }}
