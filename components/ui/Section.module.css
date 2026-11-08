@@ -39,14 +39,6 @@
     content: '▼';
   }
 
-  /* Close the last section like the headings open the others */
-  &:last-child::after {
-    display: block;
-    margin-inline: calc(-1 * var(--pane-spacing-inline));
-    border-bottom: solid 1px var(--bg1);
-    content: '';
-  }
-
   /* The heading's padding already separates it from what follows */
   &:is(details):not([open]) {
     margin-block-end: calc(-1 * var(--pane-spacing-block));
