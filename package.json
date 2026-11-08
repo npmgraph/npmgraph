@@ -41,6 +41,7 @@
   ],
   "dependencies": {
     "@bugsnag/js": "^9.1.0",
+    "@fontsource/roboto-condensed": "^5.3.0",
     "@hpcc-js/wasm-graphviz": "^1.30.0",
     "@visx/axis": "^4.0.0",
     "@visx/grid": "^4.0.0",
