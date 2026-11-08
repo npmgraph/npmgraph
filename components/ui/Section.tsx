@@ -50,13 +50,6 @@ export function CollapsibleSection({
       open={open}
       {...props}
       className={cn(className, styles.root)}
-      onClick={event => {
-        // Only a click on the summary counts as the user opening the section
-        isOpeningByClickRef.current =
-          !event.currentTarget.open &&
-          event.target instanceof Element &&
-          event.target.closest('summary') !== null;
-      }}
       onToggle={event => {
         if (event.currentTarget.open) {
           opened.resolve();
@@ -71,7 +64,12 @@ export function CollapsibleSection({
         onToggle?.(event);
       }}
     >
-      <summary>
+      <summary
+        onClick={() => {
+          // The user is opening the section, as opposed to the URL doing it
+          isOpeningByClickRef.current = !ref.current?.open;
+        }}
+      >
         {title}
         <Count count={count} />
         {icon}

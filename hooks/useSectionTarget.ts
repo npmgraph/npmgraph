@@ -60,10 +60,13 @@ export default function useSectionTarget<T extends HTMLElement>(name: string) {
       ref.current.open = true;
     }
 
-    if (name === pageLoadSection && !hasScrolledToPageLoadSection) {
-      hasScrolledToPageLoadSection = true;
-      revealElement(ref.current);
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler -- Scrolls only once, for the section from the page load
+    if (name !== pageLoadSection || hasScrolledToPageLoadSection) {
+      return;
     }
+
+    hasScrolledToPageLoadSection = true;
+    revealElement(ref.current);
   }, [section, name]);
 
   return ref;
