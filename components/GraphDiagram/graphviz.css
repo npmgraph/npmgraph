@@ -50,6 +50,17 @@ g {
       }
     }
 
+    /* Not every browser draws the focus ring on SVG elements */
+    &:focus-visible {
+      outline: none;
+
+      path {
+        stroke: var(--accent);
+        stroke-dasharray: 5 3;
+        stroke-width: 4;
+      }
+    }
+
     &.unselected {
       opacity: 0.35;
     }

@@ -15,8 +15,8 @@
 
   // Same focus style as the tabs
   &:focus-visible {
-    outline: none;
     filter: brightness(125%);
+    outline: none;
   }
 
   &[aria-hidden='true'] {
