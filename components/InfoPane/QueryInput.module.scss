@@ -12,20 +12,20 @@
 
 /* In the app header */
 .header {
-  border-color: rgb(255 255 255 / 30%);
+  border-color: color-mix(in srgb, var(--tabs-text) 30%, transparent);
   border-radius: 1000px;
-  background: rgb(255 255 255 / 15%);
+  background: color-mix(in srgb, var(--tabs-text) 15%, transparent);
   padding: 0.25em 0.6em;
   max-width: 400px;
   color: var(--tabs-text);
 
   &::placeholder {
-    color: rgb(255 255 255 / 50%);
+    color: color-mix(in srgb, var(--tabs-text) 50%, transparent);
   }
 
   &:focus {
-    border-color: rgb(255 255 255 / 70%);
-    background-color: rgb(255 255 255 / 25%);
+    border-color: color-mix(in srgb, var(--tabs-text) 70%, transparent);
+    background-color: color-mix(in srgb, var(--tabs-text) 25%, transparent);
   }
 }
 

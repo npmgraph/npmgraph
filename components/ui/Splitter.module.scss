@@ -12,6 +12,13 @@
   padding: 0 10px;
   color: var(--tabs-text);
   user-select: none;
+
+  // Same focus style as the tabs
+  &:focus-visible {
+    outline: none;
+    filter: brightness(125%);
+  }
+
   &[aria-hidden='true'] {
     /* Hide it but keep its place */
     visibility: hidden;

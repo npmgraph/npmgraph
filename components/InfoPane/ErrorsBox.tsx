@@ -23,7 +23,7 @@ export default function ErrorsBox() {
   const hosts = [...new Set(urls.map(url => url.host))];
 
   return (
-    <div className={styles.error}>
+    <div className={styles.error} role="alert">
       {errors.map(([key, error]) => (
         <p key={key}>{error.message}</p>
       ))}

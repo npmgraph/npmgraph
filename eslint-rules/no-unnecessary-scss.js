@@ -15,6 +15,10 @@ const rule = {
     },
   },
   create(context) {
+    if (!context.filename.endsWith('.scss')) {
+      return {};
+    }
+
     return {
       StyleSheet(node) {
         try {

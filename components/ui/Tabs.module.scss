@@ -44,9 +44,8 @@
     background: var(--accent);
   }
 
-  // `all: unset` above removes the browser's focus ring
+  // `all: unset` above removes the browser's focus ring, so match the hover style
   button:focus-visible {
-    outline: 2px solid var(--tabs-text);
-    outline-offset: -4px;
+    filter: brightness(125%);
   }
 }

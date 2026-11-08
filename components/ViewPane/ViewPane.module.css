@@ -16,10 +16,7 @@
 }
 
 /* Mimic a placeholder: the field stays prefilled but looks untouched */
-.customLinksDefault:not(:focus) {
-  color: darkgray;
-}
-
+.customLinksDefault:not(:focus),
 .customLinksHelp {
   color: var(--text-dim);
 }

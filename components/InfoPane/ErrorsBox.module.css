@@ -5,7 +5,7 @@
     calc(-1 * var(--pane-spacing-inline)) 0;
   background-color: var(--accent);
   padding: var(--pane-spacing-block) var(--pane-spacing-inline);
-  color: white;
+  color: var(--text-on-accent);
 
   a {
     color: inherit;

@@ -69,3 +69,15 @@
     border-radius: var(--rad-sm);
   }
 }
+
+// Exactly square buttons, whatever their content
+.square > .button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  line-height: 1;
+}

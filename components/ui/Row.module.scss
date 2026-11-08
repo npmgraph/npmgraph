@@ -17,7 +17,7 @@
   min-width: 0;
 
   &:nth-child(even) {
-    background-color: rgba(127, 127, 127, 0.06);
+    background-color: color-mix(in srgb, var(--text) 6%, transparent);
   }
 }
 

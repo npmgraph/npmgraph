@@ -20,7 +20,7 @@
 }
 
 .error {
-  color: white;
+  color: var(--text-on-accent);
 }
 
 @keyframes flashIn {
