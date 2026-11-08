@@ -1,17 +1,17 @@
 import type { HTMLProps } from 'react';
 import { $ } from 'select-dom';
 import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
+import useTab, { selectTab } from '../../hooks/useTab.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import * as utilities from './utilities.module.css';
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
 
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
-  const [pane, setPane] = useGlobalState('pane');
+  const pane = useTab();
   const isTightScreen = useIsTightScreen();
   const [hide, setHide] = useHashParam(PARAM_HIDE);
   const [isReportOnly] = useReportOnly();
@@ -68,13 +68,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                       return;
                     }
 
-                    setHide(null);
-                    // The graph isn't a tab on wide screens, so go back to the report
-                    setPane(
-                      !isTightScreen && tabPane === PaneType.GRAPH
-                        ? PaneType.REPORT
-                        : tabPane,
-                    );
+                    selectTab(tabPane);
                   }}
                 >
                   {label}

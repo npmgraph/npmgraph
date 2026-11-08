@@ -1,9 +1,9 @@
 import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
-import { useGlobalState } from '../lib/GlobalStore.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
+import useTab from '../hooks/useTab.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import ViewPane from './ViewPane/ViewPane.tsx';
@@ -17,7 +17,7 @@ const ModulePane = lazy(async () => modulePanePromise);
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;
-  const [pane] = useGlobalState('pane');
+  const pane = useTab();
   // The store updates synchronously, so defer the pane to keep showing the previous one while the next suspends
   const deferredPane = useDeferredValue(pane);
 

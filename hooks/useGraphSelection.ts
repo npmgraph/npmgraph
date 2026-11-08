@@ -8,12 +8,17 @@ const selectableQueryTypes = new Set<QueryTypeValue>([
   QueryType.Exact,
 ]);
 
+export function parseSelection(selection: string | null) {
+  const parts = selection ? selection.split(':') : [];
+  const type =
+    parts.length > 1 ? (parts[0] as QueryTypeValue) : QueryType.Default;
+  const value = (parts.length > 1 ? parts[1] : parts[0]) ?? '';
+  return [type, value] as const;
+}
+
 export default function useGraphSelection() {
   const [sel, setSel] = useHashParam(PARAM_SELECTION);
-  const parts = sel ? sel.split(':') : [];
-  const selectType =
-    parts.length > 1 ? (parts[0] as QueryTypeValue) : QueryType.Default;
-  const selectValue = (parts.length > 1 ? parts[1] : parts[0]) ?? '';
+  const [selectType, selectValue] = parseSelection(sel);
 
   return [
     selectType,

@@ -6,6 +6,7 @@ import { useQuery } from '../../hooks/useQuery.ts';
 import { PaneType, PARAM_PACKAGES } from '../../lib/constants.ts';
 import { celebrate } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { selectTab } from '../../hooks/useTab.ts';
 import { getGraphForQuery, type GraphState } from '../../lib/graph-util.ts';
 
 // Celebrate when a graph that was just loaded is a single module without dependencies
@@ -32,7 +33,6 @@ export default function useLoadGraph(
   const [query] = useQuery();
   // Pasted package.json files are in the hash, they can change without the query changing
   const [packages] = useHashParam(PARAM_PACKAGES);
-  const [, setPane] = useGlobalState('pane');
   const [, setGraph] = useGlobalState('graph');
   const [collapse] = useCollapse();
   const dependencyTypes = useDependencyTypes();
@@ -60,7 +60,7 @@ export default function useLoadGraph(
         newGraph.entryModules.size === 0 &&
         newGraph.failedEntryModules.size > 0
       ) {
-        setPane(PaneType.INFO);
+        selectTab(PaneType.INFO);
       }
     });
 
@@ -74,6 +74,5 @@ export default function useLoadGraph(
     isModuleVisible,
     packages,
     setGraph,
-    setPane,
   ]);
 }

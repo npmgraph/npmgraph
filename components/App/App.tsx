@@ -1,11 +1,10 @@
 import { useEffect, useRef } from 'react';
-import { PaneType, PARAM_TAB } from '../../lib/constants.ts';
+import { PaneType } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
-import useSyncTab from '../../hooks/useSyncTab.ts';
+import useTab from '../../hooks/useTab.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
@@ -23,27 +22,25 @@ export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
   const isTightScreen = useIsTightScreen();
-  const [pane, setPane] = useGlobalState('pane');
-  const [tab] = useHashParam(PARAM_TAB);
+  const pane = useTab();
+  const [, setIsGraphTabActive] = useGlobalState('isGraphTabActive');
   const [isReportOnly] = useReportOnly();
   useExternalInput();
 
-  // On mobile, auto-select the Graph tab whenever the query changes.
-  // This handles both deep links (initial load) and new queries during a session.
-  // (unless a deep link specified a tab)
-  const initialTabRef = useRef(tab);
+  // On mobile, show the graph whenever the query changes. The initial one is
+  // handled by the global state, since a deep link can specify a tab.
+  const queryKey = query.join(',');
+  const queryKeyRef = useRef(queryKey);
   useEffect(() => {
-    if (initialTabRef.current !== null) {
-      initialTabRef.current = null;
+    if (queryKeyRef.current === queryKey) {
       return;
     }
 
-    if (isTightScreen && query.length > 0) {
-      setPane(PaneType.GRAPH);
+    queryKeyRef.current = queryKey;
+    if (isTightScreen && queryKey) {
+      setIsGraphTabActive(true);
     }
-  }, [query, isTightScreen, setPane]);
-
-  useSyncTab();
+  }, [queryKey, isTightScreen, setIsGraphTabActive]);
 
   if (query.length === 0) {
     return (

@@ -1,46 +1,27 @@
 import { useCallback, useSyncExternalStore } from 'react';
 import type { GraphState } from './graph-types.ts';
-import {
-  type PaneTypes,
-  PaneType,
-  PARAM_QUERY,
-  PARAM_TAB,
-  TIGHT_SCREEN_QUERY,
-} from './constants.ts';
+import { PARAM_QUERY, PARAM_TAB, TIGHT_SCREEN_QUERY } from './constants.ts';
 import type Module from './Module.ts';
 import { hashGet, searchGet } from './url-util.ts';
 
 type GlobalState = {
   colorize?: string;
   graph: GraphState;
+  // Whether the graph is the selected tab, which only matters on tight screens
+  isGraphTabActive: boolean;
   lastVisit: number;
   location: URL;
-  pane: PaneTypes;
   selectedModules?: Map<string, Module>;
 };
 
-function _getInitialPane() {
-  if (!searchGet(PARAM_QUERY)) {
-    return PaneType.INFO;
-  }
-
-  const tab = hashGet(PARAM_TAB);
-  const tabPane = Object.values(PaneType).find(
-    type => type === tab && type !== PaneType.GRAPH,
-  );
-  if (tabPane) {
-    return tabPane;
-  }
-
-  const select = hashGet('select')?.split(/[ ,]+/);
-  if (select) {
-    return PaneType.MODULE;
-  }
-
-  const isTight =
+// Mobile starts on the graph, unless the URL links to a tab
+function _isGraphTabInitiallyActive() {
+  return (
+    Boolean(searchGet(PARAM_QUERY)) &&
+    hashGet(PARAM_TAB) === null &&
     globalThis.window !== undefined &&
-    globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches;
-  return isTight ? PaneType.GRAPH : PaneType.REPORT;
+    globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches
+  );
 }
 
 let globalState: GlobalState = {
@@ -49,9 +30,9 @@ let globalState: GlobalState = {
     entryModules: new Set(),
     failedEntryModules: new Map(),
   },
+  isGraphTabActive: _isGraphTabInitiallyActive(),
   lastVisit: 0,
   location: new URL(location.href),
-  pane: _getInitialPane(),
   selectedModules: new Map(),
 };
 
