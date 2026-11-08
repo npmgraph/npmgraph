@@ -12,7 +12,7 @@
   font-family: inherit;
   text-align: center;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 
   > span {
     opacity: 0.6;
