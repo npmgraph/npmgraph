@@ -17,8 +17,7 @@
 
   @include tight-screen {
     border-right: none;
-    background-image: none;
-    background-color: color-mix(in srgb, var(--tabs-bg), var(--tabs-text) 20%);
+    background: color-mix(in srgb, var(--tabs-bg), var(--tabs-text) 20%);
   }
 
   svg {

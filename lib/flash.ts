@@ -3,7 +3,7 @@ import confetti from 'canvas-confetti';
 export type FlashEntry = {
   id: number;
   message: string;
-  backgroundColor: string;
+  backgroundColor?: string;
   isError: boolean;
 };
 
@@ -29,7 +29,7 @@ export function subscribeFlash(listener: FlashListener) {
   };
 }
 
-export function flash(wat: unknown, bg = 'var(--bg-orange)') {
+export function flash(wat: unknown, bg?: string) {
   const entry: FlashEntry = {
     id: nextFlashId++,
     message: toFlashMessage(wat),
@@ -76,7 +76,7 @@ export async function celebrate(message: string) {
   });
 }
 
-function normalizeBackgroundColor(bg: string) {
+function normalizeBackgroundColor(bg?: string) {
   return bg === 'error' ? 'var(--bg-red)' : bg;
 }
 

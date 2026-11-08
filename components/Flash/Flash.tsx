@@ -41,6 +41,7 @@ export default function Flash() {
           style={{
             maxWidth: `${maxWidth}px`,
             backgroundColor: entry.backgroundColor,
+            color: entry.backgroundColor && 'var(--text)',
           }}
           onAnimationEnd={event => {
             if (event.animationName !== flashStyles.flashOut) {
