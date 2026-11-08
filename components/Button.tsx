@@ -41,14 +41,19 @@ export function ButtonCheckbox({
 
 export function ButtonGroup({
   vertical,
+  square,
   ...props
-}: { vertical?: boolean } & React.HTMLAttributes<HTMLDivElement>) {
+}: {
+  vertical?: boolean;
+  square?: boolean;
+} & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       {...props}
       className={cn(
         props.className,
         vertical ? styles.verticalGroup : styles.horizontalGroup,
+        square && styles.square,
       )}
     />
   );
