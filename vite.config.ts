@@ -25,7 +25,8 @@ export default defineConfig({
         test: {
           name: 'smoke',
           include: ['smoke.test.ts'],
-          testTimeout: 3000,
+          // Graphs are fetched from the registry, which can be slow on CI
+          testTimeout: 60_000,
           browser: {
             enabled: true,
             headless: true,

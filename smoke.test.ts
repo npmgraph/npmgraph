@@ -141,23 +141,19 @@ describe('graph', () => {
     await appears('button', /^Info$/);
   });
 
-  it(
-    'shows the root module when loading a graph larger than the viewport',
-    async () => {
-      await goto('?q=express');
-      await nodeAppears();
-      // The viewport can move the graph again right after it's rendered
-      await new Promise(resolve => {
-        setTimeout(resolve, 500);
-      });
+  it('shows the root module when loading a graph larger than the viewport', async () => {
+    await goto('?q=express');
+    await nodeAppears();
+    // The viewport can move the graph again right after it's rendered
+    await new Promise(resolve => {
+      setTimeout(resolve, 500);
+    });
 
-      const root = $('svg g.node', doc()).getBoundingClientRect();
-      const view = $('.react-transform-wrapper', doc()).getBoundingClientRect();
-      expect(root.left).toBeGreaterThanOrEqual(view.left);
-      expect(root.right).toBeLessThanOrEqual(view.right);
-    },
-    TIMEOUT,
-  );
+    const root = $('svg g.node', doc()).getBoundingClientRect();
+    const view = $('.react-transform-wrapper', doc()).getBoundingClientRect();
+    expect(root.left).toBeGreaterThanOrEqual(view.left);
+    expect(root.right).toBeLessThanOrEqual(view.right);
+  });
 });
 
 describe('navigation', () => {
@@ -242,145 +238,136 @@ describe('panes', () => {
     await appears('h2', /^debug@/);
   });
 
-  it(
-    'adds custom links to the module pane and stores them locally',
-    async () => {
-      localStorage.removeItem('npmgraph-custom-module-links');
-      localStorage.removeItem('npmgraph-module-link-providers');
-      await goto('?q=debug');
-      await nodeAppears('debug@');
-      await userEvent.click(node());
-      await appears('h2', /^debug@/);
-      const moduleVersion = $('h2', doc())?.textContent?.trim().slice(6);
+  it('adds custom links to the module pane and stores them locally', async () => {
+    localStorage.removeItem('npmgraph-custom-module-links');
+    localStorage.removeItem('npmgraph-module-link-providers');
+    await goto('?q=debug');
+    await nodeAppears('debug@');
+    await userEvent.click(node());
+    await appears('h2', /^debug@/);
+    const moduleVersion = $('h2', doc())?.textContent?.trim().slice(6);
+    expect(
+      $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),
+    ).toBeDefined();
+    await userEvent.click(tab('View'));
+    // The View pane can take longer than the locator's own wait to render
+    await appears('details > summary');
+    await userEvent.click(app().getByCSS('details > summary'));
+    const textarea = $(
+      'textarea[aria-label="Custom link providers for Module tab"]',
+      doc(),
+    );
+    const defaultConfig = textarea?.value ?? '';
+    expect(defaultConfig).toContain(
+      'npm, https://www.npmjs.com/package/{+name}/v/{version}',
+    );
+    expect(defaultConfig).toContain('repo, {repository}');
+    expect(defaultConfig).toContain('website, {homepage}');
+    expect(defaultConfig).toContain(
+      'package.json, https://unpkg.com/{+name}@{version}/package.json',
+    );
+    const previewButtons = $$(
+      '[aria-label="Preview of Module tab link buttons"] button',
+      doc(),
+    );
+    expect(previewButtons.map(button => button.textContent)).toEqual([
+      'npm',
+      'repo',
+      'website',
+      'package.json',
+    ]);
+    expect(previewButtons.every(button => button.disabled)).toBe(true);
+    await userEvent.fill(
+      app().getByRole('textbox', {
+        name: 'Custom link providers for Module tab',
+      }),
+      'invalid row',
+    );
+    expect(
+      $('textarea[aria-label="Custom link providers for Module tab"]', doc())
+        ?.validationMessage,
+    ).toBe(
+      'Each non-empty row must contain a label and a valid HTTP(S) URL separated by a comma.',
+    );
+    await userEvent.fill(
+      app().getByRole('textbox', {
+        name: 'Custom link providers for Module tab',
+      }),
+      '',
+    );
+    expect(
+      $('details > summary', doc())?.parentElement?.hasAttribute('open'),
+    ).toBe(true);
+    expect(doc().activeElement).toBe(
+      $('textarea[aria-label="Custom link providers for Module tab"]', doc()),
+    );
+    const customConfig = [
+      defaultConfig,
+      'npmx,https://npmx.dev/package/{name}@{version}',
+    ].join('\n');
+    await userEvent.fill(
+      app().getByRole('textbox', {
+        name: 'Custom link providers for Module tab',
+      }),
+      customConfig,
+    );
+    expect(
+      $$('[aria-label="Preview of Module tab link buttons"] button', doc()).map(
+        button => button.textContent,
+      ),
+    ).toContain('npmx');
+
+    expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
+      customConfig,
+    );
+    await userEvent.click(tab('Module'));
+    await vi.waitFor(() => {
+      expect(
+        $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
+      ).toBe(`https://npmx.dev/package/debug@${moduleVersion}`);
+    });
+    await userEvent.click(tab('View'));
+    expect(
+      $('details > summary', doc())?.parentElement?.hasAttribute('open'),
+    ).toBe(true);
+    await userEvent.click(
+      app().getByRole('button', { name: 'Reset to defaults' }),
+    );
+    expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
+      defaultConfig,
+    );
+    await userEvent.click(tab('Module'));
+    await vi.waitFor(() => {
       expect(
         $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),
       ).toBeDefined();
-      await userEvent.click(tab('View'));
-      // The View pane can take longer than the locator's own wait to render
-      await appears('details > summary');
-      await userEvent.click(app().getByCSS('details > summary'));
-      const textarea = $(
-        'textarea[aria-label="Custom link providers for Module tab"]',
-        doc(),
-      );
-      const defaultConfig = textarea?.value ?? '';
-      expect(defaultConfig).toContain(
-        'npm, https://www.npmjs.com/package/{+name}/v/{version}',
-      );
-      expect(defaultConfig).toContain('repo, {repository}');
-      expect(defaultConfig).toContain('website, {homepage}');
-      expect(defaultConfig).toContain(
-        'package.json, https://unpkg.com/{+name}@{version}/package.json',
-      );
-      const previewButtons = $$(
-        '[aria-label="Preview of Module tab link buttons"] button',
-        doc(),
-      );
-      expect(previewButtons.map(button => button.textContent)).toEqual([
-        'npm',
-        'repo',
-        'website',
-        'package.json',
-      ]);
-      expect(previewButtons.every(button => button.disabled)).toBe(true);
-      await userEvent.fill(
-        app().getByRole('textbox', {
-          name: 'Custom link providers for Module tab',
-        }),
-        'invalid row',
-      );
-      expect(
-        $('textarea[aria-label="Custom link providers for Module tab"]', doc())
-          ?.validationMessage,
-      ).toBe(
-        'Each non-empty row must contain a label and a valid HTTP(S) URL separated by a comma.',
-      );
-      await userEvent.fill(
-        app().getByRole('textbox', {
-          name: 'Custom link providers for Module tab',
-        }),
-        '',
-      );
-      expect(
-        $('details > summary', doc())?.parentElement?.hasAttribute('open'),
-      ).toBe(true);
-      expect(doc().activeElement).toBe(
-        $('textarea[aria-label="Custom link providers for Module tab"]', doc()),
-      );
-      const customConfig = [
-        defaultConfig,
-        'npmx,https://npmx.dev/package/{name}@{version}',
-      ].join('\n');
-      await userEvent.fill(
-        app().getByRole('textbox', {
-          name: 'Custom link providers for Module tab',
-        }),
-        customConfig,
-      );
-      expect(
-        $$(
-          '[aria-label="Preview of Module tab link buttons"] button',
-          doc(),
-        ).map(button => button.textContent),
-      ).toContain('npmx');
-
-      expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
-        customConfig,
-      );
-      await userEvent.click(tab('Module'));
-      await vi.waitFor(() => {
-        expect(
-          $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
-        ).toBe(`https://npmx.dev/package/debug@${moduleVersion}`);
-      });
-      await userEvent.click(tab('View'));
-      expect(
-        $('details > summary', doc())?.parentElement?.hasAttribute('open'),
-      ).toBe(true);
-      await userEvent.click(
-        app().getByRole('button', { name: 'Reset to defaults' }),
-      );
-      expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
-        defaultConfig,
-      );
-      await userEvent.click(tab('Module'));
-      await vi.waitFor(() => {
-        expect(
-          $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),
-        ).toBeDefined();
-      });
-      expect($$optional('a[href^="https://npmx.dev/"]', doc())).toHaveLength(0);
-      win().localStorage.removeItem('npmgraph-custom-module-links');
-      win().localStorage.removeItem('npmgraph-module-link-providers');
-    },
-    TIMEOUT,
-  );
+    });
+    expect($$optional('a[href^="https://npmx.dev/"]', doc())).toHaveLength(0);
+    win().localStorage.removeItem('npmgraph-custom-module-links');
+    win().localStorage.removeItem('npmgraph-module-link-providers');
+  });
 
   it.each([
     ['desktop', 1280],
     ['mobile', 400],
-  ])(
-    'keeps the Report tab after a refresh on %s',
-    async (_name, width) => {
-      await goto('?q=express', width);
-      await nodeAppears();
-      await userEvent.click(tab('Report'));
-      await hashHas('tab=report');
+  ])('keeps the Report tab after a refresh on %s', async (_name, width) => {
+    await goto('?q=express', width);
+    await nodeAppears();
+    await userEvent.click(tab('Report'));
+    await hashHas('tab=report');
 
-      win().location.reload();
-      await new Promise(resolve => {
-        iframe.addEventListener('load', resolve, { once: true });
-      });
-      // The graph stays mounted while hidden, so it's a sign the page settled
-      await nodeAppears();
-      await vi.waitFor(() => {
-        expect($('[role="tab"][aria-selected="true"]', doc()).textContent).toBe(
-          'Report',
-        );
-      });
-    },
-    TIMEOUT,
-  );
+    win().location.reload();
+    await new Promise(resolve => {
+      iframe.addEventListener('load', resolve, { once: true });
+    });
+    // The graph stays mounted while hidden, so it's a sign the page settled
+    await nodeAppears();
+    await vi.waitFor(() => {
+      expect($('[role="tab"][aria-selected="true"]', doc()).textContent).toBe(
+        'Report',
+      );
+    });
+  });
 
   it('renders report items', async () => {
     await goto('?q=debug');
@@ -393,20 +380,15 @@ describe('panes', () => {
     );
   });
 
-  // Loading the devDependencies of `ms` takes longer than the default test timeout
-  it(
-    'toggles dependency types',
-    async () => {
-      await goto('?q=ms');
-      await nodeAppears();
-      await userEvent.click(tab('View'));
-      await userEvent.click(toggle('Include devDependencies'));
-      // hash value is "%2CdevDependencies" (leading empty entry), so match loosely
-      await hashHas('devDependencies');
-      await nodeAppears();
-    },
-    TIMEOUT,
-  );
+  it('toggles dependency types', async () => {
+    await goto('?q=ms');
+    await nodeAppears();
+    await userEvent.click(tab('View'));
+    await userEvent.click(toggle('Include devDependencies'));
+    // hash value is "%2CdevDependencies" (leading empty entry), so match loosely
+    await hashHas('devDependencies');
+    await nodeAppears();
+  });
 
   it('toggles module sizing', async () => {
     await goto('?q=debug');
