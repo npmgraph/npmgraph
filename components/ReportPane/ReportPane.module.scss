@@ -11,9 +11,15 @@
   }
 }
 
-.collapseInfo {
+.description {
   color: var(--text-dim);
   font-size: 90%;
+}
+
+.filter {
+  @include search-input;
+
+  padding-block: 0.2em;
 }
 
 // Centered column
