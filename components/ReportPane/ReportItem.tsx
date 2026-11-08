@@ -49,10 +49,13 @@ export function ReportItem({
       data-report-item={sectionName(title)}
       onToggle={() => {
         // Like in the report-only view, a single open section is linkable
-        const opened = $$optional('details[data-report-item][open]');
+        const [firstItem, moreThanOpenOpen] = $$optional(
+          'details[data-report-item][open]',
+        );
         setSection(
           // Also update when closing, since the one left open may be a different section
-          opened.length === 1 ? opened[0]!.dataset['reportItem'] : null,
+          // eslint-disable-next-line unicorn/dom-node-dataset -- No greppability
+          moreThanOpenOpen ? null : firstItem!.getAttribute('data-report-item'),
         );
       }}
     >
