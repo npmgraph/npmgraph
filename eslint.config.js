@@ -5,7 +5,15 @@ import reactDoctor from 'eslint-plugin-react-doctor';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 import { defineConfig } from 'eslint/config';
 import selectDom from 'select-dom/eslint-plugin';
+import noMagicColors from './eslint-rules/no-magic-colors.js';
 import noUnnecessaryScss from './eslint-rules/no-unnecessary-scss.js';
+
+const local = {
+  rules: {
+    'no-magic-colors': noMagicColors,
+    'no-unnecessary-scss': noUnnecessaryScss,
+  },
+};
 
 const disabledRules = [
   // TODO: Gradually review and enable
@@ -92,13 +100,17 @@ export default defineConfig([
   },
   {
     files: ['**/*.scss'],
-    plugins: {
-      css,
-      local: { rules: { 'no-unnecessary-scss': noUnnecessaryScss } },
-    },
+    plugins: { css, local },
     language: 'css/css',
     languageOptions: { tolerant: true },
     rules: { 'local/no-unnecessary-scss': 'error' },
+  },
+  {
+    // The theme variables are defined in index.scss
+    files: ['**/*.css', '**/*.scss'],
+    ignores: ['index.scss'],
+    plugins: { local },
+    rules: { 'local/no-magic-colors': 'error' },
   },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),

@@ -38,7 +38,7 @@
 }
 
 .deprecatedTitle {
-  color: darkred;
+  color: color-mix(in oklch, var(--stroke-red) 60%, var(--text));
 }
 
 .sizeGrid {
