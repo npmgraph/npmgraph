@@ -38,6 +38,11 @@ function decorateGraphNodes(
     nodeElement.setAttribute('tabindex', '0');
     nodeElement.setAttribute('aria-label', `Select ${module.key}`);
 
+    // Graphviz wraps the node in a link; keep the node as the only tab stop
+    for (const link of $$optional('a', nodeElement)) {
+      link.setAttribute('tabindex', '-1');
+    }
+
     if (module.package.deprecated) {
       nodeElement.classList.add('warning');
     }
