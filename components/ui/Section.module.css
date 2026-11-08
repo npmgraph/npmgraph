@@ -1,4 +1,6 @@
 .root {
+  scroll-margin-top: 60px;
+
   > summary,
   > h3 {
     display: flex;

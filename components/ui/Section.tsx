@@ -1,9 +1,6 @@
-import { useRef, useState, type HTMLProps, type ReactNode } from 'react';
+import { useState, type HTMLProps, type ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
-import useSectionTarget, {
-  revealElement,
-  sectionName,
-} from '../../hooks/useSectionTarget.ts';
+import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 import { SectionOpenedContext } from './SectionOpenedContext.ts';
 import * as styles from './Section.module.css';
 
@@ -34,7 +31,6 @@ export function CollapsibleSection({
 } & HTMLProps<HTMLDetailsElement>) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDetailsElement>(name);
-  const isOpeningByClickRef = useRef(false);
   const [opened] = useState(() => {
     const deferred = Promise.withResolvers<void>();
     if (open) {
@@ -53,23 +49,12 @@ export function CollapsibleSection({
       onToggle={event => {
         if (event.currentTarget.open) {
           opened.resolve();
-
-          if (isOpeningByClickRef.current) {
-            revealElement(event.currentTarget);
-          }
         }
-
-        isOpeningByClickRef.current = false;
 
         onToggle?.(event);
       }}
     >
-      <summary
-        onClick={() => {
-          // The user is opening the section, as opposed to the URL doing it
-          isOpeningByClickRef.current = !ref.current?.open;
-        }}
-      >
+      <summary>
         {title}
         <Count count={count} />
         {icon}
