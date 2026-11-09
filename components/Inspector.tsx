@@ -53,7 +53,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     <div
       id="inspector"
       role="tabpanel"
-      aria-labelledby={`tab-${isReportOnly ? PaneType.REPORT : deferredPane}`}
+      aria-labelledby={`tab-${isReportOnly ? PaneType.REPORT : deferredTab}`}
       className={cn(
         styles.inspector,
         { [styles.only]: isReportOnly },
