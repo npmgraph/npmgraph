@@ -8,7 +8,7 @@ import StickerFarm from './StickerFarm.tsx';
 
 export default function Intro() {
   return (
-    <div className={styles.root}>
+    <main className={styles.root}>
       <h1 title={`Release: ${appVersion} (${releaseStage})`}>
         <Logo />
       </h1>
@@ -17,6 +17,6 @@ export default function Intro() {
       <InputHelp />
       <StickerFarm />
       <GitHubCorner />
-    </div>
+    </main>
   );
 }

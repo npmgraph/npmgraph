@@ -3,7 +3,7 @@ import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
-import { PaneType, PARAM_PACKAGES } from '../../lib/constants.ts';
+import { PARAM_PACKAGES } from '../../lib/constants.ts';
 import { celebrate } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { getGraphForQuery, type GraphState } from '../../lib/graph-util.ts';
@@ -32,7 +32,6 @@ export default function useLoadGraph(
   const [query] = useQuery();
   // Pasted package.json files are in the hash, they can change without the query changing
   const [packages] = useHashParam(PARAM_PACKAGES);
-  const [, setPane] = useGlobalState('pane');
   const [, setGraph] = useGlobalState('graph');
   const [collapse] = useCollapse();
   const dependencyTypes = useDependencyTypes();
@@ -55,13 +54,6 @@ export default function useLoadGraph(
 
       celebrateZeroDependencies(newGraph, isModuleVisible);
       setGraph(newGraph);
-
-      if (
-        newGraph.entryModules.size === 0 &&
-        newGraph.failedEntryModules.size > 0
-      ) {
-        setPane(PaneType.INFO);
-      }
     });
 
     return () => {
@@ -74,6 +66,5 @@ export default function useLoadGraph(
     isModuleVisible,
     packages,
     setGraph,
-    setPane,
   ]);
 }
