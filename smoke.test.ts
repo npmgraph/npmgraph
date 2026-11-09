@@ -208,9 +208,10 @@ describe('navigation', () => {
 describe('package.json input', () => {
   it('does not show local package names in the search field', async () => {
     await goto('?q=debug');
-    await userEvent.click(tab('Info'));
     const fileInput = app().getByLabelText('Choose file');
     const upload = async (contents: object) => {
+      // Loading a package.json resets the URL, which leaves the Info tab
+      await userEvent.click(tab('Info'));
       await userEvent.upload(
         fileInput,
         new File([JSON.stringify(contents)], 'package.json', {
