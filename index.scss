@@ -14,11 +14,23 @@ $hues: (
   'violet': 260,
 );
 
+// Lightness is an offset from the accent's, chroma a multiple of it
 @function named($hue, $lightness, $chroma) {
   @return oklch(
-    from var(--accent) calc(l + var(#{$lightness})) calc(c * var(#{$chroma}))
+    from var(--accent) calc(l + #{$lightness}) calc(c * #{$chroma})
       calc(h + #{$hue})
   );
+}
+
+// Strokes (for borders and lines) and backgrounds (should contrast with text)
+@mixin named-colors($stroke-lightness, $bg-lightness, $bg-chroma) {
+  @each $name in 'red', 'orange', 'yellow', 'blue' {
+    --stroke-#{$name}: #{named(map.get($hues, $name), $stroke-lightness, 1)};
+  }
+
+  @each $name, $hue in $hues {
+    --bg-#{$name}: #{named($hue, $bg-lightness, $bg-chroma)};
+  }
 }
 
 // Neutrals use the accent's hue and a fraction of its chroma
@@ -63,23 +75,7 @@ $hues: (
   // Shadow colors depend on the background color
   --bg0-shadow-color: color-mix(in oklch, var(--bg0) 90%, black);
 
-  --stroke-dL: 0.02;
-  --stroke-cK: 1;
-  --bg-dL: 0.15; // Background lightness
-  --bg-cK: 0.85; // Background chroma
-
-  @each $name in 'red', 'orange', 'yellow', 'blue' {
-    --stroke-#{$name}: #{named(
-        map.get($hues, $name),
-        '--stroke-dL',
-        '--stroke-cK'
-      )};
-  }
-
-  // Named background colors (should contrast well with text color)
-  @each $name, $hue in $hues {
-    --bg-#{$name}: #{named($hue, '--bg-dL', '--bg-cK')};
-  }
+  @include named-colors(0.02, 0.15, 0.85);
 
   // Diagonal stripes for warnings
   --warning0: color-mix(in oklch, var(--bg-yellow) 15%, var(--bg-root));
@@ -102,9 +98,7 @@ $hues: (
     --bg1: #{neutral(48%)};
     --bg2: #{neutral(31%, 0.035)};
 
-    --stroke-dL: 0.12;
-    --bg-dL: -0.04;
-    --bg-cK: 0.8;
+    @include named-colors(0.12, -0.04, 0.8);
   }
 }
 
