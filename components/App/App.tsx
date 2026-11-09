@@ -68,12 +68,12 @@ export default function App() {
           {isTightScreen && <Tabs />}
         </div>
         {activity.total > 0 ? <Loader activity={activity} /> : null}
-        <div className={styles.content}>
+        <main className={styles.content}>
           <div className={styles.graph} hidden={isGraphHidden}>
             <GraphDiagram activity={activity} />
           </div>
           <Inspector />
-        </div>
+        </main>
         <PreviewWidget />
       </div>
     </>

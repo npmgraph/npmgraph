@@ -59,7 +59,9 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                 <button
                   type="button"
                   role="tab"
+                  id={`tab-${id}`}
                   aria-selected={isSelected}
+                  aria-controls={id === GRAPH ? undefined : 'inspector'}
                   className={utilities.brightHover}
                   onClick={() => {
                     // Like mobile apps, tapping the current tab scrolls to the top

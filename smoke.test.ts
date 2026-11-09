@@ -241,6 +241,14 @@ describe('panes', () => {
     await appears('h2', /^debug@/);
   });
 
+  it('opens module pane on node keyboard activation', async () => {
+    await goto('?q=debug');
+    await nodeAppears('debug@');
+    $<SVGAElement>('svg g.node[data-module^="debug@"] a', doc()).focus();
+    await userEvent.keyboard('{Enter}');
+    await appears('h2', /^debug@/);
+  });
+
   it(
     'adds custom links to the module pane and stores them locally',
     async () => {
