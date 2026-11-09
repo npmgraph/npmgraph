@@ -91,8 +91,9 @@ export default function QueryInput({
             return;
           }
 
-          // Until submitted, highlight the matches in the graph
-          const filter = value.trim() === inputValue ? '' : value.trim();
+          // Until submitted, highlight the matches of the term being typed in the graph
+          const filter =
+            value.trim() === inputValue ? '' : value.split(',').at(-1)!.trim();
           setGraphSelection(
             filter ? QueryType.Search : QueryType.Default,
             filter,
