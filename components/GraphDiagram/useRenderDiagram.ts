@@ -34,9 +34,10 @@ function decorateGraphNodes(
       continue;
     }
 
-    nodeElement.setAttribute('role', 'button');
-    nodeElement.setAttribute('tabindex', '0');
-    nodeElement.setAttribute('aria-label', `Select ${module.key}`);
+    // Safari doesn't make SVG links focusable on its own
+    for (const link of $$optional('a', nodeElement)) {
+      link.setAttribute('tabindex', '0');
+    }
 
     if (module.package.deprecated) {
       nodeElement.classList.add('warning');

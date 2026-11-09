@@ -196,7 +196,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
         excluded: ['node'],
       }}
     >
-      {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- Already handled by onEsc() */}
+      {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- The links inside the nodes are natively focusable and clickable with the keyboard */}
       <div
         className={styles.root}
         onPointerDown={() => {
