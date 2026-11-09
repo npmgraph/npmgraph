@@ -9,7 +9,7 @@ import * as styles from './GraphDiagram.module.scss';
 
 // Select a module (or deselect with an empty click), or collapse it with Shift
 export default function useGraphClick() {
-  const selectTab = useTab()[1];
+  const [, selectTab] = useTab();
   const setGraphSelection = useGraphSelection()[2];
   const [collapse, setCollapse] = useCollapse();
 
