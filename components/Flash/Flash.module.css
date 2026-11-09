@@ -3,10 +3,10 @@
   position: fixed;
   left: 5px;
   flex-direction: column;
+  align-items: flex-start;
   gap: 5px;
   z-index: 100;
   pointer-events: none;
-  align-items: flex-start;
 }
 
 .flash {
