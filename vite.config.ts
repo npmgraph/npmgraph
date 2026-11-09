@@ -22,6 +22,8 @@ export default defineConfig({
       {
         // Serve the built app (npm run build) at the dev server root
         publicDir: 'dist',
+        // Scan the app too, or Vite finds its dependencies mid-test and reloads
+        optimizeDeps: { entries: ['smoke.test.ts', 'index.html'] },
         test: {
           name: 'smoke',
           include: ['smoke.test.ts'],

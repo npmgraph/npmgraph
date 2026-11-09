@@ -342,6 +342,7 @@ describe('panes', () => {
         ).toBe(`https://npmx.dev/package/debug@${moduleVersion}`);
       });
       await userEvent.click(tab('View'));
+      await appears('details > summary');
       expect(
         $('details > summary', doc())?.parentElement?.hasAttribute('open'),
       ).toBe(true);
