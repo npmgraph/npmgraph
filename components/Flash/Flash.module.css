@@ -6,6 +6,7 @@
   gap: 5px;
   z-index: 100;
   pointer-events: none;
+  align-items: flex-start;
 }
 
 .flash {
@@ -20,7 +21,6 @@
 }
 
 .error {
-  box-shadow: none;
   background: var(--accent);
   color: var(--text-on-accent);
 }
