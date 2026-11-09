@@ -1,9 +1,11 @@
-import { type HTMLProps, useRef, useState } from 'react';
+import { type HTMLProps, useId, useRef, useState } from 'react';
 import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { cn } from '../../lib/dom.ts';
-import { getCachedModule } from '../../lib/ModuleCache.ts';
+import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
 import { searchSet } from '../../lib/url-util.ts';
+import useGraph from '../../hooks/useGraph.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import * as styles from './QueryInput.module.scss';
@@ -18,6 +20,10 @@ export default function QueryInput({
 }: HTMLProps<HTMLInputElement> & { variant?: 'header' | 'hero' }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
+  const graph = useGraph();
+  const setGraphSelection = useGraphSelection()[2];
+  const listId = useId();
+  const isHeader = variant === 'header';
   const inputValue = query
     .filter(key => !getCachedModule(key)?.isLocal)
     .join(', ');
@@ -77,12 +83,31 @@ export default function QueryInput({
         spellCheck="false"
         // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting.
         autoFocus={!hasSoftKeyboard && query.length === 0}
+        list={isHeader ? listId : undefined}
         onChange={event => {
-          setValueState({ query, inputValue, value: event.target.value });
+          const { value } = event.target;
+          setValueState({ query, inputValue, value });
+          if (!isHeader) {
+            return;
+          }
+
+          // Until submitted, highlight the matches in the graph
+          const filter = value.trim() === inputValue ? '' : value.trim();
+          setGraphSelection(
+            filter ? QueryType.Search : QueryType.Default,
+            filter,
+          );
         }}
         onKeyDown={handleCmdEnter}
         {...props}
       />
+      {isHeader && (
+        <datalist id={listId}>
+          {[...graph.moduleInfos.values()].map(({ module }) => (
+            <option key={module.key} value={module.label} />
+          ))}
+        </datalist>
+      )}
     </form>
   );
 }
