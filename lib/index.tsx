@@ -10,7 +10,7 @@ import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
 import { disableBugsnag } from './bugsnag.ts';
-import { flash } from './flash.ts';
+import { flashError } from './flash.ts';
 
 // A deploy likely replaced the fingerprinted chunks this page references
 globalThis.addEventListener('vite:preloadError', event => {
@@ -86,12 +86,12 @@ function detectFeatures() {
 
 globalThis.addEventListener('error', error => {
   console.error(error);
-  flash(error.message);
+  flashError(error.message);
 });
 
 globalThis.addEventListener('unhandledrejection', error => {
   console.error(error);
-  flash(error.reason);
+  flashError(error.reason);
 });
 
 globalThis.addEventListener('load', () => {

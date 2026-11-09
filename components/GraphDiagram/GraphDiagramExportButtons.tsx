@@ -6,7 +6,7 @@ import DownloadIcon from '../../images/icons/download.svg?react';
 import MarkdownIcon from '../../images/icons/markdown.svg?react';
 import PngIcon from '../../images/icons/png.svg?react';
 import { report } from '../../lib/bugsnag.ts';
-import { flash } from '../../lib/flash.ts';
+import { flash, flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeMermaid } from '../../lib/graph-util.ts';
 import { Button, ButtonGroup } from '../Button.tsx';
@@ -50,7 +50,7 @@ export default function GraphDiagramExportButtons() {
                 ) {
                   flash('Copied graph as text');
                 } else {
-                  flash('Could not copy graph', 'error');
+                  flashError('Could not copy graph');
                 }
               }}
             >
@@ -165,12 +165,14 @@ async function copyPng() {
       !document.hasFocus()
     ) {
       // User switched away from the page; not an app error
-      flash('Unable to copy image. Keep this window focused and try again.');
+      flashError(
+        'Unable to copy image. Keep this window focused and try again.',
+      );
       return;
     }
 
     report.error(error instanceof Error ? error : new Error(String(error)));
-    flash('Unable to copy image to clipboard');
+    flashError('Unable to copy image to clipboard');
   }
 }
 
