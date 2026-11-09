@@ -51,6 +51,17 @@
   gap: 0.5em;
 }
 
+.symbol {
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 1.3rem;
+  line-height: 1;
+
+  &.warn {
+    color: var(--stroke-yellow);
+  }
+}
+
 .count {
   color: var(--text-dim);
   font-weight: normal;

@@ -4,12 +4,9 @@ import { patchLocation } from '../../hooks/useLocation.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PaneType, PARAM_SECTION, PARAM_TAB } from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
-import { CollapsibleSection } from '../ui/Section.tsx';
+import { CollapsibleSection, type SectionType } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.css';
-
-const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
 
 // Like in the report-only view, a single open section is linkable
 function storeOpenSection() {
@@ -44,15 +41,12 @@ export function ReportItem({
 }: {
   title: string;
   count?: number | string;
-  type?: 'info' | 'warn' | 'error';
+  type?: SectionType;
   description?: ReactNode;
   open?: boolean;
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
-  const icon = SYMBOLS[type] && (
-    <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
-  );
   const body = (
     <>
       {description ? <p className={styles.description}>{description}</p> : null}
@@ -61,13 +55,13 @@ export function ReportItem({
   );
 
   return isReportOnly ? (
-    <DocumentSection title={title} count={count} icon={icon}>
+    <DocumentSection title={title} count={count} type={type}>
       {body}
     </DocumentSection>
   ) : (
     <CollapsibleSection
       open={open}
-      icon={icon}
+      type={type}
       title={title}
       count={count}
       data-report-item={sectionName(title)}

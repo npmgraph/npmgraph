@@ -15,7 +15,7 @@ function Advisories({ advisories }: { advisories: Promise<Advisory[]> }) {
   }
 
   return (
-    <Section title="Vulnerabilities" count={list.length} icon="⚠️">
+    <Section title="Vulnerabilities" count={list.length} type="warn">
       <Rows>
         {list.map(advisory => (
           <AdvisoryRow key={advisory.id} advisory={advisory} />

@@ -8,6 +8,16 @@ export function SectionBody({ children }: { children: ReactNode }) {
   return <div className={styles.body}>{children}</div>;
 }
 
+const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
+
+export type SectionType = keyof typeof SYMBOLS;
+
+export function SectionSymbol({ type = 'info' }: { type?: SectionType }) {
+  return SYMBOLS[type] ? (
+    <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
+  ) : null;
+}
+
 function Count({ count }: { count?: number | string }) {
   return count === undefined ? null : (
     <span className={styles.count}>{count}</span>
@@ -17,7 +27,7 @@ function Count({ count }: { count?: number | string }) {
 export function CollapsibleSection({
   title,
   count,
-  icon,
+  type,
   className,
   children,
   open = true,
@@ -26,7 +36,7 @@ export function CollapsibleSection({
 }: {
   title: string;
   count?: number | string;
-  icon?: ReactNode;
+  type?: SectionType;
   open?: boolean;
 } & HTMLProps<HTMLDetailsElement>) {
   const name = sectionName(title);
@@ -57,7 +67,7 @@ export function CollapsibleSection({
       <summary>
         {title}
         <Count count={count} />
-        {icon}
+        <SectionSymbol type={type} />
       </summary>
       <SectionOpenedContext value={opened.promise}>
         <SectionBody>{children}</SectionBody>
@@ -71,13 +81,13 @@ export function Section({
   children,
   className,
   count,
-  icon,
+  type,
 }: {
   title: string;
   children: any;
   className?: string;
   count?: number | string;
-  icon?: ReactNode;
+  type?: SectionType;
 }) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDivElement>(name);
@@ -87,7 +97,7 @@ export function Section({
       <h3>
         {title}
         <Count count={count} />
-        {icon}
+        <SectionSymbol type={type} />
       </h3>
       <SectionBody>{children}</SectionBody>
     </div>

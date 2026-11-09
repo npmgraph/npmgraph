@@ -11,9 +11,7 @@ import { ModuleOutdated } from './ModuleVersionInfo.tsx';
 import * as styles from './ModuleWarnings.module.css';
 
 function Warning({ children }: { children: React.ReactNode }) {
-  return (
-    <p className={styles.warning}>{children}</p>
-  );
+  return <p className={styles.warning}>{children}</p>;
 }
 
 export function ModuleWarnings({
@@ -34,7 +32,7 @@ export function ModuleWarnings({
   const mappingUrl = mapping && resolveDocUrl(mapping.url);
 
   return (
-    <Section title="Warnings" count={count} icon="⚠️">
+    <Section title="Warnings" count={count} type="warn">
       {deprecated ? <Warning>Deprecated: {deprecated}</Warning> : null}
       {hasOutdated && <ModuleOutdated module={module} />}
       {replacements ? (
