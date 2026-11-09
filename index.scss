@@ -2,17 +2,16 @@
 @use 'sass:map';
 @use './lib/root.module.scss' as *;
 
-// The accent is the only hand-picked color. Neutrals use its hue and a fraction
-// of its chroma, so changing `--accent` re-tints the whole theme.
-// Named hues, as offsets from the accent's hue (the accent itself is orange).
+// The accent is the only hand-picked color; everything else is computed from it.
+// Named hues: offsets from the accent's hue (orange is the accent itself).
 // Lightness and chroma are offsets from the accent's too.
 $hues: (
-  'red': -28,
-  'orange': 27,
-  'yellow': 62,
-  'green': 102,
-  'blue': 172,
-  'violet': 232,
+  'red': -30,
+  'orange': 0,
+  'yellow': 50,
+  'green': 100,
+  'blue': 200,
+  'violet': 260,
 );
 
 @function named($hue, $lightness, $chroma) {
@@ -22,6 +21,7 @@ $hues: (
   );
 }
 
+// Neutrals use the accent's hue and a fraction of its chroma
 @function neutral($lightness, $tint: 0.04) {
   @return oklch(from var(--accent) #{$lightness} calc(c * #{$tint}) h);
 }
@@ -63,10 +63,10 @@ $hues: (
   // Shadow colors depend on the background color
   --bg0-shadow-color: color-mix(in oklch, var(--bg0) 90%, black);
 
-  --stroke-dL: 0.065;
-  --stroke-cK: 2.3;
-  --bg-dL: 0.165; // Background lightness
-  --bg-cK: 1.6; // Background chroma
+  --stroke-dL: 0.02;
+  --stroke-cK: 1;
+  --bg-dL: 0.15; // Background lightness
+  --bg-cK: 0.85; // Background chroma
 
   @each $name in 'red', 'orange', 'yellow', 'blue' {
     --stroke-#{$name}: #{named(
@@ -102,9 +102,9 @@ $hues: (
     --bg1: #{neutral(48%)};
     --bg2: #{neutral(31%, 0.035)};
 
-    --stroke-dL: 0.165;
-    --bg-dL: -0.135;
-    --bg-cK: 1.2;
+    --stroke-dL: 0.12;
+    --bg-dL: -0.04;
+    --bg-cK: 0.8;
   }
 }
 
