@@ -19,9 +19,6 @@ export const PARAM_SELECTION = 'select';
 export const PARAM_SIZING = 'sizing';
 export const PARAM_TAB = 'tab';
 
-// Value of the `tab` param that closes the inspector
-export const TAB_NONE = 'none';
-
 export const SEARCH_FIELD_ID = 'search-field';
 export const UNNAMED_PACKAGE = 'unnamed module';
 export const UNNAMED_PACKAGE_PREFIX = 'unnamed-package-';
@@ -31,6 +28,8 @@ export const PaneType = {
   REPORT: 'report',
   INFO: 'info',
   VIEW: 'view',
+  // Closes the inspector
+  NONE: 'none',
 } as const;
 
 export type PaneTypes = (typeof PaneType)[keyof typeof PaneType];

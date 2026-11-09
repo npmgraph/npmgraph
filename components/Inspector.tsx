@@ -2,7 +2,6 @@ import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
 import { PaneType } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { cn } from '../lib/dom.ts';
-import { useInspectorOpen } from '../hooks/useInspectorOpen.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
 import { useTab } from '../hooks/useTab.ts';
@@ -25,13 +24,12 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   // The tab updates synchronously, so defer it to keep showing the previous one while the next suspends
   const deferredTab = useDeferredValue(tab);
 
-  const [isInspectorOpen] = useInspectorOpen();
   const [isReportOnly] = useReportOnly();
 
   // The graph is rendered by App, so it doesn't change when switching tabs
   if (
     !isReportOnly &&
-    (!isInspectorOpen || (isTightScreen && isGraphVisible))
+    (tab === PaneType.NONE || (isTightScreen && isGraphVisible))
   ) {
     return null;
   }
@@ -50,6 +48,8 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     case PaneType.INFO:
       paneComponent = <InfoPane />;
       break;
+    case PaneType.NONE:
+      return null;
   }
 
   return (

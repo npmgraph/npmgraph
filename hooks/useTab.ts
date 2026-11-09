@@ -29,17 +29,25 @@ export function useTab() {
       ? (tabParameter as PaneTypes)
       : defaultTab;
 
-  // Show a tab: un-hide the inspector, leave the mobile graph and drop the section of the previous tab
-  const selectTab = (nextTab: PaneTypes) => {
+  // Show a tab (`null` goes back to the default one): leave the report-only view, leave the mobile graph and drop the section of the previous tab
+  // `PaneType.NONE` closes the inspector instead, and leaves the graph alone
+  const selectTab = (nextTab: PaneTypes | null) => {
     const parameters = new URLSearchParams(location.hash.slice(1));
-    parameters.set(PARAM_TAB, nextTab);
+    if (nextTab) {
+      parameters.set(PARAM_TAB, nextTab);
+    } else {
+      parameters.delete(PARAM_TAB);
+    }
+
     parameters.delete(PARAM_HIDE);
     if (nextTab !== tab) {
       parameters.delete(PARAM_SECTION);
     }
 
     patchLocation({ hash: parameters.toString() }, true);
-    setGraphVisible(false);
+    if (nextTab !== PaneType.NONE) {
+      setGraphVisible(false);
+    }
   };
 
   return [tab, selectTab] as const;

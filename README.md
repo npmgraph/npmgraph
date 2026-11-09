@@ -64,11 +64,7 @@ https://npmgraph.js.org/?q=send#deps=peerDependencies
 
 ### `hide` (hash param)
 
-Legacy parameter. If present and empty (e.g. `...#hide`), hides the inspector panel; use `tab=none` instead. If `graph` (`...#hide=graph`), hides the graph and shows only the Report pane, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
-
-**Example**: Graph `send`, close the inspector (legacy, same as `tab=none`)
-
-https://npmgraph.js.org/?q=send@0.18.0#hide
+If `graph` (`...#hide=graph`), hides the graph and shows only the Report pane, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
 
 **Example**: Show only the report for `send`
 

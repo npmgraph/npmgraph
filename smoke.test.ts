@@ -140,12 +140,6 @@ describe('graph', () => {
     await appears('button', /^Info$/);
   });
 
-  it('renders with inspector hidden via legacy hide', async () => {
-    await goto('?q=debug#hide');
-    await nodeAppears();
-    await appears('button', /^Info$/);
-  });
-
   it(
     'shows the root module when loading a graph larger than the viewport',
     async () => {
