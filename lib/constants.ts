@@ -26,7 +26,6 @@ export const UNNAMED_PACKAGE_PREFIX = 'unnamed-package-';
 export const PaneType = {
   MODULE: 'module',
   REPORT: 'report',
-  GRAPH: 'graph',
   INFO: 'info',
   VIEW: 'view',
 } as const;

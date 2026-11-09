@@ -1,34 +1,40 @@
 import type { HTMLProps } from 'react';
 import { $ } from 'select-dom';
-import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
+import { PaneType, PARAM_HIDE, type PaneTypes } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
+import { useTab } from '../../hooks/useTab.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import * as utilities from './utilities.module.css';
 import { Splitter } from './Splitter.tsx';
 import * as styles from './Tabs.module.scss';
 
+const GRAPH = 'graph';
+
 export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
-  const [pane, setPane] = useGlobalState('pane');
+  const [tab, selectTab] = useTab();
+  const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const isTightScreen = useIsTightScreen();
   const [hide, setHide] = useHashParam(PARAM_HIDE);
   const [isReportOnly] = useReportOnly();
   const isInspectorOpen = hide === null || isReportOnly;
-  // The report-only view doesn't change the stored pane
-  const currentPane = isReportOnly ? PaneType.REPORT : pane;
+  // The report-only view doesn't change the selected tab
+  const currentTab = isReportOnly ? PaneType.REPORT : tab;
+  const isGraphShown = isTightScreen && isGraphVisible && !isReportOnly;
 
-  const tabs = [
-    {
-      pane: PaneType.GRAPH,
-      label: 'Graph',
-      visible: isTightScreen || isReportOnly,
-    },
-    { pane: PaneType.INFO, label: 'Info' },
-    { pane: PaneType.REPORT, label: 'Report' },
-    { pane: PaneType.MODULE, label: 'Module' },
-    { pane: PaneType.VIEW, label: 'View' },
+  // The graph isn't a tab, it's a view that takes turns with the inspector
+  const tabs: Array<{
+    id: PaneTypes | typeof GRAPH;
+    label: string;
+    visible?: boolean;
+  }> = [
+    { id: GRAPH, label: 'Graph', visible: isTightScreen || isReportOnly },
+    { id: PaneType.INFO, label: 'Info' },
+    { id: PaneType.REPORT, label: 'Report' },
+    { id: PaneType.MODULE, label: 'Module' },
+    { id: PaneType.VIEW, label: 'View' },
   ];
 
   return (
@@ -36,12 +42,16 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       <div role="tablist" aria-label="Inspector panels" className={styles.list}>
         {tabs
           .filter(tab => tab.visible !== false)
-          .map(({ pane: tabPane, label }) => {
-            const isSelected = isInspectorOpen && currentPane === tabPane;
+          .map(({ id, label }) => {
+            const isSelected =
+              isInspectorOpen &&
+              (id === GRAPH
+                ? isGraphShown
+                : !isGraphShown && currentTab === id);
 
             return (
               <div
-                key={tabPane}
+                key={id}
                 className={cn(styles.tab, {
                   [styles.active]: isSelected,
                 })}
@@ -49,11 +59,15 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                 <button
                   type="button"
                   role="tab"
+                  id={`tab-${id}`}
                   aria-selected={isSelected}
+                  aria-controls={id === GRAPH ? undefined : 'inspector'}
                   className={utilities.brightHover}
                   onClick={() => {
                     // Like mobile apps, tapping the current tab scrolls to the top
-                    if (isSelected && tabPane !== PaneType.GRAPH) {
+                    if (isSelected && id !== GRAPH) {
+                      // Also store the tab, in case it was only the default
+                      selectTab(id);
                       // The page scrolls on tight screens, the inspector otherwise
                       const scroller = isTightScreen
                         ? document.documentElement
@@ -68,13 +82,13 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                       return;
                     }
 
-                    setHide(null);
-                    // The graph isn't a tab on wide screens, so go back to the report
-                    setPane(
-                      !isTightScreen && tabPane === PaneType.GRAPH
-                        ? PaneType.REPORT
-                        : tabPane,
-                    );
+                    if (id === GRAPH) {
+                      setHide(null);
+                      setGraphVisible(true);
+                      return;
+                    }
+
+                    selectTab(id);
                   }}
                 >
                   {label}

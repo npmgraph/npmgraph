@@ -12,6 +12,35 @@
   <line class="line1" stroke-width="6px" x1="9" x2="9" y2="12" />
 </pattern>
 <filter
+  id="focus-ring"
+  x="-30%"
+  y="-60%"
+  width="160%"
+  height="220%"
+  color-interpolation-filters="sRGB"
+  ><feMorphology in="SourceAlpha" operator="dilate" radius="2" result="gap-grown" />
+  <feGaussianBlur in="gap-grown" stdDeviation="2" result="gap-blurred" />
+  <feComponentTransfer in="gap-blurred" result="gap-shape">
+    <feFuncA type="linear" slope="20" intercept="-9.5" />
+  </feComponentTransfer>
+  <feMorphology in="SourceAlpha" operator="dilate" radius="4" result="ring-grown" />
+  <feGaussianBlur in="ring-grown" stdDeviation="2" result="ring-blurred" />
+  <feComponentTransfer in="ring-blurred" result="ring-shape">
+    <feFuncA type="linear" slope="20" intercept="-9.5" />
+  </feComponentTransfer>
+  <feComposite in="gap-shape" in2="SourceAlpha" operator="out" result="gap" />
+  <feComposite in="ring-shape" in2="gap-shape" operator="out" result="ring" />
+  <feFlood style="flood-color: var(--bg0)" result="gap-color" />
+  <feComposite in="gap-color" in2="gap" operator="in" result="colored-gap" />
+  <feFlood style="flood-color: var(--text)" result="ring-color" />
+  <feComposite in="ring-color" in2="ring" operator="in" result="colored-ring" />
+  <feMerge>
+    <feMergeNode in="colored-ring" />
+    <feMergeNode in="colored-gap" />
+    <feMergeNode in="SourceGraphic" />
+  </feMerge>
+</filter>
+<filter
   id="collapsed-outline"
   x="-50%"
   y="-50%"

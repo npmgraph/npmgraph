@@ -1,11 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { PaneType, PARAM_TAB } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useActivity } from '../../hooks/useActivity.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
-import useSyncTab from '../../hooks/useSyncTab.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
@@ -23,27 +20,24 @@ export default function App() {
   const activity = useActivity();
   const [query] = useQuery();
   const isTightScreen = useIsTightScreen();
-  const [pane, setPane] = useGlobalState('pane');
-  const [tab] = useHashParam(PARAM_TAB);
+  const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const [isReportOnly] = useReportOnly();
   useExternalInput();
 
-  // On mobile, auto-select the Graph tab whenever the query changes.
-  // This handles both deep links (initial load) and new queries during a session.
-  // (unless a deep link specified a tab)
-  const initialTabRef = useRef(tab);
+  // On mobile, show the graph when the query changes. The initial query is
+  // handled by the initial state, which respects deep links to a tab.
+  const queryKey = query.join(',');
+  const previousQueryKeyRef = useRef(queryKey);
   useEffect(() => {
-    if (initialTabRef.current !== null) {
-      initialTabRef.current = null;
+    if (previousQueryKeyRef.current === queryKey) {
       return;
     }
 
-    if (isTightScreen && query.length > 0) {
-      setPane(PaneType.GRAPH);
+    previousQueryKeyRef.current = queryKey;
+    if (isTightScreen && queryKey !== '') {
+      setGraphVisible(true);
     }
-  }, [query, isTightScreen, setPane]);
-
-  useSyncTab();
+  }, [queryKey, isTightScreen, setGraphVisible]);
 
   if (query.length === 0) {
     return (
@@ -57,8 +51,7 @@ export default function App() {
 
   // On mobile the graph is a tab. It stays mounted when hidden, otherwise
   // it'd be laid out again every time the user comes back to it.
-  const isGraphHidden =
-    isReportOnly || (isTightScreen && pane !== PaneType.GRAPH);
+  const isGraphHidden = isReportOnly || (isTightScreen && !isGraphVisible);
 
   return (
     <>
@@ -67,7 +60,7 @@ export default function App() {
         className={cn(styles.root, {
           [styles.loading]: activity.total > 0,
           [styles.fixedHeight]:
-            isTightScreen && pane === PaneType.GRAPH && !isReportOnly,
+            isTightScreen && isGraphVisible && !isReportOnly,
         })}
       >
         <div className={styles.stickyTop}>
@@ -75,12 +68,12 @@ export default function App() {
           {isTightScreen && <Tabs />}
         </div>
         {activity.total > 0 ? <Loader activity={activity} /> : null}
-        <div className={styles.content}>
+        <main className={styles.content}>
           <div className={styles.graph} hidden={isGraphHidden}>
             <GraphDiagram activity={activity} />
           </div>
           <Inspector />
-        </div>
+        </main>
         <PreviewWidget />
       </div>
     </>

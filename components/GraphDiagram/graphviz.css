@@ -55,6 +55,15 @@ g {
       }
     }
 
+    /* Browsers don't reliably draw outlines on SVG elements, so use a filter */
+    a:focus-visible {
+      outline: none;
+
+      path {
+        filter: url(#focus-ring);
+      }
+    }
+
     &.unselected {
       opacity: 0.35;
     }
