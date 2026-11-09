@@ -71,9 +71,7 @@ export function ReportItem({
       title={title}
       count={count}
       data-report-item={sectionName(title)}
-      onToggle={() => {
-        storeOpenSection();
-      }}
+      onToggle={storeOpenSection}
     >
       {body}
     </CollapsibleSection>
