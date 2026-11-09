@@ -34,6 +34,11 @@ function decorateGraphNodes(
       continue;
     }
 
+    // Safari doesn't make SVG links focusable on its own
+    for (const link of $$optional('a', nodeElement)) {
+      link.setAttribute('tabindex', '0');
+    }
+
     if (module.package.deprecated) {
       nodeElement.classList.add('warning');
     }
