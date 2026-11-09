@@ -41,7 +41,7 @@
   color-scheme: light dark;
 
   --accent: #da6200;
-  --text-on-accent: #fff;
+  --text-on-accent: white;
 
   // Neutral ramp, from text (0) to background (100)
   @for $i from 0 through 10 {
@@ -67,7 +67,7 @@
 
   --header-padding: 12px;
   --tabs-bg: #{neutral(45%)};
-  --tabs-text: #{neutral(99%)};
+  --tabs-text: white;
   --tabs-border: oklch(from var(--tabs-bg) calc(l + 0.35) c h / 80%);
 
   // Shadow colors depend on the background color
