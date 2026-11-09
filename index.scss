@@ -1,38 +1,18 @@
 /* eslint-disable local/no-magic-colors -- The theme variables are defined here */
-@use 'sass:color';
-@use 'sass:math';
-@use 'sass:string';
 @use './lib/root.module.scss' as *;
 
-// The accent is the only hand-picked color; everything else is computed from it
-$accent: #da6200;
-$accent-oklch: color.to-space($accent, oklch);
+// The accent is the only hand-picked color; everything else is computed from it.
 
-// Gamut-mapped sRGB hex
-@function to-hex($color) {
-  $srgb: color.to-gamut($color, $space: srgb, $method: local-minde);
-  $rgb: rgb(
-    math.round(color.channel($srgb, 'red', $space: rgb)),
-    math.round(color.channel($srgb, 'green', $space: rgb)),
-    math.round(color.channel($srgb, 'blue', $space: rgb))
-  );
-  @return string.to-lower-case('#' + string.slice(color.ie-hex-str($rgb), 4));
-}
-
-// Hue is an offset from the accent's, lightness is too, chroma is a multiple
+// Lightness is an offset from the accent's, chroma a multiple of it
 @function named($hue, $lightness, $chroma) {
-  @return to-hex(
-    color.change(
-      $accent-oklch,
-      $lightness: color.channel($accent-oklch, 'lightness', $space: oklch) +
-        $lightness * 100%,
-      $chroma: color.channel($accent-oklch, 'chroma', $space: oklch) * $chroma,
-      $hue: color.channel($accent-oklch, 'hue', $space: oklch) + $hue
-    )
+  @return oklch(
+    from var(--accent) calc(l + #{$lightness}) calc(c * #{$chroma})
+      calc(h + #{$hue})
   );
 }
 
-// Strokes (for borders and lines) and backgrounds (should contrast with text)
+// Strokes (for borders and lines) and backgrounds (should contrast with text).
+// Hues are offsets from the accent's hue (orange is the accent itself).
 @mixin named-colors($stroke-lightness, $bg-lightness, $bg-chroma) {
   --stroke-red: #{named(-22, $stroke-lightness, 1)};
   --bg-red: #{named(-22, $bg-lightness, $bg-chroma)};
@@ -53,20 +33,14 @@ $accent-oklch: color.to-space($accent, oklch);
 
 // Neutrals use the accent's hue and a fraction of its chroma
 @function neutral($lightness, $tint: 0.04) {
-  @return to-hex(
-    color.change(
-      $accent-oklch,
-      $lightness: $lightness,
-      $chroma: color.channel($accent-oklch, 'chroma', $space: oklch) * $tint
-    )
-  );
+  @return oklch(from var(--accent) #{$lightness} calc(c * #{$tint}) h);
 }
 
 :root {
   accent-color: var(--accent);
   color-scheme: light dark;
 
-  --accent: #{$accent};
+  --accent: #da6200;
   --text-on-accent: #fff;
 
   // Neutral ramp, from text (0) to background (100)
@@ -80,7 +54,7 @@ $accent-oklch: color.to-space($accent, oklch);
   --inspector-size: 32em;
   --bg-gradient: linear-gradient(
     to bottom,
-    color-mix(in srgb, #{neutral(99%, 0.02)} 20%, transparent),
+    oklch(from var(--tabs-text) l c h / 20%),
     transparent 100%
   );
 
@@ -94,7 +68,7 @@ $accent-oklch: color.to-space($accent, oklch);
   --header-padding: 12px;
   --tabs-bg: #{neutral(45%, 0.065)};
   --tabs-text: #{neutral(99%, 0.02)};
-  --tabs-border: color-mix(in srgb, #{neutral(80%, 0.065)} 80%, transparent);
+  --tabs-border: oklch(from var(--tabs-bg) calc(l + 0.35) c h / 80%);
 
   // Shadow colors depend on the background color
   --bg0-shadow-color: color-mix(in oklch, var(--bg0) 90%, black);
