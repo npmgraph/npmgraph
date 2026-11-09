@@ -1,6 +1,6 @@
 @use '../../lib/root.module.scss' as *;
 
-.splitter {
+.splitter:is(button) {
   @include button-reset;
   display: flex;
   justify-content: center;
@@ -8,6 +8,7 @@
   transition: border-radius var(--transition-duration);
   cursor: default;
   margin-right: calc(-1 * var(--header-padding));
+  border-right: none;
   background: var(--tabs-bg) var(--bg-gradient);
   padding: 0 10px;
   color: var(--tabs-text);
