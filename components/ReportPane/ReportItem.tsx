@@ -57,7 +57,7 @@ export function ReportItem({
         setSection(
           // Also update when closing, since the one left open may be a different section
           // eslint-disable-next-line unicorn/dom-node-dataset -- No greppability
-          moreThanOpenOpen ? null : firstItem!.getAttribute('data-report-item'),
+          moreThanOpenOpen ? null : firstItem?.getAttribute('data-report-item'),
         );
       }}
     >
