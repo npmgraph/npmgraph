@@ -1,7 +1,7 @@
 import type { PackageJSON, PackumentVersion } from '@npm/types';
 import { getActivity } from '../hooks/useActivity.ts';
 import { patchLocation } from '../hooks/useLocation.ts';
-import { flash } from './flash.ts';
+import { flashError } from './flash.ts';
 import { cacheLocalPackage, sanitizePackageKeys } from './ModuleCache.ts';
 import {
   PARAM_PACKAGES,
@@ -25,7 +25,7 @@ export function loadPackageJson(json: string, filename?: string): void {
   try {
     pkg = JSON.parse(json);
   } catch {
-    flash(`${filename ?? 'Pasted content'} is not a valid JSON file`);
+    flashError(`${filename ?? 'Pasted content'} is not a valid JSON file`);
     return;
   }
 
