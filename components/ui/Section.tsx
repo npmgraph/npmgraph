@@ -13,8 +13,9 @@ const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
 export type SectionType = keyof typeof SYMBOLS;
 
 export function SectionSymbol({ type = 'info' }: { type?: SectionType }) {
-  return SYMBOLS[type] ? (
-    <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
+  const symbol = SYMBOLS[type];
+  return symbol ? (
+    <span className={cn(styles.symbol, styles[type])}>{symbol}</span>
   ) : null;
 }
 
