@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 import { $$optional } from 'select-dom';
-import useHashParam from '../../hooks/useHashParam.ts';
+import { patchLocation } from '../../hooks/useLocation.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
-import { PARAM_SECTION } from '../../lib/constants.ts';
+import { PaneType, PARAM_SECTION, PARAM_TAB } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
@@ -27,7 +27,6 @@ export function ReportItem({
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
-  const [, setSection] = useHashParam(PARAM_SECTION);
   const icon = SYMBOLS[type] && (
     <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
   );
@@ -54,11 +53,22 @@ export function ReportItem({
         const [firstItem, moreThanOpenOpen] = $$optional(
           'details[data-report-item][open]',
         );
-        setSection(
-          // Also update when closing, since the one left open may be a different section
-          // eslint-disable-next-line unicorn/dom-node-dataset -- No greppability
-          moreThanOpenOpen ? null : firstItem?.getAttribute('data-report-item'),
-        );
+        const section = moreThanOpenOpen
+          ? null
+          : // Also update when closing, since the one left open may be a different section
+            // eslint-disable-next-line unicorn/dom-node-dataset -- No greppability
+            firstItem?.getAttribute('data-report-item');
+
+        // The section only makes sense together with its tab
+        const parameters = new URLSearchParams(location.hash.slice(1));
+        parameters.set(PARAM_TAB, PaneType.REPORT);
+        if (section) {
+          parameters.set(PARAM_SECTION, section);
+        } else {
+          parameters.delete(PARAM_SECTION);
+        }
+
+        patchLocation({ hash: parameters.toString() }, true);
       }}
     >
       {body}
