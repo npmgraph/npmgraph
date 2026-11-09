@@ -27,10 +27,7 @@ function useDefaultTab(): PaneTypes {
     [graph, selectType, selectValue],
   );
 
-  if (
-    query.length === 0 ||
-    (graph.entryModules.size === 0 && graph.failedEntryModules.size > 0)
-  ) {
+  if (query.length === 0) {
     return PaneType.INFO;
   }
 
