@@ -206,31 +206,35 @@ describe('navigation', () => {
 });
 
 describe('package.json input', () => {
-  it('does not show local package names in the search field', async () => {
-    await goto('?q=debug');
-    await userEvent.click(tab('Info'));
-    const fileInput = app().getByLabelText('Choose file');
-    const upload = async (contents: object) => {
+  // Loading a package.json resets the URL and leaves the Info tab, so each file gets its own test
+  it.each([
+    {
+      label: 'an unnamed package',
+      contents: { version: '1.0.1' },
+      expected: 'unnamed-package-',
+    },
+    {
+      label: 'a named package',
+      contents: { name: 'local-package', version: '1.0.1' },
+      expected: 'local-package',
+    },
+  ])(
+    'does not show $label in the search field',
+    async ({ contents, expected }) => {
+      await goto('?q=debug');
+      await userEvent.click(tab('Info'));
       await userEvent.upload(
-        fileInput,
+        app().getByLabelText('Choose file'),
         new File([JSON.stringify(contents)], 'package.json', {
           type: 'application/json',
         }),
       );
-    };
-
-    await upload({ version: '1.0.1' });
-    await vi.waitFor(() => {
-      expect(win().location.search).toContain('unnamed-package-');
-    });
-    expect(searchValue()).toBe('');
-
-    await upload({ name: 'local-package', version: '1.0.1' });
-    await vi.waitFor(() => {
-      expect(win().location.search).toContain('local-package');
-    });
-    expect(searchValue()).toBe('');
-  });
+      await vi.waitFor(() => {
+        expect(win().location.search).toContain(expected);
+      });
+      expect(searchValue()).toBe('');
+    },
+  );
 });
 
 describe('panes', () => {
