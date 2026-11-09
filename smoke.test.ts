@@ -78,7 +78,6 @@ async function goto(path: string, width = 1280) {
 const nodeAppears = async (module = '') =>
   appears(`svg g.node${module && `[data-module^="${module}"]`}`);
 
-// eslint-disable-next-line unicorn/no-unnecessary-parameters -- Readable
 const search = async (q: string) => {
   const input = app().getByCSS('#search-field');
   await userEvent.fill(input, q);
@@ -382,6 +381,56 @@ describe('panes', () => {
     },
     TIMEOUT,
   );
+
+  describe('tab', { timeout: TIMEOUT }, () => {
+    const expectTab = async (name: string) =>
+      vi.waitFor(() => {
+        expect($('[role="tab"][aria-selected="true"]', doc()).textContent).toBe(
+          name,
+        );
+      });
+
+    it('stays when the search field is focused', async () => {
+      await goto('?q=debug#tab=view');
+      await nodeAppears();
+      await userEvent.click(app().getByCSS('#search-field'));
+      await expectTab('View');
+    });
+
+    it('stays when the graph fails to load', async () => {
+      await goto('?q=npmgraph-no-such-module-xyz#tab=view');
+      await expectTab('View');
+      await new Promise(resolve => {
+        setTimeout(resolve, 2000);
+      });
+      await expectTab('View');
+    });
+
+    it('does not follow the selection', async () => {
+      await goto('?q=debug#select=ms');
+      await nodeAppears('ms@');
+      await expectTab('Report');
+    });
+
+    it('is stored when opening a report section', async () => {
+      await goto('?q=debug');
+      await nodeAppears();
+      expect(win().location.hash).not.toContain('tab=');
+      await userEvent.click(
+        app().getByCSS('details[data-report-item] > summary').first(),
+      );
+      await hashHas('tab=report');
+    });
+
+    it('opens the graph on mobile after a search, the tab on a shared link', async () => {
+      await goto('', 400);
+      await search('debug');
+      await expectTab('Graph');
+      iframe.remove();
+      await goto('?q=debug#tab=report', 400);
+      await expectTab('Report');
+    });
+  });
 
   it('renders report items', async () => {
     await goto('?q=debug');
