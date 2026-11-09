@@ -64,6 +64,8 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   onClick={() => {
                     // Like mobile apps, tapping the current tab scrolls to the top
                     if (isSelected && id !== GRAPH) {
+                      // Also store the tab, in case it was only the default
+                      selectTab(id);
                       // The page scrolls on tight screens, the inspector otherwise
                       const scroller = isTightScreen
                         ? document.documentElement

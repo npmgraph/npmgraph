@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
   PaneType,
   PARAM_HIDE,
@@ -7,31 +6,16 @@ import {
   type PaneTypes,
 } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
-import { queryModuleCache } from '../lib/ModuleCache.ts';
-import useGraphSelection from './useGraphSelection.ts';
 import { patchLocation } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
 import useHashParam from './useHashParam.ts';
 
 const tabs = new Set<string>(Object.values(PaneType));
 
-// The tab to show until the user picks one, based on the graph
+// The tab to show until the user picks one
 function useDefaultTab(): PaneTypes {
   const [query] = useQuery();
-  const [graph] = useGlobalState('graph');
-  const [selectType, selectValue] = useGraphSelection();
-  const nSelected = useMemo(
-    () => queryModuleCache(selectType, selectValue).size,
-    // Selection depends on the graph's modules
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [graph, selectType, selectValue],
-  );
-
-  if (query.length === 0) {
-    return PaneType.INFO;
-  }
-
-  return nSelected === 1 ? PaneType.MODULE : PaneType.REPORT;
+  return query.length === 0 ? PaneType.INFO : PaneType.REPORT;
 }
 
 // The `tab` hash param is the only place where the user's tab is stored.
