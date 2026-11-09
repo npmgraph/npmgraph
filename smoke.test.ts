@@ -208,10 +208,9 @@ describe('navigation', () => {
 describe('package.json input', () => {
   it('does not show local package names in the search field', async () => {
     await goto('?q=debug');
+    await userEvent.click(tab('Info'));
     const fileInput = app().getByLabelText('Choose file');
     const upload = async (contents: object) => {
-      // Loading a package.json resets the URL, which leaves the Info tab
-      await userEvent.click(tab('Info'));
       await userEvent.upload(
         fileInput,
         new File([JSON.stringify(contents)], 'package.json', {
@@ -226,6 +225,8 @@ describe('package.json input', () => {
     });
     expect(searchValue()).toBe('');
 
+    // Loading a package.json resets the URL, which leaves the Info tab
+    await userEvent.click(tab('Info'));
     await upload({ name: 'local-package', version: '1.0.1' });
     await vi.waitFor(() => {
       expect(win().location.search).toContain('local-package');
