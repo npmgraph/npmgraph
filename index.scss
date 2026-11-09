@@ -14,26 +14,26 @@
 // Strokes (for borders and lines) and backgrounds (should contrast with text).
 // Hues are offsets from the accent's hue.
 @mixin named-colors($stroke-lightness, $bg-lightness, $bg-chroma) {
-  --stroke-red: #{named(-22, $stroke-lightness, 1)};
+  --stroke-red: #{named(-22, $stroke-lightness, 1.5)};
   --bg-red: #{named(-22, $bg-lightness, $bg-chroma)};
 
-  --stroke-orange: #{named(22, $stroke-lightness, 1)};
+  --stroke-orange: #{named(22, $stroke-lightness, 1.5)};
   --bg-orange: #{named(22, $bg-lightness, $bg-chroma)};
 
-  --stroke-yellow: #{named(64, $stroke-lightness, 1)};
+  --stroke-yellow: #{named(64, $stroke-lightness, 1.5)};
   --bg-yellow: #{named(64, $bg-lightness, $bg-chroma)};
 
   --bg-green: #{named(100, $bg-lightness, $bg-chroma)};
 
-  --stroke-blue: #{named(200, $stroke-lightness, 1)};
+  --stroke-blue: #{named(200, $stroke-lightness, 1.5)};
   --bg-blue: #{named(200, $bg-lightness, $bg-chroma)};
 
   --bg-violet: #{named(260, $bg-lightness, $bg-chroma)};
 }
 
-// Neutrals use the accent's hue and a fraction of its chroma
+// Neutrals use the accent's hue and a small fraction of its chroma
 @function neutral($lightness) {
-  @return oklch(from var(--accent) #{$lightness} calc(c * 0.04) h);
+  @return oklch(from var(--accent) #{$lightness} calc(c * 0.15) h);
 }
 
 :root {
@@ -66,14 +66,14 @@
   --bg2: #{neutral(90%)};
 
   --header-padding: 12px;
-  --tabs-bg: #{neutral(45%)};
+  --tabs-bg: oklch(from var(--accent) 0.45 calc(c * 0.4) h);
   --tabs-text: white;
   --tabs-border: oklch(from var(--tabs-bg) calc(l + 0.35) c h / 80%);
 
   // Shadow colors depend on the background color
   --bg0-shadow-color: color-mix(in oklch, var(--bg0) 90%, black);
 
-  @include named-colors(0.02, 0.15, 0.85);
+  @include named-colors(0.02, 0.15, 1.5);
 
   // Diagonal stripes for warnings
   --warning0: color-mix(in oklch, var(--bg-yellow) 15%, var(--bg-root));
@@ -96,7 +96,7 @@
     --bg1: #{neutral(48%)};
     --bg2: #{neutral(31%)};
 
-    @include named-colors(0.12, -0.04, 0.8);
+    @include named-colors(0.12, -0.04, 1.4);
   }
 }
 
