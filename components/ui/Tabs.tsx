@@ -1,9 +1,9 @@
 import type { HTMLProps } from 'react';
 import { $ } from 'select-dom';
-import { PaneType, PARAM_HIDE, type PaneTypes } from '../../lib/constants.ts';
+import { PaneType, type PaneTypes } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
+import { useInspectorOpen } from '../../hooks/useInspectorOpen.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useTab } from '../../hooks/useTab.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
@@ -17,9 +17,8 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [tab, selectTab] = useTab();
   const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const isTightScreen = useIsTightScreen();
-  const [hide, setHide] = useHashParam(PARAM_HIDE);
+  const [isInspectorOpen, setInspectorOpen] = useInspectorOpen();
   const [isReportOnly] = useReportOnly();
-  const isInspectorOpen = hide === null || isReportOnly;
   // The report-only view doesn't change the selected tab
   const currentTab = isReportOnly ? PaneType.REPORT : tab;
   const isGraphShown = isTightScreen && isGraphVisible && !isReportOnly;
@@ -83,7 +82,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                     }
 
                     if (id === GRAPH) {
-                      setHide(null);
+                      setInspectorOpen(true);
                       setGraphVisible(true);
                       return;
                     }
@@ -101,7 +100,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       <Splitter
         isOpen={isInspectorOpen}
         onClick={() => {
-          setHide(true);
+          setInspectorOpen(false);
         }}
       />
     </div>

@@ -135,6 +135,12 @@ describe('graph', () => {
   });
 
   it('renders with inspector hidden', async () => {
+    await goto('?q=debug#tab=none');
+    await nodeAppears();
+    await appears('button', /^Info$/);
+  });
+
+  it('renders with inspector hidden via legacy hide', async () => {
     await goto('?q=debug#hide');
     await nodeAppears();
     await appears('button', /^Info$/);

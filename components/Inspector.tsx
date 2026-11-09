@@ -1,8 +1,8 @@
 import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
-import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
+import { PaneType } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { cn } from '../lib/dom.ts';
-import useHashParam from '../hooks/useHashParam.ts';
+import { useInspectorOpen } from '../hooks/useInspectorOpen.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
 import { useTab } from '../hooks/useTab.ts';
@@ -25,11 +25,14 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   // The tab updates synchronously, so defer it to keep showing the previous one while the next suspends
   const deferredTab = useDeferredValue(tab);
 
-  const [hide] = useHashParam(PARAM_HIDE);
+  const [isInspectorOpen] = useInspectorOpen();
   const [isReportOnly] = useReportOnly();
 
   // The graph is rendered by App, so it doesn't change when switching tabs
-  if (!isReportOnly && (hide !== null || (isTightScreen && isGraphVisible))) {
+  if (
+    !isReportOnly &&
+    (!isInspectorOpen || (isTightScreen && isGraphVisible))
+  ) {
     return null;
   }
 
