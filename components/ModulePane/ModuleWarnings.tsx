@@ -1,4 +1,5 @@
 import { resolveDocUrl } from 'module-replacements';
+import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
 import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
@@ -7,6 +8,7 @@ import { getReplacements } from '../ReportPane/reports/replacements.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { Section } from '../ui/Section.tsx';
 import { isOutdated } from './module-status.ts';
+import * as styles from './ModuleWarnings.module.css';
 import { ModuleOutdated } from './ModuleVersionInfo.tsx';
 
 export function ModuleWarnings({
@@ -28,7 +30,7 @@ export function ModuleWarnings({
 
   return (
     <Section title="Warnings" count={count} type="warn">
-      <dl className={listStyles.list}>
+      <dl className={cn(listStyles.list, styles.list)}>
         {deprecated ? (
           <div>
             <dt>Deprecated</dt>
