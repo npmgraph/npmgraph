@@ -5,6 +5,11 @@
  * The pattern#warning ID selector is necessary because SVG fill references
  * use the syntax fill: url(#id), which requires matching by ID attribute. */
 
+/* Safari renders the text of the font @import */
+defs > style {
+  display: none;
+}
+
 pattern#warning {
   .line0 {
     stroke: var(--warning0);
