@@ -11,12 +11,12 @@ export default function AppHeader() {
   const isTightScreen = useIsTightScreen();
 
   return (
-    <div className={styles.root}>
+    <header className={styles.root}>
       <QueryLink query={[]}>
         <Logo />
       </QueryLink>
       <QueryInput variant="header" />
       {isTightScreen ? null : <Tabs />}
-    </div>
+    </header>
   );
 }

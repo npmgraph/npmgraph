@@ -1,6 +1,6 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { satisfies } from 'verkit';
-import { flash } from './flash.ts';
+import { flashError } from './flash.ts';
 import HttpError from './HttpError.ts';
 import Module from './Module.ts';
 import {
@@ -346,13 +346,13 @@ export function syncPackagesHash() {
   try {
     packages = JSON.parse(packagesJson);
   } catch {
-    flash('`packages` hash param is not valid JSON');
+    flashError('`packages` hash param is not valid JSON');
     return;
   }
 
   // The hash can contain anything, don't let it break the app
   if (!Array.isArray(packages) || packages.some(pkg => !isPackage(pkg))) {
-    flash('`packages` hash param is not a valid list of packages');
+    flashError('`packages` hash param is not a valid list of packages');
     return;
   }
 

@@ -1,4 +1,4 @@
-import { flash } from './flash.ts';
+import { flashError } from './flash.ts';
 
 export function handleGlobalError(event: ErrorEvent) {
   console.error(event);
@@ -8,5 +8,5 @@ export function handleGlobalError(event: ErrorEvent) {
     return;
   }
 
-  flash(event.message);
+  flashError(event.message);
 }
