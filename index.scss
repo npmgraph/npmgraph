@@ -1,8 +1,27 @@
 /* eslint-disable local/no-magic-colors -- The theme variables are defined here */
+@use 'sass:map';
 @use './lib/root.module.scss' as *;
 
 // The accent is the only hand-picked color. Neutrals use its hue and a fraction
 // of its chroma, so changing `--accent` re-tints the whole theme.
+// Named hues, as offsets from the accent's hue (the accent itself is orange).
+// Lightness and chroma are offsets from the accent's too.
+$hues: (
+  'red': -28,
+  'orange': 27,
+  'yellow': 62,
+  'green': 102,
+  'blue': 172,
+  'violet': 232,
+);
+
+@function named($hue, $lightness, $chroma) {
+  @return oklch(
+    from var(--accent) calc(l + var(#{$lightness})) calc(c * var(#{$chroma}))
+      calc(h + #{$hue})
+  );
+}
+
 @function neutral($lightness, $tint: 0.04) {
   @return oklch(from var(--accent) #{$lightness} calc(c * #{$tint}) h);
 }
@@ -44,24 +63,23 @@
   // Shadow colors depend on the background color
   --bg0-shadow-color: color-mix(in oklch, var(--bg0) 90%, black);
 
-  // Named stroke colors (for borders and lines that should contrast well with background colors)
-  --stroke-L: 70%;
-  --stroke-C: 100%;
-  --stroke-red: oklch(var(--stroke-L) var(--stroke-C) 20);
-  --stroke-orange: oklch(var(--stroke-L) var(--stroke-C) 75);
-  --stroke-yellow: oklch(var(--stroke-L) var(--stroke-C) 110);
-  --stroke-blue: oklch(var(--stroke-L) var(--stroke-C) 220);
+  --stroke-dL: 0.065;
+  --stroke-cK: 2.3;
+  --bg-dL: 0.165; // Background lightness
+  --bg-cK: 1.6; // Background chroma
+
+  @each $name in 'red', 'orange', 'yellow', 'blue' {
+    --stroke-#{$name}: #{named(
+        map.get($hues, $name),
+        '--stroke-dL',
+        '--stroke-cK'
+      )};
+  }
 
   // Named background colors (should contrast well with text color)
-  --bg-L: 80%; // Background lightness
-  --bg-C: 70%; // Background chroma
-
-  --bg-red: oklch(var(--bg-L) var(--bg-C) 20);
-  --bg-orange: oklch(var(--bg-L) var(--bg-C) 75);
-  --bg-yellow: oklch(var(--bg-L) var(--bg-C) 110);
-  --bg-green: oklch(var(--bg-L) var(--bg-C) 150);
-  --bg-blue: oklch(var(--bg-L) var(--bg-C) 220);
-  --bg-violet: oklch(var(--bg-L) var(--bg-C) 280);
+  @each $name, $hue in $hues {
+    --bg-#{$name}: #{named($hue, '--bg-dL', '--bg-cK')};
+  }
 
   // Diagonal stripes for warnings
   --warning0: color-mix(in oklch, var(--bg-yellow) 15%, var(--bg-root));
@@ -84,9 +102,9 @@
     --bg1: #{neutral(48%)};
     --bg2: #{neutral(31%, 0.035)};
 
-    --stroke-L: 80%;
-    --bg-L: 50%;
-    --bg-C: 50%;
+    --stroke-dL: 0.165;
+    --bg-dL: -0.135;
+    --bg-cK: 1.2;
   }
 }
 
