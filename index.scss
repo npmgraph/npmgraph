@@ -14,14 +14,14 @@
 // Strokes (for borders and lines) and backgrounds (should contrast with text).
 // Hues are offsets from the accent's hue (orange is the accent itself).
 @mixin named-colors($stroke-lightness, $bg-lightness, $bg-chroma) {
-  --stroke-red: #{named(-30, $stroke-lightness, 1)};
-  --stroke-orange: #{named(0, $stroke-lightness, 1)};
-  --stroke-yellow: #{named(50, $stroke-lightness, 1)};
+  --stroke-red: #{named(-22, $stroke-lightness, 1)};
+  --stroke-orange: #{named(22, $stroke-lightness, 1)};
+  --stroke-yellow: #{named(64, $stroke-lightness, 1)};
   --stroke-blue: #{named(200, $stroke-lightness, 1)};
 
-  --bg-red: #{named(-30, $bg-lightness, $bg-chroma)};
-  --bg-orange: #{named(0, $bg-lightness, $bg-chroma)};
-  --bg-yellow: #{named(50, $bg-lightness, $bg-chroma)};
+  --bg-red: #{named(-22, $bg-lightness, $bg-chroma)};
+  --bg-orange: #{named(22, $bg-lightness, $bg-chroma)};
+  --bg-yellow: #{named(64, $bg-lightness, $bg-chroma)};
   --bg-green: #{named(100, $bg-lightness, $bg-chroma)};
   --bg-blue: #{named(200, $bg-lightness, $bg-chroma)};
   --bg-violet: #{named(260, $bg-lightness, $bg-chroma)};
