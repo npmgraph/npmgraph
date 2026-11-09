@@ -1,18 +1,13 @@
-import { Fragment } from 'react';
 import { resolveDocUrl } from 'module-replacements';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
+import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
 import { Replacement } from '../ReportPane/reports/ModuleReplacementsNative.tsx';
 import { getReplacements } from '../ReportPane/reports/replacements.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { Section } from '../ui/Section.tsx';
 import { isOutdated } from './module-status.ts';
 import { ModuleOutdated } from './ModuleVersionInfo.tsx';
-import * as styles from './ModuleWarnings.module.css';
-
-function Warning({ children }: { children: React.ReactNode }) {
-  return <p className={styles.warning}>{children}</p>;
-}
 
 export function ModuleWarnings({
   module,
@@ -33,25 +28,37 @@ export function ModuleWarnings({
 
   return (
     <Section title="Warnings" count={count} type="warn">
-      {deprecated ? <Warning>Deprecated: {deprecated}</Warning> : null}
-      {hasOutdated && <ModuleOutdated module={module} />}
-      {replacements ? (
-        <Warning>
-          Replaceable:{' '}
-          {replacements.filter(isDefined).map((replacement, index) => (
-            <Fragment key={replacement.id}>
-              {index > 0 && ', '}
-              <Replacement replacement={replacement} />
-            </Fragment>
-          ))}
-          {mappingUrl && (
-            <>
-              {' • '}
-              <ExternalLink href={mappingUrl}>learn more</ExternalLink>
-            </>
-          )}
-        </Warning>
-      ) : null}
+      <dl className={listStyles.list}>
+        {deprecated ? (
+          <div>
+            <dt>Deprecated</dt>
+            <dd className={listStyles.details}>{deprecated}</dd>
+          </div>
+        ) : null}
+        {hasOutdated && <ModuleOutdated module={module} />}
+        {replacements ? (
+          <div>
+            <dt>
+              Replaceable
+              {mappingUrl && (
+                <>
+                  {' • '}
+                  <ExternalLink href={mappingUrl}>learn more</ExternalLink>
+                </>
+              )}
+            </dt>
+            <dd className={listStyles.details}>
+              <ul>
+                {replacements.filter(isDefined).map(replacement => (
+                  <li key={replacement.id}>
+                    <Replacement replacement={replacement} />
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        ) : null}
+      </dl>
     </Section>
   );
 }

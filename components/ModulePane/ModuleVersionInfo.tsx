@@ -3,9 +3,9 @@ import { cn } from '../../lib/dom.ts';
 import type Module from '../../lib/Module.ts';
 import type { VersionStatus } from '../../lib/version-status.ts';
 import { QueryLink } from '../ui/QueryLink.tsx';
+import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
 import * as styles from './ModuleVersionInfo.module.css';
 import { getStatus } from './module-status.ts';
-import * as warningStyles from './ModuleWarnings.module.css';
 
 function getOutdatedMessage({
   level,
@@ -42,16 +42,19 @@ export function ModuleDistTag({
 export function ModuleOutdated({
   module,
   ...props
-}: { module: Module } & React.HTMLAttributes<HTMLParagraphElement>) {
+}: { module: Module } & React.HTMLAttributes<HTMLDivElement>) {
   const status = getStatus(module);
   if (status?.type !== 'outdated' || !module.packument) {
     return null;
   }
 
   return (
-    <p {...props} className={cn(warningStyles.warning, props.className)}>
-      Outdated: {getOutdatedMessage(status)} <code>latest</code> (
-      <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
-    </p>
+    <div {...props}>
+      <dt>Outdated</dt>
+      <dd className={listStyles.details}>
+        {getOutdatedMessage(status)} <code>latest</code> (
+        <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
+      </dd>
+    </div>
   );
 }
