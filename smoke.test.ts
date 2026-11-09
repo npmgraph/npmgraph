@@ -245,7 +245,7 @@ describe('panes', () => {
   it('opens module pane on node keyboard activation', async () => {
     await goto('?q=debug');
     await nodeAppears('debug@');
-    $<SVGGElement>('svg g.node[data-module^="debug@"]', doc()).focus();
+    $<SVGAElement>('svg g.node[data-module^="debug@"] a', doc()).focus();
     await userEvent.keyboard('{Enter}');
     await appears('h2', /^debug@/);
   });

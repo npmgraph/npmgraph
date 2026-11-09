@@ -50,14 +50,12 @@ g {
       }
     }
 
-    /* Not every browser draws the focus ring on SVG elements */
-    &:focus-visible {
+    /* Browsers don't reliably draw outlines on SVG elements, so use a filter */
+    a:focus-visible {
       outline: none;
 
       path {
-        stroke: var(--accent);
-        stroke-dasharray: 5 3;
-        stroke-width: 4;
+        filter: url(#focus-ring);
       }
     }
 
