@@ -10,13 +10,17 @@
 </pattern>
 <filter
   id="focus-ring"
-  x="-20%"
-  y="-20%"
-  width="140%"
-  height="140%"
+  x="-30%"
+  y="-60%"
+  width="160%"
+  height="220%"
   color-interpolation-filters="sRGB"
-  ><feMorphology in="SourceAlpha" operator="dilate" radius="3" result="grown" />
-  <feComposite in="grown" in2="SourceAlpha" operator="out" result="ring" />
+  ><feMorphology in="SourceAlpha" operator="dilate" radius="4" result="grown" />
+  <feGaussianBlur in="grown" stdDeviation="3" result="blurred" />
+  <feComponentTransfer in="blurred" result="rounded">
+    <feFuncA type="linear" slope="20" intercept="-9.5" />
+  </feComponentTransfer>
+  <feComposite in="rounded" in2="SourceAlpha" operator="out" result="ring" />
   <feFlood style="flood-color: var(--accent)" result="color" />
   <feComposite in="color" in2="ring" operator="in" result="colored-ring" />
   <feMerge>
