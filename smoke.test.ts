@@ -57,10 +57,10 @@ const hashHas = async (s: string) =>
     },
   );
 
-async function goto(path: string) {
+async function goto(path: string, width = 1280) {
   errors = [];
   iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;inset:0;width:1280px;height:800px';
+  iframe.style.cssText = `position:fixed;inset:0;width:${width}px;height:800px`;
   document.body.append(iframe);
   iframe.src = `/index.html${path}`;
   await new Promise(resolve => {
@@ -78,7 +78,6 @@ async function goto(path: string) {
 const nodeAppears = async (module = '') =>
   appears(`svg g.node${module && `[data-module^="${module}"]`}`);
 
-// eslint-disable-next-line unicorn/no-unnecessary-parameters -- Readable
 const search = async (q: string) => {
   const input = app().getByCSS('#search-field');
   await userEvent.fill(input, q);
@@ -207,31 +206,35 @@ describe('navigation', () => {
 });
 
 describe('package.json input', () => {
-  it('does not show local package names in the search field', async () => {
-    await goto('?q=debug');
-    await userEvent.click(tab('Info'));
-    const fileInput = app().getByLabelText('Choose file');
-    const upload = async (contents: object) => {
+  // Loading a package.json resets the URL and leaves the Info tab, so each file gets its own test
+  it.each([
+    {
+      label: 'an unnamed package',
+      contents: { version: '1.0.1' },
+      expected: 'unnamed-package-',
+    },
+    {
+      label: 'a named package',
+      contents: { name: 'local-package', version: '1.0.1' },
+      expected: 'local-package',
+    },
+  ])(
+    'does not show $label in the search field',
+    async ({ contents, expected }) => {
+      await goto('?q=debug');
+      await userEvent.click(tab('Info'));
       await userEvent.upload(
-        fileInput,
+        app().getByLabelText('Choose file'),
         new File([JSON.stringify(contents)], 'package.json', {
           type: 'application/json',
         }),
       );
-    };
-
-    await upload({ version: '1.0.1' });
-    await vi.waitFor(() => {
-      expect(win().location.search).toContain('unnamed-package-');
-    });
-    expect(searchValue()).toBe('');
-
-    await upload({ name: 'local-package', version: '1.0.1' });
-    await vi.waitFor(() => {
-      expect(win().location.search).toContain('local-package');
-    });
-    expect(searchValue()).toBe('');
-  });
+      await vi.waitFor(() => {
+        expect(win().location.search).toContain(expected);
+      });
+      expect(searchValue()).toBe('');
+    },
+  );
 });
 
 describe('panes', () => {
@@ -239,6 +242,14 @@ describe('panes', () => {
     await goto('?q=debug');
     await nodeAppears('debug@');
     await userEvent.click(node('debug@'));
+    await appears('h2', /^debug@/);
+  });
+
+  it('opens module pane on node keyboard activation', async () => {
+    await goto('?q=debug');
+    await nodeAppears('debug@');
+    $<SVGAElement>('svg g.node[data-module^="debug@"] a', doc()).focus();
+    await userEvent.keyboard('{Enter}');
     await appears('h2', /^debug@/);
   });
 
@@ -256,6 +267,8 @@ describe('panes', () => {
         $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),
       ).toBeDefined();
       await userEvent.click(tab('View'));
+      // The View pane can take longer than the locator's own wait to render
+      await appears('details > summary');
       await userEvent.click(app().getByCSS('details > summary'));
       const textarea = $(
         'textarea[aria-label="Custom link providers for Module tab"]',
@@ -332,6 +345,7 @@ describe('panes', () => {
         ).toBe(`https://npmx.dev/package/debug@${moduleVersion}`);
       });
       await userEvent.click(tab('View'));
+      await appears('details > summary');
       expect(
         $('details > summary', doc())?.parentElement?.hasAttribute('open'),
       ).toBe(true);
@@ -353,6 +367,82 @@ describe('panes', () => {
     },
     TIMEOUT,
   );
+
+  it.each([
+    ['desktop', 1280],
+    ['mobile', 400],
+  ])(
+    'keeps the Report tab after a refresh on %s',
+    async (_name, width) => {
+      await goto('?q=express', width);
+      await nodeAppears();
+      await userEvent.click(tab('Report'));
+      await hashHas('tab=report');
+
+      win().location.reload();
+      await new Promise(resolve => {
+        iframe.addEventListener('load', resolve, { once: true });
+      });
+      // The graph stays mounted while hidden, so it's a sign the page settled
+      await nodeAppears();
+      await vi.waitFor(() => {
+        expect($('[role="tab"][aria-selected="true"]', doc()).textContent).toBe(
+          'Report',
+        );
+      });
+    },
+    TIMEOUT,
+  );
+
+  describe('tab', { timeout: TIMEOUT }, () => {
+    const expectTab = async (name: string) =>
+      vi.waitFor(() => {
+        expect($('[role="tab"][aria-selected="true"]', doc()).textContent).toBe(
+          name,
+        );
+      });
+
+    it('stays when the search field is focused', async () => {
+      await goto('?q=debug#tab=view');
+      await nodeAppears();
+      await userEvent.click(app().getByCSS('#search-field'));
+      await expectTab('View');
+    });
+
+    it('stays when the graph fails to load', async () => {
+      await goto('?q=npmgraph-no-such-module-xyz#tab=view');
+      await expectTab('View');
+      await new Promise(resolve => {
+        setTimeout(resolve, 2000);
+      });
+      await expectTab('View');
+    });
+
+    it('does not follow the selection', async () => {
+      await goto('?q=debug#select=ms');
+      await nodeAppears('ms@');
+      await expectTab('Report');
+    });
+
+    it('is stored when opening a report section', async () => {
+      await goto('?q=debug');
+      await nodeAppears();
+      expect(win().location.hash).not.toContain('tab=');
+      await userEvent.click(
+        app().getByCSS('details[data-report-item] > summary').first(),
+      );
+      await hashHas('tab=report');
+    });
+
+    it('opens the graph on mobile after a search, the tab on a shared link', async () => {
+      await goto('', 400);
+      await search('debug');
+      await expectTab('Graph');
+      iframe.remove();
+      await goto('?q=debug#tab=report', 400);
+      await expectTab('Report');
+    });
+  });
 
   it('renders report items', async () => {
     await goto('?q=debug');

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import useLocation from '../hooks/useLocation.ts';
-import GithubIcon from '../images/icons/github.svg?react';
-import OffsiteLinkIcon from '../images/icons/offsite-link.svg?react';
+import GlobeIcon from '../images/icons/globe.svg?react';
+import PullRequestIcon from '../images/icons/pull-request.svg?react';
 import XIcon from '../images/icons/x.svg?react';
 import * as utilities from './ui/utilities.module.css';
 import * as styles from './PreviewWidget.module.css';
@@ -35,7 +35,7 @@ export default function PreviewWidget() {
   }
 
   return (
-    <ButtonGroup vertical className={styles.root}>
+    <ButtonGroup square vertical className={styles.root}>
       {prUrl ? (
         <Button
           href={prUrl}
@@ -43,7 +43,7 @@ export default function PreviewWidget() {
           rel="noopener noreferrer"
           title="Open pull request"
         >
-          <GithubIcon />
+          <PullRequestIcon />
         </Button>
       ) : null}
       <Button
@@ -53,7 +53,7 @@ export default function PreviewWidget() {
         rel="noopener noreferrer"
         title="Compare to production npmgraph"
       >
-        <OffsiteLinkIcon />
+        <GlobeIcon />
       </Button>
       <Button
         className={utilities.brightHover}

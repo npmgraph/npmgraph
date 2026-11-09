@@ -8,7 +8,7 @@ export type Analysis = {
   modules: ReturnType<typeof analyzeModules>;
   peerDependencies: ReturnType<typeof analyzePeerDependencies>;
   maintainers: ReturnType<typeof analyzeMaintainers>;
-  licenses: Awaited<ReturnType<typeof analyzeLicenses>>;
+  licenses: ReturnType<typeof analyzeLicenses>;
 };
 
 export const AnalysisContext = createContext<Analysis | undefined>(undefined);

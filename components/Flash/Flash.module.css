@@ -1,8 +1,9 @@
 .root {
   display: flex;
   position: fixed;
-  left: 10px;
+  left: 5px;
   flex-direction: column;
+  align-items: flex-start;
   gap: 5px;
   z-index: 100;
   pointer-events: none;
@@ -13,19 +14,19 @@
   animation:
     flashIn 0.7s,
     flashOut 0.7s 5s forwards;
-  box-shadow: 2px 2px 10px 5px var(--bg-root);
-  border-bottom-right-radius: 1em;
+  background: var(--bg-root);
   padding: 4px;
   white-space: pre-wrap;
 }
 
 .error {
-  color: white;
+  background: var(--accent);
+  color: var(--text-on-accent);
 }
 
 @keyframes flashIn {
   from {
-    transform: translateX(calc(-100% - 10px));
+    transform: translateX(calc(-100% - 5px));
   }
 
   to {
@@ -39,7 +40,7 @@
   }
 
   to {
-    transform: translateX(calc(-100% - 10px));
+    transform: translateX(calc(-100% - 5px));
   }
 }
 

@@ -50,7 +50,7 @@ export function Tag({
         setGraphSelection(type, value);
       }}
     >
-      {gravatar && <Gravatar email={gravatar} username={value} />}
+      {gravatar && <Gravatar email={gravatar} />}
       {title}
     </button>
   );

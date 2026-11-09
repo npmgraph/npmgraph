@@ -1,9 +1,11 @@
 import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
-import { useGlobalState } from '../lib/GlobalStore.ts';
 import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
+import { useGlobalState } from '../lib/GlobalStore.ts';
 import { cn } from '../lib/dom.ts';
 import useHashParam from '../hooks/useHashParam.ts';
+import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
+import { useTab } from '../hooks/useTab.ts';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import ViewPane from './ViewPane/ViewPane.tsx';
@@ -17,28 +19,28 @@ const ModulePane = lazy(async () => modulePanePromise);
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;
-  const [pane] = useGlobalState('pane');
-  // The store updates synchronously, so defer the pane to keep showing the previous one while the next suspends
-  const deferredPane = useDeferredValue(pane);
+  const [tab] = useTab();
+  const [isGraphVisible] = useGlobalState('isGraphVisible');
+  const isTightScreen = useIsTightScreen();
+  // The tab updates synchronously, so defer it to keep showing the previous one while the next suspends
+  const deferredTab = useDeferredValue(tab);
 
   const [hide] = useHashParam(PARAM_HIDE);
   const [isReportOnly] = useReportOnly();
 
-  if (hide !== null && !isReportOnly) {
+  // The graph is rendered by App, so it doesn't change when switching tabs
+  if (!isReportOnly && (hide !== null || (isTightScreen && isGraphVisible))) {
     return null;
   }
 
   let paneComponent;
-  switch (isReportOnly ? PaneType.REPORT : deferredPane) {
+  switch (isReportOnly ? PaneType.REPORT : deferredTab) {
     case PaneType.MODULE:
       paneComponent = <ModulePane />;
       break;
     case PaneType.REPORT:
       paneComponent = <ReportPane />;
       break;
-    case PaneType.GRAPH:
-      // The graph is rendered by App, so it doesn't change when switching tabs
-      return null;
     case PaneType.VIEW:
       paneComponent = <ViewPane />;
       break;
@@ -49,6 +51,9 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   return (
     <div
+      id="inspector"
+      role="tabpanel"
+      aria-labelledby={`tab-${isReportOnly ? PaneType.REPORT : deferredTab}`}
       className={cn(
         styles.inspector,
         { [styles.only]: isReportOnly },

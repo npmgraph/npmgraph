@@ -1,19 +1,11 @@
 import { useSyncExternalStore } from 'react';
-import { PaneType, TIGHT_SCREEN_QUERY } from '../lib/constants.ts';
-import { getGlobalState, setGlobalState } from '../lib/GlobalStore.ts';
+import { TIGHT_SCREEN_QUERY } from '../lib/constants.ts';
 
 function subscribe(onChange: () => void) {
   const media = globalThis.matchMedia(TIGHT_SCREEN_QUERY);
-  const update = () => {
-    onChange();
-    if (!media.matches && getGlobalState('pane') === PaneType.GRAPH) {
-      setGlobalState('pane', PaneType.REPORT);
-    }
-  };
-
-  media.addEventListener('change', update);
+  media.addEventListener('change', onChange);
   return () => {
-    media.removeEventListener('change', update);
+    media.removeEventListener('change', onChange);
   };
 }
 

@@ -1,7 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { $optional } from 'select-dom';
 import * as appStyles from '../App/App.module.scss';
-import * as graphDiagramStyles from '../GraphDiagram/GraphDiagram.module.scss';
 import {
   notifyFlashElementReady,
   subscribeFlash,
@@ -17,7 +16,6 @@ export default function Flash() {
 
   // Read from the DOM on resize and on every render (e.g. a new flash)
   const top = useSyncExternalStore(subscribeToResize, getTop);
-  const maxWidth = useSyncExternalStore(subscribeToResize, getMaxWidth);
 
   useEffect(
     () =>
@@ -28,7 +26,7 @@ export default function Flash() {
   );
 
   return (
-    <div className={flashStyles.root} style={{ top: `${top}px` }}>
+    <div className={flashStyles.root} style={{ top: `${top}px` }} role="status">
       {entries.map(entry => (
         <div
           key={entry.id}
@@ -38,10 +36,6 @@ export default function Flash() {
             }
           }}
           className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
-          style={{
-            maxWidth: `${maxWidth}px`,
-            backgroundColor: entry.backgroundColor,
-          }}
           onAnimationEnd={event => {
             if (event.animationName !== flashStyles.flashOut) {
               return;
@@ -63,17 +57,6 @@ function subscribeToResize(callback: () => void) {
   return () => {
     window.removeEventListener('resize', callback);
   };
-}
-
-function getMaxWidth() {
-  // The root fills the pane, whereas .graph only wraps the (possibly tiny) SVG
-  const graph = $optional(`.${graphDiagramStyles.root}`);
-
-  const graphWidth = graph instanceof HTMLElement ? graph.offsetWidth : 0;
-  return Math.max(
-    160,
-    graphWidth > 0 ? graphWidth - FLASH_GAP : window.innerWidth - FLASH_GAP * 2,
-  );
 }
 
 function getTop() {

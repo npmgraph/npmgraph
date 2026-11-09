@@ -7,7 +7,7 @@ export function GraphDiagramZoomButtons() {
   const controls = useControls();
 
   return (
-    <ButtonGroup>
+    <ButtonGroup square>
       <Button
         title="Zoom to actual size"
         onClick={() => {
