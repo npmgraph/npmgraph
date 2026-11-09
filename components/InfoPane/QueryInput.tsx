@@ -1,12 +1,11 @@
 import { type HTMLProps, useRef, useState } from 'react';
-import { PaneType, PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
+import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { cn } from '../../lib/dom.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
 import { searchSet } from '../../lib/url-util.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
-import { useTab } from '../../hooks/useTab.ts';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
@@ -19,7 +18,6 @@ export default function QueryInput({
 }: HTMLProps<HTMLInputElement> & { variant?: 'header' | 'hero' }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query] = useQuery();
-  const selectTab = useTab()[1];
   const inputValue = query
     .filter(key => !getCachedModule(key)?.isLocal)
     .join(', ');
@@ -62,10 +60,6 @@ export default function QueryInput({
     event.preventDefault();
   }
 
-  function handleFocus() {
-    selectTab(PaneType.INFO);
-  }
-
   return (
     <form action="/" className={styles.form} onSubmit={handleSubmit}>
       <input
@@ -82,13 +76,11 @@ export default function QueryInput({
         autoCorrect="off"
         spellCheck="false"
         // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting.
-        // Also don't auto-focus when a graph is loading, since focus switches to the Info pane (overriding the `tab` hash)
         autoFocus={!hasSoftKeyboard && query.length === 0}
         onChange={event => {
           setValueState({ query, inputValue, value: event.target.value });
         }}
         onKeyDown={handleCmdEnter}
-        onFocus={handleFocus}
         {...props}
       />
     </form>
