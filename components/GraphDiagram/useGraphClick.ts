@@ -1,17 +1,15 @@
 import { $, closestElementOptional } from 'select-dom';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
+import { useTab } from '../../hooks/useTab.ts';
 import { toggleItem } from '../../lib/array-util.ts';
-import { PaneType, PARAM_HIDE } from '../../lib/constants.ts';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { PaneType } from '../../lib/constants.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
 import * as styles from './GraphDiagram.module.scss';
 
 // Select a module (or deselect with an empty click), or collapse it with Shift
 export default function useGraphClick() {
-  const [, setPane] = useGlobalState('pane');
-  const [, setZenMode] = useHashParam(PARAM_HIDE);
+  const [, selectTab] = useTab();
   const setGraphSelection = useGraphSelection()[2];
   const [collapse, setCollapse] = useCollapse();
 
@@ -48,13 +46,9 @@ export default function useGraphClick() {
       return;
     }
 
-    if (node) {
-      setZenMode('');
-    }
-
     setGraphSelection(QueryType.Default, moduleKey);
     if (moduleKey !== '') {
-      setPane(PaneType.MODULE);
+      selectTab(PaneType.MODULE);
     }
   };
 }

@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import { cn, percent } from '../../lib/dom.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
-import { percent } from '../../lib/dom.ts';
+import { QueryType } from '../../lib/ModuleCache.ts';
 import { type TreemapLeaf, layoutTreemap } from '../../lib/treemap-util.js';
+import * as utilities from '../ui/utilities.module.css';
 import * as styles from './ModuleTreeMap.module.css';
 
 export function ModuleTreeMap({
@@ -14,6 +17,7 @@ export function ModuleTreeMap({
   style?: React.CSSProperties;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const setGraphSelection = useGraphSelection()[2];
   const [leaves, setLeaves] = useState<TreemapLeaf[]>([]);
   const m = 1;
 
@@ -51,10 +55,11 @@ export function ModuleTreeMap({
        ${percent(leaf.rank)}), var(--root-color) 25%)`;
 
         return (
-          <div
+          <button
             key={leaf.key}
+            type="button"
             title={`${leaf.name} (${size})`}
-            className={styles.root}
+            className={cn(styles.root, utilities.brightHover)}
             style={{
               left: `${leaf.x0 + m / 2}px`,
               top: `${leaf.y0 + m / 2}px`,
@@ -63,9 +68,12 @@ export function ModuleTreeMap({
               fontSize: `${65 + 70 * Math.sqrt(leaf.coverage)}%`,
               backgroundColor,
             }}
+            onClick={() => {
+              setGraphSelection(QueryType.Default, leaf.name);
+            }}
           >
             {leaf.name} <span>{size}</span>
-          </div>
+          </button>
         );
       })}
     </div>

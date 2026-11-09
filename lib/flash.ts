@@ -3,7 +3,6 @@ import confetti from 'canvas-confetti';
 export type FlashEntry = {
   id: number;
   message: string;
-  backgroundColor: string;
   isError: boolean;
 };
 
@@ -29,12 +28,19 @@ export function subscribeFlash(listener: FlashListener) {
   };
 }
 
-export function flash(wat: unknown, bg = '#f80') {
+export function flash(wat: unknown) {
+  return enqueue(wat, false);
+}
+
+export function flashError(wat: unknown) {
+  return enqueue(wat, true);
+}
+
+function enqueue(wat: unknown, isError: boolean) {
   const entry: FlashEntry = {
     id: nextFlashId++,
     message: toFlashMessage(wat),
-    backgroundColor: normalizeBackgroundColor(bg),
-    isError: wat instanceof Error,
+    isError,
   };
 
   if (listeners.size === 0) {
@@ -59,7 +65,7 @@ export function notifyFlashElementReady(id: number, element: HTMLElement) {
 }
 
 export async function celebrate(message: string) {
-  const id = flash(`🎉 ${message} 🎉`, 'var(--bg-root)');
+  const id = flash(`🎉 ${message} 🎉`);
   const element = await waitForFlashElement(id);
 
   const y = element
@@ -74,10 +80,6 @@ export async function celebrate(message: string) {
     angle: -20,
     origin: { x: 0, y },
   });
-}
-
-function normalizeBackgroundColor(bg: string) {
-  return bg === 'error' ? '#b3261e' : bg;
 }
 
 function toFlashMessage(wat: unknown) {
