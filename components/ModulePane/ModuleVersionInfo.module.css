@@ -1,16 +1,4 @@
 .distTag {
-  margin: 0;
+  color: var(--text-dim);
   font-size: 0.85rem;
-}
-
-.majorUpdates svg {
-  color: var(--stroke-red);
-}
-
-.minorUpdates svg {
-  color: var(--stroke-orange);
-}
-
-.patchUpdates svg {
-  color: var(--stroke-yellow);
 }

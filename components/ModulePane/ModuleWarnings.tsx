@@ -1,6 +1,5 @@
 import { Fragment } from 'react';
 import { resolveDocUrl } from 'module-replacements';
-import WarningIcon from '../../images/icons/warning.svg?react';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
 import { Replacement } from '../ReportPane/reports/ModuleReplacementsNative.tsx';
@@ -13,10 +12,7 @@ import * as styles from './ModuleWarnings.module.css';
 
 function Warning({ children }: { children: React.ReactNode }) {
   return (
-    <p className={styles.warning}>
-      <WarningIcon />
-      <span>{children}</span>
-    </p>
+    <p className={styles.warning}>{children}</p>
   );
 }
 
@@ -38,7 +34,7 @@ export function ModuleWarnings({
   const mappingUrl = mapping && resolveDocUrl(mapping.url);
 
   return (
-    <Section title="Warnings" count={count}>
+    <Section title="Warnings" count={count} icon="⚠️">
       {deprecated ? <Warning>Deprecated: {deprecated}</Warning> : null}
       {hasOutdated && <ModuleOutdated module={module} />}
       {replacements ? (

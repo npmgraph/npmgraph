@@ -1,11 +1,4 @@
 .warning {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5em;
   margin: 0;
   font-size: 0.85rem;
-
-  svg {
-    flex-shrink: 0;
-  }
 }
