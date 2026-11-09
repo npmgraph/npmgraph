@@ -4,7 +4,7 @@
   right: 0;
   fill: var(--accent);
   border: 0;
-  color: #fff;
+  color: var(--text-on-accent);
 }
 .root :global(.arm) {
   transform-origin: 130px 106px;

@@ -8,7 +8,9 @@ export function Loader({
   return (
     <>
       <div className={styles.progressBar} />
-      <div className={styles.loader}>{activity.title} ...</div>
+      <div className={styles.loader} role="status">
+        {activity.title} ...
+      </div>
     </>
   );
 }

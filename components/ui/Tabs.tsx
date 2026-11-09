@@ -58,7 +58,12 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                       const scroller = isTightScreen
                         ? document.documentElement
                         : $('#inspector');
-                      scroller?.scrollTo({ top: 0, behavior: 'smooth' });
+                      scroller?.scrollTo({
+                        top: 0,
+                        behavior: matchMedia('(prefers-reduced-motion)').matches
+                          ? 'instant'
+                          : 'smooth',
+                      });
 
                       return;
                     }
