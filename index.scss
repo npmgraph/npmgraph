@@ -1,18 +1,7 @@
 /* eslint-disable local/no-magic-colors -- The theme variables are defined here */
-@use 'sass:map';
 @use './lib/root.module.scss' as *;
 
 // The accent is the only hand-picked color; everything else is computed from it.
-// Named hues: offsets from the accent's hue (orange is the accent itself).
-// Lightness and chroma are offsets from the accent's too.
-$hues: (
-  'red': -30,
-  'orange': 0,
-  'yellow': 50,
-  'green': 100,
-  'blue': 200,
-  'violet': 260,
-);
 
 // Lightness is an offset from the accent's, chroma a multiple of it
 @function named($hue, $lightness, $chroma) {
@@ -22,15 +11,20 @@ $hues: (
   );
 }
 
-// Strokes (for borders and lines) and backgrounds (should contrast with text)
+// Strokes (for borders and lines) and backgrounds (should contrast with text).
+// Hues are offsets from the accent's hue (orange is the accent itself).
 @mixin named-colors($stroke-lightness, $bg-lightness, $bg-chroma) {
-  @each $name in 'red', 'orange', 'yellow', 'blue' {
-    --stroke-#{$name}: #{named(map.get($hues, $name), $stroke-lightness, 1)};
-  }
+  --stroke-red: #{named(-30, $stroke-lightness, 1)};
+  --stroke-orange: #{named(0, $stroke-lightness, 1)};
+  --stroke-yellow: #{named(50, $stroke-lightness, 1)};
+  --stroke-blue: #{named(200, $stroke-lightness, 1)};
 
-  @each $name, $hue in $hues {
-    --bg-#{$name}: #{named($hue, $bg-lightness, $bg-chroma)};
-  }
+  --bg-red: #{named(-30, $bg-lightness, $bg-chroma)};
+  --bg-orange: #{named(0, $bg-lightness, $bg-chroma)};
+  --bg-yellow: #{named(50, $bg-lightness, $bg-chroma)};
+  --bg-green: #{named(100, $bg-lightness, $bg-chroma)};
+  --bg-blue: #{named(200, $bg-lightness, $bg-chroma)};
+  --bg-violet: #{named(260, $bg-lightness, $bg-chroma)};
 }
 
 // Neutrals use the accent's hue and a fraction of its chroma
