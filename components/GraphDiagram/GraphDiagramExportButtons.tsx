@@ -181,11 +181,6 @@ function downloadSvg() {
     return;
   }
 
-  // The exported file can't use the bundled font, so link to the hosted one
-  const fontElement = document.createElement('defs');
-  fontElement.innerHTML = `<defs><style type="text/css">@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:400');</style></defs>`;
-  svg.insertBefore(fontElement, svg.firstChild);
-
   // Inline the app's styles for export
   const styleElement = cloneStyleElement();
   if (styleElement) {

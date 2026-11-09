@@ -1,4 +1,3 @@
-import '@fontsource/roboto-condensed/latin-400.css';
 import './graphviz.css';
 import { select } from 'd3-selection';
 import {
