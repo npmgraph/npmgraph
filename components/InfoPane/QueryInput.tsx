@@ -19,7 +19,7 @@ export default function QueryInput({
   ...props
 }: HTMLProps<HTMLInputElement> & { variant?: 'header' | 'hero' }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const submittedRef = useRef(false);
+  const enterPendingRef = useRef(false);
   const [query] = useQuery();
   const graph = useGraph();
   const setGraphSelection = useGraphSelection()[2];
@@ -52,7 +52,7 @@ export default function QueryInput({
 
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
     event?.preventDefault();
-    submittedRef.current = true;
+    enterPendingRef.current = false;
     patchLocation({ search: getSearchParameters(), hash: '' }, false, {
       isInput: true,
     });
@@ -70,13 +70,15 @@ export default function QueryInput({
       return;
     }
 
-    // Safari uses the first Enter to dismiss the datalist dropdown instead of submitting the form
-    submittedRef.current = false;
-    setTimeout(() => {
-      if (!submittedRef.current) {
-        handleSubmit();
-      }
-    }, 0);
+    enterPendingRef.current = true;
+  }
+
+  // Safari uses the first Enter to pick/dismiss the datalist option instead of submitting the form.
+  // By keyup the picked value is in the field, and if the form wasn't submitted, do it now.
+  function handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Enter' && enterPendingRef.current) {
+      handleSubmit();
+    }
   }
 
   return (
@@ -113,6 +115,7 @@ export default function QueryInput({
           );
         }}
         onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
         {...props}
       />
       {isHeader && (
