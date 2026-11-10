@@ -29,7 +29,7 @@ g {
     }
 
     path {
-      fill: var(--bg0);
+      fill: var(--bg-node);
       stroke: var(--text);
     }
 
