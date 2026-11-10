@@ -1,9 +1,9 @@
 import css from '@eslint/css';
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
+import byo from 'eslint-plugin-byo';
 import reactDoctor from 'eslint-plugin-react-doctor';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
-import byo from 'eslint-plugin-byo';
 import { defineConfig } from 'eslint/config';
 import selectDom from 'select-dom/eslint-plugin';
 import noMagicColors from './eslint-rules/no-magic-colors.js';
@@ -49,6 +49,7 @@ const disabledRules = [
 ];
 
 export default defineConfig([
+  // Don't add new objects to this list unless strictly necessary. Extend the existing ones instead
   ...xo({
     browser: true,
     space: true,
@@ -61,6 +62,7 @@ export default defineConfig([
   }),
   {
     files: [tsFilesGlob, jsFilesGlob],
+    plugins: { byo },
     rules: {
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
@@ -82,11 +84,7 @@ export default defineConfig([
           'newlines-between': 'never',
         },
       ],
-    },
-  },
-  {
-    plugins: { byo },
-    rules: {
+
       'byo/no-direct-location-hash': [
         'error',
         {

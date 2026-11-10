@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
-import useHashParameter from '../../hooks/useHashParameter.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { PARAM_PACKAGES } from '../../lib/constants.ts';
 import { celebrate } from '../../lib/flash.ts';
@@ -31,7 +31,7 @@ export default function useLoadGraph(
 ) {
   const [query] = useQuery();
   // Pasted package.json files are in the hash, they can change without the query changing
-  const [packages] = useHashParameter(PARAM_PACKAGES);
+  const [packages] = useHashParam(PARAM_PACKAGES);
   const [, setGraph] = useGlobalState('graph');
   const [collapse] = useCollapse();
   const dependencyTypes = useDependencyTypes();

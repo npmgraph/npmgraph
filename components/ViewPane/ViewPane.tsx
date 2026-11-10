@@ -5,7 +5,7 @@ import { isDefined } from '../../lib/guards.ts';
 import useCustomModuleLinks, {
   DEFAULT_CUSTOM_MODULE_LINKS,
 } from '../../hooks/useCustomModuleLinks.ts';
-import useHashParameter from '../../hooks/useHashParameter.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
 import {
   getCustomModuleLinksError,
@@ -27,8 +27,8 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
   const customLinksRef = useRef<HTMLTextAreaElement>(null);
   const customLinksId = useId();
   const hasDefaultLinks = customLinks === DEFAULT_CUSTOM_MODULE_LINKS;
-  const [depTypes, setDepTypes] = useHashParameter(PARAM_DEPENDENCIES);
-  const [sizing, setSizing] = useHashParameter(PARAM_SIZING);
+  const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
+  const [sizing, setSizing] = useHashParam(PARAM_SIZING);
   const customLinksError = getCustomModuleLinksError(customLinks);
 
   useEffect(() => {
