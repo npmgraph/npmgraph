@@ -1,9 +1,9 @@
 import { PARAM_HIDE } from '../lib/constants.ts';
-import useHashParam from './useHashParam.ts';
+import useHashParameter from './useHashParameter.ts';
 
 // The report-only view (`#hide=graph`) shows the report as a document, without the graph
 export default function useReportOnly() {
-  const [hide, setHide] = useHashParam(PARAM_HIDE);
+  const [hide, setHide] = useHashParameter(PARAM_HIDE);
 
   const setReportOnly = (isEnabled: boolean) => {
     setHide(isEnabled ? 'graph' : null);

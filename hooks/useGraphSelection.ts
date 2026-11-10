@@ -1,6 +1,6 @@
 import { QueryType, type QueryTypeValue } from '../lib/ModuleCache.ts';
 import { PARAM_SELECTION } from '../lib/constants.ts';
-import useHashParam from './useHashParam.ts';
+import useHashParameter from './useHashParameter.ts';
 
 const selectableQueryTypes = new Set<QueryTypeValue>([
   QueryType.Default,
@@ -9,7 +9,7 @@ const selectableQueryTypes = new Set<QueryTypeValue>([
 ]);
 
 export default function useGraphSelection() {
-  const [sel, setSel] = useHashParam(PARAM_SELECTION);
+  const [sel, setSel] = useHashParameter(PARAM_SELECTION);
   const parts = sel ? sel.split(':') : [];
   const selectType =
     parts.length > 1 ? (parts[0] as QueryTypeValue) : QueryType.Default;

@@ -37,6 +37,17 @@ export function patchLocation(
   setGlobalState('location', url);
 }
 
+// Change the hash parameters. It reads the current hash, so updates never undo each other
+export function patchHash(
+  update: (parameters: URLSearchParams) => void,
+  shouldReplace = true,
+) {
+  // eslint-disable-next-line byo/no-direct-location-hash -- The one place that reads it
+  const parameters = new URLSearchParams(location.hash.slice(1));
+  update(parameters);
+  patchLocation({ hash: parameters.toString() }, shouldReplace);
+}
+
 export default function useLocation() {
   const [href] = useGlobalState('location');
 

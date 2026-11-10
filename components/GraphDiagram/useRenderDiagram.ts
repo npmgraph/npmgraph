@@ -2,7 +2,7 @@ import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
 import { use, useEffect, useState } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
-import useHashParam from '../../hooks/useHashParam.ts';
+import useHashParameter from '../../hooks/useHashParameter.ts';
 import { report } from '../../lib/bugsnag.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
@@ -135,7 +135,7 @@ export default function useRenderDiagram(
   isModuleVisible: ({ name }: { name: string }) => boolean,
 ) {
   const [graph] = useGlobalState('graph');
-  const [sizing] = useHashParam(PARAM_SIZING);
+  const [sizing] = useHashParameter(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
   const [diagramElement, setDiagramElement] = useState<
     SVGSVGElement | undefined

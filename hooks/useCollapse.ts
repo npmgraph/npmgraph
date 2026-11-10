@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { PARAM_COLLAPSE } from '../lib/constants.ts';
-import useHashParam from './useHashParam.ts';
+import useHashParameter from './useHashParameter.ts';
 
 export default function useCollapse() {
-  const [value, setValue] = useHashParam(PARAM_COLLAPSE);
+  const [value, setValue] = useHashParameter(PARAM_COLLAPSE);
   const excludes = useMemo(
     () =>
       (value ?? '')
