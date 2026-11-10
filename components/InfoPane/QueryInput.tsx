@@ -19,6 +19,7 @@ export default function QueryInput({
   ...props
 }: HTMLProps<HTMLInputElement> & { variant?: 'header' | 'hero' }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const submittedRef = useRef(false);
   const [query] = useQuery();
   const graph = useGraph();
   const setGraphSelection = useGraphSelection()[2];
@@ -51,19 +52,31 @@ export default function QueryInput({
 
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
     event?.preventDefault();
+    submittedRef.current = true;
     patchLocation({ search: getSearchParameters(), hash: '' }, false, {
       isInput: true,
     });
   }
 
-  // Add cmd-enter support to search in a new tab
-  function handleCmdEnter(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (!(event.key === 'Enter' && event.metaKey)) {
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter' || event.nativeEvent.isComposing) {
       return;
     }
 
-    window.open(`/?${getSearchParameters()}`, '_blank');
-    event.preventDefault();
+    // Add cmd-enter support to search in a new tab
+    if (event.metaKey) {
+      window.open(`/?${getSearchParameters()}`, '_blank');
+      event.preventDefault();
+      return;
+    }
+
+    // Safari uses the first Enter to dismiss the datalist dropdown instead of submitting the form
+    submittedRef.current = false;
+    setTimeout(() => {
+      if (!submittedRef.current) {
+        handleSubmit();
+      }
+    }, 0);
   }
 
   return (
@@ -99,7 +112,7 @@ export default function QueryInput({
             filter,
           );
         }}
-        onKeyDown={handleCmdEnter}
+        onKeyDown={handleKeyDown}
         {...props}
       />
       {isHeader && (
