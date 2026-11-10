@@ -3,6 +3,7 @@ import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import reactDoctor from 'eslint-plugin-react-doctor';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
+import byo from 'eslint-plugin-byo';
 import { defineConfig } from 'eslint/config';
 import selectDom from 'select-dom/eslint-plugin';
 import noMagicColors from './eslint-rules/no-magic-colors.js';
@@ -79,6 +80,20 @@ export default defineConfig([
         {
           warnOnUnassignedImports: 'top',
           'newlines-between': 'never',
+        },
+      ],
+    },
+  },
+  {
+    plugins: { byo },
+    rules: {
+      'byo/no-direct-location-hash': [
+        'error',
+        {
+          selector:
+            'MemberExpression[property.name="hash"]:matches([object.name="location"], [object.object.name=/^(window|globalThis)$/][object.property.name="location"])',
+          message:
+            'Use useHashParameters() or patchHash() instead of location.hash',
         },
       ],
     },

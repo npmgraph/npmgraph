@@ -6,9 +6,9 @@ import {
   type PaneTypes,
 } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
-import { patchLocation } from './useLocation.ts';
+import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
-import useHashParam from './useHashParam.ts';
+import useHashParameter from './useHashParameter.ts';
 
 const tabs = new Set<string>(Object.values(PaneType));
 
@@ -21,7 +21,7 @@ function useDefaultTab(): PaneTypes {
 // The `tab` hash param is the only place where the user's tab is stored.
 // Without it, the tab follows the default.
 export function useTab() {
-  const [tabParameter] = useHashParam(PARAM_TAB);
+  const [tabParameter] = useHashParameter(PARAM_TAB);
   const [, setGraphVisible] = useGlobalState('isGraphVisible');
   const defaultTab = useDefaultTab();
   const tab =
@@ -31,14 +31,13 @@ export function useTab() {
 
   // Show a tab: un-hide the inspector, leave the mobile graph and drop the section of the previous tab
   const selectTab = (nextTab: PaneTypes) => {
-    const parameters = new URLSearchParams(location.hash.slice(1));
-    parameters.set(PARAM_TAB, nextTab);
-    parameters.delete(PARAM_HIDE);
-    if (nextTab !== tab) {
-      parameters.delete(PARAM_SECTION);
-    }
-
-    patchLocation({ hash: parameters.toString() }, true);
+    patchHash(parameters => {
+      parameters.set(PARAM_TAB, nextTab);
+      parameters.delete(PARAM_HIDE);
+      if (nextTab !== tab) {
+        parameters.delete(PARAM_SECTION);
+      }
+    });
     setGraphVisible(false);
   };
 

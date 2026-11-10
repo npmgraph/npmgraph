@@ -2,6 +2,7 @@ import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import hostedGitInfo from 'hosted-git-info';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
 import { isDefined } from './guards.ts';
+import { hashSet } from './url-util.ts';
 import {
   getModuleKey,
   parseModuleKey,
@@ -115,11 +116,7 @@ export default class Module {
   getShareableLink() {
     const json = JSON.stringify(this.package);
     const url = new URL(location.href);
-    const hashParameters = new URLSearchParams(
-      location.hash.replace(/^#/v, ''),
-    );
-    hashParameters.set('package_json', json);
-    url.hash = hashParameters.toString();
+    url.hash = hashSet('package_json', json);
     return url;
   }
 

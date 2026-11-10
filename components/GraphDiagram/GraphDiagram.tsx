@@ -27,7 +27,7 @@ import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
+import useHashParameter from '../../hooks/useHashParameter.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
@@ -66,7 +66,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [graph] = useGlobalState('graph');
   const [query] = useQuery();
   const [collapse] = useCollapse();
-  const [colorize] = useHashParam(PARAM_COLORIZE);
+  const [colorize] = useHashParameter(PARAM_COLORIZE);
 
   const handleGraphClick = useGraphClick();
 
