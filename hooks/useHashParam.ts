@@ -1,8 +1,14 @@
-import { patchLocation } from './useLocation.ts';
+import useLocation, { patchHash } from './useLocation.ts';
 
-// eslint-disable-next-line @eslint-react/no-unnecessary-use-prefix -- Global state hook
+// All the hash parameters, and the way to change them
+export function useHashParameters() {
+  const [url] = useLocation();
+
+  return [new URLSearchParams(url.hash.slice(1)), patchHash] as const;
+}
+
 export default function useHashParameter(parameterName: string) {
-  const parameters = new URLSearchParams(location.hash.replace(/^#/v, ''));
+  const [parameters] = useHashParameters();
   const parameter = parameters.get(parameterName);
 
   const setValue = (
@@ -17,16 +23,15 @@ export default function useHashParameter(parameterName: string) {
       value = String(value);
     }
 
-    if (!value) {
-      parameters.delete(parameterName);
-    } else if (value === true) {
-      parameters.set(parameterName, '');
-    } else {
-      parameters.set(parameterName, value);
-    }
-
-    // Update page
-    patchLocation({ hash: parameters.toString() }, shouldReplace);
+    patchHash(next => {
+      if (!value) {
+        next.delete(parameterName);
+      } else if (value === true) {
+        next.set(parameterName, '');
+      } else {
+        next.set(parameterName, value);
+      }
+    }, shouldReplace);
   };
 
   return [parameter, setValue] as const;
