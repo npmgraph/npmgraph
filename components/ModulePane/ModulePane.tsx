@@ -4,7 +4,7 @@ import type Module from '../../lib/Module.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
-import useHashParameter from '../../hooks/useHashParameter.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
@@ -65,7 +65,7 @@ function ModuleDetailsPane({
   module,
   ...props
 }: { module: Module } & React.HTMLAttributes<HTMLDivElement>) {
-  const [colorize] = useHashParameter(PARAM_COLORIZE);
+  const [colorize] = useHashParam(PARAM_COLORIZE);
   const pkg = module.package;
 
   return (

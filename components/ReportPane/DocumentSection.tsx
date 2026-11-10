@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useHashParameters } from '../../hooks/useHashParameter.ts';
+import { useHashParameters } from '../../hooks/useHashParam.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PARAM_SECTION } from '../../lib/constants.ts';
 import { SectionBody } from '../ui/Section.tsx';

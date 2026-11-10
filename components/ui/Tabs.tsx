@@ -3,7 +3,7 @@ import { $ } from 'select-dom';
 import { PaneType, PARAM_HIDE, type PaneTypes } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
-import useHashParameter from '../../hooks/useHashParameter.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useTab } from '../../hooks/useTab.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
@@ -17,7 +17,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [tab, selectTab] = useTab();
   const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const isTightScreen = useIsTightScreen();
-  const [hide, setHide] = useHashParameter(PARAM_HIDE);
+  const [hide, setHide] = useHashParam(PARAM_HIDE);
   const [isReportOnly] = useReportOnly();
   const isInspectorOpen = hide === null || isReportOnly;
   // The report-only view doesn't change the selected tab

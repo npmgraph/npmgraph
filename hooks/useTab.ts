@@ -8,7 +8,7 @@ import {
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
-import useHashParameter from './useHashParameter.ts';
+import useHashParam from './useHashParam.ts';
 
 const tabs = new Set<string>(Object.values(PaneType));
 
@@ -21,7 +21,7 @@ function useDefaultTab(): PaneTypes {
 // The `tab` hash param is the only place where the user's tab is stored.
 // Without it, the tab follows the default.
 export function useTab() {
-  const [tabParameter] = useHashParameter(PARAM_TAB);
+  const [tabParameter] = useHashParam(PARAM_TAB);
   const [, setGraphVisible] = useGlobalState('isGraphVisible');
   const defaultTab = useDefaultTab();
   const tab =
