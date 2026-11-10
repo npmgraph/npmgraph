@@ -1,3 +1,6 @@
-.list dt {
-  font-weight: bold;
+.list {
+  margin-top: 0;
+  dt {
+    font-weight: bold;
+  }
 }
