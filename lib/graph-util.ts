@@ -25,7 +25,8 @@ export type {
   GraphState,
 } from './graph-types.ts';
 
-const FONT = 'Roboto Condensed, sans-serif';
+const FONT =
+  'Roboto Condensed, Arial Narrow, Helvetica Neue Condensed, Liberation Sans Narrow, sans-serif';
 
 const DEFAULT_STYLES = {
   GRAPH: vizStyle({
