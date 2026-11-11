@@ -22,7 +22,7 @@ export default function StickerFarm() {
               rel="noopener noreferrer"
               className={styles.logo}
             >
-              <Logo width="100%" height="20" />
+              <Logo width="100%" height="24" />
             </a>
           </li>
         ))}
