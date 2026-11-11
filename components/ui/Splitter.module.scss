@@ -12,10 +12,7 @@
   padding: 0 10px;
   color: var(--tabs-text);
   user-select: none;
-
-  &:focus-visible {
-    outline: none;
-  }
+  outline: none;
 
   &[aria-hidden='true'] {
     /* Hide it but keep its place */
