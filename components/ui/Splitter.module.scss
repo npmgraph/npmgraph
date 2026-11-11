@@ -13,9 +13,7 @@
   color: var(--tabs-text);
   user-select: none;
 
-  // Same focus style as the tabs
   &:focus-visible {
-    backdrop-filter: brightness(var(--hover-brightness));
     outline: none;
   }
 

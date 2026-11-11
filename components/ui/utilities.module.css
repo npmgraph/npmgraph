@@ -3,7 +3,8 @@
   transition: filter 0.2s;
   will-change: filter;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     filter: brightness(var(--hover-brightness));
     transition-duration: 0.1s;
   }
@@ -13,7 +14,8 @@
 .brightHoverBackdrop {
   transition: backdrop-filter 0.2s;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     backdrop-filter: brightness(var(--hover-brightness));
     transition-duration: 0.1s;
   }

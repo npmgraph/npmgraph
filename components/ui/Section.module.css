@@ -18,13 +18,6 @@
     line-height: normal;
   }
 
-  &:not([open]) > summary {
-    &:hover,
-    &:focus-visible {
-      backdrop-filter: brightness(var(--hover-brightness));
-    }
-  }
-
   /* Move triangle to the right */
   & summary::-webkit-details-marker {
     display: none;
