@@ -8,11 +8,11 @@
   transition: border-radius var(--transition-duration);
   cursor: default;
   margin-right: calc(-1 * var(--header-padding));
+  outline: none;
   border-right: none;
   padding: 0 10px;
   color: var(--tabs-text);
   user-select: none;
-  outline: none;
 
   &[aria-hidden='true'] {
     /* Hide it but keep its place */
