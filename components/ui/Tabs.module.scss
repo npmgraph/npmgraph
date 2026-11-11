@@ -10,11 +10,21 @@
   min-height: 50px;
   color: var(--tabs-text);
   user-select: none;
+
+  // The tabs are dark in both color schemes
+  --hover-brightness: 125%;
 }
 
 .list {
   @include tight-screen {
     flex-grow: 1;
+  }
+}
+
+// On tight screens the tabs are below the header, not part of it
+.root {
+  @include tight-screen {
+    background: var(--tabs-bg) var(--bg-gradient);
   }
 }
 
@@ -36,7 +46,6 @@
     flex-grow: 1;
     justify-content: center;
     align-items: center;
-    background: var(--tabs-bg) var(--bg-gradient);
     padding: 0 10px;
   }
 
@@ -46,6 +55,7 @@
 
   // `all: unset` above removes the browser's focus ring, so match the hover style
   button:focus-visible {
-    filter: brightness(125%);
+    backdrop-filter: brightness(var(--hover-brightness));
+    filter: brightness(var(--hover-brightness));
   }
 }

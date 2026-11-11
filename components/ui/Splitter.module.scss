@@ -9,14 +9,13 @@
   cursor: default;
   margin-right: calc(-1 * var(--header-padding));
   border-right: none;
-  background: var(--tabs-bg) var(--bg-gradient);
   padding: 0 10px;
   color: var(--tabs-text);
   user-select: none;
 
   // Same focus style as the tabs
   &:focus-visible {
-    filter: brightness(125%);
+    backdrop-filter: brightness(var(--hover-brightness));
     outline: none;
   }
 
