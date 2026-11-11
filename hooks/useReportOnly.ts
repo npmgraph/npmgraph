@@ -4,10 +4,35 @@ import { PARAM_HIDE } from '../lib/constants.ts';
 // The report-only view (`#hide=graph`) shows the report as a document, without the graph
 export default function useReportOnly() {
   const [hide, setHide] = useQueryState(PARAM_HIDE);
+  const isReportOnly = hide === 'graph';
 
   const setReportOnly = (isEnabled: boolean) => {
-    void setHide(isEnabled ? 'graph' : null);
+    // Entering pushes a history entry so Back returns to the graph
+    const update = setHide(isEnabled ? 'graph' : null, {
+      history: isEnabled ? 'push' : 'replace',
+    });
+
+    if (isEnabled && !isReportOnly) {
+      void update.then(() => {
+        history.replaceState({ ...history.state, reportOnly: true }, '');
+      });
+    }
   };
 
-  return [hide === 'graph', setReportOnly] as const;
+  // Leave like Back would, instead of stacking a duplicate of the previous entry
+  const leaveReportOnly = (afterwards?: () => void) => {
+    if (history.state?.reportOnly) {
+      if (afterwards) {
+        globalThis.addEventListener('popstate', afterwards, { once: true });
+      }
+
+      history.back();
+      return;
+    }
+
+    void setHide(null);
+    afterwards?.();
+  };
+
+  return [isReportOnly, setReportOnly, leaveReportOnly] as const;
 }

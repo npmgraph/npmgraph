@@ -29,14 +29,17 @@ export function useTab() {
   const defaultTab = useDefaultTab();
   const tab = parameters[PARAM_TAB] ?? defaultTab;
 
-  // Show a tab: un-hide the inspector, leave the mobile graph and drop the section of the previous tab
-  const selectTab = (nextTab: PaneTypes) => {
+  // Show a tab (`null` goes back to the default one): leave the report-only view, leave the mobile graph and drop the section of the previous tab
+  // `PaneType.NONE` closes the inspector instead, and leaves the graph alone
+  const selectTab = (nextTab: PaneTypes | null) => {
     void setParameters({
       [PARAM_TAB]: nextTab,
       [PARAM_HIDE]: null,
       ...(nextTab !== tab && { [PARAM_SECTION]: null }),
     });
-    setGraphVisible(false);
+    if (nextTab !== PaneType.NONE) {
+      setGraphVisible(false);
+    }
   };
 
   return [tab, selectTab] as const;
