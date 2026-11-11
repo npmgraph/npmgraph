@@ -1,6 +1,7 @@
 import css from '@eslint/css';
 import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
+import byo from 'eslint-plugin-byo';
 import reactDoctor from 'eslint-plugin-react-doctor';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 import { defineConfig } from 'eslint/config';
@@ -48,6 +49,7 @@ const disabledRules = [
 ];
 
 export default defineConfig([
+  // Don't add new objects to this list unless strictly necessary. Extend the existing ones instead
   ...xo({
     browser: true,
     space: true,
@@ -60,6 +62,7 @@ export default defineConfig([
   }),
   {
     files: [tsFilesGlob, jsFilesGlob],
+    plugins: { byo },
     rules: {
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
@@ -79,6 +82,16 @@ export default defineConfig([
         {
           warnOnUnassignedImports: 'top',
           'newlines-between': 'never',
+        },
+      ],
+
+      'byo/no-direct-location-hash': [
+        'error',
+        {
+          selector:
+            'MemberExpression[property.name="hash"]:matches([object.name="location"], [object.object.name=/^(window|globalThis)$/][object.property.name="location"])',
+          message:
+            'Use useHashParameters() or patchHash() instead of location.hash',
         },
       ],
     },

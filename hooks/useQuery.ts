@@ -1,29 +1,29 @@
-import { useMemo, useState } from 'react';
-import { useGlobalState } from '../lib/GlobalStore.ts';
+import { useCallback, useMemo, useState } from 'react';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../lib/constants.ts';
-import { searchGet, searchSet } from '../lib/url-util.ts';
-import { patchLocation } from './useLocation.ts';
-
-function setQuery(moduleKeys: string[] = [], shouldReplace = false) {
-  // Clean up keys
-  moduleKeys = moduleKeys.filter(Boolean).map(key => {
-    key = key.trim();
-
-    // Don't lowercase URLs
-    return /https?:\/\//i.test(key) ? key : key.toLowerCase();
-  });
-  moduleKeys = [...new Set(moduleKeys)];
-  const search = searchSet(PARAM_QUERY, moduleKeys.join(','));
-  patchLocation({ search }, shouldReplace);
-}
+import useSearchParameter from './useSearchParameter.ts';
 
 export function useQuery() {
-  const [location] = useGlobalState('location');
-  const queryString = searchGet(PARAM_QUERY, location) ?? '';
+  const [queryString, setQueryString] = useSearchParameter(PARAM_QUERY);
   const parsedQuery = useMemo(
-    () => queryString.split(/\s*,\s*/).filter(Boolean),
+    () => (queryString ?? '').split(/\s*,\s*/).filter(Boolean),
     [queryString],
   );
+
+  const setQuery = useCallback(
+    (moduleKeys: string[] = [], shouldReplace = false) => {
+      // Clean up keys
+      moduleKeys = moduleKeys.filter(Boolean).map(key => {
+        key = key.trim();
+
+        // Don't lowercase URLs
+        return /https?:\/\//i.test(key) ? key : key.toLowerCase();
+      });
+      moduleKeys = [...new Set(moduleKeys)];
+      setQueryString(moduleKeys.join(','), shouldReplace);
+    },
+    [setQueryString],
+  );
+
   return [parsedQuery, setQuery] as const;
 }
 
