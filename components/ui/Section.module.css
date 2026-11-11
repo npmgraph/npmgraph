@@ -18,13 +18,11 @@
     line-height: normal;
   }
 
-  /* Only closed sections highlight their heading */
-  &[open] > summary:hover {
-    backdrop-filter: none;
-  }
-
-  &:not([open]) > summary:focus-visible {
-    backdrop-filter: brightness(var(--hover-brightness));
+  &:not([open]) > summary {
+    &:hover,
+    &:focus-visible {
+      backdrop-filter: brightness(var(--hover-brightness));
+    }
   }
 
   /* Move triangle to the right */

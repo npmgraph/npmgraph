@@ -7,17 +7,14 @@
   align-items: center;
   gap: 0 1.2em;
   box-sizing: border-box;
-  background: var(--tabs-bg) var(--bg-gradient);
   padding-inline: var(--header-padding);
   color: var(--tabs-text);
-  color-scheme: dark;
 
   /* Override --text so the Logo's color-mix renders in light colors on the dark header */
   --text: var(--tabs-text);
 
   @include tight-screen {
     border-right: none;
-    background: color-mix(in srgb, var(--tabs-bg), var(--tabs-text) 20%);
   }
 
   svg {
