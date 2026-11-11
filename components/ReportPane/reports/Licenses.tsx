@@ -23,6 +23,15 @@ const issueBadges: Record<LicenseIssue, string> = {
   deprecated: 'Deprecated',
 };
 
+function Badge({ children }: { children: string }) {
+  return (
+    <span className={styles.keyword}>
+      <span className={styles.warnIcon}>{WARN_SYMBOL}</span>
+      {children}
+    </span>
+  );
+}
+
 function useSpdxLicenses() {
   const [spdxLicenses, setSpdxLicenses] = useState<Map<string, SPDXLicense>>();
 
@@ -55,10 +64,7 @@ function LicenseRow({
           {issues && (
             <div className={styles.keywords}>
               {issues.map(issue => (
-                <span key={issue} className={styles.keyword}>
-                  <span className={styles.warnIcon}>{WARN_SYMBOL}</span>
-                  {issueBadges[issue]}
-                </span>
+                <Badge key={issue}>{issueBadges[issue]}</Badge>
               ))}
             </div>
           )}
@@ -72,9 +78,9 @@ export default function Licenses() {
   const { modulesByLicense, unlicensedModules } = useLicenseAnalysis();
   const spdxLicenses = useSpdxLicenses();
 
-  const licenses = [...modulesByLicense]
-    .filter(([license]) => license !== UNLICENSED)
-    .toSorted(([a], [b]) => a.localeCompare(b));
+  const licenses = [...modulesByLicense].filter(
+    ([license]) => license !== UNLICENSED,
+  );
   const hasUnlicensed = unlicensedModules.length > 0;
   const issuesByLicense = new Map<string, LicenseIssue[]>();
 
@@ -85,6 +91,13 @@ export default function Licenses() {
       issuesByLicense.set(license, issues);
     }
   }
+
+  // Licenses with warnings first, then alphabetical
+  licenses.sort(
+    ([a], [b]) =>
+      Number(issuesByLicense.has(b)) - Number(issuesByLicense.has(a)) ||
+      a.localeCompare(b),
+  );
 
   const count = licenses.length + (hasUnlicensed ? 1 : 0);
   if (count === 0) {
@@ -107,6 +120,18 @@ export default function Licenses() {
       }
     >
       <Rows>
+        {hasUnlicensed && (
+          <GroupRow
+            modules={unlicensedModules.toSorted((a, b) =>
+              a.key.localeCompare(b.key),
+            )}
+            heading={
+              <div className={styles.keywords}>
+                <Badge>(unlicensed)</Badge>
+              </div>
+            }
+          />
+        )}
         {licenses.map(([license, modules]) => (
           <LicenseRow
             key={license}
@@ -115,19 +140,6 @@ export default function Licenses() {
             issues={issuesByLicense.get(license)}
           />
         ))}
-        {hasUnlicensed && (
-          <GroupRow
-            modules={unlicensedModules.toSorted((a, b) =>
-              a.key.localeCompare(b.key),
-            )}
-            heading={
-              <span>
-                <span className={styles.warnIcon}>{WARN_SYMBOL}</span>
-                (unlicensed)
-              </span>
-            }
-          />
-        )}
       </Rows>
     </ReportItem>
   );
