@@ -52,6 +52,7 @@
     "filter-altered-clicks": "^2.1.1",
     "hosted-git-info": "^10.1.1",
     "module-replacements": "^3.4.0",
+    "nuqs": "^2.10.3",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "react-error-boundary": "^6.1.6",
