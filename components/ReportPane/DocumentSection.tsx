@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { useHashParameters } from '../../hooks/useHashParam.ts';
+import useLocation from '../../hooks/useLocation.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PARAM_SECTION } from '../../lib/constants.ts';
 import { SectionBody } from '../ui/Section.tsx';
@@ -19,8 +19,8 @@ export function DocumentSection({
 }) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLElement>(name);
-  const [parameters] = useHashParameters();
-  const permalink = new URLSearchParams(parameters);
+  const [url] = useLocation();
+  const permalink = new URLSearchParams(url.hash.slice(1));
   permalink.set(PARAM_SECTION, name);
 
   return (

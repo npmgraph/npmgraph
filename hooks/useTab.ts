@@ -1,3 +1,4 @@
+import { parseAsString, parseAsStringEnum, useQueryStates } from 'nuqs';
 import {
   PaneType,
   PARAM_HIDE,
@@ -6,11 +7,9 @@ import {
   type PaneTypes,
 } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
-import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
-import useHashParam from './useHashParam.ts';
 
-const tabs = new Set<string>(Object.values(PaneType));
+const tabs = Object.values(PaneType);
 
 // The tab to show until the user picks one
 function useDefaultTab(): PaneTypes {
@@ -21,22 +20,21 @@ function useDefaultTab(): PaneTypes {
 // The `tab` hash param is the only place where the user's tab is stored.
 // Without it, the tab follows the default.
 export function useTab() {
-  const [tabParameter] = useHashParam(PARAM_TAB);
+  const [parameters, setParameters] = useQueryStates({
+    [PARAM_TAB]: parseAsStringEnum<PaneTypes>(tabs),
+    [PARAM_HIDE]: parseAsString,
+    [PARAM_SECTION]: parseAsString,
+  });
   const [, setGraphVisible] = useGlobalState('isGraphVisible');
   const defaultTab = useDefaultTab();
-  const tab =
-    tabParameter !== null && tabs.has(tabParameter)
-      ? (tabParameter as PaneTypes)
-      : defaultTab;
+  const tab = parameters[PARAM_TAB] ?? defaultTab;
 
   // Show a tab: un-hide the inspector, leave the mobile graph and drop the section of the previous tab
   const selectTab = (nextTab: PaneTypes) => {
-    patchHash(parameters => {
-      parameters.set(PARAM_TAB, nextTab);
-      parameters.delete(PARAM_HIDE);
-      if (nextTab !== tab) {
-        parameters.delete(PARAM_SECTION);
-      }
+    void setParameters({
+      [PARAM_TAB]: nextTab,
+      [PARAM_HIDE]: null,
+      ...(nextTab !== tab && { [PARAM_SECTION]: null }),
     });
     setGraphVisible(false);
   };

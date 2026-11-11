@@ -1,6 +1,6 @@
+import { useQueryState } from 'nuqs';
 import { QueryType, type QueryTypeValue } from '../lib/ModuleCache.ts';
 import { PARAM_SELECTION } from '../lib/constants.ts';
-import useHashParam from './useHashParam.ts';
 
 const selectableQueryTypes = new Set<QueryTypeValue>([
   QueryType.Default,
@@ -9,7 +9,7 @@ const selectableQueryTypes = new Set<QueryTypeValue>([
 ]);
 
 export default function useGraphSelection() {
-  const [sel, setSel] = useHashParam(PARAM_SELECTION);
+  const [sel, setSel] = useQueryState(PARAM_SELECTION);
   const parts = sel ? sel.split(':') : [];
   const selectType =
     parts.length > 1 ? (parts[0] as QueryTypeValue) : QueryType.Default;
@@ -20,14 +20,14 @@ export default function useGraphSelection() {
     selectValue,
     (queryType: QueryTypeValue = QueryType.Default, queryValue?: string) => {
       if (!queryType && !queryValue) {
-        setSel('');
+        void setSel(null);
         return;
       }
 
-      setSel(
-        selectableQueryTypes.has(queryType)
+      void setSel(
+        (selectableQueryTypes.has(queryType)
           ? queryValue
-          : `${queryType}:${queryValue}`,
+          : `${queryType}:${queryValue}`) || null,
       );
     },
   ] as const;

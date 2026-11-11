@@ -1,10 +1,10 @@
+import { useQueryState } from 'nuqs';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
 import colorizers, { getColorizer } from '../colorizers/index.ts';
 import * as styles from './ColorizeInput.module.css';
 
 export default function ColorizeInput() {
-  const [colorize, setColorize] = useHashParam(PARAM_COLORIZE);
+  const [colorize, setColorize] = useQueryState(PARAM_COLORIZE);
 
   const options = [
     <option key="none" value="">
@@ -27,7 +27,7 @@ export default function ColorizeInput() {
         <select
           value={colorize ?? ''}
           onChange={event => {
-            setColorize(event.target.value);
+            void setColorize(event.target.value || null);
           }}
         >
           {options}

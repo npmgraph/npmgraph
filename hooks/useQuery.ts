@@ -1,9 +1,9 @@
+import { useQueryState } from 'nuqs';
 import { useCallback, useMemo, useState } from 'react';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../lib/constants.ts';
-import useSearchParameter from './useSearchParameter.ts';
 
 export function useQuery() {
-  const [queryString, setQueryString] = useSearchParameter(PARAM_QUERY);
+  const [queryString, setQueryString] = useQueryState(PARAM_QUERY);
   const parsedQuery = useMemo(
     () => (queryString ?? '').split(/\s*,\s*/).filter(Boolean),
     [queryString],
@@ -19,7 +19,9 @@ export function useQuery() {
         return /https?:\/\//i.test(key) ? key : key.toLowerCase();
       });
       moduleKeys = [...new Set(moduleKeys)];
-      setQueryString(moduleKeys.join(','), shouldReplace);
+      void setQueryString(moduleKeys.join(',') || null, {
+        history: shouldReplace ? 'replace' : 'push',
+      });
     },
     [setQueryString],
   );

@@ -1,6 +1,6 @@
+import { parseAsString, useQueryStates } from 'nuqs';
 import type { ReactNode } from 'react';
 import { $$optional } from 'select-dom';
-import { patchHash } from '../../hooks/useLocation.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PaneType, PARAM_SECTION, PARAM_TAB } from '../../lib/constants.ts';
@@ -12,7 +12,12 @@ import * as styles from './ReportItem.module.css';
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
 
 // Like in the report-only view, a single open section is linkable
-function storeOpenSection() {
+function storeOpenSection(
+  setParameters: (values: {
+    [PARAM_TAB]: string;
+    [PARAM_SECTION]: string | null;
+  }) => unknown,
+) {
   const [firstItem, moreThanOpenOpen] = $$optional(
     'details[data-report-item][open]',
   );
@@ -23,13 +28,9 @@ function storeOpenSection() {
       firstItem?.getAttribute('data-report-item');
 
   // The section only makes sense together with its tab
-  patchHash(parameters => {
-    parameters.set(PARAM_TAB, PaneType.REPORT);
-    if (section) {
-      parameters.set(PARAM_SECTION, section);
-    } else {
-      parameters.delete(PARAM_SECTION);
-    }
+  void setParameters({
+    [PARAM_TAB]: PaneType.REPORT,
+    [PARAM_SECTION]: section || null,
   });
 }
 
@@ -49,6 +50,10 @@ export function ReportItem({
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
+  const [, setParameters] = useQueryStates({
+    [PARAM_TAB]: parseAsString,
+    [PARAM_SECTION]: parseAsString,
+  });
   const icon = SYMBOLS[type] && (
     <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
   );
@@ -70,7 +75,9 @@ export function ReportItem({
       title={title}
       count={count}
       data-report-item={sectionName(title)}
-      onToggle={storeOpenSection}
+      onToggle={() => {
+        storeOpenSection(setParameters);
+      }}
     >
       {body}
     </CollapsibleSection>

@@ -90,8 +90,7 @@ export default defineConfig([
         {
           selector:
             'MemberExpression[property.name="hash"]:matches([object.name="location"], [object.object.name=/^(window|globalThis)$/][object.property.name="location"])',
-          message:
-            'Use useHashParameters() or patchHash() instead of location.hash',
+          message: 'Use a nuqs hook instead of location.hash',
         },
       ],
     },

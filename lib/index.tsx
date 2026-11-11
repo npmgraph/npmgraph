@@ -5,6 +5,7 @@ import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
 import { Unsupported } from '../components/Unsupported.tsx';
 import { setActivityForApp } from '../hooks/useActivity.ts';
+import { NuqsAdapter } from '../hooks/NuqsAdapter.ts';
 import { DiagramTitle } from './DiagramTitle.tsx';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
@@ -114,10 +115,16 @@ globalThis.addEventListener('load', () => {
   const appElement = $('body');
   createRoot(appElement).render(
     // <StrictMode>
-    <App />,
+    <NuqsAdapter>
+      <App />
+    </NuqsAdapter>,
     // </StrictMode>,
   );
 
   // A little component for managing the title
-  createRoot($('title')).render(<DiagramTitle defaultTitle={document.title} />);
+  createRoot($('title')).render(
+    <NuqsAdapter>
+      <DiagramTitle defaultTitle={document.title} />
+    </NuqsAdapter>,
+  );
 });

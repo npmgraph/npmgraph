@@ -1,11 +1,10 @@
 import { useEffect, useId, useRef, useState, type HTMLProps } from 'react';
+import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
 import { cn } from '../../lib/dom.ts';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
-import { isDefined } from '../../lib/guards.ts';
 import useCustomModuleLinks, {
   DEFAULT_CUSTOM_MODULE_LINKS,
 } from '../../hooks/useCustomModuleLinks.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
 import {
   getCustomModuleLinksError,
@@ -27,23 +26,22 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
   const customLinksRef = useRef<HTMLTextAreaElement>(null);
   const customLinksId = useId();
   const hasDefaultLinks = customLinks === DEFAULT_CUSTOM_MODULE_LINKS;
-  const [depTypes, setDepTypes] = useHashParam(PARAM_DEPENDENCIES);
-  const [sizing, setSizing] = useHashParam(PARAM_SIZING);
+  const [dependencyTypes, setDepTypes] = useQueryState(
+    PARAM_DEPENDENCIES,
+    parseAsArrayOf(parseAsString).withDefault([]),
+  );
+  const [sizing, setSizing] = useQueryState(PARAM_SIZING);
   const customLinksError = getCustomModuleLinksError(customLinks);
 
   useEffect(() => {
     customLinksRef.current?.setCustomValidity(customLinksError);
   }, [customLinksError]);
 
-  const dependencyTypes = (
-    (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
-  ).filter(item => isDefined(item));
-
   const isIncludeDev = dependencyTypes.includes('devDependencies');
   const isIncludePeer = dependencyTypes.includes('peerDependencies');
 
   function setDependencyType(type: DependencyKey, shouldInclude: boolean) {
-    const nextTypes = new Set(dependencyTypes);
+    const nextTypes = new Set<string>(dependencyTypes);
 
     if (shouldInclude) {
       nextTypes.add(type);
@@ -51,7 +49,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
       nextTypes.delete(type);
     }
 
-    setDepTypes([...nextTypes].toSorted().join(','));
+    void setDepTypes([...nextTypes].toSorted());
   }
 
   return (
@@ -77,7 +75,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
       <Toggle
         checked={sizing === ''}
         onChange={() => {
-          setSizing(sizing === null);
+          void setSizing(sizing === null ? '' : null);
         }}
       >
         Size modules by unpacked size
