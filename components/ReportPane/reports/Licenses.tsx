@@ -127,7 +127,7 @@ export default function Licenses() {
             )}
             heading={
               <div className={styles.keywords}>
-                <Badge>(unlicensed)</Badge>
+                <Badge>Unlicensed</Badge>
               </div>
             }
           />
