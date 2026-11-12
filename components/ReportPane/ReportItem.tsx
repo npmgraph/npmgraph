@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { $$optional } from 'select-dom';
-import { patchLocation } from '../../hooks/useLocation.ts';
+import { patchHash } from '../../hooks/useLocation.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PaneType, PARAM_SECTION, PARAM_TAB } from '../../lib/constants.ts';
@@ -23,15 +23,14 @@ function storeOpenSection() {
       firstItem?.getAttribute('data-report-item');
 
   // The section only makes sense together with its tab
-  const parameters = new URLSearchParams(location.hash.slice(1));
-  parameters.set(PARAM_TAB, PaneType.REPORT);
-  if (section) {
-    parameters.set(PARAM_SECTION, section);
-  } else {
-    parameters.delete(PARAM_SECTION);
-  }
-
-  patchLocation({ hash: parameters.toString() }, true);
+  patchHash(parameters => {
+    parameters.set(PARAM_TAB, PaneType.REPORT);
+    if (section) {
+      parameters.set(PARAM_SECTION, section);
+    } else {
+      parameters.delete(PARAM_SECTION);
+    }
+  });
 }
 
 export function ReportItem({

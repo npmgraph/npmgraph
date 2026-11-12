@@ -1,11 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { PARAM_SECTION } from '../lib/constants.ts';
+import { hashGet } from '../lib/url-util.ts';
 import useHashParam from './useHashParam.ts';
 
 // The only section that gets scrolled to by itself is the one in the URL on page load
-const pageLoadSection = new URLSearchParams(location.hash.slice(1)).get(
-  PARAM_SECTION,
-);
+const pageLoadSection = hashGet(PARAM_SECTION);
 let hasScrolledToPageLoadSection = false;
 
 export function sectionName(title: string) {
