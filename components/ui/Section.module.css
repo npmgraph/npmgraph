@@ -18,13 +18,6 @@
     line-height: normal;
   }
 
-  &:not([open]) > summary {
-    &:hover,
-    &:focus-visible {
-      background: color-mix(in srgb, currentcolor 10%, transparent);
-    }
-  }
-
   /* Move triangle to the right */
   & summary::-webkit-details-marker {
     display: none;
