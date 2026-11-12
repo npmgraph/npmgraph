@@ -17,12 +17,18 @@
   display: block;
   box-sizing: border-box;
   outline: none;
-  border: 1px solid var(--text-dim);
+  border: 1px solid var(--border);
   border-radius: 1em;
+  background: var(--bg-root);
   padding: 0.3em 0.7em;
   width: 100%;
+  color: var(--text);
   font: inherit;
   font-size: 16px; // It must be at least 16px to avoid iOS zooming in on focus
+
+  &::placeholder {
+    color: var(--text-dim);
+  }
 
   &:focus {
     border-color: var(--accent);

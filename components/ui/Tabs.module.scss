@@ -36,16 +36,10 @@
     flex-grow: 1;
     justify-content: center;
     align-items: center;
-    background: var(--tabs-bg) var(--bg-gradient);
     padding: 0 10px;
   }
 
   &.active button {
     background: var(--accent);
-  }
-
-  // `all: unset` above removes the browser's focus ring, so match the hover style
-  button:focus-visible {
-    filter: brightness(125%);
   }
 }

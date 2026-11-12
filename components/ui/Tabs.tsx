@@ -62,7 +62,11 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   id={`tab-${id}`}
                   aria-selected={isSelected}
                   aria-controls={id === GRAPH ? undefined : 'inspector'}
-                  className={utilities.brightHover}
+                  className={
+                    isSelected
+                      ? utilities.brightHover
+                      : utilities.brightHoverBackdrop
+                  }
                   onClick={() => {
                     // Like mobile apps, tapping the current tab scrolls to the top
                     if (isSelected && id !== GRAPH) {
