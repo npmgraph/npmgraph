@@ -98,6 +98,41 @@
       march calc(var(--period) * 0.1s) linear infinite;
     stroke-dashoffset: var(--offset, 0);
   }
+
+  // A cat flicks its tail in short bursts
+  [data-tail] {
+    animation: flick 4s 1.5s infinite;
+  }
+}
+
+@keyframes flick {
+  0%,
+  60% {
+    transform: rotate(0deg);
+    animation-timing-function: ease-out;
+  }
+
+  66% {
+    transform: rotate(-9deg);
+    animation-timing-function: ease-in-out;
+  }
+
+  74% {
+    transform: rotate(5deg);
+  }
+
+  81% {
+    transform: rotate(-2.5deg);
+  }
+
+  88% {
+    transform: rotate(1deg);
+  }
+
+  95%,
+  100% {
+    transform: rotate(0deg);
+  }
 }
 
 @keyframes fade-in {
