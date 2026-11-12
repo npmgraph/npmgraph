@@ -117,38 +117,7 @@
   }
 
   20% {
-    transform: rotate(2deg);
-  }
-
-  40% {
-    transform: rotate(-1deg);
-  }
-
-  55% {
-    transform: rotate(-6deg);
-  }
-
-  65% {
-    transform: rotate(3deg);
-  }
-
-  75% {
-    transform: rotate(-2deg);
-  }
-
-  85% {
-    transform: rotate(1deg);
-  }
-}
-
-@keyframes sway-tip {
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-
-  20% {
-    transform: rotate(1.5deg);
+    transform: rotate(2.5deg);
   }
 
   40% {
@@ -156,7 +125,7 @@
   }
 
   55% {
-    transform: rotate(-5deg);
+    transform: rotate(-8deg);
   }
 
   65% {
@@ -169,6 +138,37 @@
 
   85% {
     transform: rotate(1.5deg);
+  }
+}
+
+@keyframes sway-tip {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  20% {
+    transform: rotate(2deg);
+  }
+
+  40% {
+    transform: rotate(-2deg);
+  }
+
+  55% {
+    transform: rotate(-7deg);
+  }
+
+  65% {
+    transform: rotate(5.5deg);
+  }
+
+  75% {
+    transform: rotate(-4deg);
+  }
+
+  85% {
+    transform: rotate(2deg);
   }
 }
 
