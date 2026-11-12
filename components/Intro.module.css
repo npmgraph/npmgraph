@@ -1,21 +1,29 @@
+/* Painted on the page and not on .root, so it also fills the area under the iOS Safari URL bar */
+:global(html):has(.root) {
+  background:
+    radial-gradient(
+        var(--bg-root),
+        color-mix(in oklch, var(--accent) 10%, var(--bg-root))
+      )
+      top / 100% 100lvh no-repeat,
+    color-mix(in oklch, var(--accent) 10%, var(--bg-root));
+
+  @media (prefers-color-scheme: dark) {
+    background:
+      radial-gradient(var(--bg0), var(--bg-root)) top / 100% 100lvh no-repeat,
+      var(--bg-root);
+  }
+}
+
 .root {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
-  background: radial-gradient(
-    var(--bg-root),
-    color-mix(in oklch, var(--accent) 10%, var(--bg-root))
-  );
-  /* The extra bottom padding keeps the content centered in the visible area */
-  padding: 1em 1em calc(1em + 100lvh - 100svh);
+  padding: 1em;
   width: 100%;
-  min-height: 100lvh;
-
-  @media (prefers-color-scheme: dark) {
-    background: radial-gradient(var(--bg0), var(--bg-root));
-  }
+  min-height: 100svh;
 
   h1 svg {
     display: block;

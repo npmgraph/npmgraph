@@ -18,10 +18,8 @@
   line-height: var(--loader-height);
   text-overflow: ellipsis;
   white-space: nowrap;
-}
 
-@media (max-aspect-ratio: 2/3), (max-width: 700px) {
-  .loader {
+  @media (aspect-ratio <= 2/3), (width <= 700px) {
     right: 0;
     border-top-right-radius: 0;
   }
