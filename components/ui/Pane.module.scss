@@ -38,7 +38,7 @@
   :where(&) hr {
     margin: 0 calc(-1 * var(--pane-spacing-inline));
     border: none;
-    border-top: solid 1px var(--bg1);
+    border-top: solid 1px var(--border);
   }
 
   @include tight-screen {
