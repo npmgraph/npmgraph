@@ -33,13 +33,13 @@ import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
+import NotFoundCat from '../../images/not-found.svg?react';
 import { clampPosition, getFitScale } from './viewport-util.ts';
 import useRenderDiagram from './useRenderDiagram.ts';
 import useLoadGraph from './useLoadGraph.ts';
 import useGraphClick from './useGraphClick.ts';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
-import NotFoundCat from '../../images/not-found.svg?react';
 import * as styles from './GraphDiagram.module.scss';
 
 const idSeen = new Set<unknown>();

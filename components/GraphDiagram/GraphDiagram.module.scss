@@ -89,4 +89,29 @@
   z-index: 1;
   inset: 0;
   pointer-events: none;
+
+  // The dashed strokes fade in after the cat, then march
+  [stroke-dasharray] {
+    opacity: 0;
+    animation: fade-in 1s 0.5s forwards;
+    stroke-dashoffset: var(--offset, 0);
+
+    @media (prefers-reduced-motion: no-preference) {
+      animation:
+        fade-in 1s 0.5s forwards,
+        march calc(var(--period) * 0.1s) linear infinite;
+    }
+  }
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes march {
+  to {
+    stroke-dashoffset: calc(var(--offset, 0) - var(--period));
+  }
 }
