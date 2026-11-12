@@ -7,7 +7,7 @@
     align-items: center;
     gap: 0.5rem;
     margin-inline: calc(-1 * var(--pane-spacing-inline));
-    border-top: solid 1px var(--text-dim);
+    border-top: solid 1px var(--border);
     padding: 1em var(--pane-spacing-inline);
 
     /* Match native H3 style */

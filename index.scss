@@ -59,7 +59,8 @@
   );
 
   --text: #{neutral(14%)};
-  --text-dim: #{neutral(68%)};
+  --text-dim: #{neutral(55%)};
+  --border: #{neutral(82%)};
   --bg-root: white;
   --bg0: #{neutral(96.5%, 0.02)};
   --bg1: #{neutral(80%)};
@@ -93,7 +94,8 @@
 
     --root-color: black; // Don't change, it's used to mix colors on light/dark schemes
     --text: #{neutral(96%)};
-    --text-dim: #{neutral(53%)};
+    --text-dim: #{neutral(62%)};
+    --border: #{neutral(38%)};
     --bg-root: #{neutral(18%)};
     --bg0: #{neutral(25%, 0.04)};
     --bg1: #{neutral(48%)};
