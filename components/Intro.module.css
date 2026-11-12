@@ -1,16 +1,17 @@
-/* Painted on the page and not on .root, so it also fills the area under the iOS Safari URL bar */
+/* Painted on the page and not on .root, so it also fills the area under the iOS Safari URL bar, and it's never shorter than the page */
 :global(html):has(.root) {
   background:
     radial-gradient(
         var(--bg-root),
         color-mix(in oklch, var(--accent) 10%, var(--bg-root))
       )
-      top / 100% 100lvh no-repeat,
+      top / 100% max(100%, 100lvh) no-repeat,
     color-mix(in oklch, var(--accent) 10%, var(--bg-root));
 
   @media (prefers-color-scheme: dark) {
     background:
-      radial-gradient(var(--bg0), var(--bg-root)) top / 100% 100lvh no-repeat,
+      radial-gradient(var(--bg0), var(--bg-root)) top / 100% max(100%, 100lvh)
+        no-repeat,
       var(--bg-root);
   }
 }
