@@ -85,12 +85,17 @@ function detectFeatures() {
 }
 
 globalThis.addEventListener('error', error => {
-  console.error(error);
+  // Browsers hide the details of cross-origin script errors, so there's nothing to show.
+  // Safari on iOS throws one from `SharingLinkExtractorJS.viewportDominantIFrameHandle()`:
+  // it's undocumented and looks for any iframe on the page, which we don't have.
+  if (!error.filename) {
+    return;
+  }
+
   flashError(error.message);
 });
 
 globalThis.addEventListener('unhandledrejection', error => {
-  console.error(error);
   flashError(error.reason);
 });
 
