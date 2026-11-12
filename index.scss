@@ -1,7 +1,7 @@
 /* eslint-disable local/no-magic-colors -- The theme variables are defined here */
 @use './lib/root.module.scss' as *;
 
-// The accent is the only hand-picked color; everything else is computed from it.
+// The palette is hand-picked; the accent is one of its colors and everything else is computed from it.
 
 // Lightness is an offset from the accent's, chroma a multiple of it
 @function named($hue, $lightness, $chroma) {
@@ -40,7 +40,12 @@
   accent-color: var(--accent);
   color-scheme: light dark;
 
-  --accent: #da6200;
+  --palette-salmon: #fba17e;
+  --palette-sand: #f7d794;
+  --palette-amber: #ff9a00;
+  --palette-orange: #ee6200;
+
+  --accent: var(--palette-orange);
   --text-on-accent: white;
 
   // Neutral ramp, from text (0) to background (100)
@@ -77,8 +82,8 @@
   @include named-colors(0.02, 0.15, 0.85);
 
   // Diagonal stripes for warnings
-  --warning0: color-mix(in oklch, var(--bg-yellow) 15%, var(--bg-root));
-  --warning1: color-mix(in oklch, var(--bg-yellow) 40%, var(--bg-root));
+  --warning0: color-mix(in oklch, var(--palette-sand) 15%, var(--bg-root));
+  --warning1: color-mix(in oklch, var(--palette-sand) 40%, var(--bg-root));
 
   --transition-duration: 0.5s;
 
@@ -91,6 +96,10 @@
     @for $i from 0 through 10 {
       --grey#{(10-$i) * 10}: #{neutral($i * 10%)};
     }
+
+    // The darker orange is dull on dark backgrounds
+    --accent: var(--palette-amber);
+    --text-on-accent: black;
 
     --root-color: black; // Don't change, it's used to mix colors on light/dark schemes
     --text: #{neutral(96%)};
