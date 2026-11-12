@@ -1,10 +1,9 @@
 .error {
   display: grid;
+  flex-shrink: 0;
   gap: 0.5em;
-  margin: calc(-1 * var(--pane-spacing-block))
-    calc(-1 * var(--pane-spacing-inline)) 0;
   background-color: var(--accent);
-  padding: var(--pane-spacing-block) var(--pane-spacing-inline);
+  padding: 1lh 1em;
   color: var(--text-on-accent);
 
   a {
