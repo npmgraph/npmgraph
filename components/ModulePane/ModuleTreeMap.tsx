@@ -63,15 +63,16 @@ export function ModuleTreeMap({
         };
 
         // It isn't a module, so there's nothing to select
-        if (leaf.isOthers) {
+        if (leaf.hiddenCount !== undefined) {
+          const label = `+${leaf.hiddenCount} more`;
           return (
             <div
               key={leaf.key}
-              title={`${leaf.name} (${size})`}
+              title={`${label} (${size})`}
               className={cn(styles.root, styles.others)}
               style={position}
             >
-              {leaf.name} <span>{size}</span>
+              {label} <span>{size}</span>
             </div>
           );
         }

@@ -13,8 +13,8 @@ export type TreemapLeaf = {
   coverage: number;
   // Position among the leaves, from 0 (largest) to 1 (smallest)
   rank: number;
-  // The aggregate of the smaller modules, not a module itself
-  isOthers?: boolean;
+  // Set on the aggregate of the smaller modules (not a module itself): how many it stands for
+  hiddenCount?: number;
 };
 
 // Note: dependencySizes is *sometimes* undefined.  E.g.
@@ -114,6 +114,8 @@ export function layoutTreemap(
       ),
     },
   ]).map(leaf =>
-    leaf.key === othersKey ? { ...leaf, name: 'others', isOthers: true } : leaf,
+    leaf.key === othersKey
+      ? { ...leaf, name: 'others', hiddenCount: hidden.length }
+      : leaf,
   );
 }

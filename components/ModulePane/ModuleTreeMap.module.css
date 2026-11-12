@@ -26,7 +26,10 @@
 
 .others {
   cursor: default;
-  border: dashed 1px var(--text-dim);
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0 6px,
+    color-mix(in oklch, var(--text-dim) 25%, transparent) 6px 12px
+  );
   color: var(--text-dim);
-  font-style: italic;
 }

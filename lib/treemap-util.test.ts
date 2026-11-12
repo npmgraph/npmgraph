@@ -92,6 +92,14 @@ describe('layoutTreemap', () => {
     expect(leaves.map(leaf => Math.round(leaf.value))).toEqual([
       10, 9, 8, 7, 6, 5,
     ]);
+    expect(leaves.map(leaf => leaf.hiddenCount)).toEqual([
+      4,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+    ]);
   });
 
   it('has no leaves without dependencies', () => {
