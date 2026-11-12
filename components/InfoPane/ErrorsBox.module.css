@@ -1,6 +1,7 @@
 .error {
-  display: grid;
+  display: flex;
   flex-shrink: 0;
+  align-items: start;
   gap: 0.5em;
   background-color: var(--accent);
   padding: 1lh 1em;
@@ -8,5 +9,25 @@
 
   a {
     color: inherit;
+  }
+}
+
+.messages {
+  display: grid;
+  flex-grow: 1;
+  gap: 0.5em;
+}
+
+.dismiss {
+  display: block;
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: inherit;
+
+  svg {
+    display: block;
   }
 }
