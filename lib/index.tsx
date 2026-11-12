@@ -84,24 +84,20 @@ function detectFeatures() {
   return unsupported;
 }
 
-function handleGlobalError(event: ErrorEvent | PromiseRejectionEvent) {
-  if (event instanceof PromiseRejectionEvent) {
-    flashError(event.reason);
-    return;
-  }
-
+globalThis.addEventListener('error', error => {
   // Browsers hide the details of cross-origin script errors, so there's nothing to show.
   // Safari on iOS throws one from `SharingLinkExtractorJS.viewportDominantIFrameHandle()`:
   // it's undocumented and looks for any iframe on the page, which we don't have.
-  if (!event.filename) {
+  if (!error.filename) {
     return;
   }
 
-  flashError(event.message);
-}
+  flashError(error.message);
+});
 
-globalThis.addEventListener('error', handleGlobalError);
-globalThis.addEventListener('unhandledrejection', handleGlobalError);
+globalThis.addEventListener('unhandledrejection', error => {
+  flashError(error.reason);
+});
 
 globalThis.addEventListener('load', () => {
   const unsupported = detectFeatures();
