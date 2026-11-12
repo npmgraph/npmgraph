@@ -10,7 +10,7 @@ import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
 import { disableBugsnag } from './bugsnag.ts';
-import { handleGlobalError } from './global-errors.ts';
+import { flashError } from './flash.ts';
 
 // A deploy likely replaced the fingerprinted chunks this page references
 globalThis.addEventListener('vite:preloadError', event => {
@@ -84,8 +84,23 @@ function detectFeatures() {
   return unsupported;
 }
 
-globalThis.addEventListener('error', handleGlobalError);
+function handleGlobalError(event: ErrorEvent | PromiseRejectionEvent) {
+  if (event instanceof PromiseRejectionEvent) {
+    flashError(event.reason);
+    return;
+  }
 
+  // Browsers hide the details of cross-origin script errors, so there's nothing to show.
+  // Safari on iOS throws one from `SharingLinkExtractorJS.viewportDominantIFrameHandle()`:
+  // it's undocumented and looks for any iframe on the page, which we don't have.
+  if (!event.filename) {
+    return;
+  }
+
+  flashError(event.message);
+}
+
+globalThis.addEventListener('error', handleGlobalError);
 globalThis.addEventListener('unhandledrejection', handleGlobalError);
 
 globalThis.addEventListener('load', () => {
