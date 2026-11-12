@@ -23,3 +23,10 @@
     white-space: nowrap;
   }
 }
+
+.others {
+  cursor: default;
+  border: dashed 1px var(--text-dim);
+  color: var(--text-dim);
+  font-style: italic;
+}

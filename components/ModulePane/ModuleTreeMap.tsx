@@ -54,20 +54,35 @@ export function ModuleTreeMap({
             var(--bg-red)
        ${percent(leaf.rank)}), var(--root-color) 25%)`;
 
+        const position = {
+          left: `${leaf.x0 + m / 2}px`,
+          top: `${leaf.y0 + m / 2}px`,
+          width: `${leaf.x1 - leaf.x0 - m}px`,
+          height: `${leaf.y1 - leaf.y0 - m}px`,
+          fontSize: `${65 + 70 * Math.sqrt(leaf.coverage)}%`,
+        };
+
+        // It isn't a module, so there's nothing to select
+        if (leaf.isOthers) {
+          return (
+            <div
+              key={leaf.key}
+              title={`${leaf.name} (${size})`}
+              className={cn(styles.root, styles.others)}
+              style={position}
+            >
+              {leaf.name} <span>{size}</span>
+            </div>
+          );
+        }
+
         return (
           <button
             key={leaf.key}
             type="button"
             title={`${leaf.name} (${size})`}
             className={cn(styles.root, utilities.brightHover)}
-            style={{
-              left: `${leaf.x0 + m / 2}px`,
-              top: `${leaf.y0 + m / 2}px`,
-              width: `${leaf.x1 - leaf.x0 - m}px`,
-              height: `${leaf.y1 - leaf.y0 - m}px`,
-              fontSize: `${65 + 70 * Math.sqrt(leaf.coverage)}%`,
-              backgroundColor,
-            }}
+            style={{ ...position, backgroundColor }}
             onClick={() => {
               setGraphSelection(QueryType.Default, leaf.name);
             }}
