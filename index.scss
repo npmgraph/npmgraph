@@ -61,13 +61,12 @@
   --text: #{neutral(14%)};
   --text-dim: #{neutral(55%)};
   --bg-root: white;
-  --bg0: #{neutral(96%)};
-  --bg-node: #{neutral(96%, 0.04)};
+  --bg0: #{neutral(96.5%, 0.02)};
   --bg1: #{neutral(80%)};
   --bg2: #{neutral(90%)};
 
   --header-padding: 12px;
-  --tabs-bg: oklch(from var(--accent) 0.45 calc(c * 0.2) h);
+  --tabs-bg: #{neutral(45%)};
   --tabs-text: white;
   --tabs-border: oklch(from var(--tabs-bg) calc(l + 0.35) c h / 80%);
 
@@ -93,8 +92,7 @@
     --text: #{neutral(96%)};
     --text-dim: #{neutral(62%)};
     --bg-root: #{neutral(18%)};
-    --bg0: #{neutral(25%)};
-    --bg-node: #{neutral(25%, 0.04)};
+    --bg0: #{neutral(25%, 0.04)};
     --bg1: #{neutral(48%)};
     --bg2: #{neutral(31%)};
 
