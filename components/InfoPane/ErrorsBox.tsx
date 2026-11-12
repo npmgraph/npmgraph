@@ -48,16 +48,18 @@ export default function ErrorsBox() {
           </p>
         )}
       </div>
-      <button
-        type="button"
-        aria-label="Remove the failing modules from the query"
-        className={cn(styles.dismiss, utilities.brightHover)}
-        onClick={() => {
-          setQuery(query.filter(key => !failed.has(key)));
-        }}
-      >
-        <XIcon />
-      </button>
+      {query.length > 1 && (
+        <button
+          type="button"
+          aria-label="Remove the failing modules from the query"
+          className={cn(styles.dismiss, utilities.brightHover)}
+          onClick={() => {
+            setQuery(query.filter(key => !failed.has(key)));
+          }}
+        >
+          <XIcon />
+        </button>
+      )}
     </div>
   );
 }

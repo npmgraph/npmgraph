@@ -16,6 +16,10 @@
   display: grid;
   flex-grow: 1;
   gap: 0.5em;
+
+  p {
+    margin: 0;
+  }
 }
 
 .dismiss {
