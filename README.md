@@ -64,11 +64,7 @@ https://npmgraph.js.org/?q=send#deps=peerDependencies
 
 ### `hide` (hash param)
 
-If present (e.g. `...#hide`), hides the inspector panel. If `graph` (`...#hide=graph`), hides the graph and shows only the Report pane, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
-
-**Example**: Graph `send`, close the inspector
-
-https://npmgraph.js.org/?q=send@0.18.0#hide
+If `graph` (`...#hide=graph`), hides the graph and shows only the Report pane, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
 
 **Example**: Show only the report for `send`
 
@@ -150,13 +146,17 @@ https://npmgraph.js.org/?q=send#sizing
 
 ### `tab` (hash param)
 
-Current inspector tab. One of `info`, `report`, `module`, or `view`. Updated automatically as tabs change.
+Current inspector tab. One of `info`, `report`, `module`, or `view`; or `none` to close the inspector. Updated automatically as tabs change.
 
 Each graph state has a default tab, which is omitted from the URL: `info` for an empty graph, `module` when exactly one module is selected, and `report` otherwise. When `tab` is absent, the default tab is shown and follows the graph state (e.g. selecting a module switches to `module`). Changing tabs clears `section`.
 
 **Example**: Graph `send`, showing the report tab
 
 https://npmgraph.js.org/?q=send#tab=report
+
+**Example**: Graph `send`, close the inspector
+
+https://npmgraph.js.org/?q=send@0.18.0#tab=none
 
 ## Running locally
 
