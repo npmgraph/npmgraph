@@ -8,6 +8,7 @@ import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
 import Flash from '../Flash/Flash.tsx';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
+import ErrorsBox from '../InfoPane/ErrorsBox.tsx';
 import Inspector from '../Inspector.tsx';
 import Intro from '../Intro.tsx';
 import PreviewWidget from '../PreviewWidget.tsx';
@@ -67,6 +68,8 @@ export default function App() {
           <AppHeader />
           {isTightScreen && <Tabs />}
         </div>
+        {/* On tight screens the inspector can be hidden, the errors can't */}
+        {isTightScreen && <ErrorsBox />}
         {activity.total > 0 ? <Loader activity={activity} /> : null}
         <main className={styles.content}>
           <div className={styles.graph} hidden={isGraphHidden}>

@@ -62,7 +62,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       )}
       {...restProps}
     >
-      <ErrorsBox />
+      {!isTightScreen && <ErrorsBox />}
       <Suspense fallback={null}>{paneComponent}</Suspense>
     </div>
   );
