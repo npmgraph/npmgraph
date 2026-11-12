@@ -14,8 +14,11 @@
         stroke-width=".2"
       />
     </g>
-    <clipPath id="not-found-tail">
-      <path d="M50 43H74L74.3 48 73.85 50 72.75 52 71.75 54 70.8 56 69.95 58 69.1 60 68.25 62 67.45 64 66.75 66 66.2 68 65.85 70 65.7 72 65.6 72.6H50Z" />
+    <clipPath id="not-found-tail-base">
+      <path d="M50 56H70.8L69.95 58 69.1 60 68.25 62 67.45 64 66.75 66 66.2 68 65.85 70 65.7 72 65.6 72.6H50Z" />
+    </clipPath>
+    <clipPath id="not-found-tail-tip">
+      <path d="M50 43H74L74.3 48 73.85 50 72.75 52 71.75 54 70.8 56 70.5 56.6H50Z" />
     </clipPath>
     <clipPath id="not-found-body">
       <path clip-rule="evenodd" d="M30 0H160V120H30ZM50 43H74L74.3 48 73.85 50 72.75 52 71.75 54 70.8 56 69.95 58 69.1 60 68.25 62 67.45 64 66.75 66 66.2 68 65.85 70 65.7 72H50Z" />
@@ -37,9 +40,16 @@
     style="--offset: 3.46; --period: 11.58"
   />
   <g transform="translate(61.1 72)">
-    <g data-tail="">
+    <g data-tail="base">
       <g transform="translate(-61.1 -72)">
-        <use href="#not-found-cat" clip-path="url(#not-found-tail)" />
+        <use href="#not-found-cat" clip-path="url(#not-found-tail-base)" />
+        <g transform="translate(64.85 56)">
+          <g data-tail="tip">
+            <g transform="translate(-64.85 -56)">
+              <use href="#not-found-cat" clip-path="url(#not-found-tail-tip)" />
+            </g>
+          </g>
+        </g>
       </g>
     </g>
   </g>
