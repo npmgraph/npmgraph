@@ -8,9 +8,10 @@
     var(--bg-root),
     color-mix(in oklch, var(--accent) 10%, var(--bg-root))
   );
-  padding: 1em;
+  /* The extra bottom padding keeps the content centered in the visible area */
+  padding: 1em 1em calc(1em + 100lvh - 100svh);
   width: 100%;
-  min-height: 100svh;
+  min-height: 100lvh;
 
   @media (prefers-color-scheme: dark) {
     background: radial-gradient(var(--bg0), var(--bg-root));

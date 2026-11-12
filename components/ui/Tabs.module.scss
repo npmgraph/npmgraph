@@ -32,6 +32,7 @@
 
   button {
     all: unset;
+    -webkit-tap-highlight-color: transparent;
     display: flex;
     flex-grow: 1;
     justify-content: center;

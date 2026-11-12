@@ -39,7 +39,7 @@
   body,
   .root {
     height: auto;
-    min-height: 100svh;
+    min-height: 100lvh;
   }
   .root {
     --inspector-size: auto;
@@ -47,6 +47,7 @@
     /* The graph pans and zooms in place, so it fills the screen instead of the page scrolling */
     &.fixedHeight {
       height: 100svh;
+      min-height: 100svh;
     }
   }
   .stickyTop {
