@@ -61,6 +61,9 @@
   --warning1: color-mix(in oklch, var(--bg-yellow) 40%, var(--bg-root));
 
   --transition-duration: 0.5s;
+
+  // How much `brightHover` lightens, 125% is too much on light backgrounds
+  --hover-brightness: 105%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -80,6 +83,8 @@
     --stroke-L: 80%;
     --bg-L: 50%;
     --bg-C: 50%;
+
+    --hover-brightness: 125%;
   }
 }
 
