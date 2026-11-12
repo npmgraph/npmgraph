@@ -236,7 +236,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           </div>
         ) : (
           <div className={styles.graphControls}>
-            <GraphDiagramZoomButtons />
+            <GraphDiagramZoomButtons fitScale={minScale} />
             <GraphDiagramExportButtons />
           </div>
         )}
