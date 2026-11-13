@@ -65,9 +65,8 @@ export default function QueryInput({
       return;
     }
 
-    // Until submitted, highlight the matches of the term being typed in the graph
-    const filter =
-      value.trim() === inputValue ? '' : value.split(',').at(-1)!.trim();
+    // Until submitted, highlight the matches of the whole field in the graph
+    const filter = value.trim() === inputValue ? '' : value.trim();
     setGraphSelection(filter ? QueryType.Search : QueryType.Default, filter);
   }
 
