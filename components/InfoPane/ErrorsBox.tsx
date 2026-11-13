@@ -48,7 +48,7 @@ export default function ErrorsBox() {
           </p>
         )}
       </div>
-      {query.length > 1 && (
+      {query.some(key => !failed.has(key)) && (
         <button
           type="button"
           aria-label="Remove the failing modules from the query"

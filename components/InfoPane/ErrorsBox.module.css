@@ -25,9 +25,11 @@
 .dismiss {
   display: block;
   flex-shrink: 0;
+  /* Bigger hit area, without moving the icon */
+  margin: -0.5em;
   border: 0;
   background: none;
-  padding: 0;
+  padding: 0.5em;
   color: inherit;
 
   svg {
