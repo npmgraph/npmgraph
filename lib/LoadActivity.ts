@@ -1,6 +1,3 @@
-/**
-DOM maniulation methods
-*/
 type Listener = () => void;
 
 /**
