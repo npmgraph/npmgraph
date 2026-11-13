@@ -1,5 +1,5 @@
 import '../index.scss';
-import type { ReactElement } from 'react';
+import { type ReactElement, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
@@ -118,9 +118,9 @@ globalThis.addEventListener('load', () => {
   // Main app component
   const appElement = $('body');
   createRoot(appElement).render(
-    // <StrictMode>
-    <App />,
-    // </StrictMode>,
+    <StrictMode>
+      <App />
+    </StrictMode>,
   );
 
   // A little component for managing the title
