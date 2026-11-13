@@ -34,10 +34,6 @@ export function hasTreemap(data: BundlePhobiaData): boolean {
 // Tiles thinner than this (in px) are noise, but the largest few are always kept
 const MIN_TILE_SIZE = 10;
 const MIN_TILE_COUNT = 5;
-
-// The tile for the dropped modules sits in the bottom-right corner, in px
-const OTHERS_WIDTH = 90;
-const OTHERS_HEIGHT = 22;
 const OTHERS_KEY = '__others';
 
 // Lay out the dependencies as a treemap, sized by their share of the module size
@@ -61,7 +57,7 @@ export function layoutTreemap(
     0,
   );
 
-  const layout = (dependencies: Dependency[], height: number) => {
+  const layout = (dependencies: Dependency[]) => {
     const nodes = [
       ...dependencies,
 
@@ -76,7 +72,7 @@ export function layoutTreemap(
 
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
-    treemap<Dependency>().size([w, height]).padding(2)(root);
+    treemap<Dependency>().size([w, h]).padding(2)(root);
 
     return root.leaves().map((d, i, a): TreemapLeaf => {
       // Cast to rectangular node so we can get dimensions,
@@ -95,7 +91,7 @@ export function layoutTreemap(
     });
   };
 
-  const leaves = layout(dependencySizes, h);
+  const leaves = layout(dependencySizes);
   const noise = new Set(
     leaves
       .filter(
@@ -110,27 +106,27 @@ export function layoutTreemap(
     return leaves;
   }
 
-  const othersWidth = Math.min(OTHERS_WIDTH, w / 2);
-  const othersHeight = Math.min(OTHERS_HEIGHT, h / 4);
+  const kept = dependencySizes.filter(d => !noise.has(d.name));
   const hidden = dependencySizes.filter(d => noise.has(d.name));
   const hiddenSize = hidden.reduce((sum, d) => sum + d.approximateSize, 0);
 
-  return [
-    ...layout(
-      dependencySizes.filter(d => !noise.has(d.name)),
-      h - othersHeight,
-    ),
-    {
-      key: OTHERS_KEY,
-      name: 'others',
-      value: (hiddenSize * size) / dependencySum,
-      x0: w - othersWidth,
-      y0: h - othersHeight,
-      x1: w,
-      y1: h,
-      coverage: 0,
-      rank: 1,
-      hiddenCount: hidden.length,
-    },
-  ];
+  // Never bigger than the smallest module, so it's the last tile (bottom-right)
+  const othersWeight = Math.min(
+    hiddenSize,
+    ...kept.map(d => d.approximateSize),
+  );
+
+  return layout([
+    ...kept,
+    { name: OTHERS_KEY, approximateSize: othersWeight },
+  ]).map(leaf =>
+    leaf.key === OTHERS_KEY
+      ? {
+          ...leaf,
+          name: 'others',
+          value: (hiddenSize * size) / dependencySum,
+          hiddenCount: hidden.length,
+        }
+      : leaf,
+  );
 }

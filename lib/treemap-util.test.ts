@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { BundlePhobiaData } from './fetch-types.ts';
-import { hasTreemap, layoutTreemap } from './treemap-util.ts';
+import { type TreemapLeaf, hasTreemap, layoutTreemap } from './treemap-util.ts';
 
 const data = {
   size: 1000,
@@ -37,7 +37,7 @@ describe('layoutTreemap', () => {
     expect(leaves.map(leaf => leaf.rank)).toEqual([0, 0.5, 1]);
   });
 
-  it('drops the tiny modules into a small others tile in the bottom-right corner', () => {
+  it('drops the tiny modules into a small others tile at the end of the treemap', () => {
     const leaves = layoutTreemap(
       {
         size: 5010,
@@ -56,6 +56,8 @@ describe('layoutTreemap', () => {
       150,
     );
     const others = leaves.at(-1)!;
+    const area = (leaf: TreemapLeaf) =>
+      (leaf.x1 - leaf.x0) * (leaf.y1 - leaf.y0);
 
     expect(leaves.map(leaf => leaf.name)).toEqual([
       'large-1',
@@ -67,14 +69,14 @@ describe('layoutTreemap', () => {
     ]);
     expect(others.hiddenCount).toBe(10);
     expect(Math.round(others.value)).toBe(10);
-    expect(others.x1).toBe(300);
-    expect(others.y1).toBe(150);
-    expect(others.x1 - others.x0).toBeLessThanOrEqual(90);
-    expect(others.y1 - others.y0).toBeLessThanOrEqual(22);
 
-    // It doesn't cover any module
-    for (const leaf of leaves.slice(0, -1)) {
-      expect(leaf.y1).toBeLessThanOrEqual(others.y0);
+    // It's part of the rectangle, and the smallest tile
+    for (const leaf of leaves) {
+      expect(leaf.x0).toBeGreaterThanOrEqual(0);
+      expect(leaf.y0).toBeGreaterThanOrEqual(0);
+      expect(leaf.x1).toBeLessThanOrEqual(300);
+      expect(leaf.y1).toBeLessThanOrEqual(150);
+      expect(area(others)).toBeLessThanOrEqual(area(leaf));
     }
   });
 

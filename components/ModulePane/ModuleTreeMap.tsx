@@ -8,6 +8,10 @@ import { type TreemapLeaf, layoutTreemap } from '../../lib/treemap-util.js';
 import * as utilities from '../ui/utilities.module.css';
 import * as styles from './ModuleTreeMap.module.css';
 
+// When it doesn't fit at all, the name is only in the tooltip
+const isLabelVisible = (width: number, height: number, fontScale: number) =>
+  width >= fontScale * 32 && height >= fontScale * 24;
+
 export function ModuleTreeMap({
   data,
   style,
@@ -75,15 +79,10 @@ export function ModuleTreeMap({
               className={cn(styles.root, styles.others)}
               style={position}
             >
-              {label}
+              {isLabelVisible(width, height, fontScale) && label}
             </div>
           );
         }
-
-        // When it doesn't fit at all, the name is only in the tooltip
-        const labelSize = fontScale * 16;
-        const isLabelVisible =
-          width >= labelSize * 2 && height >= labelSize * 1.5;
 
         return (
           <button
@@ -96,7 +95,7 @@ export function ModuleTreeMap({
               setGraphSelection(QueryType.Default, leaf.name);
             }}
           >
-            {isLabelVisible && (
+            {isLabelVisible(width, height, fontScale) && (
               <>
                 {leaf.name} <span>{size}</span>
               </>
