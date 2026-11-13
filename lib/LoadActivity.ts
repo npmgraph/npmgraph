@@ -1,17 +1,33 @@
 /**
 DOM maniulation methods
 */
-type LoadActivityFn = (la: LoadActivity) => void;
+type Listener = () => void;
 
 /**
 Lite class for tracking async activity
 */
 export default class LoadActivity {
+  readonly #listeners = new Set<Listener>();
   title: string | undefined = '';
 
   total = 0;
   active = 0;
-  onChange: LoadActivityFn | undefined;
+  // Changes on every update, for `useSyncExternalStore()`
+  version = 0;
+
+  subscribe = (listener: Listener) => {
+    this.#listeners.add(listener);
+    return () => {
+      this.#listeners.delete(listener);
+    };
+  };
+
+  #notify() {
+    this.version++;
+    for (const listener of this.#listeners) {
+      listener();
+    }
+  }
 
   start(title: string): () => void {
     if (title) {
@@ -20,7 +36,7 @@ export default class LoadActivity {
 
     this.total++;
     this.active++;
-    this.onChange?.(this);
+    this.#notify();
 
     let _isFinished = false;
     return () => {
@@ -35,7 +51,7 @@ export default class LoadActivity {
         this.title = undefined;
       }
 
-      this.onChange?.(this);
+      this.#notify();
     };
   }
 
