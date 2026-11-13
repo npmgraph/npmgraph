@@ -28,37 +28,45 @@ export default function ErrorsBox() {
 
   return (
     <div className={styles.error} role="alert">
-      <div className={styles.messages}>
-        {errors.map(([key, error]) => (
-          <p key={key}>{error.message}</p>
-        ))}
-        {hosts.length > 0 && (
-          <p>
-            {hosts.join(', ')} must allow CORS requests from the {location.host}{' '}
-            domain for this to work.
-          </p>
-        )}
-        {urls.some(url => isGithubUrl(url)) && (
-          <p>
-            URLs that refer to private GitHub repos or gists should use the URL
-            shown when{' '}
-            <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-and-understanding-files#viewing-or-copying-the-raw-file-content">
-              viewing the "Raw" file
-            </ExternalLink>
-          </p>
+      <div className={styles.errors}>
+        <div className={styles.messages}>
+          {errors.map(([key, error]) => (
+            <p key={key}>{error.message}</p>
+          ))}
+        </div>
+        {/* Not shown when it would leave the query empty */}
+        {query.some(key => !failed.has(key)) && (
+          <button
+            type="button"
+            aria-label="Remove the failing modules from the query"
+            className={cn(styles.dismiss, utilities.brightHoverBackdrop)}
+            onClick={() => {
+              setQuery(query.filter(key => !failed.has(key)));
+            }}
+          >
+            <XIcon />
+          </button>
         )}
       </div>
-      {query.some(key => !failed.has(key)) && (
-        <button
-          type="button"
-          aria-label="Remove the failing modules from the query"
-          className={cn(styles.dismiss, utilities.brightHoverBackdrop)}
-          onClick={() => {
-            setQuery(query.filter(key => !failed.has(key)));
-          }}
-        >
-          <XIcon />
-        </button>
+      {hosts.length > 0 && (
+        <>
+          <hr className={styles.divider} />
+          <div className={styles.messages}>
+            <p>
+              {hosts.join(', ')} must allow CORS requests from the{' '}
+              {location.host} domain for this to work.
+            </p>
+            {urls.some(url => isGithubUrl(url)) && (
+              <p>
+                URLs that refer to private GitHub repos or gists should use the
+                URL shown when{' '}
+                <ExternalLink href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-and-understanding-files#viewing-or-copying-the-raw-file-content">
+                  viewing the "Raw" file
+                </ExternalLink>
+              </p>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

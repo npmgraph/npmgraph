@@ -1,8 +1,7 @@
 .error {
-  display: flex;
+  display: grid;
   flex-shrink: 0;
-  align-items: start;
-  gap: 0.5em;
+  gap: 1em;
   background-color: var(--accent);
   padding: 1lh 1em;
   color: var(--text-on-accent);
@@ -10,6 +9,12 @@
   a {
     color: inherit;
   }
+}
+
+.errors {
+  display: flex;
+  align-items: start;
+  gap: 0.5em;
 }
 
 .messages {
@@ -35,4 +40,11 @@
   svg {
     display: block;
   }
+}
+
+/* Reaches the edges of the banner */
+.divider {
+  margin: 0 -1em;
+  border: 0;
+  border-top: 1px solid var(--text-on-accent);
 }
