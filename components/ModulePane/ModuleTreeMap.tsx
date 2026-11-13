@@ -54,12 +54,15 @@ export function ModuleTreeMap({
             var(--bg-red)
        ${percent(leaf.rank)}), var(--root-color) 25%)`;
 
+        const width = leaf.x1 - leaf.x0 - m;
+        const height = leaf.y1 - leaf.y0 - m;
+        const fontScale = 0.65 + 0.7 * Math.sqrt(leaf.coverage);
         const position = {
           left: `${leaf.x0 + m / 2}px`,
           top: `${leaf.y0 + m / 2}px`,
-          width: `${leaf.x1 - leaf.x0 - m}px`,
-          height: `${leaf.y1 - leaf.y0 - m}px`,
-          fontSize: `${65 + 70 * Math.sqrt(leaf.coverage)}%`,
+          width: `${width}px`,
+          height: `${height}px`,
+          fontSize: `${fontScale * 100}%`,
         };
 
         // It isn't a module, so there's nothing to select
@@ -72,10 +75,15 @@ export function ModuleTreeMap({
               className={cn(styles.root, styles.others)}
               style={position}
             >
-              {label} <span>{size}</span>
+              {label}
             </div>
           );
         }
+
+        // When it doesn't fit at all, the name is only in the tooltip
+        const labelSize = fontScale * 16;
+        const isLabelVisible =
+          width >= labelSize * 2 && height >= labelSize * 1.5;
 
         return (
           <button
@@ -88,7 +96,11 @@ export function ModuleTreeMap({
               setGraphSelection(QueryType.Default, leaf.name);
             }}
           >
-            {leaf.name} <span>{size}</span>
+            {isLabelVisible && (
+              <>
+                {leaf.name} <span>{size}</span>
+              </>
+            )}
           </button>
         );
       })}

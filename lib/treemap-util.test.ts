@@ -37,69 +37,71 @@ describe('layoutTreemap', () => {
     expect(leaves.map(leaf => leaf.rank)).toEqual([0, 0.5, 1]);
   });
 
-  it('keeps the five largest modules and aggregates the rest', () => {
+  it('drops the tiny modules into a small others tile in the bottom-right corner', () => {
     const leaves = layoutTreemap(
       {
-        size: 28,
+        size: 5010,
         dependencySizes: [
-          { name: 'one', approximateSize: 7 },
-          { name: 'two', approximateSize: 6 },
-          { name: 'three', approximateSize: 5 },
-          { name: 'four', approximateSize: 4 },
-          { name: 'five', approximateSize: 3 },
-          { name: 'six', approximateSize: 2 },
-          { name: 'seven', approximateSize: 1 },
+          ...Array.from({ length: 5 }, (_, index) => ({
+            name: `large-${index + 1}`,
+            approximateSize: 1000,
+          })),
+          ...Array.from({ length: 10 }, (_, index) => ({
+            name: `tiny-${index + 1}`,
+            approximateSize: 1,
+          })),
         ],
       } as BundlePhobiaData,
-      20,
-      20,
+      300,
+      150,
     );
+    const others = leaves.at(-1)!;
 
     expect(leaves.map(leaf => leaf.name)).toEqual([
-      'one',
-      'two',
-      'three',
-      'four',
-      'five',
+      'large-1',
+      'large-2',
+      'large-3',
+      'large-4',
+      'large-5',
       'others',
     ]);
-    expect(leaves.map(leaf => Math.round(leaf.value))).toEqual([
-      7, 6, 5, 4, 3, 3,
-    ]);
+    expect(others.hiddenCount).toBe(10);
+    expect(Math.round(others.value)).toBe(10);
+    expect(others.x1).toBe(300);
+    expect(others.y1).toBe(150);
+    expect(others.x1 - others.x0).toBeLessThanOrEqual(90);
+    expect(others.y1 - others.y0).toBeLessThanOrEqual(22);
+
+    // It doesn't cover any module
+    for (const leaf of leaves.slice(0, -1)) {
+      expect(leaf.y1).toBeLessThanOrEqual(others.y0);
+    }
   });
 
-  it('groups modules after the five largest into others', () => {
+  it('keeps the five largest modules even if they are tiny', () => {
     const leaves = layoutTreemap(
       {
-        size: 45,
-        dependencySizes: Array.from({ length: 9 }, (_, index) => ({
+        size: 7,
+        dependencySizes: Array.from({ length: 7 }, (_, index) => ({
           name: `module-${index + 1}`,
-          approximateSize: 9 - index,
+          approximateSize: 1,
         })),
       } as BundlePhobiaData,
-      1200,
-      600,
+      20,
+      20,
     );
 
-    expect(leaves.map(leaf => leaf.name)).toEqual([
-      'others',
-      'module-1',
-      'module-2',
-      'module-3',
-      'module-4',
-      'module-5',
-    ]);
-    expect(leaves.map(leaf => Math.round(leaf.value))).toEqual([
-      10, 9, 8, 7, 6, 5,
-    ]);
-    expect(leaves.map(leaf => leaf.hiddenCount)).toEqual([
-      4,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-    ]);
+    expect(leaves).toHaveLength(6);
+    expect(
+      leaves.slice(0, 5).every(leaf => leaf.name.startsWith('module-')),
+    ).toBe(true);
+    expect(leaves.at(-1)!.hiddenCount).toBe(2);
+  });
+
+  it('has no others tile when every module is big enough', () => {
+    expect(layoutTreemap(data, 1200, 600).some(leaf => leaf.hiddenCount)).toBe(
+      false,
+    );
   });
 
   it('has no leaves without dependencies', () => {

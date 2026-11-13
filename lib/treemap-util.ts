@@ -13,7 +13,7 @@ export type TreemapLeaf = {
   coverage: number;
   // Position among the leaves, from 0 (largest) to 1 (smallest)
   rank: number;
-  // Set on the aggregate of the smaller modules (not a module itself): how many it stands for
+  // Set on the tile that stands for the dropped modules (not a module itself): how many
   hiddenCount?: number;
 };
 
@@ -31,6 +31,15 @@ export function hasTreemap(data: BundlePhobiaData): boolean {
   return getDependencySizes(data).length > 0;
 }
 
+// Tiles thinner than this (in px) are noise, but the largest few are always kept
+const MIN_TILE_SIZE = 10;
+const MIN_TILE_COUNT = 5;
+
+// The tile for the dropped modules sits in the bottom-right corner, in px
+const OTHERS_WIDTH = 90;
+const OTHERS_HEIGHT = 22;
+const OTHERS_KEY = '__others';
+
 // Lay out the dependencies as a treemap, sized by their share of the module size
 export function layoutTreemap(
   data: BundlePhobiaData,
@@ -47,11 +56,12 @@ export function layoutTreemap(
     return [];
   }
 
-  const layout = (dependencies: Dependency[]) => {
-    const dependencySum = dependencies.reduce(
-      (sum, n) => sum + n.approximateSize,
-      0,
-    );
+  const dependencySum = dependencySizes.reduce(
+    (sum, n) => sum + n.approximateSize,
+    0,
+  );
+
+  const layout = (dependencies: Dependency[], height: number) => {
     const nodes = [
       ...dependencies,
 
@@ -66,9 +76,9 @@ export function layoutTreemap(
 
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
-    treemap<Dependency>().size([w, h]).padding(2)(root);
+    treemap<Dependency>().size([w, height]).padding(2)(root);
 
-    return root.leaves().map((d, i, a) => {
+    return root.leaves().map((d, i, a): TreemapLeaf => {
       // Cast to rectangular node so we can get dimensions,
       const rd = d as unknown as HierarchyRectangularNode<Dependency>;
       return {
@@ -85,37 +95,42 @@ export function layoutTreemap(
     });
   };
 
-  const leaves = layout(dependencySizes);
-  const firstToAggregate = Math.min(leaves.length, 5);
+  const leaves = layout(dependencySizes, h);
+  const noise = new Set(
+    leaves
+      .filter(
+        (leaf, index) =>
+          index >= MIN_TILE_COUNT &&
+          Math.min(leaf.x1 - leaf.x0, leaf.y1 - leaf.y0) < MIN_TILE_SIZE,
+      )
+      .map(leaf => leaf.name),
+  );
 
-  if (firstToAggregate === leaves.length) {
+  if (noise.size === 0) {
     return leaves;
   }
 
-  const retainedNames = new Set(
-    leaves.slice(0, firstToAggregate).map(leaf => leaf.name),
-  );
-  const retained = dependencySizes.filter(d => retainedNames.has(d.name));
-  const hidden = dependencySizes.filter(d => !retainedNames.has(d.name));
-  const names = new Set(dependencySizes.map(d => d.name));
-  let othersKey = '__others';
+  const othersWidth = Math.min(OTHERS_WIDTH, w / 2);
+  const othersHeight = Math.min(OTHERS_HEIGHT, h / 4);
+  const hidden = dependencySizes.filter(d => noise.has(d.name));
+  const hiddenSize = hidden.reduce((sum, d) => sum + d.approximateSize, 0);
 
-  while (names.has(othersKey)) {
-    othersKey += '_';
-  }
-
-  return layout([
-    ...retained,
+  return [
+    ...layout(
+      dependencySizes.filter(d => !noise.has(d.name)),
+      h - othersHeight,
+    ),
     {
-      name: othersKey,
-      approximateSize: hidden.reduce(
-        (total, d) => total + d.approximateSize,
-        0,
-      ),
+      key: OTHERS_KEY,
+      name: 'others',
+      value: (hiddenSize * size) / dependencySum,
+      x0: w - othersWidth,
+      y0: h - othersHeight,
+      x1: w,
+      y1: h,
+      coverage: 0,
+      rank: 1,
+      hiddenCount: hidden.length,
     },
-  ]).map(leaf =>
-    leaf.key === othersKey
-      ? { ...leaf, name: 'others', hiddenCount: hidden.length }
-      : leaf,
-  );
+  ];
 }
