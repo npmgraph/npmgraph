@@ -52,7 +52,7 @@ export default function ErrorsBox() {
         <button
           type="button"
           aria-label="Remove the failing modules from the query"
-          className={cn(styles.dismiss, utilities.brightHover)}
+          className={cn(styles.dismiss, utilities.brightHoverBackdrop)}
           onClick={() => {
             setQuery(query.filter(key => !failed.has(key)));
           }}

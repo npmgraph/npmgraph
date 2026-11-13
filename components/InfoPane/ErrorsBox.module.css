@@ -25,7 +25,6 @@
 .dismiss {
   display: block;
   flex-shrink: 0;
-  cursor: pointer;
   border: 0;
   background: none;
   padding: 0;
