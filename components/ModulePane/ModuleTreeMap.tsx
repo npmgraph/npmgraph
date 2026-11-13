@@ -12,6 +12,10 @@ import * as styles from './ModuleTreeMap.module.css';
 const isLabelVisible = (width: number, height: number, fontScale: number) =>
   width >= fontScale * 32 && height >= fontScale * 24;
 
+// The size is secondary, so it only shows when it has a line of its own
+const isSizeVisible = (width: number, height: number, fontScale: number) =>
+  width >= 56 && height >= fontScale * 21 + 19;
+
 export function ModuleTreeMap({
   data,
   style,
@@ -97,7 +101,8 @@ export function ModuleTreeMap({
           >
             {isLabelVisible(width, height, fontScale) && (
               <>
-                {leaf.name} <span>{size}</span>
+                {leaf.name}{' '}
+                {isSizeVisible(width, height, fontScale) && <span>{size}</span>}
               </>
             )}
           </button>
