@@ -5,7 +5,7 @@
   line-height: 1;
 
   &.warn {
-    color: var(--stroke-yellow);
+    color: var(--accent);
   }
 }
 
