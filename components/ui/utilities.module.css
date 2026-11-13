@@ -6,7 +6,7 @@
   &:hover,
   &:focus-visible {
     filter: brightness(var(--hover-brightness));
-    transition-duration: 0.1s;
+    transition-duration: 0s;
   }
 }
 
@@ -17,6 +17,6 @@
   &:hover,
   &:focus-visible {
     backdrop-filter: brightness(var(--hover-brightness));
-    transition-duration: 0.1s;
+    transition-duration: 0s;
   }
 }
