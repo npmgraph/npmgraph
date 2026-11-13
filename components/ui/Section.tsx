@@ -56,11 +56,9 @@ export function CollapsibleSection({
       }}
     >
       <summary className={utilities.brightHoverBackdrop}>
-        <span className={styles.title}>
-          {title}
-          <Count count={count} />
-          {icon}
-        </span>
+        {title}
+        <Count count={count} />
+        {icon}
       </summary>
       <SectionOpenedContext value={opened.promise}>
         <SectionBody>{children}</SectionBody>
