@@ -44,6 +44,11 @@
   gap: 0.5em;
 }
 
+/* Keeps the count and icon right after the title, even when the title wraps */
+.title > * {
+  margin-inline-start: 0.5em;
+}
+
 .count {
   color: var(--text-dim);
   font-weight: normal;
