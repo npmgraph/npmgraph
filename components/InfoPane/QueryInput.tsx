@@ -58,6 +58,19 @@ export default function QueryInput({
     });
   }
 
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target;
+    setValueState({ query, inputValue, value });
+    if (!isHeader) {
+      return;
+    }
+
+    // Until submitted, highlight the matches of the term being typed in the graph
+    const filter =
+      value.trim() === inputValue ? '' : value.split(',').at(-1)!.trim();
+    setGraphSelection(filter ? QueryType.Search : QueryType.Default, filter);
+  }
+
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
     if (event.key !== 'Enter' || event.nativeEvent.isComposing) {
       return;
@@ -105,21 +118,7 @@ export default function QueryInput({
         // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting.
         autoFocus={!hasSoftKeyboard && query.length === 0}
         list={isHeader ? listId : undefined}
-        onChange={event => {
-          const { value } = event.target;
-          setValueState({ query, inputValue, value });
-          if (!isHeader) {
-            return;
-          }
-
-          // Until submitted, highlight the matches of the term being typed in the graph
-          const filter =
-            value.trim() === inputValue ? '' : value.split(',').at(-1)!.trim();
-          setGraphSelection(
-            filter ? QueryType.Search : QueryType.Default,
-            filter,
-          );
-        }}
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
         onKeyUp={handleKeyUp}
         {...props}
