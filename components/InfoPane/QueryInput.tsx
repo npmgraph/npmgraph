@@ -1,9 +1,11 @@
-import { type HTMLProps, useRef, useState } from 'react';
+import { type HTMLProps, useId, useRef, useState } from 'react';
 import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { cn } from '../../lib/dom.ts';
-import { getCachedModule } from '../../lib/ModuleCache.ts';
+import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
 import { searchSet } from '../../lib/url-util.ts';
+import useGraph from '../../hooks/useGraph.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import * as styles from './QueryInput.module.scss';
@@ -17,7 +19,12 @@ export default function QueryInput({
   ...props
 }: HTMLProps<HTMLInputElement> & { variant?: 'header' | 'hero' }) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const enterValueRef = useRef<string | null>(null);
   const [query] = useQuery();
+  const graph = useGraph();
+  const setGraphSelection = useGraphSelection()[2];
+  const listId = useId();
+  const isHeader = variant === 'header';
   const inputValue = query
     .filter(key => !getCachedModule(key)?.isLocal)
     .join(', ');
@@ -45,19 +52,52 @@ export default function QueryInput({
 
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
     event?.preventDefault();
+    enterValueRef.current = null;
     patchLocation({ search: getSearchParameters(), hash: '' }, false, {
       isInput: true,
     });
   }
 
-  // Add cmd-enter support to search in a new tab
-  function handleCmdEnter(event: React.KeyboardEvent<HTMLInputElement>) {
-    if (!(event.key === 'Enter' && event.metaKey)) {
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target;
+    setValueState({ query, inputValue, value });
+    if (!isHeader) {
       return;
     }
 
-    window.open(`/?${getSearchParameters()}`, '_blank');
-    event.preventDefault();
+    // Until submitted, highlight the matches of the term being typed in the graph
+    const filter =
+      value.trim() === inputValue ? '' : value.split(',').at(-1)!.trim();
+    setGraphSelection(filter ? QueryType.Search : QueryType.Default, filter);
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter' || event.nativeEvent.isComposing) {
+      return;
+    }
+
+    // Add cmd-enter support to search in a new tab
+    if (event.metaKey) {
+      window.open(`/?${getSearchParameters()}`, '_blank');
+      event.preventDefault();
+      return;
+    }
+
+    enterValueRef.current = event.currentTarget.value;
+  }
+
+  // Safari uses the first Enter to dismiss the datalist instead of submitting the form.
+  // If the form wasn't submitted and the value is unchanged (no option was picked), do it now.
+  function handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter' || enterValueRef.current === null) {
+      return;
+    }
+
+    const isUnchanged = enterValueRef.current === event.currentTarget.value;
+    enterValueRef.current = null;
+    if (isUnchanged) {
+      handleSubmit();
+    }
   }
 
   return (
@@ -77,12 +117,19 @@ export default function QueryInput({
         spellCheck="false"
         // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting.
         autoFocus={!hasSoftKeyboard && query.length === 0}
-        onChange={event => {
-          setValueState({ query, inputValue, value: event.target.value });
-        }}
-        onKeyDown={handleCmdEnter}
+        list={isHeader ? listId : undefined}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        onKeyUp={handleKeyUp}
         {...props}
       />
+      {isHeader && (
+        <datalist id={listId}>
+          {[...graph.moduleInfos.values()].map(({ module }) => (
+            <option key={module.key} value={module.label} />
+          ))}
+        </datalist>
+      )}
     </form>
   );
 }
