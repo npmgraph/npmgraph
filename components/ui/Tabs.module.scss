@@ -30,7 +30,8 @@
     border-right: none;
   }
 
-  button {
+  // Low specificity, so the reset doesn't also unset the transition of `brightHover`
+  :where(&) button {
     all: unset;
     display: flex;
     flex-grow: 1;
