@@ -32,7 +32,7 @@ export function hasTreemap(data: BundlePhobiaData): boolean {
 }
 
 // Tiles thinner than this (in px) are noise, but the largest few are always kept
-const MIN_TILE_SIZE = 10;
+const MIN_TILE_SIZE = 20;
 const MIN_TILE_COUNT = 5;
 const OTHERS_KEY = '__others';
 
@@ -70,7 +70,13 @@ export function layoutTreemap(
       .parentId(node => (node.name === '__root' ? '' : '__root'))(nodes)
       .sum(d => (d.approximateSize * size) / dependencySum)
 
-      .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
+      // The others tile goes last, so it ends up in the bottom-right corner
+      .sort(
+        (a, b) =>
+          Number(a.data.name === OTHERS_KEY) -
+            Number(b.data.name === OTHERS_KEY) ||
+          (b.value ?? 0) - (a.value ?? 0),
+      );
 
     treemap<Dependency>().size([w, h]).padding(2)(root);
 
@@ -110,15 +116,9 @@ export function layoutTreemap(
   const hidden = dependencySizes.filter(d => noise.has(d.name));
   const hiddenSize = hidden.reduce((sum, d) => sum + d.approximateSize, 0);
 
-  // Never bigger than the smallest module, so it's the last tile (bottom-right)
-  const othersWeight = Math.min(
-    hiddenSize,
-    ...kept.map(d => d.approximateSize),
-  );
-
   return layout([
     ...kept,
-    { name: OTHERS_KEY, approximateSize: othersWeight },
+    { name: OTHERS_KEY, approximateSize: hiddenSize },
   ]).map(leaf =>
     leaf.key === OTHERS_KEY
       ? {
