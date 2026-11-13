@@ -18,9 +18,14 @@ export function useActivity() {
 
   useEffect(() => {
     const current = activity;
-    current.onChange = rerender;
+    // Requests can start while another component renders (see `usePromise`), and React doesn't allow updating this one then
+    const onChange = () => {
+      queueMicrotask(rerender);
+    };
+
+    current.onChange = onChange;
     return () => {
-      if (current.onChange === rerender) {
+      if (current.onChange === onChange) {
         current.onChange = undefined;
       }
     };
