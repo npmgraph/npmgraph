@@ -30,5 +30,6 @@
   p {
     margin: 0;
     max-width: 26em;
+    text-align: justify;
   }
 }
