@@ -33,6 +33,7 @@
   // Low specificity, so the reset doesn't also unset the transition of `brightHover`
   :where(&) button {
     all: unset;
+    -webkit-tap-highlight-color: transparent;
     display: flex;
     flex-grow: 1;
     justify-content: center;
