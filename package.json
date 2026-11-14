@@ -19,7 +19,6 @@
   },
   "scripts": {
     "build": "vite build",
-    "fetch-licenses": "node scripts/fetch-licenses.ts",
     "start": "vite",
     "lint": "eslint",
     "lint:fix": "eslint --fix",

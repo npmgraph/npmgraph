@@ -11,3 +11,8 @@
   font-size: 0.8rem;
   white-space: nowrap;
 }
+
+.warnIcon {
+  margin-right: 0.25em;
+  color: var(--stroke-yellow);
+}
