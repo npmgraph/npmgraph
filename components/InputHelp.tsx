@@ -2,15 +2,6 @@ import FilePicker from './InfoPane/FilePicker.tsx';
 import * as styles from './InputHelp.module.css';
 import { QueryLink } from './ui/QueryLink.tsx';
 
-const EXAMPLES = [
-  { query: ['express'], title: 'A single module name' },
-  {
-    query: ['cross-env@6', 'rimraf'],
-    title: 'Multiple module names, with optional versions',
-  },
-  { query: ['sindresorhus/ora'], title: 'A GitHub repository reference' },
-];
-
 export function InputDescription({ isDim }: { isDim?: boolean }) {
   return (
     <p className={isDim ? styles.dim : undefined}>
@@ -30,14 +21,21 @@ export function InputExamples() {
     <div className={styles.examples}>
       <h2 className={styles.label}>Try</h2>
       <div className={styles.chips}>
-        {EXAMPLES.map(({ query, title }) => (
-          <QueryLink
-            key={query.join(',')}
-            className={styles.chip}
-            query={query}
-            title={title}
-          />
-        ))}
+        <QueryLink
+          className={styles.chip}
+          query={['express']}
+          title="A single module name"
+        />
+        <QueryLink
+          className={styles.chip}
+          query={['cross-env@6', 'rimraf']}
+          title="Multiple module names, with optional versions"
+        />
+        <QueryLink
+          className={styles.chip}
+          query={['sindresorhus/ora']}
+          title="A GitHub repository reference"
+        />
       </div>
     </div>
   );

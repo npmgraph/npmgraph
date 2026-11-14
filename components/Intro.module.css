@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1.25em;
+  gap: 3.75em;
   box-sizing: border-box;
   background: radial-gradient(
     var(--bg-root),
@@ -18,7 +18,7 @@
     background: radial-gradient(var(--bg0), var(--bg-root));
   }
 
-  h2 svg {
+  h1 svg {
     display: block;
     margin: auto;
     max-width: 90%;
@@ -46,4 +46,10 @@
   font-size: 0.8em;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
