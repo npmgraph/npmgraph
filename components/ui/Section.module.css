@@ -2,7 +2,7 @@
   scroll-margin-top: 60px;
 
   > summary,
-  > h2 {
+  > h3 {
     display: flex;
     align-items: center;
     gap: 0.5rem;

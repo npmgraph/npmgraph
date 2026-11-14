@@ -5,3 +5,12 @@
   gap: 0.5em;
   text-align: center;
 }
+
+.title {
+  margin: 0;
+  color: var(--text-dim);
+  font-weight: normal;
+  font-size: 0.8em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
