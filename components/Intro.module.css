@@ -24,7 +24,13 @@
   }
 
   h2 {
+    opacity: 0.6;
+    margin: 1em 0 0.5em;
+    font-weight: normal;
+    font-size: 0.8em;
+    letter-spacing: 0.05em;
     text-align: center;
+    text-transform: uppercase;
   }
 
   a {

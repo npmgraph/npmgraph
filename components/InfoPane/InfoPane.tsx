@@ -1,12 +1,13 @@
 import type { HTMLProps } from 'react';
 import { Pane } from '../ui/Pane.tsx';
-import InputHelp from '../InputHelp.tsx';
+import { InputDescription, InputExamples } from '../InputHelp.tsx';
 import * as styles from './InfoPane.module.css';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <InputHelp />
+      <InputDescription />
+      <InputExamples />
 
       <hr />
       <footer className={styles.footer}>
