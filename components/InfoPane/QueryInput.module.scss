@@ -16,7 +16,6 @@
 }
 .input {
   @include search-input;
-  margin-block: 0.6em;
 }
 
 /* Placeholder-like hint with an inline <kbd>, only shown while the field is empty and unfocused */
@@ -71,7 +70,6 @@
 
 /* In the intro screen */
 .hero {
-  margin-block: 0.8em;
   max-width: 20em;
   font-size: 2em;
 }
