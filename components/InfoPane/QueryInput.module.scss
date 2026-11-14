@@ -7,7 +7,6 @@
 }
 .input {
   @include search-input;
-  margin-block: 0.6em;
 }
 
 /* In the app header */
@@ -31,7 +30,6 @@
 
 /* In the intro screen */
 .hero {
-  margin-block: 0.8em;
   max-width: 20em;
   font-size: 2em;
 }

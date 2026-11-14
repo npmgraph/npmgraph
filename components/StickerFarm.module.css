@@ -1,27 +1,12 @@
-.root {
+.list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 0.5em;
-  margin-top: 2em;
-
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5em 2em;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-}
-
-.label {
-  opacity: 0.6;
-  font-size: 0.8em;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  gap: 1.5em 2em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .logo {

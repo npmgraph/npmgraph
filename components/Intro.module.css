@@ -3,6 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 3em;
   box-sizing: border-box;
   background: radial-gradient(
     var(--bg-root),
@@ -22,15 +23,12 @@
     max-width: 90%;
   }
 
-  h2 {
-    text-align: center;
-  }
-
   a {
     color: var(--accent);
   }
 
-  ul {
+  p {
     margin: 0;
+    max-width: 26em;
   }
 }

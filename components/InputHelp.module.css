@@ -1,0 +1,25 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.dim {
+  color: var(--text-dim);
+}
+
+.chips .chip {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 2em;
+  background: var(--bg2);
+  padding: 0.2em 0.8em;
+  color: var(--text);
+  text-decoration: none;
+
+  &:hover {
+    color: var(--accent);
+  }
+}
