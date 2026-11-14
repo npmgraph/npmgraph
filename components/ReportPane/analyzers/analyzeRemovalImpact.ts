@@ -11,38 +11,39 @@ export function analyzeRemovalImpact({
   moduleInfos,
   entryModules,
 }: Pick<GraphState, 'moduleInfos' | 'entryModules'>) {
-  const reach = (skip?: Module) => {
-    const seen = new Set<Module>();
-    const stack = [...entryModules];
-    for (let module = stack.pop(); module; module = stack.pop()) {
-      if (module === skip || seen.has(module)) {
+  // Keyed by module key, since the same module can be loaded as more than one instance
+  const reach = (skip?: string) => {
+    const seen = new Set<string>();
+    const stack = [...entryModules].map(({ key }) => key);
+    for (let key = stack.pop(); key; key = stack.pop()) {
+      if (key === skip || seen.has(key)) {
         continue;
       }
 
-      seen.add(module);
-      for (const { module: dep } of moduleInfos.get(module.key)?.downstream ??
-        []) {
-        stack.push(dep);
+      seen.add(key);
+      for (const { module } of moduleInfos.get(key)?.downstream ?? []) {
+        stack.push(module.key);
       }
     }
 
     return seen;
   };
 
-  const direct = new Set<Module>();
+  const entryKeys = new Set([...entryModules].map(({ key }) => key));
+  const direct = new Map<string, Module>();
   for (const entry of entryModules) {
     for (const { module } of moduleInfos.get(entry.key)?.downstream ?? []) {
-      if (!entryModules.has(module)) {
-        direct.add(module);
+      if (!entryKeys.has(module.key)) {
+        direct.set(module.key, module);
       }
     }
   }
 
   const all = reach();
-  return [...direct]
+  return [...direct.values()]
     .map(module => ({
       module,
-      dropped: all.size - reach(module).size,
+      dropped: all.size - reach(module.key).size,
     }))
     .filter(({ dropped }) => dropped > 1)
     .toSorted(
