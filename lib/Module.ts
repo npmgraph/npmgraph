@@ -148,6 +148,8 @@ export default class Module {
     const pkg = this.getLatestVersion() ?? this.package;
 
     return parseLicense(
+      // An empty `license` string must fall back to `licenses`, unlike `??`
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       pkg.license || (pkg as unknown as { licenses: string[] }).licenses,
     );
   }
@@ -180,7 +182,7 @@ function parseLicense(
         .trim()
         .toLowerCase()
         .replaceAll(/^\(|\)$/gv, '')
-        .split(/\s+or\s+/)
+        .split(/(?<=\S)\s+or\s+/)
     : [];
 }
 

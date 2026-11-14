@@ -36,18 +36,18 @@ describe('describeUrlSource', () => {
   });
 
   it('includes the ref unless it is the default branch', () => {
-    const describe = (ref: string) =>
+    const describeRef = (ref: string) =>
       describeUrlSource(
         new URL(
           `https://raw.githubusercontent.com/user/repo/${ref}/package.json`,
         ),
       );
 
-    expect(describe('v1.0.0')).toBe('user/repo#v1.0.0');
-    expect(describe('feature-branch')).toBe('user/repo#feature-branch');
-    expect(describe('main')).toBe('user/repo');
-    expect(describe('master')).toBe('user/repo');
-    expect(describe('HEAD')).toBe('user/repo');
+    expect(describeRef('v1.0.0')).toBe('user/repo#v1.0.0');
+    expect(describeRef('feature-branch')).toBe('user/repo#feature-branch');
+    expect(describeRef('main')).toBe('user/repo');
+    expect(describeRef('master')).toBe('user/repo');
+    expect(describeRef('HEAD')).toBe('user/repo');
   });
 
   it('ignores the directory of GitHub repos', () => {

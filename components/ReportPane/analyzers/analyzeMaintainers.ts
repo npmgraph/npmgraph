@@ -34,7 +34,11 @@ export function analyzeMaintainers({
     const { maintainers } = module;
 
     // Group modules we aren't interested in under "" (removed below)
-    if (module.isStub || module.package.private || maintainers.length !== 1) {
+    if (
+      module.isStub ||
+      Boolean(module.package.private) ||
+      maintainers.length !== 1
+    ) {
       return '';
     }
 
@@ -71,13 +75,13 @@ export function analyzeMaintainers({
         maintainer.name = '\u{26A0}\u{FE0F} (unnamed maintainer)';
       }
 
-      let modules = modulesByMaintainer.get(maintainer.name);
-      if (!modules) {
-        modules = new Set();
-        modulesByMaintainer.set(maintainer.name, modules);
+      let maintainerModules = modulesByMaintainer.get(maintainer.name);
+      if (!maintainerModules) {
+        maintainerModules = new Set();
+        modulesByMaintainer.set(maintainer.name, maintainerModules);
       }
 
-      modules.add(module);
+      maintainerModules.add(module);
     }
   }
 

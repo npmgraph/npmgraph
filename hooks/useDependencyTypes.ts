@@ -12,7 +12,7 @@ export default function useDependencyTypes() {
 
   return useMemo(() => {
     const extra = (depTypes ?? '')
-      .split(/\s*,\s*/)
+      .split(',')
       .map(s => s.trim())
       .filter(Boolean)
       .toSorted() as DependencyKey[];

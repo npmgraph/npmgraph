@@ -19,18 +19,13 @@ const local = {
 const disabledRules = [
   // TODO: Gradually review and enable
   '@typescript-eslint/consistent-type-assertions',
-  '@typescript-eslint/no-shadow',
   '@typescript-eslint/no-unsafe-argument',
   '@typescript-eslint/no-unsafe-assignment',
   '@typescript-eslint/no-unsafe-member-access',
-  '@typescript-eslint/no-unsafe-type-assertion',
-  '@typescript-eslint/prefer-nullish-coalescing',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
-  'regexp/no-super-linear-move',
-  'unicorn/no-break-in-nested-loop',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
 
   // Unwanted

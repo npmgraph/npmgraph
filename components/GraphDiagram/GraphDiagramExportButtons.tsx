@@ -223,7 +223,10 @@ function cloneStyleElement() {
 }
 
 function generateLinkToDownload(extension: DownloadExtension, link: string) {
-  const name = document.title.replace(/.*- /v, '').replaceAll(/\W+/gv, '_');
+  const name = (document.title.split('- ').at(-1) ?? '').replaceAll(
+    /\W+/gv,
+    '_',
+  );
   const downloadLink = document.createElement('a');
   downloadLink.href = link;
   downloadLink.download = `${name}_dependencies.${extension}`;

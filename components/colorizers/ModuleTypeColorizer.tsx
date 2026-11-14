@@ -55,12 +55,12 @@ type PackageModuleType = {
   types: boolean;
 };
 
-function isESMFile(file?: string) {
-  return file?.endsWith?.('.mjs') || file?.endsWith?.('.mts');
+function isESMFile(file = '') {
+  return /\.m[jt]s$/v.test(file);
 }
 
-function isCJSFile(file?: string) {
-  return file?.endsWith?.('.cjs') || file?.endsWith?.('.cts');
+function isCJSFile(file = '') {
+  return /\.c[jt]s$/v.test(file);
 }
 
 function detectPackageType(pkg: PackageJSON) {
@@ -109,14 +109,14 @@ function detectFile(file: string, pkgType: PackageModuleType) {
 // with a default export
 function detectConditions(exports: object, pkgType: PackageModuleType) {
   const defaultValue = 'default' in exports && exports.default;
-  const importValue = 'import' in exports && exports.import;
-  const requireValue = 'require' in exports && exports.require;
+  const hasImport = 'import' in exports && Boolean(exports.import);
+  const hasRequire = 'require' in exports && Boolean(exports.require);
 
-  if (importValue || (defaultValue && requireValue)) {
+  if (hasImport || (defaultValue && hasRequire)) {
     pkgType.esm = true;
   }
 
-  if (requireValue || (defaultValue && importValue)) {
+  if (hasRequire || (defaultValue && hasImport)) {
     pkgType.cjs = true;
   }
 }

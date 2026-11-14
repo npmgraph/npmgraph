@@ -60,14 +60,14 @@ export default function QueryInput({
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const { value } = event.target;
-    setValueState({ query, inputValue, value });
+    const { value: newValue } = event.target;
+    setValueState({ query, inputValue, value: newValue });
     if (!isHeader) {
       return;
     }
 
     // Until submitted, highlight the matches of the whole field in the graph
-    const filter = value.trim() === inputValue ? '' : value.trim();
+    const filter = newValue.trim() === inputValue ? '' : newValue.trim();
     setGraphSelection(filter ? QueryType.Search : QueryType.Default, filter);
   }
 

@@ -34,22 +34,21 @@ export function analyzePeerDependencies({
         destination: undefined,
       };
 
-      for (const { module: mod, level, upstream } of moduleInfos.values()) {
-        if (mod.name !== name || !satisfies(mod.version, versionRange)) {
-          continue;
-        }
-
-        // Only count as "met" if the module was brought in via a regular
-        // (non-peer) dependency, or is an explicitly queried root module.
-        // Nodes that are in the graph solely due to peer dep resolution should
-        // still be reported as "missing" in the unmet-peer-deps report.
-        const hasNonPeerUpstream =
-          level === 0 ||
-          [...upstream].some(({ type }) => type !== 'peerDependencies');
-        if (hasNonPeerUpstream) {
-          pdi.destination = mod;
-          break;
-        }
+      // Only count as "met" if the module was brought in via a regular
+      // (non-peer) dependency, or is an explicitly queried root module.
+      // Nodes that are in the graph solely due to peer dep resolution should
+      // still be reported as "missing" in the unmet-peer-deps report.
+      const met = moduleInfos
+        .values()
+        .find(
+          ({ module: mod, level, upstream }) =>
+            mod.name === name &&
+            satisfies(mod.version, versionRange) &&
+            (level === 0 ||
+              [...upstream].some(({ type }) => type !== 'peerDependencies')),
+        );
+      if (met) {
+        pdi.destination = met.module;
       }
 
       peerDependencyInfos.push(pdi);
