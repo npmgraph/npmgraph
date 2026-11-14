@@ -8,7 +8,6 @@ import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
-import { ModuleAdvisories } from './ModuleAdvisories.tsx';
 import { ModuleDependents } from './ModuleDependents.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.css';
@@ -85,9 +84,6 @@ function ModuleDetailsPane({
       </div>
 
       <ModuleWarnings module={module} showOutdated={isShowStatus} />
-
-      {/* Modules loaded from elsewhere (e.g. a URL) have no registry data */}
-      {module.packument && <ModuleAdvisories module={module} />}
 
       <ReleaseTimeline module={module} />
 

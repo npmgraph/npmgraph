@@ -20,7 +20,7 @@ function getVersionsByName({ moduleInfos }: ModuleAnalysisState) {
   return versionsByName;
 }
 
-export function AdvisoryRow({ advisory }: { advisory: Advisory }) {
+function AdvisoryRow({ advisory }: { advisory: Advisory }) {
   return (
     <Row
       stacked
