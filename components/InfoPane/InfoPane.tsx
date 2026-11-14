@@ -11,7 +11,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
         <InputExamples />
       </div>
 
-      <hr />
+      <h3 className={styles.connect}>Connect</h3>
       <footer className={styles.footer}>
         <a
           href="https://github.com/npmgraph/npmgraph"

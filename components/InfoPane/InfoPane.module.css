@@ -3,6 +3,10 @@
   margin: 1em 0;
 }
 
+.connect {
+  text-align: center;
+}
+
 .footer {
   display: flex;
   justify-content: center;

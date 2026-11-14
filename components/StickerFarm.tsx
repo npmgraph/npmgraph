@@ -12,7 +12,7 @@ const PARTNERS = [
 export default function StickerFarm() {
   return (
     <div className={styles.root}>
-      <h2 className={styles.label}>Powered By</h2>
+      <h3>Powered By</h3>
       <ul>
         {PARTNERS.map(({ name, href, Logo }) => (
           <li key={name}>

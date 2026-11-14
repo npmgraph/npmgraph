@@ -24,8 +24,7 @@
     max-width: 90%;
   }
 
-  h2 {
-    margin: 0;
+  h3 {
     text-align: center;
   }
 
@@ -38,14 +37,6 @@
     max-width: 40em;
     text-align: center;
   }
-}
-
-.label {
-  opacity: 0.6;
-  font-weight: normal;
-  font-size: 0.8em;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
 }
 
 .description {

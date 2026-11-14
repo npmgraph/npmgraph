@@ -15,7 +15,7 @@ export default function Intro() {
       <QueryInput variant="hero" />
       <InputExamples />
       <div className={styles.description}>
-        <h2 className={styles.label}>Explore npm modules and dependencies</h2>
+        <h3>Explore npm modules and dependencies</h3>
         <InputDescription isDim />
       </div>
       <StickerFarm />

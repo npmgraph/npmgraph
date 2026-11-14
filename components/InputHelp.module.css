@@ -13,15 +13,6 @@
   gap: 0.5em;
 }
 
-.label {
-  opacity: 0.6;
-  margin: 0;
-  font-weight: normal;
-  font-size: 0.8em;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
 .dim {
   color: var(--text-dim);
 }
