@@ -12,5 +12,5 @@ export default function useSearchParameter(parameterName: string) {
     [parameterName],
   );
 
-  return [searchGet(parameterName, url), setValue] as const;
+  return [searchGet(parameterName, url) ?? undefined, setValue] as const;
 }

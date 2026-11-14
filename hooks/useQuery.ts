@@ -3,10 +3,10 @@ import { PARAM_QUERY, UNNAMED_PACKAGE } from '../lib/constants.ts';
 import useSearchParameter from './useSearchParameter.ts';
 
 export function useQuery() {
-  const [queryString, setQueryString] = useSearchParameter(PARAM_QUERY);
+  const [queryString = '', setQueryString] = useSearchParameter(PARAM_QUERY);
   const parsedQuery = useMemo(
     () =>
-      (queryString ?? '')
+      queryString
         .split(',')
         .map(s => s.trim())
         .filter(Boolean),
