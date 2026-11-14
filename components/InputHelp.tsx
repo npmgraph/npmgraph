@@ -7,7 +7,7 @@ export default function InputHelp({
 }) {
   return (
     <>
-      <p>{heading}</p>
+      <h2>{heading}</h2>
 
       <ul>
         <li>

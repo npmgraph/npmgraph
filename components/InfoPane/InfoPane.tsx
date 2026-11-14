@@ -6,7 +6,7 @@ import * as styles from './InfoPane.module.css';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
-    <Pane {...props}>
+    <Pane {...props} className={styles.root}>
       <InputHelp heading="npmgraph supports looking up:" />
 
       <p>It also accepts package.json:</p>

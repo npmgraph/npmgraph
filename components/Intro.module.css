@@ -3,6 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1.25em;
   box-sizing: border-box;
   background: radial-gradient(
     var(--bg-root),
@@ -16,14 +17,19 @@
     background: radial-gradient(var(--bg0), var(--bg-root));
   }
 
-  h1 svg {
+  h2 svg {
     display: block;
     margin: auto;
     max-width: 90%;
   }
 
   h2 {
+    margin: 0;
     text-align: center;
+  }
+
+  p {
+    margin: 0;
   }
 
   a {
