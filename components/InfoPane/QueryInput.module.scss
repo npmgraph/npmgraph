@@ -33,11 +33,15 @@
   white-space: nowrap;
 
   kbd {
+    display: inline-grid;
+    place-items: center;
     border: 1px solid currentcolor;
     border-radius: 4px;
-    padding: 0 0.35em;
+    padding-bottom: 0.1em; /* Optically center the slash */
+    width: 1.5em;
+    height: 1.5em;
     font-size: 0.8em;
-    line-height: 1.3;
+    line-height: 1;
     font-family: inherit;
   }
 }
