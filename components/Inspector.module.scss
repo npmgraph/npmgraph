@@ -23,6 +23,15 @@
     display: none;
   }
 
+  // Panels that share the sidebar, like the report and the selected module: each scrolls on its own
+  &.split {
+    overflow-y: hidden;
+
+    @include tight-screen {
+      overflow: clip;
+    }
+  }
+
   &.only {
     flex-grow: 1;
     width: auto;
@@ -33,5 +42,17 @@
 @include tight-screen {
   :global(html):has(.inspector) {
     background: var(--bg0);
+  }
+}
+
+.main {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+
+  @include tight-screen {
+    overflow: visible;
   }
 }

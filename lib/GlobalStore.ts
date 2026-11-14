@@ -9,6 +9,8 @@ type GlobalState = {
   graph: GraphState;
   // On tight screens the graph and the inspector take turns
   isGraphVisible: boolean;
+  // The module panel is docked under the report. It starts collapsed on tight screens, where it covers the page
+  isModulePanelOpen: boolean;
   lastVisit: number;
   location: URL;
   selectedModules?: Map<string, Module>;
@@ -31,6 +33,9 @@ let globalState: GlobalState = {
     failedEntryModules: new Map(),
   },
   isGraphVisible: _isGraphInitiallyVisible(),
+  isModulePanelOpen:
+    globalThis.window === undefined ||
+    !globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches,
   lastVisit: 0,
   location: new URL(location.href),
   selectedModules: new Map(),

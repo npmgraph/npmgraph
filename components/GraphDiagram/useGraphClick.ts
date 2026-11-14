@@ -4,6 +4,7 @@ import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { useTab } from '../../hooks/useTab.ts';
 import { toggleItem } from '../../lib/array-util.ts';
 import { PaneType } from '../../lib/constants.ts';
+import { setGlobalState } from '../../lib/GlobalStore.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
 import * as styles from './GraphDiagram.module.scss';
 
@@ -47,8 +48,11 @@ export default function useGraphClick() {
     }
 
     setGraphSelection(QueryType.Default, moduleKey);
-    if (moduleKey !== '') {
-      selectTab(PaneType.MODULE);
+    if (moduleKey === '') {
+      return;
     }
+
+    selectTab(PaneType.REPORT);
+    setGlobalState('isModulePanelOpen', true);
   };
 }

@@ -13,10 +13,10 @@ import ViewPane from './ViewPane/ViewPane.tsx';
 
 // Keep these panes in secondary bundles but start loading them eagerly
 const reportPanePromise = import('./ReportPane/ReportPane.tsx');
-const modulePanePromise = import('./ModulePane/ModulePane.tsx');
+const modulePanelPromise = import('./ModulePane/ModulePanel.tsx');
 
 const ReportPane = lazy(async () => reportPanePromise);
-const ModulePane = lazy(async () => modulePanePromise);
+const ModulePanel = lazy(async () => modulePanelPromise);
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;
@@ -36,11 +36,17 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   let paneComponent;
   switch (isReportOnly ? PaneType.REPORT : deferredTab) {
-    case PaneType.MODULE:
-      paneComponent = <ModulePane />;
-      break;
     case PaneType.REPORT:
-      paneComponent = <ReportPane />;
+      paneComponent = isReportOnly ? (
+        <ReportPane />
+      ) : (
+        <>
+          <div className={styles.main}>
+            <ReportPane />
+          </div>
+          <ModulePanel />
+        </>
+      );
       break;
     case PaneType.VIEW:
       paneComponent = <ViewPane />;
@@ -57,7 +63,10 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       aria-labelledby={`tab-${isReportOnly ? PaneType.REPORT : deferredTab}`}
       className={cn(
         styles.inspector,
-        { [styles.only]: isReportOnly },
+        {
+          [styles.only]: isReportOnly,
+          [styles.split]: !isReportOnly && deferredTab === PaneType.REPORT,
+        },
         className,
       )}
       {...restProps}

@@ -338,7 +338,7 @@ describe('panes', () => {
       expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
         customConfig,
       );
-      await userEvent.click(tab('Module'));
+      await userEvent.click(tab('Report'));
       await vi.waitFor(() => {
         expect(
           $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
@@ -355,7 +355,7 @@ describe('panes', () => {
       expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
         defaultConfig,
       );
-      await userEvent.click(tab('Module'));
+      await userEvent.click(tab('Report'));
       await vi.waitFor(() => {
         expect(
           $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),

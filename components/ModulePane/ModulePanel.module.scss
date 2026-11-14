@@ -1,0 +1,70 @@
+@use '../../lib/root.module.scss' as *;
+
+.panel {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  border-top: solid 1px var(--border);
+  background: var(--bg0);
+  // Share the sidebar with the report
+  min-height: 0;
+  max-height: 55%;
+
+  @include tight-screen {
+    // A sheet that stays at the bottom of the screen while the report scrolls
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    box-shadow: 0 -2px 8px var(--bg0-shadow-color);
+    max-height: none;
+  }
+}
+
+.header {
+  all: unset;
+  display: flex;
+  flex-shrink: 0;
+  align-items: baseline;
+  gap: 0.75em;
+  cursor: pointer;
+  padding: 0.75em 1em;
+
+  &::after {
+    margin-left: auto;
+    content: '▼';
+    color: var(--text-dim);
+  }
+
+  &[aria-expanded='false']::after {
+    content: '▲';
+  }
+
+  &:focus-visible {
+    outline: solid 2px var(--accent);
+    outline-offset: -2px;
+  }
+}
+
+.label {
+  font-weight: bold;
+  font-size: 1.17em;
+}
+
+.title {
+  flex-shrink: 1;
+  overflow: hidden;
+  color: var(--text-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  border-top: solid 1px var(--border);
+  overflow-y: auto;
+
+  @include tight-screen {
+    max-height: 60svh;
+  }
+}

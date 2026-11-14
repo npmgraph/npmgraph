@@ -1,10 +1,8 @@
-import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { queryModuleCache } from '../../lib/ModuleCache.ts';
 import type Module from '../../lib/Module.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import { useSelectedModules } from '../../hooks/useSelectedModules.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
@@ -15,25 +13,6 @@ import * as styles from './ModulePane.module.css';
 import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
-
-function useSelectedModules() {
-  const [graph] = useGlobalState('graph');
-  const [queryType, queryValue] = useGraphSelection();
-
-  const selectedModules = queryModuleCache(queryType, queryValue);
-
-  // Fall back to the top-level module if nothing is selected
-  const [entryModule] = graph.entryModules;
-  if (
-    entryModule &&
-    graph.entryModules.size === 1 &&
-    selectedModules.size === 0
-  ) {
-    return new Map([[entryModule.key, entryModule]]);
-  }
-
-  return selectedModules;
-}
 
 function LocalModulePane({ module }: { module: Module }) {
   return (
