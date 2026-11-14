@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow -- the `error` function and its parameters share a name */
 import Bugsnag from '@bugsnag/js';
 import HttpError from './HttpError.ts';
 
@@ -43,7 +44,7 @@ const bugsnag = apiKey
   : undefined;
 
 function notify(
-  error_: Error,
+  error: Error,
   severity: 'info' | 'warning' | 'error',
   onSent?: () => void,
 ) {
@@ -53,7 +54,7 @@ function notify(
   }
 
   bugsnag.notify(
-    error_,
+    error,
     event => {
       event.severity = severity;
     },
@@ -61,16 +62,16 @@ function notify(
   );
 }
 
-function info(error_: Error, onSent?: () => void) {
-  notify(error_, 'info', onSent);
+function info(error: Error, onSent?: () => void) {
+  notify(error, 'info', onSent);
 }
 
-function warn(error_: Error, onSent?: () => void) {
-  notify(error_, 'warning', onSent);
+function warn(error: Error, onSent?: () => void) {
+  notify(error, 'warning', onSent);
 }
 
-function error(error_: Error, onSent?: () => void) {
-  notify(error_, 'error', onSent);
+function error(error: Error, onSent?: () => void) {
+  notify(error, 'error', onSent);
 }
 
 export const report = { info, warn, error };
