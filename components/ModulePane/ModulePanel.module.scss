@@ -24,36 +24,45 @@
   all: unset;
   display: flex;
   flex-shrink: 0;
-  align-items: baseline;
+  align-items: center;
   gap: 0.75em;
   cursor: pointer;
-  padding: 0.75em 1em;
+  background: var(--tabs-bg) var(--bg-gradient);
+  padding: 0 1em;
+  min-height: 40px;
+  color: var(--tabs-text);
+
+  // Like the header, it's always dark
+  color-scheme: dark;
+  font-weight: 600;
+  font-size: 12pt;
+  --hover-brightness: 125%;
 
   &::after {
     margin-left: auto;
     content: '▼';
-    color: var(--text-dim);
   }
 
   &[aria-expanded='false']::after {
     content: '▲';
   }
 
+  &:hover,
   &:focus-visible {
-    outline: solid 2px var(--accent);
+    filter: brightness(var(--hover-brightness));
+  }
+
+  &:focus-visible {
+    outline: solid 2px var(--tabs-text);
     outline-offset: -2px;
   }
 }
 
-.label {
-  font-weight: bold;
-  font-size: 1.17em;
-}
-
 .title {
   flex-shrink: 1;
+  opacity: 0.7;
   overflow: hidden;
-  color: var(--text-dim);
+  font-weight: normal;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

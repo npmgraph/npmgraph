@@ -25,7 +25,7 @@ export default function ModulePanel() {
           setOpen(!isOpen);
         }}
       >
-        <span className={styles.label}>Module</span>
+        <span>Module</span>
         <span className={styles.title}>{useTitle()}</span>
       </button>
       {isOpen && (
