@@ -1,12 +1,51 @@
 /* eslint-disable local/no-magic-colors -- The theme variables are defined here */
 @use './lib/root.module.scss' as *;
 
+// The accent is the only hand-picked color; everything else is computed from it.
+
+// Lightness is an offset from the accent's, chroma a multiple of it
+@function named($hue, $lightness, $chroma) {
+  @return oklch(
+    from var(--accent) calc(l + #{$lightness}) calc(c * #{$chroma})
+      calc(h + #{$hue})
+  );
+}
+
+// Strokes (for borders and lines) and backgrounds (should contrast with text).
+// Hues are offsets from the accent's hue.
+@mixin named-colors($stroke-lightness, $bg-lightness, $bg-chroma) {
+  --stroke-red: #{named(-22, $stroke-lightness, 1)};
+  --bg-red: #{named(-22, $bg-lightness, $bg-chroma)};
+
+  --stroke-orange: #{named(22, $stroke-lightness, 1)};
+  --bg-orange: #{named(22, $bg-lightness, $bg-chroma)};
+
+  --stroke-yellow: #{named(64, $stroke-lightness, 1)};
+  --bg-yellow: #{named(64, $bg-lightness, $bg-chroma)};
+
+  --bg-green: #{named(100, $bg-lightness, $bg-chroma)};
+
+  --stroke-blue: #{named(200, $stroke-lightness, 1)};
+  --bg-blue: #{named(200, $bg-lightness, $bg-chroma)};
+
+  --bg-violet: #{named(260, $bg-lightness, $bg-chroma)};
+}
+
+// Neutrals use the accent's hue and a small fraction of its chroma
+@function neutral($lightness, $chroma: 0.07) {
+  @return oklch(from var(--accent) #{$lightness} calc(c * #{$chroma}) h);
+}
+
 :root {
   accent-color: var(--accent);
   color-scheme: light dark;
 
+  --accent: #da6200;
+  --text-on-accent: white;
+
+  // Neutral ramp, from text (0) to background (100)
   @for $i from 0 through 10 {
-    --grey#{($i) * 10}: oklch(#{$i * 10%} 0 0);
+    --grey#{($i) * 10}: #{neutral($i * 10%)};
   }
 
   --root-color: white; // Don't change, it's used to mix colors on light/dark schemes
@@ -15,71 +54,56 @@
   --inspector-size: 32em;
   --bg-gradient: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0.2),
+    oklch(from var(--tabs-text) l c h / 20%),
     transparent 100%
   );
 
-  --text: #020303;
-  --text-dim: #999;
-  --bg-root: #fff;
-  --bg0: #f1f4f4;
-  --bg1: #bbb;
-  --bg2: #ddd;
+  --text: #{neutral(14%)};
+  --text-dim: #{neutral(55%)};
+  --border: #{neutral(82%)};
+  --bg-root: white;
+  --bg0: #{neutral(96.5%, 0.02)};
+  --bg1: #{neutral(80%)};
+  --bg2: #{neutral(90%)};
 
   --header-padding: 12px;
-  --tabs-bg: rgb(90, 83, 79);
-  --tabs-text: #fff;
-  --tabs-border: rgba(203, 203, 203, 0.796);
-
-  --accent: #da6200;
-  --text-on-accent: #fff;
+  --tabs-bg: #{neutral(45%)};
+  --tabs-text: white;
+  --tabs-border: oklch(from var(--tabs-bg) calc(l + 0.35) c h / 80%);
 
   // Shadow colors depend on the background color
   --bg0-shadow-color: color-mix(in oklch, var(--bg0) 90%, black);
 
-  // Named stroke colors (for borders and lines that should contrast well with background colors)
-  --stroke-L: 70%;
-  --stroke-C: 100%;
-  --stroke-red: oklch(var(--stroke-L) var(--stroke-C) 20);
-  --stroke-orange: oklch(var(--stroke-L) var(--stroke-C) 75);
-  --stroke-yellow: oklch(var(--stroke-L) var(--stroke-C) 110);
-  --stroke-blue: oklch(var(--stroke-L) var(--stroke-C) 220);
-
-  // Named background colors (should contrast well with text color)
-  --bg-L: 80%; // Background lightness
-  --bg-C: 70%; // Background chroma
-
-  --bg-red: oklch(var(--bg-L) var(--bg-C) 20);
-  --bg-orange: oklch(var(--bg-L) var(--bg-C) 75);
-  --bg-yellow: oklch(var(--bg-L) var(--bg-C) 110);
-  --bg-green: oklch(var(--bg-L) var(--bg-C) 150);
-  --bg-blue: oklch(var(--bg-L) var(--bg-C) 220);
-  --bg-violet: oklch(var(--bg-L) var(--bg-C) 280);
+  @include named-colors(0.02, 0.15, 0.85);
 
   // Diagonal stripes for warnings
   --warning0: color-mix(in oklch, var(--bg-yellow) 15%, var(--bg-root));
   --warning1: color-mix(in oklch, var(--bg-yellow) 40%, var(--bg-root));
 
   --transition-duration: 0.5s;
+
+  // How much `brightHover` lightens, 125% is too much on light backgrounds
+  --hover-brightness: 105%;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     @for $i from 0 through 10 {
-      --grey#{(10-$i) * 10}: oklch(#{$i * 10%} 0 0);
+      --grey#{(10-$i) * 10}: #{neutral($i * 10%)};
     }
 
     --root-color: black; // Don't change, it's used to mix colors on light/dark schemes
-    --text: #f3f3f3;
-    --text-dim: #766;
-    --bg-root: #111;
-    --bg0: #262222;
-    --bg1: #696666;
-    --bg2: #333;
+    --text: #{neutral(96%)};
+    --text-dim: #{neutral(62%)};
+    --border: #{neutral(38%)};
+    --bg-root: #{neutral(18%)};
+    --bg0: #{neutral(25%, 0.04)};
+    --bg1: #{neutral(48%)};
+    --bg2: #{neutral(31%)};
 
-    --stroke-L: 80%;
-    --bg-L: 50%;
-    --bg-C: 50%;
+    @include named-colors(0.12, -0.04, 0.8);
+
+    --hover-brightness: 125%;
   }
 }
 

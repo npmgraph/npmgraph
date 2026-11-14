@@ -28,6 +28,7 @@
   display: flex;
   position: relative;
   flex: 1;
+  padding: 24px;
   min-width: 0;
   user-select: none;
   -webkit-user-select: none;
@@ -90,14 +91,96 @@
   inset: 0;
   pointer-events: none;
 
-  img {
-    animation: appear 2s ease-out;
+  // The dashed strokes fade in after the cat, then march
+  [stroke-dasharray] {
+    opacity: 0;
+    animation:
+      fade-in 1s 0.5s forwards,
+      march calc(var(--period) * 0.1s) linear infinite;
+    stroke-dashoffset: var(--offset, 0);
+  }
+
+  // The tail never stops: a lazy sway with a flick, the tip trailing the base
+  [data-tail] {
+    animation: sway 4s 1s ease-in-out infinite;
+  }
+
+  [data-tail='tip'] {
+    animation-delay: 1.15s;
+    animation-name: sway-tip;
   }
 }
 
-@keyframes appear {
-  from {
-    scale: 0.9;
-    opacity: 0;
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  20% {
+    transform: rotate(2.5deg);
+  }
+
+  40% {
+    transform: rotate(-1.5deg);
+  }
+
+  55% {
+    transform: rotate(-8deg);
+  }
+
+  65% {
+    transform: rotate(4deg);
+  }
+
+  75% {
+    transform: rotate(-3deg);
+  }
+
+  85% {
+    transform: rotate(1.5deg);
+  }
+}
+
+@keyframes sway-tip {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  20% {
+    transform: rotate(2deg);
+  }
+
+  40% {
+    transform: rotate(-2deg);
+  }
+
+  55% {
+    transform: rotate(-7deg);
+  }
+
+  65% {
+    transform: rotate(5.5deg);
+  }
+
+  75% {
+    transform: rotate(-4deg);
+  }
+
+  85% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes march {
+  to {
+    stroke-dashoffset: calc(var(--offset, 0) - var(--period));
   }
 }

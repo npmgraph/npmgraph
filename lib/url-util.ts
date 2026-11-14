@@ -5,18 +5,18 @@ export function urlPatch(urlParts: Partial<URL>, url = new URL(location.href)) {
 
 export function hashGet(
   key: string,
-  location: URL | Location = globalThis.location,
+  url: URL | Location = globalThis.location,
 ) {
-  const parameters = new URLSearchParams(location.hash.slice(1));
+  const parameters = new URLSearchParams(url.hash.slice(1));
   return parameters.get(key);
 }
 
 export function hashSet(
   key: string,
   value?: string,
-  location: URL | Location = globalThis.location,
+  url: URL | Location = globalThis.location,
 ) {
-  const parameters = new URLSearchParams(location.hash.slice(1));
+  const parameters = new URLSearchParams(url.hash.slice(1));
   if (value) {
     parameters.set(key, value);
   } else {

@@ -6,7 +6,7 @@
   > input {
     flex-grow: 1;
     box-sizing: border-box;
-    border: solid 1px var(--text-dim);
+    border: solid 1px var(--border);
     border-radius: 4px;
     padding: 0.3em 0.7em;
     font: inherit;
