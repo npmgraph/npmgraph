@@ -1,0 +1,19 @@
+@use '../../lib/root.module.scss' as *;
+
+// A sheet that stays at the bottom of the screen while the report scrolls
+.sheet {
+  @include tight-screen {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin-top: auto;
+    box-shadow: 0 -2px 8px var(--bg0-shadow-color);
+  }
+}
+
+.body {
+  @include tight-screen {
+    max-height: 60svh;
+    overflow-y: auto;
+  }
+}

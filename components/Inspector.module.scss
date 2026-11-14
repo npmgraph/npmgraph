@@ -23,6 +23,15 @@
     display: none;
   }
 
+  // Panels that share the sidebar, like the report and the selected module: each scrolls on its own
+  &.split {
+    overflow-y: hidden;
+
+    @include tight-screen {
+      overflow: clip;
+    }
+  }
+
   &.only {
     flex-grow: 1;
     width: auto;
