@@ -1,10 +1,11 @@
 import { appVersion, releaseStage } from '../lib/bugsnag.ts';
 import GitHubCorner from './GitHubCorner.tsx';
 import QueryInput from './InfoPane/QueryInput.tsx';
-import InputHelp from './InputHelp.tsx';
+import { InputDescription, InputExamples } from './InputHelp.tsx';
 import * as styles from './Intro.module.css';
 import Logo from './Logo.tsx';
 import StickerFarm from './StickerFarm.tsx';
+import { Group } from './ui/Group.tsx';
 
 export default function Intro() {
   return (
@@ -12,9 +13,11 @@ export default function Intro() {
       <h1 title={`Release: ${appVersion} (${releaseStage})`}>
         <Logo />
       </h1>
-      <h2>Explore npm modules and dependencies</h2>
       <QueryInput variant="hero" />
-      <InputHelp />
+      <InputExamples />
+      <Group title="Explore npm modules and dependencies">
+        <InputDescription isDim />
+      </Group>
       <StickerFarm />
       <GitHubCorner />
     </main>
