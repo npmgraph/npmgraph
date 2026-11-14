@@ -44,15 +44,3 @@
     background: var(--bg0);
   }
 }
-
-.main {
-  display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
-  min-height: 0;
-  overflow-y: auto;
-
-  @include tight-screen {
-    overflow: visible;
-  }
-}

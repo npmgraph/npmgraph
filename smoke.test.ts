@@ -338,7 +338,7 @@ describe('panes', () => {
       expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
         customConfig,
       );
-      await userEvent.click(tab('Report'));
+      await userEvent.click(tab('Analysis'));
       await vi.waitFor(() => {
         expect(
           $('a[href^="https://npmx.dev/"]', doc())?.getAttribute('href'),
@@ -355,7 +355,7 @@ describe('panes', () => {
       expect(win().localStorage.getItem('npmgraph-module-link-providers')).toBe(
         defaultConfig,
       );
-      await userEvent.click(tab('Report'));
+      await userEvent.click(tab('Analysis'));
       await vi.waitFor(() => {
         expect(
           $('a[href^="https://www.npmjs.com/package/debug/"]', doc()),
@@ -376,7 +376,7 @@ describe('panes', () => {
     async (_name, width) => {
       await goto('?q=express', width);
       await nodeAppears();
-      await userEvent.click(tab('Report'));
+      await userEvent.click(tab('Analysis'));
       await hashHas('tab=report');
 
       win().location.reload();
@@ -447,7 +447,7 @@ describe('panes', () => {
   it('renders report items', async () => {
     await goto('?q=debug');
     await nodeAppears();
-    await userEvent.click(tab('Report'));
+    await userEvent.click(tab('Analysis'));
     await Promise.all(
       ['Modules', 'Maintainers', 'Licenses'].map(async title =>
         appears('details > summary', new RegExp(title)),

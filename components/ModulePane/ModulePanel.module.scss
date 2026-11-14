@@ -1,79 +1,19 @@
 @use '../../lib/root.module.scss' as *;
 
-.panel {
-  display: flex;
-  flex: 0 1 auto;
-  flex-direction: column;
-  border-top: solid 1px var(--border);
-  background: var(--bg0);
-  // Share the sidebar with the report
-  min-height: 0;
-  max-height: 55%;
-
+// A sheet that stays at the bottom of the screen while the report scrolls
+.sheet {
   @include tight-screen {
-    // A sheet that stays at the bottom of the screen while the report scrolls
     position: sticky;
     bottom: 0;
     z-index: 5;
+    margin-top: auto;
     box-shadow: 0 -2px 8px var(--bg0-shadow-color);
-    max-height: none;
   }
-}
-
-.header {
-  all: unset;
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.75em;
-  cursor: pointer;
-  background: var(--tabs-bg) var(--bg-gradient);
-  padding: 0 1em;
-  min-height: 40px;
-  color: var(--tabs-text);
-
-  // Like the header, it's always dark
-  color-scheme: dark;
-  font-weight: 600;
-  font-size: 12pt;
-  --hover-brightness: 125%;
-
-  &::after {
-    margin-left: auto;
-    content: '▼';
-  }
-
-  &[aria-expanded='false']::after {
-    content: '▲';
-  }
-
-  &:hover,
-  &:focus-visible {
-    filter: brightness(var(--hover-brightness));
-  }
-
-  &:focus-visible {
-    outline: solid 2px var(--tabs-text);
-    outline-offset: -2px;
-  }
-}
-
-.title {
-  flex-shrink: 1;
-  opacity: 0.7;
-  overflow: hidden;
-  font-weight: normal;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .body {
-  display: flex;
-  flex-direction: column;
-  border-top: solid 1px var(--border);
-  overflow-y: auto;
-
   @include tight-screen {
     max-height: 60svh;
+    overflow-y: auto;
   }
 }

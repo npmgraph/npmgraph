@@ -13,9 +13,11 @@ import ViewPane from './ViewPane/ViewPane.tsx';
 
 // Keep these panes in secondary bundles but start loading them eagerly
 const reportPanePromise = import('./ReportPane/ReportPane.tsx');
+const reportPanelPromise = import('./ReportPane/ReportPanel.tsx');
 const modulePanelPromise = import('./ModulePane/ModulePanel.tsx');
 
 const ReportPane = lazy(async () => reportPanePromise);
+const ReportPanel = lazy(async () => reportPanelPromise);
 const ModulePanel = lazy(async () => modulePanelPromise);
 
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
@@ -41,9 +43,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
         <ReportPane />
       ) : (
         <>
-          <div className={styles.main}>
-            <ReportPane />
-          </div>
+          <ReportPanel />
           <ModulePanel />
         </>
       );
