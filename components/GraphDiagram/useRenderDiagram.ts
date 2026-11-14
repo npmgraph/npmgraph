@@ -3,7 +3,6 @@ import { select } from 'd3-selection';
 import { use, useEffect, useState } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
-import { report } from '../../lib/bugsnag.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
 import { createAbortable } from '../../lib/createAbortable.ts';
 import { flashError } from '../../lib/flash.ts';
@@ -46,7 +45,7 @@ function decorateGraphNodes(
     if (module.name) {
       nodeElement.dataset['module'] = module.key;
     } else {
-      report.warn(new Error(`Bad replace: ${key}`));
+      reportError(new Error(`Bad replace: ${key}`));
     }
 
     if (!isModuleVisible(module)) {
