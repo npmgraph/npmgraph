@@ -1,10 +1,17 @@
-import { useControls } from 'react-zoom-pan-pinch';
+import { useControls, useTransformComponent } from 'react-zoom-pan-pinch';
 import ZoomFitIcon from '../../images/icons/zoom-fit.svg?react';
 import { Button, ButtonGroup } from '../Button.tsx';
 import { zoomAroundCenter } from './viewport-util.ts';
 
-export function GraphDiagramZoomButtons() {
+// `fitScale` is the scale at which the whole graph fits the view, up to 1
+export function GraphDiagramZoomButtons({ fitScale }: { fitScale: number }) {
   const controls = useControls();
+  const scale = useTransformComponent(({ state }) => state.scale);
+
+  // Nothing to do if the graph is already at 1:1 and fits entirely
+  if (fitScale === 1 && Math.abs(scale - 1) < 0.001) {
+    return null;
+  }
 
   return (
     <ButtonGroup square>
