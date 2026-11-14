@@ -43,14 +43,21 @@ const disabledRules = [
   'require-unicode-regexp',
 ];
 
+const xoConfigs = xo({
+  browser: true,
+  space: true,
+  prettier: 'compat',
+  gitignore: import.meta.url,
+});
+
+// Rule options replace each other instead of merging, so extend xo's
+const [, xoNameReplacements] = xoConfigs
+  .map(config => config.rules?.['unicorn/name-replacements'])
+  .findLast(Boolean);
+
 export default defineConfig([
   // Don't add new objects to this list unless strictly necessary. Extend the existing ones instead
-  ...xo({
-    browser: true,
-    space: true,
-    prettier: 'compat',
-    gitignore: import.meta.url,
-  }),
+  ...xoConfigs,
   ...xoReact({
     space: true,
     prettier: 'compat',
@@ -60,6 +67,16 @@ export default defineConfig([
     plugins: { byo },
     rules: {
       'unicorn/switch-case-braces': ['error', 'avoid'],
+      'unicorn/name-replacements': [
+        'error',
+        {
+          ...xoNameReplacements,
+          replacements: {
+            ...xoNameReplacements.replacements,
+            mod: { module: true },
+          },
+        },
+      ],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
       'unicorn/filename-case': [
         'error',
