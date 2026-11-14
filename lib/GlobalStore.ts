@@ -1,6 +1,11 @@
 import { useCallback, useSyncExternalStore } from 'react';
 import type { GraphState } from './graph-types.ts';
-import { PARAM_QUERY, PARAM_TAB, TIGHT_SCREEN_QUERY } from './constants.ts';
+import {
+  PaneType,
+  PARAM_QUERY,
+  PARAM_TAB,
+  TIGHT_SCREEN_QUERY,
+} from './constants.ts';
 import type Module from './Module.ts';
 import { hashGet, searchGet } from './url-util.ts';
 
@@ -20,7 +25,7 @@ function _isGraphInitiallyVisible() {
     globalThis.window !== undefined &&
     globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches &&
     Boolean(searchGet(PARAM_QUERY)) &&
-    !hashGet(PARAM_TAB)
+    (hashGet(PARAM_TAB) ?? PaneType.NONE) === PaneType.NONE
   );
 }
 
