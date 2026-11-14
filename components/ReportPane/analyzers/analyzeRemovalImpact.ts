@@ -5,17 +5,15 @@ export type RemovalImpact = {
   module: Module;
   // Modules that would disappear from the graph, including the module itself
   dropped: number;
-  // Modules the module pulls in, including itself
-  total: number;
 };
 
 export function analyzeRemovalImpact({
   moduleInfos,
   entryModules,
 }: Pick<GraphState, 'moduleInfos' | 'entryModules'>) {
-  const reach = (starts: Iterable<Module>, skip?: Module) => {
+  const reach = (skip?: Module) => {
     const seen = new Set<Module>();
-    const stack = [...starts];
+    const stack = [...entryModules];
     for (let module = stack.pop(); module; module = stack.pop()) {
       if (module === skip || seen.has(module)) {
         continue;
@@ -40,12 +38,11 @@ export function analyzeRemovalImpact({
     }
   }
 
-  const all = reach(entryModules);
+  const all = reach();
   return [...direct]
     .map(module => ({
       module,
-      dropped: all.size - reach(entryModules, module).size,
-      total: reach([module]).size,
+      dropped: all.size - reach(module).size,
     }))
     .filter(({ dropped }) => dropped > 1)
     .toSorted(

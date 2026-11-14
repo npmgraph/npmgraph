@@ -64,6 +64,7 @@ export default function ReportPane({
       )}
       <AnalysisProvider>
         <ModulesAll />
+        <ModulesRemovalImpact />
         <PeerDependenciesAll />
         <MaintainersAll />
         <LicensesAll />
@@ -72,7 +73,6 @@ export default function ReportPane({
         <ModulesDeprecated />
         <ModulesOutdated />
         <ModulesRepeated />
-        <ModulesRemovalImpact />
         <PeerDependenciesMissing />
         <MaintainersSolo />
         <LicensesMissing />

@@ -36,8 +36,8 @@ describe('analyzeRemovalImpact', () => {
       entryModules: new Set([root]),
     } as never);
 
-    expect(
-      impact.map(({ module, dropped, total }) => [module.name, dropped, total]),
-    ).toEqual([['a', 2, 3]]);
+    expect(impact.map(({ module, dropped }) => [module.name, dropped])).toEqual(
+      [['a', 2]],
+    );
   });
 });

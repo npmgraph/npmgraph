@@ -11,16 +11,16 @@ export default function ModulesRemovalImpact() {
     return null;
   }
 
-  const max = Math.max(...removalImpact.map(({ total }) => total));
+  const max = Math.max(...removalImpact.map(({ dropped }) => dropped));
 
   return (
     <ReportItem
       title="Removal impact"
       count={removalImpact.length}
-      description="Modules that would disappear from the graph if a direct dependency were removed or replaced. Sub-dependencies shared with other modules stay."
+      description="Number of modules that would leave the graph if you removed or replaced each dependency: the dependency itself plus whatever only it needs. Modules that something else also depends on stay."
     >
       <Rows>
-        {removalImpact.map(({ module, dropped, total }) => (
+        {removalImpact.map(({ module, dropped }) => (
           <Row key={module.key}>
             <Selectable
               className={styles.name}
@@ -32,14 +32,8 @@ export default function ModulesRemovalImpact() {
                 className={styles.dropped}
                 style={{ width: `${(dropped / max) * 100}%` }}
               />
-              <span
-                className={styles.shared}
-                style={{ width: `${((total - dropped) / max) * 100}%` }}
-              />
             </span>
-            <span className={styles.count}>
-              −{dropped} / {total}
-            </span>
+            <span className={styles.count}>{dropped}</span>
           </Row>
         ))}
       </Rows>

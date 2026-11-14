@@ -17,10 +17,6 @@
   background: var(--accent);
 }
 
-.shared {
-  background: color-mix(in srgb, currentcolor 30%, transparent);
-}
-
 .count {
   flex: 0 0 5em;
   font-variant-numeric: tabular-nums;
