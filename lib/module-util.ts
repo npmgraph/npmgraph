@@ -52,9 +52,9 @@ export function getModuleKey(name: string, version: string) {
 }
 
 export function parseModuleKey(moduleKey: string): string[] {
-  const match = /(?<name>.+)@(?<version>.*)/v.exec(moduleKey);
-  return match
-    ? [match.groups!['name']!, match.groups!['version']!]
+  const index = moduleKey.lastIndexOf('@');
+  return index > 0
+    ? [moduleKey.slice(0, index), moduleKey.slice(index + 1)]
     : [moduleKey];
 }
 

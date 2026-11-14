@@ -5,9 +5,49 @@
   align-items: center;
   gap: 1em;
 }
+.field {
+  position: relative;
+  width: 100%;
+
+  /* Keep the hint aligned with the input's edge */
+  &:has(> .header) {
+    max-width: 400px;
+  }
+}
 .input {
   @include search-input;
   margin-block: 0.6em;
+}
+
+/* Placeholder-like hint with an inline <kbd>, only shown while the field is empty and unfocused */
+.hint {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  gap: 0.4em;
+  inset-block: 0;
+  inset-inline-start: 0.6em;
+  pointer-events: none;
+  color: color-mix(in srgb, var(--tabs-text) 50%, transparent);
+  font-size: 16px;
+  white-space: nowrap;
+
+  kbd {
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid currentcolor;
+    border-radius: 4px;
+    padding-bottom: 0.1em; /* Optically center the slash */
+    width: 1.4em;
+    height: 1.2em;
+    font-size: 0.8em;
+    line-height: 1;
+    font-family: inherit;
+  }
+}
+.input:focus + .hint,
+.input:not(:placeholder-shown) + .hint {
+  display: none;
 }
 
 /* In the app header */
