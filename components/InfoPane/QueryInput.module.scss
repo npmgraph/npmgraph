@@ -5,9 +5,35 @@
   align-items: center;
   gap: 1em;
 }
+.field {
+  position: relative;
+  width: 100%;
+
+  /* Keep the hint aligned with the input's edge */
+  &:has(> .header) {
+    max-width: 400px;
+  }
+}
 .input {
   @include search-input;
   margin-block: 0.6em;
+}
+
+/* Shortcut hint, only shown while the field is empty and unfocused */
+.hint {
+  display: flex;
+  position: absolute;
+  align-items: center;
+  opacity: 0.6;
+  inset-block: 0;
+  inset-inline-end: 0.6em;
+  pointer-events: none;
+  color: var(--tabs-text);
+  font-size: 12px;
+}
+.input:focus + .hint,
+.input:not(:placeholder-shown) + .hint {
+  display: none;
 }
 
 /* In the app header */

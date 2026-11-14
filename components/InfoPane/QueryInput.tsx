@@ -101,27 +101,34 @@ export default function QueryInput({
 
   return (
     <form action="/" className={styles.form} onSubmit={handleSubmit}>
-      <input
-        ref={inputRef}
-        type="search"
-        name="q"
-        aria-label="Search npm modules"
-        id={SEARCH_FIELD_ID}
-        className={cn(styles.input, variant && styles[variant], className)}
-        placeholder="Search…"
-        value={value}
-        autoCapitalize="off"
-        autoComplete="off"
-        autoCorrect="off"
-        spellCheck="false"
-        // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting.
-        autoFocus={!hasSoftKeyboard && query.length === 0}
-        list={isHeader ? listId : undefined}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onKeyUp={handleKeyUp}
-        {...props}
-      />
+      <div className={styles.field}>
+        <input
+          ref={inputRef}
+          type="search"
+          name="q"
+          aria-label="Search npm modules"
+          id={SEARCH_FIELD_ID}
+          className={cn(styles.input, variant && styles[variant], className)}
+          placeholder="Search…"
+          value={value}
+          autoCapitalize="off"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting.
+          autoFocus={!hasSoftKeyboard && query.length === 0}
+          list={isHeader ? listId : undefined}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+          {...props}
+        />
+        {isHeader && !hasSoftKeyboard && (
+          <kbd aria-hidden className={styles.hint}>
+            /
+          </kbd>
+        )}
+      </div>
       {isHeader && (
         <datalist id={listId}>
           {[...graph.moduleInfos.values()].map(({ module }) => (
