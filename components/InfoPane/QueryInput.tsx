@@ -25,6 +25,7 @@ export default function QueryInput({
   const setGraphSelection = useGraphSelection()[2];
   const listId = useId();
   const isHeader = variant === 'header';
+  const hasShortcutHint = isHeader && !hasSoftKeyboard;
   const inputValue = query
     .filter(key => !getCachedModule(key)?.isLocal)
     .join(', ');
@@ -109,7 +110,7 @@ export default function QueryInput({
           aria-label="Search npm modules"
           id={SEARCH_FIELD_ID}
           className={cn(styles.input, variant && styles[variant], className)}
-          placeholder="Search…"
+          placeholder={hasShortcutHint ? ' ' : 'Search…'}
           value={value}
           autoCapitalize="off"
           autoComplete="off"
@@ -123,10 +124,10 @@ export default function QueryInput({
           onKeyUp={handleKeyUp}
           {...props}
         />
-        {isHeader && !hasSoftKeyboard && (
-          <kbd aria-hidden className={styles.hint}>
-            /
-          </kbd>
+        {hasShortcutHint && (
+          <span aria-hidden className={styles.hint}>
+            Type <kbd>/</kbd> to search
+          </span>
         )}
       </div>
       {isHeader && (
