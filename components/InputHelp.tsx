@@ -7,21 +7,15 @@ const EXAMPLES = [
   ['sindresorhus/type-fest'],
 ];
 
-export default function InputHelp({
-  heading = 'For example:',
-}: {
-  heading?: string;
-}) {
+export default function InputHelp() {
   return (
-    <>
-      <p>{heading}</p>
-      <ul className={styles.chips}>
-        {EXAMPLES.map(query => (
-          <li key={query.join()}>
-            <QueryLink query={query} />
-          </li>
-        ))}
-      </ul>
-    </>
+    <ul className={styles.chips}>
+      <li className={styles.label}>Try:</li>
+      {EXAMPLES.map(query => (
+        <li key={query.join()}>
+          <QueryLink className={styles.chip} query={query} />
+        </li>
+      ))}
+    </ul>
   );
 }

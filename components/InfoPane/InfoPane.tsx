@@ -8,20 +8,22 @@ import * as styles from './InfoPane.module.css';
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <InputHelp heading="npmgraph supports looking up:" />
+      <p>npmgraph supports looking up:</p>
+      <ul>
+        <li>A npm module name</li>
+        <li>Multiple, versioned module names</li>
+        <li>A GitHub repository shorthand</li>
+      </ul>
+      <InputHelp />
 
       <p>It also accepts package.json:</p>
       <ul>
-        <li>Drag and drop a file anywhere on the page</li>
-        <li>Paste package.json (file or text)</li>
+        <li>Drop or paste a file or text</li>
         <li>
-          Link to a{' '}
+          <FilePicker label="Choose file" /> or enter a{' '}
           <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
-            package.json file
+            URL
           </QueryLink>
-        </li>
-        <li>
-          <FilePicker label="Choose file" /> from your computer
         </li>
       </ul>
 

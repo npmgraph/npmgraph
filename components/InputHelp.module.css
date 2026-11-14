@@ -2,24 +2,28 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: var(--chips-justify, flex-start);
+  align-items: center;
   gap: 0.5em;
-  margin: 0 0 1em;
+  margin: 1em 0;
   padding: 0;
   list-style: none;
+}
 
-  a {
-    display: block;
-    border: 1px solid var(--border);
-    border-radius: 2em;
-    background: var(--bg1);
-    padding: 0.2em 0.8em;
+.label {
+  color: var(--text-dim);
+}
+
+.chips .chip {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 2em;
+  background: var(--bg2);
+  padding: 0.2em 0.8em;
+  color: var(--text);
+  text-decoration: none;
+
+  &:hover {
+    border-color: var(--accent);
     color: var(--accent);
-    font-family: monospace;
-    text-decoration: none;
-
-    &:hover {
-      filter: brightness(var(--hover-brightness));
-      border-color: var(--accent);
-    }
   }
 }
