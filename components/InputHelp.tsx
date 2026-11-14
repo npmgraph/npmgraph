@@ -9,13 +9,11 @@ const EXAMPLES = [
 
 export default function InputHelp() {
   return (
-    <ul className={styles.chips}>
-      <li className={styles.label}>Try:</li>
+    <div className={styles.chips}>
+      <span className={styles.label}>Try:</span>
       {EXAMPLES.map(query => (
-        <li key={query.join()}>
-          <QueryLink className={styles.chip} query={query} />
-        </li>
+        <QueryLink key={query.join()} className={styles.chip} query={query} />
       ))}
-    </ul>
+    </div>
   );
 }

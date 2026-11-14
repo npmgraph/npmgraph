@@ -8,24 +8,20 @@ import * as styles from './InfoPane.module.css';
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <p>npmgraph supports looking up:</p>
-      <ul>
-        <li>A npm module name</li>
-        <li>Multiple, versioned module names</li>
-        <li>A GitHub repository shorthand</li>
-      </ul>
+      <p>
+        npmgraph supports looking up a npm module name, multiple versioned
+        module names, or a GitHub repository shorthand.
+      </p>
       <InputHelp />
 
-      <p>It also accepts package.json:</p>
-      <ul>
-        <li>Drop or paste a file or text</li>
-        <li>
-          <FilePicker label="Choose file" /> or enter a{' '}
-          <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
-            URL
-          </QueryLink>
-        </li>
-      </ul>
+      <p>
+        It also accepts package.json: drop or paste a file or text,{' '}
+        <FilePicker label="choose a file" />, or enter a{' '}
+        <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
+          URL
+        </QueryLink>
+        .
+      </p>
 
       <hr />
       <footer className={styles.footer}>
