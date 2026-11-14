@@ -71,13 +71,13 @@ export function analyzeMaintainers({
         maintainer.name = '\u{26A0}\u{FE0F} (unnamed maintainer)';
       }
 
-      let modules = modulesByMaintainer.get(maintainer.name);
-      if (!modules) {
-        modules = new Set();
-        modulesByMaintainer.set(maintainer.name, modules);
+      let maintainerModules = modulesByMaintainer.get(maintainer.name);
+      if (!maintainerModules) {
+        maintainerModules = new Set();
+        modulesByMaintainer.set(maintainer.name, maintainerModules);
       }
 
-      modules.add(module);
+      maintainerModules.add(module);
     }
   }
 

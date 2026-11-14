@@ -39,7 +39,7 @@ function RegistryStatus({
 export default function RegistryInput() {
   const inputId = useId();
   const [registry, setRegistry] = useRegistry();
-  const [value, setValue] = useState(registry ?? '');
+  const [value, setValue] = useState(registry);
   const debouncedValue = useDebouncedValue(value, 1000);
   const check = usePromise(debouncedValue, async () =>
     isRegistryOnline(debouncedValue),

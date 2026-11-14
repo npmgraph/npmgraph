@@ -2,7 +2,10 @@ import { useCallback } from 'react';
 import { searchGet, searchSet } from '../lib/url-util.ts';
 import useLocation, { patchLocation } from './useLocation.ts';
 
-export default function useSearchParameter(parameterName: string) {
+export default function useSearchParameter(
+  parameterName: string,
+  defaultValue = '',
+) {
   const [url] = useLocation();
 
   const setValue = useCallback(
@@ -12,5 +15,5 @@ export default function useSearchParameter(parameterName: string) {
     [parameterName],
   );
 
-  return [searchGet(parameterName, url), setValue] as const;
+  return [searchGet(parameterName, url) ?? defaultValue, setValue] as const;
 }

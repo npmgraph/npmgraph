@@ -5,7 +5,11 @@ import useSearchParameter from './useSearchParameter.ts';
 export function useQuery() {
   const [queryString, setQueryString] = useSearchParameter(PARAM_QUERY);
   const parsedQuery = useMemo(
-    () => (queryString ?? '').split(/\s*,\s*/).filter(Boolean),
+    () =>
+      queryString
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean),
     [queryString],
   );
 

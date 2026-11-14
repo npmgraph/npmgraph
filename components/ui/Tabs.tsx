@@ -41,7 +41,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
     <div className={cn(styles.root, className)}>
       <div role="tablist" aria-label="Inspector panels" className={styles.list}>
         {tabs
-          .filter(tab => tab.visible !== false)
+          .filter(item => item.visible !== false)
           .map(({ id, label }) => {
             const isSelected =
               isInspectorOpen &&

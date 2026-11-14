@@ -36,7 +36,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
   }, [customLinksError]);
 
   const dependencyTypes = (
-    (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
+    (depTypes ?? '').split(',').map(s => s.trim()) as DependencyKey[]
   ).filter(item => isDefined(item));
 
   const isIncludeDev = dependencyTypes.includes('devDependencies');
