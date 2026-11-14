@@ -2,7 +2,14 @@ import FilePicker from './InfoPane/FilePicker.tsx';
 import * as styles from './InputHelp.module.css';
 import { QueryLink } from './ui/QueryLink.tsx';
 
-const EXAMPLES = [['express'], ['cross-env@6', 'rimraf'], ['sindresorhus/ora']];
+const EXAMPLES = [
+  { query: ['express'], title: 'A single module name' },
+  {
+    query: ['cross-env@6', 'rimraf'],
+    title: 'Multiple module names, with optional versions',
+  },
+  { query: ['sindresorhus/ora'], title: 'A GitHub repository reference' },
+];
 
 export function InputDescription({ isDim }: { isDim?: boolean }) {
   return (
@@ -23,11 +30,12 @@ export function InputExamples() {
     <div className={styles.examples}>
       <span className={styles.label}>Try</span>
       <div className={styles.chips}>
-        {EXAMPLES.map(query => (
+        {EXAMPLES.map(({ query, title }) => (
           <QueryLink
             key={query.join(',')}
             className={styles.chip}
             query={query}
+            title={title}
           />
         ))}
       </div>
