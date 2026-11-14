@@ -11,6 +11,7 @@
   padding: 1em;
   width: 100%;
   min-height: 100svh;
+  --chips-justify: center;
 
   @media (prefers-color-scheme: dark) {
     background: radial-gradient(var(--bg0), var(--bg-root));
@@ -29,8 +30,6 @@
   a {
     color: var(--accent);
   }
-
-  --chips-justify: center;
 
   p {
     max-width: 40em;

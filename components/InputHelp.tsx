@@ -2,27 +2,19 @@ import FilePicker from './InfoPane/FilePicker.tsx';
 import * as styles from './InputHelp.module.css';
 import { QueryLink } from './ui/QueryLink.tsx';
 
-const EXAMPLES = [
-  ['express'],
-  ['cross-env@6', 'rimraf'],
-  ['sindresorhus/ora'],
-];
+const EXAMPLES = [['express'], ['cross-env@6', 'rimraf'], ['sindresorhus/ora']];
 
-export default function InputHelp({
-  variant,
-}: {
-  variant?: 'hero';
-}) {
-  const hero = variant === 'hero';
+export default function InputHelp({ variant }: { variant?: 'hero' }) {
+  const isHero = variant === 'hero';
   const description = (
-    <p className={hero ? styles.dim : undefined}>
+    <p className={isHero ? styles.dim : undefined}>
       npmgraph supports looking up npm module names (multiple and versioned),
-      GitHub repository shorthands, or package.json: drop or paste a file or
-      text, <FilePicker label="choose a file" />, or enter a{' '}
+      GitHub repository shorthands, or package.json (drop or paste a file or
+      text, or enter a{' '}
       <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
         URL
       </QueryLink>
-      .
+      ). <FilePicker label="Choose file" /> from your computer.
     </p>
   );
   const examples = (
@@ -30,13 +22,17 @@ export default function InputHelp({
       <span className={styles.label}>Try</span>
       <div className={styles.chips}>
         {EXAMPLES.map(query => (
-          <QueryLink key={query.join()} className={styles.chip} query={query} />
+          <QueryLink
+            key={query.join(',')}
+            className={styles.chip}
+            query={query}
+          />
         ))}
       </div>
     </div>
   );
 
-  return hero ? (
+  return isHero ? (
     <>
       {examples}
       {description}
