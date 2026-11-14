@@ -1,0 +1,28 @@
+.name {
+  flex: 0 0 12em;
+  text-align: left;
+}
+
+.bar {
+  display: flex;
+  flex: 8em;
+  align-self: center;
+  border-radius: 0.25em;
+  background: color-mix(in srgb, currentcolor 10%, transparent);
+  height: 0.5em;
+  overflow: hidden;
+}
+
+.dropped {
+  background: var(--accent);
+}
+
+.shared {
+  background: color-mix(in srgb, currentcolor 30%, transparent);
+}
+
+.count {
+  flex: 0 0 5em;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}

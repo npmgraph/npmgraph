@@ -4,6 +4,7 @@ import {
   getVersionStatus,
   type VersionStatus,
 } from '../../../lib/version-status.ts';
+import { analyzeRemovalImpact } from './analyzeRemovalImpact.ts';
 
 export type OutdatedModule = {
   module: Module;
@@ -36,6 +37,7 @@ export type ModuleAnalysisState = GraphState & {
   versionsByName: Record<string, Module[]>;
   deprecated: Module[];
   outdated: OutdatedModule[];
+  removalImpact: ReturnType<typeof analyzeRemovalImpact>;
 };
 
 export function analyzeModules({ moduleInfos, entryModules }: GraphState) {
@@ -72,5 +74,6 @@ export function analyzeModules({ moduleInfos, entryModules }: GraphState) {
     versionsByName: {},
     deprecated,
     outdated,
+    removalImpact: analyzeRemovalImpact({ moduleInfos, entryModules }),
   } as ModuleAnalysisState;
 }
