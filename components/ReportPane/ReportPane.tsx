@@ -1,9 +1,6 @@
-import { useId, useState } from 'react';
 import useGraph from '../../hooks/useGraph.ts';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
-import { QueryType } from '../../lib/ModuleCache.ts';
 import { Button } from '../Button.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
@@ -27,11 +24,6 @@ export default function ReportPane({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const graph = useGraph();
   const [isReportOnly, setReportOnly] = useReportOnly();
-  const [selectType, selectValue, setGraphSelection] = useGraphSelection();
-  const filterListId = useId();
-  const [filter, setFilter] = useState(
-    selectType === QueryType.Search ? selectValue : '',
-  );
 
   if (!graph.moduleInfos) {
     return <div>Loading</div>;
@@ -64,32 +56,6 @@ export default function ReportPane({
               Report only
             </Button>
           </div>
-          <input
-            type="search"
-            className={styles.filter}
-            placeholder="Filter modules…"
-            aria-label="Filter modules"
-            list={filterListId}
-            value={filter}
-            autoCapitalize="off"
-            autoComplete="off"
-            autoCorrect="off"
-            spellCheck="false"
-            onChange={event => {
-              const { value } = event.target;
-              setFilter(value);
-              // Highlight the matches in the graph too
-              setGraphSelection(
-                value.trim() ? QueryType.Search : QueryType.Default,
-                value.trim(),
-              );
-            }}
-          />
-          <datalist id={filterListId}>
-            {[...graph.moduleInfos.values()].map(({ module }) => (
-              <option key={module.key} value={module.label} />
-            ))}
-          </datalist>
           <CollapsedModules />
         </>
       )}

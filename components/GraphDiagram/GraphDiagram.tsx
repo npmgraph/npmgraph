@@ -33,6 +33,7 @@ import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
 import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
 import useOnEsc from '../../hooks/useOnEsc.ts';
+import NotFoundCat from '../../images/not-found.svg?react';
 import { clampPosition, getFitScale } from './viewport-util.ts';
 import useRenderDiagram from './useRenderDiagram.ts';
 import useLoadGraph from './useLoadGraph.ts';
@@ -40,8 +41,6 @@ import useGraphClick from './useGraphClick.ts';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
 import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
 import * as styles from './GraphDiagram.module.scss';
-
-const notFoundUrl = new URL('../../images/not-found.svg', import.meta.url);
 
 const idSeen = new Set<unknown>();
 
@@ -232,11 +231,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       >
         {isNotFound ? (
           <div className={styles.notFound}>
-            <img src={notFoundUrl.href} width={110} alt="Module not found" />
+            <NotFoundCat width={110} role="img" aria-label="Module not found" />
           </div>
         ) : (
           <div className={styles.graphControls}>
-            <GraphDiagramZoomButtons />
+            <GraphDiagramZoomButtons fitScale={minScale} />
             <GraphDiagramExportButtons />
           </div>
         )}

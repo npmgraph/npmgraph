@@ -8,14 +8,17 @@
     flex-grow: 1;
     appearance: none;
     box-sizing: border-box;
-    border: solid 1px var(--text-dim);
+    border: solid 1px var(--border);
     border-radius: 4px;
     background:
       linear-gradient(45deg, transparent 50%, currentcolor 50%)
         calc(100% - 1.1em) 50% / 0.4em 0.4em no-repeat,
       linear-gradient(135deg, currentcolor 50%, transparent 50%)
         calc(100% - 0.7em) 50% / 0.4em 0.4em no-repeat;
+    /* iOS Safari tints native selects blue unless these are set explicitly */
+    background-color: var(--bg-root);
     padding: 0.3em 2em 0.3em 0.7em;
+    color: inherit;
     font: inherit;
   }
 }
