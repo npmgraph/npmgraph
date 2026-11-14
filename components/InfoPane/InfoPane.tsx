@@ -6,28 +6,32 @@ import * as styles from './InfoPane.module.css';
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <InputDescription />
+      <div className={styles.group}>
+        <h3>npmgraph</h3>
+        <InputDescription />
+      </div>
       <div className={styles.examples}>
         <InputExamples />
       </div>
-
-      <h3 className={styles.connect}>Connect</h3>
       <footer className={styles.footer}>
-        <a
-          href="https://github.com/npmgraph/npmgraph"
-          target="_blank"
-          rel="noreferrer"
-        >
-          GitHub repo
-        </a>
-        <span aria-hidden="true">•</span>
-        <a
-          href="https://github.com/sponsors/broofa"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Sponsor
-        </a>
+        <h3>Connect</h3>
+        <div className={styles.links}>
+          <a
+            href="https://github.com/npmgraph/npmgraph"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub repo
+          </a>
+          <span aria-hidden="true">•</span>
+          <a
+            href="https://github.com/sponsors/broofa"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Sponsor
+          </a>
+        </div>
       </footer>
     </Pane>
   );
