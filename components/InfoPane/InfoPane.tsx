@@ -7,7 +7,9 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
       <InputDescription />
-      <InputExamples />
+      <div className={styles.examples}>
+        <InputExamples />
+      </div>
 
       <hr />
       <footer className={styles.footer}>

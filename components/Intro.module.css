@@ -3,6 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1.25em;
   box-sizing: border-box;
   background: radial-gradient(
     var(--bg-root),
@@ -17,20 +18,15 @@
     background: radial-gradient(var(--bg0), var(--bg-root));
   }
 
-  h1 svg {
+  h2 svg {
     display: block;
     margin: auto;
     max-width: 90%;
   }
 
   h2 {
-    opacity: 0.6;
-    margin: 1em 0 0.5em;
-    font-weight: normal;
-    font-size: 0.8em;
-    letter-spacing: 0.05em;
+    margin: 0;
     text-align: center;
-    text-transform: uppercase;
   }
 
   a {
@@ -38,7 +34,16 @@
   }
 
   p {
+    margin: 0;
     max-width: 40em;
     text-align: center;
   }
+}
+
+.label {
+  opacity: 0.6;
+  font-weight: normal;
+  font-size: 0.8em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }

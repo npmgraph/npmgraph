@@ -28,7 +28,7 @@ export function InputDescription({ isDim }: { isDim?: boolean }) {
 export function InputExamples() {
   return (
     <div className={styles.examples}>
-      <span className={styles.label}>Try</span>
+      <h2 className={styles.label}>Try</h2>
       <div className={styles.chips}>
         {EXAMPLES.map(({ query, title }) => (
           <QueryLink

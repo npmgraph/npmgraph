@@ -1,3 +1,7 @@
+.examples {
+  margin: 1em 0;
+}
+
 .footer {
   display: flex;
   justify-content: center;
