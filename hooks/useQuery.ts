@@ -1,17 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
+import { parseCommaList } from '../lib/array-util.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../lib/constants.ts';
 import useSearchParameter from './useSearchParameter.ts';
 
 export function useQuery() {
   const [queryString = '', setQueryString] = useSearchParameter(PARAM_QUERY);
-  const parsedQuery = useMemo(
-    () =>
-      queryString
-        .split(',')
-        .map(s => s.trim())
-        .filter(Boolean),
-    [queryString],
-  );
+  const parsedQuery = useMemo(() => parseCommaList(queryString), [queryString]);
 
   const setQuery = useCallback(
     (moduleKeys: string[] = [], shouldReplace = false) => {

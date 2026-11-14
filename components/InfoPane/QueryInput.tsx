@@ -1,6 +1,6 @@
 import { type HTMLProps, useId, useRef, useState } from 'react';
 import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
-import { isDefined } from '../../lib/guards.ts';
+import { parseCommaList } from '../../lib/array-util.ts';
 import { cn } from '../../lib/dom.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
 import { searchSet } from '../../lib/url-util.ts';
@@ -42,10 +42,7 @@ export default function QueryInput({
   const { value } = valueState;
 
   function getSearchParameters() {
-    let moduleKeys = inputRef
-      .current!.value.split(',')
-      .map(v => v.trim())
-      .filter(item => isDefined(item));
+    let moduleKeys = parseCommaList(inputRef.current!.value);
 
     moduleKeys = [...new Set(moduleKeys)]; // De-dupe
     return searchSet(PARAM_QUERY, moduleKeys.join(', '));
