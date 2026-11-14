@@ -145,11 +145,13 @@ export default class Module {
 
   getLicenses() {
     // Pick license from latest `dist` version, if available
-    const pkg = this.getLatestVersion() ?? this.package;
+    const { license, licenses } = (this.getLatestVersion() ??
+      this.package) as PackageJSON;
 
-    return parseLicense(
-      pkg.license || (pkg as unknown as { licenses: string[] }).licenses,
-    );
+    const parsed = parseLicense(license);
+
+    // Fall back to the deprecated `licenses` when `license` is empty or missing
+    return parsed.length > 0 ? parsed : parseLicense(licenses);
   }
 
   toString() {
@@ -180,7 +182,7 @@ function parseLicense(
         .trim()
         .toLowerCase()
         .replaceAll(/^\(|\)$/gv, '')
-        .split(/\s+or\s+/)
+        .split(/(?<=\S)\s+or\s+/)
     : [];
 }
 
