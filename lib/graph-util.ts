@@ -566,9 +566,9 @@ export function foreachDownstream(
 
   seen.add(module);
 
-  for (const { module: downstream } of info.downstream) {
-    callback(downstream);
-    foreachDownstream(downstream, graph, callback, seen);
+  for (const downstream of info.downstream) {
+    callback(downstream.module);
+    foreachDownstream(downstream.module, graph, callback, seen);
   }
 }
 

@@ -34,11 +34,7 @@ export function analyzeMaintainers({
     const { maintainers } = module;
 
     // Group modules we aren't interested in under "" (removed below)
-    if (
-      module.isStub ||
-      Boolean(module.package.private) ||
-      maintainers.length !== 1
-    ) {
+    if (module.isStub || module.package.private || maintainers.length !== 1) {
       return '';
     }
 

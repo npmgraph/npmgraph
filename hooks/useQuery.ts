@@ -6,7 +6,7 @@ export function useQuery() {
   const [queryString, setQueryString] = useSearchParameter(PARAM_QUERY);
   const parsedQuery = useMemo(
     () =>
-      (queryString ?? '')
+      queryString
         .split(',')
         .map(s => s.trim())
         .filter(Boolean),

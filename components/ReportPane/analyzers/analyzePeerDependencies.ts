@@ -1,6 +1,6 @@
 import { satisfies } from 'verkit';
 import type Module from '../../../lib/Module.ts';
-import type { GraphState } from '../../../lib/graph-util.ts';
+import type { GraphModuleInfo, GraphState } from '../../../lib/graph-util.ts';
 
 export type PeerDependencyInfo = {
   name: string;
@@ -14,6 +14,10 @@ export type PeerDependenciesState = {
   peerDependencyInfos: PeerDependencyInfo[];
 };
 
+function hasNonPeerUpstream(upstream: GraphModuleInfo['upstream']) {
+  return [...upstream].some(({ type }) => type !== 'peerDependencies');
+}
+
 export function analyzePeerDependencies({
   moduleInfos,
 }: GraphState): PeerDependenciesState | undefined {
@@ -26,30 +30,27 @@ export function analyzePeerDependencies({
     }
 
     for (const [name, versionRange] of Object.entries(peerDependencies)) {
+      // Only count as "met" if the module was brought in via a regular
+      // (non-peer) dependency, or is an explicitly queried root module.
+      // Nodes that are in the graph solely due to peer dep resolution should
+      // still be reported as "missing" in the unmet-peer-deps report.
+      const destination = moduleInfos.values().find(
+        ({ module: candidate, level, upstream }) =>
+          // Same package
+          candidate.name === name &&
+          // Version is compatible with the requested range
+          satisfies(candidate.version, versionRange) &&
+          // Explicitly queried root module, or not only a peer dependency
+          (level === 0 || hasNonPeerUpstream(upstream)),
+      )?.module;
+
       const pdi: PeerDependencyInfo = {
         name,
         versionRange,
         source: module,
         optional: peerDependenciesMeta?.[name]?.optional,
-        destination: undefined,
+        destination,
       };
-
-      // Only count as "met" if the module was brought in via a regular
-      // (non-peer) dependency, or is an explicitly queried root module.
-      // Nodes that are in the graph solely due to peer dep resolution should
-      // still be reported as "missing" in the unmet-peer-deps report.
-      const met = moduleInfos
-        .values()
-        .find(
-          ({ module: mod, level, upstream }) =>
-            mod.name === name &&
-            satisfies(mod.version, versionRange) &&
-            (level === 0 ||
-              [...upstream].some(({ type }) => type !== 'peerDependencies')),
-        );
-      if (met) {
-        pdi.destination = met.module;
-      }
 
       peerDependencyInfos.push(pdi);
     }

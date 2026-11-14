@@ -145,13 +145,13 @@ export default class Module {
 
   getLicenses() {
     // Pick license from latest `dist` version, if available
-    const pkg = this.getLatestVersion() ?? this.package;
+    const { license, licenses } = (this.getLatestVersion() ??
+      this.package) as PackageJSON;
 
-    return parseLicense(
-      // An empty `license` string must fall back to `licenses`, unlike `??`
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      pkg.license || (pkg as unknown as { licenses: string[] }).licenses,
-    );
+    const parsed = parseLicense(license);
+
+    // Fall back to the deprecated `licenses` when `license` is empty or missing
+    return parsed.length > 0 ? parsed : parseLicense(licenses);
   }
 
   toString() {

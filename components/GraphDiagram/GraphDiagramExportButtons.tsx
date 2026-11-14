@@ -8,6 +8,7 @@ import PngIcon from '../../images/icons/png.svg?react';
 import { report } from '../../lib/bugsnag.ts';
 import { flash, flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
 import { composeMermaid } from '../../lib/graph-util.ts';
 import { Button, ButtonGroup } from '../Button.tsx';
 import * as graphStyles from './GraphDiagram.module.scss';
@@ -20,12 +21,18 @@ function getDiagramElement() {
 
 export default function GraphDiagramExportButtons() {
   const [graph] = useGlobalState('graph');
+  const [query] = useQuery();
   const [isCopying, setIsCopying] = useState(false);
 
   return (
     <>
       <ButtonGroup>
-        <Button title="Download graph as SVG" onClick={downloadSvg}>
+        <Button
+          title="Download graph as SVG"
+          onClick={() => {
+            downloadSvg(query);
+          }}
+        >
           <DownloadIcon />
         </Button>
       </ButtonGroup>
@@ -176,7 +183,7 @@ async function copyPng() {
   }
 }
 
-function downloadSvg() {
+function downloadSvg(query: string[]) {
   // Get svg DOM (cloned, so we can tweak as needed for SVG export)
   const svg = getDiagramElement()?.cloneNode(true) as SVGSVGElement | undefined;
   if (!svg) {
@@ -192,7 +199,7 @@ function downloadSvg() {
   const svgData = new XMLSerializer().serializeToString(svg);
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const svgUrl = URL.createObjectURL(svgBlob);
-  generateLinkToDownload('svg', svgUrl);
+  generateLinkToDownload('svg', svgUrl, query);
 }
 
 // Collects rules from all readable stylesheets (<link> in production, <style>
@@ -222,11 +229,16 @@ function cloneStyleElement() {
   return styleElement;
 }
 
-function generateLinkToDownload(extension: DownloadExtension, link: string) {
-  const name = (document.title.split('- ').at(-1) ?? '').replaceAll(
-    /\W+/gv,
-    '_',
-  );
+function generateLinkToDownload(
+  extension: DownloadExtension,
+  link: string,
+  query: string[],
+) {
+  const title =
+    query.length > 0
+      ? `Dependencies for ${query.join(', ')}`
+      : 'NPM Dependency Diagrams';
+  const name = title.replaceAll(/\W+/gv, '_');
   const downloadLink = document.createElement('a');
   downloadLink.href = link;
   downloadLink.download = `${name}_dependencies.${extension}`;

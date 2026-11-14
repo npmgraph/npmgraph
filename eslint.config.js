@@ -91,6 +91,15 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: [tsFilesGlob],
+    rules: {
+      '@typescript-eslint/prefer-nullish-coalescing': [
+        'error',
+        { ignorePrimitives: { boolean: true } },
+      ],
+    },
+  },
   reactDoctor.configs.recommended,
   {
     // Warnings are ignored, so make them fail
