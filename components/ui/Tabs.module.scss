@@ -1,5 +1,7 @@
 @use '../../lib/root.module.scss' as *;
 
+$tab-padding: 10px;
+
 .root,
 .list {
   display: flex;
@@ -38,7 +40,7 @@
     flex-grow: 1;
     justify-content: center;
     align-items: center;
-    padding: 0 10px;
+    padding: 0 $tab-padding;
   }
 
   &.active button {
@@ -53,7 +55,9 @@
   &::after {
     position: absolute;
     top: -3px;
-    right: -10px;
+    right: calc(
+      $tab-padding / -2
+    ); // Halfway into the padding, away from the border
     border-radius: 50%;
     background: var(--accent);
     width: 8px;
