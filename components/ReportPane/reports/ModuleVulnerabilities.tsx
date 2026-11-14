@@ -1,94 +1,26 @@
 import { Suspense, use, useDeferredValue, useMemo } from 'react';
 import { QueryType } from '../../../lib/ModuleCache.ts';
-import fetchJson from '../../../lib/fetchJson.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Row, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type { ModuleAnalysisState } from '../analyzers/analyzeModules.ts';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
+import { fetchAdvisories, type Advisory } from './advisories.ts';
 import * as styles from './ModuleVulnerabilities.module.css';
 
-const SEVERITY_RANK = {
-  none: 0,
-  info: 1,
-  low: 2,
-  moderate: 3,
-  high: 4,
-  critical: 5,
-};
-
-type Advisory = {
-  packageName?: string;
-  id: number;
-  url: string;
-  title: string;
-  severity: 'none' | 'info' | 'low' | 'moderate' | 'high' | 'critical';
-  vulnerable_versions: string;
-  cwe: string[]; // CWE codes
-  cvss: { score: number; vectorString: string };
-};
-
-async function fetchAdvisories({ moduleInfos }: ModuleAnalysisState) {
-  type BulkAdvisories = Record<string, Advisory[]>;
+function getVersionsByName({ moduleInfos }: ModuleAnalysisState) {
   const versionsByName: Record<string, string[]> = {};
 
-  let nModules = 0;
   for (const { module } of moduleInfos.values()) {
     versionsByName[module.name] ??= [];
     (versionsByName[module.name] ??= []).push(module.version);
-    nModules++;
   }
 
-  let moduleAdvisories: BulkAdvisories | null = null;
-  if (nModules > 0) {
-    const body = JSON.stringify(versionsByName, null, 2);
-
-    // Ideally we'd be using `getRegistry()` here, but due to CORS issues with the
-    // npmjs.org registry endpoint, we have to use our own proxy lambda instead.
-    const registry =
-      'https://pcwyqhjns4xzfybfy6grsq3if40sccxu.lambda-url.us-west-2.on.aws';
-
-    moduleAdvisories = await fetchJson<BulkAdvisories>(
-      `${registry}/-/npm/v1/security/advisories/bulk`,
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-        method: 'POST',
-        body,
-      },
-    ).catch(error => {
-      console.log('Error fetching NPM audit data:', error.message);
-      return null;
-    });
-  }
-
-  // Get flat list of advisories
-  const advisories: Advisory[] = [];
-  if (moduleAdvisories) {
-    for (const [moduleName, moduleAdvisory] of Object.entries(
-      moduleAdvisories,
-    )) {
-      for (const adv of moduleAdvisory) {
-        adv.packageName = moduleName;
-        advisories.push(adv);
-      }
-    }
-  }
-
-  // Sort by severity, name
-  advisories.sort((a, b) => {
-    const rank = SEVERITY_RANK[b.severity] - SEVERITY_RANK[a.severity];
-    return rank === 0
-      ? (a.packageName ?? '').localeCompare(b.packageName ?? '')
-      : rank;
-  });
-
-  return advisories;
+  return versionsByName;
 }
 
-function AdvisoryRow({ advisory }: { advisory: Advisory }) {
+export function AdvisoryRow({ advisory }: { advisory: Advisory }) {
   return (
     <Row
       stacked
@@ -151,7 +83,7 @@ export default function ModuleVulnerabilities() {
   // previous advisories (and the open state) on screen while the next ones load
   const advisories = useDeferredValue(
     // eslint-disable-next-line @typescript-eslint/promise-function-async -- useMemo() can't take an async callback
-    useMemo(() => fetchAdvisories(analysis), [analysis]),
+    useMemo(() => fetchAdvisories(getVersionsByName(analysis)), [analysis]),
   );
 
   return (

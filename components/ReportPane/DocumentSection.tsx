@@ -2,19 +2,23 @@ import type { ReactNode } from 'react';
 import { useHashParameters } from '../../hooks/useHashParam.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PARAM_SECTION } from '../../lib/constants.ts';
-import { SectionBody } from '../ui/Section.tsx';
+import {
+  SectionBody,
+  SectionSymbol,
+  type SectionType,
+} from '../ui/Section.tsx';
 import * as styles from './DocumentSection.module.scss';
 
 // An always-open section with a permalink, for the report-only view
 export function DocumentSection({
   title,
   count,
-  icon,
+  type,
   children,
 }: {
   title: string;
   count?: number | string;
-  icon?: ReactNode;
+  type?: SectionType;
   children: ReactNode;
 }) {
   const name = sectionName(title);
@@ -34,7 +38,7 @@ export function DocumentSection({
           #
         </a>
         {title}
-        {icon}
+        <SectionSymbol type={type} />
         {count !== undefined && <small>{count}</small>}
       </h2>
       <SectionBody>{children}</SectionBody>

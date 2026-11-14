@@ -2,18 +2,19 @@ import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { queryModuleCache } from '../../lib/ModuleCache.ts';
 import type Module from '../../lib/Module.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
+import { ModuleAdvisories } from './ModuleAdvisories.tsx';
 import { ModuleDependents } from './ModuleDependents.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.css';
 import { ModuleSize } from './ModuleSize.tsx';
-import { ModuleVersionInfo } from './ModuleVersionInfo.tsx';
+import { ModuleDistTag } from './ModuleVersionInfo.tsx';
+import { ModuleWarnings } from './ModuleWarnings.tsx';
 import { ReleaseTimeline } from './ReleaseTimeline.tsx';
 
 function useSelectedModules() {
@@ -67,29 +68,26 @@ function ModuleDetailsPane({
 }: { module: Module } & React.HTMLAttributes<HTMLDivElement>) {
   const [colorize] = useHashParam(PARAM_COLORIZE);
   const pkg = module.package;
+  const isShowStatus = !colorize || colorize === OutdatedColorizer.name;
 
   return (
     <Pane {...props}>
       <div className={styles.title}>
         <h2>{module.source ?? module.key}</h2>
-        {!colorize || colorize === OutdatedColorizer.name ? (
-          <ModuleVersionInfo module={module} />
-        ) : null}
+        {isShowStatus && <ModuleDistTag module={module} />}
       </div>
-
-      {pkg.deprecated ? (
-        <div className={cn(styles.warning, styles.deprecatedBox)}>
-          <h2 className={styles.deprecatedTitle}>Deprecated Module</h2>
-          {pkg.deprecated}
-        </div>
-      ) : null}
 
       <p>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
-        <ModuleActions module={module} />
         <ModuleExternalLinks module={module} />
+        <ModuleActions module={module} />
       </div>
+
+      <ModuleWarnings module={module} showOutdated={isShowStatus} />
+
+      {/* Modules loaded from elsewhere (e.g. a URL) have no registry data */}
+      {module.packument && <ModuleAdvisories module={module} />}
 
       <ReleaseTimeline module={module} />
 

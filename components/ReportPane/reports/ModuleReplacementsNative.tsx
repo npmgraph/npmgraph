@@ -1,28 +1,11 @@
-import {
-  all,
-  resolveDocUrl,
-  type ModuleReplacement,
-} from 'module-replacements';
+import { resolveDocUrl, type ModuleReplacement } from 'module-replacements';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
 import type Module from '../../../lib/Module.ts';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 import * as styles from './ModuleList.module.css';
-
-type Mapping = (typeof all.mappings)[string];
-
-function getReplacements(moduleName: string) {
-  const mapping = all.mappings[moduleName];
-  if (!mapping) {
-    return { mapping: null, replacements: null };
-  }
-
-  return {
-    mapping,
-    replacements: mapping.replacements.map(id => all.replacements[id]),
-  };
-}
+import { getReplacements, type Mapping } from './replacements.ts';
 
 // Render `backticked` parts as code
 function InlineCode({ text }: { text: string }) {
@@ -33,7 +16,11 @@ function InlineCode({ text }: { text: string }) {
     );
 }
 
-function Replacement({ replacement }: { replacement: ModuleReplacement }) {
+export function Replacement({
+  replacement,
+}: {
+  replacement: ModuleReplacement;
+}) {
   switch (replacement.type) {
     case 'native': {
       const url = resolveDocUrl(replacement.url)!;
