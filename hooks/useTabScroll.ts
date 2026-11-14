@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
-import { $ } from 'select-dom';
+import { getScroller } from '../lib/dom.ts';
 
 // Last scroll position per tab, valid only while the tab shows the same content
 const positions = new Map<string, { key: string; top: number }>();
@@ -21,9 +21,7 @@ export function useTabScroll(
 
     currentRef.current = { tab, key };
     const saved = positions.get(tab);
-    // The page scrolls on tight screens, the inspector otherwise
-    const scroller = isTightScreen ? document.documentElement : $('#inspector');
-    scroller?.scrollTo({
+    getScroller(isTightScreen)?.scrollTo({
       top: saved?.key === key ? saved.top : 0,
       behavior: 'instant',
     });
@@ -34,7 +32,7 @@ export function useTabScroll(
       return;
     }
 
-    const scroller = isTightScreen ? document.documentElement : $('#inspector');
+    const scroller = getScroller(isTightScreen);
     // The page's scroll events fire on the document
     const target = isTightScreen ? document : scroller;
     const save = () => {
