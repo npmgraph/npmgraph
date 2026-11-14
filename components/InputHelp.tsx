@@ -5,7 +5,7 @@ import { QueryLink } from './ui/QueryLink.tsx';
 const EXAMPLES = [
   ['express'],
   ['cross-env@6', 'rimraf'],
-  ['sindresorhus/type-fest'],
+  ['sindresorhus/ora'],
 ];
 
 export default function InputHelp() {
