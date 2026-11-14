@@ -31,4 +31,9 @@
   }
 
   --chips-justify: center;
+
+  p {
+    max-width: 40em;
+    text-align: center;
+  }
 }
