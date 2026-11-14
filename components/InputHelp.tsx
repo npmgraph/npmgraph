@@ -1,4 +1,11 @@
+import * as styles from './InputHelp.module.css';
 import { QueryLink } from './ui/QueryLink.tsx';
+
+const EXAMPLES = [
+  ['express'],
+  ['cross-env@6', 'rimraf'],
+  ['sindresorhus/type-fest'],
+];
 
 export default function InputHelp({
   heading = 'For example:',
@@ -8,27 +15,12 @@ export default function InputHelp({
   return (
     <>
       <p>{heading}</p>
-
-      <ul>
-        <li>
-          A npm module name: <QueryLink query={['express']} />
-        </li>
-        <li>
-          Multiple, versioned module names:{' '}
-          <QueryLink query={['cross-env@6', 'rimraf']} />
-        </li>
-        <li>
-          A GitHub repository shorthand:{' '}
-          <QueryLink query="sindresorhus/type-fest">
-            sindresorhus/type-fest
-          </QueryLink>
-        </li>
-        <li>
-          A URL to a{' '}
-          <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
-            package.json file
-          </QueryLink>
-        </li>
+      <ul className={styles.chips}>
+        {EXAMPLES.map(query => (
+          <li key={query.join()}>
+            <QueryLink query={query} />
+          </li>
+        ))}
       </ul>
     </>
   );

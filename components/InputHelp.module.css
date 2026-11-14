@@ -1,0 +1,25 @@
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: var(--chips-justify, flex-start);
+  gap: 0.5em;
+  margin: 0 0 1em;
+  padding: 0;
+  list-style: none;
+
+  a {
+    display: block;
+    border: 1px solid var(--border);
+    border-radius: 2em;
+    background: var(--bg1);
+    padding: 0.2em 0.8em;
+    color: var(--accent);
+    font-family: monospace;
+    text-decoration: none;
+
+    &:hover {
+      filter: brightness(var(--hover-brightness));
+      border-color: var(--accent);
+    }
+  }
+}

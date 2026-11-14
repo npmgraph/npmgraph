@@ -1,6 +1,7 @@
 import type { HTMLProps } from 'react';
 import { Pane } from '../ui/Pane.tsx';
 import InputHelp from '../InputHelp.tsx';
+import { QueryLink } from '../ui/QueryLink.tsx';
 import FilePicker from './FilePicker.tsx';
 import * as styles from './InfoPane.module.css';
 
@@ -13,6 +14,12 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
       <ul>
         <li>Drag and drop a file anywhere on the page</li>
         <li>Paste package.json (file or text)</li>
+        <li>
+          Link to a{' '}
+          <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
+            package.json file
+          </QueryLink>
+        </li>
         <li>
           <FilePicker label="Choose file" /> from your computer
         </li>

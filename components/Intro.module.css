@@ -30,7 +30,9 @@
     color: var(--accent);
   }
 
-  ul {
-    margin: 0;
+  --chips-justify: center;
+
+  p {
+    margin-bottom: 0.5em;
   }
 }
