@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow -- the `error` function and its parameters share a name */
 import Bugsnag from '@bugsnag/js';
 import HttpError from './HttpError.ts';
 
@@ -20,58 +19,25 @@ export function disableBugsnag() {
   isDisabled = true;
 }
 
-const bugsnag = apiKey
-  ? Bugsnag.start({
-      appVersion,
-      apiKey,
-      releaseStage,
-      enabledReleaseStages: ['production', 'preview'],
-      onError(event) {
-        // Don't report HttpErrors since they're kind of expected from time to time
-        if (isDisabled || event.originalError instanceof HttpError) {
-          return false;
-        }
+if (apiKey) {
+  Bugsnag.start({
+    appVersion,
+    apiKey,
+    releaseStage,
+    enabledReleaseStages: ['production', 'preview'],
+    onError(event) {
+      // Don't report HttpErrors since they're kind of expected from time to time
+      if (isDisabled || event.originalError instanceof HttpError) {
+        return false;
+      }
 
-        const message = event.errors[0]?.errorMessage ?? '';
-        const exclude = [
-          'Failed to fetch dynamically imported module',
-          'Unable to preload CSS',
-        ];
-        // Stale chunks after a deploy; handled by reload in index.tsx
-        return exclude.every(item => !message.includes(item));
-      },
-    })
-  : undefined;
-
-function notify(
-  error: Error,
-  severity: 'info' | 'warning' | 'error',
-  onSent?: () => void,
-) {
-  if (!bugsnag) {
-    onSent?.();
-    return;
-  }
-
-  bugsnag.notify(
-    error,
-    event => {
-      event.severity = severity;
+      const message = event.errors[0]?.errorMessage ?? '';
+      const exclude = [
+        'Failed to fetch dynamically imported module',
+        'Unable to preload CSS',
+      ];
+      // Stale chunks after a deploy; handled by reload in index.tsx
+      return exclude.every(item => !message.includes(item));
     },
-    () => onSent?.(),
-  );
+  });
 }
-
-function info(error: Error, onSent?: () => void) {
-  notify(error, 'info', onSent);
-}
-
-function warn(error: Error, onSent?: () => void) {
-  notify(error, 'warning', onSent);
-}
-
-function error(error: Error, onSent?: () => void) {
-  notify(error, 'error', onSent);
-}
-
-export const report = { info, warn, error };

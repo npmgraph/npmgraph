@@ -1,6 +1,5 @@
 import type Module from '../../../lib/Module.ts';
 import type { Maintainer } from '../../../lib/Module.ts';
-import { report } from '../../../lib/bugsnag.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
 
 export type MaintainerAnalysisState = {
@@ -63,7 +62,7 @@ export function analyzeMaintainers({
       }
 
       if (!maintainer.name) {
-        report.error(
+        reportError(
           new Error(
             `Nameless maintainer ${JSON.stringify(m)} in ${module.key}`,
           ),

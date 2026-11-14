@@ -5,7 +5,6 @@ import CopyIcon from '../../images/icons/copy.svg?react';
 import DownloadIcon from '../../images/icons/download.svg?react';
 import MarkdownIcon from '../../images/icons/markdown.svg?react';
 import PngIcon from '../../images/icons/png.svg?react';
-import { report } from '../../lib/bugsnag.ts';
 import { flash, flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
@@ -90,7 +89,7 @@ async function renderPngBlob(): Promise<{
   const vb = svg?.getAttribute('viewBox')?.split(' ');
 
   if (!svg || !vb) {
-    report.error(new Error('No viewBox'));
+    reportError(new Error('No viewBox'));
     return null;
   }
 
@@ -178,7 +177,7 @@ async function copyPng() {
       return;
     }
 
-    report.error(error instanceof Error ? error : new Error(String(error)));
+    reportError(error);
     flashError('Unable to copy image to clipboard');
   }
 }
