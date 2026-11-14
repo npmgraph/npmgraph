@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { $$optional } from 'select-dom';
 import { patchHash } from '../../hooks/useLocation.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PaneType, PARAM_SECTION, PARAM_TAB } from '../../lib/constants.ts';
@@ -10,6 +11,9 @@ import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.css';
 
 const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
+
+// Sections the user opened or closed, to restore them when the pane is shown again
+const toggled = new Map<string, boolean>();
 
 // Like in the report-only view, a single open section is linkable
 function storeOpenSection() {
@@ -49,6 +53,9 @@ export function ReportItem({
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
+  const [query] = useQuery();
+  const name = sectionName(title);
+  const toggleKey = `${query.join(',')}|${name}`;
   const icon = SYMBOLS[type] && (
     <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
   );
@@ -65,12 +72,21 @@ export function ReportItem({
     </DocumentSection>
   ) : (
     <CollapsibleSection
-      open={open}
+      open={toggled.get(toggleKey) ?? open}
       icon={icon}
       title={title}
       count={count}
-      data-report-item={sectionName(title)}
-      onToggle={storeOpenSection}
+      data-report-item={name}
+      onToggle={event => {
+        // Remember only what differs from the default, which may change with the data
+        if (event.currentTarget.open === open) {
+          toggled.delete(toggleKey);
+        } else {
+          toggled.set(toggleKey, event.currentTarget.open);
+        }
+
+        storeOpenSection();
+      }}
     >
       {body}
     </CollapsibleSection>

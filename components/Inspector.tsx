@@ -5,7 +5,10 @@ import { cn } from '../lib/dom.ts';
 import useHashParam from '../hooks/useHashParam.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
+import useGraphSelection from '../hooks/useGraphSelection.ts';
+import { useQuery } from '../hooks/useQuery.ts';
 import { useTab } from '../hooks/useTab.ts';
+import { useTabScroll } from '../hooks/useTabScroll.ts';
 import ErrorsBox from './InfoPane/ErrorsBox.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
@@ -28,9 +31,28 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
 
   const [hide] = useHashParam(PARAM_HIDE);
   const [isReportOnly] = useReportOnly();
+  const [query] = useQuery();
+  const [selectionType, selectionValue] = useGraphSelection();
 
   // The graph is rendered by App, so it doesn't change when switching tabs
-  if (!isReportOnly && (hide !== null || (isTightScreen && isGraphVisible))) {
+  const isHidden =
+    !isReportOnly && (hide !== null || (isTightScreen && isGraphVisible));
+  const shownTab = isReportOnly ? PaneType.REPORT : deferredTab;
+
+  // The scroll position only makes sense for the same content
+  const content = query.join(',');
+  useTabScroll(
+    shownTab,
+    shownTab === PaneType.MODULE
+      ? `${content}|${selectionType}:${selectionValue}`
+      : shownTab === PaneType.REPORT
+        ? content
+        : '',
+    isTightScreen,
+    !isHidden,
+  );
+
+  if (isHidden) {
     return null;
   }
 
