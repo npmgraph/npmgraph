@@ -1,20 +1,3 @@
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-}
-
-.examples {
-  --chips-justify: center;
-}
-
-.footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5em;
-}
-
 .links {
   display: flex;
   justify-content: center;

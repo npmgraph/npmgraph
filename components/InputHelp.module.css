@@ -1,15 +1,8 @@
 .chips {
   display: flex;
   flex-wrap: wrap;
-  justify-content: var(--chips-justify, flex-start);
+  justify-content: center;
   align-items: center;
-  gap: 0.5em;
-}
-
-.examples {
-  display: flex;
-  flex-direction: column;
-  align-items: var(--chips-justify, flex-start);
   gap: 0.5em;
 }
 

@@ -12,7 +12,6 @@
   padding: 1em;
   width: 100%;
   min-height: 100svh;
-  --chips-justify: center;
 
   @media (prefers-color-scheme: dark) {
     background: radial-gradient(var(--bg0), var(--bg-root));
@@ -24,10 +23,6 @@
     max-width: 90%;
   }
 
-  h3 {
-    text-align: center;
-  }
-
   a {
     color: var(--accent);
   }
@@ -35,13 +30,5 @@
   p {
     margin: 0;
     max-width: 26em;
-    text-align: center;
   }
-}
-
-.description {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5em;
 }

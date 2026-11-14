@@ -1,20 +1,17 @@
 import type { HTMLProps } from 'react';
 import { Pane } from '../ui/Pane.tsx';
+import { Group } from '../ui/Group.tsx';
 import { InputDescription, InputExamples } from '../InputHelp.tsx';
 import * as styles from './InfoPane.module.css';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <div className={styles.group}>
-        <h3>npmgraph</h3>
+      <Group title="npmgraph">
         <InputDescription />
-      </div>
-      <div className={styles.examples}>
-        <InputExamples />
-      </div>
-      <footer className={styles.footer}>
-        <h3>Connect</h3>
+      </Group>
+      <InputExamples />
+      <Group title="Connect">
         <div className={styles.links}>
           <a
             href="https://github.com/npmgraph/npmgraph"
@@ -32,7 +29,7 @@ export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
             Sponsor
           </a>
         </div>
-      </footer>
+      </Group>
     </Pane>
   );
 }

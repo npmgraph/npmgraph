@@ -2,6 +2,7 @@ import BugsnagLogo from '../images/partners/bugsnag.svg?react';
 import GitHubLogo from '../images/partners/github.svg?react';
 import NpmLogo from '../images/partners/npm.svg?react';
 import * as styles from './StickerFarm.module.css';
+import { Group } from './ui/Group.tsx';
 
 const PARTNERS = [
   { name: 'npm', href: 'https://www.npmjs.com', Logo: NpmLogo },
@@ -11,9 +12,8 @@ const PARTNERS = [
 
 export default function StickerFarm() {
   return (
-    <div className={styles.root}>
-      <h3>Powered By</h3>
-      <ul>
+    <Group title="Powered By">
+      <ul className={styles.list}>
         {PARTNERS.map(({ name, href, Logo }) => (
           <li key={name}>
             <a
@@ -27,6 +27,6 @@ export default function StickerFarm() {
           </li>
         ))}
       </ul>
-    </div>
+    </Group>
   );
 }

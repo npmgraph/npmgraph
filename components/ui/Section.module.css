@@ -2,13 +2,10 @@
   scroll-margin-top: 60px;
 
   > summary,
-  > h3 {
+  > h2 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-
-    /* Not the small label style of the global h3 */
-    opacity: 1;
     margin-inline: calc(-1 * var(--pane-spacing-inline));
     border-top: solid 1px var(--border);
     padding: 1em var(--pane-spacing-inline);
@@ -19,8 +16,6 @@
 
     /* Reset line-height to match the spacing of native H3 */
     line-height: normal;
-    letter-spacing: normal;
-    text-transform: none;
   }
 
   /* Move triangle to the right */

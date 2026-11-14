@@ -5,6 +5,7 @@ import { InputDescription, InputExamples } from './InputHelp.tsx';
 import * as styles from './Intro.module.css';
 import Logo from './Logo.tsx';
 import StickerFarm from './StickerFarm.tsx';
+import { Group } from './ui/Group.tsx';
 
 export default function Intro() {
   return (
@@ -14,10 +15,9 @@ export default function Intro() {
       </h1>
       <QueryInput variant="hero" />
       <InputExamples />
-      <div className={styles.description}>
-        <h3>Explore npm modules and dependencies</h3>
+      <Group title="Explore npm modules and dependencies">
         <InputDescription isDim />
-      </div>
+      </Group>
       <StickerFarm />
       <GitHubCorner />
     </main>

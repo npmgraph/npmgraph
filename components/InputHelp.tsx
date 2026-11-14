@@ -1,5 +1,6 @@
 import FilePicker from './InfoPane/FilePicker.tsx';
 import * as styles from './InputHelp.module.css';
+import { Group } from './ui/Group.tsx';
 import { QueryLink } from './ui/QueryLink.tsx';
 
 export function InputDescription({ isDim }: { isDim?: boolean }) {
@@ -18,8 +19,7 @@ export function InputDescription({ isDim }: { isDim?: boolean }) {
 
 export function InputExamples() {
   return (
-    <div className={styles.examples}>
-      <h3>Try</h3>
+    <Group title="Try">
       <div className={styles.chips}>
         <QueryLink
           className={styles.chip}
@@ -37,6 +37,6 @@ export function InputExamples() {
           title="A GitHub repository reference"
         />
       </div>
-    </div>
+    </Group>
   );
 }

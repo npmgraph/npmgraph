@@ -83,10 +83,10 @@ export function Section({
 
   return (
     <div ref={ref} className={cn(className, styles.root)}>
-      <h3>
+      <h2>
         {title}
         <Count count={count} />
-      </h3>
+      </h2>
       <SectionBody>{children}</SectionBody>
     </div>
   );
