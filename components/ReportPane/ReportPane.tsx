@@ -1,7 +1,9 @@
+import ShareIcon from '../../images/icons/share.svg?react';
 import useGraph from '../../hooks/useGraph.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
-import { Button } from '../Button.tsx';
+import { flashError } from '../../lib/flash.ts';
+import { Button, ButtonGroup } from '../Button.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
@@ -17,6 +19,19 @@ import ModulesOutdated from './reports/ModulesOutdated.tsx';
 import ModulesRepeated from './reports/ModulesRepeated.tsx';
 import PeerDependenciesAll from './reports/PeerDependenciesAll.tsx';
 import PeerDependenciesMissing from './reports/PeerDependenciesMissing.tsx';
+
+const canShare = typeof navigator !== 'undefined' && 'share' in navigator;
+
+async function share() {
+  try {
+    await navigator.share({ title: document.title, url: location.href });
+  } catch (error) {
+    // Dismissing the share sheet rejects with an `AbortError`
+    if (!(error instanceof DOMException && error.name === 'AbortError')) {
+      flashError(error);
+    }
+  }
+}
 
 export default function ReportPane({
   className,
@@ -42,9 +57,29 @@ export default function ReportPane({
       className={cn(className, { [styles.document]: isReportOnly })}
       {...props}
     >
-      {!isReportOnly && (
-        <>
-          <div className={styles.toolbar}>
+      <div className={styles.toolbar}>
+        {isReportOnly ? (
+          <ButtonGroup className={styles.actions}>
+            <Button
+              onClick={() => {
+                setReportOnly(false);
+              }}
+            >
+              Close
+            </Button>
+            {canShare && (
+              <Button
+                aria-label="Share"
+                onClick={() => {
+                  void share();
+                }}
+              >
+                <ShareIcon />
+              </Button>
+            )}
+          </ButtonGroup>
+        ) : (
+          <>
             <div className={styles.description}>
               You can view a shareable report without the graph
             </div>
@@ -53,12 +88,12 @@ export default function ReportPane({
                 setReportOnly(true);
               }}
             >
-              Report only
+              Expand
             </Button>
-          </div>
-          <CollapsedModules />
-        </>
-      )}
+          </>
+        )}
+      </div>
+      {!isReportOnly && <CollapsedModules />}
       <AnalysisProvider>
         <ModulesAll />
         <PeerDependenciesAll />
