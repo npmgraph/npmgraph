@@ -1,35 +1,42 @@
+import FilePicker from './InfoPane/FilePicker.tsx';
+import * as styles from './InputHelp.module.css';
+import { Group } from './ui/Group.tsx';
 import { QueryLink } from './ui/QueryLink.tsx';
 
-export default function InputHelp({
-  heading = 'For example:',
-}: {
-  heading?: string;
-}) {
+export function InputDescription({ isDim }: { isDim?: boolean }) {
   return (
-    <>
-      <p>{heading}</p>
+    <p className={isDim ? styles.dim : undefined}>
+      npmgraph supports looking up npm module names (multiple and versioned),
+      GitHub repository shorthands, or package.json (drop or paste a file, or
+      enter a{' '}
+      <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
+        URL
+      </QueryLink>
+      ). <FilePicker label="Choose file" /> from your computer.
+    </p>
+  );
+}
 
-      <ul>
-        <li>
-          A npm module name: <QueryLink query={['express']} />
-        </li>
-        <li>
-          Multiple, versioned module names:{' '}
-          <QueryLink query={['cross-env@6', 'rimraf']} />
-        </li>
-        <li>
-          A GitHub repository shorthand:{' '}
-          <QueryLink query="sindresorhus/type-fest">
-            sindresorhus/type-fest
-          </QueryLink>
-        </li>
-        <li>
-          A URL to a{' '}
-          <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
-            package.json file
-          </QueryLink>
-        </li>
-      </ul>
-    </>
+export function InputExamples() {
+  return (
+    <Group title="Try">
+      <div className={styles.chips}>
+        <QueryLink
+          className={styles.chip}
+          query={['express']}
+          title="A single module name"
+        />
+        <QueryLink
+          className={styles.chip}
+          query={['cross-env@6', 'rimraf']}
+          title="Multiple module names, with optional versions"
+        />
+        <QueryLink
+          className={styles.chip}
+          query={['sindresorhus/ora']}
+          title="A GitHub repository reference"
+        />
+      </div>
+    </Group>
   );
 }
