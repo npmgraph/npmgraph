@@ -35,7 +35,7 @@ export default function ModulesAll() {
           const dependents = [
             ...new Set(
               [...(moduleInfos.get(module.key)?.upstream ?? [])].map(
-                ({ module }) => module.name,
+                ({ module: upstreamModule }) => upstreamModule.name,
               ),
             ),
           ].toSorted();
