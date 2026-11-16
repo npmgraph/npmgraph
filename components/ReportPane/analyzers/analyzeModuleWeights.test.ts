@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import Module from '../../../lib/Module.ts';
-import { analyzeRemovalImpact } from './analyzeRemovalImpact.ts';
+import { analyzeModuleWeights } from './analyzeModuleWeights.ts';
 
 const create = (name: string) => new Module({ name, version: '1.0.0' });
 
-describe('analyzeRemovalImpact', () => {
-  it('counts only the modules that no other dependency needs', () => {
+describe('analyzeModuleWeights', () => {
+  it('counts what each module pulls in and flags the heavy ones', () => {
     const root = create('root');
     const a = create('a');
     const b = create('b');
@@ -31,13 +31,14 @@ describe('analyzeRemovalImpact', () => {
       ]),
     );
 
-    const impact = analyzeRemovalImpact({
+    const weights = analyzeModuleWeights({
       moduleInfos,
       entryModules: new Set([root]),
     } as never);
 
-    expect(impact.map(({ module, dropped }) => [module.name, dropped])).toEqual(
-      [['a', 2]],
-    );
+    expect([...weights]).toEqual([
+      [a.key, { pulls: 2, heavy: true }],
+      [b.key, { pulls: 1, heavy: false }],
+    ]);
   });
 });

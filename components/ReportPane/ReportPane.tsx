@@ -16,7 +16,6 @@ import ModuleVulnerabilities from './reports/ModuleVulnerabilities.tsx';
 import ModulesAll from './reports/ModulesAll.tsx';
 import ModulesDeprecated from './reports/ModulesDeprecated.tsx';
 import ModulesOutdated from './reports/ModulesOutdated.tsx';
-import ModulesRemovalImpact from './reports/ModulesRemovalImpact.tsx';
 import ModulesRepeated from './reports/ModulesRepeated.tsx';
 import PeerDependenciesAll from './reports/PeerDependenciesAll.tsx';
 import PeerDependenciesMissing from './reports/PeerDependenciesMissing.tsx';
@@ -64,7 +63,6 @@ export default function ReportPane({
       )}
       <AnalysisProvider>
         <ModulesAll />
-        <ModulesRemovalImpact />
         <PeerDependenciesAll />
         <MaintainersAll />
         <LicensesAll />
