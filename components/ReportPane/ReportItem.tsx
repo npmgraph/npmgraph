@@ -10,11 +10,7 @@ import { CollapsibleSection } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.css';
 
-const SYMBOLS = {
-  info: null,
-  warn: <AlertFillIcon />,
-  error: '\u{1F6AB}',
-};
+const SYMBOLS = { info: null, warn: <AlertFillIcon /> };
 
 // Like in the report-only view, a single open section is linkable
 function storeOpenSection() {
@@ -48,7 +44,7 @@ export function ReportItem({
 }: {
   title: string;
   count?: number | string;
-  type?: 'info' | 'warn' | 'error';
+  type?: 'info' | 'warn';
   description?: ReactNode;
   open?: boolean;
   children: ReactNode;
