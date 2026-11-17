@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import Tooltip from '../ui/Tooltip.tsx';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { cn, percent } from '../../lib/dom.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
@@ -77,36 +78,44 @@ export function ModuleTreeMap({
         if (leaf.hiddenCount !== undefined) {
           const label = `+${leaf.hiddenCount} more`;
           return (
-            <div
-              key={leaf.key}
-              role="img"
-              aria-label={`${label} (${size})`}
-              className={cn(styles.root, styles.others)}
-              style={position}
-            >
-              {isLabelVisible(width, height, fontScale) && label}
-            </div>
+            <Tooltip key={leaf.key} label={`${label} (${size})`}>
+              {tooltip => (
+                <div
+                  {...tooltip}
+                  role="img"
+                  className={cn(styles.root, styles.others)}
+                  style={{ ...tooltip.style, ...position }}
+                >
+                  {isLabelVisible(width, height, fontScale) && label}
+                </div>
+              )}
+            </Tooltip>
           );
         }
 
         return (
-          <button
-            key={leaf.key}
-            type="button"
-            aria-label={`${leaf.name} (${size})`}
-            className={cn(styles.root, utilities.brightHover)}
-            style={{ ...position, backgroundColor }}
-            onClick={() => {
-              setGraphSelection(QueryType.Default, leaf.name);
-            }}
-          >
-            {isLabelVisible(width, height, fontScale) && (
-              <>
-                {leaf.name}{' '}
-                {isSizeVisible(width, height, fontScale) && <span>{size}</span>}
-              </>
+          <Tooltip key={leaf.key} label={`${leaf.name} (${size})`}>
+            {tooltip => (
+              <button
+                {...tooltip}
+                type="button"
+                className={cn(styles.root, utilities.brightHover)}
+                style={{ ...tooltip.style, ...position, backgroundColor }}
+                onClick={() => {
+                  setGraphSelection(QueryType.Default, leaf.name);
+                }}
+              >
+                {isLabelVisible(width, height, fontScale) && (
+                  <>
+                    {leaf.name}{' '}
+                    {isSizeVisible(width, height, fontScale) && (
+                      <span>{size}</span>
+                    )}
+                  </>
+                )}
+              </button>
             )}
-          </button>
+          </Tooltip>
         );
       })}
     </div>

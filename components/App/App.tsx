@@ -7,7 +7,6 @@ import { useQuery } from '../../hooks/useQuery.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
 import Flash from '../Flash/Flash.tsx';
-import Tooltip from '../ui/Tooltip.tsx';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
 import ErrorsBox from '../InfoPane/ErrorsBox.tsx';
 import Inspector from '../Inspector.tsx';
@@ -45,7 +44,6 @@ export default function App() {
     return (
       <>
         <Flash />
-        <Tooltip />
         <Intro />
         <PreviewWidget />
       </>
@@ -59,7 +57,6 @@ export default function App() {
   return (
     <>
       <Flash />
-      <Tooltip />
       <div
         className={cn(styles.root, {
           [styles.loading]: activity.total > 0,

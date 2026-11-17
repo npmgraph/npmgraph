@@ -5,6 +5,7 @@ import PullRequestIcon from '../images/icons/pull-request.svg?react';
 import XIcon from '../images/icons/x.svg?react';
 import * as utilities from './ui/utilities.module.css';
 import * as styles from './PreviewWidget.module.css';
+import Tooltip from './ui/Tooltip.tsx';
 import { Button, ButtonGroup } from './Button.tsx';
 
 function getNpmgraphJsOrgUrl(locationUrl: URL) {
@@ -37,34 +38,46 @@ export default function PreviewWidget() {
   return (
     <ButtonGroup square vertical className={styles.root}>
       {prUrl ? (
-        <Button
-          href={prUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Open pull request"
-        >
-          <PullRequestIcon />
-        </Button>
+        <Tooltip label="Open pull request">
+          {props => (
+            <Button
+              {...props}
+              href={prUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <PullRequestIcon />
+            </Button>
+          )}
+        </Tooltip>
       ) : null}
-      <Button
-        href={npmgraphUrl}
-        target="_blank"
-        className={utilities.brightHover}
-        rel="noopener noreferrer"
-        aria-label="Compare to production npmgraph"
-      >
-        <GlobeIcon />
-      </Button>
-      <Button
-        className={utilities.brightHover}
-        aria-label="Hide widget until reload"
-        type="button"
-        onClick={() => {
-          setIsHidden(true);
-        }}
-      >
-        <XIcon />
-      </Button>
+      <Tooltip label="Compare to production npmgraph">
+        {props => (
+          <Button
+            {...props}
+            href={npmgraphUrl}
+            target="_blank"
+            className={utilities.brightHover}
+            rel="noopener noreferrer"
+          >
+            <GlobeIcon />
+          </Button>
+        )}
+      </Tooltip>
+      <Tooltip label="Hide widget until reload">
+        {props => (
+          <Button
+            {...props}
+            className={utilities.brightHover}
+            type="button"
+            onClick={() => {
+              setIsHidden(true);
+            }}
+          >
+            <XIcon />
+          </Button>
+        )}
+      </Tooltip>
     </ButtonGroup>
   );
 }

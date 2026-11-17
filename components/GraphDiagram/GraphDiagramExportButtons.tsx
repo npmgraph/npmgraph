@@ -9,6 +9,7 @@ import { flash, flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { composeMermaid } from '../../lib/graph-util.ts';
+import Tooltip from '../ui/Tooltip.tsx';
 import { Button, ButtonGroup } from '../Button.tsx';
 import * as graphStyles from './GraphDiagram.module.scss';
 
@@ -26,52 +27,70 @@ export default function GraphDiagramExportButtons() {
   return (
     <>
       <ButtonGroup>
-        <Button
-          aria-label="Download graph as SVG"
-          onClick={() => {
-            downloadSvg(query);
-          }}
-        >
-          <DownloadIcon />
-        </Button>
+        <Tooltip label="Download graph as SVG">
+          {props => (
+            <Button
+              {...props}
+              onClick={() => {
+                downloadSvg(query);
+              }}
+            >
+              <DownloadIcon />
+            </Button>
+          )}
+        </Tooltip>
       </ButtonGroup>
       <ButtonGroup>
         {isCopying ? (
           <>
-            <Button
-              aria-label="Copy graph as PNG"
-              onClick={() => {
-                setIsCopying(false);
-                void copyPng();
-              }}
-            >
-              <PngIcon />
-            </Button>
-            <Button
-              aria-label="Copy graph as Mermaid in Markdown"
-              onClick={() => {
-                setIsCopying(false);
-                if (
-                  copy(`\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``)
-                ) {
-                  flash('Copied graph as text');
-                } else {
-                  flashError('Could not copy graph');
-                }
-              }}
-            >
-              <MarkdownIcon />
-            </Button>
+            <Tooltip label="Copy graph as PNG">
+              {props => (
+                <Button
+                  {...props}
+                  onClick={() => {
+                    setIsCopying(false);
+                    void copyPng();
+                  }}
+                >
+                  <PngIcon />
+                </Button>
+              )}
+            </Tooltip>
+            <Tooltip label="Copy graph as Mermaid in Markdown">
+              {props => (
+                <Button
+                  {...props}
+                  onClick={() => {
+                    setIsCopying(false);
+                    if (
+                      copy(
+                        `\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``,
+                      )
+                    ) {
+                      flash('Copied graph as text');
+                    } else {
+                      flashError('Could not copy graph');
+                    }
+                  }}
+                >
+                  <MarkdownIcon />
+                </Button>
+              )}
+            </Tooltip>
           </>
         ) : (
-          <Button
-            aria-label="Copy graph"
-            onClick={() => {
-              setIsCopying(true);
-            }}
-          >
-            <CopyIcon />
-          </Button>
+          <Tooltip label="Copy graph">
+            {props => (
+              <Button
+                {...props}
+                onClick={() => {
+                  setIsCopying(true);
+                }}
+              >
+                <CopyIcon />
+              </Button>
+            )}
+          </Tooltip>
         )}
       </ButtonGroup>
     </>

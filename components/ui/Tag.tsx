@@ -2,6 +2,7 @@ import type { HTMLProps } from 'react';
 import { type QueryTypeValue, QueryType } from '../../lib/ModuleCache.ts';
 import { cn } from '../../lib/dom.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import Tooltip from './Tooltip.tsx';
 import { Gravatar } from './Gravatar.tsx';
 import * as styles from './Tag.module.scss';
 import * as utilities from './utilities.module.css';
@@ -37,21 +38,25 @@ export function Tag({
   }
 
   return (
-    <button
-      type="button"
-      className={cn(
-        styles.tag,
-        type === QueryType.Maintainer ? styles.maintainer : '',
-        utilities.brightHover,
-        className,
+    <Tooltip label={title}>
+      {props => (
+        <button
+          {...props}
+          type="button"
+          className={cn(
+            styles.tag,
+            type === QueryType.Maintainer ? styles.maintainer : '',
+            utilities.brightHover,
+            className,
+          )}
+          onClick={() => {
+            setGraphSelection(type, value);
+          }}
+        >
+          {gravatar && <Gravatar email={gravatar} />}
+          {title}
+        </button>
       )}
-      aria-label={title}
-      onClick={() => {
-        setGraphSelection(type, value);
-      }}
-    >
-      {gravatar && <Gravatar email={gravatar} />}
-      {title}
-    </button>
+    </Tooltip>
   );
 }

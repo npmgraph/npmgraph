@@ -1,5 +1,6 @@
 import { useControls, useTransformComponent } from 'react-zoom-pan-pinch';
 import ZoomFitIcon from '../../images/icons/zoom-fit.svg?react';
+import Tooltip from '../ui/Tooltip.tsx';
 import { Button, ButtonGroup } from '../Button.tsx';
 import { zoomAroundCenter } from './viewport-util.ts';
 
@@ -15,22 +16,30 @@ export function GraphDiagramZoomButtons({ fitScale }: { fitScale: number }) {
 
   return (
     <ButtonGroup square>
-      <Button
-        aria-label="Zoom to actual size"
-        onClick={() => {
-          zoomAroundCenter(controls, 1);
-        }}
-      >
-        1:1
-      </Button>
-      <Button
-        aria-label="Zoom to fit"
-        onClick={() => {
-          void controls.fitToView({ maxScale: 1 });
-        }}
-      >
-        <ZoomFitIcon />
-      </Button>
+      <Tooltip label="Zoom to actual size">
+        {props => (
+          <Button
+            {...props}
+            onClick={() => {
+              zoomAroundCenter(controls, 1);
+            }}
+          >
+            1:1
+          </Button>
+        )}
+      </Tooltip>
+      <Tooltip label="Zoom to fit">
+        {props => (
+          <Button
+            {...props}
+            onClick={() => {
+              void controls.fitToView({ maxScale: 1 });
+            }}
+          >
+            <ZoomFitIcon />
+          </Button>
+        )}
+      </Tooltip>
     </ButtonGroup>
   );
 }

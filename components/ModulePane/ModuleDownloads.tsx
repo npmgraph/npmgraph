@@ -1,4 +1,5 @@
 import { Suspense, use } from 'react';
+import Tooltip from '../ui/Tooltip.tsx';
 import usePromise from '../../hooks/usePromise.ts';
 import { cn } from '../../lib/dom.ts';
 import type { NpmDownloadsPoint } from '../../lib/fetch-types.ts';
@@ -61,18 +62,22 @@ function Downloads({
     <div className={styles.downloads}>
       <span>Weekly downloads:</span>
       <strong className={styles.count}>{formatted}</strong>
-      <span className={styles.meter} aria-label={title} role="img">
-        {METER_BAR_HEIGHTS.map((height, i) => (
-          <span
-            key={height}
-            className={cn(
-              styles.meterBar,
-              i < tier.bars ? styles.filled : undefined,
-            )}
-            style={{ height }}
-          />
-        ))}
-      </span>
+      <Tooltip label={title}>
+        {props => (
+          <span {...props} className={styles.meter} role="img">
+            {METER_BAR_HEIGHTS.map((height, i) => (
+              <span
+                key={height}
+                className={cn(
+                  styles.meterBar,
+                  i < tier.bars ? styles.filled : undefined,
+                )}
+                style={{ height }}
+              />
+            ))}
+          </span>
+        )}
+      </Tooltip>
     </div>
   );
 }

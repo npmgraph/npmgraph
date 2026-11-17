@@ -1,5 +1,4 @@
 .tooltip {
-  position-anchor: --tooltip-anchor;
   position-area: bottom;
   position-try-fallbacks: flip-block;
   margin: 6px 0;
@@ -19,7 +18,7 @@
   text-align: center;
 
   &:popover-open {
-    animation: fade-in 0.1s var(--tooltip-delay, 0ms) backwards;
+    animation: fade-in 0.1s backwards;
   }
 }
 
