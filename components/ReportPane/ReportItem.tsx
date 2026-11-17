@@ -1,3 +1,4 @@
+import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import type { ReactNode } from 'react';
 import { $$optional } from 'select-dom';
 import { patchHash } from '../../hooks/useLocation.ts';
@@ -9,7 +10,11 @@ import { CollapsibleSection } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.css';
 
-const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
+const SYMBOLS = {
+  info: null,
+  warn: <AlertFillIcon />,
+  error: '\u{1F6AB}',
+};
 
 // Like in the report-only view, a single open section is linkable
 function storeOpenSection() {

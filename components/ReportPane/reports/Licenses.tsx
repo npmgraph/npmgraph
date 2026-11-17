@@ -1,3 +1,4 @@
+import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import { useEffect, useState } from 'react';
 import type Module from '../../../lib/Module.ts';
 import { QueryType } from '../../../lib/ModuleCache.ts';
@@ -14,7 +15,6 @@ import { ReportItem } from '../ReportItem.tsx';
 import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import * as styles from './Licenses.module.css';
 
-const WARN_SYMBOL = '\u{26A0}';
 const UNLICENSED = 'unlicensed';
 
 const issueBadges: Record<LicenseIssue, string> = {
@@ -26,7 +26,7 @@ const issueBadges: Record<LicenseIssue, string> = {
 function Badge({ children }: { children: string }) {
   return (
     <span className={styles.keyword}>
-      <span className={styles.warnIcon}>{WARN_SYMBOL}</span>
+      <AlertFillIcon className={styles.warnIcon} />
       {children}
     </span>
   );
