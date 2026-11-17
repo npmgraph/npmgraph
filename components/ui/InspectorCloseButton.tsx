@@ -1,11 +1,11 @@
 import { cn } from '../../lib/dom.ts';
-import * as styles from './Splitter.module.scss';
+import * as styles from './InspectorCloseButton.module.scss';
 import * as tabStyles from './Tabs.module.scss';
 import * as utilities from './utilities.module.css';
 
 const blackRightPointingTriangle = '\u{25B6}';
 
-export function Splitter({
+export function InspectorCloseButton({
   onClick,
   isOpen,
 }: {
@@ -20,7 +20,7 @@ export function Splitter({
       className={cn(
         utilities.brightHoverBackdrop,
         tabStyles.tab,
-        styles.splitter,
+        styles.button,
       )}
       aria-hidden={!isOpen}
       onClick={onClick}

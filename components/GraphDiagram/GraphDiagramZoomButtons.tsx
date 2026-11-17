@@ -1,5 +1,5 @@
+import ScreenNormalIcon from 'octicons-plain-react/ScreenNormal';
 import { useControls, useTransformComponent } from 'react-zoom-pan-pinch';
-import ZoomFitIcon from '../../images/icons/zoom-fit.svg?react';
 import { Button, ButtonGroup } from '../Button.tsx';
 import { zoomAroundCenter } from './viewport-util.ts';
 
@@ -29,7 +29,7 @@ export function GraphDiagramZoomButtons({ fitScale }: { fitScale: number }) {
           void controls.fitToView({ maxScale: 1 });
         }}
       >
-        <ZoomFitIcon />
+        <ScreenNormalIcon />
       </Button>
     </ButtonGroup>
   );

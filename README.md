@@ -14,7 +14,7 @@ A tool for exploring npm modules and dependencies. Available online at https://n
 
 Comma-separated list of npm module names, optionally with a version or version range, URLs to `package.json` files, or GitHub `user/repo` shorthand.
 
-**Example**: Graph the `send` module (official NPM registry):
+**Example**: Graph the `send` module (official npm registry):
 
 https://npmgraph.js.org/?q=send
 

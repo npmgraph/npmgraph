@@ -13,14 +13,28 @@
   user-select: none;
   text-decoration: none;
 
+  // Same height as the square buttons, with some room for fingers (`.square` resets the padding)
+  @media (pointer: coarse) {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding-inline: 8px;
+    min-height: var(--button-size);
+  }
+
   svg {
     display: block;
   }
 }
 
-.checkbox input {
-  vertical-align: middle;
-  margin: 0 0.3em 0 0;
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+
+  input {
+    margin: 0;
+  }
 }
 
 .selected {
@@ -77,7 +91,7 @@
   align-items: center;
   box-sizing: border-box;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: var(--button-size);
+  height: var(--button-size);
   line-height: 1;
 }
