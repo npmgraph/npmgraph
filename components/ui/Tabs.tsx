@@ -31,7 +31,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
     visible?: boolean;
   }> = [
     { id: GRAPH, label: 'Graph', visible: isTightScreen || isReportOnly },
-    { id: PaneType.INFO, label: 'Info' },
+    { id: PaneType.INFO, label: 'Info', visible: !isTightScreen },
     { id: PaneType.REPORT, label: 'Report' },
     { id: PaneType.MODULE, label: 'Module' },
     { id: PaneType.VIEW, label: 'View' },
