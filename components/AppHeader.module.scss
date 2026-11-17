@@ -15,7 +15,7 @@
 
   @include tight-screen {
     border-right: none;
-    padding-top: var(--header-padding);
+    padding-block: var(--header-padding);
   }
 
   svg {
