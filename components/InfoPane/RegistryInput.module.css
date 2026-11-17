@@ -15,4 +15,8 @@
 
 .status {
   color: var(--text-dim);
+
+  & svg {
+    vertical-align: text-bottom;
+  }
 }

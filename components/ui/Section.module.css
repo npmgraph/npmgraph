@@ -23,13 +23,21 @@
     display: none;
   }
 
-  & summary::after {
+  > summary .toggle {
+    display: flex;
     margin-left: auto;
-    content: '◀';
   }
 
-  &[open] summary::after {
-    content: '▼';
+  > summary .toggle > :last-child {
+    display: none;
+  }
+
+  &[open] > summary .toggle > :first-child {
+    display: none;
+  }
+
+  &[open] > summary .toggle > :last-child {
+    display: block;
   }
 
   /* The heading's padding already separates it from what follows */
