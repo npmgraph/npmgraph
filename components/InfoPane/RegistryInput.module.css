@@ -10,7 +10,6 @@
     border-radius: 4px;
     padding: 0.3em 0.7em;
     font: inherit;
-    font-size: 16px; /* It must be at least 16px to avoid iOS zooming in on focus */
   }
 }
 
