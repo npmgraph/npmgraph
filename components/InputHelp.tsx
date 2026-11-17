@@ -24,17 +24,17 @@ export function InputExamples() {
         <QueryLink
           className={styles.chip}
           query={['express']}
-          data-tooltip="A single module name"
+          title="A single module name"
         />
         <QueryLink
           className={styles.chip}
           query={['cross-env@6', 'rimraf']}
-          data-tooltip="Multiple module names, with optional versions"
+          title="Multiple module names, with optional versions"
         />
         <QueryLink
           className={styles.chip}
           query={['sindresorhus/ora']}
-          data-tooltip="A GitHub repository reference"
+          title="A GitHub repository reference"
         />
       </div>
     </Group>

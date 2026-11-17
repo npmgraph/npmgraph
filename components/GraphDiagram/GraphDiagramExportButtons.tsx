@@ -27,7 +27,6 @@ export default function GraphDiagramExportButtons() {
     <>
       <ButtonGroup>
         <Button
-          data-tooltip="Download graph as SVG"
           aria-label="Download graph as SVG"
           onClick={() => {
             downloadSvg(query);
@@ -40,7 +39,6 @@ export default function GraphDiagramExportButtons() {
         {isCopying ? (
           <>
             <Button
-              data-tooltip="Copy graph as PNG"
               aria-label="Copy graph as PNG"
               onClick={() => {
                 setIsCopying(false);
@@ -50,7 +48,6 @@ export default function GraphDiagramExportButtons() {
               <PngIcon />
             </Button>
             <Button
-              data-tooltip="Copy graph as Mermaid in Markdown"
               aria-label="Copy graph as Mermaid in Markdown"
               onClick={() => {
                 setIsCopying(false);
@@ -68,7 +65,6 @@ export default function GraphDiagramExportButtons() {
           </>
         ) : (
           <Button
-            data-tooltip="Copy graph"
             aria-label="Copy graph"
             onClick={() => {
               setIsCopying(true);

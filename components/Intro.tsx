@@ -10,7 +10,7 @@ import { Group } from './ui/Group.tsx';
 export default function Intro() {
   return (
     <main className={styles.root}>
-      <h1 data-tooltip={`Release: ${appVersion} (${releaseStage})`}>
+      <h1 title={`Release: ${appVersion} (${releaseStage})`}>
         <Logo />
       </h1>
       <QueryInput variant="hero" />

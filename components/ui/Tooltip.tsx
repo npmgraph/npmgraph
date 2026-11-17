@@ -1,14 +1,17 @@
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { closestElementOptional } from 'select-dom';
 import * as styles from './Tooltip.module.css';
 
 const ANCHOR_NAME = '--tooltip-anchor';
 const HOVER_DELAY = 400; // ms, the tooltip fades in after this
 
-// A single shared tooltip for every `[data-tooltip]` element. It's a popover
-// (top layer, no clipping) positioned in CSS via anchor positioning.
+// Links, buttons and images (not SVGs, like the logo) named by their `aria-label`
+const TARGETS = ':is(a, button, [role="img"]):not(svg)[aria-label]';
+
+// A single shared tooltip that shows the `aria-label` of the hovered or focused
+// element. It's a popover (top layer, no clipping) positioned in CSS via anchor
+// positioning.
 export default function Tooltip() {
-  const id = useId();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,34 +20,21 @@ export default function Tooltip() {
 
     function hide() {
       target?.style.removeProperty('anchor-name');
-      target?.removeAttribute('aria-describedby');
       target = undefined;
       tooltip.hidePopover();
     }
 
     function show(element: HTMLElement, delay: number) {
-      const text = element.dataset['tooltip'] ?? '';
       target = element;
       element.style.setProperty('anchor-name', ANCHOR_NAME);
-      tooltip.textContent = text;
+      tooltip.textContent = element.getAttribute('aria-label');
       tooltip.style.setProperty('--tooltip-delay', `${delay}ms`);
-
-      // Don't describe an element by what already names it
-      if (
-        element.getAttribute('aria-label') !== text &&
-        element.textContent.trim() !== text
-      ) {
-        element.setAttribute('aria-describedby', id);
-      }
 
       tooltip.showPopover();
     }
 
     function tooltipTarget(event: Event) {
-      return closestElementOptional(
-        '[data-tooltip]',
-        event.target as Node | undefined,
-      );
+      return closestElementOptional(TARGETS, event.target as Node | undefined);
     }
 
     function onPointerOver(event: PointerEvent) {
@@ -100,15 +90,9 @@ export default function Tooltip() {
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('scroll', hide, { capture: true });
     };
-  }, [id]);
+  }, []);
 
   return (
-    <div
-      ref={ref}
-      id={id}
-      role="tooltip"
-      popover="manual"
-      className={styles.tooltip}
-    />
+    <div ref={ref} role="tooltip" popover="manual" className={styles.tooltip} />
   );
 }

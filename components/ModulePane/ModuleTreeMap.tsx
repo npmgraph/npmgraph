@@ -79,7 +79,8 @@ export function ModuleTreeMap({
           return (
             <div
               key={leaf.key}
-              data-tooltip={`${label} (${size})`}
+              role="img"
+              aria-label={`${label} (${size})`}
               className={cn(styles.root, styles.others)}
               style={position}
             >
@@ -92,7 +93,6 @@ export function ModuleTreeMap({
           <button
             key={leaf.key}
             type="button"
-            data-tooltip={`${leaf.name} (${size})`}
             aria-label={`${leaf.name} (${size})`}
             className={cn(styles.root, utilities.brightHover)}
             style={{ ...position, backgroundColor }}

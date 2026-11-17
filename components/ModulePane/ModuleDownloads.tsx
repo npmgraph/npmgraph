@@ -58,7 +58,7 @@ function Downloads({
   const title = `${downloads.toLocaleString()} weekly downloads (${tier.label})`;
 
   return (
-    <div className={styles.downloads} data-tooltip={title}>
+    <div className={styles.downloads}>
       <span>Weekly downloads:</span>
       <strong className={styles.count}>{formatted}</strong>
       <span className={styles.meter} aria-label={title} role="img">
