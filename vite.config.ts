@@ -1,12 +1,46 @@
 import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
 import svgr from 'vite-plugin-svgr';
+import type { Plugin } from 'vite';
 import { configDefaults, defineConfig } from 'vitest/config';
+
+// The app is a dynamic import of bootstrap.ts: fetch it right away instead of after the entry point runs
+const preloadApp = {
+  name: 'preload-app',
+  transformIndexHtml: {
+    order: 'post',
+    handler(_html, { bundle = {} }) {
+      const app = Object.values(bundle).find(
+        chunk =>
+          chunk.type === 'chunk' &&
+          chunk.facadeModuleId?.endsWith('/lib/index.tsx'),
+      );
+      if (app?.type !== 'chunk') {
+        return [];
+      }
+
+      return [
+        ...[...(app.viteMetadata?.importedCss ?? [])].map(href => ({
+          tag: 'link',
+          attrs: { rel: 'stylesheet', crossorigin: true, href: `./${href}` },
+        })),
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'modulepreload',
+            crossorigin: true,
+            href: `./${app.fileName}`,
+          },
+        },
+      ];
+    },
+  },
+} satisfies Plugin;
 
 export default defineConfig({
   // Relative base so the site can be served from any subfolder
   base: './',
-  plugins: [react(), svgr()],
+  plugins: [react(), svgr(), preloadApp],
   envPrefix: ['BUGSNAG_', 'VERCEL_', 'NPMGRAPH_'],
   build: {
     sourcemap: true,
