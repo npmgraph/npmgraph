@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type HTMLProps } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
-import { isDefined } from '../../lib/guards.ts';
+import { parseCommaList } from '../../lib/array-util.ts';
 import useCustomModuleLinks, {
   DEFAULT_CUSTOM_MODULE_LINKS,
 } from '../../hooks/useCustomModuleLinks.ts';
@@ -35,9 +35,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
     customLinksRef.current?.setCustomValidity(customLinksError);
   }, [customLinksError]);
 
-  const dependencyTypes = (
-    (depTypes ?? '').split(/\s*,\s*/) as DependencyKey[]
-  ).filter(item => isDefined(item));
+  const dependencyTypes = parseCommaList(depTypes) as DependencyKey[];
 
   const isIncludeDev = dependencyTypes.includes('devDependencies');
   const isIncludePeer = dependencyTypes.includes('peerDependencies');

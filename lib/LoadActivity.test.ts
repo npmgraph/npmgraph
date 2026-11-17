@@ -12,8 +12,8 @@ afterEach(() => {
 describe('LoadActivity#startFor', () => {
   it('stays active for the given duration', () => {
     const activity = new LoadActivity();
-    const onChange = vi.fn<(activity: LoadActivity) => void>();
-    activity.onChange = onChange;
+    const onChange = vi.fn<() => void>();
+    activity.subscribe(onChange);
 
     activity.startFor('Loading', 500);
     expect(activity.active).toBe(1);

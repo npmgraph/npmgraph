@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useSyncExternalStore } from 'react';
 import type LoadActivity from '../lib/LoadActivity.ts';
 
 let activity: LoadActivity;
@@ -10,21 +10,20 @@ export function getActivity() {
   return activity;
 }
 
+// Requests can start while another component renders (see `usePromise`), and React doesn't allow updating this one then
+function subscribe(listener: () => void) {
+  return activity.subscribe(() => {
+    queueMicrotask(listener);
+  });
+}
+
+const getVersion = () => activity.version;
+
 export function useActivity() {
-  const [, rerender] = useReducer((n: number) => n + 1, 0);
   if (!activity) {
     throw new Error('Activity not set');
   }
 
-  useEffect(() => {
-    const current = activity;
-    current.onChange = rerender;
-    return () => {
-      if (current.onChange === rerender) {
-        current.onChange = undefined;
-      }
-    };
-  }, []);
-
+  useSyncExternalStore(subscribe, getVersion);
   return activity;
 }

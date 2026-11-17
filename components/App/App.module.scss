@@ -15,6 +15,11 @@
 
 .stickyTop {
   flex-shrink: 0;
+  background: var(--tabs-bg) var(--bg-gradient);
+  color-scheme: dark;
+
+  // The header is always dark
+  --hover-brightness: 125%;
 }
 
 .content {

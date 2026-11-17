@@ -28,3 +28,10 @@
     width: auto;
   }
 }
+
+// The inspector is at the bottom of the page, so its background also fills the area under the iOS Safari URL bar
+@include tight-screen {
+  :global(html):has(.inspector) {
+    background: var(--bg0);
+  }
+}
