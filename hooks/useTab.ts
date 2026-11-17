@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   PaneType,
   PARAM_HIDE,
@@ -9,7 +10,6 @@ import { useGlobalState } from '../lib/GlobalStore.ts';
 import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
 import useHashParam from './useHashParam.ts';
-import { useIsTightScreen } from './useIsTightScreen.ts';
 
 // The info tab never lives in the URL, so a `tab=info` param is ignored
 const tabs = new Set<string>(
@@ -28,14 +28,21 @@ export function useTab() {
   const [tabParameter] = useHashParam(PARAM_TAB);
   const [isInfoOpen, setInfoOpen] = useGlobalState('isInfoOpen');
   const [, setGraphVisible] = useGlobalState('isGraphVisible');
-  const isTightScreen = useIsTightScreen();
   const defaultTab = useDefaultTab();
-  const tab =
-    isInfoOpen && !isTightScreen
-      ? PaneType.INFO
-      : tabParameter !== null && tabs.has(tabParameter)
-        ? (tabParameter as PaneTypes)
-        : defaultTab;
+  const tab = isInfoOpen
+    ? PaneType.INFO
+    : tabParameter !== null && tabs.has(tabParameter)
+      ? (tabParameter as PaneTypes)
+      : defaultTab;
+
+  // Drop `tab=info` from old links
+  useEffect(() => {
+    if (tabParameter === PaneType.INFO) {
+      patchHash(parameters => {
+        parameters.delete(PARAM_TAB);
+      });
+    }
+  }, [tabParameter]);
 
   // Show a tab: un-hide the inspector, leave the mobile graph and drop the section of the previous tab
   const selectTab = (nextTab: PaneTypes) => {

@@ -1,4 +1,4 @@
-import type { HTMLProps } from 'react';
+import { useEffect, type HTMLProps } from 'react';
 import { $ } from 'select-dom';
 import { PaneType, PARAM_HIDE, type PaneTypes } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
@@ -17,12 +17,20 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [tab, selectTab] = useTab();
   const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const isTightScreen = useIsTightScreen();
+  const [, setInfoOpen] = useGlobalState('isInfoOpen');
   const [hide, setHide] = useHashParam(PARAM_HIDE);
   const [isReportOnly] = useReportOnly();
   const isInspectorOpen = hide === null || isReportOnly;
   // The report-only view doesn't change the selected tab
   const currentTab = isReportOnly ? PaneType.REPORT : tab;
   const isGraphShown = isTightScreen && isGraphVisible && !isReportOnly;
+
+  // The info tab is hidden on tight screens
+  useEffect(() => {
+    if (isTightScreen) {
+      setInfoOpen(false);
+    }
+  }, [isTightScreen, setInfoOpen]);
 
   // The graph isn't a tab, it's a view that takes turns with the inspector
   const tabs: Array<{
