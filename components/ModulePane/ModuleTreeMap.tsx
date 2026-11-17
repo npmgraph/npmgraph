@@ -16,14 +16,7 @@ const isLabelVisible = (width: number, height: number, fontScale: number) =>
 const isSizeVisible = (width: number, height: number, fontScale: number) =>
   width >= 56 && height >= fontScale * 21 + 19;
 
-export function ModuleTreeMap({
-  data,
-  style,
-  ...props
-}: {
-  data: BundlePhobiaData;
-  style?: React.CSSProperties;
-}) {
+export function ModuleTreeMap({ data }: { data: BundlePhobiaData }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const setGraphSelection = useGraphSelection()[2];
   const [leaves, setLeaves] = useState<TreemapLeaf[]>([]);
@@ -50,11 +43,7 @@ export function ModuleTreeMap({
   }, [data]);
 
   return (
-    <div
-      ref={containerRef}
-      style={{ position: 'relative', ...style }}
-      {...props}
-    >
+    <div ref={containerRef} className={styles.container}>
       {leaves.map(leaf => {
         const size = human(leaf.value, 'B');
         const backgroundColor = `

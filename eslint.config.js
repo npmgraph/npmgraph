@@ -89,6 +89,16 @@ export default defineConfig([
             'Use useHashParameters() or patchHash() instead of location.hash',
         },
       ],
+
+      'byo/no-static-style': [
+        'error',
+        {
+          selector:
+            'JSXAttribute[name.name="style"] > JSXExpressionContainer > ObjectExpression > Property:matches([value.type="Literal"], [value.type="TemplateLiteral"][value.expressions.length=0], [value.type="UnaryExpression"][value.argument.type="Literal"])',
+          message:
+            'Move static styles to a CSS module; `style` is only for values computed at runtime',
+        },
+      ],
     },
   },
   reactDoctor.configs.recommended,

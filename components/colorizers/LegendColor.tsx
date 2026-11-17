@@ -1,5 +1,6 @@
 import type { HTMLProps } from 'react';
 import { COLORIZE_COLORS } from '../../lib/constants.ts';
+import * as styles from './LegendColor.module.css';
 
 export function LegendColor({
   color,
@@ -10,7 +11,9 @@ export function LegendColor({
 
   return (
     <div {...props}>
-      <span style={{ color, marginRight: '0.5rem' }}>{'\u{2B24}'}</span>
+      <span className={styles.dot} style={{ color }}>
+        {'\u{2B24}'}
+      </span>
       {children}
     </div>
   );
