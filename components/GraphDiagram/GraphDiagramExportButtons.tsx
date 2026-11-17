@@ -1,9 +1,9 @@
 import copy from 'copy-text-to-clipboard';
 import { useState } from 'react';
 import { $optional } from 'select-dom';
-import CopyIcon from '../../images/icons/copy.svg?react';
-import DownloadIcon from '../../images/icons/download.svg?react';
-import MarkdownIcon from '../../images/icons/markdown.svg?react';
+import CopyIcon from '../octicons-plain-react/Copy';
+import DownloadIcon from '../octicons-plain-react/Download';
+import MarkdownIcon from '../octicons-plain-react/Markdown';
 import PngIcon from '../../images/icons/png.svg?react';
 import { flash, flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
