@@ -2,46 +2,81 @@
   <style type="text/css">
     @import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400);
   </style>
-  <pattern id="warning" width="12" height="12" patternTransform="rotate(45 50 50)" patternUnits="userSpaceOnUse">
-    <path stroke-width="6" d="M3 0v12" class="line0"/>
-    <path stroke-width="6" d="M9 0v12" class="line1"/>
+  <pattern
+    id="warning"
+    width="12"
+    height="12"
+    patternTransform="rotate(45 50 50)"
+    patternUnits="userSpaceOnUse"
+  >
+    <path stroke-width="6" d="M3 0v12" class="line0" />
+    <path stroke-width="6" d="M9 0v12" class="line1" />
   </pattern>
-  <filter id="focus-ring" width="160%" height="220%" x="-30%" y="-60%" color-interpolation-filters="sRGB">
-    <feMorphology in="SourceAlpha" operator="dilate" radius="2" result="gap-grown"/>
-    <feGaussianBlur in="gap-grown" result="gap-blurred" stdDeviation="2"/>
+  <filter
+    id="focus-ring"
+    width="160%"
+    height="220%"
+    x="-30%"
+    y="-60%"
+    color-interpolation-filters="sRGB"
+  >
+    <feMorphology
+      in="SourceAlpha"
+      operator="dilate"
+      radius="2"
+      result="gap-grown"
+    />
+    <feGaussianBlur in="gap-grown" result="gap-blurred" stdDeviation="2" />
     <feComponentTransfer in="gap-blurred" result="gap-shape">
-      <feFuncA intercept="-9.5" slope="20" type="linear"/>
+      <feFuncA intercept="-9.5" slope="20" type="linear" />
     </feComponentTransfer>
-    <feMorphology in="SourceAlpha" operator="dilate" radius="4" result="ring-grown"/>
-    <feGaussianBlur in="ring-grown" result="ring-blurred" stdDeviation="2"/>
+    <feMorphology
+      in="SourceAlpha"
+      operator="dilate"
+      radius="4"
+      result="ring-grown"
+    />
+    <feGaussianBlur in="ring-grown" result="ring-blurred" stdDeviation="2" />
     <feComponentTransfer in="ring-blurred" result="ring-shape">
-      <feFuncA intercept="-9.5" slope="20" type="linear"/>
+      <feFuncA intercept="-9.5" slope="20" type="linear" />
     </feComponentTransfer>
-    <feComposite in="gap-shape" in2="SourceAlpha" operator="out" result="gap"/>
-    <feComposite in="ring-shape" in2="gap-shape" operator="out" result="ring"/>
-    <feFlood flood-color="var(--bg0)" result="gap-color"/>
-    <feComposite in="gap-color" in2="gap" operator="in" result="colored-gap"/>
-    <feFlood flood-color="var(--text)" result="ring-color"/>
-    <feComposite in="ring-color" in2="ring" operator="in" result="colored-ring"/>
+    <feComposite in="gap-shape" in2="SourceAlpha" operator="out" result="gap" />
+    <feComposite in="ring-shape" in2="gap-shape" operator="out" result="ring" />
+    <feFlood flood-color="var(--bg0)" result="gap-color" />
+    <feComposite in="gap-color" in2="gap" operator="in" result="colored-gap" />
+    <feFlood flood-color="var(--text)" result="ring-color" />
+    <feComposite
+      in="ring-color"
+      in2="ring"
+      operator="in"
+      result="colored-ring"
+    />
     <feMerge>
-      <feMergeNode in="colored-ring"/>
-      <feMergeNode in="colored-gap"/>
-      <feMergeNode in="SourceGraphic"/>
+      <feMergeNode in="colored-ring" />
+      <feMergeNode in="colored-gap" />
+      <feMergeNode in="SourceGraphic" />
     </feMerge>
   </filter>
-  <filter id="collapsed-outline" width="200%" height="200%" x="-50%" y="-50%" color-interpolation-filters="sRGB">
-    <feOffset dx="4" dy="4" in="SourceGraphic" result="copy1"/>
+  <filter
+    id="collapsed-outline"
+    width="200%"
+    height="200%"
+    x="-50%"
+    y="-50%"
+    color-interpolation-filters="sRGB"
+  >
+    <feOffset dx="4" dy="4" in="SourceGraphic" result="copy1" />
     <feComponentTransfer in="copy1" result="faded-copy1">
-      <feFuncA slope=".5" type="linear"/>
+      <feFuncA slope=".5" type="linear" />
     </feComponentTransfer>
-    <feOffset dx="8" dy="8" in="SourceGraphic" result="copy2"/>
+    <feOffset dx="8" dy="8" in="SourceGraphic" result="copy2" />
     <feComponentTransfer in="copy2" result="faded-copy2">
-      <feFuncA slope=".25" type="linear"/>
+      <feFuncA slope=".25" type="linear" />
     </feComponentTransfer>
     <feMerge>
-      <feMergeNode in="faded-copy2"/>
-      <feMergeNode in="faded-copy1"/>
-      <feMergeNode in="SourceGraphic"/>
+      <feMergeNode in="faded-copy2" />
+      <feMergeNode in="faded-copy1" />
+      <feMergeNode in="SourceGraphic" />
     </feMerge>
   </filter>
 </svg>

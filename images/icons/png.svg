@@ -4,11 +4,12 @@
   height="16"
   viewBox="0 0 16 16"
 >
-<path
+  <path
     fill="none"
     stroke="currentColor"
     stroke-linecap="round"
     stroke-linejoin="round"
     stroke-width="1.5135"
     d="M1 11.027V4.973h1.892a1.892 1.892 0 0 1 0 3.784H1m5.676 2.27V4.973l3.027 6.054V4.973m5.297 0h-1.514a1.89 1.89 0 0 0-1.891 1.892v2.27a1.89 1.89 0 0 0 1.891 1.892h1.892V8.378h-1.135"
-  /></svg>
+  />
+</svg>
