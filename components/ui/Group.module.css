@@ -4,6 +4,11 @@
   align-items: center;
   gap: 0.5em;
   text-align: center;
+
+  &.start {
+    align-items: stretch;
+    text-align: start;
+  }
 }
 
 .title {

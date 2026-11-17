@@ -7,11 +7,11 @@ import * as styles from './InfoPane.module.css';
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {
   return (
     <Pane {...props}>
-      <Group title="npmgraph">
+      <Group title="npmgraph" align="start">
         <InputDescription />
       </Group>
-      <InputExamples />
-      <Group title="Connect">
+      <InputExamples align="start" />
+      <Group title="Connect" align="start">
         <div className={styles.links}>
           <a
             href="https://github.com/npmgraph/npmgraph"

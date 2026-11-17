@@ -4,6 +4,10 @@
   justify-content: center;
   align-items: center;
   gap: 0.5em;
+
+  &.start {
+    justify-content: flex-start;
+  }
 }
 
 .dim {
