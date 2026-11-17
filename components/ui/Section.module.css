@@ -32,6 +32,11 @@
     content: '▼';
   }
 
+  /* No hover brightening on an open section, the whole body would be brightened with it */
+  &[open] > summary {
+    backdrop-filter: none;
+  }
+
   /* The heading's padding already separates it from what follows */
   &:is(details):not([open]) {
     margin-block-end: calc(-1 * var(--pane-spacing-block));
