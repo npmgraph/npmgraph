@@ -1,4 +1,6 @@
-import ShareIcon from '../../images/icons/share.svg?react';
+import ShareIcon from 'octicons-plain-react/Share';
+import ScreenFullIcon from 'octicons-plain-react/ScreenFull';
+import ScreenNormalIcon from 'octicons-plain-react/ScreenNormal';
 import useGraph from '../../hooks/useGraph.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
@@ -66,10 +68,8 @@ export default function ReportPane({
                   void share();
                 }}
               >
-                <span className={styles.labeled}>
-                  <ShareIcon />
-                  Share
-                </span>
+                Share
+                <ShareIcon />
               </Button>
             )}
             <Button
@@ -78,6 +78,7 @@ export default function ReportPane({
               }}
             >
               Close
+              <ScreenNormalIcon />
             </Button>
           </div>
         ) : (
@@ -91,6 +92,7 @@ export default function ReportPane({
               }}
             >
               Expand
+              <ScreenFullIcon />
             </Button>
           </>
         )}
