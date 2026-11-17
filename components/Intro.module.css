@@ -20,8 +20,7 @@
   }
 
   h1 {
-    /* Halve the 3em gap to the search field (em here is the h1 size, twice the intro size) */
-    margin-block: 0 -0.75em;
+    margin: 0;
 
     svg {
       display: block;
