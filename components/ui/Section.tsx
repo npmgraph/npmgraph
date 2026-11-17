@@ -1,5 +1,3 @@
-import TriangleDownIcon from 'octicons-plain-react/TriangleDown';
-import TriangleLeftIcon from 'octicons-plain-react/TriangleLeft';
 import { useState, type HTMLProps, type ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
@@ -61,10 +59,6 @@ export function CollapsibleSection({
         {title}
         <Count count={count} />
         {icon}
-        <span className={styles.toggle} aria-hidden="true">
-          <TriangleLeftIcon />
-          <TriangleDownIcon />
-        </span>
       </summary>
       <SectionOpenedContext value={opened.promise}>
         <SectionBody>{children}</SectionBody>
