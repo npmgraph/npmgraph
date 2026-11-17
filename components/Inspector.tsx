@@ -5,6 +5,7 @@ import { cn } from '../lib/dom.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
 import { useTab } from '../hooks/useTab.ts';
+import ErrorsBox from './InfoPane/ErrorsBox.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';
 import ViewPane from './ViewPane/ViewPane.tsx';
@@ -64,6 +65,7 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
       )}
       {...restProps}
     >
+      {!isTightScreen && <ErrorsBox />}
       <Suspense fallback={null}>{paneComponent}</Suspense>
     </div>
   );

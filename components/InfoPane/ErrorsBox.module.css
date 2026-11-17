@@ -1,13 +1,50 @@
 .error {
   display: grid;
-  gap: 0.5em;
-  margin: calc(-1 * var(--pane-spacing-block))
-    calc(-1 * var(--pane-spacing-inline)) 0;
+  flex-shrink: 0;
+  gap: 1em;
   background-color: var(--accent);
-  padding: var(--pane-spacing-block) var(--pane-spacing-inline);
+  padding: 1lh 1em;
   color: var(--text-on-accent);
 
   a {
     color: inherit;
   }
+}
+
+.errors {
+  display: flex;
+  align-items: start;
+  gap: 0.5em;
+}
+
+.messages {
+  display: grid;
+  flex-grow: 1;
+  gap: 0.5em;
+
+  p {
+    margin: 0;
+  }
+}
+
+.dismiss {
+  display: block;
+  flex-shrink: 0;
+  /* Bigger hit area, without moving the icon */
+  margin: -0.5em;
+  border: 0;
+  background: none;
+  padding: 0.5em;
+  color: inherit;
+
+  svg {
+    display: block;
+  }
+}
+
+/* Reaches the edges of the banner */
+.divider {
+  margin: 0 -1em;
+  border: 0;
+  border-top: 1px solid var(--text-on-accent);
 }

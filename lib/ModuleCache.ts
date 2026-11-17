@@ -193,6 +193,29 @@ function cacheModule(module: Module, registry?: string) {
   });
 }
 
+function isQueryMatch(
+  module: Module,
+  // `exact` and `name` are mapped to `default` before this is called
+  queryType: Exclude<QueryTypeValue, 'exact' | 'name'>,
+  queryValue: string,
+) {
+  switch (queryType) {
+    case QueryType.Default: {
+      const [name, version] = parseModuleKey(queryValue);
+      return (
+        module.name === name && (!version || satisfies(module.version, version))
+      );
+    }
+
+    case QueryType.Search:
+      return module.label.toLowerCase().includes(queryValue.toLowerCase());
+    case QueryType.License:
+      return module.getLicenses().includes(queryValue.toLowerCase());
+    case QueryType.Maintainer:
+      return module.maintainers.some(({ name }) => name === queryValue);
+  }
+}
+
 /**
 Convenience method for getting loaded modules by some criteria.
 */
@@ -216,37 +239,8 @@ export function queryModuleCache(
       continue;
     }
 
-    switch (queryType) {
-      case QueryType.Default: {
-        const [name, version] = parseModuleKey(queryValue);
-        if (
-          module.name === name &&
-          (!version || satisfies(module.version, version))
-        ) {
-          results.set(module.key, module);
-        }
-
-        break;
-      }
-
-      case QueryType.Search:
-        if (module.label.toLowerCase().includes(queryValue.toLowerCase())) {
-          results.set(module.key, module);
-        }
-
-        break;
-      case QueryType.License:
-        if (module.getLicenses().includes(queryValue.toLowerCase())) {
-          results.set(module.key, module);
-        }
-
-        break;
-      case QueryType.Maintainer:
-        if (module.maintainers.some(({ name }) => name === queryValue)) {
-          results.set(module.key, module);
-        }
-
-        break;
+    if (isQueryMatch(module, queryType, queryValue)) {
+      results.set(module.key, module);
     }
   }
 

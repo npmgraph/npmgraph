@@ -30,22 +30,18 @@
     border-right: none;
   }
 
-  button {
+  // Low specificity, so the reset doesn't also unset the transition of `brightHover`
+  :where(&) button {
     all: unset;
+    -webkit-tap-highlight-color: transparent;
     display: flex;
     flex-grow: 1;
     justify-content: center;
     align-items: center;
-    background: var(--tabs-bg) var(--bg-gradient);
     padding: 0 10px;
   }
 
   &.active button {
     background: var(--accent);
-  }
-
-  // `all: unset` above removes the browser's focus ring, so match the hover style
-  button:focus-visible {
-    filter: brightness(125%);
   }
 }

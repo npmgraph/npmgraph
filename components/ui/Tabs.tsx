@@ -39,7 +39,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
     <div className={cn(styles.root, className)}>
       <div role="tablist" aria-label="Inspector panels" className={styles.list}>
         {tabs
-          .filter(tab => tab.visible !== false)
+          .filter(item => item.visible !== false)
           .map(({ id, label }) => {
             const isSelected =
               isInspectorOpen &&
@@ -60,7 +60,11 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   id={`tab-${id}`}
                   aria-selected={isSelected}
                   aria-controls={id === GRAPH ? undefined : 'inspector'}
-                  className={utilities.brightHover}
+                  className={
+                    isSelected
+                      ? utilities.brightHover
+                      : utilities.brightHoverBackdrop
+                  }
                   onClick={() => {
                     // Like mobile apps, tapping the current tab scrolls to the top
                     if (isSelected && id !== GRAPH) {

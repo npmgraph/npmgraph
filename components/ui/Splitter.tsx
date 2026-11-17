@@ -17,7 +17,11 @@ export function Splitter({
       type="button"
       aria-label={isOpen ? 'Hide side panel' : 'Show side panel'}
       aria-expanded={isOpen}
-      className={cn(utilities.brightHover, tabStyles.tab, styles.splitter)}
+      className={cn(
+        utilities.brightHoverBackdrop,
+        tabStyles.tab,
+        styles.splitter,
+      )}
       aria-hidden={!isOpen}
       onClick={onClick}
     >

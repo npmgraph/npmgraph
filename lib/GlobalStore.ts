@@ -81,7 +81,7 @@ export function setGlobalState<T extends keyof GlobalState>(
 export function useGlobalState<T extends keyof GlobalState>(
   key: T,
 ): [GlobalState[T], (value: GlobalState[T]) => void] {
-  const globalState = useSyncExternalStore(subscribe, getSnapshot);
+  const snapshot = useSyncExternalStore(subscribe, getSnapshot);
 
   const setValue = useCallback(
     (value: GlobalState[T]) => {
@@ -90,5 +90,5 @@ export function useGlobalState<T extends keyof GlobalState>(
     [key],
   );
 
-  return [globalState[key], setValue];
+  return [snapshot[key], setValue];
 }
