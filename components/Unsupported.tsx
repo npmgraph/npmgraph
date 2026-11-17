@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import GithubIcon from '../images/icons/github.svg?react';
+import GithubIcon from 'octicons-plain-react/MarkGithub';
 import { ExternalLink } from './ui/ExternalLink.tsx';
 import * as styles from './Unsupported.module.css';
 
