@@ -1,6 +1,6 @@
 @use '../../lib/root.module.scss' as *;
 
-.splitter:is(button) {
+.button:is(button) {
   @include button-reset;
   display: flex;
   justify-content: center;
@@ -13,6 +13,11 @@
   padding: 0 10px;
   color: var(--tabs-text);
   user-select: none;
+
+  /* The icon is of a sidebar on the left, the inspector is on the right */
+  svg {
+    scale: -1 1;
+  }
 
   &[aria-hidden='true'] {
     /* Hide it but keep its place */
