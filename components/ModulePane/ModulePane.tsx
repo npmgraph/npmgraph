@@ -87,8 +87,8 @@ function ModuleDetailsPane({
       <p>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
-        <ModuleActions module={module} />
         <ModuleExternalLinks module={module} />
+        <ModuleActions module={module} />
       </div>
 
       <ReleaseTimeline module={module} />
