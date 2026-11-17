@@ -1,9 +1,8 @@
 import type { HTMLProps } from 'react';
 import { $ } from 'select-dom';
-import { PaneType, PARAM_HIDE, type PaneTypes } from '../../lib/constants.ts';
+import { PaneType, type PaneTypes } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { cn } from '../../lib/dom.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useTab } from '../../hooks/useTab.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
@@ -17,9 +16,8 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [tab, selectTab] = useTab();
   const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const isTightScreen = useIsTightScreen();
-  const [hide, setHide] = useHashParam(PARAM_HIDE);
-  const [isReportOnly] = useReportOnly();
-  const isInspectorOpen = hide === null || isReportOnly;
+  const [isReportOnly, , leaveReportOnly] = useReportOnly();
+  const isInspectorOpen = isReportOnly || tab !== PaneType.NONE;
   // The report-only view doesn't change the selected tab
   const currentTab = isReportOnly ? PaneType.REPORT : tab;
   const isGraphShown = isTightScreen && isGraphVisible && !isReportOnly;
@@ -86,13 +84,25 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                       return;
                     }
 
-                    if (id === GRAPH) {
-                      setHide(null);
-                      setGraphVisible(true);
+                    const show = () => {
+                      if (id === GRAPH) {
+                        if (tab === PaneType.NONE) {
+                          selectTab(null);
+                        }
+
+                        setGraphVisible(true);
+                        return;
+                      }
+
+                      selectTab(id);
+                    };
+
+                    if (isReportOnly) {
+                      leaveReportOnly(show);
                       return;
                     }
 
-                    selectTab(id);
+                    show();
                   }}
                 >
                   {label}
@@ -105,7 +115,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
       <InspectorCloseButton
         isOpen={isInspectorOpen}
         onClick={() => {
-          setHide(true);
+          selectTab(PaneType.NONE);
         }}
       />
     </div>
