@@ -25,7 +25,7 @@ export default function GraphDiagramExportButtons() {
 
   return (
     <>
-      <ButtonGroup>
+      <ButtonGroup square>
         <Button
           title="Download graph as SVG"
           onClick={() => {
@@ -35,7 +35,7 @@ export default function GraphDiagramExportButtons() {
           <DownloadIcon />
         </Button>
       </ButtonGroup>
-      <ButtonGroup>
+      <ButtonGroup square>
         {isCopying ? (
           <>
             <Button

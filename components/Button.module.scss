@@ -13,11 +13,9 @@
   user-select: none;
   text-decoration: none;
 
-  // Taller touch targets, with the content centered
+  // Some room for fingers, `.square` resets it
   @media (pointer: coarse) {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--button-size);
+    padding-inline: 8px;
   }
 
   svg {
