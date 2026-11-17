@@ -18,9 +18,14 @@
   }
 }
 
-.checkbox input {
-  vertical-align: middle;
-  margin: 0 0.3em 0 0;
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+
+  input {
+    margin: 0;
+  }
 }
 
 .selected {

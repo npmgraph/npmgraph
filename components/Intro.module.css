@@ -4,6 +4,7 @@
   justify-content: center;
   align-items: center;
   gap: 3em;
+  --chips-justify: center;
   box-sizing: border-box;
   background: radial-gradient(
     var(--bg-root),
@@ -12,6 +13,7 @@
   padding: 1em;
   width: 100%;
   min-height: 100svh;
+  text-align: center;
 
   @media (prefers-color-scheme: dark) {
     background: radial-gradient(var(--bg0), var(--bg-root));

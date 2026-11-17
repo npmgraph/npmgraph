@@ -1,4 +1,3 @@
-import { cn } from '../lib/dom.ts';
 import FilePicker from './InfoPane/FilePicker.tsx';
 import * as styles from './InputHelp.module.css';
 import { Group } from './ui/Group.tsx';
@@ -18,10 +17,10 @@ export function InputDescription({ isDim }: { isDim?: boolean }) {
   );
 }
 
-export function InputExamples({ align }: { align?: 'start' }) {
+export function InputExamples() {
   return (
-    <Group title="Try" align={align}>
-      <div className={cn(styles.chips, align === 'start' && styles.start)}>
+    <Group title="Try">
+      <div className={styles.chips}>
         <QueryLink
           className={styles.chip}
           query={['express']}

@@ -1,13 +1,9 @@
 .chips {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: var(--chips-justify, flex-start);
   align-items: center;
   gap: 0.5em;
-
-  &.start {
-    justify-content: flex-start;
-  }
 }
 
 .dim {

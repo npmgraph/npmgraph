@@ -1,6 +1,5 @@
 .links {
   display: flex;
-  justify-content: flex-start;
   gap: 0.5em;
   color: var(--text-dim);
 }
