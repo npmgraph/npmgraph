@@ -23,6 +23,7 @@
   --stroke-yellow: #{named(64, $stroke-lightness, 1)};
   --bg-yellow: #{named(64, $bg-lightness, $bg-chroma)};
 
+  --stroke-green: #{named(100, $stroke-lightness, 1)};
   --bg-green: #{named(100, $bg-lightness, $bg-chroma)};
 
   --stroke-blue: #{named(200, $stroke-lightness, 1)};

@@ -20,3 +20,11 @@
     vertical-align: text-bottom;
   }
 }
+
+.online {
+  color: var(--stroke-green);
+}
+
+.offline {
+  color: var(--stroke-red);
+}

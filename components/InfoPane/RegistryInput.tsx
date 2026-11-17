@@ -37,11 +37,11 @@ function RegistryStatus({
 
   return isOnline ? (
     <>
-      <CheckCircleFillIcon /> Online
+      <CheckCircleFillIcon className={styles.online} /> Online
     </>
   ) : (
     <>
-      <XCircleFillIcon /> Offline
+      <XCircleFillIcon className={styles.offline} /> Offline
     </>
   );
 }
