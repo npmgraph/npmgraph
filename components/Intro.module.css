@@ -9,7 +9,7 @@
     var(--bg-root),
     color-mix(in oklch, var(--accent) 10%, var(--bg-root))
   );
-  padding: 2em 1em;
+  padding: 1em;
   width: 100%;
   min-height: 100svh;
 
@@ -17,10 +17,15 @@
     background: radial-gradient(var(--bg0), var(--bg-root));
   }
 
-  h1 svg {
-    display: block;
-    margin: auto;
-    max-width: 90%;
+  h1 {
+    /* Halve the gap between the logo and the search field */
+    margin-block: 0 -1.5em;
+
+    svg {
+      display: block;
+      margin: auto;
+      max-width: 90%;
+    }
   }
 
   a {

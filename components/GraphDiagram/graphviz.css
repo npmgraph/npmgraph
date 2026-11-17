@@ -46,6 +46,11 @@ g {
       path {
         stroke: var(--accent) !important;
         stroke-width: 3;
+
+        /* With a colorizer active the fill carries the meaning, so the selected border stays neutral */
+        svg.colorized & {
+          stroke: var(--text) !important;
+        }
       }
     }
 
@@ -104,9 +109,4 @@ g {
       opacity: 0.35;
     }
   }
-}
-
-/* With a colorizer active the fill carries the meaning, so the selected border stays neutral */
-svg.colorized g.node.selected path {
-  stroke: var(--text) !important;
 }
