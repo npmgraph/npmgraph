@@ -1,4 +1,4 @@
-import ScreenNormalIcon from 'octicons-plain-react/ScreenFull';
+import ScreenNormalIcon from 'octicons-plain-react/ScreenNormal';
 import { useControls, useTransformComponent } from 'react-zoom-pan-pinch';
 import { Button, ButtonGroup } from '../Button.tsx';
 import { zoomAroundCenter } from './viewport-util.ts';

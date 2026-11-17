@@ -1,5 +1,5 @@
 {
-  "plugins": ["prettier-plugin-css-order"],
+  "plugins": ["prettier-plugin-css-order", "@prettier/plugin-xml"],
   "arrowParens": "avoid",
   "singleQuote": true
 }
