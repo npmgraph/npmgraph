@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {
   PaneType,
   PARAM_HIDE,
@@ -11,10 +10,7 @@ import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
 import useHashParam from './useHashParam.ts';
 
-// The info tab never lives in the URL, so a `tab=info` param is ignored
-const tabs = new Set<string>(
-  Object.values(PaneType).filter(type => type !== PaneType.INFO),
-);
+const tabs = new Set<string>([PaneType.REPORT, PaneType.MODULE, PaneType.VIEW]);
 
 // The tab to show until the user picks one
 function useDefaultTab(): PaneTypes {
@@ -22,8 +18,7 @@ function useDefaultTab(): PaneTypes {
   return query.length === 0 ? PaneType.INFO : PaneType.REPORT;
 }
 
-// The `tab` hash param stores the user's tab, except the info tab which is
-// kept in memory. Without them, the tab follows the default.
+// The `tab` hash param stores the user's tab. Without it, the tab follows the default.
 export function useTab() {
   const [tabParameter] = useHashParam(PARAM_TAB);
   const [isInfoOpen, setInfoOpen] = useGlobalState('isInfoOpen');
@@ -34,15 +29,6 @@ export function useTab() {
     : tabParameter !== null && tabs.has(tabParameter)
       ? (tabParameter as PaneTypes)
       : defaultTab;
-
-  // Drop `tab=info` from old links
-  useEffect(() => {
-    if (tabParameter === PaneType.INFO) {
-      patchHash(parameters => {
-        parameters.delete(PARAM_TAB);
-      });
-    }
-  }, [tabParameter]);
 
   // Show a tab: un-hide the inspector, leave the mobile graph and drop the section of the previous tab
   const selectTab = (nextTab: PaneTypes) => {
