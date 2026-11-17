@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import useLocation from '../hooks/useLocation.ts';
 import GlobeIcon from 'octicons-plain-react/Globe';
 import PullRequestIcon from 'octicons-plain-react/GitPullRequest';
 import XIcon from 'octicons-plain-react/X';
+import useLocation from '../hooks/useLocation.ts';
 import * as utilities from './ui/utilities.module.css';
 import * as styles from './PreviewWidget.module.css';
 import { Button, ButtonGroup } from './Button.tsx';

@@ -1,5 +1,5 @@
 import type { ComponentType, HTMLProps, SVGProps } from 'react';
-import OffsiteLinkIcon from '../octicons-plain-react/LinkExternal';
+import OffsiteLinkIcon from 'octicons-plain-react/LinkExternal';
 import { cn } from '../../lib/dom.ts';
 import * as utilities from './utilities.module.css';
 import * as styles from './ExternalLink.module.css';
