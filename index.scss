@@ -133,6 +133,10 @@ body {
   color: var(--text-on-accent);
 }
 
+svg {
+  fill: currentColor;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
