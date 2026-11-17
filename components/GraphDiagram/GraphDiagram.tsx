@@ -377,6 +377,7 @@ function updateSelection(
 
 async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   const colorizer = getColorizer(colorize);
+  svg.classList.toggle('colorized', Boolean(colorizer));
 
   if (!colorizer) {
     // Unset all node colors

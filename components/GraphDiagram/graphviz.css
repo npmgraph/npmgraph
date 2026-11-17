@@ -105,3 +105,8 @@ g {
     }
   }
 }
+
+/* With a colorizer active the fill carries the meaning, so the selected border stays neutral */
+svg.colorized g.node.selected path {
+  stroke: var(--text) !important;
+}

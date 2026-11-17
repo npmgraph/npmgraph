@@ -9,7 +9,7 @@
     var(--bg-root),
     color-mix(in oklch, var(--accent) 10%, var(--bg-root))
   );
-  padding: 1em;
+  padding: 2em 1em;
   width: 100%;
   min-height: 100svh;
 
