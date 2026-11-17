@@ -13,9 +13,13 @@
   user-select: none;
   text-decoration: none;
 
-  // Some room for fingers, `.square` resets it
+  // Same height as the square buttons, with some room for fingers (`.square` resets the padding)
   @media (pointer: coarse) {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
     padding-inline: 8px;
+    min-height: var(--button-size);
   }
 
   svg {
