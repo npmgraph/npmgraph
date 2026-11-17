@@ -236,7 +236,7 @@ function generateLinkToDownload(
   const title =
     query.length > 0
       ? `Dependencies for ${query.join(', ')}`
-      : 'NPM Dependency Diagrams';
+      : 'npm Dependency Diagrams';
   const name = title.replaceAll(/\W+/gv, '_');
   const downloadLink = document.createElement('a');
   downloadLink.href = link;

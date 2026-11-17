@@ -128,6 +128,11 @@ body {
   margin: 0;
 }
 
+::selection {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
 svg {
   fill: currentColor;
 }

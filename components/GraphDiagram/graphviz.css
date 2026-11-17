@@ -46,12 +46,21 @@ g {
       path {
         stroke: var(--accent) !important;
         stroke-width: 3;
+
+        /* With a colorizer active the fill carries the meaning, so the accent is dropped from the selection and the children */
+        svg.colorized & {
+          stroke: var(--text) !important;
+        }
       }
     }
 
     &.downstream {
       path {
         stroke: var(--accent);
+
+        svg.colorized & {
+          stroke: var(--text);
+        }
       }
     }
 
