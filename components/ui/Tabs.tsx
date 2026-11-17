@@ -8,7 +8,7 @@ import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useTab } from '../../hooks/useTab.ts';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import * as utilities from './utilities.module.css';
-import { Splitter } from './Splitter.tsx';
+import { InspectorCloseButton } from './InspectorCloseButton.tsx';
 import * as styles from './Tabs.module.scss';
 
 const GRAPH = 'graph';
@@ -102,7 +102,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
           })}
       </div>
 
-      <Splitter
+      <InspectorCloseButton
         isOpen={isInspectorOpen}
         onClick={() => {
           setHide(true);

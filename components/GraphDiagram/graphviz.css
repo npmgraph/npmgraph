@@ -47,7 +47,7 @@ g {
         stroke: var(--accent) !important;
         stroke-width: 3;
 
-        /* With a colorizer active the fill carries the meaning, so the accent is dropped from the selection, children and arrows */
+        /* With a colorizer active the fill carries the meaning, so the accent is dropped from the selection and the children */
         svg.colorized & {
           stroke: var(--text) !important;
         }
@@ -101,20 +101,11 @@ g {
       > path {
         stroke: var(--accent);
         stroke-width: var(--selected-edge-width);
-
-        svg.colorized & {
-          stroke: var(--text);
-        }
       }
 
       > polygon {
         fill: var(--accent);
         stroke: var(--accent);
-
-        svg.colorized & {
-          fill: var(--text);
-          stroke: var(--text);
-        }
       }
     }
 
