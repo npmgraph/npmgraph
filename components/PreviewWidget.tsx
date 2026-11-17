@@ -41,7 +41,8 @@ export default function PreviewWidget() {
           href={prUrl}
           target="_blank"
           rel="noopener noreferrer"
-          title="Open pull request"
+          data-tooltip="Open pull request"
+          aria-label="Open pull request"
         >
           <PullRequestIcon />
         </Button>
@@ -51,13 +52,15 @@ export default function PreviewWidget() {
         target="_blank"
         className={utilities.brightHover}
         rel="noopener noreferrer"
-        title="Compare to production npmgraph"
+        data-tooltip="Compare to production npmgraph"
+        aria-label="Compare to production npmgraph"
       >
         <GlobeIcon />
       </Button>
       <Button
         className={utilities.brightHover}
-        title="Hide widget until reload"
+        data-tooltip="Hide widget until reload"
+        aria-label="Hide widget until reload"
         type="button"
         onClick={() => {
           setIsHidden(true);

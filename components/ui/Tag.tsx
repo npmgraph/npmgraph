@@ -45,7 +45,7 @@ export function Tag({
         utilities.brightHover,
         className,
       )}
-      title={title}
+      data-tooltip={title}
       onClick={() => {
         setGraphSelection(type, value);
       }}

@@ -16,7 +16,8 @@ export function GraphDiagramZoomButtons({ fitScale }: { fitScale: number }) {
   return (
     <ButtonGroup square>
       <Button
-        title="Zoom to actual size"
+        data-tooltip="Zoom to actual size"
+        aria-label="Zoom to actual size"
         onClick={() => {
           zoomAroundCenter(controls, 1);
         }}
@@ -24,7 +25,8 @@ export function GraphDiagramZoomButtons({ fitScale }: { fitScale: number }) {
         1:1
       </Button>
       <Button
-        title="Zoom to fit"
+        data-tooltip="Zoom to fit"
+        aria-label="Zoom to fit"
         onClick={() => {
           void controls.fitToView({ maxScale: 1 });
         }}

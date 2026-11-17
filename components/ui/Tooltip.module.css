@@ -1,0 +1,30 @@
+.tooltip {
+  position-anchor: --tooltip-anchor;
+  position-area: bottom;
+  position-try-fallbacks: flip-block;
+  margin: 6px 0;
+  /* Reset what the browser gives popovers by default */
+  inset: auto;
+  border: 0;
+  border-radius: var(--rad-sm);
+  background: var(--text);
+  padding: 4px 8px;
+  width: max-content;
+  max-width: 280px;
+  overflow: visible;
+  pointer-events: none;
+  color: var(--bg-root);
+  font-size: 12px;
+  line-height: 1.3;
+  text-align: center;
+
+  &:popover-open {
+    animation: fade-in 0.1s var(--tooltip-delay, 0ms) backwards;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
