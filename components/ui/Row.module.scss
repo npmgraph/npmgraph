@@ -1,5 +1,3 @@
-@use '../../lib/root.module.scss' as *;
-
 // Zebra-striped list rows, shared by the report sections and the module pane
 .rows {
   --row-inset: 0.5em;
@@ -18,7 +16,7 @@
   padding: 0.05em var(--row-inset);
   min-width: 0;
 
-  @include tight-screen {
+  @media (pointer: coarse) {
     align-content: center;
     min-height: 2.5em;
   }

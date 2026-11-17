@@ -1,4 +1,3 @@
-@use '../lib/root.module.scss' as *;
 @use './ui/utilities.module.css' as *;
 
 .button {
@@ -14,8 +13,11 @@
   user-select: none;
   text-decoration: none;
 
-  @include tight-screen {
-    min-height: 44px;
+  // Taller touch targets, with the content centered
+  @media (pointer: coarse) {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--button-size);
   }
 
   svg {
@@ -82,11 +84,7 @@
   align-items: center;
   box-sizing: border-box;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: var(--button-size);
+  height: var(--button-size);
   line-height: 1;
-
-  @include tight-screen {
-    height: 44px;
-  }
 }

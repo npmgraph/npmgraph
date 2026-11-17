@@ -2,5 +2,5 @@
   position: fixed;
   z-index: 30;
   /* Place it on the bottom left, above the graph controls if they are on screen */
-  inset: auto auto 4.4em 1em;
+  inset: auto auto calc(2.5em + var(--button-size)) 1em;
 }
