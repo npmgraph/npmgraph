@@ -68,6 +68,7 @@
   --bg2: #{neutral(90%)};
 
   --header-padding: 12px;
+  --button-size: 30px;
   --tabs-bg: #{neutral(45%)};
   --tabs-text: white;
   --tabs-border: oklch(from var(--tabs-bg) calc(l + 0.35) c h / 80%);
@@ -85,6 +86,13 @@
 
   // How much `brightHover` lightens, 125% is too much on light backgrounds
   --hover-brightness: 105%;
+}
+
+// Bigger touch targets
+@media (pointer: coarse) {
+  :root {
+    --button-size: 36px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -127,6 +135,11 @@ html {
 
 body {
   margin: 0;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--text-on-accent);
 }
 
 svg {
