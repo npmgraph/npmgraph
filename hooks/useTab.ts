@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import {
   PaneType,
   PARAM_HIDE,
@@ -9,7 +8,6 @@ import {
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
-import { useIsTightScreen } from './useIsTightScreen.ts';
 import useHashParam from './useHashParam.ts';
 
 const tabs = new Set<string>(Object.values(PaneType));
@@ -25,35 +23,16 @@ function useDefaultTab(): PaneTypes {
 export function useTab() {
   const [tabParameter] = useHashParam(PARAM_TAB);
   const [, setGraphVisible] = useGlobalState('isGraphVisible');
-  const [query] = useQuery();
-  const isTightScreen = useIsTightScreen();
   const defaultTab = useDefaultTab();
-  // The info tab isn't shown on tight screens, and it's the default without a query, so it needs no param
-  const isInfoHidden = isTightScreen || query.length === 0;
   const tab =
-    tabParameter !== null &&
-    tabs.has(tabParameter) &&
-    !(isTightScreen && tabParameter === PaneType.INFO)
+    tabParameter !== null && tabs.has(tabParameter)
       ? (tabParameter as PaneTypes)
       : defaultTab;
-
-  useEffect(() => {
-    if (isInfoHidden && tabParameter === PaneType.INFO) {
-      patchHash(parameters => {
-        parameters.delete(PARAM_TAB);
-      });
-    }
-  }, [tabParameter, isInfoHidden]);
 
   // Show a tab: un-hide the inspector, leave the mobile graph and drop the section of the previous tab
   const selectTab = (nextTab: PaneTypes) => {
     patchHash(parameters => {
-      if (isInfoHidden && nextTab === PaneType.INFO) {
-        parameters.delete(PARAM_TAB);
-      } else {
-        parameters.set(PARAM_TAB, nextTab);
-      }
-
+      parameters.set(PARAM_TAB, nextTab);
       parameters.delete(PARAM_HIDE);
       if (nextTab !== tab) {
         parameters.delete(PARAM_SECTION);
