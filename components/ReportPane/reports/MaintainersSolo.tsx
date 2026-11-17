@@ -13,7 +13,7 @@ export default function MaintainersSolo() {
 
   return (
     <ReportItem
-      type="warn"
+      warn
       title="Modules with only one maintainer"
       count={soloModulesCount}
       description={
