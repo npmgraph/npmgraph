@@ -122,7 +122,7 @@ function Vulnerabilities({
 
   return (
     <ReportItem
-      type="warn"
+      warn
       title="Vulnerabilities"
       count={advisories.length}
       description={

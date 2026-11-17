@@ -108,7 +108,7 @@ export default function Licenses() {
     <ReportItem
       title="Licenses"
       count={count}
-      type={hasUnlicensed || issuesByLicense.size > 0 ? 'warn' : 'info'}
+      warn={hasUnlicensed || issuesByLicense.size > 0}
       description={
         hasUnlicensed && (
           <>

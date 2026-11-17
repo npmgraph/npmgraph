@@ -5,12 +5,9 @@ import { patchHash } from '../../hooks/useLocation.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PaneType, PARAM_SECTION, PARAM_TAB } from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.css';
-
-const SYMBOLS = { info: null, warn: <AlertFillIcon /> };
 
 // Like in the report-only view, a single open section is linkable
 function storeOpenSection() {
@@ -37,22 +34,20 @@ function storeOpenSection() {
 export function ReportItem({
   title,
   count,
-  type = 'info',
+  warn = false,
   description,
   open = false,
   children,
 }: {
   title: string;
   count?: number | string;
-  type?: 'info' | 'warn';
+  warn?: boolean;
   description?: ReactNode;
   open?: boolean;
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
-  const icon = SYMBOLS[type] && (
-    <span className={cn(styles.symbol, styles[type])}>{SYMBOLS[type]}</span>
-  );
+  const icon = warn && <AlertFillIcon className={styles.warn} />;
   const body = (
     <>
       {description ? <p className={styles.description}>{description}</p> : null}
