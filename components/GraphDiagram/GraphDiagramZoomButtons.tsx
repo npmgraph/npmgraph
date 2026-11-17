@@ -1,4 +1,4 @@
-import ScreenFullIcon from 'octicons-plain-react/ScreenFull';
+import ScreenNormalIcon from 'octicons-plain-react/ScreenFull';
 import { useControls, useTransformComponent } from 'react-zoom-pan-pinch';
 import { Button, ButtonGroup } from '../Button.tsx';
 import { zoomAroundCenter } from './viewport-util.ts';
@@ -29,7 +29,7 @@ export function GraphDiagramZoomButtons({ fitScale }: { fitScale: number }) {
           void controls.fitToView({ maxScale: 1 });
         }}
       >
-        <ScreenFullIcon />
+        <ScreenNormalIcon />
       </Button>
     </ButtonGroup>
   );
