@@ -1,3 +1,5 @@
+@use '../../lib/root.module.scss' as *;
+
 // Zebra-striped list rows, shared by the report sections and the module pane
 .rows {
   --row-inset: 0.5em;
@@ -15,6 +17,11 @@
   gap: 0 0.75em;
   padding: 0.05em var(--row-inset);
   min-width: 0;
+
+  @include tight-screen {
+    align-content: center;
+    min-height: 2.5em;
+  }
 
   &:nth-child(even) {
     background-color: color-mix(in srgb, var(--text) 6%, transparent);
