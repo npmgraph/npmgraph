@@ -20,21 +20,13 @@
   font-size: 90%;
 }
 
-// Centered column. The toolbar spans the whole pane so its buttons stay where they are outside of this view
+// Centered column; the toolbar stays full-width so its buttons keep their position
 .document {
-  grid-template-columns:
-    minmax(0, 1fr)
-    minmax(0, 980px)
-    minmax(0, 1fr);
   gap: 24px;
   padding-block-end: 32px;
 
-  > * {
-    grid-column: 2;
-  }
-
-  > .toolbar {
-    grid-column: 1 / -1;
-    margin-block-end: calc(40px - var(--pane-spacing-block));
+  > :not(.toolbar) {
+    justify-self: center;
+    width: min(100%, 980px);
   }
 }
