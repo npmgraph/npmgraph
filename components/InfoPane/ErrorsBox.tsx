@@ -1,7 +1,7 @@
+import XIcon from 'octicons-plain-react/X';
 import { cn } from '../../lib/dom.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import XIcon from '../../images/icons/x.svg?react';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import * as utilities from '../ui/utilities.module.css';
 import * as styles from './ErrorsBox.module.css';

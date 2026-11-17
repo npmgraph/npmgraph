@@ -128,6 +128,10 @@ body {
   margin: 0;
 }
 
+svg {
+  fill: currentColor;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,

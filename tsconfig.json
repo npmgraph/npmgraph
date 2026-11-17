@@ -8,6 +8,9 @@
     "exactOptionalPropertyTypes": false,
     "noEmit": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "paths": {
+      "octicons-plain-react/*": ["./octicons-stub.d.ts"]
+    },
     "types": ["node", "typed-query-selector"]
   }
 }
