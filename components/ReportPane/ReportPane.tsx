@@ -3,7 +3,7 @@ import useGraph from '../../hooks/useGraph.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
 import { flashError } from '../../lib/flash.ts';
-import { Button, ButtonGroup } from '../Button.tsx';
+import { Button } from '../Button.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
@@ -59,7 +59,19 @@ export default function ReportPane({
     >
       <div className={styles.toolbar}>
         {isReportOnly ? (
-          <ButtonGroup className={styles.actions}>
+          <div className={styles.actions}>
+            {canShare && (
+              <Button
+                onClick={() => {
+                  void share();
+                }}
+              >
+                <span className={styles.labeled}>
+                  <ShareIcon />
+                  Share
+                </span>
+              </Button>
+            )}
             <Button
               onClick={() => {
                 setReportOnly(false);
@@ -67,17 +79,7 @@ export default function ReportPane({
             >
               Close
             </Button>
-            {canShare && (
-              <Button
-                aria-label="Share"
-                onClick={() => {
-                  void share();
-                }}
-              >
-                <ShareIcon />
-              </Button>
-            )}
-          </ButtonGroup>
+          </div>
         ) : (
           <>
             <div className={styles.description}>
