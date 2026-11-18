@@ -1,12 +1,5 @@
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
-export const COLORIZE_COLORS = [
-  'var(--bg-red)',
-  'var(--bg-orange)',
-  'var(--bg-yellow)',
-  'var(--bg-green)',
-];
-
 export const PARAM_COLLAPSE = 'collapse';
 export const PARAM_COLORIZE = 'color';
 export const PARAM_DEPENDENCIES = 'deps';

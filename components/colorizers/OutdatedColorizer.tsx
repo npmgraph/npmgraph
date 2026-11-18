@@ -1,7 +1,6 @@
 import { difference, isGreaterThan } from 'verkit';
 import type Module from '../../lib/Module.ts';
 import { getNPMPackument } from '../../lib/PackumentCache.ts';
-import { COLORIZE_COLORS } from '../../lib/constants.ts';
 import { LegendColor } from './LegendColor.tsx';
 import type { SimpleColorizer } from './types.ts';
 
@@ -12,10 +11,10 @@ export default {
   legend() {
     return (
       <>
-        <LegendColor color="3">Module is up to date</LegendColor>
-        <LegendColor color="2">PATCH updates available</LegendColor>
-        <LegendColor color="1">MINOR updates available</LegendColor>
-        <LegendColor color="0">MAJOR updates available</LegendColor>
+        <LegendColor color="green">Module is up to date</LegendColor>
+        <LegendColor color="yellow">PATCH updates available</LegendColor>
+        <LegendColor color="orange">MINOR updates available</LegendColor>
+        <LegendColor color="red">MAJOR updates available</LegendColor>
       </>
     );
   },
@@ -33,7 +32,7 @@ export default {
     // Using gt() instead of diff() so that prerelease versions (e.g.
     // 1.0.0-rc.12 < 1.0.0) are compared correctly.
     if (!isGreaterThan(latestVersion, module.version)) {
-      return COLORIZE_COLORS[3];
+      return 'var(--bg-green)';
     }
 
     let outdated;
@@ -47,16 +46,16 @@ export default {
     switch (outdated) {
       case 'major':
       case 'premajor':
-        return COLORIZE_COLORS[0];
+        return 'var(--bg-red)';
       case 'minor':
       case 'preminor':
-        return COLORIZE_COLORS[1];
+        return 'var(--bg-orange)';
       case 'patch':
       case 'prepatch':
       case 'prerelease':
-        return COLORIZE_COLORS[2];
+        return 'var(--bg-yellow)';
       case null:
-        return COLORIZE_COLORS[3];
+        return 'var(--bg-green)';
     }
   },
 } as SimpleColorizer;

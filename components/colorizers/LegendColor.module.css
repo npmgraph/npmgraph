@@ -1,3 +1,23 @@
 .dot {
   margin-right: 0.5em;
 }
+
+.red {
+  color: var(--bg-red);
+}
+
+.orange {
+  color: var(--bg-orange);
+}
+
+.yellow {
+  color: var(--bg-yellow);
+}
+
+.green {
+  color: var(--bg-green);
+}
+
+.blue {
+  color: var(--bg-blue);
+}

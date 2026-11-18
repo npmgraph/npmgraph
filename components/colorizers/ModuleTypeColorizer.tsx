@@ -15,12 +15,10 @@ export default {
   legend() {
     return (
       <>
-        <LegendColor color={COLORIZE_MODULE_CJS}>CJS Only</LegendColor>
-        <LegendColor color={COLORIZE_MODULE_DUAL}>CJS and ESM</LegendColor>
-        <LegendColor color={COLORIZE_MODULE_ESM}>ESM Only</LegendColor>
-        <LegendColor color={COLORIZE_MODULE_TYPES}>
-          TypeScript types
-        </LegendColor>
+        <LegendColor color="red">CJS Only</LegendColor>
+        <LegendColor color="yellow">CJS and ESM</LegendColor>
+        <LegendColor color="green">ESM Only</LegendColor>
+        <LegendColor color="blue">TypeScript types</LegendColor>
       </>
     );
   },
