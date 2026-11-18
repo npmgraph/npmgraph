@@ -1,5 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { $optional } from 'select-dom';
+import { cn } from '../../lib/dom.ts';
 import * as appStyles from '../App/App.module.scss';
 import {
   notifyFlashElementReady,
@@ -35,7 +36,9 @@ export default function Flash() {
               notifyFlashElementReady(entry.id, element);
             }
           }}
-          className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
+          className={cn(flashStyles.flash, {
+            [flashStyles.error]: entry.isError,
+          })}
           onAnimationEnd={event => {
             if (event.animationName !== flashStyles.flashOut) {
               return;

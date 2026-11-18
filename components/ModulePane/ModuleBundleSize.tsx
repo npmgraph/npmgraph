@@ -70,10 +70,7 @@ function BundleInfo({
       <ModuleBundleStats bundleInfo={bundleInfo} />
       {hasTreemap(bundleInfo) ? (
         <>
-          <ModuleTreeMap
-            style={{ height: '150px', marginBlock: '1em' }}
-            data={bundleInfo}
-          />
+          <ModuleTreeMap data={bundleInfo} />
           <p>
             Data source: <ExternalLink href={bpUrl}>BundlePhobia</ExternalLink>
           </p>

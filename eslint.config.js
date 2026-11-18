@@ -89,6 +89,25 @@ export default defineConfig([
             'Use useHashParameters() or patchHash() instead of location.hash',
         },
       ],
+
+      'byo/no-inline-style': [
+        'error',
+        {
+          selector:
+            'JSXAttribute[name.name="style"] > JSXExpressionContainer > ObjectExpression > Property:matches([value.type="Literal"], [value.type="TemplateLiteral"][value.expressions.length=0], [value.type="UnaryExpression"][value.argument.type="Literal"])',
+          message:
+            'Move static styles to a CSS module; `style` is only for values computed at runtime',
+        },
+      ],
+
+      'byo/no-template-class-name': [
+        'error',
+        {
+          selector:
+            'JSXAttribute[name.name="className"] > JSXExpressionContainer > TemplateLiteral',
+          message: 'Use cn() from lib/dom.ts instead of a template literal',
+        },
+      ],
     },
   },
   reactDoctor.configs.recommended,
