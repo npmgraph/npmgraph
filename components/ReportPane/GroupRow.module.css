@@ -4,16 +4,23 @@
   gap: 0.5rem;
 }
 
+/* Media object: the avatar never wraps, long names wrap beside it */
 .heading {
   display: flex;
   flex: 0 0 17ch;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.25em 0.4em;
+  gap: 0.4em;
   min-width: 0;
 
   [data-gravatar] {
+    flex: none;
     border-radius: 0.3rem;
+  }
+
+  > button {
+    overflow: visible;
+    text-wrap: wrap;
+    overflow-wrap: anywhere;
   }
 }
 
@@ -21,4 +28,9 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+
+  /* A lone module lines up with the middle of the heading */
+  &:has(> :only-child) {
+    align-self: center;
+  }
 }

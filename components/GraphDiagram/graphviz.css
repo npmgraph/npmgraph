@@ -34,7 +34,7 @@ g {
     }
 
     path {
-      fill: var(--bg0);
+      fill: var(--colorizer-color, var(--bg0));
       stroke: var(--text);
     }
 
@@ -46,12 +46,21 @@ g {
       path {
         stroke: var(--accent) !important;
         stroke-width: 3;
+
+        /* With a colorizer active the fill carries the meaning, so the accent is dropped from the selection and the children */
+        svg.colorized & {
+          stroke: var(--text) !important;
+        }
       }
     }
 
     &.downstream {
       path {
         stroke: var(--accent);
+
+        svg.colorized & {
+          stroke: var(--text);
+        }
       }
     }
 
@@ -69,7 +78,7 @@ g {
     }
 
     &.warning > path {
-      fill: url(#warning);
+      fill: var(--colorizer-color, url(#warning));
     }
 
     * {
