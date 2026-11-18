@@ -104,7 +104,7 @@ export default defineConfig([
         'error',
         {
           selector:
-            'JSXAttribute[name.name=\"className\"] > JSXExpressionContainer > TemplateLiteral',
+            'JSXAttribute[name.name="className"] > JSXExpressionContainer > TemplateLiteral',
           message: 'Use cn() from lib/dom.ts instead of a template literal',
         },
       ],
