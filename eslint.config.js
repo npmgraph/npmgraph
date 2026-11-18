@@ -80,6 +80,15 @@ export default defineConfig([
         },
       ],
 
+      'byo/no-style-attribute': [
+        'error',
+        {
+          selector: 'JSXAttribute[name.name="style"]',
+          message:
+            'Use CSS classes. For values only known at runtime, use setStyle() from lib/dom.ts as a ref',
+        },
+      ],
+
       'byo/no-direct-location-hash': [
         'error',
         {

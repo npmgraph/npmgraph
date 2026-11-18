@@ -1,16 +1,19 @@
 import type { HTMLProps } from 'react';
-import { COLORIZE_COLORS } from '../../lib/constants.ts';
+import { colors } from './colors.ts';
+import * as styles from './LegendColor.module.css';
 
 export function LegendColor({
   color,
   children,
   ...props
-}: HTMLProps<HTMLDivElement>) {
-  color = COLORIZE_COLORS[Number(color)] ?? color;
-
+}: Omit<HTMLProps<HTMLDivElement>, 'color'> & {
+  color: keyof typeof colors;
+}) {
   return (
     <div {...props}>
-      <span style={{ color, marginRight: '0.5rem' }}>{'\u{2B24}'}</span>
+      <svg className={styles.dot} viewBox="0 0 1 1" aria-hidden="true">
+        <circle cx="0.5" cy="0.5" r="0.5" fill={colors[color]} />
+      </svg>
       {children}
     </div>
   );

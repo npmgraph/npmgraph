@@ -6,6 +6,7 @@ import {
   subscribeFlash,
   type FlashEntry,
 } from '../../lib/flash.ts';
+import { setStyle } from '../../lib/dom.ts';
 import * as flashStyles from './Flash.module.css';
 
 const FLASH_GAP = 10;
@@ -26,7 +27,11 @@ export default function Flash() {
   );
 
   return (
-    <div className={flashStyles.root} style={{ top: `${top}px` }} role="status">
+    <div
+      ref={setStyle({ top: `${top}px` })}
+      className={flashStyles.root}
+      role="status"
+    >
       {entries.map(entry => (
         <div
           key={entry.id}

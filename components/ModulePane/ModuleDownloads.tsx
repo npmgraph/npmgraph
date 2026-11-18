@@ -10,7 +10,7 @@ import fetchJson from '../../lib/fetchJson.ts';
 import type Module from '../../lib/Module.ts';
 import * as styles from './ModuleDownloads.module.css';
 
-const METER_BAR_HEIGHTS = [4, 7, 10, 13, 16];
+const METER_BARS = [1, 2, 3, 4, 5];
 
 export function ModuleDownloads({ module }: { module: Module }) {
   return module.isLocal || module.isUnnamed ? null : (
@@ -62,14 +62,13 @@ function Downloads({
       <span>Weekly downloads:</span>
       <strong className={styles.count}>{formatted}</strong>
       <span className={styles.meter} aria-label={title} role="img">
-        {METER_BAR_HEIGHTS.map((height, i) => (
+        {METER_BARS.map(bar => (
           <span
-            key={height}
+            key={bar}
             className={cn(
               styles.meterBar,
-              i < tier.bars ? styles.filled : undefined,
+              bar <= tier.bars ? styles.filled : undefined,
             )}
-            style={{ height }}
           />
         ))}
       </span>

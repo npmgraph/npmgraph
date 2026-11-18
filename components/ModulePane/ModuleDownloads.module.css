@@ -28,6 +28,22 @@
   background-color: var(--bg1);
   width: 3px;
 
+  &:nth-child(1) {
+    height: 4px;
+  }
+  &:nth-child(2) {
+    height: 7px;
+  }
+  &:nth-child(3) {
+    height: 10px;
+  }
+  &:nth-child(4) {
+    height: 13px;
+  }
+  &:nth-child(5) {
+    height: 16px;
+  }
+
   &.filled {
     opacity: 1;
 

@@ -29,10 +29,11 @@ export function Gravatar({ email, size = 32, ...props }: GravatarProps) {
   return (
     <Suspense
       fallback={
-        <span
+        <svg
           data-gravatar
           className={styles.placeholder}
-          style={{ width: size, height: size }}
+          width={size}
+          height={size}
         />
       }
     >

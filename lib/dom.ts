@@ -24,3 +24,12 @@ export function cn(
 export function percent(n: number, precision = 3) {
   return `${(n * 100).toPrecision(precision)}%`;
 }
+
+// For values that can't be known at build time (the `style` attribute is not allowed)
+export function setStyle(style: Partial<CSSStyleDeclaration>) {
+  return (element: HTMLElement | null) => {
+    if (element) {
+      Object.assign(element.style, style);
+    }
+  };
+}

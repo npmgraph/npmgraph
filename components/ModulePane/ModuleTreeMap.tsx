@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
-import { cn, percent } from '../../lib/dom.ts';
+import { cn, percent, setStyle } from '../../lib/dom.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
 import { QueryType } from '../../lib/ModuleCache.ts';
@@ -16,14 +16,7 @@ const isLabelVisible = (width: number, height: number, fontScale: number) =>
 const isSizeVisible = (width: number, height: number, fontScale: number) =>
   width >= 56 && height >= fontScale * 21 + 19;
 
-export function ModuleTreeMap({
-  data,
-  style,
-  ...props
-}: {
-  data: BundlePhobiaData;
-  style?: React.CSSProperties;
-}) {
+export function ModuleTreeMap({ data }: { data: BundlePhobiaData }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const setGraphSelection = useGraphSelection()[2];
   const [leaves, setLeaves] = useState<TreemapLeaf[]>([]);
@@ -50,11 +43,7 @@ export function ModuleTreeMap({
   }, [data]);
 
   return (
-    <div
-      ref={containerRef}
-      style={{ position: 'relative', ...style }}
-      {...props}
-    >
+    <div ref={containerRef} className={styles.container}>
       {leaves.map(leaf => {
         const size = human(leaf.value, 'B');
         const backgroundColor = `
@@ -79,9 +68,9 @@ export function ModuleTreeMap({
           return (
             <div
               key={leaf.key}
+              ref={setStyle(position)}
               title={`${label} (${size})`}
               className={cn(styles.root, styles.others)}
-              style={position}
             >
               {isLabelVisible(width, height, fontScale) && label}
             </div>
@@ -91,10 +80,10 @@ export function ModuleTreeMap({
         return (
           <button
             key={leaf.key}
+            ref={setStyle({ ...position, backgroundColor })}
             type="button"
             title={`${leaf.name} (${size})`}
             className={cn(styles.root, utilities.brightHover)}
-            style={{ ...position, backgroundColor }}
             onClick={() => {
               setGraphSelection(QueryType.Default, leaf.name);
             }}
