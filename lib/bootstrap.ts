@@ -1,5 +1,4 @@
 // The only static entry point. It must not import anything from the app: a syntax error in any app module would otherwise stop this check from running
-import '../index.scss';
 // ?no-inline keeps the image out of this entry chunk
 import imageUrl from '../images/sad-kilroy.png?no-inline';
 import * as styles from './unsupported.module.css';

@@ -1,3 +1,8 @@
+declare module '*?no-inline' {
+  const url: string;
+  export default url;
+}
+
 declare module '*?raw' {
   const value: string;
   export default value;
