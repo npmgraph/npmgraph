@@ -1,0 +1,51 @@
+<style>
+  #unsupported {
+    position: relative;
+    margin: 2rem auto;
+    border: 1px solid var(--text);
+    border-radius: 10px;
+    padding: 1rem;
+    max-width: 40rem;
+
+    h1 {
+      text-align: center;
+    }
+
+    code {
+      border-radius: 3px;
+      padding: 0.1rem 0.3rem;
+      color: var(--stroke-orange);
+    }
+
+    .footer {
+      text-align: right;
+    }
+
+    img {
+      position: absolute;
+      bottom: -10px;
+      left: 100px;
+    }
+  }
+</style>
+<div id="unsupported">
+  <h1>Unsupported Features</h1>
+  <p>
+    It looks like your browser may have trouble running npmgraph. Specifically,
+    the following features appear to be missing or disabled:
+  </p>
+  <ul></ul>
+  <p>
+    Make sure you're using a modern version of Chrome, Firefox, Safari, or Edge,
+    and that cookies are enabled.
+  </p>
+  <p class="footer">
+    <a
+      href="https://github.com/npmgraph/npmgraph"
+      target="_blank"
+      rel="noreferrer"
+      >npmgraph on GitHub</a
+    >
+  </p>
+  <img src="sad-kilroy.png" width="100" alt="Sad Kilroy" />
+</div>
