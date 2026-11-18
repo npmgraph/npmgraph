@@ -79,8 +79,8 @@ function ModuleDetailsPane({
       <p>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
-        <ModuleActions module={module} />
         <ModuleExternalLinks module={module} />
+        <ModuleActions module={module} />
       </div>
 
       <ModuleWarnings module={module} showOutdated={isShowStatus} />

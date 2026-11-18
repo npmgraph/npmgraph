@@ -4,7 +4,7 @@ import { patchHash } from '../../hooks/useLocation.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PaneType, PARAM_SECTION, PARAM_TAB } from '../../lib/constants.ts';
-import { CollapsibleSection, type SectionType } from '../ui/Section.tsx';
+import { CollapsibleSection } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.css';
 
@@ -33,14 +33,14 @@ function storeOpenSection() {
 export function ReportItem({
   title,
   count,
-  type = 'info',
+  warn = false,
   description,
   open = false,
   children,
 }: {
   title: string;
   count?: number | string;
-  type?: SectionType;
+  warn?: boolean;
   description?: ReactNode;
   open?: boolean;
   children: ReactNode;
@@ -54,13 +54,13 @@ export function ReportItem({
   );
 
   return isReportOnly ? (
-    <DocumentSection title={title} count={count} type={type}>
+    <DocumentSection title={title} count={count} warn={warn}>
       {body}
     </DocumentSection>
   ) : (
     <CollapsibleSection
       open={open}
-      type={type}
+      warn={warn}
       title={title}
       count={count}
       data-report-item={sectionName(title)}

@@ -29,7 +29,7 @@ export function ModuleWarnings({
   const mappingUrl = mapping && resolveDocUrl(mapping.url);
 
   return (
-    <Section title="Warnings" count={count} type="warn">
+    <Section warn title="Warnings" count={count}>
       <dl className={cn(listStyles.list, styles.list)}>
         {deprecated ? (
           <div>

@@ -1,3 +1,4 @@
+import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import { useState, type HTMLProps, type ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
@@ -9,15 +10,8 @@ export function SectionBody({ children }: { children: ReactNode }) {
   return <div className={styles.body}>{children}</div>;
 }
 
-const SYMBOLS = { info: null, warn: '\u{26A0}', error: '\u{1F6AB}' };
-
-export type SectionType = keyof typeof SYMBOLS;
-
-export function SectionSymbol({ type = 'info' }: { type?: SectionType }) {
-  const symbol = SYMBOLS[type];
-  return symbol ? (
-    <span className={cn(styles.symbol, styles[type])}>{symbol}</span>
-  ) : null;
+export function SectionSymbol({ warn }: { warn?: boolean }) {
+  return warn ? <AlertFillIcon className={styles.warn} /> : null;
 }
 
 function Count({ count }: { count?: number | string }) {
@@ -29,7 +23,7 @@ function Count({ count }: { count?: number | string }) {
 export function CollapsibleSection({
   title,
   count,
-  type,
+  warn,
   className,
   children,
   open = true,
@@ -38,7 +32,7 @@ export function CollapsibleSection({
 }: {
   title: string;
   count?: number | string;
-  type?: SectionType;
+  warn?: boolean;
   open?: boolean;
 } & HTMLProps<HTMLDetailsElement>) {
   const name = sectionName(title);
@@ -69,7 +63,7 @@ export function CollapsibleSection({
       <summary className={utilities.brightHoverBackdrop}>
         {title}
         <Count count={count} />
-        <SectionSymbol type={type} />
+        <SectionSymbol warn={warn} />
       </summary>
       <SectionOpenedContext value={opened.promise}>
         <SectionBody>{children}</SectionBody>
@@ -83,13 +77,13 @@ export function Section({
   children,
   className,
   count,
-  type,
+  warn,
 }: {
   title: string;
   children: any;
   className?: string;
   count?: number | string;
-  type?: SectionType;
+  warn?: boolean;
 }) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDivElement>(name);
@@ -99,7 +93,7 @@ export function Section({
       <h3>
         {title}
         <Count count={count} />
-        <SectionSymbol type={type} />
+        <SectionSymbol warn={warn} />
       </h3>
       <SectionBody>{children}</SectionBody>
     </div>

@@ -113,7 +113,7 @@ export default function ModuleReplacementsNative() {
 
   return (
     <ReportItem
-      type="warn"
+      warn
       title="Suggested replacements"
       count={rows.length}
       description={
