@@ -90,13 +90,26 @@ export default defineConfig([
         },
       ],
 
-      'byo/no-static-style': [
+      'byo/no-inline-style': [
         'error',
         {
           selector:
             'JSXAttribute[name.name="style"] > JSXExpressionContainer > ObjectExpression > Property:matches([value.type="Literal"], [value.type="TemplateLiteral"][value.expressions.length=0], [value.type="UnaryExpression"][value.argument.type="Literal"])',
           message:
             'Move static styles to a CSS module; `style` is only for values computed at runtime',
+        },
+        {
+          // Assigning an empty string removes the inline style, which is allowed
+          selector:
+            'AssignmentExpression[left.object.property.name="style"]:matches([right.type="Literal"], [right.type="TemplateLiteral"][right.expressions.length=0]):not([right.value=""])',
+          message:
+            'Move static styles to a CSS module; `element.style` is only for values computed at runtime',
+        },
+        {
+          selector:
+            'CallExpression[callee.object.property.name="style"][callee.property.name="setProperty"]:matches([arguments.1.type="Literal"], [arguments.1.type="TemplateLiteral"][arguments.1.expressions.length=0])',
+          message:
+            'Move static styles to a CSS module; `element.style` is only for values computed at runtime',
         },
       ],
     },
