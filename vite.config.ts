@@ -61,6 +61,7 @@ export default defineConfig({
         test: {
           name: 'smoke',
           include: ['smoke.test.ts'],
+          // Bumping this timeout is NOT the solution to flaky smoke tests
           testTimeout: 3000,
           browser: {
             enabled: true,
