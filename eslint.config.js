@@ -16,6 +16,9 @@ const local = {
   },
 };
 
+// To change rule settings or disable rules, add a plain rule entry in this
+// config (disabledRules or the final override block). Never import from xo,
+// never reach into xo's config objects, and never modify existing blocks.
 const disabledRules = [
   // TODO: Temporarily disabled after dependency update, review and enable
   'unicorn/no-null',
@@ -45,6 +48,7 @@ const disabledRules = [
   'react-doctor/jsx-no-target-blank',
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
+  'unicorn/single-line-block-comment-style',
 ];
 
 export default defineConfig([

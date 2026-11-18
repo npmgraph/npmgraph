@@ -15,9 +15,7 @@
   gap: 0.5em;
 }
 
-/*
-Mimic a placeholder: the field stays prefilled but looks untouched
-*/
+/* Mimic a placeholder: the field stays prefilled but looks untouched */
 .customLinksDefault:not(:focus),
 .customLinksHelp {
   color: var(--text-dim);

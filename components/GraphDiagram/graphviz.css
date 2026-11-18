@@ -5,9 +5,7 @@ element/class selectors that are not rendered by React.
 The pattern#warning ID selector is necessary because SVG fill references
 use the syntax fill: url(#id), which requires matching by ID attribute. */
 
-/*
-Safari renders the text of the font @import
-*/
+/* Safari renders the text of the font @import */
 svg style {
   display: none;
 }
@@ -49,9 +47,7 @@ g {
         stroke: var(--accent) !important;
         stroke-width: 3;
 
-        /*
-        With a colorizer active the fill carries the meaning, so the accent is dropped from the selection and the children
-        */
+        /* With a colorizer active the fill carries the meaning, so the accent is dropped from the selection and the children */
         svg.colorized & {
           stroke: var(--text) !important;
         }
@@ -68,9 +64,7 @@ g {
       }
     }
 
-    /*
-    Browsers don't reliably draw outlines on SVG elements, so use a filter
-    */
+    /* Browsers don't reliably draw outlines on SVG elements, so use a filter */
     a:focus-visible {
       outline: none;
 

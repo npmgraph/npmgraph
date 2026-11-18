@@ -4,9 +4,7 @@
   color: var(--accent);
   text-decoration: underline;
 
-  /*
-  Visually hidden, but still focusable (unlike `hidden`)
-  */
+  /* Visually hidden, but still focusable (unlike `hidden`) */
   input {
     position: absolute;
     opacity: 0;

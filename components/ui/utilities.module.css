@@ -1,6 +1,4 @@
-/*
-Doesn't work on transparent items, `filter` only affects painted pixels. Use `brightHoverBackdrop` instead
-*/
+/* Doesn't work on transparent items, `filter` only affects painted pixels. Use `brightHoverBackdrop` instead */
 .brightHover {
   transition: filter 0.2s;
   will-change: filter;
@@ -12,9 +10,7 @@ Doesn't work on transparent items, `filter` only affects painted pixels. Use `br
   }
 }
 
-/*
-For items without a background: brightens whatever is behind them
-*/
+/* For items without a background: brightens whatever is behind them */
 .brightHoverBackdrop {
   transition: backdrop-filter 0.2s;
 

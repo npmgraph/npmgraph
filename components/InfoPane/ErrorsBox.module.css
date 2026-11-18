@@ -30,9 +30,7 @@
 .dismiss {
   display: block;
   flex-shrink: 0;
-  /*
-  Bigger hit area, without moving the icon
-  */
+  /* Bigger hit area, without moving the icon */
   margin: -0.5em;
   border: 0;
   background: none;
@@ -44,9 +42,7 @@
   }
 }
 
-/*
-Reaches the edges of the banner
-*/
+/* Reaches the edges of the banner */
 .divider {
   margin: 0 -1em;
   border: 0;
