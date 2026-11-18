@@ -9,26 +9,12 @@ import selectDom from 'select-dom/eslint-plugin';
 import noMagicColors from './eslint-rules/no-magic-colors.js';
 import noUnnecessaryScss from './eslint-rules/no-unnecessary-scss.js';
 
-const xoConfig = xo({
-  browser: true,
-  space: true,
-  prettier: 'compat',
-  gitignore: import.meta.url,
-});
-const unicorn = xoConfig.find(config => config.plugins?.unicorn)?.plugins
-  ?.unicorn;
-
 const local = {
   rules: {
     'no-magic-colors': noMagicColors,
     'no-unnecessary-scss': noUnnecessaryScss,
   },
 };
-
-const filenameCase = [
-  'error',
-  { cases: { kebabCase: true, camelCase: true, pascalCase: true } },
-];
 
 const disabledRules = [
   // TODO: Temporarily disabled after dependency update, review and enable
@@ -63,7 +49,12 @@ const disabledRules = [
 
 export default defineConfig([
   // Don't add new objects to this list unless strictly necessary. Extend the existing ones instead
-  ...xoConfig,
+  ...xo({
+    browser: true,
+    space: true,
+    prettier: 'compat',
+    gitignore: import.meta.url,
+  }),
   ...xoReact({
     space: true,
     prettier: 'compat',
@@ -74,14 +65,14 @@ export default defineConfig([
     rules: {
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
-      'unicorn/filename-case': filenameCase,
-      // TODO: Temporarily relaxed after dependency update
-      'unicorn/name-replacements': [
+      'unicorn/filename-case': [
         'error',
         {
-          checkProperties: false,
-          checkVariables: false,
-          checkFilenames: false,
+          cases: {
+            kebabCase: true,
+            camelCase: true,
+            pascalCase: true,
+          },
         },
       ],
 
@@ -140,16 +131,33 @@ export default defineConfig([
   },
   {
     files: ['**/*.css', '**/*.scss'],
-    plugins: { css, local, unicorn },
+    plugins: { css, local },
     language: 'css/css',
     languageOptions: { tolerant: true },
     rules: {
       'local/no-unnecessary-scss': 'error',
       'local/no-magic-colors': 'error',
-      'unicorn/filename-case': filenameCase,
     },
   },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
+  },
+  {
+    // TODO: Temporarily relaxed after dependency update
+    files: ['**/*.{js,jsx,mjs,ts,tsx,mts,css,html}'],
+    rules: {
+      'unicorn/name-replacements': [
+        'error',
+        {
+          checkProperties: false,
+          checkVariables: false,
+          checkFilenames: false,
+        },
+      ],
+      'unicorn/filename-case': [
+        'error',
+        { cases: { kebabCase: true, camelCase: true, pascalCase: true } },
+      ],
+    },
   },
 ]);
