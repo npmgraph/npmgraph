@@ -160,7 +160,7 @@ https://npmgraph.js.org/?q=send#tab=report
 
 ## Running locally
 
-`NPMGraph` is built with `vite`. To run in your local dev environment:
+`npmgraph` is built with `vite`. To run in your local dev environment:
 
 ```shell
 $ git clone https://github.com/npmgraph/npmgraph.git

@@ -52,7 +52,7 @@ function renderUnsupported(unsupported: string[]) {
   root.innerHTML = `
     <h1>Unsupported Features</h1>
     <p>
-      It looks like your browser may have trouble running NPMGraph.
+      It looks like your browser may have trouble running npmgraph.
       Specifically, the following features appear to be missing or disabled:
     </p>
   `;
@@ -75,7 +75,7 @@ function renderUnsupported(unsupported: string[]) {
       Edge, and that cookies are enabled.
     </p>
     <p class="${styles.footer}">
-      <a href="https://github.com/npmgraph/npmgraph" target="_blank" rel="noreferrer">NPMGraph on GitHub</a>
+      <a href="https://github.com/npmgraph/npmgraph" target="_blank" rel="noreferrer">npmgraph on GitHub</a>
     </p>
     <img class="${styles.sadKilroy}" width="100" src="${imageUrl.href}" alt="Sad Kilroy" />
   `,
