@@ -23,7 +23,7 @@ export default function ModulesRepeated() {
 
   return (
     <ReportItem
-      type="warn"
+      warn
       title="Modules with multiple versions"
       count={repeated.length}
       description={

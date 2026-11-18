@@ -1,3 +1,5 @@
+import CheckCircleFillIcon from 'octicons-plain-react/CheckCircleFill';
+import XCircleFillIcon from 'octicons-plain-react/XCircleFill';
 import { Suspense, use, useEffect, useId, useState } from 'react';
 import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
 import useDebouncedValue from '../../hooks/useDebouncedValue.ts';
@@ -33,7 +35,15 @@ function RegistryStatus({
     }
   }, [isOnline, registry, setRegistry]);
 
-  return isOnline ? '✅ Online' : '❌ Offline';
+  return isOnline ? (
+    <>
+      <CheckCircleFillIcon className={styles.online} /> Online
+    </>
+  ) : (
+    <>
+      <XCircleFillIcon className={styles.offline} /> Offline
+    </>
+  );
 }
 
 export default function RegistryInput() {
