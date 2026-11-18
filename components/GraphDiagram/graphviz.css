@@ -34,7 +34,7 @@ g {
     }
 
     path {
-      fill: var(--color, var(--bg0));
+      fill: var(--colorizer-color, var(--bg0));
       stroke: var(--text);
     }
 
@@ -78,7 +78,7 @@ g {
     }
 
     &.warning > path {
-      fill: var(--color, url(#warning));
+      fill: var(--colorizer-color, url(#warning));
     }
 
     * {

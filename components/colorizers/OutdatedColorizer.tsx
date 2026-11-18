@@ -21,7 +21,7 @@ export default {
 
   async colorForModule(module: Module) {
     if (module.isLocal || module.isStub) {
-      return '';
+      return undefined;
     }
 
     const manifest = await getNPMPackument(module.name);
@@ -40,7 +40,7 @@ export default {
       outdated = difference(module.version, latestVersion);
     } catch (error) {
       console.error(error);
-      return '';
+      return undefined;
     }
 
     switch (outdated) {

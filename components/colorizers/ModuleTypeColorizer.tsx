@@ -3,6 +3,11 @@ import type Module from '../../lib/Module.ts';
 import { LegendColor } from './LegendColor.tsx';
 import type { SimpleColorizer } from './types.ts';
 
+const COLORIZE_MODULE_CJS = 'red';
+const COLORIZE_MODULE_DUAL = 'yellow';
+const COLORIZE_MODULE_ESM = 'green';
+const COLORIZE_MODULE_TYPES = 'blue';
+
 export default {
   title: 'Module Type',
   name: 'moduleType',
@@ -10,10 +15,12 @@ export default {
   legend() {
     return (
       <>
-        <LegendColor color="red">CJS Only</LegendColor>
-        <LegendColor color="yellow">CJS and ESM</LegendColor>
-        <LegendColor color="green">ESM Only</LegendColor>
-        <LegendColor color="blue">TypeScript types</LegendColor>
+        <LegendColor color={COLORIZE_MODULE_CJS}>CJS Only</LegendColor>
+        <LegendColor color={COLORIZE_MODULE_DUAL}>CJS and ESM</LegendColor>
+        <LegendColor color={COLORIZE_MODULE_ESM}>ESM Only</LegendColor>
+        <LegendColor color={COLORIZE_MODULE_TYPES}>
+          TypeScript types
+        </LegendColor>
       </>
     );
   },
@@ -22,18 +29,18 @@ export default {
     const pkgType = detectPackageType(module.package);
 
     if (pkgType.esm && pkgType.cjs) {
-      return 'yellow';
+      return COLORIZE_MODULE_DUAL;
     }
 
     if (pkgType.esm) {
-      return 'green';
+      return COLORIZE_MODULE_ESM;
     }
 
     if (pkgType.cjs) {
-      return 'red';
+      return COLORIZE_MODULE_CJS;
     }
 
-    return pkgType.types ? 'blue' : '';
+    return pkgType.types ? COLORIZE_MODULE_TYPES : undefined;
   },
 } as SimpleColorizer;
 

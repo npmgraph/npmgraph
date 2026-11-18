@@ -9,7 +9,7 @@ export type Colorizer = {
 };
 
 export type SimpleColorizer = {
-  colorForModule: (module: Module) => Promise<ColorName | ''>;
+  colorForModule: (module: Module) => Promise<ColorName | undefined>;
 } & Colorizer;
 
 export type BulkColorizer = {
