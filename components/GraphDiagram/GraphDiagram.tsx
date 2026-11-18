@@ -23,7 +23,7 @@ import {
   queryModuleCache,
   QueryType,
 } from '../../lib/ModuleCache.ts';
-import { PARAM_COLORIZE } from '../../lib/constants.ts';
+import { COLORS, PARAM_COLORIZE, type ColorName } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
@@ -377,6 +377,14 @@ function updateSelection(
   }
 }
 
+// The color is a class, which sets `--color` for the fill
+function setColor(path: Element, color: ColorName | '' | null | undefined) {
+  path.classList.remove(...Object.values(COLORS));
+  if (color) {
+    path.classList.add(COLORS[color]);
+  }
+}
+
 async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   const colorizer = getColorizer(colorize);
   svg.classList.toggle('colorized', Boolean(colorizer));
@@ -384,7 +392,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   if (!colorizer) {
     // Unset all node colors
     for (const node of $$optional('g.node path', svg)) {
-      node.removeAttribute('style');
+      setColor(node, '');
     }
 
     return;
@@ -401,7 +409,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
       // Reset color if there's no module
       if (!m) {
-        elementPath.style.fill = '';
+        setColor(elementPath, '');
         continue;
       }
 
@@ -413,7 +421,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
           return null;
         })
         .then(color => {
-          elementPath.style.fill = color ?? '';
+          setColor(elementPath, color);
         });
     }
   } else {
@@ -435,7 +443,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       const moduleKey = element.dataset['module'];
       const m = moduleKey && getCachedModule(moduleKey);
       const elementPath = $('path', element);
-      elementPath.style.fill = (m && colors.get(m)) ?? '';
+      setColor(elementPath, m && colors.get(m));
     }
   }
 }

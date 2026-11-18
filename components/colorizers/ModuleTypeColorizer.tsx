@@ -3,11 +3,6 @@ import type Module from '../../lib/Module.ts';
 import { LegendColor } from './LegendColor.tsx';
 import type { SimpleColorizer } from './types.ts';
 
-const COLORIZE_MODULE_CJS = 'var(--bg-red)';
-const COLORIZE_MODULE_DUAL = 'var(--bg-yellow)';
-const COLORIZE_MODULE_ESM = 'var(--bg-green)';
-const COLORIZE_MODULE_TYPES = 'var(--bg-blue)';
-
 export default {
   title: 'Module Type',
   name: 'moduleType',
@@ -27,18 +22,18 @@ export default {
     const pkgType = detectPackageType(module.package);
 
     if (pkgType.esm && pkgType.cjs) {
-      return COLORIZE_MODULE_DUAL;
+      return 'yellow';
     }
 
     if (pkgType.esm) {
-      return COLORIZE_MODULE_ESM;
+      return 'green';
     }
 
     if (pkgType.cjs) {
-      return COLORIZE_MODULE_CJS;
+      return 'red';
     }
 
-    return pkgType.types ? COLORIZE_MODULE_TYPES : '';
+    return pkgType.types ? 'blue' : '';
   },
 } as SimpleColorizer;
 

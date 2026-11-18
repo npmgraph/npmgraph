@@ -32,7 +32,7 @@ export default {
     // Using gt() instead of diff() so that prerelease versions (e.g.
     // 1.0.0-rc.12 < 1.0.0) are compared correctly.
     if (!isGreaterThan(latestVersion, module.version)) {
-      return 'var(--bg-green)';
+      return 'green';
     }
 
     let outdated;
@@ -46,16 +46,16 @@ export default {
     switch (outdated) {
       case 'major':
       case 'premajor':
-        return 'var(--bg-red)';
+        return 'red';
       case 'minor':
       case 'preminor':
-        return 'var(--bg-orange)';
+        return 'orange';
       case 'patch':
       case 'prepatch':
       case 'prerelease':
-        return 'var(--bg-yellow)';
+        return 'yellow';
       case null:
-        return 'var(--bg-green)';
+        return 'green';
     }
   },
 } as SimpleColorizer;

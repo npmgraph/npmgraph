@@ -19,11 +19,6 @@ export default {
 
   async colorForModule(module: Module) {
     const bus = Math.min(module.maintainers.length, 4);
-    return [
-      'var(--bg-red)',
-      'var(--bg-orange)',
-      'var(--bg-yellow)',
-      'var(--bg-green)',
-    ][Math.max(0, bus - 1)];
+    return ['red', 'orange', 'yellow', 'green'][Math.max(0, bus - 1)];
   },
 } as SimpleColorizer;

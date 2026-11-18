@@ -1,4 +1,17 @@
+import * as colorStyles from './colors.module.css';
+
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
+
+// Color names to the CSS module classes that apply them
+export const COLORS = {
+  red: colorStyles.red,
+  orange: colorStyles.orange,
+  yellow: colorStyles.yellow,
+  green: colorStyles.green,
+  blue: colorStyles.blue,
+};
+
+export type ColorName = keyof typeof COLORS;
 
 export const PARAM_COLLAPSE = 'collapse';
 export const PARAM_COLORIZE = 'color';

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { cn, percent } from '../../lib/dom.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
@@ -46,11 +46,6 @@ export function ModuleTreeMap({ data }: { data: BundlePhobiaData }) {
     <div ref={containerRef} className={styles.container}>
       {leaves.map(leaf => {
         const size = human(leaf.value, 'B');
-        const backgroundColor = `
-            color-mix(in srgb, color-mix(in oklch increasing hue, var(--bg-orange),
-            var(--bg-red)
-       ${percent(leaf.rank)}), var(--root-color) 25%)`;
-
         const width = leaf.x1 - leaf.x0 - m;
         const height = leaf.y1 - leaf.y0 - m;
         const fontScale = 0.65 + 0.7 * Math.sqrt(leaf.coverage);
@@ -82,8 +77,10 @@ export function ModuleTreeMap({ data }: { data: BundlePhobiaData }) {
             key={leaf.key}
             type="button"
             title={`${leaf.name} (${size})`}
-            className={cn(styles.root, utilities.brightHover)}
-            style={{ ...position, backgroundColor }}
+            className={cn(styles.root, styles.leaf, utilities.brightHover)}
+            style={
+              { ...position, '--rank': percent(leaf.rank) } as CSSProperties
+            }
             onClick={() => {
               setGraphSelection(QueryType.Default, leaf.name);
             }}
