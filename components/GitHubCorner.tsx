@@ -9,7 +9,7 @@ export default function GitHubCorner() {
       className={styles.root}
       aria-label="View source on GitHub"
     >
-      <GitHubCornerSvg viewBox="0 0 250 250" />
+      <GitHubCornerSvg />
     </a>
   );
 }

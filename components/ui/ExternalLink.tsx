@@ -23,12 +23,7 @@ export function ExternalLink({
       {...props}
     >
       {children}
-      <IconComponent
-        aria-hidden="true"
-        viewBox="0 0 16 16"
-        width={12}
-        height={12}
-      />
+      <IconComponent aria-hidden="true" width={12} height={12} />
     </a>
   );
 }
