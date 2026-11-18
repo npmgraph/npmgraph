@@ -99,6 +99,15 @@ export default defineConfig([
             'Move static styles to a CSS module; `style` is only for values computed at runtime',
         },
       ],
+
+      'byo/no-template-class-name': [
+        'error',
+        {
+          selector:
+            'JSXAttribute[name.name=\"className\"] > JSXExpressionContainer > TemplateLiteral',
+          message: 'Use cn() from lib/dom.ts instead of a template literal',
+        },
+      ],
     },
   },
   reactDoctor.configs.recommended,
