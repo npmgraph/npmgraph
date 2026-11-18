@@ -9,6 +9,15 @@ import selectDom from 'select-dom/eslint-plugin';
 import noMagicColors from './eslint-rules/no-magic-colors.js';
 import noUnnecessaryScss from './eslint-rules/no-unnecessary-scss.js';
 
+const xoConfig = xo({
+  browser: true,
+  space: true,
+  prettier: 'compat',
+  gitignore: import.meta.url,
+});
+const unicorn = xoConfig.find(config => config.plugins?.unicorn)?.plugins
+  ?.unicorn;
+
 const local = {
   rules: {
     'no-magic-colors': noMagicColors,
@@ -16,7 +25,16 @@ const local = {
   },
 };
 
+const filenameCase = [
+  'error',
+  { cases: { kebabCase: true, camelCase: true, pascalCase: true } },
+];
+
 const disabledRules = [
+  // TODO: Temporarily disabled after dependency update, review and enable
+  'unicorn/no-null',
+  'unicorn/prefer-await',
+
   // TODO: Gradually review and enable
   '@typescript-eslint/consistent-type-assertions',
   '@typescript-eslint/no-unsafe-argument',
@@ -45,12 +63,7 @@ const disabledRules = [
 
 export default defineConfig([
   // Don't add new objects to this list unless strictly necessary. Extend the existing ones instead
-  ...xo({
-    browser: true,
-    space: true,
-    prettier: 'compat',
-    gitignore: import.meta.url,
-  }),
+  ...xoConfig,
   ...xoReact({
     space: true,
     prettier: 'compat',
@@ -61,14 +74,14 @@ export default defineConfig([
     rules: {
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
-      'unicorn/filename-case': [
+      'unicorn/filename-case': filenameCase,
+      // TODO: Temporarily relaxed after dependency update
+      'unicorn/name-replacements': [
         'error',
         {
-          cases: {
-            kebabCase: true,
-            camelCase: true,
-            pascalCase: true,
-          },
+          checkProperties: false,
+          checkVariables: false,
+          checkFilenames: false,
         },
       ],
 
@@ -127,12 +140,13 @@ export default defineConfig([
   },
   {
     files: ['**/*.css', '**/*.scss'],
-    plugins: { css, local },
+    plugins: { css, local, unicorn },
     language: 'css/css',
     languageOptions: { tolerant: true },
     rules: {
       'local/no-unnecessary-scss': 'error',
       'local/no-magic-colors': 'error',
+      'unicorn/filename-case': filenameCase,
     },
   },
   {

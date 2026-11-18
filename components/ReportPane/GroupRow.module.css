@@ -4,7 +4,9 @@
   gap: 0.5rem;
 }
 
-/* Media object: the avatar never wraps, long names wrap beside it */
+/*
+Media object: the avatar never wraps, long names wrap beside it
+*/
 .heading {
   display: flex;
   flex: 0 0 17ch;
@@ -29,7 +31,9 @@
   flex-direction: column;
   min-width: 0;
 
-  /* A lone module lines up with the middle of the heading */
+  /*
+  A lone module lines up with the middle of the heading
+  */
   &:has(> :only-child) {
     align-self: center;
   }

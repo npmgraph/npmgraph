@@ -1,4 +1,6 @@
-/* The colorizer colors, as classes that set `--colorizer-color` on the colored element */
+/*
+The colorizer colors, as classes that set `--colorizer-color` on the colored element
+*/
 .red {
   --colorizer-color: var(--bg-red);
 }

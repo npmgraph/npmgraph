@@ -1,4 +1,6 @@
-/* How many modules a module pulls in, right-aligned at the end of its row */
+/*
+How many modules a module pulls in, right-aligned at the end of its row
+*/
 .weight {
   display: inline-flex;
   justify-content: flex-end;

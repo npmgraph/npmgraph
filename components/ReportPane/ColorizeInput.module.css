@@ -3,7 +3,9 @@
   align-items: center;
   gap: 0.5em;
 
-  /* Same box as the registry input; Safari ignores the padding of native selects */
+  /*
+  Same box as the registry input; Safari ignores the padding of native selects
+  */
   select {
     flex-grow: 1;
     appearance: none;
@@ -15,7 +17,9 @@
         calc(100% - 1.1em) 50% / 0.4em 0.4em no-repeat,
       linear-gradient(135deg, currentcolor 50%, transparent 50%)
         calc(100% - 0.7em) 50% / 0.4em 0.4em no-repeat;
-    /* iOS Safari tints native selects blue unless these are set explicitly */
+    /*
+    iOS Safari tints native selects blue unless these are set explicitly
+    */
     background-color: var(--bg-root);
     padding: 0.3em 2em 0.3em 0.7em;
     height: 2.2em; /* Same as the registry input */

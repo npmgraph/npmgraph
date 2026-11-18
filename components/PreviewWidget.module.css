@@ -1,6 +1,8 @@
 .root {
   position: fixed;
   z-index: 30;
-  /* Place it on the bottom left, above the graph controls if they are on screen */
+  /*
+  Place it on the bottom left, above the graph controls if they are on screen
+  */
   inset: auto auto calc(2.5em + var(--button-size)) 1em;
 }

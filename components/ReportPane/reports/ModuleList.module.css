@@ -1,4 +1,6 @@
-/* Module list shared by reports: not striped, just a gap between modules */
+/*
+Module list shared by reports: not striped, just a gap between modules
+*/
 .list {
   display: flex;
   flex-direction: column;
@@ -14,13 +16,17 @@
   padding-inline-start: 1em;
   min-width: 0;
 
-  /* Blend in with the text, only the font family differs */
+  /*
+  Blend in with the text, only the font family differs
+  */
   code {
     font: inherit;
     font-family: ui-monospace, monospace;
   }
 
-  /* One item per line, marked with an arrow */
+  /*
+  One item per line, marked with an arrow
+  */
   ul {
     margin: 0;
     padding: 0 0 0 2ch;

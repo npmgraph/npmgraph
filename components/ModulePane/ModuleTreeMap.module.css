@@ -30,7 +30,9 @@
   }
 }
 
-/* Redder the bigger it is, `--rank` is set at runtime */
+/*
+Redder the bigger it is, `--rank` is set at runtime
+*/
 .leaf {
   background-color: color-mix(
     in srgb,
