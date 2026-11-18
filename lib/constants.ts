@@ -28,6 +28,8 @@ export const PaneType = {
   REPORT: 'report',
   INFO: 'info',
   VIEW: 'view',
+  // Closes the inspector
+  NONE: 'none',
 } as const;
 
 export type PaneTypes = (typeof PaneType)[keyof typeof PaneType];

@@ -25,7 +25,7 @@ export default function GraphDiagramExportButtons() {
 
   return (
     <>
-      <ButtonGroup>
+      <ButtonGroup square>
         <Button
           title="Download graph as SVG"
           onClick={() => {
@@ -35,7 +35,7 @@ export default function GraphDiagramExportButtons() {
           <DownloadIcon />
         </Button>
       </ButtonGroup>
-      <ButtonGroup>
+      <ButtonGroup square>
         {isCopying ? (
           <>
             <Button
@@ -236,7 +236,7 @@ function generateLinkToDownload(
   const title =
     query.length > 0
       ? `Dependencies for ${query.join(', ')}`
-      : 'NPM Dependency Diagrams';
+      : 'npm Dependency Diagrams';
   const name = title.replaceAll(/\W+/gv, '_');
   const downloadLink = document.createElement('a');
   downloadLink.href = link;

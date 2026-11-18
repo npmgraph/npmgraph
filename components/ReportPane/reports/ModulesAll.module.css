@@ -1,0 +1,19 @@
+/* How many modules a module pulls in, right-aligned at the end of its row */
+.weight {
+  display: inline-flex;
+  justify-content: flex-end;
+  gap: 0.25em;
+  margin-inline-start: auto;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+
+  &.heavy {
+    color: var(--accent);
+    font-weight: bold;
+  }
+}
+
+.icon {
+  font-weight: normal;
+}

@@ -10,7 +10,12 @@ import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
 import useHashParam from './useHashParam.ts';
 
-const tabs = new Set<string>([PaneType.REPORT, PaneType.MODULE, PaneType.VIEW]);
+const tabs = new Set<string>([
+  PaneType.REPORT,
+  PaneType.MODULE,
+  PaneType.VIEW,
+  PaneType.NONE,
+]);
 
 // The tab to show until the user picks one
 function useDefaultTab(): PaneTypes {
@@ -30,10 +35,13 @@ export function useTab() {
       ? (tabParameter as PaneTypes)
       : defaultTab;
 
-  // Show a tab: un-hide the inspector, leave the mobile graph and drop the section of the previous tab
-  const selectTab = (nextTab: PaneTypes) => {
+  // Show a tab (`null` goes back to the default one): leave the report-only view, leave the mobile graph and drop the section of the previous tab
+  // `PaneType.NONE` closes the inspector instead, and leaves the graph alone
+  const selectTab = (nextTab: PaneTypes | null) => {
     patchHash(parameters => {
-      if (nextTab !== PaneType.INFO) {
+      if (nextTab === null) {
+        parameters.delete(PARAM_TAB);
+      } else if (nextTab !== PaneType.INFO) {
         parameters.set(PARAM_TAB, nextTab);
       }
 
@@ -43,7 +51,9 @@ export function useTab() {
       }
     });
     setInfoOpen(nextTab === PaneType.INFO);
-    setGraphVisible(false);
+    if (nextTab !== PaneType.NONE) {
+      setGraphVisible(false);
+    }
   };
 
   return [tab, selectTab] as const;

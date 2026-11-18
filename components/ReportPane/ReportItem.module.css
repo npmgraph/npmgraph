@@ -1,12 +1,6 @@
-.symbol {
-  display: inline-block;
+.warn {
   vertical-align: middle;
-  font-size: 1.3rem;
-  line-height: 1;
-
-  &.warn {
-    color: var(--accent);
-  }
+  color: var(--accent);
 }
 
 /* The description of the report, before the rows */
