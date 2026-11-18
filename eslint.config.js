@@ -16,9 +16,10 @@ const local = {
   },
 };
 
-// To change rule settings or disable rules, add a plain rule entry in this
-// config (disabledRules or the final override block). Never import from xo,
-// never reach into xo's config objects, and never modify existing blocks.
+// To change rule settings or disable rules, add a plain rule entry to an
+// existing object in this config (disabledRules or the tsFilesGlob block).
+// Never add new config objects, never import from xo and never reach into
+// xo's config objects.
 const disabledRules = [
   // TODO: Temporarily disabled after dependency update, review and enable
   'unicorn/no-null',
@@ -76,6 +77,33 @@ export default defineConfig([
             kebabCase: true,
             camelCase: true,
             pascalCase: true,
+          },
+        },
+      ],
+      'unicorn/name-replacements': [
+        'error',
+        {
+          replacements: {
+            props: false,
+            ref: false,
+            refs: false,
+            pkg: false,
+            param: false,
+            fn: false,
+            ev: false,
+            args: false,
+            arg: false,
+            i: false,
+            deps: false,
+            dep: false,
+            src: false,
+            repo: false,
+            doc: false,
+            ctx: false,
+            buf: false,
+            util: false,
+            dev: false,
+            dist: false,
           },
         },
       ],
@@ -145,23 +173,5 @@ export default defineConfig([
   },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
-  },
-  {
-    // TODO: Temporarily relaxed after dependency update
-    files: ['**/*.{js,jsx,mjs,ts,tsx,mts,css,html}'],
-    rules: {
-      'unicorn/name-replacements': [
-        'error',
-        {
-          checkProperties: false,
-          checkVariables: false,
-          checkFilenames: false,
-        },
-      ],
-      'unicorn/filename-case': [
-        'error',
-        { cases: { kebabCase: true, camelCase: true, pascalCase: true } },
-      ],
-    },
   },
 ]);
