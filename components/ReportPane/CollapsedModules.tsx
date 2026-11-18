@@ -1,3 +1,4 @@
+import XIcon from 'octicons-plain-react/X';
 import useCollapse from '../../hooks/useCollapse.ts';
 import { toggleItem } from '../../lib/array-util.ts';
 import { Button } from '../Button.tsx';
@@ -29,7 +30,7 @@ export default function CollapsedModules() {
                 setCollapse(toggleItem(collapse, name));
               }}
             >
-              ×
+              <XIcon />
             </button>
             <span>{name}</span>
           </li>

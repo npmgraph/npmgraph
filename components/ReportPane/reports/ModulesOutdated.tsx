@@ -21,7 +21,7 @@ export default function ModulesOutdated() {
 
   return (
     <ReportItem
-      type="warn"
+      warn
       title="Outdated modules"
       count={groups.reduce((total, [, modules]) => total + modules.length, 0)}
       description={

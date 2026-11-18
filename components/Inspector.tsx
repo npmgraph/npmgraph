@@ -1,8 +1,7 @@
 import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
-import { PaneType, PARAM_HIDE } from '../lib/constants.ts';
+import { PaneType } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import { cn } from '../lib/dom.ts';
-import useHashParam from '../hooks/useHashParam.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
 import useGraphSelection from '../hooks/useGraphSelection.ts';
@@ -21,6 +20,18 @@ const modulePanePromise = import('./ModulePane/ModulePane.tsx');
 const ReportPane = lazy(async () => reportPanePromise);
 const ModulePane = lazy(async () => modulePanePromise);
 
+// The scroll position only makes sense for the same content
+function getScrollKey(tab: string, content: string, selection: string) {
+  switch (tab) {
+    case PaneType.MODULE:
+      return `${content}|${selection}`;
+    case PaneType.REPORT:
+      return content;
+    default:
+      return '';
+  }
+}
+
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;
   const [tab] = useTab();
@@ -29,25 +40,23 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   // The tab updates synchronously, so defer it to keep showing the previous one while the next suspends
   const deferredTab = useDeferredValue(tab);
 
-  const [hide] = useHashParam(PARAM_HIDE);
   const [isReportOnly] = useReportOnly();
   const [query] = useQuery();
   const [selectionType, selectionValue] = useGraphSelection();
 
   // The graph is rendered by App, so it doesn't change when switching tabs
   const isHidden =
-    !isReportOnly && (hide !== null || (isTightScreen && isGraphVisible));
+    !isReportOnly &&
+    (tab === PaneType.NONE || (isTightScreen && isGraphVisible));
   const shownTab = isReportOnly ? PaneType.REPORT : deferredTab;
 
-  // The scroll position only makes sense for the same content
-  const content = query.join(',');
   useTabScroll(
     shownTab,
-    shownTab === PaneType.MODULE
-      ? `${content}|${selectionType}:${selectionValue}`
-      : shownTab === PaneType.REPORT
-        ? content
-        : '',
+    getScrollKey(
+      shownTab,
+      query.join(','),
+      `${selectionType}:${selectionValue}`,
+    ),
     isTightScreen,
     !isHidden,
   );
@@ -70,6 +79,8 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
     case PaneType.INFO:
       paneComponent = <InfoPane />;
       break;
+    case PaneType.NONE:
+      return null;
   }
 
   return (
