@@ -449,7 +449,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       const moduleKey = element.dataset['module'];
       const m = moduleKey && getCachedModule(moduleKey);
       const elementPath = $('path', element);
-      const color = m ? colors.get(m) : undefined;
+      const color = m && colors.get(m);
       if (color) {
         setColor(elementPath, color);
       } else {
