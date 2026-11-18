@@ -9,7 +9,6 @@ export default function GitHubCorner() {
       className={styles.root}
       aria-label="View source on GitHub"
     >
-      {/* svgo.config.json removes the viewBox of the file */}
       <GitHubCornerSvg viewBox="0 0 250 250" />
     </a>
   );

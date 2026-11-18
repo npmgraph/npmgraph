@@ -1,8 +1,8 @@
 // The only static entry point. It must not import anything from the app: a syntax error in any app module would otherwise stop this check from running
 import '../index.scss';
+// ?no-inline keeps the image out of this entry chunk
+import imageUrl from '../images/sad-kilroy.png?no-inline';
 import * as styles from './unsupported.module.css';
-
-const imageUrl = new URL('../images/sad-kilroy.png', import.meta.url);
 
 function isValidJS(src: string) {
   try {
@@ -77,7 +77,7 @@ function renderUnsupported(unsupported: string[]) {
     <p class="${styles.footer}">
       <a href="https://github.com/npmgraph/npmgraph" target="_blank" rel="noreferrer">npmgraph on GitHub</a>
     </p>
-    <img class="${styles.sadKilroy}" width="100" src="${imageUrl.href}" alt="Sad Kilroy" />
+    <img class="${styles.sadKilroy}" width="100" src="${imageUrl}" alt="Sad Kilroy" />
   `,
   );
   document.body.append(root);

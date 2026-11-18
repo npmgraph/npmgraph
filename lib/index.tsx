@@ -63,9 +63,4 @@ function init() {
   createRoot($('title')).render(<DiagramTitle defaultTitle={document.title} />);
 }
 
-// This module is imported dynamically, so the load event may have fired already
-if (document.readyState === 'complete') {
-  init();
-} else {
-  globalThis.addEventListener('load', init);
-}
+init();

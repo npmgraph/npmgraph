@@ -25,7 +25,6 @@ export function ExternalLink({
       {children}
       <IconComponent
         aria-hidden="true"
-        // svgo.config.json removes the viewBox of the files, which is needed to resize them
         viewBox="0 0 16 16"
         width={12}
         height={12}
