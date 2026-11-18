@@ -378,11 +378,13 @@ function updateSelection(
 }
 
 // The color is a class, which sets `--colorizer-color` for the fill
-function setColor(path: Element, color?: ColorName) {
+function setColor(path: Element, color: ColorName) {
+  unsetColor(path);
+  path.classList.add(COLORS[color]);
+}
+
+function unsetColor(path: Element) {
   path.classList.remove(...Object.values(COLORS));
-  if (color) {
-    path.classList.add(COLORS[color]);
-  }
 }
 
 async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
@@ -392,7 +394,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   if (!colorizer) {
     // Unset all node colors
     for (const node of $$optional('g.node path', svg)) {
-      setColor(node);
+      unsetColor(node);
     }
 
     return;
@@ -409,7 +411,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
       // Reset color if there's no module
       if (!m) {
-        setColor(elementPath);
+        unsetColor(elementPath);
         continue;
       }
 
@@ -421,7 +423,11 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
           return undefined;
         })
         .then(color => {
-          setColor(elementPath, color);
+          if (color) {
+            setColor(elementPath, color);
+          } else {
+            unsetColor(elementPath);
+          }
         });
     }
   } else {
@@ -443,7 +449,12 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       const moduleKey = element.dataset['module'];
       const m = moduleKey && getCachedModule(moduleKey);
       const elementPath = $('path', element);
-      setColor(elementPath, m ? colors.get(m) : undefined);
+      const color = m ? colors.get(m) : undefined;
+      if (color) {
+        setColor(elementPath, color);
+      } else {
+        unsetColor(elementPath);
+      }
     }
   }
 }
