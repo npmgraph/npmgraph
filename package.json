@@ -90,7 +90,6 @@
     "prettier": "^3.10.1",
     "prettier-plugin-css-order": "^2.2.0",
     "sass": "^1.108.2",
-    "svgo": "^4.1.0",
     "typed-query-selector": "^2.12.4",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-plugin-css-modules": "^5.3.0",
