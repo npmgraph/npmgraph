@@ -26,8 +26,14 @@ function detectFeatures() {
   const features = {
     localStorage: hasLocalStorage(), // See issue #202
     '||= (Logical Or)': isValidJS('a ||= 123'), // Since 2020
+    'Array.prototype.at': Array.prototype.at, // Since 2022
+    'crypto.randomUUID': globalThis.crypto?.randomUUID, // Since 2022
+    'Object.hasOwn': Object.hasOwn, // Since 2022
+    'Array.prototype.toSorted': Array.prototype.toSorted, // Since 2023
+    'RegExp v flag': isValidJS('/a/v'), // Since 2023
     'AbortSignal.timeout': globalThis.AbortSignal?.timeout, // Since 2024
     'Map.groupBy': globalThis.Map?.groupBy, // Since 2024
+    'Promise.withResolvers': Promise.withResolvers, // Since 2024
     'URL.parse': globalThis.URL?.parse, // Since 2024
   };
 
