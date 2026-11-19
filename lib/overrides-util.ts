@@ -5,9 +5,7 @@ Utilities for resolving `overrides` in package.json dependency trees.
 See: https://docs.npmjs.com/cli/v10/configuring-npm/package-json#overrides
 */
 
-/**
-Overrides map as defined in package.json `overrides` field.
-*/
+/** Overrides map as defined in package.json `overrides` field. */
 export type Overrides = {
   [packageName: string]: string | Overrides;
 };
@@ -32,9 +30,7 @@ function doesOverrideKeyMatch(key: string, name: string, spec?: string) {
   }
 }
 
-/**
-Type guard that checks whether an unknown value is a valid Overrides object.
-*/
+/** Type guard that checks whether an unknown value is a valid Overrides object. */
 export function isOverrides(value: unknown): value is Overrides {
   if (typeof value !== 'object' || value === null) {
     return false;

@@ -1,5 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
 import Bugsnag from '@bugsnag/js';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@bugsnag/js', () => ({
   default: { start: vi.fn(() => ({ notify: vi.fn() })) },

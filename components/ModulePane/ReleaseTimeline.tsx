@@ -1,12 +1,12 @@
-import { type SemVer, tryParse } from 'verkit';
 import { AxisBottom } from '@visx/axis';
 import { GridColumns } from '@visx/grid';
 import { scaleLinear, scaleTime } from '@visx/scale';
-import { type ReactElement, useState } from 'react';
-import type Module from '../../lib/Module.ts';
+import { useState, type ReactElement } from 'react';
+import { tryParse, type SemVer } from 'verkit';
 import useMeasure from '../../hooks/useMeasure.ts';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
+import type Module from '../../lib/Module.ts';
 import { Section } from '../ui/Section.tsx';
 import { ModuleDownloads } from './ModuleDownloads.tsx';
 import * as styles from './ReleaseTimeline.module.css';

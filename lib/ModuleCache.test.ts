@@ -1,11 +1,11 @@
 import type { PackumentVersion } from '@npm/types';
 import { describe, expect, it, vi } from 'vitest';
+import fetchJson from './fetchJson.ts';
 import {
   cacheLocalPackage,
   getCachedModule,
   getModule,
 } from './ModuleCache.ts';
-import fetchJson from './fetchJson.ts';
 
 vi.mock('./fetchJson.ts', () => ({ default: vi.fn() }));
 vi.mock('./registry-util.ts', () => ({ getRegistry: () => 'test://registry' }));

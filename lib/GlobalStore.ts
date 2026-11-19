@@ -1,11 +1,11 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import type { GraphState } from './graph-types.ts';
 import {
   PaneType,
   PARAM_QUERY,
   PARAM_TAB,
   TIGHT_SCREEN_QUERY,
 } from './constants.ts';
+import type { GraphState } from './graph-types.ts';
 import type Module from './Module.ts';
 import { hashGet, searchGet } from './url-util.ts';
 

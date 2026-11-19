@@ -1,7 +1,7 @@
 import type { PackumentVersion } from '@npm/types';
 import { describe, expect, it } from 'vitest';
-import Module from './Module.ts';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
+import Module from './Module.ts';
 
 describe('Module', () => {
   describe('isUnnamed', () => {

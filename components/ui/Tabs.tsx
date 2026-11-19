@@ -1,13 +1,13 @@
 import type { HTMLProps } from 'react';
-import { PaneType, type PaneTypes } from '../../lib/constants.ts';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { cn, getScroller } from '../../lib/dom.ts';
+import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useTab } from '../../hooks/useTab.ts';
-import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
-import * as utilities from './utilities.module.css';
+import { PaneType, type PaneTypes } from '../../lib/constants.ts';
+import { cn, getScroller } from '../../lib/dom.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { InspectorCloseButton } from './InspectorCloseButton.tsx';
 import * as styles from './Tabs.module.scss';
+import * as utilities from './utilities.module.css';
 
 const GRAPH = 'graph';
 

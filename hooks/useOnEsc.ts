@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 
 const EDITABLE = 'input, textarea, select, [contenteditable]';
 
-/**
-Call `handler` when Esc is pressed (ignored while typing in form fields).
-*/
+/** Call `handler` when Esc is pressed (ignored while typing in form fields). */
 export default function useOnEsc(handler: () => void) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

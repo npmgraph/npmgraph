@@ -1,6 +1,6 @@
 import { Suspense, use, useDeferredValue, useMemo } from 'react';
-import { QueryType } from '../../../lib/ModuleCache.ts';
 import fetchJson from '../../../lib/fetchJson.ts';
+import { QueryType } from '../../../lib/ModuleCache.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Row, Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';

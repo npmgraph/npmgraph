@@ -2,8 +2,8 @@ import XIcon from 'octicons-plain-react/X';
 import useCollapse from '../../hooks/useCollapse.ts';
 import { toggleItem } from '../../lib/array-util.ts';
 import { Button } from '../Button.tsx';
-import { ReportItem } from './ReportItem.tsx';
 import * as styles from './CollapsedModules.module.css';
+import { ReportItem } from './ReportItem.tsx';
 
 export default function CollapsedModules() {
   const [collapse, setCollapse] = useCollapse();

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { BundlePhobiaData } from './fetch-types.ts';
-import { type TreemapLeaf, hasTreemap, layoutTreemap } from './treemap-util.ts';
+import { hasTreemap, layoutTreemap, type TreemapLeaf } from './treemap-util.ts';
 
 const data = {
   size: 1000,
