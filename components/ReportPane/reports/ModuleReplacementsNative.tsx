@@ -1,7 +1,7 @@
 import { resolveDocUrl, type ModuleReplacement } from 'module-replacements';
+import type Module from '../../../lib/Module.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type Module from '../../../lib/Module.ts';
 import { useModuleAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
 import * as styles from './ModuleList.module.css';

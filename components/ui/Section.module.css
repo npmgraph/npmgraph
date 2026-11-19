@@ -19,11 +19,11 @@
   }
 
   /* Move triangle to the right */
-  & summary::-webkit-details-marker {
+  summary::-webkit-details-marker {
     display: none;
   }
 
-  & summary::after {
+  summary::after {
     margin-left: auto;
     content: '◀';
   }

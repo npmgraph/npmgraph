@@ -1,9 +1,11 @@
-/* Styles for SVG elements dynamically injected by Graphviz at runtime.
- * These cannot use CSS module class names because they target generated SVG
- * element/class selectors that are not rendered by React.
- *
- * The pattern#warning ID selector is necessary because SVG fill references
- * use the syntax fill: url(#id), which requires matching by ID attribute. */
+/*
+Styles for SVG elements dynamically injected by Graphviz at runtime.
+These cannot use CSS module class names because they target generated SVG
+element/class selectors that are not rendered by React.
+
+The pattern#warning ID selector is necessary because SVG fill references
+use the syntax fill: url(#id), which requires matching by ID attribute.
+*/
 
 /* Safari renders the text of the font @import */
 svg style {
@@ -34,7 +36,7 @@ g {
     }
 
     path {
-      fill: var(--bg0);
+      fill: var(--colorizer-color, var(--bg0));
       stroke: var(--text);
     }
 
@@ -78,7 +80,7 @@ g {
     }
 
     &.warning > path {
-      fill: url(#warning);
+      fill: var(--colorizer-color, url(#warning));
     }
 
     * {

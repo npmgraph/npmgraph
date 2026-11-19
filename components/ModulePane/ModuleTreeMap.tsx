@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { cn, percent } from '../../lib/dom.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
 import { QueryType } from '../../lib/ModuleCache.ts';
-import { type TreemapLeaf, layoutTreemap } from '../../lib/treemap-util.js';
+import { layoutTreemap, type TreemapLeaf } from '../../lib/treemap-util.js';
 import * as utilities from '../ui/utilities.module.css';
 import * as styles from './ModuleTreeMap.module.css';
 
@@ -16,14 +16,7 @@ const isLabelVisible = (width: number, height: number, fontScale: number) =>
 const isSizeVisible = (width: number, height: number, fontScale: number) =>
   width >= 56 && height >= fontScale * 21 + 19;
 
-export function ModuleTreeMap({
-  data,
-  style,
-  ...props
-}: {
-  data: BundlePhobiaData;
-  style?: React.CSSProperties;
-}) {
+export function ModuleTreeMap({ data }: { data: BundlePhobiaData }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const setGraphSelection = useGraphSelection()[2];
   const [leaves, setLeaves] = useState<TreemapLeaf[]>([]);
@@ -50,18 +43,9 @@ export function ModuleTreeMap({
   }, [data]);
 
   return (
-    <div
-      ref={containerRef}
-      style={{ position: 'relative', ...style }}
-      {...props}
-    >
+    <div ref={containerRef} className={styles.container}>
       {leaves.map(leaf => {
         const size = human(leaf.value, 'B');
-        const backgroundColor = `
-            color-mix(in srgb, color-mix(in oklch increasing hue, var(--bg-orange),
-            var(--bg-red)
-       ${percent(leaf.rank)}), var(--root-color) 25%)`;
-
         const width = leaf.x1 - leaf.x0 - m;
         const height = leaf.y1 - leaf.y0 - m;
         const fontScale = 0.65 + 0.7 * Math.sqrt(leaf.coverage);
@@ -93,8 +77,10 @@ export function ModuleTreeMap({
             key={leaf.key}
             type="button"
             title={`${leaf.name} (${size})`}
-            className={cn(styles.root, utilities.brightHover)}
-            style={{ ...position, backgroundColor }}
+            className={cn(styles.root, styles.leaf, utilities.brightHover)}
+            style={
+              { ...position, '--rank': percent(leaf.rank) } as CSSProperties
+            }
             onClick={() => {
               setGraphSelection(QueryType.Default, leaf.name);
             }}
