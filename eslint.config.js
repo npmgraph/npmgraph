@@ -21,10 +21,6 @@ const local = {
 // Never add new config objects, never import from xo and never reach into
 // xo's config objects.
 const disabledRules = [
-  // TODO: Temporarily disabled after dependency update, review and enable
-  'unicorn/no-null',
-  'unicorn/prefer-await',
-
   // TODO: Gradually review and enable
   '@typescript-eslint/consistent-type-assertions',
   '@typescript-eslint/no-unsafe-argument',
@@ -34,12 +30,14 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
+  'unicorn/prefer-await',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
 
   // Unwanted
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
   '@typescript-eslint/naming-convention', // I don't see this happening
   '@typescript-eslint/no-empty-function', // No reason to enforce this
+  'unicorn/no-null', // null ok
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
