@@ -25,7 +25,7 @@ export default function GraphDiagramExportButtons() {
 
   return (
     <>
-      <ButtonGroup>
+      <ButtonGroup square>
         <Button
           title="Download graph as SVG"
           onClick={() => {
@@ -35,7 +35,7 @@ export default function GraphDiagramExportButtons() {
           <DownloadIcon />
         </Button>
       </ButtonGroup>
-      <ButtonGroup>
+      <ButtonGroup square>
         {isCopying ? (
           <>
             <Button
@@ -202,7 +202,7 @@ function downloadSvg(query: string[]) {
 }
 
 // Collects rules from all readable stylesheets (<link> in production, <style>
-// in dev) so CSS variables like --bg-red survive outside the document
+// in dev) so the theme variables survive outside the document
 function cloneStyleElement() {
   const cssTexts: string[] = [];
 
@@ -236,7 +236,7 @@ function generateLinkToDownload(
   const title =
     query.length > 0
       ? `Dependencies for ${query.join(', ')}`
-      : 'NPM Dependency Diagrams';
+      : 'npm Dependency Diagrams';
   const name = title.replaceAll(/\W+/gv, '_');
   const downloadLink = document.createElement('a');
   downloadLink.href = link;

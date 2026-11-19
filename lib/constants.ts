@@ -1,11 +1,17 @@
+import * as colorStyles from './colors.module.css';
+
 export const DEFAULT_NPM_REGISTRY = 'https://registry.npmjs.org';
 
-export const COLORIZE_COLORS = [
-  'var(--bg-red)',
-  'var(--bg-orange)',
-  'var(--bg-yellow)',
-  'var(--bg-green)',
-];
+// Color names to the CSS module classes that apply them
+export const COLORS = {
+  red: colorStyles.red,
+  orange: colorStyles.orange,
+  yellow: colorStyles.yellow,
+  green: colorStyles.green,
+  blue: colorStyles.blue,
+};
+
+export type ColorName = keyof typeof COLORS;
 
 export const PARAM_COLLAPSE = 'collapse';
 export const PARAM_COLORIZE = 'color';
@@ -28,6 +34,8 @@ export const PaneType = {
   REPORT: 'report',
   INFO: 'info',
   VIEW: 'view',
+  // Closes the inspector
+  NONE: 'none',
 } as const;
 
 export type PaneTypes = (typeof PaneType)[keyof typeof PaneType];

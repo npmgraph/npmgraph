@@ -2,10 +2,10 @@ import { describe, expect, it } from 'vitest';
 import type Module from '../../lib/Module.ts';
 import ModuleTypeColorizer from './ModuleTypeColorizer.tsx';
 
-const CJS = 'var(--bg-red)';
-const DUAL = 'var(--bg-yellow)';
-const ESM = 'var(--bg-green)';
-const TYPES = 'var(--bg-blue)';
+const CJS = 'red';
+const DUAL = 'yellow';
+const ESM = 'green';
+const TYPES = 'blue';
 
 const colorFor = async (pkg: Record<string, unknown>) =>
   ModuleTypeColorizer.colorForModule({

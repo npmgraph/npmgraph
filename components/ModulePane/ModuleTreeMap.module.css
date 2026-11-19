@@ -1,3 +1,9 @@
+.container {
+  position: relative;
+  margin-block: 1em;
+  height: 150px;
+}
+
 .root {
   display: grid;
   position: absolute;
@@ -22,6 +28,19 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+/* Redder the bigger it is, `--rank` is set at runtime */
+.leaf {
+  background-color: color-mix(
+    in srgb,
+    color-mix(
+      in oklch increasing hue,
+      var(--bg-orange),
+      var(--bg-red) var(--rank)
+    ),
+    var(--root-color) 25%
+  );
 }
 
 .others {

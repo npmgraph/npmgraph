@@ -1,6 +1,6 @@
 @use '../../lib/root.module.scss' as *;
 
-.splitter:is(button) {
+.button:is(button) {
   @include button-reset;
   display: flex;
   justify-content: center;

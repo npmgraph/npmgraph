@@ -1,6 +1,5 @@
 /**
-Remember the results of the most recent calls, using the first argument as the
-key. Meant for slow, pure functions like the graph layout.
+Remember the results of the most recent calls, using the first argument as the key. Meant for slow, pure functions like the graph layout.
 */
 export default function memoizeRecent<
   Args extends [string, ...unknown[]],

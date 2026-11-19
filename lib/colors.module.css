@@ -1,0 +1,20 @@
+/* The colorizer colors, as classes that set `--colorizer-color` on the colored element */
+.red {
+  --colorizer-color: var(--bg-red);
+}
+
+.orange {
+  --colorizer-color: var(--bg-orange);
+}
+
+.yellow {
+  --colorizer-color: var(--bg-yellow);
+}
+
+.green {
+  --colorizer-color: var(--bg-green);
+}
+
+.blue {
+  --colorizer-color: var(--bg-blue);
+}

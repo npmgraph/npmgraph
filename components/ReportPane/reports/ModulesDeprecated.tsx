@@ -12,7 +12,7 @@ export default function ModulesDeprecated() {
 
   return (
     <ReportItem
-      type="warn"
+      warn
       title="Deprecated modules"
       count={deprecated.length}
       description="Deprecated modules are unsupported and may have unpatched security vulnerabilities. See the deprecation notes below for module-specific instructions."
