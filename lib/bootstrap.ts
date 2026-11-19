@@ -1,6 +1,4 @@
 // The only static entry point. It must not import anything from the app: a syntax error in any app module would otherwise stop this check from running
-import { $ } from 'select-dom';
-import html from './unsupported.html?raw';
 
 function isValidJS(src: string) {
   try {
@@ -41,10 +39,13 @@ function detectFeatures() {
 }
 
 function renderUnsupported(unsupported: string[]) {
-  document.body.insertAdjacentHTML('beforeend', html);
-  $('#unsupported ul').innerHTML = unsupported
-    .map(name => `<li><code>${name}</code> is not supported</li>`)
-    .join('');
+  const parameters = new URLSearchParams(
+    unsupported.map(value => ['unsupported', value]),
+  );
+  const frame = document.createElement('iframe');
+  frame.src = `unsupported.html?${parameters}`;
+  frame.style.cssText = 'border: 0; width: 100%; height: 100vh';
+  document.body.append(frame);
 }
 
 // The app is a separate chunk: it never loads on unsupported browsers, and a syntax error in it can't affect the check above

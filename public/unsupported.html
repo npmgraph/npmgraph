@@ -1,0 +1,83 @@
+<!doctype html>
+<!-- eslint-disable @html-eslint/require-open-graph-protocol -- Standalone page shown in an iframe -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>Unsupported Features</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: system-ui, sans-serif;
+      }
+
+      main {
+        position: relative;
+        margin: 2rem auto;
+        border: 1px solid currentColor;
+        border-radius: 10px;
+        padding: 1rem;
+        max-width: 40rem;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      code {
+        border-radius: 3px;
+        padding: 0.1rem 0.3rem;
+        color: darkorange;
+      }
+
+      .footer {
+        text-align: right;
+      }
+
+      img {
+        position: absolute;
+        bottom: -10px;
+        left: 100px;
+      }
+    </style>
+    <meta
+      content="Your browser is missing features that npmgraph needs"
+      name="description"
+    />
+  </head>
+  <body>
+    <main>
+      <h1>Unsupported Features</h1>
+      <p>
+        It looks like your browser may have trouble running npmgraph.
+        Specifically, the following features appear to be missing or disabled:
+      </p>
+      <ul></ul>
+      <p>
+        Make sure you're using a modern version of Chrome, Firefox, Safari, or
+        Edge, and that cookies are enabled.
+      </p>
+      <p class="footer">
+        <a
+          href="https://github.com/npmgraph/npmgraph"
+          rel="noreferrer"
+          target="_blank"
+          >npmgraph on GitHub</a
+        >
+      </p>
+      <img alt="Sad Kilroy" height="44" src="sad-kilroy.png" width="100" />
+    </main>
+    <script>
+      const list = document.querySelector('ul');
+      for (const name of new URLSearchParams(location.search).getAll(
+        'unsupported',
+      )) {
+        const item = document.createElement('li');
+        const code = document.createElement('code');
+        code.textContent = name;
+        item.append(code, ' is not supported');
+        list.append(item);
+      }
+    </script>
+  </body>
+</html>
