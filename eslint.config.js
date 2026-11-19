@@ -30,7 +30,6 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
-  'unicorn/prefer-await',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
 
   // Unwanted
@@ -41,7 +40,6 @@ const disabledRules = [
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
-  'no-alert',
   'no-console',
   'no-warning-comments',
   'react-doctor/jsx-no-target-blank',

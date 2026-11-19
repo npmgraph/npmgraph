@@ -144,18 +144,21 @@ async function copyPng() {
     // write() (below) needs to be called synchronously so Safari still sees the
     // click's user activation.  Hence, we don't await here but, rather, pass a
     // promise to ClipboardItem, below
-    const blobPromise = renderPngBlob().then(result => {
-      if (!result) {
-        throw new Error('Failed to render PNG');
-      }
+    const blobPromise = (async () => {
+      try {
+        const result = await renderPngBlob();
+        if (!result) {
+          throw new Error('Failed to render PNG');
+        }
 
-      isCapped = result.capped;
-      return result.blob;
-    });
-    // Surface render failures; browsers otherwise report them as a generic NotAllowedError
-    blobPromise.catch((error: unknown) => {
-      console.error('PNG render failed', error);
-    });
+        isCapped = result.capped;
+        return result.blob;
+      } catch (error) {
+        // Surface render failures; browsers otherwise report them as a generic NotAllowedError
+        console.error('PNG render failed', error);
+        throw error;
+      }
+    })();
     await navigator.clipboard.write([
       new ClipboardItem({ 'image/png': blobPromise }),
     ]);
