@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- eslint-disable @html-eslint/require-open-graph-protocol -- Standalone page shown in an iframe -->
+<!-- eslint-disable @html-eslint/require-open-graph-protocol, @html-eslint/require-meta-description -- Standalone page shown in an iframe -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -13,11 +13,11 @@
 
       main {
         position: relative;
-        margin: 2rem auto;
+        margin: 2em auto;
         border: 1px solid currentColor;
         border-radius: 10px;
-        padding: 1rem;
-        max-width: 40rem;
+        padding: 1em;
+        max-width: 40em;
       }
 
       h1 {
@@ -26,7 +26,7 @@
 
       code {
         border-radius: 3px;
-        padding: 0.1rem 0.3rem;
+        padding: 0.1em 0.3em;
         color: darkorange;
       }
 
@@ -40,10 +40,7 @@
         left: 100px;
       }
     </style>
-    <meta
-      content="Your browser is missing features that npmgraph needs"
-      name="description"
-    />
+    <meta content="noindex" name="robots" />
   </head>
   <body>
     <main>
@@ -65,7 +62,7 @@
           >npmgraph on GitHub</a
         >
       </p>
-      <img alt="Sad Kilroy" height="44" src="sad-kilroy.png" width="100" />
+      <img alt="Sad Kilroy" height="44" src="../sad-kilroy.png" width="100" />
     </main>
     <script>
       const list = document.querySelector('ul');

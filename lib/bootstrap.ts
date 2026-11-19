@@ -1,5 +1,7 @@
 // The only static entry point. It must not import anything from the app: a syntax error in any app module would otherwise stop this check from running
 
+import unsupportedUrl from './unsupported.html?url';
+
 function isValidJS(src: string) {
   try {
     // eslint-disable-next-line no-new-func, no-new, react-doctor/no-eval -- Only called with hard-coded snippets, to detect syntax support
@@ -24,13 +26,13 @@ function hasLocalStorage() {
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
   const features = {
-    '||= (Logical Or)': isValidJS('a ||= 123'),
-    'AbortSignal.timeout': globalThis.AbortSignal?.timeout,
-    'Map.groupBy': globalThis.Map?.groupBy,
-    'URL.parse': globalThis.URL?.parse,
-    fetch: globalThis.fetch,
-    localStorage: hasLocalStorage(),
-    Promise: globalThis.Promise,
+    '||= (Logical Or)': isValidJS('a ||= 123'), // Since 2020
+    'AbortSignal.timeout': globalThis.AbortSignal?.timeout, // Since 2024
+    'Map.groupBy': globalThis.Map?.groupBy, // Since 2024
+    'URL.parse': globalThis.URL?.parse, // Since 2024
+    fetch: globalThis.fetch, // Since 2017
+    localStorage: hasLocalStorage(), // Since 2015
+    Promise: globalThis.Promise, // Since 2015
   };
 
   return Object.entries(features)
@@ -43,7 +45,7 @@ function renderUnsupported(unsupported: string[]) {
     unsupported.map(value => ['unsupported', value]),
   );
   const frame = document.createElement('iframe');
-  frame.src = `unsupported.html?${parameters}`;
+  frame.src = `${unsupportedUrl}?${parameters}`;
   frame.style.cssText = 'border: 0; width: 100%; height: 100vh';
   document.body.append(frame);
 }

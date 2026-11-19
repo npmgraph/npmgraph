@@ -3,6 +3,11 @@ declare module '*?raw' {
   export default value;
 }
 
+declare module '*?url' {
+  const value: string;
+  export default value;
+}
+
 // Providing types for css modules here.  This works... sort of.  For some
 // reason TS types the exports as `any`, despite the default export provided
 // below.
