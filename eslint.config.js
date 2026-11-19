@@ -16,6 +16,10 @@ const local = {
   },
 };
 
+// To change rule settings or disable rules, add a plain rule entry to an
+// existing object in this config (disabledRules or the tsFilesGlob block).
+// Never add new config objects, never import from xo and never reach into
+// xo's config objects.
 const disabledRules = [
   // TODO: Gradually review and enable
   '@typescript-eslint/consistent-type-assertions',
@@ -26,6 +30,7 @@ const disabledRules = [
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
+  'unicorn/prefer-await',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
 
   // Unwanted
@@ -41,6 +46,8 @@ const disabledRules = [
   'react-doctor/jsx-no-target-blank',
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
+  'unicorn/no-null', // null ok
+  'unicorn/single-line-block-comment-style', // No use
 ];
 
 export default defineConfig([
@@ -59,15 +66,34 @@ export default defineConfig([
     files: [tsFilesGlob, jsFilesGlob],
     plugins: { byo },
     rules: {
+      'unicorn/no-manually-wrapped-comments': 'error',
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
-      'unicorn/filename-case': [
+      'unicorn/name-replacements': [
         'error',
         {
-          cases: {
-            kebabCase: true,
-            camelCase: true,
-            pascalCase: true,
+          // TODO: Remove most exceptions
+          replacements: {
+            props: false,
+            ref: false,
+            refs: false,
+            pkg: false,
+            param: false,
+            fn: false,
+            ev: false,
+            args: false,
+            arg: false,
+            i: false,
+            deps: false,
+            dep: false,
+            src: false,
+            repo: false,
+            doc: false,
+            ctx: false,
+            buf: false,
+            util: false,
+            dev: false,
+            dist: false,
           },
         },
       ],
@@ -137,5 +163,14 @@ export default defineConfig([
   },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
+  },
+  {
+    files: [tsFilesGlob, jsFilesGlob, '**/*.css'],
+    rules: {
+      'unicorn/filename-case': [
+        'error',
+        { cases: { kebabCase: true, camelCase: true, pascalCase: true } },
+      ],
+    },
   },
 ]);
