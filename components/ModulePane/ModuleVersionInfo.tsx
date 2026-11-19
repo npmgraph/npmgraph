@@ -2,10 +2,10 @@ import simplur from 'simplur';
 import { cn } from '../../lib/dom.ts';
 import type Module from '../../lib/Module.ts';
 import type { VersionStatus } from '../../lib/version-status.ts';
-import { QueryLink } from '../ui/QueryLink.tsx';
 import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
-import * as styles from './ModuleVersionInfo.module.css';
+import { QueryLink } from '../ui/QueryLink.tsx';
 import { getStatus } from './module-status.ts';
+import * as styles from './ModuleVersionInfo.module.css';
 
 function getOutdatedMessage({
   level,

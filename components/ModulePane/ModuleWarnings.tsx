@@ -8,8 +8,8 @@ import { getReplacements } from '../ReportPane/reports/replacements.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { Section } from '../ui/Section.tsx';
 import { isOutdated } from './module-status.ts';
-import * as styles from './ModuleWarnings.module.css';
 import { ModuleOutdated } from './ModuleVersionInfo.tsx';
+import * as styles from './ModuleWarnings.module.css';
 
 export function ModuleWarnings({
   module,
