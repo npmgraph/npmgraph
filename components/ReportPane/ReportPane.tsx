@@ -22,7 +22,7 @@ import ModulesRepeated from './reports/ModulesRepeated.tsx';
 import PeerDependenciesAll from './reports/PeerDependenciesAll.tsx';
 import PeerDependenciesMissing from './reports/PeerDependenciesMissing.tsx';
 
-const canShare = Boolean(navigator.share);
+const canShare = typeof navigator !== 'undefined' && Boolean(navigator.share);
 
 async function share() {
   try {
