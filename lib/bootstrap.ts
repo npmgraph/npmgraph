@@ -1,6 +1,6 @@
 // The only static entry point. It must not import anything from the app: a syntax error in any app module would otherwise stop this check from running
 
-import unsupportedUrl from './unsupported.html?url';
+/* eslint no-restricted-syntax: ["error", { "selector": "ImportDeclaration", "message": "Static imports are not allowed here, use import() after the checks" }] -- A static import would load the module before the checks run */
 
 function isValidJS(src: string) {
   try {
@@ -26,13 +26,13 @@ function hasLocalStorage() {
 // Various features we depend on that have triggered bugsnag errors in the past
 function detectFeatures() {
   const features = {
+    localStorage: hasLocalStorage(), // See #202
+    Promise: globalThis.Promise, // Since 2015
+    fetch: globalThis.fetch, // Since 2017
     '||= (Logical Or)': isValidJS('a ||= 123'), // Since 2020
     'AbortSignal.timeout': globalThis.AbortSignal?.timeout, // Since 2024
     'Map.groupBy': globalThis.Map?.groupBy, // Since 2024
     'URL.parse': globalThis.URL?.parse, // Since 2024
-    fetch: globalThis.fetch, // Since 2017
-    localStorage: hasLocalStorage(), // Since 2015
-    Promise: globalThis.Promise, // Since 2015
   };
 
   return Object.entries(features)
@@ -41,11 +41,13 @@ function detectFeatures() {
 }
 
 function renderUnsupported(unsupported: string[]) {
-  const parameters = new URLSearchParams(
-    unsupported.map(value => ['unsupported', value]),
-  );
+  const url = new URL('unsupported.html', location.href);
+  for (const value of unsupported) {
+    url.searchParams.append('unsupported', value);
+  }
+
   const frame = document.createElement('iframe');
-  frame.src = `${unsupportedUrl}?${parameters}`;
+  frame.src = url.href;
   frame.style.cssText = 'border: 0; width: 100%; height: 100vh';
   document.body.append(frame);
 }
