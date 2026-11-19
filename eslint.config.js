@@ -159,7 +159,9 @@ export default defineConfig([
   {
     files: [tsFilesGlob, jsFilesGlob, '**/*.css'],
     rules: {
+      // https://github.com/sindresorhus/eslint-plugin-unicorn/issues/4027#issuecomment-7003173556
       'unicorn/single-line-block-comment-style': ['error', 'single-line'],
+
       'unicorn/filename-case': [
         'error',
         { cases: { kebabCase: true, camelCase: true, pascalCase: true } },
