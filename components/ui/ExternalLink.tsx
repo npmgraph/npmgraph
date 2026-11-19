@@ -1,8 +1,8 @@
 import type { ComponentType, HTMLProps, SVGProps } from 'react';
-import OffsiteLinkIcon from 'octicons-plain-react/LinkExternal';
 import { cn } from '../../lib/dom.ts';
 import * as utilities from './utilities.module.css';
 import * as styles from './ExternalLink.module.css';
+import OffsiteLinkIcon from 'octicons-plain-react/LinkExternal';
 
 export function ExternalLink({
   href,
@@ -23,7 +23,13 @@ export function ExternalLink({
       {...props}
     >
       {children}
-      <IconComponent aria-hidden="true" width={12} height={12} />
+      <IconComponent
+        aria-hidden="true"
+        // svgo.config.json removes the viewBox of the files, which is needed to resize them
+        viewBox="0 0 16 16"
+        width={12}
+        height={12}
+      />
     </a>
   );
 }
