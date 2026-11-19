@@ -1,5 +1,5 @@
 import css from '@eslint/css';
-import xo, { cssExtensions, jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
+import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import byo from 'eslint-plugin-byo';
 import reactDoctor from 'eslint-plugin-react-doctor';
@@ -163,11 +163,7 @@ export default defineConfig([
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },
   {
-    files: [
-      tsFilesGlob,
-      jsFilesGlob,
-      ...cssExtensions.map(extension => `**/*.${extension}`),
-    ],
+    files: [tsFilesGlob, jsFilesGlob, '**/*.css'],
     rules: {
       'unicorn/filename-case': [
         'error',
