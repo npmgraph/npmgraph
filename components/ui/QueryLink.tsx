@@ -1,8 +1,8 @@
 import filterAlteredClicks from 'filter-altered-clicks';
 import type { HTMLProps } from 'react';
+import useLocation, { patchLocation } from '../../hooks/useLocation.ts';
 import { PARAM_QUERY } from '../../lib/constants.ts';
 import { urlPatch } from '../../lib/url-util.ts';
-import useLocation, { patchLocation } from '../../hooks/useLocation.ts';
 
 export function QueryLink({
   query,

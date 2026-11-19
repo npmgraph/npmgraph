@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes } from 'react';
-import type { QueryTypeValue } from '../../lib/ModuleCache.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { cn } from '../../lib/dom.ts';
+import type { QueryTypeValue } from '../../lib/ModuleCache.ts';
 import * as styles from './Selectable.module.scss';
 import * as utilities from './utilities.module.css';
 

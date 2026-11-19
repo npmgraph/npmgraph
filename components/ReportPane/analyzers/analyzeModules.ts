@@ -1,5 +1,5 @@
-import type Module from '../../../lib/Module.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
+import type Module from '../../../lib/Module.ts';
 import {
   getVersionStatus,
   type VersionStatus,

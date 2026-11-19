@@ -2,12 +2,12 @@ import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import hostedGitInfo from 'hosted-git-info';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
 import { isDefined } from './guards.ts';
-import { hashSet } from './url-util.ts';
 import {
   getModuleKey,
   parseModuleKey,
   resolveDependencyAliases,
 } from './module-util.ts';
+import { hashSet } from './url-util.ts';
 
 type Maintainers = PackumentVersion['maintainers'];
 export type Maintainer = Exclude<Maintainers, undefined>[0];

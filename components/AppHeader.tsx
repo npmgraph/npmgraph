@@ -1,10 +1,10 @@
-import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.ts';
+import * as styles from './AppHeader.module.scss';
 import QueryInput from './InfoPane/QueryInput.tsx';
 import Logo from './Logo.tsx';
-import * as styles from './AppHeader.module.scss';
-import Tabs from './ui/Tabs.tsx';
 import { QueryLink } from './ui/QueryLink.tsx';
+import Tabs from './ui/Tabs.tsx';
 
 export default function AppHeader() {
   useKeyboardShortcuts();

@@ -10,12 +10,22 @@ import {
 } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import {
-  type ReactZoomPanPinchContentRef,
   TransformComponent,
   TransformWrapper,
+  type ReactZoomPanPinchContentRef,
 } from 'react-zoom-pan-pinch';
 import { $, $$optional } from 'select-dom';
+import useCollapse from '../../hooks/useCollapse.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
+import useOnEsc from '../../hooks/useOnEsc.ts';
+import usePrevious from '../../hooks/usePrevious.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
+import NotFoundCat from '../../images/not-found.svg?react';
+import { COLORS, PARAM_COLORIZE, type ColorName } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { gatherSelectionInfo, type GraphState } from '../../lib/graph-util.ts';
 import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
 import {
@@ -23,24 +33,14 @@ import {
   queryModuleCache,
   QueryType,
 } from '../../lib/ModuleCache.ts';
-import { COLORS, PARAM_COLORIZE, type ColorName } from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
-import useCollapse from '../../hooks/useCollapse.ts';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
-import useHashParam from '../../hooks/useHashParam.ts';
-import { useQuery } from '../../hooks/useQuery.ts';
-import usePrevious from '../../hooks/usePrevious.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
-import { type GraphState, gatherSelectionInfo } from '../../lib/graph-util.ts';
-import useOnEsc from '../../hooks/useOnEsc.ts';
-import NotFoundCat from '../../images/not-found.svg?react';
-import { clampPosition, getFitScale } from './viewport-util.ts';
-import useRenderDiagram from './useRenderDiagram.ts';
-import useLoadGraph from './useLoadGraph.ts';
-import useGraphClick from './useGraphClick.ts';
-import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
-import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
 import * as styles from './GraphDiagram.module.scss';
+import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
+import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import useGraphClick from './useGraphClick.ts';
+import useLoadGraph from './useLoadGraph.ts';
+import useRenderDiagram from './useRenderDiagram.ts';
+import { clampPosition, getFitScale } from './viewport-util.ts';
 
 const isTouchscreen = globalThis.matchMedia('(pointer: coarse)').matches;
 const idSeen = new Set<unknown>();

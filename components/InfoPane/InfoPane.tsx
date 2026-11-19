@@ -1,7 +1,7 @@
 import type { HTMLProps } from 'react';
-import { Pane } from '../ui/Pane.tsx';
-import { Group } from '../ui/Group.tsx';
 import { InputDescription, InputExamples } from '../InputHelp.tsx';
+import { Group } from '../ui/Group.tsx';
+import { Pane } from '../ui/Pane.tsx';
 import * as styles from './InfoPane.module.css';
 
 export default function InfoPane(props: HTMLProps<HTMLDivElement>) {

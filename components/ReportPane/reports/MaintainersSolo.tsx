@@ -1,6 +1,6 @@
+import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { useMaintainerAnalysis } from '../analyzers/useAnalysis.ts';
 import { ReportItem } from '../ReportItem.tsx';
-import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { MaintainerRows } from './MaintainerRows.tsx';
 
 export default function MaintainersSolo() {

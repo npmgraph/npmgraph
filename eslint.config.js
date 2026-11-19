@@ -37,6 +37,7 @@ const disabledRules = [
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
   '@typescript-eslint/naming-convention', // I don't see this happening
   '@typescript-eslint/no-empty-function', // No reason to enforce this
+  'import-x/order', // Handled by prettier-plugin-sort-imports
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
@@ -95,14 +96,6 @@ export default defineConfig([
             dev: false,
             dist: false,
           },
-        },
-      ],
-
-      'import-x/order': [
-        'error',
-        {
-          warnOnUnassignedImports: 'top',
-          'newlines-between': 'never',
         },
       ],
 

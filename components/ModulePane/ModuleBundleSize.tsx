@@ -1,10 +1,10 @@
 import { Suspense, use } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
-import type Module from '../../lib/Module.ts';
-import fetchJson from '../../lib/fetchJson.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
-import { ExternalLink } from '../ui/ExternalLink.tsx';
+import fetchJson from '../../lib/fetchJson.ts';
+import type Module from '../../lib/Module.ts';
 import { hasTreemap } from '../../lib/treemap-util.ts';
+import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { ModuleBundleStats } from './ModuleBundleStats.tsx';
 import { ModuleTreeMap } from './ModuleTreeMap.tsx';
 

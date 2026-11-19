@@ -4,10 +4,10 @@ import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
 import { setActivityForApp } from '../hooks/useActivity.ts';
 import { DiagramTitle } from './DiagramTitle.tsx';
-import LoadActivity from './LoadActivity.ts';
-import { syncPackagesHash } from './ModuleCache.ts';
 import { setActivityForRequestCache } from './fetchJson.ts';
 import { flashError } from './flash.ts';
+import LoadActivity from './LoadActivity.ts';
+import { syncPackagesHash } from './ModuleCache.ts';
 
 // A deploy likely replaced the fingerprinted chunks this page references
 globalThis.addEventListener('vite:preloadError', event => {

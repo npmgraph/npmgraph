@@ -1,7 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { playwright } from '@vitest/browser-playwright';
-import svgr from 'vite-plugin-svgr';
 import type { Plugin } from 'vite';
+import svgr from 'vite-plugin-svgr';
 import { configDefaults, defineConfig } from 'vitest/config';
 
 // The app is a dynamic import of bootstrap.ts: fetch it (and graphviz) right away instead of after the entry point runs
