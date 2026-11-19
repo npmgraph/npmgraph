@@ -1,16 +1,18 @@
 import type { HTMLProps } from 'react';
-import { COLORIZE_COLORS } from '../../lib/constants.ts';
+import { COLORS, type ColorName } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
+import * as styles from './LegendColor.module.css';
+
+const largeCircle = '\u{2B24}';
 
 export function LegendColor({
   color,
   children,
   ...props
-}: HTMLProps<HTMLDivElement>) {
-  color = COLORIZE_COLORS[Number(color)] ?? color;
-
+}: Omit<HTMLProps<HTMLDivElement>, 'color'> & { color: ColorName }) {
   return (
     <div {...props}>
-      <span style={{ color, marginRight: '0.5rem' }}>{'\u{2B24}'}</span>
+      <span className={cn(styles.dot, COLORS[color])}>{largeCircle}</span>
       {children}
     </div>
   );

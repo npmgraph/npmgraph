@@ -5,6 +5,7 @@ import { scaleLinear, scaleTime } from '@visx/scale';
 import { type ReactElement, useState } from 'react';
 import type Module from '../../lib/Module.ts';
 import useMeasure from '../../hooks/useMeasure.ts';
+import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import { Section } from '../ui/Section.tsx';
 import { ModuleDownloads } from './ModuleDownloads.tsx';
@@ -118,7 +119,7 @@ function buildLayers(
     layers[kind].push(
       <g
         key={`dot=${key}`}
-        className={`${styles.dot} ${isZeroMinor ? styles.preV1 : ''}`}
+        className={cn(styles.dot, { [styles.preV1]: isZeroMinor })}
       >
         <title>{title}</title>
         <circle

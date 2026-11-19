@@ -149,9 +149,15 @@ export async function getGraphForQuery(
 
   async function _visit(
     module: Module[] | Module,
-    level = 0,
-    currentOverrides: Overrides = {},
-    rootOverrides: Overrides = {},
+    {
+      level = 0,
+      currentOverrides = {},
+      rootOverrides = {},
+    }: {
+      level?: number;
+      currentOverrides?: Overrides;
+      rootOverrides?: Overrides;
+    } = {},
   ): Promise<GraphModuleInfo | void> {
     if (!module) {
       throw new Error('Undefined module');
@@ -161,7 +167,7 @@ export async function getGraphForQuery(
     if (Array.isArray(module)) {
       await Promise.all(
         module.map(async m =>
-          _visit(m, level, currentOverrides, rootOverrides),
+          _visit(m, { level, currentOverrides, rootOverrides }),
         ),
       );
       return;
@@ -218,12 +224,11 @@ export async function getGraphForQuery(
           version,
         );
 
-        const moduleInfo = await _visit(
-          downstreamModule,
-          level + 1,
-          childOverrides,
+        const moduleInfo = await _visit(downstreamModule, {
+          level: level + 1,
+          currentOverrides: childOverrides,
           rootOverrides,
-        );
+        });
 
         moduleInfo?.upstream.add({ module, type });
         info?.downstream.add({ module: downstreamModule, type });
@@ -254,7 +259,10 @@ export async function getGraphForQuery(
               ...m.package.dependencies,
             })
           : {};
-        return _visit(m, 0, rootOverrides, rootOverrides);
+        return _visit(m, {
+          currentOverrides: rootOverrides,
+          rootOverrides,
+        });
       }
     }),
   );
@@ -315,7 +323,7 @@ export async function getGraphForQuery(
                   return;
                 }
 
-                await _visit(peerModule, info.level + 1);
+                await _visit(peerModule, { level: info.level + 1 });
                 // Register in the name index so later iterations can find it.
                 let list = modulesByName.get(name);
                 if (!list) {

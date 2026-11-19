@@ -202,7 +202,7 @@ function downloadSvg(query: string[]) {
 }
 
 // Collects rules from all readable stylesheets (<link> in production, <style>
-// in dev) so CSS variables like --bg-red survive outside the document
+// in dev) so the theme variables survive outside the document
 function cloneStyleElement() {
   const cssTexts: string[] = [];
 
