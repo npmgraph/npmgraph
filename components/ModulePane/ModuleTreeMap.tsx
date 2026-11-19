@@ -4,7 +4,7 @@ import { cn, percent } from '../../lib/dom.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
 import { QueryType } from '../../lib/ModuleCache.ts';
-import { type TreemapLeaf, layoutTreemap } from '../../lib/treemap-util.js';
+import { layoutTreemap, type TreemapLeaf } from '../../lib/treemap-util.js';
 import * as utilities from '../ui/utilities.module.css';
 import * as styles from './ModuleTreeMap.module.css';
 

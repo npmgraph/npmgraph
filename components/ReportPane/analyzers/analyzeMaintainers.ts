@@ -1,6 +1,6 @@
+import type { GraphState } from '../../../lib/graph-util.ts';
 import type Module from '../../../lib/Module.ts';
 import type { Maintainer } from '../../../lib/Module.ts';
-import type { GraphState } from '../../../lib/graph-util.ts';
 
 export type MaintainerAnalysisState = {
   modulesByMaintainer: Map<string, Iterable<Module>>;

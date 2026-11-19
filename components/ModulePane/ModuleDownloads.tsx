@@ -1,11 +1,11 @@
 import { Suspense, use } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
 import { cn } from '../../lib/dom.ts';
-import type { NpmDownloadsPoint } from '../../lib/fetch-types.ts';
 import {
-  getPopularityTier,
   formatWeeklyDownloads,
+  getPopularityTier,
 } from '../../lib/downloads-util.ts';
+import type { NpmDownloadsPoint } from '../../lib/fetch-types.ts';
 import fetchJson from '../../lib/fetchJson.ts';
 import type Module from '../../lib/Module.ts';
 import * as styles from './ModuleDownloads.module.css';

@@ -1,7 +1,7 @@
 import type { Packument, PackumentVersion } from '@npm/types';
 import { describe, expect, it } from 'vitest';
-import Module from '../../../lib/Module.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
+import Module from '../../../lib/Module.ts';
 import { analyzeModules, groupOutdatedByLevel } from './analyzeModules.ts';
 
 function createModule(name: string, version: string, latest: string) {

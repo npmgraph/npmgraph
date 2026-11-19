@@ -1,5 +1,5 @@
-import { QueryType, type QueryTypeValue } from '../lib/ModuleCache.ts';
 import { PARAM_SELECTION } from '../lib/constants.ts';
+import { QueryType, type QueryTypeValue } from '../lib/ModuleCache.ts';
 import useHashParam from './useHashParam.ts';
 
 const selectableQueryTypes = new Set<QueryTypeValue>([

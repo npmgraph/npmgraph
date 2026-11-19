@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { PARAM_PACKAGES } from './constants.ts';
 import { flashError } from './flash.ts';
 import { getModule, syncPackagesHash } from './ModuleCache.ts';
-import { PARAM_PACKAGES } from './constants.ts';
 
 vi.mock('./flash.ts', () => ({ flashError: vi.fn() }));
 vi.mock('./registry-util.ts', () => ({ getRegistry: () => 'test://registry' }));

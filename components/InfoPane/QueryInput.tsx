@@ -1,13 +1,13 @@
-import { type HTMLProps, useId, useRef, useState } from 'react';
-import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
-import { parseCommaList } from '../../lib/array-util.ts';
-import { cn } from '../../lib/dom.ts';
-import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
-import { searchSet } from '../../lib/url-util.ts';
+import { useId, useRef, useState, type HTMLProps } from 'react';
 import useGraph from '../../hooks/useGraph.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
+import { parseCommaList } from '../../lib/array-util.ts';
+import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
+import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
+import { searchSet } from '../../lib/url-util.ts';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
