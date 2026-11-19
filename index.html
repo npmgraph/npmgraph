@@ -64,14 +64,14 @@
       content="3ngFL3Bcx_jMvyD6oTFDYNk8fmF-wxk5ykjZg7wW624"
       name="google-site-verification"
     />
-
     <meta content="false" name="vercel-toolbar" />
-    <meta content="Graph / visualize of npm dependencies" name="description" />
 
+    <meta content="Graph / visualize of npm dependencies" name="description" />
     <meta
       content="visualize, visualization, graph, npm, npm modules, npm graph, npm licenses"
       name="keywords"
     />
+
     <meta content="npmgraph - npm Dependency Diagrams" property="og:title" />
     <meta content="website" property="og:type" />
     <meta content="https://npmgraph.js.org/" property="og:url" />
@@ -90,5 +90,11 @@
     <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
   </head>
 
-  <body></body>
+  <body>
+    <noscript>npmgraph needs JavaScript to run.</noscript>
+    <script nomodule>
+      document.body.textContent =
+        'Your browser is too old to run npmgraph. Please use a modern version of Chrome, Firefox, Safari, or Edge.';
+    </script>
+  </body>
 </html>

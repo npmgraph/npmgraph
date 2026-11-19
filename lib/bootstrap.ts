@@ -48,7 +48,8 @@ function renderUnsupported(unsupported: string[]) {
 
   const frame = document.createElement('iframe');
   frame.src = url.href;
-  frame.style.cssText = 'border: 0; width: 100%; height: 100vh';
+  frame.title = 'Unsupported features';
+  frame.className = 'unsupported-frame';
   document.body.append(frame);
 }
 
