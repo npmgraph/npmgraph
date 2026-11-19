@@ -68,16 +68,6 @@ export default defineConfig([
     rules: {
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
-      'unicorn/filename-case': [
-        'error',
-        {
-          cases: {
-            kebabCase: true,
-            camelCase: true,
-            pascalCase: true,
-          },
-        },
-      ],
       'unicorn/name-replacements': [
         'error',
         {
@@ -173,7 +163,11 @@ export default defineConfig([
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
   },
   {
-    files: cssExtensions.map(extension => `**/*.${extension}`),
+    files: [
+      tsFilesGlob,
+      jsFilesGlob,
+      ...cssExtensions.map(extension => `**/*.${extension}`),
+    ],
     rules: {
       'unicorn/filename-case': [
         'error',
