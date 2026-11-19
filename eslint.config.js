@@ -37,7 +37,6 @@ const disabledRules = [
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
   '@typescript-eslint/naming-convention', // I don't see this happening
   '@typescript-eslint/no-empty-function', // No reason to enforce this
-  'unicorn/no-null', // null ok
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
@@ -47,7 +46,8 @@ const disabledRules = [
   'react-doctor/jsx-no-target-blank',
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
-  'unicorn/single-line-block-comment-style',
+  'unicorn/no-null', // null ok
+  'unicorn/single-line-block-comment-style', // No use
 ];
 
 export default defineConfig([
@@ -66,11 +66,13 @@ export default defineConfig([
     files: [tsFilesGlob, jsFilesGlob],
     plugins: { byo },
     rules: {
+      'unicorn/no-manually-wrapped-comments': 'error',
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
       'unicorn/name-replacements': [
         'error',
         {
+          // TODO: Remove most exceptions
           replacements: {
             props: false,
             ref: false,
