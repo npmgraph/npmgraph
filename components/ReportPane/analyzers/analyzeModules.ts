@@ -16,9 +16,7 @@ type GroupLevel = 'major' | 'minor' | 'patch';
 // Most outdated first
 const levels: GroupLevel[] = ['major', 'minor', 'patch'];
 
-/**
-Groups the outdated modules by how far behind they are, most outdated first
-*/
+/** Groups the outdated modules by how far behind they are, most outdated first */
 export function groupOutdatedByLevel(outdated: OutdatedModule[]) {
   return levels
     .map(

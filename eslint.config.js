@@ -48,7 +48,6 @@ const disabledRules = [
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
   'unicorn/no-null', // null ok
-  'unicorn/single-line-block-comment-style', // No use
 ];
 
 export default defineConfig([
@@ -160,6 +159,7 @@ export default defineConfig([
   {
     files: [tsFilesGlob, jsFilesGlob, '**/*.css'],
     rules: {
+      'unicorn/single-line-block-comment-style': ['error', 'single-line'],
       'unicorn/filename-case': [
         'error',
         { cases: { kebabCase: true, camelCase: true, pascalCase: true } },

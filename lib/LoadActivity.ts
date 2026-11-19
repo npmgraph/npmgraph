@@ -1,8 +1,6 @@
 type Listener = () => void;
 
-/**
-Lite class for tracking async activity
-*/
+/** Lite class for tracking async activity */
 export default class LoadActivity {
   readonly #listeners = new Set<Listener>();
   title: string | undefined = '';
@@ -52,9 +50,7 @@ export default class LoadActivity {
     };
   }
 
-  /**
-  Show activity for a fixed time, so that quick actions still give feedback
-  */
+  /** Show activity for a fixed time, so that quick actions still give feedback */
   startFor(title: string, duration = 500): void {
     if (duration < 0) {
       throw new RangeError('duration must not be negative');

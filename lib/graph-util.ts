@@ -129,9 +129,7 @@ export function hasDependencies(
   return getDependencyEntries(module, dependencyTypes, level).size > 0;
 }
 
-/**
-Fetch the module dependency tree for a given query.
-*/
+/** Fetch the module dependency tree for a given query. */
 export async function getGraphForQuery(
   query: string[],
   dependencyTypes: Set<DependencyKey>,

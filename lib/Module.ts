@@ -58,23 +58,17 @@ export default class Module {
     return this.package.name;
   }
 
-  /**
-  True if this module was loaded from a package.json that had no `name` field
-  */
+  /** True if this module was loaded from a package.json that had no `name` field */
   get isUnnamed() {
     return this.name.startsWith(UNNAMED_PACKAGE_PREFIX);
   }
 
-  /**
-  User-facing display name. Returns 'unnamed module' for unnamed packages
-  */
+  /** User-facing display name. Returns 'unnamed module' for unnamed packages */
   get displayName() {
     return this.source ?? (this.isUnnamed ? UNNAMED_PACKAGE : this.name);
   }
 
-  /**
-  Full label of the module: where it was loaded from or its name and version
-  */
+  /** Full label of the module: where it was loaded from or its name and version */
   get label() {
     return this.source ?? this.key;
   }
