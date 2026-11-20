@@ -60,7 +60,6 @@ export default function ReportPane({
       <div className={styles.toolbar}>
         {isReportOnly ? (
           <div className={styles.actions}>
-            {/* eslint-disable-next-line react-doctor/no-unguarded-browser-global-in-render-or-hook-init -- There is no server render, this only runs in the browser */}
             {'share' in navigator && (
               <Button
                 onClick={() => {
