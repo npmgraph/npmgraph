@@ -4,6 +4,7 @@ import type Module from '../../lib/Module.ts';
 import type { VersionStatus } from '../../lib/version-status.ts';
 import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
 import { QueryLink } from '../ui/QueryLink.tsx';
+import { SectionSymbol } from '../ui/Section.tsx';
 import { getStatus } from './module-status.ts';
 import * as styles from './ModuleVersionInfo.module.css';
 
@@ -50,7 +51,10 @@ export function ModuleOutdated({
 
   return (
     <div {...props}>
-      <dt>Outdated</dt>
+      <dt>
+        <SectionSymbol warn />
+        Outdated
+      </dt>
       <dd className={listStyles.details}>
         {getOutdatedMessage(status)} <code>latest</code> (
         <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)

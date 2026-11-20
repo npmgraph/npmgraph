@@ -1,46 +1,67 @@
 import { resolveDocUrl } from 'module-replacements';
+import { Suspense, use } from 'react';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
+import { fetchModuleAdvisories } from '../ReportPane/reports/advisories.ts';
 import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
 import { Replacement } from '../ReportPane/reports/ModuleReplacementsNative.tsx';
 import { getReplacements } from '../ReportPane/reports/replacements.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
-import { Section } from '../ui/Section.tsx';
+import { SectionSymbol } from '../ui/Section.tsx';
 import { isOutdated } from './module-status.ts';
 import { ModuleOutdated } from './ModuleVersionInfo.tsx';
 import * as styles from './ModuleWarnings.module.css';
 
-export function ModuleWarnings({
+type Props = { module: Module; showOutdated: boolean };
+
+function Warnings({
   module,
   showOutdated,
-}: {
-  module: Module;
-  showOutdated: boolean;
-}) {
+  vulnerabilities,
+}: Props & { vulnerabilities: number }) {
   const { deprecated } = module.package;
   const hasOutdated = showOutdated && isOutdated(module);
   const { mapping, replacements } = getReplacements(module.name);
-  const count = [deprecated, hasOutdated, mapping].filter(Boolean).length;
-  if (count === 0) {
+  if (!(deprecated || hasOutdated || mapping || vulnerabilities > 0)) {
     return null;
   }
 
   const mappingUrl = mapping && resolveDocUrl(mapping.url);
 
   return (
-    <Section warn title="Warnings" count={count}>
+    <>
+      <hr />
       <dl className={cn(listStyles.list, styles.list)}>
         {deprecated ? (
           <div>
-            <dt>Deprecated</dt>
+            <dt>
+              <SectionSymbol warn />
+              Deprecated
+            </dt>
             <dd className={listStyles.details}>{deprecated}</dd>
           </div>
         ) : null}
+        {vulnerabilities > 0 && (
+          <div>
+            <dt>
+              <SectionSymbol warn />
+              Vulnerabilities
+              {' • '}
+              <ExternalLink
+                href={`https://github.com/advisories?query=ecosystem%3Anpm+affects%3A${encodeURIComponent(module.name)}`}
+              >
+                details
+              </ExternalLink>
+            </dt>
+            <dd className={listStyles.details}>{vulnerabilities}</dd>
+          </div>
+        )}
         {hasOutdated && <ModuleOutdated module={module} />}
         {replacements ? (
           <div>
             <dt>
+              <SectionSymbol warn />
               Replaceable
               {mappingUrl && (
                 <>
@@ -61,6 +82,19 @@ export function ModuleWarnings({
           </div>
         ) : null}
       </dl>
-    </Section>
+    </>
+  );
+}
+
+function WithVulnerabilities(props: Props) {
+  const advisories = use(fetchModuleAdvisories(props.module));
+  return <Warnings {...props} vulnerabilities={advisories.length} />;
+}
+
+export function ModuleWarnings(props: Props) {
+  return (
+    <Suspense fallback={<Warnings {...props} vulnerabilities={0} />}>
+      <WithVulnerabilities {...props} />
+    </Suspense>
   );
 }

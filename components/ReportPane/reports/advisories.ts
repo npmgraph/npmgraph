@@ -1,4 +1,6 @@
+import pMemoize from 'p-memoize';
 import fetchJson from '../../../lib/fetchJson.ts';
+import type Module from '../../../lib/Module.ts';
 
 const SEVERITY_RANK = {
   none: 0,
@@ -73,3 +75,8 @@ export async function fetchAdvisories(
 
   return advisories;
 }
+
+export const fetchModuleAdvisories = pMemoize(
+  async ({ name, version }: Module) => fetchAdvisories({ [name]: [version] }),
+  { cacheKey: ([{ key }]) => key },
+);

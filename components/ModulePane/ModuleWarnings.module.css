@@ -2,5 +2,9 @@
   margin-top: 0;
   dt {
     font-weight: bold;
+
+    svg {
+      margin-inline-end: 0.5ch;
+    }
   }
 }
