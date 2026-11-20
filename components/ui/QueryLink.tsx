@@ -2,7 +2,7 @@ import filterAlteredClicks from 'filter-altered-clicks';
 import type { HTMLProps } from 'react';
 import useLocation, { patchLocation } from '../../hooks/useLocation.ts';
 import { PARAM_QUERY } from '../../lib/constants.ts';
-import { urlPatch } from '../../lib/url-util.ts';
+import { getViewSettingsHash, urlPatch } from '../../lib/url-util.ts';
 
 export function QueryLink({
   query,
@@ -19,7 +19,7 @@ export function QueryLink({
   const queries = Array.isArray(query) ? query : [query];
 
   const search = query.length > 0 ? `${PARAM_QUERY}=${queries.join(',')}` : '';
-  const hash = reset ? '' : currentHash;
+  const hash = reset ? getViewSettingsHash(currentHash) : currentHash;
   const url = urlPatch({ search, hash });
 
   function onClick(event: React.MouseEvent) {

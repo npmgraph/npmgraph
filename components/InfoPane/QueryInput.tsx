@@ -1,13 +1,13 @@
 import { useId, useRef, useState, type HTMLProps } from 'react';
 import useGraph from '../../hooks/useGraph.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
-import { patchLocation } from '../../hooks/useLocation.ts';
+import useLocation, { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { parseCommaList } from '../../lib/array-util.ts';
 import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
-import { searchSet } from '../../lib/url-util.ts';
+import { getViewSettingsHash, searchSet } from '../../lib/url-util.ts';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
@@ -21,6 +21,7 @@ export default function QueryInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const enterValueRef = useRef<string | null>(null);
   const [query] = useQuery();
+  const [{ hash }] = useLocation();
   const graph = useGraph();
   const setGraphSelection = useGraphSelection()[2];
   const listId = useId();
@@ -51,9 +52,11 @@ export default function QueryInput({
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
     event?.preventDefault();
     enterValueRef.current = null;
-    patchLocation({ search: getSearchParameters(), hash: '' }, false, {
-      isInput: true,
-    });
+    patchLocation(
+      { search: getSearchParameters(), hash: getViewSettingsHash(hash) },
+      false,
+      { isInput: true },
+    );
   }
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
