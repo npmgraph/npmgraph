@@ -141,10 +141,6 @@ async function rasterize(
     }
 
     return blob;
-  } catch (error) {
-    // Surface render failures; browsers otherwise report them as a generic NotAllowedError
-    console.error('PNG render failed', error);
-    throw error;
   } finally {
     URL.revokeObjectURL(url);
   }

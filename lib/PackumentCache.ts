@@ -57,10 +57,8 @@ export async function getNPMPackument(
         headers: { Accept: 'application/json' },
         signal,
       });
-    } catch (error) {
-      if (!signal?.aborted) {
-        console.warn('Failed to fetch packument', moduleName, error);
-      }
+    } catch {
+      // Left undefined
     }
 
     isPending = false;

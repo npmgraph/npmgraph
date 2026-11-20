@@ -38,11 +38,7 @@ const fetchSPDXLicenses = pMemoize(
           license,
         ]),
       );
-    } catch (error) {
-      console.warn(
-        'Failed to fetch SPDX licenses, falling back to empty map',
-        error,
-      );
+    } catch {
       return new Map();
     }
   },
