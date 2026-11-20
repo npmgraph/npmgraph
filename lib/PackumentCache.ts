@@ -59,11 +59,7 @@ export async function getNPMPackument(
       });
     } catch (error) {
       if (!signal?.aborted) {
-        console.warn(
-          'Failed to fetch packument',
-          moduleName,
-          error instanceof Error ? error.message : error,
-        );
+        console.warn('Failed to fetch packument', moduleName, error);
       }
     }
 

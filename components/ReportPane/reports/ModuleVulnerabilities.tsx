@@ -61,10 +61,7 @@ async function fetchAdvisories({ moduleInfos }: ModuleAnalysisState) {
         },
       );
     } catch (error) {
-      console.log(
-        'Error fetching npm audit data:',
-        error instanceof Error ? error.message : error,
-      );
+      console.log('Error fetching npm audit data:', error);
     }
   }
 
