@@ -164,7 +164,7 @@ export async function getModule(
         error.message = `Failed to get ${moduleKey}`;
       }
 
-      module = Module.stub(moduleKey, error);
+      module = Module.stub(moduleKey, error as Error);
     }
 
     cacheEntry.module = module;
