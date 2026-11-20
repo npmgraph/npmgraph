@@ -60,8 +60,8 @@ async function fetchAdvisories({ moduleInfos }: ModuleAnalysisState) {
           body,
         },
       );
-    } catch {
-      // Advisories are optional
+    } catch (error) {
+      console.log('Error fetching npm audit data:', error);
     }
   }
 

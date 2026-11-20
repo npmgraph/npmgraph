@@ -1,6 +1,5 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { ErrorBoundary } from 'react-error-boundary';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
 import { setActivityForApp } from '../hooks/useActivity.ts';
@@ -56,9 +55,7 @@ function init() {
   const appElement = $('body');
   createRoot(appElement).render(
     <StrictMode>
-      <ErrorBoundary fallback={<p>Something went wrong. Please reload.</p>}>
-        <App />
-      </ErrorBoundary>
+      <App />
     </StrictMode>,
   );
 

@@ -418,7 +418,10 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       // Colorize it (async)
       void colorizer
         .colorForModule(m)
-        .catch(() => undefined)
+        .catch(error => {
+          console.warn(`Error colorizing ${m.name}: ${error.message}`);
+          return undefined;
+        })
         .then(color => {
           if (color) {
             setColor(elementPath, color);

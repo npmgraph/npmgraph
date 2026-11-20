@@ -85,7 +85,8 @@ function composeSvgMarkup(
 
   try {
     return layout(dotDoc, graphviz);
-  } catch {
+  } catch (error) {
+    console.error(error);
     flashError('Error while rendering graph');
     return '<svg />';
   }
