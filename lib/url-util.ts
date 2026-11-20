@@ -4,20 +4,17 @@ import {
   PARAM_SIZING,
 } from './constants.ts';
 
-const VIEW_SETTINGS = [PARAM_COLORIZE, PARAM_DEPENDENCIES, PARAM_SIZING];
+const VIEW_SETTINGS = new Set([
+  PARAM_COLORIZE,
+  PARAM_DEPENDENCIES,
+  PARAM_SIZING,
+]);
 
-// The hash without anything that only applies to the current graph (selection, section, collapsed modules…)
-export function getViewSettingsHash(hash: string) {
-  const current = new URLSearchParams(hash.slice(1));
-  const parameters = new URLSearchParams();
-  for (const key of VIEW_SETTINGS) {
-    const value = current.get(key);
-    if (value !== null) {
-      parameters.set(key, value);
-    }
-  }
-
-  return parameters.toString();
+// The hash parameters without anything that only applies to the current graph (selection, section, collapsed modules…)
+export function getViewSettings(parameters: URLSearchParams) {
+  return new URLSearchParams(
+    [...parameters].filter(([key]) => VIEW_SETTINGS.has(key)),
+  );
 }
 
 export function urlPatch(urlParts: Partial<URL>, url = new URL(location.href)) {
