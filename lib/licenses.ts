@@ -1,3 +1,5 @@
+import pMemoize from 'p-memoize';
+
 export const SPDX_URL =
   'https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json';
 
@@ -21,34 +23,30 @@ export type SPDXLicenseList = {
 
 export type LicenseIssue = 'no-osi' | 'no-fsf' | 'deprecated';
 
-let cachedLicenses: Map<string, SPDXLicense> | null = null;
+const fetchSPDXLicenses = pMemoize(
+  async (): Promise<Map<string, SPDXLicense>> => {
+    try {
+      const response = await fetch(SPDX_URL);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch SPDX licenses: ${response.status}`);
+      }
 
-async function fetchSPDXLicenses(): Promise<Map<string, SPDXLicense>> {
-  if (cachedLicenses) {
-    return cachedLicenses;
-  }
-
-  try {
-    const response = await fetch(SPDX_URL);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch SPDX licenses: ${response.status}`);
+      const data: SPDXLicenseList = await response.json();
+      return new Map(
+        data.licenses.map(license => [
+          license.licenseId.toLowerCase(),
+          license,
+        ]),
+      );
+    } catch (error) {
+      console.warn(
+        'Failed to fetch SPDX licenses, falling back to empty map',
+        error,
+      );
+      return new Map();
     }
-
-    const data: SPDXLicenseList = await response.json();
-    cachedLicenses = new Map(
-      data.licenses.map(license => [license.licenseId.toLowerCase(), license]),
-    );
-
-    return cachedLicenses;
-  } catch (error) {
-    console.warn(
-      'Failed to fetch SPDX licenses, falling back to empty map',
-      error,
-    );
-    cachedLicenses = new Map();
-    return cachedLicenses;
-  }
-}
+  },
+);
 
 export async function getLicense(id: string): Promise<SPDXLicense | undefined> {
   const licenses = await fetchSPDXLicenses();
