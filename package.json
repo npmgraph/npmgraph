@@ -1,8 +1,6 @@
 {
   "name": "npmgraph",
-  "version": "3.1.1",
   "private": true,
-  "description": "Visualize npm dependency graphs (public and private!)",
   "license": "MIT",
   "repository": "github:npmgraph/npmgraph",
   "funding": [
@@ -11,6 +9,9 @@
   ],
   "author": "Robert Kieffer (https://github.com/broofa)",
   "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "devEngines": {
     "runtime": {
       "name": "node",

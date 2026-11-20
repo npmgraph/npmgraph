@@ -27,7 +27,6 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-assignment',
   '@typescript-eslint/no-unsafe-member-access',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'package-json/require-engines', // Vercel picks the Node version from engines
   'unicorn/prefer-await',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
 
