@@ -1,5 +1,6 @@
 import { resolveDocUrl } from 'module-replacements';
 import { Suspense, use } from 'react';
+import simplur from 'simplur';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
@@ -39,7 +40,7 @@ function Warnings({
       <hr />
       <dl className={cn(listStyles.list, styles.list)}>
         {deprecated ? (
-          <div>
+          <div className={styles.inline}>
             <dt>
               <SectionSymbol warn />
               Deprecated
@@ -47,22 +48,24 @@ function Warnings({
             <dd className={listStyles.details}>{deprecated}</dd>
           </div>
         ) : null}
+        {hasOutdated && (
+          <ModuleOutdated module={module} className={styles.inline} />
+        )}
         {vulnerabilities > 0 && (
-          <div>
+          <div className={styles.inline}>
             <dt>
               <SectionSymbol warn />
               Vulnerabilities
-              {' • '}
+            </dt>
+            <dd className={listStyles.details}>
               <ExternalLink
                 href={`https://github.com/advisories?query=ecosystem%3Anpm+affects%3A${encodeURIComponent(module.name)}`}
               >
-                details
+                {simplur`${vulnerabilities} advisor[y|ies]`}
               </ExternalLink>
-            </dt>
-            <dd className={listStyles.details}>{vulnerabilities}</dd>
+            </dd>
           </div>
         )}
-        {hasOutdated && <ModuleOutdated module={module} />}
         {replacements ? (
           <div>
             <dt>

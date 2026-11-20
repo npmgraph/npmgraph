@@ -8,3 +8,17 @@
     }
   }
 }
+
+.inline {
+  display: flex;
+  column-gap: 0.5ch;
+  flex-wrap: wrap;
+
+  dt::after {
+    content: ':';
+  }
+
+  dd {
+    margin: 0;
+  }
+}
