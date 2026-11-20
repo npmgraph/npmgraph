@@ -67,27 +67,33 @@ function Warnings({
           </div>
         )}
         {replacements ? (
-          <div>
-            <dt>
-              <SectionSymbol warn />
-              Replaceable
-              {mappingUrl && (
-                <>
-                  {' • '}
-                  <ExternalLink href={mappingUrl}>learn more</ExternalLink>
-                </>
-              )}
-            </dt>
-            <dd className={listStyles.details}>
-              <ul>
-                {replacements.filter(isDefined).map(replacement => (
-                  <li key={replacement.id}>
-                    <Replacement replacement={replacement} />
-                  </li>
-                ))}
-              </ul>
-            </dd>
-          </div>
+          mappingUrl ? (
+            <div className={styles.inline}>
+              <dt>
+                <SectionSymbol warn />
+                Replaceable
+              </dt>
+              <dd className={listStyles.details}>
+                <ExternalLink href={mappingUrl}>learn more</ExternalLink>
+              </dd>
+            </div>
+          ) : (
+            <div>
+              <dt>
+                <SectionSymbol warn />
+                Replaceable
+              </dt>
+              <dd className={listStyles.details}>
+                <ul>
+                  {replacements.filter(isDefined).map(replacement => (
+                    <li key={replacement.id}>
+                      <Replacement replacement={replacement} />
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )
         ) : null}
       </dl>
     </>
