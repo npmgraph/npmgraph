@@ -21,9 +21,7 @@ export function getFitScale(wrapper: HTMLElement, content: HTMLElement) {
   );
 }
 
-/**
-Keeps the graph from moving away from the edges of the viewport, like scrolling
-*/
+/** Keeps the graph from moving away from the edges of the viewport, like scrolling */
 export function clampPosition(
   { instance }: ReactZoomPanPinchContentRef,
   x: number,
@@ -49,9 +47,7 @@ export function clampPosition(
   ] as const;
 }
 
-/**
-Zoom to the given scale, keeping the center of the viewport where it is
-*/
+/** Zoom to the given scale, keeping the center of the viewport where it is */
 export function zoomAroundCenter(
   controls: ReactZoomPanPinchContentRef,
   newScale: number,

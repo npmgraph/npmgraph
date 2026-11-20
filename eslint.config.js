@@ -16,27 +16,28 @@ const local = {
   },
 };
 
+// To change rule settings or disable rules, add a plain rule entry to an
+// existing object in this config (disabledRules or the tsFilesGlob block).
+// Never add new config objects, never import from xo and never reach into
+// xo's config objects.
 const disabledRules = [
   // TODO: Gradually review and enable
   '@typescript-eslint/consistent-type-assertions',
-  '@typescript-eslint/no-shadow',
   '@typescript-eslint/no-unsafe-argument',
   '@typescript-eslint/no-unsafe-assignment',
   '@typescript-eslint/no-unsafe-member-access',
-  '@typescript-eslint/no-unsafe-type-assertion',
-  '@typescript-eslint/prefer-nullish-coalescing',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
   'package-json/prefer-files-field',
   'package-json/require-engines',
   'package-json/require-entry-point',
-  'regexp/no-super-linear-move',
-  'unicorn/no-break-in-nested-loop',
+  'unicorn/prefer-await',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
 
   // Unwanted
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
   '@typescript-eslint/naming-convention', // I don't see this happening
   '@typescript-eslint/no-empty-function', // No reason to enforce this
+  'import-x/order', // Handled by prettier-plugin-sort-imports
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
@@ -46,6 +47,7 @@ const disabledRules = [
   'react-doctor/jsx-no-target-blank',
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
+  'unicorn/no-null', // null ok
 ];
 
 export default defineConfig([
@@ -64,24 +66,35 @@ export default defineConfig([
     files: [tsFilesGlob, jsFilesGlob],
     plugins: { byo },
     rules: {
+      'unicorn/no-manually-wrapped-comments': 'error',
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],
-      'unicorn/filename-case': [
+      'unicorn/name-replacements': [
         'error',
         {
-          cases: {
-            kebabCase: true,
-            camelCase: true,
-            pascalCase: true,
+          // TODO: Remove most exceptions
+          replacements: {
+            props: false,
+            ref: false,
+            refs: false,
+            pkg: false,
+            param: false,
+            fn: false,
+            ev: false,
+            args: false,
+            arg: false,
+            i: false,
+            deps: false,
+            dep: false,
+            src: false,
+            repo: false,
+            doc: false,
+            ctx: false,
+            buf: false,
+            util: false,
+            dev: false,
+            dist: false,
           },
-        },
-      ],
-
-      'import-x/order': [
-        'error',
-        {
-          warnOnUnassignedImports: 'top',
-          'newlines-between': 'never',
         },
       ],
 
@@ -92,6 +105,25 @@ export default defineConfig([
             'MemberExpression[property.name="hash"]:matches([object.name="location"], [object.object.name=/^(window|globalThis)$/][object.property.name="location"])',
           message:
             'Use useHashParameters() or patchHash() instead of location.hash',
+        },
+      ],
+
+      'byo/no-inline-style': [
+        'error',
+        {
+          selector:
+            'JSXAttribute[name.name="style"] > JSXExpressionContainer > ObjectExpression > Property:matches([value.type="Literal"], [value.type="TemplateLiteral"][value.expressions.length=0], [value.type="UnaryExpression"][value.argument.type="Literal"])',
+          message:
+            'Move static styles to a CSS module; `style` is only for values computed at runtime',
+        },
+      ],
+
+      'byo/no-template-class-name': [
+        'error',
+        {
+          selector:
+            'JSXAttribute[name.name="className"] > JSXExpressionContainer > TemplateLiteral',
+          message: 'Use cn() from lib/dom.ts instead of a template literal',
         },
       ],
     },
@@ -123,5 +155,17 @@ export default defineConfig([
   },
   {
     rules: Object.fromEntries(disabledRules.map(rule => [rule, 'off'])),
+  },
+  {
+    files: [tsFilesGlob, jsFilesGlob, '**/*.css'],
+    rules: {
+      // https://github.com/sindresorhus/eslint-plugin-unicorn/issues/4027#issuecomment-7003173556
+      'unicorn/single-line-block-comment-style': ['error', 'single-line'],
+
+      'unicorn/filename-case': [
+        'error',
+        { cases: { kebabCase: true, camelCase: true, pascalCase: true } },
+      ],
+    },
   },
 ]);

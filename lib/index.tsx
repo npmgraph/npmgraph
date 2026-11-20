@@ -1,16 +1,13 @@
-import '../index.scss';
-import { type ReactElement, StrictMode } from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { $ } from 'select-dom';
 import App from '../components/App/App.tsx';
-import { Unsupported } from '../components/Unsupported.tsx';
 import { setActivityForApp } from '../hooks/useActivity.ts';
 import { DiagramTitle } from './DiagramTitle.tsx';
+import { setActivityForRequestCache } from './fetchJson.ts';
+import { flashError } from './flash.ts';
 import LoadActivity from './LoadActivity.ts';
 import { syncPackagesHash } from './ModuleCache.ts';
-import { setActivityForRequestCache } from './fetchJson.ts';
-import { disableBugsnag } from './bugsnag.ts';
-import { flashError } from './flash.ts';
 
 // A deploy likely replaced the fingerprinted chunks this page references
 globalThis.addEventListener('vite:preloadError', event => {
@@ -30,60 +27,6 @@ globalThis.addEventListener('vite:preloadError', event => {
   globalThis.location.reload();
 });
 
-function isValidJS(src: string) {
-  try {
-    // eslint-disable-next-line no-new-func, no-new, react-doctor/no-eval -- Only called with hard-coded snippets, to detect syntax support
-    new Function(src);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Various features we depend on that have triggered bugsnag errors in the past
-function detectFeatures() {
-  const unsupported = new Map<string, ReactElement>();
-
-  // API checks
-  const features = {
-    '||= (Logical Or)': isValidJS('a ||= 123'),
-    'AbortSignal.timeout': globalThis.AbortSignal?.timeout,
-    'Map.groupBy': globalThis.Map?.groupBy,
-    'URL.parse': globalThis.URL?.parse,
-    fetch: globalThis.fetch,
-    globalThis: typeof globalThis !== 'undefined',
-    Promise: globalThis.Promise,
-  };
-
-  for (const [k, v] of Object.entries(features)) {
-    if (v) {
-      continue;
-    }
-
-    unsupported.set(
-      k,
-      <>
-        <code>{k}</code> is not supported
-      </>,
-    );
-  }
-
-  // LocalStorage may not work if cookies are disabled. See #202
-  try {
-    localStorage.setItem('test', 'test');
-    localStorage.removeItem('test');
-  } catch {
-    unsupported.set(
-      'localStorage',
-      <>
-        <code>localStorage</code> is not supported
-      </>,
-    );
-  }
-
-  return unsupported;
-}
-
 globalThis.addEventListener('error', error => {
   // Browsers hide the details of cross-origin script errors, so there's nothing to show.
   // Safari on iOS throws one from `SharingLinkExtractorJS.viewportDominantIFrameHandle()`:
@@ -99,14 +42,7 @@ globalThis.addEventListener('unhandledrejection', error => {
   flashError(error.reason);
 });
 
-globalThis.addEventListener('load', () => {
-  const unsupported = detectFeatures();
-  if (unsupported.size > 0) {
-    disableBugsnag();
-    createRoot($('body')).render(<Unsupported unsupported={unsupported} />);
-    return;
-  }
-
+function init() {
   // Make sure module cache is synced with hash param
   syncPackagesHash();
 
@@ -125,4 +61,6 @@ globalThis.addEventListener('load', () => {
 
   // A little component for managing the title
   createRoot($('title')).render(<DiagramTitle defaultTitle={document.title} />);
-});
+}
+
+init();

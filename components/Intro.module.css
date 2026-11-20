@@ -3,6 +3,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 3em;
+  --chips-justify: center;
   box-sizing: border-box;
   background: radial-gradient(
     var(--bg-root),
@@ -11,26 +13,29 @@
   padding: 1em;
   width: 100%;
   min-height: 100svh;
+  text-align: center;
 
   @media (prefers-color-scheme: dark) {
     background: radial-gradient(var(--bg0), var(--bg-root));
   }
 
-  h1 svg {
-    display: block;
-    margin: auto;
-    max-width: 90%;
-  }
+  h1 {
+    margin: 0;
 
-  h2 {
-    text-align: center;
+    svg {
+      display: block;
+      margin: auto;
+      max-width: 90%;
+    }
   }
 
   a {
     color: var(--accent);
   }
 
-  ul {
+  p {
     margin: 0;
+    max-width: 26em;
+    text-align: justify;
   }
 }

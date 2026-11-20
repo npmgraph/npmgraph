@@ -1,8 +1,8 @@
 import { useState, type HTMLProps, type ReactNode } from 'react';
-import { cn } from '../../lib/dom.ts';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
-import { SectionOpenedContext } from './SectionOpenedContext.ts';
+import { cn } from '../../lib/dom.ts';
 import * as styles from './Section.module.css';
+import { SectionOpenedContext } from './SectionOpenedContext.ts';
 import * as utilities from './utilities.module.css';
 
 export function SectionBody({ children }: { children: ReactNode }) {

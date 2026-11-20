@@ -11,3 +11,9 @@
   font-size: 0.8rem;
   white-space: nowrap;
 }
+
+.warnIcon {
+  vertical-align: -0.125em;
+  margin-right: 0.25em;
+  color: var(--stroke-yellow);
+}

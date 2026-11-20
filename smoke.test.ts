@@ -1,8 +1,8 @@
 // Smoke tests: load the built app (dist/) in an iframe and check that graphs render.
 // Run `npm run build` first.
-import { afterEach, describe, expect, it, vi } from 'vitest';
-import { type Locator, locators, page, userEvent } from 'vitest/browser';
 import { $, $$, $$optional } from 'select-dom';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { locators, page, userEvent, type Locator } from 'vitest/browser';
 
 declare module 'vitest/browser' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions -- needed for declaration merging
@@ -135,7 +135,7 @@ describe('graph', () => {
   });
 
   it('renders with inspector hidden', async () => {
-    await goto('?q=debug#hide');
+    await goto('?q=debug#tab=none');
     await nodeAppears();
     await appears('button', /^Info$/);
   });

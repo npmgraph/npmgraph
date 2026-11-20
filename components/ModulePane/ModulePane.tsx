@@ -1,13 +1,13 @@
-import type Module from '../../lib/Module.ts';
-import { PARAM_COLORIZE } from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { useSelectedModules } from '../../hooks/useSelectedModules.ts';
+import { PARAM_COLORIZE } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
+import type Module from '../../lib/Module.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
 import { ModuleDependents } from './ModuleDependents.tsx';
+import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.css';
 import { ModuleSize } from './ModuleSize.tsx';
@@ -66,8 +66,8 @@ function ModuleDetailsPane({
       <p>{pkg?.description}</p>
 
       <div className={styles.moduleHeader}>
-        <ModuleActions module={module} />
         <ModuleExternalLinks module={module} />
+        <ModuleActions module={module} />
       </div>
 
       <ReleaseTimeline module={module} />

@@ -6,17 +6,15 @@ import { Pane } from '../ui/Pane.tsx';
 import AnalysisProvider from './analyzers/AnalysisProvider.tsx';
 import CollapsedModules from './CollapsedModules.tsx';
 import * as styles from './ReportPane.module.scss';
-import LicensesAll from './reports/LicensesAll.tsx';
-import LicensesMissing from './reports/LicensesMissing.tsx';
-import LicensesKeyword from './reports/LicensesKeyword.tsx';
+import Licenses from './reports/Licenses.tsx';
 import MaintainersAll from './reports/MaintainersAll.tsx';
 import MaintainersSolo from './reports/MaintainersSolo.tsx';
 import ModuleReplacementsNative from './reports/ModuleReplacementsNative.tsx';
-import ModuleVulnerabilities from './reports/ModuleVulnerabilities.tsx';
 import ModulesAll from './reports/ModulesAll.tsx';
 import ModulesDeprecated from './reports/ModulesDeprecated.tsx';
 import ModulesOutdated from './reports/ModulesOutdated.tsx';
 import ModulesRepeated from './reports/ModulesRepeated.tsx';
+import ModuleVulnerabilities from './reports/ModuleVulnerabilities.tsx';
 import PeerDependenciesAll from './reports/PeerDependenciesAll.tsx';
 import PeerDependenciesMissing from './reports/PeerDependenciesMissing.tsx';
 
@@ -65,7 +63,7 @@ export default function ReportPane({
         <ModulesAll />
         <PeerDependenciesAll />
         <MaintainersAll />
-        <LicensesAll />
+        <Licenses />
 
         <ModuleVulnerabilities />
         <ModulesDeprecated />
@@ -73,9 +71,6 @@ export default function ReportPane({
         <ModulesRepeated />
         <PeerDependenciesMissing />
         <MaintainersSolo />
-        <LicensesMissing />
-        <LicensesKeyword keyword="obsolete" />
-        <LicensesKeyword keyword="discouraged" />
         <ModuleReplacementsNative />
       </AnalysisProvider>
     </Pane>

@@ -1,7 +1,7 @@
 import type { Packument } from '@npm/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { DependencyKey } from './graph-types.ts';
 import { serializeGraph } from './graph-serialize.ts';
+import type { DependencyKey } from './graph-types.ts';
 import { getGraphForQuery } from './graph-util.ts';
 import { clearModuleCache } from './ModuleCache.ts';
 
@@ -375,7 +375,7 @@ describe('peer dependencies', () => {
   it('no duplicate edges for level-0 peers', async () => {
     root({ peerDependencies: { react: '^17' } });
     await expect(edges(types)).resolves.toSatisfy(
-      (edges: string[]) => new Set(edges).size === edges.length,
+      (list: string[]) => new Set(list).size === list.length,
     );
   });
 });

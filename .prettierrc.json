@@ -1,5 +1,16 @@
 {
-  "plugins": ["prettier-plugin-css-order"],
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-css-order"
+  ],
   "arrowParens": "avoid",
-  "singleQuote": true
+  "singleQuote": true,
+  "overrides": [
+    {
+      "files": "*.svg",
+      "options": {
+        "parser": "html"
+      }
+    }
+  ]
 }

@@ -14,9 +14,7 @@ export function resolveGitHubShorthand(moduleKey: string) {
     : moduleKey;
 }
 
-/**
-Short description of where a package.json URL points to: `user/repo` (plus `#ref`, unless it's the default branch) for GitHub repos, the URL without protocol otherwise
-*/
+/** Short description of where a package.json URL points to: `user/repo` (plus `#ref`, unless it's the default branch) for GitHub repos, the URL without protocol otherwise */
 export function describeUrlSource(url: URL) {
   if (url.host === 'raw.githubusercontent.com') {
     const [owner, repo, ref, ...path] = url.pathname.split('/').filter(Boolean);
@@ -52,17 +50,15 @@ export function getModuleKey(name: string, version: string) {
 }
 
 export function parseModuleKey(moduleKey: string): string[] {
-  const match = /(?<name>.+)@(?<version>.*)/v.exec(moduleKey);
-  return match
-    ? [match.groups!['name']!, match.groups!['version']!]
+  const index = moduleKey.lastIndexOf('@');
+  return index > 0
+    ? [moduleKey.slice(0, index), moduleKey.slice(index + 1)]
     : [moduleKey];
 }
 
 const ALIAS_RE = /npm:(?<name>@?[^@]+)(?:@(?<semver>.+))?/v;
 
-/**
-Resolve a dependency to its real name and range, following npm: aliases
-*/
+/** Resolve a dependency to its real name and range, following npm: aliases */
 export function resolveAlias(name: string, version: string) {
   const groups = ALIAS_RE.exec(version)?.groups;
   return groups

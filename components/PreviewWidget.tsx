@@ -1,11 +1,11 @@
+import PullRequestIcon from 'octicons-plain-react/GitPullRequest';
+import GlobeIcon from 'octicons-plain-react/Globe';
+import XIcon from 'octicons-plain-react/X';
 import { useMemo, useState } from 'react';
 import useLocation from '../hooks/useLocation.ts';
-import GlobeIcon from '../images/icons/globe.svg?react';
-import PullRequestIcon from '../images/icons/pull-request.svg?react';
-import XIcon from '../images/icons/x.svg?react';
-import * as utilities from './ui/utilities.module.css';
-import * as styles from './PreviewWidget.module.css';
 import { Button, ButtonGroup } from './Button.tsx';
+import * as styles from './PreviewWidget.module.css';
+import * as utilities from './ui/utilities.module.css';
 
 function getNpmgraphJsOrgUrl(locationUrl: URL) {
   const url = new URL('https://npmgraph.js.org/');

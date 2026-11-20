@@ -1,5 +1,5 @@
-import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { useSelectedModules } from '../../hooks/useSelectedModules.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { Panel } from '../ui/Panel.tsx';
 import ModulePane from './ModulePane.tsx';
 import * as styles from './ModulePanel.module.scss';

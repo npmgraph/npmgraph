@@ -9,10 +9,24 @@
     border: solid 1px var(--border);
     border-radius: 4px;
     padding: 0.3em 0.7em;
+    height: 2.2em; /* Same as the colorizer select */
     font: inherit;
+    font-size: 16px; /* It must be at least 16px to avoid iOS zooming in on focus */
   }
 }
 
 .status {
   color: var(--text-dim);
+
+  svg {
+    vertical-align: text-bottom;
+  }
+}
+
+.online {
+  color: var(--stroke-green);
+}
+
+.offline {
+  color: var(--stroke-red);
 }

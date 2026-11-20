@@ -16,6 +16,11 @@
   padding: 0.05em var(--row-inset);
   min-width: 0;
 
+  @media (pointer: coarse) {
+    align-content: center;
+    min-height: 2.5em;
+  }
+
   &:nth-child(even) {
     background-color: color-mix(in srgb, var(--text) 6%, transparent);
   }

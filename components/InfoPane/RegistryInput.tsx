@@ -1,8 +1,10 @@
+import CheckCircleFillIcon from 'octicons-plain-react/CheckCircleFill';
+import XCircleFillIcon from 'octicons-plain-react/XCircleFill';
 import { Suspense, use, useEffect, useId, useState } from 'react';
-import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
 import useDebouncedValue from '../../hooks/useDebouncedValue.ts';
 import usePromise from '../../hooks/usePromise.ts';
 import useRegistry from '../../hooks/useRegistry.ts';
+import { DEFAULT_NPM_REGISTRY } from '../../lib/constants.ts';
 import * as styles from './RegistryInput.module.css';
 
 const CHECKING = 'Checking...';
@@ -33,13 +35,21 @@ function RegistryStatus({
     }
   }, [isOnline, registry, setRegistry]);
 
-  return isOnline ? '✅ Online' : '❌ Offline';
+  return isOnline ? (
+    <>
+      <CheckCircleFillIcon className={styles.online} /> Online
+    </>
+  ) : (
+    <>
+      <XCircleFillIcon className={styles.offline} /> Offline
+    </>
+  );
 }
 
 export default function RegistryInput() {
   const inputId = useId();
-  const [registry, setRegistry] = useRegistry();
-  const [value, setValue] = useState(registry ?? '');
+  const [registry = '', setRegistry] = useRegistry();
+  const [value, setValue] = useState(registry);
   const debouncedValue = useDebouncedValue(value, 1000);
   const check = usePromise(debouncedValue, async () =>
     isRegistryOnline(debouncedValue),

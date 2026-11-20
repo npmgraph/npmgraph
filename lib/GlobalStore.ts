@@ -1,6 +1,11 @@
 import { useCallback, useSyncExternalStore } from 'react';
+import {
+  PaneType,
+  PARAM_QUERY,
+  PARAM_TAB,
+  TIGHT_SCREEN_QUERY,
+} from './constants.ts';
 import type { GraphState } from './graph-types.ts';
-import { PARAM_QUERY, PARAM_TAB, TIGHT_SCREEN_QUERY } from './constants.ts';
 import type Module from './Module.ts';
 import { hashGet, searchGet } from './url-util.ts';
 
@@ -9,6 +14,8 @@ type GlobalState = {
   graph: GraphState;
   // On tight screens the graph and the inspector take turns
   isGraphVisible: boolean;
+  // The info tab isn't stored in the URL, a link never opens it
+  isInfoOpen: boolean;
   // The module panel is docked under the report. It starts collapsed on tight screens, where it covers the page
   isModulePanelOpen: boolean;
   isReportPanelOpen: boolean;
@@ -23,7 +30,7 @@ function _isGraphInitiallyVisible() {
     globalThis.window !== undefined &&
     globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches &&
     Boolean(searchGet(PARAM_QUERY)) &&
-    !hashGet(PARAM_TAB)
+    (hashGet(PARAM_TAB) ?? PaneType.NONE) === PaneType.NONE
   );
 }
 
@@ -34,6 +41,7 @@ let globalState: GlobalState = {
     failedEntryModules: new Map(),
   },
   isGraphVisible: _isGraphInitiallyVisible(),
+  isInfoOpen: false,
   isModulePanelOpen:
     globalThis.window === undefined ||
     !globalThis.matchMedia(TIGHT_SCREEN_QUERY).matches,
@@ -83,7 +91,7 @@ export function setGlobalState<T extends keyof GlobalState>(
 export function useGlobalState<T extends keyof GlobalState>(
   key: T,
 ): [GlobalState[T], (value: GlobalState[T]) => void] {
-  const globalState = useSyncExternalStore(subscribe, getSnapshot);
+  const snapshot = useSyncExternalStore(subscribe, getSnapshot);
 
   const setValue = useCallback(
     (value: GlobalState[T]) => {
@@ -92,5 +100,5 @@ export function useGlobalState<T extends keyof GlobalState>(
     [key],
   );
 
-  return [globalState[key], setValue];
+  return [snapshot[key], setValue];
 }

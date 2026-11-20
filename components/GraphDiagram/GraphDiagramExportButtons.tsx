@@ -1,11 +1,11 @@
 import copy from 'copy-text-to-clipboard';
+import CopyIcon from 'octicons-plain-react/Copy';
+import DownloadIcon from 'octicons-plain-react/Download';
+import MarkdownIcon from 'octicons-plain-react/Markdown';
 import { useState } from 'react';
 import { $optional } from 'select-dom';
-import CopyIcon from '../../images/icons/copy.svg?react';
-import DownloadIcon from '../../images/icons/download.svg?react';
-import MarkdownIcon from '../../images/icons/markdown.svg?react';
+import { useQuery } from '../../hooks/useQuery.ts';
 import PngIcon from '../../images/icons/png.svg?react';
-import { report } from '../../lib/bugsnag.ts';
 import { flash, flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeMermaid } from '../../lib/graph-util.ts';
@@ -20,16 +20,22 @@ function getDiagramElement() {
 
 export default function GraphDiagramExportButtons() {
   const [graph] = useGlobalState('graph');
+  const [query] = useQuery();
   const [isCopying, setIsCopying] = useState(false);
 
   return (
     <>
-      <ButtonGroup>
-        <Button title="Download graph as SVG" onClick={downloadSvg}>
+      <ButtonGroup square>
+        <Button
+          title="Download graph as SVG"
+          onClick={() => {
+            downloadSvg(query);
+          }}
+        >
           <DownloadIcon />
         </Button>
       </ButtonGroup>
-      <ButtonGroup>
+      <ButtonGroup square>
         {isCopying ? (
           <>
             <Button
@@ -83,7 +89,7 @@ async function renderPngBlob(): Promise<{
   const vb = svg?.getAttribute('viewBox')?.split(' ');
 
   if (!svg || !vb) {
-    report.error(new Error('No viewBox'));
+    reportError(new Error('No viewBox'));
     return null;
   }
 
@@ -171,12 +177,12 @@ async function copyPng() {
       return;
     }
 
-    report.error(error instanceof Error ? error : new Error(String(error)));
+    reportError(error);
     flashError('Unable to copy image to clipboard');
   }
 }
 
-function downloadSvg() {
+function downloadSvg(query: string[]) {
   // Get svg DOM (cloned, so we can tweak as needed for SVG export)
   const svg = getDiagramElement()?.cloneNode(true) as SVGSVGElement | undefined;
   if (!svg) {
@@ -192,11 +198,11 @@ function downloadSvg() {
   const svgData = new XMLSerializer().serializeToString(svg);
   const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
   const svgUrl = URL.createObjectURL(svgBlob);
-  generateLinkToDownload('svg', svgUrl);
+  generateLinkToDownload('svg', svgUrl, query);
 }
 
 // Collects rules from all readable stylesheets (<link> in production, <style>
-// in dev) so CSS variables like --bg-red survive outside the document
+// in dev) so the theme variables survive outside the document
 function cloneStyleElement() {
   const cssTexts: string[] = [];
 
@@ -222,8 +228,16 @@ function cloneStyleElement() {
   return styleElement;
 }
 
-function generateLinkToDownload(extension: DownloadExtension, link: string) {
-  const name = document.title.replace(/.*- /v, '').replaceAll(/\W+/gv, '_');
+function generateLinkToDownload(
+  extension: DownloadExtension,
+  link: string,
+  query: string[],
+) {
+  const title =
+    query.length > 0
+      ? `Dependencies for ${query.join(', ')}`
+      : 'npm Dependency Diagrams';
+  const name = title.replaceAll(/\W+/gv, '_');
   const downloadLink = document.createElement('a');
   downloadLink.href = link;
   downloadLink.download = `${name}_dependencies.${extension}`;

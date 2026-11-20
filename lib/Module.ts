@@ -2,12 +2,12 @@ import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import hostedGitInfo from 'hosted-git-info';
 import { UNNAMED_PACKAGE, UNNAMED_PACKAGE_PREFIX } from './constants.ts';
 import { isDefined } from './guards.ts';
-import { hashSet } from './url-util.ts';
 import {
   getModuleKey,
   parseModuleKey,
   resolveDependencyAliases,
 } from './module-util.ts';
+import { hashSet } from './url-util.ts';
 
 type Maintainers = PackumentVersion['maintainers'];
 export type Maintainer = Exclude<Maintainers, undefined>[0];
@@ -58,23 +58,17 @@ export default class Module {
     return this.package.name;
   }
 
-  /**
-  True if this module was loaded from a package.json that had no `name` field
-  */
+  /** True if this module was loaded from a package.json that had no `name` field */
   get isUnnamed() {
     return this.name.startsWith(UNNAMED_PACKAGE_PREFIX);
   }
 
-  /**
-  User-facing display name. Returns 'unnamed module' for unnamed packages
-  */
+  /** User-facing display name. Returns 'unnamed module' for unnamed packages */
   get displayName() {
     return this.source ?? (this.isUnnamed ? UNNAMED_PACKAGE : this.name);
   }
 
-  /**
-  Full label of the module: where it was loaded from or its name and version
-  */
+  /** Full label of the module: where it was loaded from or its name and version */
   get label() {
     return this.source ?? this.key;
   }
@@ -145,11 +139,13 @@ export default class Module {
 
   getLicenses() {
     // Pick license from latest `dist` version, if available
-    const pkg = this.getLatestVersion() ?? this.package;
+    const { license, licenses } = (this.getLatestVersion() ??
+      this.package) as PackageJSON;
 
-    return parseLicense(
-      pkg.license || (pkg as unknown as { licenses: string[] }).licenses,
-    );
+    const parsed = parseLicense(license);
+
+    // Fall back to the deprecated `licenses` when `license` is empty or missing
+    return parsed.length > 0 ? parsed : parseLicense(licenses);
   }
 
   toString() {
@@ -180,7 +176,7 @@ function parseLicense(
         .trim()
         .toLowerCase()
         .replaceAll(/^\(|\)$/gv, '')
-        .split(/\s+or\s+/)
+        .split(/(?<=\S)\s+or\s+/)
     : [];
 }
 

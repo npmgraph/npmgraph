@@ -1,9 +1,10 @@
-import type Module from '../../../lib/Module.ts';
 import type { GraphState } from '../../../lib/graph-util.ts';
+import type Module from '../../../lib/Module.ts';
 import {
   getVersionStatus,
   type VersionStatus,
 } from '../../../lib/version-status.ts';
+import { analyzeModuleWeights } from './analyzeModuleWeights.ts';
 
 export type OutdatedModule = {
   module: Module;
@@ -15,9 +16,7 @@ type GroupLevel = 'major' | 'minor' | 'patch';
 // Most outdated first
 const levels: GroupLevel[] = ['major', 'minor', 'patch'];
 
-/**
-Groups the outdated modules by how far behind they are, most outdated first
-*/
+/** Groups the outdated modules by how far behind they are, most outdated first */
 export function groupOutdatedByLevel(outdated: OutdatedModule[]) {
   return levels
     .map(
@@ -36,6 +35,7 @@ export type ModuleAnalysisState = GraphState & {
   versionsByName: Record<string, Module[]>;
   deprecated: Module[];
   outdated: OutdatedModule[];
+  weights: ReturnType<typeof analyzeModuleWeights>;
 };
 
 export function analyzeModules({ moduleInfos, entryModules }: GraphState) {
@@ -72,5 +72,6 @@ export function analyzeModules({ moduleInfos, entryModules }: GraphState) {
     versionsByName: {},
     deprecated,
     outdated,
+    weights: analyzeModuleWeights({ moduleInfos, entryModules }),
   } as ModuleAnalysisState;
 }

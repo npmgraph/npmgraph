@@ -1,8 +1,8 @@
-import type { HTMLAttributes, HTMLProps } from 'react';
-import type Module from '../../lib/Module.ts';
+import type { HTMLAttributes, HTMLProps, ReactNode } from 'react';
 import { cn } from '../../lib/dom.ts';
-import { Selectable } from './Selectable.tsx';
+import type Module from '../../lib/Module.ts';
 import * as styles from './Row.module.scss';
+import { Selectable } from './Selectable.tsx';
 
 export function Rows({
   as: Tag = 'div',
@@ -32,10 +32,13 @@ export function RowNote({ className, ...props }: HTMLProps<HTMLDivElement>) {
 export function ModuleRows({
   modules,
   bold,
+  trailing,
 }: {
   modules: Iterable<Module>;
   // Modules to highlight, e.g. the top level ones
   bold?: ReadonlySet<Module>;
+  // Extra content at the end of each row
+  trailing?: (module: Module) => ReactNode;
 }) {
   return (
     <Rows>
@@ -45,6 +48,7 @@ export function ModuleRows({
           className={cn({ [styles.bold]: bold?.has(module) })}
         >
           <Selectable value={module.key} label={module.label} />
+          {trailing?.(module)}
         </Row>
       ))}
     </Rows>

@@ -12,11 +12,7 @@ export default function PeerDependenciesMissing() {
   }
 
   return (
-    <ReportItem
-      type="warn"
-      title="Missing peer dependencies"
-      count={missing.length}
-    >
+    <ReportItem warn title="Missing peer dependencies" count={missing.length}>
       <PeerDependencyRows peerDependencyInfos={missing} />
     </ReportItem>
   );

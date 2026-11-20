@@ -1,11 +1,12 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { $optional } from 'select-dom';
-import * as appStyles from '../App/App.module.scss';
+import { cn } from '../../lib/dom.ts';
 import {
   notifyFlashElementReady,
   subscribeFlash,
   type FlashEntry,
 } from '../../lib/flash.ts';
+import * as appStyles from '../App/App.module.scss';
 import * as flashStyles from './Flash.module.css';
 
 const FLASH_GAP = 10;
@@ -35,7 +36,9 @@ export default function Flash() {
               notifyFlashElementReady(entry.id, element);
             }
           }}
-          className={`${flashStyles.flash} ${entry.isError ? flashStyles.error : ''}`}
+          className={cn(flashStyles.flash, {
+            [flashStyles.error]: entry.isError,
+          })}
           onAnimationEnd={event => {
             if (event.animationName !== flashStyles.flashOut) {
               return;
