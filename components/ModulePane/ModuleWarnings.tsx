@@ -23,7 +23,12 @@ function Warnings({
   const { deprecated } = module.package;
   const hasOutdated = showOutdated && isOutdated(module);
   const { mapping, replacements } = getReplacements(module.name);
-  if (!(deprecated || hasOutdated || mapping || vulnerabilities > 0)) {
+  if (!(
+    hasOutdated ||
+    vulnerabilities > 0 ||
+    Boolean(deprecated) ||
+    Boolean(mapping)
+  )) {
     return null;
   }
 
