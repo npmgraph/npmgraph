@@ -1,15 +1,9 @@
 import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
 import { satisfies } from 'verkit';
-import { flashError } from './flash.ts';
-import HttpError from './HttpError.ts';
-import Module from './Module.ts';
-import {
-  cachePackument,
-  getCachedPackument,
-  getNPMPackument,
-} from './PackumentCache.ts';
 import { PARAM_PACKAGES } from './constants.ts';
 import fetchJson from './fetchJson.ts';
+import { flashError } from './flash.ts';
+import HttpError from './HttpError.ts';
 import {
   describeUrlSource,
   getModuleKey,
@@ -18,9 +12,15 @@ import {
   resolveGitHubShorthand,
   resolveModule,
 } from './module-util.ts';
+import Module from './Module.ts';
+import {
+  cachePackument,
+  getCachedPackument,
+  getNPMPackument,
+} from './PackumentCache.ts';
+import { getRegistry } from './registry-util.ts';
 import selectVersion from './selectVersion.ts';
 import { hashGet } from './url-util.ts';
-import { getRegistry } from './registry-util.ts';
 
 const moduleCache = new Map<string, ModuleCacheEntry>();
 
@@ -216,9 +216,7 @@ function isQueryMatch(
   }
 }
 
-/**
-Convenience method for getting loaded modules by some criteria.
-*/
+/** Convenience method for getting loaded modules by some criteria. */
 export function queryModuleCache(
   queryType: QueryTypeValue,
   queryValue: string,

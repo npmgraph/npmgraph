@@ -1,5 +1,8 @@
 {
-  "plugins": ["prettier-plugin-css-order"],
+  "plugins": [
+    "@ianvs/prettier-plugin-sort-imports",
+    "prettier-plugin-css-order"
+  ],
   "arrowParens": "avoid",
   "singleQuote": true,
   "overrides": [

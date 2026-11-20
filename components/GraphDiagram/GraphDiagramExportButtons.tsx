@@ -1,13 +1,13 @@
 import copy from 'copy-text-to-clipboard';
-import { useState } from 'react';
-import { $optional } from 'select-dom';
 import CopyIcon from 'octicons-plain-react/Copy';
 import DownloadIcon from 'octicons-plain-react/Download';
 import MarkdownIcon from 'octicons-plain-react/Markdown';
+import { useState } from 'react';
+import { $optional } from 'select-dom';
+import { useQuery } from '../../hooks/useQuery.ts';
 import PngIcon from '../../images/icons/png.svg?react';
 import { flash, flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { useQuery } from '../../hooks/useQuery.ts';
 import { composeMermaid } from '../../lib/graph-util.ts';
 import { Button, ButtonGroup } from '../Button.tsx';
 import * as graphStyles from './GraphDiagram.module.scss';
@@ -202,7 +202,7 @@ function downloadSvg(query: string[]) {
 }
 
 // Collects rules from all readable stylesheets (<link> in production, <style>
-// in dev) so CSS variables like --bg-red survive outside the document
+// in dev) so the theme variables survive outside the document
 function cloneStyleElement() {
   const cssTexts: string[] = [];
 

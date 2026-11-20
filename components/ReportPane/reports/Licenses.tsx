@@ -1,18 +1,18 @@
 import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import { useEffect, useState } from 'react';
-import type Module from '../../../lib/Module.ts';
-import { QueryType } from '../../../lib/ModuleCache.ts';
 import {
   getAllLicenses,
   getLicenseIssues,
   type LicenseIssue,
   type SPDXLicense,
 } from '../../../lib/licenses.ts';
+import type Module from '../../../lib/Module.ts';
+import { QueryType } from '../../../lib/ModuleCache.ts';
 import { Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
+import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import { GroupRow } from '../GroupRow.tsx';
 import { ReportItem } from '../ReportItem.tsx';
-import { useLicenseAnalysis } from '../analyzers/useAnalysis.ts';
 import * as styles from './Licenses.module.css';
 
 const UNLICENSED = 'unlicensed';

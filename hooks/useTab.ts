@@ -6,9 +6,9 @@ import {
   type PaneTypes,
 } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
+import useHashParam from './useHashParam.ts';
 import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
-import useHashParam from './useHashParam.ts';
 
 const tabs = new Set<string>([
   PaneType.REPORT,

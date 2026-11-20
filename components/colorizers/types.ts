@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import type { ColorName } from '../../lib/constants.ts';
 import type Module from '../../lib/Module.ts';
 
 export type Colorizer = {
@@ -8,9 +9,9 @@ export type Colorizer = {
 };
 
 export type SimpleColorizer = {
-  colorForModule: (module: Module) => Promise<string>;
+  colorForModule: (module: Module) => Promise<ColorName | undefined>;
 } & Colorizer;
 
 export type BulkColorizer = {
-  colorsForModules: (modules: Module[]) => Promise<Map<Module, string>>;
+  colorsForModules: (modules: Module[]) => Promise<Map<Module, ColorName>>;
 } & Colorizer;

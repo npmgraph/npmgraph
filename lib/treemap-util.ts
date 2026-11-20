@@ -1,4 +1,4 @@
-import { type HierarchyRectangularNode, stratify, treemap } from 'd3-hierarchy';
+import { stratify, treemap, type HierarchyRectangularNode } from 'd3-hierarchy';
 import type { BundlePhobiaData } from './fetch-types.ts';
 
 export type TreemapLeaf = {

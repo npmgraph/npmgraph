@@ -5,7 +5,6 @@ import * as styles from './Toggle.module.scss';
 export function Toggle({
   checked = false,
   onChange,
-  style,
   children,
   className,
   ...props
@@ -18,7 +17,6 @@ export function Toggle({
       type="button"
       aria-pressed={checked}
       className={cn(styles.toggle, { [styles.checked]: checked }, className)}
-      style={style}
       {...props}
       onClick={onChange}
     >
