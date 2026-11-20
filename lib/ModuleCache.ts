@@ -152,8 +152,11 @@ export async function getModule(
     promise = fetchModuleFromNPM(name, version, signal);
   }
 
-  void promise
-    .catch(error => {
+  async function settle() {
+    let module: Module;
+    try {
+      module = await promise;
+    } catch (error) {
       // Same message for every failure, with the key the user entered (not the rewritten URL)
       if (error instanceof HttpError) {
         error.message = `Failed to get ${moduleKey} (code = ${error.code})`;
@@ -161,19 +164,21 @@ export async function getModule(
         error.message = `Failed to get ${moduleKey}`;
       }
 
-      return Module.stub(moduleKey, error);
-    })
-    .then(module => {
-      cacheEntry.module = module;
+      module = Module.stub(moduleKey, error);
+    }
 
-      // Add cache entry for module's computed key
-      if (!signal?.aborted) {
-        moduleCache.set(module.key, cacheEntry);
-      }
+    cacheEntry.module = module;
 
-      // Resolve promise
-      cacheEntry.resolve(module);
-    });
+    // Add cache entry for module's computed key
+    if (!signal?.aborted) {
+      moduleCache.set(module.key, cacheEntry);
+    }
+
+    // Resolve promise
+    cacheEntry.resolve(module);
+  }
+
+  void settle();
 
   return cacheEntry.promise;
 }
