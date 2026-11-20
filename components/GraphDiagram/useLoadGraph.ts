@@ -41,12 +41,15 @@ export default function useLoadGraph(
 
   useEffect(() => {
     const controller = new AbortController();
-    void getGraphForQuery(
-      sortedQuery,
-      dependencyTypes,
-      isModuleVisible,
-      controller.signal,
-    ).then(newGraph => {
+
+    async function load() {
+      const newGraph = await getGraphForQuery(
+        sortedQuery,
+        dependencyTypes,
+        isModuleVisible,
+        controller.signal,
+      );
+
       // Check after async
       if (controller.signal.aborted) {
         return;
@@ -54,7 +57,9 @@ export default function useLoadGraph(
 
       celebrateZeroDependencies(newGraph, isModuleVisible);
       setGraph(newGraph);
-    });
+    }
+
+    void load();
 
     return () => {
       controller.abort();
