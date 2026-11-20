@@ -49,23 +49,19 @@ async function fetchAdvisories({ moduleInfos }: ModuleAnalysisState) {
     const registry =
       'https://pcwyqhjns4xzfybfy6grsq3if40sccxu.lambda-url.us-west-2.on.aws';
 
-    try {
-      moduleAdvisories = await fetchJson<BulkAdvisories>(
-        `${registry}/-/npm/v1/security/advisories/bulk`,
-        {
-          headers: {
-            Accept: 'application/json',
-          },
-          method: 'POST',
-          body,
+    moduleAdvisories = await fetchJson<BulkAdvisories>(
+      `${registry}/-/npm/v1/security/advisories/bulk`,
+      {
+        headers: {
+          Accept: 'application/json',
         },
-      );
-    } catch (error) {
-      console.log(
-        'Error fetching npm audit data:',
-        error instanceof Error ? error.message : error,
-      );
-    }
+        method: 'POST',
+        body,
+      },
+    ).catch(error => {
+      console.log('Error fetching npm audit data:', error.message);
+      return null;
+    });
   }
 
   // Get flat list of advisories

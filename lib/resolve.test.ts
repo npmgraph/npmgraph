@@ -40,15 +40,11 @@ const graph = async (
 ) =>
   serializeGraph(await getGraphForQuery([query], new Set(types), () => true));
 
-const edges = async (...args: Parameters<typeof graph>) => {
-  const g = await graph(...args);
-  return g.edges;
-};
+const edges = async (...args: Parameters<typeof graph>) =>
+  graph(...args).then(g => g.edges);
 
-const nodeKeys = async (...args: Parameters<typeof graph>) => {
-  const g = await graph(...args);
-  return Object.keys(g.nodes).toSorted();
-};
+const nodeKeys = async (...args: Parameters<typeof graph>) =>
+  graph(...args).then(g => Object.keys(g.nodes).toSorted());
 
 beforeEach(() => {
   vi.spyOn(console, 'log').mockImplementation(() => {});
@@ -299,11 +295,9 @@ describe('graph structure', () => {
     add('b', { '1.0.0': { dependencies: { react: '17.0.2' } } });
     add('c', { '1.0.0': { dependencies: { react: '^18' } } });
     root({ dependencies: { a: '1', b: '1', c: '1' } });
-    const keys = await nodeKeys();
-    expect(keys.filter(k => k.startsWith('react@'))).toEqual([
-      'react@17.0.2',
-      'react@18.2.0',
-    ]);
+    await expect(
+      nodeKeys().then(keys => keys.filter(k => k.startsWith('react@'))),
+    ).resolves.toEqual(['react@17.0.2', 'react@18.2.0']);
   });
 
   it('cycles terminate', async () => {

@@ -35,7 +35,9 @@ describe('fetchJson', () => {
     const timeout = new DOMException('Timed out', 'TimeoutError');
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(timeout));
 
-    await expect(fetchJson(url)).rejects.toMatchObject({
+    const error = await fetchJson(url).catch((error_: unknown) => error_);
+
+    expect(error).toMatchObject({
       message: `Failed to get ${url}`,
       cause: timeout,
     });

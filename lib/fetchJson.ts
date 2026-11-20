@@ -40,30 +40,30 @@ export default async function fetchJson<T>(
     ? () => {}
     : activity?.start(`Fetching ${decodeURIComponent(url)}`);
 
-  const p = (async () => {
-    try {
-      const response = await fetch(input, init);
+  const p = fetch(input, init)
+    .then(async response => {
       if (response.ok) {
-        return (await response.json()) as unknown;
+        return response.json() as unknown;
       }
 
       const error = new HttpError(response.status);
       error.stack = traceError.stack;
       throw error;
-    } catch (error) {
+    })
+    .catch(error => {
       const message = `Failed to get ${url}`;
 
       // `message` is read-only on DOMExceptions (e.g. timeouts and aborts)
-      if (error instanceof Error && !(error instanceof DOMException)) {
+      if (!(error instanceof DOMException)) {
         error.message = message;
         throw error;
       }
 
       throw new Error(message, { cause: error });
-    } finally {
+    })
+    .finally(() => {
       finish?.();
-    }
-  })();
+    });
 
   if (isCacheable) {
     requestCache.set(cacheKey, p);
