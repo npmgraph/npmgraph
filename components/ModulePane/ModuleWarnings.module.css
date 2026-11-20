@@ -10,15 +10,16 @@
 }
 
 .inline {
-  display: flex;
-  column-gap: 0.5ch;
-  flex-wrap: wrap;
+  dt,
+  dd {
+    display: inline;
+  }
 
   dt::after {
-    content: ':';
+    content: ': ';
   }
 
   dd {
-    margin: 0;
+    padding: 0;
   }
 }
