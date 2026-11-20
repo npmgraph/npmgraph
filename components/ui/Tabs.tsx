@@ -1,14 +1,14 @@
-import type { HTMLProps } from 'react';
+import { useEffect, type HTMLProps } from 'react';
 import { $ } from 'select-dom';
-import { PaneType, type PaneTypes } from '../../lib/constants.ts';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { cn } from '../../lib/dom.ts';
+import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useTab } from '../../hooks/useTab.ts';
-import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
-import * as utilities from './utilities.module.css';
+import { PaneType, type PaneTypes } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { InspectorCloseButton } from './InspectorCloseButton.tsx';
 import * as styles from './Tabs.module.scss';
+import * as utilities from './utilities.module.css';
 
 const GRAPH = 'graph';
 
@@ -16,11 +16,19 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [tab, selectTab] = useTab();
   const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const isTightScreen = useIsTightScreen();
+  const [, setInfoOpen] = useGlobalState('isInfoOpen');
   const [isReportOnly, , leaveReportOnly] = useReportOnly();
   const isInspectorOpen = isReportOnly || tab !== PaneType.NONE;
   // The report-only view doesn't change the selected tab
   const currentTab = isReportOnly ? PaneType.REPORT : tab;
   const isGraphShown = isTightScreen && isGraphVisible && !isReportOnly;
+
+  // The info tab is hidden on tight screens
+  useEffect(() => {
+    if (isTightScreen) {
+      setInfoOpen(false);
+    }
+  }, [isTightScreen, setInfoOpen]);
 
   // The graph isn't a tab, it's a view that takes turns with the inspector
   const tabs: Array<{
@@ -29,7 +37,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
     visible?: boolean;
   }> = [
     { id: GRAPH, label: 'Graph', visible: isTightScreen || isReportOnly },
-    { id: PaneType.INFO, label: 'Info' },
+    { id: PaneType.INFO, label: 'Info', visible: !isTightScreen },
     { id: PaneType.REPORT, label: 'Report' },
     { id: PaneType.MODULE, label: 'Module' },
     { id: PaneType.VIEW, label: 'View' },

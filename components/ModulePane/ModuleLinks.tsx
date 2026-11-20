@@ -1,5 +1,5 @@
-import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
+import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { toggleItem } from '../../lib/array-util.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';

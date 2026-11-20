@@ -52,6 +52,8 @@
         cookie_flags: 'SameSite=None;Secure',
       });
     </script>
+    <link href="index.scss" rel="stylesheet" />
+    <script type="module" src="lib/bootstrap.ts"></script>
     <link
       type="application/opensearchdescription+xml"
       href="/opensearch.xml"
@@ -88,7 +90,11 @@
     <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
   </head>
 
-  <body></body>
-
-  <script type="module" src="lib/index.tsx"></script>
+  <body>
+    <noscript>npmgraph needs JavaScript to run.</noscript>
+    <script nomodule>
+      document.body.textContent =
+        'Your browser is too old to run npmgraph. Please use a modern version of Chrome, Firefox, Safari, or Edge.';
+    </script>
+  </body>
 </html>

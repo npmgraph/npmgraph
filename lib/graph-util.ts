@@ -1,21 +1,21 @@
-import { satisfies } from 'verkit';
 import simplur from 'simplur';
-import type Module from './Module.ts';
+import { satisfies } from 'verkit';
+import { PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
 import type {
   DependencyEntry,
   DependencyKey,
   GraphModuleInfo,
   GraphState,
 } from './graph-types.ts';
-import { getModule } from './ModuleCache.ts';
-import { PARAM_QUERY, UNNAMED_PACKAGE } from './constants.ts';
 import { getModuleKey, resolveAlias } from './module-util.ts';
+import type Module from './Module.ts';
+import { getModule } from './ModuleCache.ts';
 import {
-  type Overrides,
   getChildOverrides,
   getVersionOverride,
   isOverrides,
   resolveOverrideRefs,
+  type Overrides,
 } from './overrides-util.ts';
 import { isOptionalPeerDependency } from './peer-dependency-util.ts';
 
@@ -129,9 +129,7 @@ export function hasDependencies(
   return getDependencyEntries(module, dependencyTypes, level).size > 0;
 }
 
-/**
-Fetch the module dependency tree for a given query.
-*/
+/** Fetch the module dependency tree for a given query. */
 export async function getGraphForQuery(
   query: string[],
   dependencyTypes: Set<DependencyKey>,

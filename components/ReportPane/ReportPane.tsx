@@ -14,11 +14,11 @@ import Licenses from './reports/Licenses.tsx';
 import MaintainersAll from './reports/MaintainersAll.tsx';
 import MaintainersSolo from './reports/MaintainersSolo.tsx';
 import ModuleReplacementsNative from './reports/ModuleReplacementsNative.tsx';
-import ModuleVulnerabilities from './reports/ModuleVulnerabilities.tsx';
 import ModulesAll from './reports/ModulesAll.tsx';
 import ModulesDeprecated from './reports/ModulesDeprecated.tsx';
 import ModulesOutdated from './reports/ModulesOutdated.tsx';
 import ModulesRepeated from './reports/ModulesRepeated.tsx';
+import ModuleVulnerabilities from './reports/ModuleVulnerabilities.tsx';
 import PeerDependenciesAll from './reports/PeerDependenciesAll.tsx';
 import PeerDependenciesMissing from './reports/PeerDependenciesMissing.tsx';
 

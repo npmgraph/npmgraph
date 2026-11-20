@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
+import { useActivity } from '../../hooks/useActivity.ts';
+import useExternalInput from '../../hooks/useExternalInput.ts';
+import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
+import useReportOnly from '../../hooks/useReportOnly.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import { useActivity } from '../../hooks/useActivity.ts';
-import useReportOnly from '../../hooks/useReportOnly.ts';
-import { useQuery } from '../../hooks/useQuery.ts';
-import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import AppHeader from '../AppHeader.tsx';
 import Flash from '../Flash/Flash.tsx';
 import GraphDiagram from '../GraphDiagram/GraphDiagram.tsx';
@@ -13,7 +14,6 @@ import Inspector from '../Inspector.tsx';
 import Intro from '../Intro.tsx';
 import PreviewWidget from '../PreviewWidget.tsx';
 import Tabs from '../ui/Tabs.tsx';
-import useExternalInput from '../../hooks/useExternalInput.ts';
 import * as styles from './App.module.scss';
 import { Loader } from './Loader.tsx';
 

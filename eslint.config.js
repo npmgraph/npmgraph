@@ -37,6 +37,7 @@ const disabledRules = [
   '@stylistic/no-mixed-operators', // Should be part of prettier:compat but it's not?
   '@typescript-eslint/naming-convention', // I don't see this happening
   '@typescript-eslint/no-empty-function', // No reason to enforce this
+  'import-x/order', // Handled by prettier-plugin-sort-imports
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
@@ -51,7 +52,6 @@ const disabledRules = [
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
   'unicorn/no-null', // null ok
-  'unicorn/single-line-block-comment-style', // No use
 ];
 
 export default defineConfig([
@@ -99,14 +99,6 @@ export default defineConfig([
             dev: false,
             dist: false,
           },
-        },
-      ],
-
-      'import-x/order': [
-        'error',
-        {
-          warnOnUnassignedImports: 'top',
-          'newlines-between': 'never',
         },
       ],
 
@@ -171,6 +163,9 @@ export default defineConfig([
   {
     files: [tsFilesGlob, jsFilesGlob, '**/*.css'],
     rules: {
+      // https://github.com/sindresorhus/eslint-plugin-unicorn/issues/4027#issuecomment-7003173556
+      'unicorn/single-line-block-comment-style': ['error', 'single-line'],
+
       'unicorn/filename-case': [
         'error',
         { cases: { kebabCase: true, camelCase: true, pascalCase: true } },

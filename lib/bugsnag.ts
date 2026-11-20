@@ -10,15 +10,6 @@ export const appVersion =
   import.meta.env.VERCEL_GIT_COMMIT_SHA ??
   'none';
 
-let isDisabled = false;
-
-/**
-Suppress all reports (e.g. on unsupported platforms)
-*/
-export function disableBugsnag() {
-  isDisabled = true;
-}
-
 if (apiKey) {
   Bugsnag.start({
     appVersion,
@@ -27,7 +18,7 @@ if (apiKey) {
     enabledReleaseStages: ['production', 'preview'],
     onError(event) {
       // Don't report HttpErrors since they're kind of expected from time to time
-      if (isDisabled || event.originalError instanceof HttpError) {
+      if (event.originalError instanceof HttpError) {
         return false;
       }
 

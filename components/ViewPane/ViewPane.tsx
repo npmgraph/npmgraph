@@ -1,22 +1,22 @@
 import { useEffect, useId, useRef, useState, type HTMLProps } from 'react';
-import { cn } from '../../lib/dom.ts';
-import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
-import { parseCommaList } from '../../lib/array-util.ts';
 import useCustomModuleLinks, {
   DEFAULT_CUSTOM_MODULE_LINKS,
 } from '../../hooks/useCustomModuleLinks.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
+import { parseCommaList } from '../../lib/array-util.ts';
+import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
+import { Button, ButtonGroup } from '../Button.tsx';
+import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import {
   getCustomModuleLinksError,
   parseCustomModuleLinks,
 } from '../ModulePane/module-links.ts';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
-import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { Toggle } from '../ui/Toggle.tsx';
-import { Button, ButtonGroup } from '../Button.tsx';
 import * as styles from './ViewPane.module.css';
 
 export default function ViewPane(props: HTMLProps<HTMLDivElement>) {

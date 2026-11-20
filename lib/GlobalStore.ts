@@ -1,11 +1,11 @@
 import { useCallback, useSyncExternalStore } from 'react';
-import type { GraphState } from './graph-types.ts';
 import {
   PaneType,
   PARAM_QUERY,
   PARAM_TAB,
   TIGHT_SCREEN_QUERY,
 } from './constants.ts';
+import type { GraphState } from './graph-types.ts';
 import type Module from './Module.ts';
 import { hashGet, searchGet } from './url-util.ts';
 
@@ -14,6 +14,8 @@ type GlobalState = {
   graph: GraphState;
   // On tight screens the graph and the inspector take turns
   isGraphVisible: boolean;
+  // The info tab isn't stored in the URL, a link never opens it
+  isInfoOpen: boolean;
   lastVisit: number;
   location: URL;
   selectedModules?: Map<string, Module>;
@@ -36,6 +38,7 @@ let globalState: GlobalState = {
     failedEntryModules: new Map(),
   },
   isGraphVisible: _isGraphInitiallyVisible(),
+  isInfoOpen: false,
   lastVisit: 0,
   location: new URL(location.href),
   selectedModules: new Map(),

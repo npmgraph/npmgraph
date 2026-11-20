@@ -1,8 +1,8 @@
 import type { HTMLAttributes, HTMLProps, ReactNode } from 'react';
-import type Module from '../../lib/Module.ts';
 import { cn } from '../../lib/dom.ts';
-import { Selectable } from './Selectable.tsx';
+import type Module from '../../lib/Module.ts';
 import * as styles from './Row.module.scss';
+import { Selectable } from './Selectable.tsx';
 
 export function Rows({
   as: Tag = 'div',

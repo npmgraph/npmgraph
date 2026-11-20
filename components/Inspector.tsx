@@ -1,10 +1,10 @@
 import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
-import { PaneType } from '../lib/constants.ts';
-import { useGlobalState } from '../lib/GlobalStore.ts';
-import { cn } from '../lib/dom.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
 import { useTab } from '../hooks/useTab.ts';
+import { PaneType } from '../lib/constants.ts';
+import { cn } from '../lib/dom.ts';
+import { useGlobalState } from '../lib/GlobalStore.ts';
 import ErrorsBox from './InfoPane/ErrorsBox.tsx';
 import InfoPane from './InfoPane/InfoPane.tsx';
 import * as styles from './Inspector.module.scss';

@@ -1,8 +1,8 @@
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
-import type Module from '../../lib/Module.ts';
 import { foreachDownstream, hasDependencies } from '../../lib/graph-util.ts';
 import human from '../../lib/human.ts';
+import type Module from '../../lib/Module.ts';
 import { Section } from '../ui/Section.tsx';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
 import * as styles from './ModulePane.module.css';

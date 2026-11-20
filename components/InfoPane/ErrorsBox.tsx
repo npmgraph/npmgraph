@@ -1,6 +1,6 @@
 import XIcon from 'octicons-plain-react/X';
-import { cn } from '../../lib/dom.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
+import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import * as utilities from '../ui/utilities.module.css';
