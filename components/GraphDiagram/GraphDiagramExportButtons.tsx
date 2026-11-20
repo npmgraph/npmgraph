@@ -81,16 +81,13 @@ export default function GraphDiagramExportButtons() {
 const MAX_PNG_PIXELS = 8_000_000;
 const PNG_SCALE = 2;
 
-async function renderPngBlob(): Promise<{
-  blob: Blob;
-  capped: boolean;
-} | null> {
+// Starts rendering and returns right away, so `write()` can be called synchronously
+function renderPng(): { blob: Promise<Blob>; isCapped: boolean } {
   const svg = getDiagramElement()?.cloneNode(true) as SVGSVGElement | undefined;
   const vb = svg?.getAttribute('viewBox')?.split(' ');
 
   if (!svg || !vb) {
-    reportError(new Error('No viewBox'));
-    return null;
+    throw new Error('No viewBox');
   }
 
   const styleElement = cloneStyleElement();
@@ -109,7 +106,14 @@ async function renderPngBlob(): Promise<{
   const canvas = document.createElement('canvas');
   canvas.width = Math.max(1, Math.floor(width * scale));
   canvas.height = Math.max(1, Math.floor(height * scale));
-  const ctx = canvas.getContext('2d')!;
+
+  return { blob: rasterize(svg, canvas), isCapped };
+}
+
+async function rasterize(
+  svg: SVGSVGElement,
+  canvas: HTMLCanvasElement,
+): Promise<Blob> {
   const img = new Image();
   const svgBlob = new Blob([new XMLSerializer().serializeToString(svg)], {
     type: 'image/svg+xml;charset=utf-8',
@@ -125,40 +129,34 @@ async function renderPngBlob(): Promise<{
     });
 
     if (img.naturalWidth === 0) {
-      return null;
+      throw new Error('Failed to render PNG');
     }
 
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
     const blob = await new Promise<Blob | null>(resolve => {
       canvas.toBlob(resolve, 'image/png');
     });
-    return blob ? { blob, capped: isCapped } : null;
+    if (!blob) {
+      throw new Error('Failed to render PNG');
+    }
+
+    return blob;
+  } catch (error) {
+    // Surface render failures; browsers otherwise report them as a generic NotAllowedError
+    console.error('PNG render failed', error);
+    throw error;
   } finally {
     URL.revokeObjectURL(url);
   }
 }
 
 async function copyPng() {
-  let isCapped = false;
   try {
     // write() (below) needs to be called synchronously so Safari still sees the
     // click's user activation.  Hence, we don't await here but, rather, pass a
     // promise to ClipboardItem, below
-    const blobPromise = renderPngBlob().then(result => {
-      if (!result) {
-        throw new Error('Failed to render PNG');
-      }
-
-      isCapped = result.capped;
-      return result.blob;
-    });
-    // Surface render failures; browsers otherwise report them as a generic NotAllowedError
-    blobPromise.catch((error: unknown) => {
-      console.error('PNG render failed', error);
-    });
-    await navigator.clipboard.write([
-      new ClipboardItem({ 'image/png': blobPromise }),
-    ]);
+    const { blob, isCapped } = renderPng();
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
     flash(
       isCapped
         ? 'Graph image copied to clipboard (scaled down to 8 megapixels)'
