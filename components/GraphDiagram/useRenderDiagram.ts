@@ -1,10 +1,9 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { use, useEffect, useState } from 'react';
+import { use, useEffect } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
-import { createAbortable } from '../../lib/createAbortable.ts';
 import { flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
@@ -138,39 +137,24 @@ export default function useRenderDiagram(
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
-  const [diagramElement, setDiagramElement] = useState<
-    SVGSVGElement | undefined
-  >(getDiagramElement);
+  const [diagramElement, setDiagramElement] = useGlobalState('diagram');
 
   useEffect(() => {
-    const { signal, abort } = createAbortable();
-
     // Post-process rendered DOM
     const finish = activity.start('Rendering');
 
-    // Render SVG markup (async)
-    (async function () {
-      // Check after all async stuff
-      if (signal.aborted) {
-        return;
-      }
+    // Signal other hooks that graph DOM has changed
+    setDiagramElement(
+      insertDiagram(
+        composeSvgMarkup(graph, sizing !== null, graphviz),
+        isModuleVisible,
+      ),
+    );
 
-      // Signal other hooks that graph DOM has changed
-      setDiagramElement(
-        insertDiagram(
-          composeSvgMarkup(graph, sizing !== null, graphviz),
-          isModuleVisible,
-        ),
-      );
+    finish?.();
 
-      finish?.();
-    })();
-
-    return () => {
-      finish();
-      abort();
-    };
-  }, [activity, graphviz, graph, isModuleVisible, sizing]);
+    return finish;
+  }, [activity, graphviz, graph, isModuleVisible, setDiagramElement, sizing]);
 
   return diagramElement;
 }
