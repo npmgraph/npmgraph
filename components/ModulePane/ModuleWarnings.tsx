@@ -55,7 +55,7 @@ function Warnings({
           <div className={styles.inline}>
             <dt>
               <SectionSymbol warn />
-              Vulnerabilities
+              Vulnerable
             </dt>
             <dd className={listStyles.details}>
               <ExternalLink
