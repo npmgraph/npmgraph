@@ -151,9 +151,7 @@ export default function useRenderDiagram(
       ),
     );
 
-    finish?.();
-
-    return finish;
+    finish();
   }, [activity, graphviz, graph, isModuleVisible, setDiagramElement, sizing]);
 
   return diagramElement;
