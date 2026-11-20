@@ -22,8 +22,6 @@ import ModulesRepeated from './reports/ModulesRepeated.tsx';
 import PeerDependenciesAll from './reports/PeerDependenciesAll.tsx';
 import PeerDependenciesMissing from './reports/PeerDependenciesMissing.tsx';
 
-const canShare = typeof navigator !== 'undefined' && Boolean(navigator.share);
-
 async function share() {
   try {
     await navigator.share({ title: document.title, url: location.href });
@@ -62,7 +60,7 @@ export default function ReportPane({
       <div className={styles.toolbar}>
         {isReportOnly ? (
           <div className={styles.actions}>
-            {canShare && (
+            {typeof navigator !== 'undefined' && 'share' in navigator && (
               <Button
                 onClick={() => {
                   void share();
