@@ -34,6 +34,7 @@ import {
   QueryType,
 } from '../../lib/ModuleCache.ts';
 import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
+import type { SimpleColorizer } from '../colorizers/types.ts';
 import * as styles from './GraphDiagram.module.scss';
 import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
@@ -387,6 +388,25 @@ function unsetColor(path: Element) {
   path.classList.remove(...Object.values(COLORS));
 }
 
+async function colorizeElement(
+  colorizer: SimpleColorizer,
+  m: Module,
+  path: Element,
+) {
+  let color;
+  try {
+    color = await colorizer.colorForModule(m);
+  } catch (error) {
+    console.warn(`Error colorizing ${m.name}: ${(error as Error).message}`);
+  }
+
+  if (color) {
+    setColor(path, color);
+  } else {
+    unsetColor(path);
+  }
+}
+
 async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
   const colorizer = getColorizer(colorize);
   svg.classList.toggle('colorized', Boolean(colorizer));
@@ -416,19 +436,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       }
 
       // Colorize it (async)
-      void colorizer
-        .colorForModule(m)
-        .catch(error => {
-          console.warn(`Error colorizing ${m.name}: ${error.message}`);
-          return undefined;
-        })
-        .then(color => {
-          if (color) {
-            setColor(elementPath, color);
-          } else {
-            unsetColor(elementPath);
-          }
-        });
+      void colorizeElement(colorizer, m, elementPath);
     }
   } else {
     // Bundle up modules

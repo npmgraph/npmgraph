@@ -10,7 +10,12 @@ import useHashParam from './useHashParam.ts';
 import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
 
-const tabs = new Set<string>(Object.values(PaneType));
+const tabs = new Set<string>([
+  PaneType.REPORT,
+  PaneType.MODULE,
+  PaneType.VIEW,
+  PaneType.NONE,
+]);
 
 // The tab to show until the user picks one
 function useDefaultTab(): PaneTypes {
@@ -18,14 +23,15 @@ function useDefaultTab(): PaneTypes {
   return query.length === 0 ? PaneType.INFO : PaneType.REPORT;
 }
 
-// The `tab` hash param is the only place where the user's tab is stored.
-// Without it, the tab follows the default.
+// The `tab` hash param stores the user's tab. Without it, the tab follows the default.
 export function useTab() {
   const [tabParameter] = useHashParam(PARAM_TAB);
+  const [isInfoOpen, setInfoOpen] = useGlobalState('isInfoOpen');
   const [, setGraphVisible] = useGlobalState('isGraphVisible');
   const defaultTab = useDefaultTab();
-  const tab =
-    tabParameter !== null && tabs.has(tabParameter)
+  const tab = isInfoOpen
+    ? PaneType.INFO
+    : tabParameter !== null && tabs.has(tabParameter)
       ? (tabParameter as PaneTypes)
       : defaultTab;
 
@@ -33,10 +39,10 @@ export function useTab() {
   // `PaneType.NONE` closes the inspector instead, and leaves the graph alone
   const selectTab = (nextTab: PaneTypes | null) => {
     patchHash(parameters => {
-      if (nextTab) {
-        parameters.set(PARAM_TAB, nextTab);
-      } else {
+      if (nextTab === null) {
         parameters.delete(PARAM_TAB);
+      } else if (nextTab !== PaneType.INFO) {
+        parameters.set(PARAM_TAB, nextTab);
       }
 
       parameters.delete(PARAM_HIDE);
@@ -44,6 +50,7 @@ export function useTab() {
         parameters.delete(PARAM_SECTION);
       }
     });
+    setInfoOpen(nextTab === PaneType.INFO);
     if (nextTab !== PaneType.NONE) {
       setGraphVisible(false);
     }

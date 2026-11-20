@@ -11,9 +11,13 @@ import { hashGet, searchGet } from './url-util.ts';
 
 type GlobalState = {
   colorize?: string;
+  // The rendered graph SVG, set once it's in the DOM
+  diagram?: SVGSVGElement;
   graph: GraphState;
   // On tight screens the graph and the inspector take turns
   isGraphVisible: boolean;
+  // The info tab isn't stored in the URL, a link never opens it
+  isInfoOpen: boolean;
   lastVisit: number;
   location: URL;
   selectedModules?: Map<string, Module>;
@@ -36,6 +40,7 @@ let globalState: GlobalState = {
     failedEntryModules: new Map(),
   },
   isGraphVisible: _isGraphInitiallyVisible(),
+  isInfoOpen: false,
   lastVisit: 0,
   location: new URL(location.href),
   selectedModules: new Map(),
