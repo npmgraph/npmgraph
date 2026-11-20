@@ -1,8 +1,8 @@
 import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
-import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
-import useReportOnly from '../hooks/useReportOnly.ts';
 import useGraphSelection from '../hooks/useGraphSelection.ts';
+import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
 import { useQuery } from '../hooks/useQuery.ts';
+import useReportOnly from '../hooks/useReportOnly.ts';
 import { useTab } from '../hooks/useTab.ts';
 import { useTabScroll } from '../hooks/useTabScroll.ts';
 import { PaneType } from '../lib/constants.ts';
