@@ -1,10 +1,9 @@
 import { useEffect, type HTMLProps } from 'react';
-import { $ } from 'select-dom';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useTab } from '../../hooks/useTab.ts';
 import { PaneType, type PaneTypes } from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
+import { cn, getScroller } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { InspectorCloseButton } from './InspectorCloseButton.tsx';
 import * as styles from './Tabs.module.scss';
@@ -78,11 +77,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                     if (isSelected && id !== GRAPH) {
                       // Also store the tab, in case it was only the default
                       selectTab(id);
-                      // The page scrolls on tight screens, the inspector otherwise
-                      const scroller = isTightScreen
-                        ? document.documentElement
-                        : $('#inspector');
-                      scroller?.scrollTo({
+                      getScroller(isTightScreen)?.scrollTo({
                         top: 0,
                         behavior: matchMedia('(prefers-reduced-motion)').matches
                           ? 'instant'
