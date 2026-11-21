@@ -1,10 +1,9 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { use, useEffect, useState } from 'react';
+import { use, useEffect } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
-import { createAbortable } from '../../lib/createAbortable.ts';
 import { flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
@@ -58,11 +57,13 @@ function decorateGraphNodes(
   }
 }
 
-// Keep graphviz in a secondary bundle but load it eagerly
-const graphvizPromise = (async () => {
+async function loadGraphviz() {
   const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
   return Graphviz.load();
-})();
+}
+
+// Keep graphviz in a secondary bundle but load it eagerly
+const graphvizPromise = loadGraphviz();
 
 // Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
 const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
@@ -136,39 +137,22 @@ export default function useRenderDiagram(
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
-  const [diagramElement, setDiagramElement] = useState<
-    SVGSVGElement | undefined
-  >(getDiagramElement);
+  const [diagramElement, setDiagramElement] = useGlobalState('diagram');
 
   useEffect(() => {
-    const { signal, abort } = createAbortable();
-
     // Post-process rendered DOM
     const finish = activity.start('Rendering');
 
-    // Render SVG markup (async)
-    (async function () {
-      // Check after all async stuff
-      if (signal.aborted) {
-        return;
-      }
+    // Signal other hooks that graph DOM has changed
+    setDiagramElement(
+      insertDiagram(
+        composeSvgMarkup(graph, sizing !== null, graphviz),
+        isModuleVisible,
+      ),
+    );
 
-      // Signal other hooks that graph DOM has changed
-      setDiagramElement(
-        insertDiagram(
-          composeSvgMarkup(graph, sizing !== null, graphviz),
-          isModuleVisible,
-        ),
-      );
-
-      finish?.();
-    })();
-
-    return () => {
-      finish();
-      abort();
-    };
-  }, [activity, graphviz, graph, isModuleVisible, sizing]);
+    finish();
+  }, [activity, graphviz, graph, isModuleVisible, setDiagramElement, sizing]);
 
   return diagramElement;
 }
