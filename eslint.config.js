@@ -40,6 +40,10 @@ const disabledRules = [
   'no-console',
   'no-warning-comments',
   'react-doctor/jsx-no-target-blank',
+  'react-doctor/no-hydration-branch-on-browser-global', // No server render
+  'react-doctor/no-unguarded-browser-global-at-module-scope', // No server render
+  'react-doctor/no-unguarded-browser-global-in-render-or-hook-init', // No server render
+  'react-doctor/rendering-hydration-mismatch-time', // No server render
   'react/jsx-no-target-blank',
   'require-unicode-regexp',
   'unicorn/no-null', // null ok
