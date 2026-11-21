@@ -36,7 +36,11 @@ function useSpdxLicenses() {
   const [spdxLicenses, setSpdxLicenses] = useState<Map<string, SPDXLicense>>();
 
   useEffect(() => {
-    void getAllLicenses().then(setSpdxLicenses);
+    async function load() {
+      setSpdxLicenses(await getAllLicenses());
+    }
+
+    void load();
   }, []);
 
   return spdxLicenses;
