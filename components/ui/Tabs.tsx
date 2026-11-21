@@ -2,6 +2,7 @@ import { useEffect, type HTMLProps } from 'react';
 import { $ } from 'select-dom';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
+import { useChangedTabs } from '../../hooks/useChangedTabs.ts';
 import { useTab } from '../../hooks/useTab.ts';
 import { PaneType, type PaneTypes } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
@@ -22,6 +23,9 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   // The report-only view doesn't change the selected tab
   const currentTab = isReportOnly ? PaneType.REPORT : tab;
   const isGraphShown = isTightScreen && isGraphVisible && !isReportOnly;
+  const changedTabs = useChangedTabs(
+    isGraphShown ? GRAPH : isInspectorOpen ? currentTab : undefined,
+  );
 
   // The info tab is hidden on tight screens
   useEffect(() => {
@@ -68,6 +72,9 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                   id={`tab-${id}`}
                   aria-selected={isSelected}
                   aria-controls={id === GRAPH ? undefined : 'inspector'}
+                  aria-label={
+                    changedTabs.has(id) ? `${label} (updated)` : undefined
+                  }
                   className={
                     isSelected
                       ? utilities.brightHover
@@ -113,7 +120,11 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                     show();
                   }}
                 >
-                  {label}
+                  <span
+                    className={cn({ [styles.changed]: changedTabs.has(id) })}
+                  >
+                    {label}
+                  </span>
                 </button>
               </div>
             );

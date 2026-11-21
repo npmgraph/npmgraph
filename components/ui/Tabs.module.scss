@@ -45,3 +45,19 @@
     background: var(--accent);
   }
 }
+
+// A dot for the tabs that changed while they were out of sight
+.changed {
+  position: relative;
+
+  &::after {
+    position: absolute;
+    top: -9px;
+    right: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    width: 8px;
+    height: 8px;
+    content: '';
+  }
+}
