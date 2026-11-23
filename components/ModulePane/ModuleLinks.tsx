@@ -72,6 +72,24 @@ function getLinkContent(label: string, href: string) {
   }
 }
 
+export function ModuleLinkButton({
+  label,
+  href,
+  ...props
+}: { label: string; href: string } & React.HTMLAttributes<HTMLAnchorElement>) {
+  return (
+    <Button
+      {...props}
+      target="_blank"
+      href={href}
+      title={label}
+      className={styles.linkButton}
+    >
+      {getLinkContent(label, href)}
+    </Button>
+  );
+}
+
 export function ModuleLinks({ module }: { module: Module }) {
   const [customLinks] = useCustomModuleLinks();
   const isSingleEntryModule = useIsSingleEntryModule(module);
@@ -102,14 +120,7 @@ export function ModuleLinks({ module }: { module: Module }) {
         </>
       )}
       {links.map(({ label, href }) => (
-        <Button
-          key={`${label}:${href}`}
-          target="_blank"
-          href={href}
-          title={label}
-        >
-          {getLinkContent(label, href)}
-        </Button>
+        <ModuleLinkButton key={`${label}:${href}`} label={label} href={href} />
       ))}
     </div>
   );

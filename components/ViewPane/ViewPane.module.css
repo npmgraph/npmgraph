@@ -29,6 +29,8 @@
 }
 
 .customLinksPreview {
+  display: flex;
   flex-wrap: wrap;
+  gap: 8px;
   pointer-events: none;
 }
