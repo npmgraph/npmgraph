@@ -138,6 +138,13 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
     };
   }, []);
 
+  // Effect: Fit the graph in the view when it's generated
+  useEffect(() => {
+    if (diagramElement) {
+      void transformRef.current?.fitToView({ maxScale: 1, animationTime: 0 });
+    }
+  }, [diagramElement]);
+
   const selectedModules = useMemo(
     () =>
       graph
