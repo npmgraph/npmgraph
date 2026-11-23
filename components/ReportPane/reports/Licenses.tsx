@@ -150,8 +150,7 @@ export default function Licenses() {
     <ErrorBoundary
       fallbackRender={({ error }) => (
         <ReportItem title="Licenses" warn>
-          Could not load the SPDX license list from {SPDX_URL}, which is needed
-          to check licenses for issues:{' '}
+          Could not load the SPDX license list from {SPDX_URL}:{' '}
           {error instanceof Error ? error.message : String(error)}
         </ReportItem>
       )}

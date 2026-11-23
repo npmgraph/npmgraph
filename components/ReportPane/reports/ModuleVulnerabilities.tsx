@@ -1,4 +1,5 @@
 import { Suspense, use, useDeferredValue, useMemo } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { ExternalLink } from '../../ui/ExternalLink.tsx';
 import { Row, Rows } from '../../ui/Row.tsx';
@@ -87,8 +88,18 @@ export default function ModuleVulnerabilities() {
   );
 
   return (
-    <Suspense fallback={null}>
-      <Vulnerabilities advisories={advisories} />
-    </Suspense>
+    <ErrorBoundary
+      resetKeys={[advisories]}
+      fallbackRender={({ error }) => (
+        <ReportItem warn title="Vulnerabilities">
+          Could not load the security advisories:{' '}
+          {error instanceof Error ? error.message : String(error)}
+        </ReportItem>
+      )}
+    >
+      <Suspense fallback={null}>
+        <Vulnerabilities advisories={advisories} />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
