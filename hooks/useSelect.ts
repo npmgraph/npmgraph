@@ -26,7 +26,7 @@ export function useSelect({ inspect = false } = {}) {
     const target =
       count === 1 && (inspect || !isGraphShown)
         ? 'module'
-        : count > 1 && !isGraphShown
+        : !isGraphShown && count > 1
           ? 'graph'
           : undefined;
 
