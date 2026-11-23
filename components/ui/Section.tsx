@@ -1,3 +1,4 @@
+import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import { useState, type HTMLProps, type ReactNode } from 'react';
 import useSectionTarget, { sectionName } from '../../hooks/useSectionTarget.ts';
 import { cn } from '../../lib/dom.ts';
@@ -9,6 +10,10 @@ export function SectionBody({ children }: { children: ReactNode }) {
   return <div className={styles.body}>{children}</div>;
 }
 
+export function SectionSymbol({ warn }: { warn?: boolean }) {
+  return warn ? <AlertFillIcon className={styles.warn} /> : null;
+}
+
 function Count({ count }: { count?: number | string }) {
   return count === undefined ? null : (
     <span className={styles.count}>{count}</span>
@@ -18,7 +23,7 @@ function Count({ count }: { count?: number | string }) {
 export function CollapsibleSection({
   title,
   count,
-  icon,
+  warn,
   className,
   children,
   open = true,
@@ -27,7 +32,7 @@ export function CollapsibleSection({
 }: {
   title: string;
   count?: number | string;
-  icon?: ReactNode;
+  warn?: boolean;
   open?: boolean;
 } & HTMLProps<HTMLDetailsElement>) {
   const name = sectionName(title);
@@ -58,7 +63,7 @@ export function CollapsibleSection({
       <summary className={utilities.brightHoverBackdrop}>
         {title}
         <Count count={count} />
-        {icon}
+        <SectionSymbol warn={warn} />
       </summary>
       <SectionOpenedContext value={opened.promise}>
         <SectionBody>{children}</SectionBody>
@@ -72,11 +77,13 @@ export function Section({
   children,
   className,
   count,
+  warn,
 }: {
   title: string;
   children: any;
   className?: string;
   count?: number | string;
+  warn?: boolean;
 }) {
   const name = sectionName(title);
   const ref = useSectionTarget<HTMLDivElement>(name);
@@ -86,6 +93,7 @@ export function Section({
       <h3>
         {title}
         <Count count={count} />
+        <SectionSymbol warn={warn} />
       </h3>
       <SectionBody>{children}</SectionBody>
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import { useSelect } from '../../hooks/useSelect.ts';
 import { cn, percent } from '../../lib/dom.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
@@ -18,7 +18,7 @@ const isSizeVisible = (width: number, height: number, fontScale: number) =>
 
 export function ModuleTreeMap({ data }: { data: BundlePhobiaData }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const setGraphSelection = useGraphSelection()[2];
+  const select = useSelect();
   const [leaves, setLeaves] = useState<TreemapLeaf[]>([]);
   const m = 1;
 
@@ -82,7 +82,7 @@ export function ModuleTreeMap({ data }: { data: BundlePhobiaData }) {
               { ...position, '--rank': percent(leaf.rank) } as CSSProperties
             }
             onClick={() => {
-              setGraphSelection(QueryType.Default, leaf.name);
+              select(QueryType.Default, leaf.name);
             }}
           >
             {isLabelVisible(width, height, fontScale) && (
