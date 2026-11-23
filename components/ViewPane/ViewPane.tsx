@@ -7,13 +7,12 @@ import { parseCommaList } from '../../lib/array-util.ts';
 import { PARAM_DEPENDENCIES, PARAM_SIZING } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import type { DependencyKey } from '../../lib/graph-util.ts';
-import { Button } from '../Button.tsx';
+import { Button, ButtonGroup } from '../Button.tsx';
 import RegistryInput from '../InfoPane/RegistryInput.tsx';
 import {
   getCustomModuleLinksError,
   parseCustomModuleLinks,
 } from '../ModulePane/module-links.ts';
-import { ModuleLinkButton } from '../ModulePane/ModuleLinks.tsx';
 import ColorizeInput from '../ReportPane/ColorizeInput.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { CollapsibleSection } from '../ui/Section.tsx';
@@ -130,7 +129,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
         />
         <div className={styles.customLinksPreviewRow}>
           Preview
-          <div
+          <ButtonGroup
             aria-label="Preview of Module tab link buttons"
             className={styles.customLinksPreview}
             role="group"
@@ -140,16 +139,12 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
               version: '1.0.0',
               repository: 'https://example.com/repository',
               homepage: 'https://example.com/homepage',
-            }).map(({ label, href }) => (
-              <ModuleLinkButton
-                key={label}
-                aria-disabled
-                label={label}
-                href={href}
-                tabIndex={-1}
-              />
+            }).map(({ label }) => (
+              <Button key={label} disabled>
+                {label}
+              </Button>
             ))}
-          </div>
+          </ButtonGroup>
         </div>
         <p className={styles.customLinksHelp}>
           CSV: one link per line with label,URL columns.

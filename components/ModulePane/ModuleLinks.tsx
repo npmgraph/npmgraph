@@ -65,7 +65,7 @@ function getLinkContent(label: string, href: string) {
   }
 }
 
-export function ModuleLinkButton({
+function ModuleLinkButton({
   label,
   href,
   ...props
