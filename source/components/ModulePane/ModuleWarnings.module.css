@@ -1,0 +1,25 @@
+.list {
+  margin: 0;
+  dt {
+    font-weight: bold;
+
+    svg {
+      margin-inline-end: 0.5ch;
+    }
+  }
+}
+
+.inline {
+  dt,
+  dd {
+    display: inline;
+  }
+
+  dt::after {
+    content: ': ';
+  }
+
+  dd {
+    padding: 0;
+  }
+}

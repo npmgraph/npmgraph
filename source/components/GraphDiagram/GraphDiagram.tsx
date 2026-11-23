@@ -1,0 +1,468 @@
+import './graphviz.css';
+import { select } from 'd3-selection';
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import {
+  TransformComponent,
+  TransformWrapper,
+  type ReactZoomPanPinchContentRef,
+} from 'react-zoom-pan-pinch';
+import { $, $$optional } from 'select-dom';
+import useCollapse from '../../hooks/useCollapse.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import useHashParam from '../../hooks/useHashParam.ts';
+import useOnEsc from '../../hooks/useOnEsc.ts';
+import usePrevious from '../../hooks/usePrevious.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
+import NotFoundCat from '../../images/not-found.svg?react';
+import { COLORS, PARAM_COLORIZE, type ColorName } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { gatherSelectionInfo, type GraphState } from '../../lib/graph-util.ts';
+import type LoadActivity from '../../lib/LoadActivity.ts';
+import type Module from '../../lib/Module.ts';
+import {
+  getCachedModule,
+  queryModuleCache,
+  QueryType,
+} from '../../lib/ModuleCache.ts';
+import { getColorizer, isSimpleColorizer } from '../colorizers/index.ts';
+import type { SimpleColorizer } from '../colorizers/types.ts';
+import * as styles from './GraphDiagram.module.scss';
+import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
+import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import useGraphClick from './useGraphClick.ts';
+import useLoadGraph from './useLoadGraph.ts';
+import useRenderDiagram from './useRenderDiagram.ts';
+import { clampPosition, getFitScale } from './viewport-util.ts';
+
+const isTouchscreen = globalThis.matchMedia('(pointer: coarse)').matches;
+const idSeen = new Set<unknown>();
+
+export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
+  return (
+    <ErrorBoundary
+      fallback={
+        <div className={cn(styles.status, styles.failed)}>
+          Layout failed to load
+        </div>
+      }
+    >
+      <Suspense fallback={<div className={styles.status}>Loading…</div>}>
+        <GraphDiagramInner activity={activity} />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
+  const [selectType, selectValue, setGraphSelection] = useGraphSelection();
+  const [graph] = useGlobalState('graph');
+  const [query] = useQuery();
+  const [collapse] = useCollapse();
+  const [colorize] = useHashParam(PARAM_COLORIZE);
+
+  const handleGraphClick = useGraphClick();
+
+  // Nothing to show: every requested module failed to load
+  // (the graph can still be the one of the previous query while loading)
+  const isNotFound =
+    graph?.entryModules.size === 0 &&
+    query.length > 0 &&
+    query.every(key => graph.failedEntryModules.has(key));
+
+  const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
+  const [minScale, setMinScale] = useState(0.05);
+  // Position of the graph when the pointer went down, to tell a click from a drag.
+  // The library's panning callbacks aren't used for this because they don't always
+  // come in pairs (e.g. trackpad panning never calls onPanningStop).
+  const pointerDownPositionRef = useRef<[number, number]>(undefined);
+
+  // Filter for which modules should be shown / collapsed in the graph
+  const isModuleVisible = useCallback(
+    ({ name }: { name: string }) => !collapse?.includes(name),
+    [collapse],
+  );
+
+  // Note: Graph rendering can take a significant amount of time.  It is also dependent on UI settings.
+  // Thus, it's broken up into different useEffect() actions, below.
+  // Effect: Fetch modules
+  useLoadGraph(isModuleVisible);
+
+  const diagramElement = useRenderDiagram(activity, isModuleVisible);
+
+  // Effect: Don't allow zooming out further than "fit to screen"
+  useEffect(() => {
+    const controls = transformRef.current;
+    const wrapper = controls?.instance.wrapperComponent;
+    const content = controls?.instance.contentComponent;
+    if (!controls || !wrapper || !content) {
+      return;
+    }
+
+    const update = () => {
+      const fitScale = getFitScale(wrapper, content);
+      if (!fitScale) {
+        return;
+      }
+
+      setMinScale(fitScale);
+
+      if (controls.instance.state.scale < fitScale) {
+        void controls.fitToView({ maxScale: 1, animationTime: 0 });
+        return;
+      }
+
+      const [x, y] = clampPosition(
+        controls,
+        controls.instance.state.positionX,
+        controls.instance.state.positionY,
+        controls.instance.state.scale,
+      );
+
+      void controls.setTransform(x, y, controls.instance.state.scale, 0);
+    };
+
+    const observer = new ResizeObserver(update);
+    observer.observe(wrapper);
+    observer.observe(content);
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
+  const selectedModules = useMemo(
+    () =>
+      graph
+        ? queryModuleCache(selectType, selectValue)
+        : new Map<string, Module>(),
+    [graph, selectType, selectValue],
+  );
+  const previousSelection = usePrevious(selectedModules);
+  // Effect: render graph selection
+  useEffect(() => {
+    if (!graph) {
+      return;
+    }
+
+    updateSelection(graph, selectedModules, {
+      transform: transformRef.current,
+      shouldScrollToSelected:
+        selectedModules.size > 0 || (previousSelection?.size ?? 0) === 0,
+      // Filtering highlights only the matches, not their dependencies
+      shouldIncludeRelated: selectType !== QueryType.Search,
+    });
+  }, [diagramElement, graph, selectedModules, previousSelection, selectType]);
+
+  // Effect: Colorize nodes
+  useEffect(() => {
+    if (!diagramElement) {
+      return;
+    }
+
+    void colorizeGraph(diagramElement, colorize ?? '');
+  }, [colorize, diagramElement]);
+
+  // Effect: Reset graph selection on Esc key press
+  useOnEsc(() => {
+    setGraphSelection(QueryType.Default, '');
+  });
+
+  return (
+    <TransformWrapper
+      ref={transformRef}
+      minScale={minScale}
+      maxScale={4}
+      zoomAnimation={{ size: 0 }}
+      doubleClick={{ disabled: true }}
+      wheel={{
+        wheelDisabled: true,
+        step: 0.01,
+      }}
+      trackPadPanning={{
+        disabled: false,
+        velocityDisabled: true,
+      }}
+      keyboard={{ disabled: false }}
+      panning={{
+        // Without this it becomes a bit difficult to click on the nodes,
+        // panning starts if you move by 1px and it prevents the default.
+        // On touch screens nodes cover most of the graph, so they must pan.
+        excluded: isTouchscreen ? [] : ['node'],
+      }}
+    >
+      {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- The links inside the nodes are natively focusable and clickable with the keyboard */}
+      <div
+        className={styles.root}
+        onPointerDown={() => {
+          const { positionX, positionY } =
+            transformRef.current?.instance.state ?? {};
+          pointerDownPositionRef.current =
+            positionX === undefined || positionY === undefined
+              ? undefined
+              : [positionX, positionY];
+        }}
+        onDragStart={event => {
+          // Dragging a node or link would start the browser's drag and drop
+          event.preventDefault();
+        }}
+        onClick={event => {
+          const start = pointerDownPositionRef.current;
+          pointerDownPositionRef.current = undefined;
+          const state = transformRef.current?.instance.state;
+
+          // A drag can end on a node or link, which shouldn't be selected or followed
+          if (
+            start &&
+            state &&
+            Math.hypot(state.positionX - start[0], state.positionY - start[1]) >
+              5
+          ) {
+            event.preventDefault();
+            return;
+          }
+
+          handleGraphClick(event);
+        }}
+      >
+        {isNotFound ? (
+          <div className={styles.notFound}>
+            <NotFoundCat width={110} role="img" aria-label="Module not found" />
+          </div>
+        ) : (
+          <div className={styles.graphControls}>
+            <GraphDiagramZoomButtons fitScale={minScale} />
+            <GraphDiagramExportButtons />
+          </div>
+        )}
+        <TransformComponent
+          wrapperClass={styles.viewport}
+          wrapperStyle={{ width: '100%', height: '100%' }}
+        >
+          <div className={styles.graph} />
+        </TransformComponent>
+      </div>
+    </TransformWrapper>
+  );
+}
+
+// @ts-expect-error Debug helper for logging when a react variable changes
+function logUpdate(name: string, value: unknown) {
+  if (!value) {
+    if (!idSeen.has(name)) {
+      console.log(name, '<undefined>');
+      idSeen.add(name);
+    }
+
+    return;
+  }
+
+  if (idSeen.has(value)) {
+    return;
+  }
+
+  idSeen.add(value);
+  console.log(name, 'updated ->', value);
+}
+
+function scrollGraphIntoView(
+  element: Element | undefined,
+  transform: ReactZoomPanPinchContentRef | null,
+  animationTime = 0,
+) {
+  const wrapper = transform?.instance.wrapperComponent;
+  if (!transform || !wrapper || !element) {
+    return;
+  }
+
+  // Center the element in the viewport, but without moving the graph away from
+  // the edges (like when scrolling)
+  const { scale, positionX, positionY } = transform.instance.state;
+  const view = wrapper.getBoundingClientRect();
+  const box = element.getBoundingClientRect();
+  const [x, y] = clampPosition(
+    transform,
+    positionX + view.left + view.width / 2 - (box.left + box.width / 2),
+    positionY + view.top + view.height / 2 - (box.top + box.height / 2),
+    scale,
+  );
+
+  void transform.setTransform(x, y, scale, animationTime);
+}
+
+type SelectionInfo = ReturnType<typeof gatherSelectionInfo>;
+
+// Returns the selected node element (if multiple, the last one)
+function updateNodeSelection(si: SelectionInfo, isSelection: boolean) {
+  let scrollElement: HTMLElement | undefined;
+  for (const element of $$optional('svg .node[data-module]')) {
+    const moduleKey = element.dataset['module'] ?? '';
+    const isSelected = si.selectedKeys.has(moduleKey);
+    const isUpstream = si.upstreamModuleKeys.has(moduleKey);
+    const isDownstream = si.downstreamModuleKeys.has(moduleKey);
+    element.classList.toggle('selected', isSelection && isSelected);
+    element.classList.toggle('upstream', isSelection && isUpstream);
+    element.classList.toggle('downstream', isSelection && isDownstream);
+    element.classList.toggle(
+      'unselected',
+      isSelection && !isSelected && !isUpstream && !isDownstream,
+    );
+
+    if (isSelection && isSelected) {
+      scrollElement = element;
+    }
+  }
+
+  return scrollElement;
+}
+
+function updateEdgeSelection(si: SelectionInfo, isSelection: boolean) {
+  for (const edge of $$optional('svg g.edge')) {
+    const edgeTitle = $('title', edge)?.textContent ?? '';
+    const isUpstream = si.upstreamEdgeKeys.has(edgeTitle);
+    const isDownstream = si.downstreamEdgeKeys.has(edgeTitle);
+    edge.classList.toggle('upstream', isSelection && isUpstream);
+    edge.classList.toggle('downstream', isSelection && isDownstream);
+    edge.classList.toggle(
+      'unselected',
+      isSelection && !isUpstream && !isDownstream,
+    );
+
+    // Move edge to end of child list so it's painted last
+    if (isUpstream || isDownstream) {
+      edge.parentElement?.append(edge);
+    }
+  }
+}
+
+function updateSelection(
+  graph: GraphState,
+  modules: Map<string, Module>,
+  {
+    transform = null,
+    shouldScrollToSelected = true,
+    shouldIncludeRelated = true,
+  }: {
+    transform?: ReactZoomPanPinchContentRef | null;
+    shouldScrollToSelected?: boolean;
+    shouldIncludeRelated?: boolean;
+  } = {},
+) {
+  // Get selection info
+  const si = gatherSelectionInfo(graph, modules.values(), shouldIncludeRelated);
+  const isSelection = modules.size > 0;
+
+  // Set selection classes for node and edge elements
+  const scrollElement = updateNodeSelection(si, isSelection);
+  updateEdgeSelection(si, isSelection);
+
+  if (shouldScrollToSelected) {
+    // Scroll to selected element (if multiple elements, this scrolls to last one)
+    if (scrollElement) {
+      scrollGraphIntoView(scrollElement, transform, 300);
+    } else {
+      // If no selection and we haven't already scrolled to the root node as part of
+      // the initial render, do that now
+      scrollGraphIntoView(
+        select(`.${styles.graph} svg .node`).node() as HTMLElement,
+        transform,
+      );
+    }
+  }
+}
+
+// The color is a class, which sets `--colorizer-color` for the fill
+function setColor(path: Element, color: ColorName) {
+  unsetColor(path);
+  path.classList.add(COLORS[color]);
+}
+
+function unsetColor(path: Element) {
+  path.classList.remove(...Object.values(COLORS));
+}
+
+async function colorizeElement(
+  colorizer: SimpleColorizer,
+  m: Module,
+  path: Element,
+) {
+  let color;
+  try {
+    color = await colorizer.colorForModule(m);
+  } catch (error) {
+    console.warn(`Error colorizing ${m.name}: ${(error as Error).message}`);
+  }
+
+  if (color) {
+    setColor(path, color);
+  } else {
+    unsetColor(path);
+  }
+}
+
+async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
+  const colorizer = getColorizer(colorize);
+  svg.classList.toggle('colorized', Boolean(colorizer));
+
+  if (!colorizer) {
+    // Unset all node colors
+    for (const node of $$optional('g.node path', svg)) {
+      unsetColor(node);
+    }
+
+    return;
+  }
+
+  const moduleEls = $$optional('g.node', svg);
+
+  if (isSimpleColorizer(colorizer)) {
+    // For each node in graph
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset['module'];
+      const m = moduleKey && getCachedModule(moduleKey);
+      const elementPath = $('path', element);
+
+      // Reset color if there's no module
+      if (!m) {
+        unsetColor(elementPath);
+        continue;
+      }
+
+      // Colorize it (async)
+      void colorizeElement(colorizer, m, elementPath);
+    }
+  } else {
+    // Bundle up modules
+    const modules: Module[] = [];
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset['module'];
+      const m = moduleKey && getCachedModule(moduleKey);
+      if (m) {
+        modules.push(m);
+      }
+    }
+
+    // Get colors for all modules
+    const colors = await colorizer.colorsForModules(modules);
+
+    // Apply colors
+    for (const element of moduleEls) {
+      const moduleKey = element.dataset['module'];
+      const m = moduleKey && getCachedModule(moduleKey);
+      const elementPath = $('path', element);
+      const color = m && colors.get(m);
+      if (color) {
+        setColor(elementPath, color);
+      } else {
+        unsetColor(elementPath);
+      }
+    }
+  }
+}

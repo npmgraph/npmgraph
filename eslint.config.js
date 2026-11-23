@@ -27,10 +27,6 @@ const disabledRules = [
   '@typescript-eslint/no-unsafe-assignment',
   '@typescript-eslint/no-unsafe-member-access',
   '@typescript-eslint/use-unknown-in-catch-callback-variable',
-  'package-json/prefer-files-field',
-  'package-json/require-engines',
-  'package-json/require-entry-point',
-  'unicorn/prefer-await',
   'unicorn/prefer-iterator-to-array', // TODO: 2027
 
   // Unwanted
@@ -41,7 +37,6 @@ const disabledRules = [
   '@typescript-eslint/no-restricted-types', // null ok
   '@typescript-eslint/strict-boolean-expressions', // Too strict
   'capitalized-comments',
-  'no-alert',
   'no-console',
   'no-warning-comments',
   'react-doctor/jsx-no-target-blank',
@@ -127,7 +122,8 @@ export default defineConfig([
         {
           selector:
             'JSXAttribute[name.name="className"] > JSXExpressionContainer > TemplateLiteral',
-          message: 'Use cn() from lib/dom.ts instead of a template literal',
+          message:
+            'Use cn() from source/lib/dom.ts instead of a template literal',
         },
       ],
     },

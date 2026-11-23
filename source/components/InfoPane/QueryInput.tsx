@@ -1,0 +1,146 @@
+import { useId, useRef, useState, type HTMLProps } from 'react';
+import useGraph from '../../hooks/useGraph.ts';
+import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import { useHashParameters } from '../../hooks/useHashParam.ts';
+import { patchLocation } from '../../hooks/useLocation.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
+import { parseCommaList } from '../../lib/array-util.ts';
+import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
+import { cn } from '../../lib/dom.ts';
+import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
+import { getViewSettings, searchSet } from '../../lib/url-util.ts';
+import * as styles from './QueryInput.module.scss';
+
+// No better detection for this :(
+const hasSoftKeyboard = 'ontouchstart' in document.documentElement;
+
+export default function QueryInput({
+  variant,
+  className,
+  ...props
+}: HTMLProps<HTMLInputElement> & { variant?: 'header' | 'hero' }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const enterValueRef = useRef<string | null>(null);
+  const [query] = useQuery();
+  const [hashParameters] = useHashParameters();
+  const graph = useGraph();
+  const setGraphSelection = useGraphSelection()[2];
+  const listId = useId();
+  const isHeader = variant === 'header';
+  const hasShortcutHint = isHeader && !hasSoftKeyboard;
+  const inputValue = query
+    .filter(key => !getCachedModule(key)?.isLocal)
+    .join(', ');
+
+  const [valueState, setValueState] = useState({
+    query,
+    inputValue,
+    value: inputValue,
+  });
+  if (valueState.query !== query || valueState.inputValue !== inputValue) {
+    setValueState({ query, inputValue, value: inputValue });
+  }
+
+  const { value } = valueState;
+
+  function getSearchParameters() {
+    let moduleKeys = parseCommaList(inputRef.current!.value);
+
+    moduleKeys = [...new Set(moduleKeys)]; // De-dupe
+    return searchSet(PARAM_QUERY, moduleKeys.join(', '));
+  }
+
+  function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
+    event?.preventDefault();
+    enterValueRef.current = null;
+    patchLocation(
+      {
+        search: getSearchParameters(),
+        hash: getViewSettings(hashParameters).toString(),
+      },
+      false,
+      { isInput: true },
+    );
+  }
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { value: newValue } = event.target;
+    setValueState({ query, inputValue, value: newValue });
+    if (!isHeader) {
+      return;
+    }
+
+    // Until submitted, highlight the matches of the whole field in the graph
+    const filter = newValue.trim() === inputValue ? '' : newValue.trim();
+    setGraphSelection(filter ? QueryType.Search : QueryType.Default, filter);
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter' || event.nativeEvent.isComposing) {
+      return;
+    }
+
+    // Add cmd-enter support to search in a new tab
+    if (event.metaKey) {
+      window.open(`/?${getSearchParameters()}`, '_blank');
+      event.preventDefault();
+      return;
+    }
+
+    enterValueRef.current = event.currentTarget.value;
+  }
+
+  // Safari uses the first Enter to dismiss the datalist instead of submitting the form.
+  // If the form wasn't submitted and the value is unchanged (no option was picked), do it now.
+  function handleKeyUp(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter' || enterValueRef.current === null) {
+      return;
+    }
+
+    const isUnchanged = enterValueRef.current === event.currentTarget.value;
+    enterValueRef.current = null;
+    if (isUnchanged) {
+      handleSubmit();
+    }
+  }
+
+  return (
+    <form action="/" className={styles.form} onSubmit={handleSubmit}>
+      <div className={styles.field}>
+        <input
+          ref={inputRef}
+          type="search"
+          name="q"
+          aria-label="Search npm modules"
+          id={SEARCH_FIELD_ID}
+          className={cn(styles.input, variant && styles[variant], className)}
+          placeholder={hasShortcutHint ? ' ' : 'Search…'}
+          value={value}
+          autoCapitalize="off"
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck="false"
+          // Don't attempt to auto-focus on mobile, it doesn't actually work and when it works it's distracting.
+          autoFocus={!hasSoftKeyboard && query.length === 0}
+          list={isHeader ? listId : undefined}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onKeyUp={handleKeyUp}
+          {...props}
+        />
+        {hasShortcutHint && (
+          <span aria-hidden className={styles.hint}>
+            Type <kbd>/</kbd> to search
+          </span>
+        )}
+      </div>
+      {isHeader && (
+        <datalist id={listId}>
+          {[...graph.moduleInfos.values()].map(({ module }) => (
+            <option key={module.key} value={module.label} />
+          ))}
+        </datalist>
+      )}
+    </form>
+  );
+}
