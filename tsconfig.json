@@ -9,7 +9,7 @@
     "noEmit": true,
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "paths": {
-      "octicons-plain-react/*": ["./octicons-stub.d.ts"]
+      "octicons-plain-react/*": ["./source/octicons-stub.d.ts"]
     },
     "types": ["node", "typed-query-selector"]
   }

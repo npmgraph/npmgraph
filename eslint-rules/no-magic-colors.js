@@ -12,7 +12,7 @@ const namedColors = new Set(
 const colorInRaw =
   /#[\da-f]{3,8}\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch)\(/i;
 
-// Colors must come from the theme variables in `index.scss`
+// Colors must come from the theme variables in `source/index.scss`
 const rule = {
   meta: {
     type: 'suggestion',
@@ -22,7 +22,7 @@ const rule = {
     schema: [],
     messages: {
       magicColor:
-        'Use a theme variable from index.scss instead of the color `{{color}}`.',
+        'Use a theme variable from source/index.scss instead of the color `{{color}}`.',
     },
   },
   create(context) {

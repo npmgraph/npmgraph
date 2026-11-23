@@ -45,11 +45,16 @@ const preloadApp = {
 } satisfies Plugin;
 
 export default defineConfig({
+  root: 'source',
+  publicDir: '../public',
+  envDir: '..',
   // Relative base so the site can be served from any subfolder
   base: './',
   plugins: [react(), svgr(), preloadApp],
   envPrefix: ['BUGSNAG_', 'VERCEL_', 'NPMGRAPH_'],
   build: {
+    outDir: '../dist',
+    emptyOutDir: true,
     sourcemap: true,
   },
   test: {
@@ -62,7 +67,7 @@ export default defineConfig({
       },
       {
         // Serve the built app (npm run build) at the dev server root
-        publicDir: 'dist',
+        publicDir: '../dist',
         // Scan the app too, or Vite finds its dependencies mid-test and reloads
         optimizeDeps: { entries: ['smoke.test.ts', 'index.html'] },
         test: {
