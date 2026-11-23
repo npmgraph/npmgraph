@@ -1,16 +1,13 @@
 import { $, closestElementOptional } from 'select-dom';
 import useCollapse from '../../hooks/useCollapse.ts';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
-import { useTab } from '../../hooks/useTab.ts';
+import { useSelect } from '../../hooks/useSelect.ts';
 import { toggleItem } from '../../lib/array-util.ts';
-import { PaneType } from '../../lib/constants.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
 import * as styles from './GraphDiagram.module.scss';
 
 // Select a module (or deselect with an empty click), or collapse it with Shift
 export default function useGraphClick() {
-  const [, selectTab] = useTab();
-  const setGraphSelection = useGraphSelection()[2];
+  const select = useSelect({ inspect: true });
   const [collapse, setCollapse] = useCollapse();
 
   function toggleCollapsed(name: string) {
@@ -46,9 +43,6 @@ export default function useGraphClick() {
       return;
     }
 
-    setGraphSelection(QueryType.Default, moduleKey);
-    if (moduleKey !== '') {
-      selectTab(PaneType.MODULE);
-    }
+    select(QueryType.Default, moduleKey);
   };
 }
