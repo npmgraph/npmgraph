@@ -1,3 +1,24 @@
+import {
+  PARAM_COLORIZE,
+  PARAM_DEPENDENCIES,
+  PARAM_SIZING,
+  PARAM_TAB,
+} from './constants.ts';
+
+const VIEW_SETTINGS = new Set([
+  PARAM_COLORIZE,
+  PARAM_DEPENDENCIES,
+  PARAM_SIZING,
+  PARAM_TAB,
+]);
+
+// The hash parameters without anything that only applies to the current graph (selection, section, collapsed modules…). The tab is kept so that querying doesn't switch it back to the default one
+export function getViewSettings(parameters: URLSearchParams) {
+  return new URLSearchParams(
+    [...parameters].filter(([key]) => VIEW_SETTINGS.has(key)),
+  );
+}
+
 export function urlPatch(urlParts: Partial<URL>, url = new URL(location.href)) {
   Object.assign(url, urlParts);
   return url;
