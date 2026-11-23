@@ -73,11 +73,13 @@ function ModuleDetailsPane({
     <Pane {...props}>
       <div className={styles.title}>
         <h2>{module.source ?? module.key}</h2>
-        <ModuleCollapseToggle module={module} />
         {isShowStatus && <ModuleDistTag module={module} />}
       </div>
 
-      <ModuleLinks module={module} />
+      <div className={styles.moduleHeader}>
+        <ModuleLinks module={module} />
+        <ModuleCollapseToggle module={module} />
+      </div>
 
       <p>{pkg?.description}</p>
 

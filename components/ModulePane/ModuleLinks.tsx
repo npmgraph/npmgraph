@@ -1,5 +1,5 @@
-import EyeIcon from 'octicons-plain-react/Eye';
-import EyeClosedIcon from 'octicons-plain-react/EyeClosed';
+import StackIcon from 'octicons-plain-react/Stack';
+import StackCheckIcon from 'octicons-plain-react/StackCheck';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
@@ -48,7 +48,7 @@ export function ModuleCollapseToggle({ module }: { module: Module }) {
           setCollapse(toggleItem(collapse, module.name));
         }}
       >
-        {isCollapsed ? <EyeClosedIcon /> : <EyeIcon />}
+        {isCollapsed ? <StackCheckIcon /> : <StackIcon />}
       </Button>
     </ButtonGroup>
   );
