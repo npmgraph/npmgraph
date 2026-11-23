@@ -12,7 +12,6 @@
 .moduleHeader {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   gap: 8px;
 }
 
@@ -20,6 +19,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.separator {
+  align-self: stretch;
+  border-inline-start: solid 1px var(--bg1);
 }
 
 .sizeGrid {

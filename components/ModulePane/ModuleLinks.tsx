@@ -63,22 +63,26 @@ export function ModuleLinks({ module }: { module: Module }) {
     !module.package.homepage.startsWith('https://github.com/')
       ? module.package.homepage
       : undefined;
+  const links = parseCustomModuleLinks(customLinks, {
+    name: module.name,
+    version: module.version,
+    repository: repoUrl,
+    homepage: homepageUrl,
+    fromRegistry: Boolean(module.packument),
+  });
 
   return (
     <div className={styles.moduleLinks}>
       {/* Opens in the current view, unlike the customizable links */}
       {isSingleEntryModule ? null : (
-        <QueryLink component={Button} query={module.key}>
-          npmgraph
-        </QueryLink>
+        <>
+          <QueryLink component={Button} query={module.key}>
+            npmgraph
+          </QueryLink>
+          {links.length > 0 && <span className={styles.separator} />}
+        </>
       )}
-      {parseCustomModuleLinks(customLinks, {
-        name: module.name,
-        version: module.version,
-        repository: repoUrl,
-        homepage: homepageUrl,
-        fromRegistry: Boolean(module.packument),
-      }).map(({ label, href }) => (
+      {links.map(({ label, href }) => (
         <Button key={`${label}:${href}`} target="_blank" href={href}>
           {label}
         </Button>
