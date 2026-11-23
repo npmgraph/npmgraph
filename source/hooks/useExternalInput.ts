@@ -1,0 +1,120 @@
+import { useEffect } from 'react';
+import { SEARCH_FIELD_ID } from '../lib/constants.ts';
+import { flashError } from '../lib/flash.ts';
+import { isValidJson, loadPackageJson, readFile } from '../lib/read-file.ts';
+import * as styles from './useExternalInput.module.css';
+
+let dragEnterCounter = 0;
+
+function updateDragOverlay() {
+  document.documentElement.classList.toggle(styles.root, dragEnterCounter > 0);
+}
+
+function onDrop(ev: DragEvent) {
+  dragEnterCounter = 0;
+  updateDragOverlay();
+
+  ev.preventDefault();
+
+  // If dropped items aren't files, reject them
+  const dt = ev.dataTransfer;
+  if (!dt?.items) {
+    flashError('Sorry, file dropping is not supported by this browser');
+    return;
+  }
+
+  if (dt.items.length !== 1) {
+    flashError('You must drop exactly one file');
+    return;
+  }
+
+  const item = dt.items[0];
+  if (!item) {
+    return;
+  }
+
+  if (item.type && item.type !== 'application/json') {
+    flashError('File must have a ".json" extension');
+    return;
+  }
+
+  const file = item.getAsFile();
+  if (!file) {
+    flashError(
+      'Please drop a file, not... well... whatever else it was you dropped',
+    );
+    return;
+  }
+
+  void readFile(file);
+}
+
+function onPaste(ev: ClipboardEvent): void {
+  const firstItem = ev.clipboardData?.items[0];
+  if (firstItem?.kind === 'file') {
+    void readFile(firstItem.getAsFile()!);
+    ev.preventDefault();
+    return;
+  }
+
+  const text = ev.clipboardData?.getData('text');
+  if (!text) {
+    return;
+  }
+
+  // Ignore pastes in fields, unless the field is the search field and the paste is a JSON file
+  if (
+    ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName ?? '') &&
+    (document.activeElement?.id !== SEARCH_FIELD_ID || !isValidJson(text))
+  ) {
+    return;
+  }
+
+  // Let invalid JSON text through when outside the field, so the user can see the error message
+  ev.preventDefault();
+  loadPackageJson(text);
+}
+
+// Must inform the browser that we'll handle the `drop` event
+// https://stackoverflow.com/a/21341021
+function onDragOver(event: DragEvent) {
+  event.preventDefault();
+}
+
+// Show overlay. `dragenter` is fired repeatedly for any random element that we glide over,
+// not just on `globalThis`, so we need to keep track of how many nested elements we're inside
+function onDragEnter() {
+  dragEnterCounter++;
+  updateDragOverlay();
+}
+
+function onDragLeave() {
+  dragEnterCounter--;
+  updateDragOverlay();
+}
+
+function onClick() {
+  // Fail safe in case the browser skips some `dragleave` events
+  dragEnterCounter = 0;
+  updateDragOverlay();
+}
+
+export default function useExternalInput() {
+  useEffect(() => {
+    globalThis.addEventListener('paste', onPaste);
+    document.documentElement.addEventListener('drop', onDrop);
+    globalThis.addEventListener('dragover', onDragOver);
+    globalThis.addEventListener('dragenter', onDragEnter);
+    globalThis.addEventListener('dragleave', onDragLeave);
+    globalThis.addEventListener('click', onClick);
+
+    return () => {
+      globalThis.removeEventListener('paste', onPaste);
+      document.documentElement.removeEventListener('drop', onDrop);
+      globalThis.removeEventListener('dragover', onDragOver);
+      globalThis.removeEventListener('dragenter', onDragEnter);
+      globalThis.removeEventListener('dragleave', onDragLeave);
+      globalThis.removeEventListener('click', onClick);
+    };
+  }, []);
+}

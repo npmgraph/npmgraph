@@ -1,0 +1,57 @@
+import type { HTMLProps } from 'react';
+import { useSelect } from '../../hooks/useSelect.ts';
+import { cn } from '../../lib/dom.ts';
+import { QueryType, type QueryTypeValue } from '../../lib/ModuleCache.ts';
+import { Gravatar } from './Gravatar.tsx';
+import * as styles from './Tag.module.scss';
+import * as utilities from './utilities.module.css';
+
+export function Tags({
+  children,
+  className,
+  ...props
+}: HTMLProps<HTMLDivElement>) {
+  return (
+    <div className={cn(styles.tags, className)} {...props}>
+      {children}
+    </div>
+  );
+}
+
+export function Tag({
+  type,
+  value,
+  count = 0,
+  gravatar,
+  className,
+}: {
+  type: QueryTypeValue;
+  value: string;
+  count?: number;
+  gravatar?: string;
+} & Omit<HTMLProps<HTMLButtonElement>, 'type'>) {
+  const select = useSelect();
+  let title = value;
+  if (count > 1) {
+    title += ` (${count})`;
+  }
+
+  return (
+    <button
+      type="button"
+      className={cn(
+        styles.tag,
+        type === QueryType.Maintainer ? styles.maintainer : '',
+        utilities.brightHover,
+        className,
+      )}
+      title={title}
+      onClick={() => {
+        select(type, value);
+      }}
+    >
+      {gravatar && <Gravatar email={gravatar} />}
+      {title}
+    </button>
+  );
+}

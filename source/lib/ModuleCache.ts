@@ -1,0 +1,363 @@
+import type { PackageJSON, Packument, PackumentVersion } from '@npm/types';
+import { satisfies } from 'verkit';
+import { PARAM_PACKAGES } from './constants.ts';
+import fetchJson from './fetchJson.ts';
+import { flashError } from './flash.ts';
+import HttpError from './HttpError.ts';
+import {
+  describeUrlSource,
+  getModuleKey,
+  isHttpModule,
+  parseModuleKey,
+  resolveGitHubShorthand,
+  resolveModule,
+} from './module-util.ts';
+import Module from './Module.ts';
+import {
+  cachePackument,
+  getCachedPackument,
+  getNPMPackument,
+} from './PackumentCache.ts';
+import { getRegistry } from './registry-util.ts';
+import selectVersion from './selectVersion.ts';
+import { hashGet } from './url-util.ts';
+
+const moduleCache = new Map<string, ModuleCacheEntry>();
+
+export const QueryType = {
+  Default: 'default',
+  Name: 'name',
+  Exact: 'exact',
+  License: 'license',
+  Maintainer: 'maintainer',
+  Search: 'search',
+} as const;
+
+export type QueryTypeValue = (typeof QueryType)[keyof typeof QueryType];
+
+type ModuleCacheEntry = PromiseWithResolvers<Module> & {
+  module: Module; // Set once module is loaded
+  registry?: string; // NPM_REGISTRY url
+};
+
+// Entries without a registry (local and URL modules) are always current
+function isCurrent(entry: ModuleCacheEntry) {
+  return !entry.registry || entry.registry === getRegistry();
+}
+
+async function fetchModuleFromNPM(
+  moduleName: string,
+  version?: string,
+  signal?: AbortSignal,
+): Promise<Module> {
+  const packument = await getNPMPackument(moduleName, signal);
+
+  if (!packument) {
+    throw new Error(`Could not find ${moduleName} module`);
+  }
+
+  // Handle unpublished packages
+  if (packument.time && 'unpublished' in packument.time) {
+    throw new Error(`${moduleName} has been unpublished`);
+  }
+
+  // Match best version from manifest
+  const packumentVersion = packument && selectVersion(packument, version);
+
+  if (!packumentVersion) {
+    throw new Error(
+      version
+        ? `${moduleName} does not have a version ${version}`
+        : `${moduleName} has no published versions`,
+    );
+  }
+
+  return new Module(packumentVersion, packument);
+}
+
+async function fetchModuleFromURL(urlString: string, signal?: AbortSignal) {
+  const url = new URL(urlString);
+
+  // TODO: We should probably be fetching github content via their REST API, but
+  // that makes this code much more github-specific.  So, for now, we just do
+  // some URL-massaging to pull from the "raw" URL
+  if (/\.?github.com$/.test(url.host)) {
+    url.host = 'raw.githubusercontent.com';
+    url.pathname = url.pathname.replace('/blob', '');
+  }
+
+  const pkg: PackageJSON = await fetchJson<PackageJSON>(url, { signal });
+
+  pkg.name ||= url.href;
+
+  const module = new Module(pkg);
+  module.source = describeUrlSource(url);
+  return module;
+}
+
+// Note: This method should not throw!  Errors should be returned as part of a
+// stub module
+export async function getModule(
+  moduleKey: string,
+  signal?: AbortSignal,
+): Promise<Module> {
+  if (!moduleKey) {
+    throw new Error('Undefined module name');
+  }
+
+  signal?.throwIfAborted();
+
+  moduleKey = resolveGitHubShorthand(moduleKey);
+  let [name, version] = parseModuleKey(moduleKey);
+
+  if (isHttpModule(moduleKey)) {
+    name = moduleKey;
+    version = '';
+    // unchanged
+  } else {
+    [name, version] = resolveModule(name!, version);
+  }
+
+  moduleKey = getModuleKey(name, version);
+  // Check cache once we're done massaging the version string
+  const cachedEntry = moduleCache.get(moduleKey);
+  if (cachedEntry && isCurrent(cachedEntry)) {
+    return cachedEntry.promise;
+  }
+
+  // Set up the cache so subsequent requests for this module will get the same
+  // promise object (and thus the same module), even if the module hasn't been
+  // loaded yet
+  const cacheEntry = Promise.withResolvers() as ModuleCacheEntry;
+  moduleCache.set(moduleKey, cacheEntry);
+
+  // Don't leave an aborted request in the cache for the next query to find
+  signal?.addEventListener(
+    'abort',
+    () => {
+      if (!cacheEntry.module && moduleCache.get(moduleKey) === cacheEntry) {
+        moduleCache.delete(moduleKey);
+      }
+    },
+    { once: true },
+  );
+
+  let promise: Promise<Module>;
+
+  // Fetch module based on type
+  if (isHttpModule(moduleKey)) {
+    promise = fetchModuleFromURL(moduleKey, signal);
+  } else {
+    cacheEntry.registry = getRegistry();
+    promise = fetchModuleFromNPM(name, version, signal);
+  }
+
+  async function settle() {
+    let module: Module;
+    try {
+      module = await promise;
+    } catch (error) {
+      // Same message for every failure, with the key the user entered (not the rewritten URL)
+      if (error instanceof HttpError) {
+        error.message = `Failed to get ${moduleKey} (code = ${error.code})`;
+      } else if (isHttpModule(moduleKey) && error instanceof Error) {
+        error.message = `Failed to get ${moduleKey}`;
+      }
+
+      module = Module.stub(moduleKey, error as Error);
+    }
+
+    cacheEntry.module = module;
+
+    // Add cache entry for module's computed key
+    if (!signal?.aborted) {
+      moduleCache.set(module.key, cacheEntry);
+    }
+
+    // Resolve promise
+    cacheEntry.resolve(module);
+  }
+
+  void settle();
+
+  return cacheEntry.promise;
+}
+
+export function getCachedModule(key: string) {
+  const entry = moduleCache.get(key);
+  return entry && isCurrent(entry) ? entry.module : undefined;
+}
+
+function cacheModule(module: Module, registry?: string) {
+  moduleCache.set(module.key, {
+    promise: Promise.resolve(module),
+    module,
+    registry,
+    resolve() {},
+    reject() {},
+  });
+}
+
+function isQueryMatch(
+  module: Module,
+  // `exact` and `name` are mapped to `default` before this is called
+  queryType: Exclude<QueryTypeValue, 'exact' | 'name'>,
+  queryValue: string,
+) {
+  switch (queryType) {
+    case QueryType.Default: {
+      const [name, version] = parseModuleKey(queryValue);
+      return (
+        module.name === name && (!version || satisfies(module.version, version))
+      );
+    }
+
+    case QueryType.Search:
+      return module.label.toLowerCase().includes(queryValue.toLowerCase());
+    case QueryType.License:
+      return module.getLicenses().includes(queryValue.toLowerCase());
+    case QueryType.Maintainer:
+      return module.maintainers.some(({ name }) => name === queryValue);
+  }
+}
+
+/** Convenience method for getting loaded modules by some criteria. */
+export function queryModuleCache(
+  queryType: QueryTypeValue,
+  queryValue: string,
+) {
+  const results = new Map<string, Module>();
+
+  if (!queryType && !queryValue) {
+    return results;
+  }
+
+  // 'exact' and 'name' query deprecated in favor of Default
+  if (queryType === QueryType.Exact || queryType === QueryType.Name) {
+    queryType = QueryType.Default;
+  }
+
+  for (const { module } of moduleCache.values()) {
+    if (!module) {
+      continue;
+    }
+
+    if (isQueryMatch(module, queryType, queryValue)) {
+      results.set(module.key, module);
+    }
+  }
+
+  return results;
+}
+
+const PACKAGE_WHITELIST: Array<keyof PackageJSON> = [
+  'author',
+  'dependencies',
+  'devDependencies',
+  'license',
+  'name',
+  'optionalDependencies',
+  'overrides',
+  'peerDependencies',
+  'peerDependenciesMeta',
+  'version',
+];
+
+export function sanitizePackageKeys(pkg: PackageJSON) {
+  const sanitized: PackageJSON = {} as PackageJSON;
+
+  for (const key of PACKAGE_WHITELIST) {
+    if (Object.hasOwn(pkg, key)) {
+      sanitized[key] = pkg[key];
+    }
+  }
+
+  return sanitized;
+}
+
+export function cacheLocalPackage(pkg: PackumentVersion) {
+  let packument = getCachedPackument(pkg.name);
+  if (!packument) {
+    const now = new Date().toISOString();
+    // Create a stub packument
+    packument = {
+      name: pkg.name,
+      versions: {},
+      'dist-tags': {},
+      maintainers: [],
+      time: {
+        modified: now,
+        created: now,
+        [pkg.version]: now,
+      },
+      license: pkg.license ?? 'UNLICENSED',
+    } as unknown as Packument;
+
+    // Put it into the packument cache
+    cachePackument(pkg.name, packument);
+  }
+
+  // Add version to packument
+  packument.versions[pkg.version] = pkg;
+
+  const module = new Module(pkg);
+
+  module.isLocal = true;
+  module.source = module.isUnnamed
+    ? 'upload: package.json'
+    : `upload: ${module.key}`;
+
+  // Put module in cache and local cache
+  cacheModule(module);
+
+  return module;
+}
+
+let lastPackagesValue: string | null;
+
+function isPackage(pkg: unknown): pkg is PackageJSON {
+  return (
+    typeof pkg === 'object' &&
+    pkg !== null &&
+    'name' in pkg &&
+    typeof pkg.name === 'string'
+  );
+}
+
+// Make sure any packages in the URL hash are loaded into the module cache
+export function syncPackagesHash() {
+  const packagesJson = hashGet(PARAM_PACKAGES);
+
+  // If the hash param hasn't changed, there's nothing to do
+  if (lastPackagesValue === packagesJson) {
+    return;
+  }
+
+  lastPackagesValue = packagesJson;
+
+  if (!packagesJson) {
+    return;
+  }
+
+  let packages: unknown;
+  try {
+    packages = JSON.parse(packagesJson);
+  } catch {
+    flashError('`packages` hash param is not valid JSON');
+    return;
+  }
+
+  // The hash can contain anything, don't let it break the app
+  if (!Array.isArray(packages) || packages.some(pkg => !isPackage(pkg))) {
+    flashError('`packages` hash param is not a valid list of packages');
+    return;
+  }
+
+  for (const pkg of packages as PackageJSON[]) {
+    cacheLocalPackage(sanitizePackageKeys(pkg) as PackumentVersion);
+  }
+}
+
+export function clearModuleCache() {
+  moduleCache.clear();
+}

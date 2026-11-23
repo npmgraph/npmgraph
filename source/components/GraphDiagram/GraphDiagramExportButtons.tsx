@@ -1,0 +1,248 @@
+import copy from 'copy-text-to-clipboard';
+import CopyIcon from 'octicons-plain-react/Copy';
+import DownloadIcon from 'octicons-plain-react/Download';
+import MarkdownIcon from 'octicons-plain-react/Markdown';
+import { useState } from 'react';
+import { $optional } from 'select-dom';
+import { useQuery } from '../../hooks/useQuery.ts';
+import PngIcon from '../../images/icons/png.svg?react';
+import { flash, flashError } from '../../lib/flash.ts';
+import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { composeMermaid } from '../../lib/graph-util.ts';
+import { Button, ButtonGroup } from '../Button.tsx';
+import * as graphStyles from './GraphDiagram.module.scss';
+
+type DownloadExtension = 'svg' | 'png';
+
+function getDiagramElement() {
+  return $optional<SVGSVGElement>(`.${graphStyles.graphDiagram}`);
+}
+
+export default function GraphDiagramExportButtons() {
+  const [graph] = useGlobalState('graph');
+  const [query] = useQuery();
+  const [isCopying, setIsCopying] = useState(false);
+
+  return (
+    <>
+      <ButtonGroup square>
+        <Button
+          title="Download graph as SVG"
+          onClick={() => {
+            downloadSvg(query);
+          }}
+        >
+          <DownloadIcon />
+        </Button>
+      </ButtonGroup>
+      <ButtonGroup square>
+        {isCopying ? (
+          <>
+            <Button
+              title="Copy graph as PNG"
+              onClick={() => {
+                setIsCopying(false);
+                void copyPng();
+              }}
+            >
+              <PngIcon />
+            </Button>
+            <Button
+              title="Copy graph as Mermaid in Markdown"
+              onClick={() => {
+                setIsCopying(false);
+                if (
+                  copy(`\`\`\`mermaid\n${composeMermaid({ graph })}\n\`\`\``)
+                ) {
+                  flash('Copied graph as text');
+                } else {
+                  flashError('Could not copy graph');
+                }
+              }}
+            >
+              <MarkdownIcon />
+            </Button>
+          </>
+        ) : (
+          <Button
+            title="Copy graph"
+            onClick={() => {
+              setIsCopying(true);
+            }}
+          >
+            <CopyIcon />
+          </Button>
+        )}
+      </ButtonGroup>
+    </>
+  );
+}
+
+const MAX_PNG_PIXELS = 8_000_000;
+const PNG_SCALE = 2;
+
+// Starts rendering and returns right away, so `write()` can be called synchronously
+function renderPng(): { blob: Promise<Blob>; isCapped: boolean } {
+  const svg = getDiagramElement()?.cloneNode(true) as SVGSVGElement | undefined;
+  const vb = svg?.getAttribute('viewBox')?.split(' ');
+
+  if (!svg || !vb) {
+    throw new Error('No viewBox');
+  }
+
+  const styleElement = cloneStyleElement();
+  if (styleElement) {
+    svg.append(styleElement);
+  }
+
+  const width = Number(vb[2]);
+  const height = Number(vb[3]);
+  // Safari can fail to rasterize SVGs lacking explicit pixel dimensions
+  svg.setAttribute('width', String(width));
+  svg.setAttribute('height', String(height));
+  const maxScale = Math.sqrt(MAX_PNG_PIXELS / (width * height));
+  const isCapped = PNG_SCALE > maxScale;
+  const scale = isCapped ? maxScale : PNG_SCALE;
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.floor(width * scale));
+  canvas.height = Math.max(1, Math.floor(height * scale));
+
+  return { blob: rasterize(svg, canvas), isCapped };
+}
+
+async function rasterize(
+  svg: SVGSVGElement,
+  canvas: HTMLCanvasElement,
+): Promise<Blob> {
+  const img = new Image();
+  const svgBlob = new Blob([new XMLSerializer().serializeToString(svg)], {
+    type: 'image/svg+xml;charset=utf-8',
+  });
+  // eslint-disable-next-line react-doctor/no-create-object-url-without-revoke -- Revoked in the `finally` block below
+  const url = URL.createObjectURL(svgBlob);
+
+  try {
+    await new Promise(resolve => {
+      img.addEventListener('load', resolve, { once: true });
+      img.addEventListener('error', resolve, { once: true });
+      img.src = url;
+    });
+
+    if (img.naturalWidth === 0) {
+      throw new Error('Failed to render PNG');
+    }
+
+    canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>(resolve => {
+      canvas.toBlob(resolve, 'image/png');
+    });
+    if (!blob) {
+      throw new Error('Failed to render PNG');
+    }
+
+    return blob;
+  } catch (error) {
+    // Surface render failures; browsers otherwise report them as a generic NotAllowedError
+    console.error('PNG render failed', error);
+    throw error;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+async function copyPng() {
+  try {
+    // write() (below) needs to be called synchronously so Safari still sees the
+    // click's user activation.  Hence, we don't await here but, rather, pass a
+    // promise to ClipboardItem, below
+    const { blob, isCapped } = renderPng();
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+    flash(
+      isCapped
+        ? 'Graph image copied to clipboard (scaled down to 8 megapixels)'
+        : 'Graph image copied to clipboard',
+    );
+  } catch (error) {
+    if (
+      error instanceof DOMException &&
+      error.name === 'NotAllowedError' &&
+      !document.hasFocus()
+    ) {
+      // User switched away from the page; not an app error
+      flashError(
+        'Unable to copy image. Keep this window focused and try again.',
+      );
+      return;
+    }
+
+    reportError(error);
+    flashError('Unable to copy image to clipboard');
+  }
+}
+
+function downloadSvg(query: string[]) {
+  // Get svg DOM (cloned, so we can tweak as needed for SVG export)
+  const svg = getDiagramElement()?.cloneNode(true) as SVGSVGElement | undefined;
+  if (!svg) {
+    return;
+  }
+
+  // Inline the app's styles for export
+  const styleElement = cloneStyleElement();
+  if (styleElement) {
+    svg.append(styleElement);
+  }
+
+  const svgData = new XMLSerializer().serializeToString(svg);
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  const svgUrl = URL.createObjectURL(svgBlob);
+  generateLinkToDownload('svg', svgUrl, query);
+}
+
+// Collects rules from all readable stylesheets (<link> in production, <style>
+// in dev) so the theme variables survive outside the document
+function cloneStyleElement() {
+  const cssTexts: string[] = [];
+
+  for (const sheet of document.styleSheets) {
+    try {
+      for (const rule of sheet.cssRules) {
+        // eslint-disable-next-line @typescript-eslint/no-deprecated -- Still works
+        if (rule.type !== CSSRule.MEDIA_RULE) {
+          cssTexts.push(rule.cssText);
+        }
+      }
+    } catch {
+      // Cross-origin sheets (e.g. Google Fonts) can't be read
+    }
+  }
+
+  if (cssTexts.length === 0) {
+    return null;
+  }
+
+  const styleElement = document.createElement('style');
+  styleElement.textContent = cssTexts.join('\n');
+  return styleElement;
+}
+
+function generateLinkToDownload(
+  extension: DownloadExtension,
+  link: string,
+  query: string[],
+) {
+  const title =
+    query.length > 0
+      ? `Dependencies for ${query.join(', ')}`
+      : 'npm Dependency Diagrams';
+  const name = title.replaceAll(/\W+/gv, '_');
+  const downloadLink = document.createElement('a');
+  downloadLink.href = link;
+  downloadLink.download = `${name}_dependencies.${extension}`;
+  downloadLink.click();
+  if (link.startsWith('blob:')) {
+    setTimeout(() => {
+      URL.revokeObjectURL(link);
+    }, 1000);
+  }
+}
