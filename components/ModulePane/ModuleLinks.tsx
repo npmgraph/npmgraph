@@ -2,7 +2,7 @@ import MarkGithubIcon from 'octicons-plain-react/MarkGithub';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
-import NpmLogo from '../../images/partners/npm.svg?react';
+import NpmIcon from '../../images/icons/npm.svg?react';
 import { toggleItem } from '../../lib/array-util.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
@@ -59,7 +59,7 @@ function getLinkContent(label: string, href: string) {
 
   switch (label.toLowerCase()) {
     case 'npm':
-      return <NpmLogo className={styles.logo} />;
+      return <NpmIcon />;
 
     case 'repo':
       return hostname === 'github.com' ? <MarkGithubIcon /> : label;

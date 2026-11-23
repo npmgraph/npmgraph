@@ -15,12 +15,6 @@
   gap: 8px;
 }
 
-.logo {
-  fill: currentcolor;
-  width: auto;
-  height: 1.1em;
-}
-
 .separator {
   align-self: center;
   border-inline-start: solid 1px var(--bg1);
