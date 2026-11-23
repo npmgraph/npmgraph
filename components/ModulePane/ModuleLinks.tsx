@@ -21,7 +21,7 @@ function useIsSingleEntryModule(module: Module) {
   );
 }
 
-export function ModuleCollapseToggle({ module }: { module: Module }) {
+function ModuleCollapseToggle({ module }: { module: Module }) {
   const [collapse, setCollapse] = useCollapse();
   const [graph] = useGlobalState('graph');
   const dependencyTypes = useDependencyTypes();
@@ -73,6 +73,7 @@ export function ModuleLinks({ module }: { module: Module }) {
 
   return (
     <div className={styles.moduleLinks}>
+      <ModuleCollapseToggle module={module} />
       {/* Opens in the current view, unlike the customizable links */}
       {isSingleEntryModule ? null : (
         <>
