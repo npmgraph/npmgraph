@@ -1,8 +1,6 @@
-import MarkGithubIcon from 'octicons-plain-react/MarkGithub';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
-import NpmIcon from '../../images/icons/npm.svg?react';
 import { toggleItem } from '../../lib/array-util.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
@@ -58,12 +56,6 @@ function getLinkContent(label: string, href: string) {
   const { hostname } = new URL(href);
 
   switch (label.toLowerCase()) {
-    case 'npm':
-      return <NpmIcon />;
-
-    case 'repo':
-      return hostname === 'github.com' ? <MarkGithubIcon /> : label;
-
     case 'website':
       return hostname === 'github.com' ? label : hostname.replace(/^www\./, '');
 
@@ -78,13 +70,7 @@ export function ModuleLinkButton({
   ...props
 }: { label: string; href: string } & React.HTMLAttributes<HTMLAnchorElement>) {
   return (
-    <Button
-      {...props}
-      target="_blank"
-      href={href}
-      title={label}
-      className={styles.linkButton}
-    >
+    <Button {...props} target="_blank" href={href} title={label}>
       {getLinkContent(label, href)}
     </Button>
   );

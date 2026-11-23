@@ -138,7 +138,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
             {parseCustomModuleLinks(customLinks, {
               name: 'package',
               version: '1.0.0',
-              repository: 'https://github.com/example/repository',
+              repository: 'https://example.com/repository',
               homepage: 'https://example.com/homepage',
             }).map(({ label, href }) => (
               <ModuleLinkButton

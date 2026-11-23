@@ -15,11 +15,6 @@
   gap: 8px;
 }
 
-.linkButton {
-  display: inline-flex;
-  align-items: center;
-}
-
 .separator {
   align-self: center;
   border-inline-start: solid 1px var(--bg1);
