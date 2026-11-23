@@ -15,7 +15,7 @@ export type SPDXLicense = {
   isFsfLibre?: boolean;
 };
 
-export type SPDXLicenseList = {
+type SPDXLicenseList = {
   licenseListVersion: string;
   licenses: SPDXLicense[];
   releaseDate: string;
@@ -36,11 +36,6 @@ const fetchSPDXLicenses = pMemoize(
     );
   },
 );
-
-export async function getLicense(id: string): Promise<SPDXLicense | undefined> {
-  const licenses = await fetchSPDXLicenses();
-  return licenses.get(id.toLowerCase());
-}
 
 let allLicensesPromise: Promise<Map<string, SPDXLicense>> | undefined;
 
