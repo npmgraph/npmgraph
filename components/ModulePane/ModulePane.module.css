@@ -15,6 +15,12 @@
   gap: 8px;
 }
 
+.collapseToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .separator {
   align-self: center;
   border-inline-start: solid 1px var(--bg1);

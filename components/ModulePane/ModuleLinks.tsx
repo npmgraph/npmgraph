@@ -1,5 +1,6 @@
+import SquareIcon from 'octicons-plain-react/Square';
+import SquareFillIcon from 'octicons-plain-react/SquareFill';
 import StackIcon from 'octicons-plain-react/Stack';
-import StackCheckIcon from 'octicons-plain-react/StackCheck';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
@@ -41,14 +42,17 @@ function ModuleCollapseToggle({ module }: { module: Module }) {
   const isCollapsed = collapse.includes(module.name);
 
   return (
-    <ButtonGroup square>
+    <ButtonGroup>
       <Button
+        className={styles.collapseToggle}
         title={isCollapsed ? 'Expand' : 'Collapse'}
+        aria-pressed={isCollapsed}
         onClick={() => {
           setCollapse(toggleItem(collapse, module.name));
         }}
       >
-        {isCollapsed ? <StackCheckIcon /> : <StackIcon />}
+        {isCollapsed ? <SquareFillIcon /> : <SquareIcon />}
+        <StackIcon />
       </Button>
     </ButtonGroup>
   );
