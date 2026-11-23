@@ -77,8 +77,8 @@ function ModuleDetailsPane({
       </div>
 
       <div className={styles.moduleHeader}>
-        <ModuleLinks module={module} />
         <ModuleCollapseToggle module={module} />
+        <ModuleLinks module={module} />
       </div>
 
       <p>{pkg?.description}</p>
