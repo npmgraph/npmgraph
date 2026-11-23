@@ -15,16 +15,16 @@ export type SPDXLicense = {
   isFsfLibre?: boolean;
 };
 
-type SPDXLicenseList = {
-  licenseListVersion: string;
-  licenses: SPDXLicense[];
-  releaseDate: string;
-};
-
 export type LicenseIssue = 'no-osi' | 'no-fsf' | 'deprecated';
 
 const fetchSPDXLicenses = pMemoize(
   async (): Promise<Map<string, SPDXLicense>> => {
+    type SPDXLicenseList = {
+      licenseListVersion: string;
+      licenses: SPDXLicense[];
+      releaseDate: string;
+    };
+
     const response = await fetch(SPDX_URL);
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
