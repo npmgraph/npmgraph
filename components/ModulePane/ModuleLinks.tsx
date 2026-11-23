@@ -2,6 +2,7 @@ import useCollapse from '../../hooks/useCollapse.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { toggleItem } from '../../lib/array-util.ts';
+import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
@@ -95,19 +96,29 @@ export function ModuleLinks({ module }: { module: Module }) {
 
   return (
     <div className={styles.moduleLinks}>
-      <ModuleCollapseToggle module={module} />
-      {/* Opens in the current view, unlike the customizable links */}
       {isSingleEntryModule ? null : (
-        <>
+        <div className={styles.linkGroup}>
+          <ModuleCollapseToggle module={module} />
+          {/* Opens in the current view, unlike the customizable links */}
           <QueryLink component={Button} query={module.key}>
             npmgraph
           </QueryLink>
-          {links.length > 0 && <span className={styles.separator} />}
-        </>
+        </div>
       )}
-      {links.map(({ label, href }) => (
-        <ModuleLinkButton key={`${label}:${href}`} label={label} href={href} />
-      ))}
+      <div
+        className={cn(
+          styles.linkGroup,
+          !isSingleEntryModule && styles.separated,
+        )}
+      >
+        {links.map(({ label, href }) => (
+          <ModuleLinkButton
+            key={`${label}:${href}`}
+            label={label}
+            href={href}
+          />
+        ))}
+      </div>
     </div>
   );
 }
