@@ -1,10 +1,15 @@
 import { useId, useRef, useState, type HTMLProps } from 'react';
 import useGraph from '../../hooks/useGraph.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import useHashParameter from '../../hooks/useHashParam.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { parseCommaList } from '../../lib/array-util.ts';
-import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
+import {
+  PARAM_QUERY,
+  PARAM_TAB,
+  SEARCH_FIELD_ID,
+} from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
 import { searchSet } from '../../lib/url-util.ts';
@@ -21,6 +26,7 @@ export default function QueryInput({
   const inputRef = useRef<HTMLInputElement>(null);
   const enterValueRef = useRef<string | null>(null);
   const [query] = useQuery();
+  const [tab] = useHashParameter(PARAM_TAB);
   const graph = useGraph();
   const setGraphSelection = useGraphSelection()[2];
   const listId = useId();
@@ -51,7 +57,11 @@ export default function QueryInput({
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
     event?.preventDefault();
     enterValueRef.current = null;
-    patchLocation({ search: getSearchParameters(), hash: '' }, false, {
+    // Keep the current tab instead of falling back to the default one
+    const hash = tab
+      ? new URLSearchParams({ [PARAM_TAB]: tab }).toString()
+      : '';
+    patchLocation({ search: getSearchParameters(), hash }, false, {
       isInput: true,
     });
   }

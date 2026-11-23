@@ -1,12 +1,12 @@
 import type { ButtonHTMLAttributes } from 'react';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import { useSelect } from '../../hooks/useSelect.ts';
 import { cn } from '../../lib/dom.ts';
-import type { QueryTypeValue } from '../../lib/ModuleCache.ts';
+import { QueryType, type QueryTypeValue } from '../../lib/ModuleCache.ts';
 import * as styles from './Selectable.module.scss';
 import * as utilities from './utilities.module.css';
 
 export function Selectable({
-  type,
+  type = QueryType.Default,
   value,
   label = value,
   className,
@@ -16,13 +16,13 @@ export function Selectable({
   value: string;
   label?: string;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>) {
-  const setGraphSelection = useGraphSelection()[2];
+  const select = useSelect();
   return (
     <button
       type="button"
       className={cn(styles.root, utilities.brightHover, className)}
       onClick={() => {
-        setGraphSelection(type, value);
+        select(type, value);
       }}
       {...props}
     >

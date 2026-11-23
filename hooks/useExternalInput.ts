@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { SEARCH_FIELD_ID } from '../lib/constants.ts';
+import { flashError } from '../lib/flash.ts';
 import { isValidJson, loadPackageJson, readFile } from '../lib/read-file.ts';
 import * as styles from './useExternalInput.module.css';
 
@@ -18,12 +19,12 @@ function onDrop(ev: DragEvent) {
   // If dropped items aren't files, reject them
   const dt = ev.dataTransfer;
   if (!dt?.items) {
-    alert('Sorry, file dropping is not supported by this browser');
+    flashError('Sorry, file dropping is not supported by this browser');
     return;
   }
 
   if (dt.items.length !== 1) {
-    alert('You must drop exactly one file');
+    flashError('You must drop exactly one file');
     return;
   }
 
@@ -33,13 +34,13 @@ function onDrop(ev: DragEvent) {
   }
 
   if (item.type && item.type !== 'application/json') {
-    alert('File must have a ".json" extension');
+    flashError('File must have a ".json" extension');
     return;
   }
 
   const file = item.getAsFile();
   if (!file) {
-    alert(
+    flashError(
       'Please drop a file, not... well... whatever else it was you dropped',
     );
     return;

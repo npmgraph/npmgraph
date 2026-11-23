@@ -57,11 +57,13 @@ function decorateGraphNodes(
   }
 }
 
-// Keep graphviz in a secondary bundle but load it eagerly
-const graphvizPromise = (async () => {
+async function loadGraphviz() {
   const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
   return Graphviz.load();
-})();
+}
+
+// Keep graphviz in a secondary bundle but load it eagerly
+const graphvizPromise = loadGraphviz();
 
 // Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
 const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
@@ -149,9 +151,7 @@ export default function useRenderDiagram(
       ),
     );
 
-    finish?.();
-
-    return finish;
+    finish();
   }, [activity, graphviz, graph, isModuleVisible, setDiagramElement, sizing]);
 
   return diagramElement;

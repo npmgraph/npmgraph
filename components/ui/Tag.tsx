@@ -1,5 +1,5 @@
 import type { HTMLProps } from 'react';
-import useGraphSelection from '../../hooks/useGraphSelection.ts';
+import { useSelect } from '../../hooks/useSelect.ts';
 import { cn } from '../../lib/dom.ts';
 import { QueryType, type QueryTypeValue } from '../../lib/ModuleCache.ts';
 import { Gravatar } from './Gravatar.tsx';
@@ -30,7 +30,7 @@ export function Tag({
   count?: number;
   gravatar?: string;
 } & Omit<HTMLProps<HTMLButtonElement>, 'type'>) {
-  const setGraphSelection = useGraphSelection()[2];
+  const select = useSelect();
   let title = value;
   if (count > 1) {
     title += ` (${count})`;
@@ -47,7 +47,7 @@ export function Tag({
       )}
       title={title}
       onClick={() => {
-        setGraphSelection(type, value);
+        select(type, value);
       }}
     >
       {gravatar && <Gravatar email={gravatar} />}
