@@ -53,8 +53,14 @@ export async function getLicense(id: string): Promise<SPDXLicense | undefined> {
   return licenses.get(id.toLowerCase());
 }
 
-// Memoized, so every call returns the same promise (which `use()` needs)
-export const getAllLicenses = fetchSPDXLicenses;
+let allLicensesPromise: Promise<Map<string, SPDXLicense>> | undefined;
+
+// The same promise on every call (a memoized function returns a new one once it settled), so `use()` doesn't suspend again
+// eslint-disable-next-line @typescript-eslint/promise-function-async -- It must return the same promise on every call
+export function getAllLicenses(): Promise<Map<string, SPDXLicense>> {
+  allLicensesPromise ??= fetchSPDXLicenses();
+  return allLicensesPromise;
+}
 
 export function getLicenseIssues(spdxLicense: SPDXLicense): LicenseIssue[] {
   const issues: LicenseIssue[] = [];
