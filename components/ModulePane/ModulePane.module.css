@@ -22,8 +22,9 @@
 }
 
 .separator {
-  align-self: stretch;
+  align-self: center;
   border-inline-start: solid 1px var(--bg1);
+  height: 10px;
 }
 
 .sizeGrid {
