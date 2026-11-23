@@ -27,7 +27,7 @@ const fetchSPDXLicenses = pMemoize(
   async (): Promise<Map<string, SPDXLicense>> => {
     const response = await fetch(SPDX_URL);
     if (!response.ok) {
-      throw new Error(`Failed to fetch SPDX licenses: ${response.status}`);
+      throw new Error(`HTTP ${response.status}`);
     }
 
     const data: SPDXLicenseList = await response.json();

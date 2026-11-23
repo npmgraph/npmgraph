@@ -4,6 +4,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import {
   getAllLicenses,
   getLicenseIssues,
+  SPDX_URL,
   type LicenseIssue,
   type SPDXLicense,
 } from '../../../lib/licenses.ts';
@@ -149,6 +150,8 @@ export default function Licenses() {
     <ErrorBoundary
       fallbackRender={({ error }) => (
         <ReportItem title="Licenses" warn>
+          Could not load the SPDX license list from {SPDX_URL}, which is needed
+          to check licenses for issues:{' '}
           {error instanceof Error ? error.message : String(error)}
         </ReportItem>
       )}
