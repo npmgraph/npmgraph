@@ -1,6 +1,7 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { use, useEffect } from 'react';
+import { use, useEffect, type RefObject } from 'react';
+import type { ReactZoomPanPinchContentRef } from 'react-zoom-pan-pinch';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
@@ -133,6 +134,7 @@ function insertDiagram(
 export default function useRenderDiagram(
   activity: LoadActivity,
   isModuleVisible: ({ name }: { name: string }) => boolean,
+  transformRef: RefObject<ReactZoomPanPinchContentRef | null>,
 ) {
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
@@ -151,8 +153,19 @@ export default function useRenderDiagram(
       ),
     );
 
+    // Fit the new graph in the view
+    void transformRef.current?.fitToView({ maxScale: 1, animationTime: 0 });
+
     finish();
-  }, [activity, graphviz, graph, isModuleVisible, setDiagramElement, sizing]);
+  }, [
+    activity,
+    graphviz,
+    graph,
+    isModuleVisible,
+    setDiagramElement,
+    sizing,
+    transformRef,
+  ]);
 
   return diagramElement;
 }

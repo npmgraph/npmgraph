@@ -96,7 +96,11 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useLoadGraph(isModuleVisible);
 
-  const diagramElement = useRenderDiagram(activity, isModuleVisible);
+  const diagramElement = useRenderDiagram(
+    activity,
+    isModuleVisible,
+    transformRef,
+  );
 
   // Effect: Don't allow zooming out further than "fit to screen"
   useEffect(() => {
@@ -137,13 +141,6 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       observer.disconnect();
     };
   }, []);
-
-  // Effect: Fit the graph in the view when it's generated
-  useEffect(() => {
-    if (diagramElement) {
-      void transformRef.current?.fitToView({ maxScale: 1, animationTime: 0 });
-    }
-  }, [diagramElement]);
 
   const selectedModules = useMemo(
     () =>
