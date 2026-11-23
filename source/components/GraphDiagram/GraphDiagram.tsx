@@ -167,7 +167,13 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
       return;
     }
 
-    void colorizeGraph(diagramElement, colorize ?? '');
+    // A newer run replaces this one, so its late results must not be applied
+    const controller = new AbortController();
+    void colorizeGraph(diagramElement, colorize ?? '', controller.signal);
+
+    return () => {
+      controller.abort();
+    };
   }, [colorize, diagramElement]);
 
   // Effect: Reset graph selection on Esc key press
@@ -392,12 +398,17 @@ async function colorizeElement(
   colorizer: SimpleColorizer,
   m: Module,
   path: Element,
+  signal: AbortSignal,
 ) {
   let color;
   try {
     color = await colorizer.colorForModule(m);
   } catch (error) {
     console.warn(`Error colorizing ${m.name}: ${(error as Error).message}`);
+  }
+
+  if (signal.aborted) {
+    return;
   }
 
   if (color) {
@@ -407,7 +418,11 @@ async function colorizeElement(
   }
 }
 
-async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
+async function colorizeGraph(
+  svg: SVGSVGElement,
+  colorize: string,
+  signal: AbortSignal,
+) {
   const colorizer = getColorizer(colorize);
   svg.classList.toggle('colorized', Boolean(colorizer));
 
@@ -436,7 +451,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       }
 
       // Colorize it (async)
-      void colorizeElement(colorizer, m, elementPath);
+      void colorizeElement(colorizer, m, elementPath, signal);
     }
   } else {
     // Bundle up modules
@@ -451,6 +466,9 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
     // Get colors for all modules
     const colors = await colorizer.colorsForModules(modules);
+    if (signal.aborted) {
+      return;
+    }
 
     // Apply colors
     for (const element of moduleEls) {
