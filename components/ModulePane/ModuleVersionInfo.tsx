@@ -1,19 +1,12 @@
 import simplur from 'simplur';
 import { cn } from '../../lib/dom.ts';
 import type Module from '../../lib/Module.ts';
-import {
-  getVersionStatus,
-  type VersionStatus,
-} from '../../lib/version-status.ts';
+import type { VersionStatus } from '../../lib/version-status.ts';
+import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
 import { QueryLink } from '../ui/QueryLink.tsx';
+import { SectionSymbol } from '../ui/Section.tsx';
+import { getStatus } from './module-status.ts';
 import * as styles from './ModuleVersionInfo.module.css';
-
-const outdatedClassNames = {
-  major: styles.majorUpdates,
-  minor: styles.minorUpdates,
-  patch: styles.patchUpdates,
-  prerelease: styles.patchUpdates,
-};
 
 function getOutdatedMessage({
   level,
@@ -34,49 +27,38 @@ function getOutdatedMessage({
   }
 }
 
-export function ModuleVersionInfo({
+// Not outdated, so show the dist-tag the version is pinned to
+export function ModuleDistTag({
   module,
-  className,
+  ...props
+}: { module: Module } & React.HTMLAttributes<HTMLSpanElement>) {
+  const status = getStatus(module);
+  return status?.type === 'tag' ? (
+    <span {...props} className={cn(styles.distTag, props.className)}>
+      {status.tag}
+    </span>
+  ) : null;
+}
+
+export function ModuleOutdated({
+  module,
   ...props
 }: { module: Module } & React.HTMLAttributes<HTMLDivElement>) {
-  if (!module.packument) {
+  const status = getStatus(module);
+  if (status?.type !== 'outdated' || !module.packument) {
     return null;
-  }
-
-  const status = getVersionStatus(
-    module.version,
-    module.packument['dist-tags'],
-  );
-  if (!status || status.type === 'none') {
-    return null;
-  }
-
-  let content = null;
-  let updateClassName = '';
-  if (status.type === 'outdated') {
-    updateClassName = outdatedClassNames[status.level];
-    content = (
-      <>
-        {getOutdatedMessage(status)} <code>latest</code> (
-        <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
-      </>
-    );
-  } else if (status.type === 'tag') {
-    // Not outdated, so show the dist-tag the version is pinned to
-    updateClassName = styles.distTag;
-    content = (
-      <>
-        (<code>{status.tag}</code>)
-      </>
-    );
   }
 
   return (
-    <p
-      {...props}
-      className={cn(styles.moduleVersion, updateClassName, className)}
-    >
-      {content}
-    </p>
+    <div {...props}>
+      <dt>
+        <SectionSymbol warn />
+        Outdated
+      </dt>
+      <dd className={listStyles.details}>
+        {getOutdatedMessage(status)} <code>latest</code> (
+        <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
+      </dd>
+    </div>
   );
 }
