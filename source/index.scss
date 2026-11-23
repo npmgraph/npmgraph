@@ -86,6 +86,10 @@
 
   // How much `brightHover` lightens, 125% is too much on light backgrounds
   --hover-brightness: 105%;
+
+  &:-moz-window-inactive {
+    --accent: color-mix(in oklch, #da6200 25%, #808080);
+  }
 }
 
 // Bigger touch targets
