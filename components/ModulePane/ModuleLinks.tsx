@@ -1,6 +1,8 @@
+import MarkGithubIcon from 'octicons-plain-react/MarkGithub';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
+import NpmLogo from '../../images/partners/npm.svg?react';
 import { toggleItem } from '../../lib/array-util.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
@@ -52,6 +54,24 @@ function ModuleCollapseToggle({ module }: { module: Module }) {
   );
 }
 
+function getLinkContent(label: string, href: string) {
+  const { hostname } = new URL(href);
+
+  switch (label.toLowerCase()) {
+    case 'npm':
+      return <NpmLogo className={styles.logo} />;
+
+    case 'repo':
+      return hostname === 'github.com' ? <MarkGithubIcon /> : label;
+
+    case 'website':
+      return hostname === 'github.com' ? label : hostname.replace(/^www\./, '');
+
+    default:
+      return label;
+  }
+}
+
 export function ModuleLinks({ module }: { module: Module }) {
   const [customLinks] = useCustomModuleLinks();
   const isSingleEntryModule = useIsSingleEntryModule(module);
@@ -82,8 +102,13 @@ export function ModuleLinks({ module }: { module: Module }) {
         </>
       )}
       {links.map(({ label, href }) => (
-        <Button key={`${label}:${href}`} target="_blank" href={href}>
-          {label}
+        <Button
+          key={`${label}:${href}`}
+          target="_blank"
+          href={href}
+          title={label}
+        >
+          {getLinkContent(label, href)}
         </Button>
       ))}
     </div>
