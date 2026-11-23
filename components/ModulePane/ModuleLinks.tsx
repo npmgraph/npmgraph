@@ -1,4 +1,3 @@
-import StackIcon from 'octicons-plain-react/Stack';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
@@ -42,14 +41,12 @@ function ModuleCollapseToggle({ module }: { module: Module }) {
   return (
     <ButtonGroup>
       <ButtonCheckbox
-        title="Collapse"
-        aria-label="Collapse"
         checked={isCollapsed}
         onChange={() => {
           setCollapse(toggleItem(collapse, module.name));
         }}
       >
-        <StackIcon />
+        Collapse
       </ButtonCheckbox>
     </ButtonGroup>
   );
