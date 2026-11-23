@@ -1,4 +1,3 @@
-import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import type { ReactNode } from 'react';
 import { $$optional } from 'select-dom';
 import { patchHash } from '../../hooks/useLocation.ts';
@@ -54,7 +53,6 @@ export function ReportItem({
   const [query] = useQuery();
   const name = sectionName(title);
   const toggleKey = `${query.join(',')}|${name}`;
-  const icon = warn && <AlertFillIcon className={styles.warn} />;
   const body = (
     <>
       {description ? <p className={styles.description}>{description}</p> : null}
@@ -63,13 +61,13 @@ export function ReportItem({
   );
 
   return isReportOnly ? (
-    <DocumentSection title={title} count={count} icon={icon}>
+    <DocumentSection title={title} count={count} warn={warn}>
       {body}
     </DocumentSection>
   ) : (
     <CollapsibleSection
       open={toggled.get(toggleKey) ?? open}
-      icon={icon}
+      warn={warn}
       title={title}
       count={count}
       data-report-item={name}
