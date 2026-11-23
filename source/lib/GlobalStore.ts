@@ -11,8 +11,6 @@ import { hashGet, searchGet } from './url-util.ts';
 
 type GlobalState = {
   colorize?: string;
-  // The rendered graph SVG, set once it's in the DOM
-  diagram?: SVGSVGElement;
   graph: GraphState;
   // On tight screens the graph and the inspector take turns
   isGraphVisible: boolean;

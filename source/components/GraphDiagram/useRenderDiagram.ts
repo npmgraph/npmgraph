@@ -1,6 +1,6 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { use, useEffect } from 'react';
+import { use, useEffect, useMemo } from 'react';
 import { $, $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
@@ -91,8 +91,8 @@ function composeSvgMarkup(
   }
 }
 
-// Replace the diagram in the DOM with the SVG markup
-function insertDiagram(
+// Create the diagram element from the SVG markup
+function createDiagram(
   svgMarkup: string,
   isModuleVisible: ({ name }: { name: string }) => boolean,
 ) {
@@ -116,17 +116,12 @@ function insertDiagram(
     svgDom.setAttribute('height', height);
   }
 
-  // Inject into DOM
-  const element = $(`.${styles.graph}`);
-  getDiagramElement()?.remove();
-  element.append(svgDom);
-
   // Inject SVG definitions: warning pattern and collapsed-node outline
-  select(`.${styles.graph} svg`).insert('defs', ':first-child').html(svgDefs);
+  select(svgDom).insert('defs', ':first-child').html(svgDefs);
 
-  decorateGraphNodes(element, isModuleVisible);
+  decorateGraphNodes(svgDom, isModuleVisible);
 
-  return getDiagramElement();
+  return svgDom;
 }
 
 // Render the graph as SVG in the DOM, and return the SVG element
@@ -137,22 +132,23 @@ export default function useRenderDiagram(
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
-  const [diagramElement, setDiagramElement] = useGlobalState('diagram');
 
-  useEffect(() => {
-    // Post-process rendered DOM
-    const finish = activity.start('Rendering');
-
-    // Signal other hooks that graph DOM has changed
-    setDiagramElement(
-      insertDiagram(
+  // The diagram is derived from the graph, it only needs to be put in the DOM
+  const diagramElement = useMemo(
+    () =>
+      createDiagram(
         composeSvgMarkup(graph, sizing !== null, graphviz),
         isModuleVisible,
       ),
-    );
+    [graph, graphviz, isModuleVisible, sizing],
+  );
 
+  useEffect(() => {
+    const finish = activity.start('Rendering');
+    getDiagramElement()?.remove();
+    $(`.${styles.graph}`).append(diagramElement);
     finish();
-  }, [activity, graphviz, graph, isModuleVisible, setDiagramElement, sizing]);
+  }, [activity, diagramElement]);
 
   return diagramElement;
 }
