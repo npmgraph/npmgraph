@@ -1,12 +1,17 @@
+import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import type { ReactNode } from 'react';
 import { $$optional } from 'select-dom';
 import { patchHash } from '../../hooks/useLocation.ts';
+import { useQuery } from '../../hooks/useQuery.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { sectionName } from '../../hooks/useSectionTarget.ts';
 import { PaneType, PARAM_SECTION, PARAM_TAB } from '../../lib/constants.ts';
 import { CollapsibleSection } from '../ui/Section.tsx';
 import { DocumentSection } from './DocumentSection.tsx';
 import * as styles from './ReportItem.module.css';
+
+// Sections the user opened or closed, to restore them when the pane is shown again
+const toggled = new Map<string, boolean>();
 
 // Like in the report-only view, a single open section is linkable
 function storeOpenSection() {
@@ -46,6 +51,10 @@ export function ReportItem({
   children: ReactNode;
 }) {
   const [isReportOnly] = useReportOnly();
+  const [query] = useQuery();
+  const name = sectionName(title);
+  const toggleKey = `${query.join(',')}|${name}`;
+  const icon = warn && <AlertFillIcon className={styles.warn} />;
   const body = (
     <>
       {description ? <p className={styles.description}>{description}</p> : null}
@@ -54,17 +63,26 @@ export function ReportItem({
   );
 
   return isReportOnly ? (
-    <DocumentSection title={title} count={count} warn={warn}>
+    <DocumentSection title={title} count={count} icon={icon}>
       {body}
     </DocumentSection>
   ) : (
     <CollapsibleSection
-      open={open}
-      warn={warn}
+      open={toggled.get(toggleKey) ?? open}
+      icon={icon}
       title={title}
       count={count}
-      data-report-item={sectionName(title)}
-      onToggle={storeOpenSection}
+      data-report-item={name}
+      onToggle={event => {
+        // Remember only what differs from the default, which may change with the data
+        if (event.currentTarget.open === open) {
+          toggled.delete(toggleKey);
+        } else {
+          toggled.set(toggleKey, event.currentTarget.open);
+        }
+
+        storeOpenSection();
+      }}
     >
       {body}
     </CollapsibleSection>
