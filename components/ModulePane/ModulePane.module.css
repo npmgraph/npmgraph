@@ -13,28 +13,12 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  /* Clips the separator when its group wraps to the start of a line */
-  overflow-x: clip;
 }
 
-.linkGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.separated {
-  position: relative;
-
-  &::before {
-    position: absolute;
-    top: 50%;
-    translate: 0 -50%;
-    inset-inline-start: -4.5px;
-    border-inline-start: solid 1px var(--bg1);
-    height: 10px;
-    content: '';
-  }
+.separator {
+  align-self: center;
+  border-inline-start: solid 1px var(--bg1);
+  height: 10px;
 }
 
 .sizeGrid {
