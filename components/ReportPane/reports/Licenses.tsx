@@ -1,5 +1,6 @@
 import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import { Suspense, use } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import {
   getAllLicenses,
   getLicenseIssues,
@@ -145,8 +146,16 @@ function LoadedLicenses() {
 // The issues of each license show up once the SPDX list is loaded
 export default function Licenses() {
   return (
-    <Suspense fallback={<LicensesReport />}>
-      <LoadedLicenses />
-    </Suspense>
+    <ErrorBoundary
+      fallbackRender={({ error }) => (
+        <ReportItem title="Licenses" warn>
+          {error instanceof Error ? error.message : String(error)}
+        </ReportItem>
+      )}
+    >
+      <Suspense fallback={<LicensesReport />}>
+        <LoadedLicenses />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

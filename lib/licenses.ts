@@ -25,26 +25,15 @@ export type LicenseIssue = 'no-osi' | 'no-fsf' | 'deprecated';
 
 const fetchSPDXLicenses = pMemoize(
   async (): Promise<Map<string, SPDXLicense>> => {
-    try {
-      const response = await fetch(SPDX_URL);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch SPDX licenses: ${response.status}`);
-      }
-
-      const data: SPDXLicenseList = await response.json();
-      return new Map(
-        data.licenses.map(license => [
-          license.licenseId.toLowerCase(),
-          license,
-        ]),
-      );
-    } catch (error) {
-      console.warn(
-        'Failed to fetch SPDX licenses, falling back to empty map',
-        error,
-      );
-      return new Map();
+    const response = await fetch(SPDX_URL);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch SPDX licenses: ${response.status}`);
     }
+
+    const data: SPDXLicenseList = await response.json();
+    return new Map(
+      data.licenses.map(license => [license.licenseId.toLowerCase(), license]),
+    );
   },
 );
 
