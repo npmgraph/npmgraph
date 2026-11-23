@@ -5,19 +5,14 @@
 .title {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 0.25em 0.75em;
 }
 
-.moduleHeader {
+.moduleLinks {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   gap: 8px;
-}
-
-.moduleLinks {
-  flex-wrap: wrap;
 }
 
 .sizeGrid {

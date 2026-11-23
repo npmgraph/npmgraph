@@ -36,67 +36,64 @@ function Warnings({
   const mappingUrl = mapping && resolveDocUrl(mapping.url);
 
   return (
-    <>
-      <hr />
-      <dl className={cn(listStyles.list, styles.list)}>
-        {deprecated ? (
+    <dl className={cn(listStyles.list, styles.list)}>
+      {deprecated ? (
+        <div className={styles.inline}>
+          <dt>
+            <SectionSymbol warn />
+            Deprecated
+          </dt>
+          <dd className={listStyles.details}>{deprecated}</dd>
+        </div>
+      ) : null}
+      {hasOutdated && (
+        <ModuleOutdated module={module} className={styles.inline} />
+      )}
+      {vulnerabilities > 0 && (
+        <div className={styles.inline}>
+          <dt>
+            <SectionSymbol warn />
+            Vulnerable
+          </dt>
+          <dd className={listStyles.details}>
+            <ExternalLink
+              href={`https://github.com/advisories?query=ecosystem%3Anpm+affects%3A${encodeURIComponent(module.name)}`}
+            >
+              {simplur`${vulnerabilities} advisor[y|ies]`}
+            </ExternalLink>
+          </dd>
+        </div>
+      )}
+      {replacements ? (
+        mappingUrl ? (
           <div className={styles.inline}>
             <dt>
               <SectionSymbol warn />
-              Deprecated
-            </dt>
-            <dd className={listStyles.details}>{deprecated}</dd>
-          </div>
-        ) : null}
-        {hasOutdated && (
-          <ModuleOutdated module={module} className={styles.inline} />
-        )}
-        {vulnerabilities > 0 && (
-          <div className={styles.inline}>
-            <dt>
-              <SectionSymbol warn />
-              Vulnerable
+              Replaceable
             </dt>
             <dd className={listStyles.details}>
-              <ExternalLink
-                href={`https://github.com/advisories?query=ecosystem%3Anpm+affects%3A${encodeURIComponent(module.name)}`}
-              >
-                {simplur`${vulnerabilities} advisor[y|ies]`}
-              </ExternalLink>
+              <ExternalLink href={mappingUrl}>learn more</ExternalLink>
             </dd>
           </div>
-        )}
-        {replacements ? (
-          mappingUrl ? (
-            <div className={styles.inline}>
-              <dt>
-                <SectionSymbol warn />
-                Replaceable
-              </dt>
-              <dd className={listStyles.details}>
-                <ExternalLink href={mappingUrl}>learn more</ExternalLink>
-              </dd>
-            </div>
-          ) : (
-            <div>
-              <dt>
-                <SectionSymbol warn />
-                Replaceable
-              </dt>
-              <dd className={listStyles.details}>
-                <ul>
-                  {replacements.filter(isDefined).map(replacement => (
-                    <li key={replacement.id}>
-                      <Replacement replacement={replacement} />
-                    </li>
-                  ))}
-                </ul>
-              </dd>
-            </div>
-          )
-        ) : null}
-      </dl>
-    </>
+        ) : (
+          <div>
+            <dt>
+              <SectionSymbol warn />
+              Replaceable
+            </dt>
+            <dd className={listStyles.details}>
+              <ul>
+                {replacements.filter(isDefined).map(replacement => (
+                  <li key={replacement.id}>
+                    <Replacement replacement={replacement} />
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+        )
+      ) : null}
+    </dl>
   );
 }
 

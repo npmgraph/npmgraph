@@ -8,7 +8,7 @@ import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
 import { ModuleDependents } from './ModuleDependents.tsx';
-import { ModuleActions, ModuleExternalLinks } from './ModuleLinks.tsx';
+import { ModuleCollapseToggle, ModuleLinks } from './ModuleLinks.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
 import * as styles from './ModulePane.module.css';
 import { ModuleSize } from './ModuleSize.tsx';
@@ -73,15 +73,13 @@ function ModuleDetailsPane({
     <Pane {...props}>
       <div className={styles.title}>
         <h2>{module.source ?? module.key}</h2>
+        <ModuleCollapseToggle module={module} />
         {isShowStatus && <ModuleDistTag module={module} />}
       </div>
 
-      <p>{pkg?.description}</p>
+      <ModuleLinks module={module} />
 
-      <div className={styles.moduleHeader}>
-        <ModuleExternalLinks module={module} />
-        <ModuleActions module={module} />
-      </div>
+      <p>{pkg?.description}</p>
 
       <ModuleWarnings module={module} showOutdated={isShowStatus} />
 
