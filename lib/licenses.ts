@@ -53,9 +53,8 @@ export async function getLicense(id: string): Promise<SPDXLicense | undefined> {
   return licenses.get(id.toLowerCase());
 }
 
-export async function getAllLicenses(): Promise<Map<string, SPDXLicense>> {
-  return fetchSPDXLicenses();
-}
+// Memoized, so every call returns the same promise (which `use()` needs)
+export const getAllLicenses = fetchSPDXLicenses;
 
 export function getLicenseIssues(spdxLicense: SPDXLicense): LicenseIssue[] {
   const issues: LicenseIssue[] = [];

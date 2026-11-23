@@ -4,14 +4,10 @@ import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import { patchLocation } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { parseCommaList } from '../../lib/array-util.ts';
-import {
-  PARAM_QUERY,
-  PARAM_TAB,
-  SEARCH_FIELD_ID,
-} from '../../lib/constants.ts';
+import { PARAM_QUERY, SEARCH_FIELD_ID } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { getCachedModule, QueryType } from '../../lib/ModuleCache.ts';
-import { hashGet, hashSet, searchSet } from '../../lib/url-util.ts';
+import { searchSet } from '../../lib/url-util.ts';
 import * as styles from './QueryInput.module.scss';
 
 // No better detection for this :(
@@ -55,13 +51,7 @@ export default function QueryInput({
   function handleSubmit(event?: React.SubmitEvent<HTMLFormElement>) {
     event?.preventDefault();
     enterValueRef.current = null;
-    // Keep the current tab instead of falling back to the default one
-    const hash = hashSet(
-      PARAM_TAB,
-      hashGet(PARAM_TAB) ?? undefined,
-      new URL('about:blank'),
-    );
-    patchLocation({ search: getSearchParameters(), hash }, false, {
+    patchLocation({ search: getSearchParameters(), hash: '' }, false, {
       isInput: true,
     });
   }
