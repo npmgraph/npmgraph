@@ -97,7 +97,7 @@ export function ModuleLinks({ module }: { module: Module }) {
   return (
     <div className={styles.moduleLinks}>
       {isSingleEntryModule ? null : (
-        <div className={styles.linkGroup}>
+        <div className={cn(styles.linkGroup, styles.beforeSeparator)}>
           <ModuleCollapseToggle module={module} />
           {/* Opens in the current view, unlike the customizable links */}
           <QueryLink component={Button} query={module.key}>

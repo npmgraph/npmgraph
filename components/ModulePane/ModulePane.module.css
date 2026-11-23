@@ -23,6 +23,10 @@
   gap: 8px;
 }
 
+.beforeSeparator {
+  margin-inline-end: 8px;
+}
+
 .separated {
   position: relative;
 
@@ -30,7 +34,7 @@
     position: absolute;
     top: 50%;
     translate: 0 -50%;
-    inset-inline-start: -4.5px;
+    inset-inline-start: -8.5px;
     border-inline-start: solid 1px var(--bg1);
     height: 10px;
     content: '';
