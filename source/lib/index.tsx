@@ -32,9 +32,8 @@ function syncWindowActive() {
   document.documentElement.classList.toggle('inactive', !document.hasFocus());
 }
 
-for (const type of ['focus', 'blur']) {
-  globalThis.addEventListener(type, syncWindowActive);
-}
+globalThis.addEventListener('focus', syncWindowActive);
+globalThis.addEventListener('blur', syncWindowActive);
 
 syncWindowActive();
 
