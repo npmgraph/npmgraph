@@ -27,6 +27,17 @@ globalThis.addEventListener('vite:preloadError', event => {
   globalThis.location.reload();
 });
 
+// Dim the colors while the window is inactive, like native apps
+function syncWindowActive() {
+  document.documentElement.classList.toggle('inactive', !document.hasFocus());
+}
+
+for (const type of ['focus', 'blur']) {
+  globalThis.addEventListener(type, syncWindowActive);
+}
+
+syncWindowActive();
+
 globalThis.addEventListener('error', error => {
   // Browsers hide the details of cross-origin script errors, so there's nothing to show.
   // Safari on iOS throws one from `SharingLinkExtractorJS.viewportDominantIFrameHandle()`:
