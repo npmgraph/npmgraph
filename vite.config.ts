@@ -4,7 +4,7 @@ import type { Plugin } from 'vite';
 import svgr from 'vite-plugin-svgr';
 import { configDefaults, defineConfig } from 'vitest/config';
 
-// The app is a dynamic import of bootstrap.ts: fetch it (and graphviz) right away instead of after the entry point runs
+// The app is a dynamic import of bootstrap.ts: fetch it right away instead of after the entry point runs
 const preloadApp = {
   name: 'preload-app',
   transformIndexHtml: {
@@ -19,26 +19,19 @@ const preloadApp = {
         return [];
       }
 
-      // Graphviz is a separate chunk that the app fetches right away
-      const graphviz = Object.values(bundle).find(
-        chunk =>
-          chunk.type === 'chunk' &&
-          chunk.moduleIds.some(id => id.includes('@hpcc-js/wasm-graphviz')),
-      );
-
       return [
         ...[...(app.viteMetadata?.importedCss ?? [])].map(href => ({
           tag: 'link',
           attrs: { rel: 'stylesheet', crossorigin: true, href: `./${href}` },
         })),
-        ...[app, graphviz].filter(Boolean).map(chunk => ({
+        {
           tag: 'link',
           attrs: {
             rel: 'modulepreload',
             crossorigin: true,
-            href: `./${chunk!.fileName}`,
+            href: `./${app.fileName}`,
           },
-        })),
+        },
       ];
     },
   },
@@ -51,6 +44,7 @@ export default defineConfig({
   // Relative base so the site can be served from any subfolder
   base: './',
   plugins: [react(), svgr(), preloadApp],
+  worker: { format: 'es' },
   envPrefix: ['BUGSNAG_', 'VERCEL_', 'NPMGRAPH_'],
   build: {
     outDir: '../dist',

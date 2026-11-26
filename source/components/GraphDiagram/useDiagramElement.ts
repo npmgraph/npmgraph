@@ -1,16 +1,14 @@
-import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { $$optional, $optional } from 'select-dom';
 import { useActivity } from '../../hooks/useActivity.ts';
 import useAsyncEffect from '../../hooks/useAsyncEffect.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
-import { nextPaint } from '../../lib/dom.ts';
 import { flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
-import memoizeRecent from '../../lib/memoizeRecent.ts';
+import { layout } from '../../lib/graphviz.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
 import svgDefs from './GraphDiagram.defs.svg?raw';
 import * as styles from './GraphDiagram.module.scss';
@@ -55,29 +53,12 @@ function decorateGraphNodes(
   }
 }
 
-async function loadGraphviz() {
-  const { Graphviz } = await import('@hpcc-js/wasm-graphviz');
-  return Graphviz.load();
-}
-
-// Keep graphviz in a secondary bundle but load it eagerly
-const graphvizPromise = loadGraphviz();
-
-// Layout is slow, so remember the latest ones (e.g. when going back to the Graph tab)
-const layout = memoizeRecent((dot: string, graphviz: Graphviz) =>
-  graphviz.dot(dot, 'svg'),
-);
-
 // Compose the SVG markup of the graph
-function composeSvgMarkup(
-  graph: GraphState,
-  hasSizing: boolean,
-  graphviz: Graphviz,
-) {
+async function composeSvgMarkup(graph: GraphState, hasSizing: boolean) {
   const dotDoc = composeDOT({ graph, sizing: hasSizing });
 
   try {
-    return layout(dotDoc, graphviz);
+    return await layout(dotDoc);
   } catch (error) {
     console.error(error);
     flashError('Error while rendering graph');
@@ -125,11 +106,9 @@ export default function useDiagramElement(
   const activity = useActivity();
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
-  const graphviz = use(graphvizPromise);
   // The previous element stays until the new one is ready
   const [diagramElement, setDiagramElement] = useState<SVGSVGElement>();
 
-  // The layout is sync, so this effect is async only to yield (see below).
   // `isModuleVisible` isn't a dep because it changes before the graph that reflects it is loaded.
   useAsyncEffect(
     async signal => {
@@ -139,25 +118,17 @@ export default function useDiagramElement(
         return;
       }
 
-      // Start after the other effects' activities, so this title wins
-      await Promise.resolve();
       const finish = activity.start('Rendering');
       try {
-        // The layout blocks the thread, so let the Loader paint before it
-        await nextPaint();
+        const svgMarkup = await composeSvgMarkup(graph, sizing !== null);
         if (!signal.aborted) {
-          setDiagramElement(
-            createDiagram(
-              composeSvgMarkup(graph, sizing !== null, graphviz),
-              isModuleVisible,
-            ),
-          );
+          setDiagramElement(createDiagram(svgMarkup, isModuleVisible));
         }
       } finally {
         finish();
       }
     },
-    [graph, graphviz, sizing],
+    [graph, sizing],
   );
 
   return diagramElement;
