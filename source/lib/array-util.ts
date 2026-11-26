@@ -6,8 +6,8 @@ export function toggleItem<T>(array: readonly T[], item: T): T[] {
 }
 
 // Turn "a, b,,c" into ['a', 'b', 'c']
-export function parseCommaList(value?: string | null): string[] {
-  return (value ?? '')
+export function parseCommaList(value = ''): string[] {
+  return value
     .split(',')
     .map(item => item.trim())
     .filter(Boolean);

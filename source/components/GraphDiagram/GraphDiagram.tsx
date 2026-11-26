@@ -177,7 +177,7 @@ function GraphDiagramInner() {
   useAsyncEffect(
     async signal => {
       if (diagramElement) {
-        await colorizeGraph(diagramElement, colorize ?? '', signal);
+        await colorizeGraph(diagramElement, colorize, signal);
       }
     },
     [colorize, diagramElement],
@@ -427,7 +427,7 @@ async function colorizeElement(
 
 async function colorizeGraph(
   svg: SVGSVGElement,
-  colorize: string,
+  colorize: string | undefined,
   signal: AbortSignal,
 ) {
   const colorizer = getColorizer(colorize);

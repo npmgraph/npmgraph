@@ -35,7 +35,7 @@ export function useTab() {
   const tab =
     isInfoOpen && !isTightScreen
       ? PaneType.INFO
-      : tabParameter !== null && tabs.has(tabParameter)
+      : tabParameter !== undefined && tabs.has(tabParameter)
         ? (tabParameter as PaneTypes)
         : defaultTab;
 

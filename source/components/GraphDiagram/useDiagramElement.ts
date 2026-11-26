@@ -148,7 +148,7 @@ export default function useDiagramElement(
         if (!signal.aborted) {
           setDiagramElement(
             createDiagram(
-              composeSvgMarkup(graph, sizing !== null, graphviz),
+              composeSvgMarkup(graph, sizing !== undefined, graphviz),
               isModuleVisible,
             ),
           );
