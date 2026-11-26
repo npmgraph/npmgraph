@@ -27,6 +27,7 @@ import { COLORS, PARAM_COLORIZE, type ColorName } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { gatherSelectionInfo, type GraphState } from '../../lib/graph-util.ts';
+import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
 import {
   getCachedModule,
@@ -46,7 +47,7 @@ import { clampPosition, getFitScale } from './viewport-util.ts';
 const isTouchscreen = globalThis.matchMedia('(pointer: coarse)').matches;
 const idSeen = new Set<unknown>();
 
-export default function GraphDiagram() {
+export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
   return (
     <ErrorBoundary
       fallback={
@@ -56,18 +57,19 @@ export default function GraphDiagram() {
       }
     >
       <Suspense fallback={<div className={styles.status}>Loading…</div>}>
-        <GraphDiagramInner />
+        <GraphDiagramInner activity={activity} />
       </Suspense>
     </ErrorBoundary>
   );
 }
 
-function GraphDiagramInner() {
+function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph] = useGlobalState('graph');
   const [query] = useQuery();
   const [collapse] = useCollapse();
-  const [colorize = ''] = useHashParam(PARAM_COLORIZE);
+  const [colorizeParam] = useHashParam(PARAM_COLORIZE);
+  const colorize = colorizeParam ?? '';
 
   const handleGraphClick = useGraphClick();
 
@@ -101,9 +103,15 @@ function GraphDiagramInner() {
   // Put the diagram in the DOM
   const graphRef = useCallback(
     (container: HTMLDivElement | null) => {
-      container?.replaceChildren(diagramElement);
+      if (!container) {
+        return;
+      }
+
+      const finish = activity.start('Rendering');
+      container.replaceChildren(diagramElement);
+      finish();
     },
-    [diagramElement],
+    [activity, diagramElement],
   );
 
   // Effect: Don't allow zooming out further than "fit to screen"

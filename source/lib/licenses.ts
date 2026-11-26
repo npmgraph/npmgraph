@@ -23,7 +23,7 @@ export type SPDXLicenseList = {
 
 export type LicenseIssue = 'no-osi' | 'no-fsf' | 'deprecated';
 
-const fetchSPDXLicenses = pMemoize(
+export const getAllLicenses = pMemoize(
   async (): Promise<Map<string, SPDXLicense>> => {
     try {
       const response = await fetch(SPDX_URL);
@@ -47,15 +47,6 @@ const fetchSPDXLicenses = pMemoize(
     }
   },
 );
-
-export async function getLicense(id: string): Promise<SPDXLicense | undefined> {
-  const licenses = await fetchSPDXLicenses();
-  return licenses.get(id.toLowerCase());
-}
-
-export async function getAllLicenses(): Promise<Map<string, SPDXLicense>> {
-  return fetchSPDXLicenses();
-}
 
 export function getLicenseIssues(spdxLicense: SPDXLicense): LicenseIssue[] {
   const issues: LicenseIssue[] = [];

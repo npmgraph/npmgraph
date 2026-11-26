@@ -73,7 +73,7 @@ export default function App() {
         {activity.total > 0 ? <Loader activity={activity} /> : null}
         <main className={styles.content}>
           <div className={styles.graph} hidden={isGraphHidden}>
-            <GraphDiagram />
+            <GraphDiagram activity={activity} />
           </div>
           <Inspector />
         </main>

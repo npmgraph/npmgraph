@@ -4,7 +4,7 @@ import colorizers, { getColorizer } from '../colorizers/index.ts';
 import * as styles from './ColorizeInput.module.css';
 
 export default function ColorizeInput() {
-  const [colorize = '', setColorize] = useHashParam(PARAM_COLORIZE);
+  const [colorize, setColorize] = useHashParam(PARAM_COLORIZE);
 
   const options = [
     <option key="none" value="">
@@ -17,7 +17,7 @@ export default function ColorizeInput() {
     )),
   ];
 
-  const colorizer = getColorizer(colorize);
+  const colorizer = getColorizer(colorize ?? '');
   const legend = colorizer?.legend?.();
 
   return (
@@ -25,7 +25,7 @@ export default function ColorizeInput() {
       <label className={styles.colorizeUi}>
         <span>Colorize by:</span>
         <select
-          value={colorize}
+          value={colorize ?? ''}
           onChange={event => {
             setColorize(event.target.value);
           }}

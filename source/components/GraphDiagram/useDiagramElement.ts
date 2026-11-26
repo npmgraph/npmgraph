@@ -130,7 +130,7 @@ export default function useDiagramElement(
   return useMemo(
     () =>
       createDiagram(
-        composeSvgMarkup(graph, sizing !== undefined, graphviz),
+        composeSvgMarkup(graph, sizing !== null, graphviz),
         isModuleVisible,
       ),
     [graph, graphviz, isModuleVisible, sizing],

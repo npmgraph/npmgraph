@@ -7,7 +7,6 @@ import {
 } from '../lib/constants.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
 import useHashParam from './useHashParam.ts';
-import { useIsTightScreen } from './useIsTightScreen.ts';
 import { patchHash } from './useLocation.ts';
 import { useQuery } from './useQuery.ts';
 
@@ -29,15 +28,12 @@ export function useTab() {
   const [tabParameter] = useHashParam(PARAM_TAB);
   const [isInfoOpen, setInfoOpen] = useGlobalState('isInfoOpen');
   const [, setGraphVisible] = useGlobalState('isGraphVisible');
-  const isTightScreen = useIsTightScreen();
   const defaultTab = useDefaultTab();
-  // The info tab is hidden on tight screens
-  const tab =
-    isInfoOpen && !isTightScreen
-      ? PaneType.INFO
-      : tabParameter !== undefined && tabs.has(tabParameter)
-        ? (tabParameter as PaneTypes)
-        : defaultTab;
+  const tab = isInfoOpen
+    ? PaneType.INFO
+    : tabParameter !== null && tabs.has(tabParameter)
+      ? (tabParameter as PaneTypes)
+      : defaultTab;
 
   // Show a tab (`null` goes back to the default one): leave the report-only view, leave the mobile graph and drop the section of the previous tab
   // `PaneType.NONE` closes the inspector instead, and leaves the graph alone

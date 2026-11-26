@@ -1,5 +1,5 @@
 import AlertFillIcon from 'octicons-plain-react/AlertFill';
-import { useEffect, useState } from 'react';
+import { Suspense, use } from 'react';
 import {
   getAllLicenses,
   getLicenseIssues,
@@ -30,20 +30,6 @@ function Badge({ children }: { children: string }) {
       {children}
     </span>
   );
-}
-
-function useSpdxLicenses() {
-  const [spdxLicenses, setSpdxLicenses] = useState<Map<string, SPDXLicense>>();
-
-  useEffect(() => {
-    async function load() {
-      setSpdxLicenses(await getAllLicenses());
-    }
-
-    void load();
-  }, []);
-
-  return spdxLicenses;
 }
 
 function LicenseRow({
@@ -78,9 +64,12 @@ function LicenseRow({
   );
 }
 
-export default function Licenses() {
+function LicensesReport({
+  spdxLicenses,
+}: {
+  spdxLicenses?: Map<string, SPDXLicense>;
+}) {
   const { modulesByLicense, unlicensedModules } = useLicenseAnalysis();
-  const spdxLicenses = useSpdxLicenses();
 
   const licenses = [...modulesByLicense].filter(
     ([license]) => license !== UNLICENSED,
@@ -146,5 +135,18 @@ export default function Licenses() {
         ))}
       </Rows>
     </ReportItem>
+  );
+}
+
+function LicensesWithSpdx() {
+  return <LicensesReport spdxLicenses={use(getAllLicenses())} />;
+}
+
+// The report is useful before the SPDX list (used for the warnings) has loaded
+export default function Licenses() {
+  return (
+    <Suspense fallback={<LicensesReport />}>
+      <LicensesWithSpdx />
+    </Suspense>
   );
 }
