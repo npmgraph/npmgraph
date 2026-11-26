@@ -75,7 +75,7 @@ export default function ViewPane(props: HTMLProps<HTMLDivElement>) {
       <Toggle
         checked={sizing === ''}
         onChange={() => {
-          setSizing(sizing === null);
+          setSizing(sizing === undefined);
         }}
       >
         Size modules by unpacked size

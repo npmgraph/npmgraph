@@ -9,13 +9,13 @@ export function useHashParameters() {
 
 export default function useHashParameter(parameterName: string) {
   const [parameters] = useHashParameters();
-  const parameter = parameters.get(parameterName);
+  const parameter = parameters.get(parameterName) ?? undefined;
 
   const setValue = (
     value: string | boolean | number | null | undefined,
     shouldReplace = true,
   ) => {
-    if (value === parameter) {
+    if ((value ?? undefined) === parameter) {
       return;
     }
 
