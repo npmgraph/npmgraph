@@ -118,8 +118,6 @@ export default function useDiagramElement(
         return;
       }
 
-      // Start after the other effects' activities, so this title wins
-      await Promise.resolve();
       const finish = activity.start('Rendering');
       try {
         const svgMarkup = await composeSvgMarkup(graph, sizing !== null);
