@@ -102,19 +102,17 @@ function GraphDiagramInner() {
   const graphRef = useCallback(
     (container: HTMLDivElement | null) => {
       container?.replaceChildren();
-      if (diagramElement) {
-        container?.append(diagramElement);
+      if (!container || !diagramElement) {
+        return;
       }
+
+      container.append(diagramElement);
+
+      // Fit the new graph in the view
+      void transformRef.current?.fitToView({ maxScale: 1, animationTime: 0 });
     },
     [diagramElement],
   );
-
-  // Effect: Fit the new graph in the view (before the selection is scrolled into view)
-  useEffect(() => {
-    if (diagramElement) {
-      void transformRef.current?.fitToView({ maxScale: 1, animationTime: 0 });
-    }
-  }, [diagramElement]);
 
   // Effect: Don't allow zooming out further than "fit to screen"
   useEffect(() => {
