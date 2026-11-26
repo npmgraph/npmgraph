@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, SyntheticEvent } from 'react';
 import { $$optional } from 'select-dom';
 import { patchHash } from '../../hooks/useLocation.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
@@ -12,26 +12,35 @@ import * as styles from './ReportItem.module.css';
 // Sections the user opened or closed, to restore them when the pane is shown again
 const toggled = new Map<string, boolean>();
 
-// Like in the report-only view, a single open section is linkable
-function storeOpenSection() {
-  const [firstItem, moreThanOpenOpen] = $$optional(
-    'details[data-report-item][open]',
-  );
-  const section = moreThanOpenOpen
-    ? null
-    : // Also update when closing, since the one left open may be a different section
-      // eslint-disable-next-line unicorn/dom-node-dataset -- No greppability
-      firstItem?.getAttribute('data-report-item');
-
-  // The section only makes sense together with its tab
-  patchHash(parameters => {
-    parameters.set(PARAM_TAB, PaneType.REPORT);
-    if (section) {
-      parameters.set(PARAM_SECTION, section);
+// Remember the toggled section (only what differs from the default, which may change with the data)
+// and, like in the report-only view, make a single open section linkable
+function storeOpenSection(toggleKey: string, isOpenByDefault: boolean) {
+  return (event: SyntheticEvent<HTMLDetailsElement>) => {
+    if (event.currentTarget.open === isOpenByDefault) {
+      toggled.delete(toggleKey);
     } else {
-      parameters.delete(PARAM_SECTION);
+      toggled.set(toggleKey, event.currentTarget.open);
     }
-  });
+
+    const [firstItem, moreThanOpenOpen] = $$optional(
+      'details[data-report-item][open]',
+    );
+    const section = moreThanOpenOpen
+      ? null
+      : // Also update when closing, since the one left open may be a different section
+        // eslint-disable-next-line unicorn/dom-node-dataset -- No greppability
+        firstItem?.getAttribute('data-report-item');
+
+    // The section only makes sense together with its tab
+    patchHash(parameters => {
+      parameters.set(PARAM_TAB, PaneType.REPORT);
+      if (section) {
+        parameters.set(PARAM_SECTION, section);
+      } else {
+        parameters.delete(PARAM_SECTION);
+      }
+    });
+  };
 }
 
 export function ReportItem({
@@ -71,16 +80,7 @@ export function ReportItem({
       title={title}
       count={count}
       data-report-item={name}
-      onToggle={event => {
-        // Remember only what differs from the default, which may change with the data
-        if (event.currentTarget.open === open) {
-          toggled.delete(toggleKey);
-        } else {
-          toggled.set(toggleKey, event.currentTarget.open);
-        }
-
-        storeOpenSection();
-      }}
+      onToggle={storeOpenSection(toggleKey, open)}
     >
       {body}
     </CollapsibleSection>
