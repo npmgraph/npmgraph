@@ -1,22 +1,19 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { use, useEffect, type RefObject } from 'react';
-import type { ReactZoomPanPinchContentRef } from 'react-zoom-pan-pinch';
-import { $, $$optional, $optional } from 'select-dom';
+import { use, useState } from 'react';
+import { $$optional, $optional } from 'select-dom';
+import { useActivity } from '../../hooks/useActivity.ts';
+import useAsyncEffect from '../../hooks/useAsyncEffect.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
+import { nextPaint } from '../../lib/dom.ts';
 import { flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
-import type LoadActivity from '../../lib/LoadActivity.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
 import svgDefs from './GraphDiagram.defs.svg?raw';
 import * as styles from './GraphDiagram.module.scss';
-
-function getDiagramElement() {
-  return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
-}
 
 function decorateGraphNodes(
   element: Element,
@@ -77,10 +74,6 @@ function composeSvgMarkup(
   hasSizing: boolean,
   graphviz: Graphviz,
 ) {
-  if (graph.moduleInfos.size === 0) {
-    return '<svg />';
-  }
-
   const dotDoc = composeDOT({ graph, sizing: hasSizing });
 
   try {
@@ -92,8 +85,8 @@ function composeSvgMarkup(
   }
 }
 
-// Replace the diagram in the DOM with the SVG markup
-function insertDiagram(
+// Create the diagram element from the SVG markup
+function createDiagram(
   svgMarkup: string,
   isModuleVisible: ({ name }: { name: string }) => boolean,
 ) {
@@ -117,55 +110,55 @@ function insertDiagram(
     svgDom.setAttribute('height', height);
   }
 
-  // Inject into DOM
-  const element = $(`.${styles.graph}`);
-  getDiagramElement()?.remove();
-  element.append(svgDom);
-
   // Inject SVG definitions: warning pattern and collapsed-node outline
-  select(`.${styles.graph} svg`).insert('defs', ':first-child').html(svgDefs);
+  select(svgDom).insert('defs', ':first-child').html(svgDefs);
 
-  decorateGraphNodes(element, isModuleVisible);
+  decorateGraphNodes(svgDom, isModuleVisible);
 
-  return getDiagramElement();
+  return svgDom;
 }
 
-// Render the graph as SVG in the DOM, and return the SVG element
-export default function useRenderDiagram(
-  activity: LoadActivity,
+// Create the SVG element of the graph (it's up to the caller to put it in the DOM)
+export default function useDiagramElement(
   isModuleVisible: ({ name }: { name: string }) => boolean,
-  transformRef: RefObject<ReactZoomPanPinchContentRef | null>,
 ) {
+  const activity = useActivity();
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
-  const [diagramElement, setDiagramElement] = useGlobalState('diagram');
+  // The previous element stays until the new one is ready
+  const [diagramElement, setDiagramElement] = useState<SVGSVGElement>();
 
-  useEffect(() => {
-    // Post-process rendered DOM
-    const finish = activity.start('Rendering');
+  // The layout is sync, so this effect is async only to yield (see below).
+  // `isModuleVisible` isn't a dep because it changes before the graph that reflects it is loaded.
+  useAsyncEffect(
+    async signal => {
+      // Nothing to lay out
+      if (graph.moduleInfos.size === 0) {
+        setDiagramElement(undefined);
+        return;
+      }
 
-    // Signal other hooks that graph DOM has changed
-    setDiagramElement(
-      insertDiagram(
-        composeSvgMarkup(graph, sizing !== null, graphviz),
-        isModuleVisible,
-      ),
-    );
-
-    // Fit the new graph in the view
-    void transformRef.current?.fitToView({ maxScale: 1, animationTime: 0 });
-
-    finish();
-  }, [
-    activity,
-    graphviz,
-    graph,
-    isModuleVisible,
-    setDiagramElement,
-    sizing,
-    transformRef,
-  ]);
+      // Start after the other effects' activities, so this title wins
+      await Promise.resolve();
+      const finish = activity.start('Rendering');
+      try {
+        // The layout blocks the thread, so let the Loader paint before it
+        await nextPaint();
+        if (!signal.aborted) {
+          setDiagramElement(
+            createDiagram(
+              composeSvgMarkup(graph, sizing !== null, graphviz),
+              isModuleVisible,
+            ),
+          );
+        }
+      } finally {
+        finish();
+      }
+    },
+    [graph, graphviz, sizing],
+  );
 
   return diagramElement;
 }

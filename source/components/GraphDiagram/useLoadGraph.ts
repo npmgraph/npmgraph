@@ -1,11 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+import useAsyncEffect from '../../hooks/useAsyncEffect.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { useQuery } from '../../hooks/useQuery.ts';
 import { PARAM_PACKAGES } from '../../lib/constants.ts';
 import { celebrate } from '../../lib/flash.ts';
-import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { setGlobalState } from '../../lib/GlobalStore.ts';
 import { getGraphForQuery, type GraphState } from '../../lib/graph-util.ts';
 
 // Celebrate when a graph that was just loaded is a single module without dependencies
@@ -25,51 +26,38 @@ function celebrateZeroDependencies(
   }
 }
 
-// Fetch the modules of the query and store the resulting graph
+// Keep the graph in the store in sync with the query
 export default function useLoadGraph(
   isModuleVisible: ({ name }: { name: string }) => boolean,
 ) {
   const [query] = useQuery();
   // Pasted package.json files are in the hash, they can change without the query changing
   const [packages] = useHashParam(PARAM_PACKAGES);
-  const [, setGraph] = useGlobalState('graph');
   const [collapse] = useCollapse();
   const dependencyTypes = useDependencyTypes();
 
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function load() {
-      const newGraph = await getGraphForQuery(
+  // Fetch the modules of the query and put the resulting graph in the store.
+  // The store keeps the previous graph until then, so nothing flashes meanwhile.
+  useAsyncEffect(
+    async signal => {
+      const graph = await getGraphForQuery(
         sortedQuery,
         dependencyTypes,
         isModuleVisible,
-        controller.signal,
+        signal,
       );
 
       // Check after async
-      if (controller.signal.aborted) {
+      if (signal.aborted) {
         return;
       }
 
-      celebrateZeroDependencies(newGraph, isModuleVisible);
-      setGraph(newGraph);
-    }
-
-    void load();
-
-    return () => {
-      controller.abort();
-    };
-  }, [
-    sortedQuery,
-    dependencyTypes,
-    collapse,
-    isModuleVisible,
-    packages,
-    setGraph,
-  ]);
+      celebrateZeroDependencies(graph, isModuleVisible);
+      setGlobalState('graph', graph);
+    },
+    [sortedQuery, dependencyTypes, collapse, isModuleVisible, packages],
+  );
 }

@@ -1,5 +1,3 @@
-import pMemoize from 'p-memoize';
-
 export const SPDX_URL =
   'https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json';
 
@@ -15,46 +13,39 @@ export type SPDXLicense = {
   isFsfLibre?: boolean;
 };
 
-export type SPDXLicenseList = {
-  licenseListVersion: string;
-  licenses: SPDXLicense[];
-  releaseDate: string;
-};
-
 export type LicenseIssue = 'no-osi' | 'no-fsf' | 'deprecated';
 
-const fetchSPDXLicenses = pMemoize(
-  async (): Promise<Map<string, SPDXLicense>> => {
-    try {
-      const response = await fetch(SPDX_URL);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch SPDX licenses: ${response.status}`);
-      }
+let allLicensesPromise: Promise<Map<string, SPDXLicense>> | undefined;
 
-      const data: SPDXLicenseList = await response.json();
-      return new Map(
-        data.licenses.map(license => [
-          license.licenseId.toLowerCase(),
-          license,
-        ]),
-      );
-    } catch (error) {
-      console.warn(
-        'Failed to fetch SPDX licenses, falling back to empty map',
-        error,
-      );
-      return new Map();
+async function fetchSPDXLicenses(): Promise<Map<string, SPDXLicense>> {
+  try {
+    type SPDXLicenseList = {
+      licenseListVersion: string;
+      licenses: SPDXLicense[];
+      releaseDate: string;
+    };
+
+    const response = await fetch(SPDX_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
     }
-  },
-);
 
-export async function getLicense(id: string): Promise<SPDXLicense | undefined> {
-  const licenses = await fetchSPDXLicenses();
-  return licenses.get(id.toLowerCase());
+    const data: SPDXLicenseList = await response.json();
+    return new Map(
+      data.licenses.map(license => [license.licenseId.toLowerCase(), license]),
+    );
+  } catch (error) {
+    // Let the next call try again
+    allLicensesPromise = undefined;
+    throw error;
+  }
 }
 
-export async function getAllLicenses(): Promise<Map<string, SPDXLicense>> {
-  return fetchSPDXLicenses();
+// The same promise on every call, so `use()` doesn't suspend again
+// eslint-disable-next-line @typescript-eslint/promise-function-async -- It must return the same promise on every call
+export function getAllLicenses(): Promise<Map<string, SPDXLicense>> {
+  allLicensesPromise ??= fetchSPDXLicenses();
+  return allLicensesPromise;
 }
 
 export function getLicenseIssues(spdxLicense: SPDXLicense): LicenseIssue[] {
