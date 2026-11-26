@@ -405,12 +405,17 @@ async function colorizeElement(
   colorizer: SimpleColorizer,
   m: Module,
   path: Element,
+  signal: AbortSignal,
 ) {
   let color;
   try {
     color = await colorizer.colorForModule(m);
   } catch (error) {
     console.warn(`Error colorizing ${m.name}: ${(error as Error).message}`);
+  }
+
+  if (signal.aborted) {
+    return;
   }
 
   if (color) {
@@ -453,7 +458,7 @@ async function colorizeGraph(
       }
 
       // Colorize it (async)
-      void colorizeElement(colorizer, m, elementPath);
+      void colorizeElement(colorizer, m, elementPath, signal);
     }
   } else {
     // Bundle up modules
