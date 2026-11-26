@@ -102,7 +102,9 @@ function GraphDiagramInner() {
   // Put the diagram in the DOM
   const graphRef = useCallback(
     (container: HTMLDivElement | null) => {
-      container?.replaceChildren(diagramElement);
+      if (diagramElement) {
+        container?.replaceChildren(diagramElement);
+      }
     },
     [diagramElement],
   );

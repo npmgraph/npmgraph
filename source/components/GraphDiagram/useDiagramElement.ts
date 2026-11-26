@@ -1,7 +1,9 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { use, useMemo } from 'react';
+import { use, useState } from 'react';
 import { $$optional, $optional } from 'select-dom';
+import { useActivity } from '../../hooks/useActivity.ts';
+import useAsyncEffect from '../../hooks/useAsyncEffect.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
 import { flashError } from '../../lib/flash.ts';
@@ -119,20 +121,46 @@ function createDiagram(
   return svgDom;
 }
 
+// Wait until the browser has painted
+const nextPaint = async () =>
+  new Promise<void>(resolve => {
+    requestAnimationFrame(() => {
+      setTimeout(resolve, 0);
+    });
+  });
+
 // Create the SVG element of the graph (it's up to the caller to put it in the DOM)
 export default function useDiagramElement(
   isModuleVisible: ({ name }: { name: string }) => boolean,
 ) {
+  const activity = useActivity();
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
+  // The previous element stays until the new one is ready, so nothing flashes meanwhile
+  const [diagramElement, setDiagramElement] = useState<SVGSVGElement>();
 
-  return useMemo(
-    () =>
-      createDiagram(
-        composeSvgMarkup(graph, sizing !== null, graphviz),
-        isModuleVisible,
-      ),
-    [graph, graphviz, isModuleVisible, sizing],
+  // The work is sync, but it's wrapped in an async effect to yield first so the
+  // Loader can paint before the thread is blocked, and to drop superseded runs
+  useAsyncEffect(
+    async signal => {
+      const finish = activity.start('Rendering');
+      try {
+        await nextPaint();
+        if (!signal.aborted) {
+          setDiagramElement(
+            createDiagram(
+              composeSvgMarkup(graph, sizing !== null, graphviz),
+              isModuleVisible,
+            ),
+          );
+        }
+      } finally {
+        finish();
+      }
+    },
+    [activity, graph, graphviz, isModuleVisible, sizing],
   );
+
+  return diagramElement;
 }
