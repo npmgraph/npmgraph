@@ -14,6 +14,7 @@
   &:not(:first-child) {
     position: relative;
 
+    /* The separator: a line in the gap before this section. It's clipped by `.toolbar` once the section wraps to a new line, so it disappears there */
     &::before {
       position: absolute;
       top: 50%;
