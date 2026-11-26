@@ -1,5 +1,6 @@
 import { resolveDocUrl } from 'module-replacements';
 import { Suspense, use } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import simplur from 'simplur';
 import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
@@ -20,13 +21,15 @@ function Warnings({
   module,
   showOutdated,
   vulnerabilities,
-}: Props & { vulnerabilities: number }) {
+  advisoriesError,
+}: Props & { vulnerabilities: number; advisoriesError?: unknown }) {
   const { deprecated } = module.package;
   const hasOutdated = showOutdated && isOutdated(module);
   const { mapping, replacements } = getReplacements(module.name);
   if (!(
     hasOutdated ||
     vulnerabilities > 0 ||
+    Boolean(advisoriesError) ||
     Boolean(deprecated) ||
     Boolean(mapping)
   )) {
@@ -61,6 +64,20 @@ function Warnings({
             >
               {simplur`${vulnerabilities} advisor[y|ies]`}
             </ExternalLink>
+          </dd>
+        </div>
+      )}
+      {Boolean(advisoriesError) && (
+        <div className={styles.inline}>
+          <dt>
+            <SectionSymbol warn />
+            Vulnerabilities
+          </dt>
+          <dd className={listStyles.details}>
+            Could not load the security advisories:{' '}
+            {advisoriesError instanceof Error
+              ? advisoriesError.message
+              : String(advisoriesError)}
           </dd>
         </div>
       )}
@@ -104,8 +121,15 @@ function WithVulnerabilities(props: Props) {
 
 export function ModuleWarnings(props: Props) {
   return (
-    <Suspense fallback={<Warnings {...props} vulnerabilities={0} />}>
-      <WithVulnerabilities {...props} />
-    </Suspense>
+    <ErrorBoundary
+      resetKeys={[props.module]}
+      fallbackRender={({ error }) => (
+        <Warnings {...props} vulnerabilities={0} advisoriesError={error} />
+      )}
+    >
+      <Suspense fallback={<Warnings {...props} vulnerabilities={0} />}>
+        <WithVulnerabilities {...props} />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

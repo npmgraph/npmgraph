@@ -1,10 +1,9 @@
-import { useEffect, type HTMLProps } from 'react';
-import { $ } from 'select-dom';
+import type { HTMLProps } from 'react';
 import { useIsTightScreen } from '../../hooks/useIsTightScreen.ts';
 import useReportOnly from '../../hooks/useReportOnly.ts';
 import { useTab } from '../../hooks/useTab.ts';
 import { PaneType, type PaneTypes } from '../../lib/constants.ts';
-import { cn } from '../../lib/dom.ts';
+import { cn, getScroller } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { InspectorCloseButton } from './InspectorCloseButton.tsx';
 import * as styles from './Tabs.module.scss';
@@ -16,19 +15,11 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
   const [tab, selectTab] = useTab();
   const [isGraphVisible, setGraphVisible] = useGlobalState('isGraphVisible');
   const isTightScreen = useIsTightScreen();
-  const [, setInfoOpen] = useGlobalState('isInfoOpen');
   const [isReportOnly, , leaveReportOnly] = useReportOnly();
   const isInspectorOpen = isReportOnly || tab !== PaneType.NONE;
   // The report-only view doesn't change the selected tab
   const currentTab = isReportOnly ? PaneType.REPORT : tab;
   const isGraphShown = isTightScreen && isGraphVisible && !isReportOnly;
-
-  // The info tab is hidden on tight screens
-  useEffect(() => {
-    if (isTightScreen) {
-      setInfoOpen(false);
-    }
-  }, [isTightScreen, setInfoOpen]);
 
   // The graph isn't a tab, it's a view that takes turns with the inspector
   const tabs: Array<{
@@ -78,11 +69,7 @@ export default function Tabs({ className }: HTMLProps<HTMLInputElement>) {
                     if (isSelected && id !== GRAPH) {
                       // Also store the tab, in case it was only the default
                       selectTab(id);
-                      // The page scrolls on tight screens, the inspector otherwise
-                      const scroller = isTightScreen
-                        ? document.documentElement
-                        : $('#inspector');
-                      scroller?.scrollTo({
+                      getScroller(isTightScreen)?.scrollTo({
                         top: 0,
                         behavior: matchMedia('(prefers-reduced-motion)').matches
                           ? 'instant'

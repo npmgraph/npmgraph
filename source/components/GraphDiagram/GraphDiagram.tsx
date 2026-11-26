@@ -15,6 +15,7 @@ import {
   type ReactZoomPanPinchContentRef,
 } from 'react-zoom-pan-pinch';
 import { $, $$optional } from 'select-dom';
+import useAsyncEffect from '../../hooks/useAsyncEffect.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -26,7 +27,6 @@ import { COLORS, PARAM_COLORIZE, type ColorName } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { gatherSelectionInfo, type GraphState } from '../../lib/graph-util.ts';
-import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
 import {
   getCachedModule,
@@ -38,15 +38,15 @@ import type { SimpleColorizer } from '../colorizers/types.ts';
 import * as styles from './GraphDiagram.module.scss';
 import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import useDiagramElement from './useDiagramElement.ts';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
-import useRenderDiagram from './useRenderDiagram.ts';
 import { clampPosition, getFitScale } from './viewport-util.ts';
 
 const isTouchscreen = globalThis.matchMedia('(pointer: coarse)').matches;
 const idSeen = new Set<unknown>();
 
-export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
+export default function GraphDiagram() {
   return (
     <ErrorBoundary
       fallback={
@@ -56,13 +56,13 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       }
     >
       <Suspense fallback={<div className={styles.status}>Loading…</div>}>
-        <GraphDiagramInner activity={activity} />
+        <GraphDiagramInner />
       </Suspense>
     </ErrorBoundary>
   );
 }
 
-function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
+function GraphDiagramInner() {
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph] = useGlobalState('graph');
   const [query] = useQuery();
@@ -96,7 +96,18 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useLoadGraph(isModuleVisible);
 
-  const diagramElement = useRenderDiagram(activity, isModuleVisible);
+  const diagramElement = useDiagramElement(isModuleVisible);
+
+  // Put the diagram in the DOM
+  const graphRef = useCallback(
+    (container: HTMLDivElement | null) => {
+      container?.replaceChildren();
+      if (diagramElement) {
+        container?.append(diagramElement);
+      }
+    },
+    [diagramElement],
+  );
 
   // Effect: Don't allow zooming out further than "fit to screen"
   useEffect(() => {
@@ -162,13 +173,15 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   }, [diagramElement, graph, selectedModules, previousSelection, selectType]);
 
   // Effect: Colorize nodes
-  useEffect(() => {
-    if (!diagramElement) {
-      return;
-    }
-
-    void colorizeGraph(diagramElement, colorize ?? '');
-  }, [colorize, diagramElement]);
+  // A newer run replaces this one, so its late results must not be applied
+  useAsyncEffect(
+    async signal => {
+      if (diagramElement) {
+        await colorizeGraph(diagramElement, colorize ?? '', signal);
+      }
+    },
+    [colorize, diagramElement],
+  );
 
   // Effect: Reset graph selection on Esc key press
   useOnEsc(() => {
@@ -246,7 +259,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           wrapperClass={styles.viewport}
           wrapperStyle={{ width: '100%', height: '100%' }}
         >
-          <div className={styles.graph} />
+          <div ref={graphRef} className={styles.graph} />
         </TransformComponent>
       </div>
     </TransformWrapper>
@@ -392,12 +405,17 @@ async function colorizeElement(
   colorizer: SimpleColorizer,
   m: Module,
   path: Element,
+  signal: AbortSignal,
 ) {
   let color;
   try {
     color = await colorizer.colorForModule(m);
   } catch (error) {
     console.warn(`Error colorizing ${m.name}: ${(error as Error).message}`);
+  }
+
+  if (signal.aborted) {
+    return;
   }
 
   if (color) {
@@ -407,7 +425,11 @@ async function colorizeElement(
   }
 }
 
-async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
+async function colorizeGraph(
+  svg: SVGSVGElement,
+  colorize: string,
+  signal: AbortSignal,
+) {
   const colorizer = getColorizer(colorize);
   svg.classList.toggle('colorized', Boolean(colorizer));
 
@@ -436,7 +458,7 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
       }
 
       // Colorize it (async)
-      void colorizeElement(colorizer, m, elementPath);
+      void colorizeElement(colorizer, m, elementPath, signal);
     }
   } else {
     // Bundle up modules
@@ -451,6 +473,9 @@ async function colorizeGraph(svg: SVGSVGElement, colorize: string) {
 
     // Get colors for all modules
     const colors = await colorizer.colorsForModules(modules);
+    if (signal.aborted) {
+      return;
+    }
 
     // Apply colors
     for (const element of moduleEls) {
