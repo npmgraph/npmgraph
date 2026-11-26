@@ -15,7 +15,7 @@ export function isSimpleColorizer(
   return 'colorForModule' in colorizer;
 }
 
-export function getColorizer(name: string) {
+export function getColorizer(name: string | undefined) {
   return colorizers.find(colorizer => colorizer.name === name);
 }
 

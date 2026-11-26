@@ -8,7 +8,7 @@ export default function useReportOnly() {
 
   const setReportOnly = (isEnabled: boolean) => {
     // Entering pushes a history entry so Back returns to the graph
-    setHide(isEnabled ? 'graph' : null, !isEnabled);
+    setHide(isEnabled ? 'graph' : undefined, !isEnabled);
 
     if (isEnabled && !isReportOnly) {
       history.replaceState({ ...history.state, reportOnly: true }, '');
@@ -26,7 +26,7 @@ export default function useReportOnly() {
       return;
     }
 
-    setHide(null);
+    setHide(undefined);
     afterwards?.();
   };
 

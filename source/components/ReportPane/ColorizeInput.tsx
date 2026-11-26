@@ -17,7 +17,7 @@ export default function ColorizeInput() {
     )),
   ];
 
-  const colorizer = getColorizer(colorize ?? '');
+  const colorizer = getColorizer(colorize);
   const legend = colorizer?.legend?.();
 
   return (

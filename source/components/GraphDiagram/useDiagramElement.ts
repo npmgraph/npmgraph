@@ -120,7 +120,7 @@ export default function useDiagramElement(
 
       const finish = activity.start('Rendering');
       try {
-        const svgMarkup = await composeSvgMarkup(graph, sizing !== null);
+        const svgMarkup = await composeSvgMarkup(graph, sizing !== undefined);
         if (!signal.aborted) {
           setDiagramElement(createDiagram(svgMarkup, isModuleVisible));
         }
