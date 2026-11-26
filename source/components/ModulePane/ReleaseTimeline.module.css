@@ -50,19 +50,19 @@
     }
   }
 
-  /* 0.x.0 releases are large enough to fit a label */
+  /* 0.x.0 releases: orange minors, but big enough to fit a label */
   .preV1 text {
     fill: var(--text);
   }
 
   .layerMinor {
-    fill: color-mix(in oklch, var(--accent) 55%, var(--bg-root));
+    fill: var(--bg-orange);
   }
   .layerPatch {
-    fill: color-mix(in oklch, var(--accent) 40%, var(--grey50));
+    fill: var(--bg-green);
   }
   .layerPrerelease {
-    fill: var(--grey60);
+    fill: var(--bg-blue);
   }
   .legend text {
     fill: var(--text);
