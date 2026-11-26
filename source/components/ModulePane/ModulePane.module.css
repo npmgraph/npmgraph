@@ -2,6 +2,11 @@
   color: var(--stroke-orange);
 }
 
+.header {
+  display: grid;
+  gap: 0.25em;
+}
+
 .title {
   display: flex;
   flex-wrap: wrap;

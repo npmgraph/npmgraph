@@ -71,14 +71,15 @@ function ModuleDetailsPane({
 
   return (
     <Pane {...props}>
-      <div className={styles.title}>
-        <h2>{module.source ?? module.key}</h2>
-        {isShowStatus && <ModuleDistTag module={module} />}
+      <div className={styles.header}>
+        <div className={styles.title}>
+          <h2>{module.source ?? module.key}</h2>
+          {isShowStatus && <ModuleDistTag module={module} />}
+        </div>
+        {pkg?.description && <p>{pkg.description}</p>}
       </div>
 
       <ModuleLinks module={module} />
-
-      <p>{pkg?.description}</p>
 
       <ModuleWarnings module={module} showOutdated={isShowStatus} />
 
