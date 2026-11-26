@@ -2,7 +2,7 @@
 
 ## Pull Requests
 
-When creating a pull request, use a Conventional Commit title in the format `type(scope): description` (for example, `fix(graph): handle empty dependencies`). Use one of these types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, matching the allowed list in `.github/workflows/pr.yml`. Keep the description concise. PR titles are validated by `.github/workflows/pr.yml`.
+When creating a pull request, use a Conventional Commit PR title in the format `type(scope): description` (for example, `fix(graph): handle empty dependencies`). Use one of these types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert, matching the default allowed list in https://github.com/amannn/action-semantic-pull-request. Keep the description concise.
 
 ## URL API Documentation
 
