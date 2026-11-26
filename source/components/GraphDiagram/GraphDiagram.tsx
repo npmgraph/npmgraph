@@ -67,8 +67,7 @@ function GraphDiagramInner() {
   const [graph] = useGlobalState('graph');
   const [query] = useQuery();
   const [collapse] = useCollapse();
-  const [colorizeParam] = useHashParam(PARAM_COLORIZE);
-  const colorize = colorizeParam ?? '';
+  const [colorize] = useHashParam(PARAM_COLORIZE);
 
   const handleGraphClick = useGraphClick();
 
@@ -175,7 +174,7 @@ function GraphDiagramInner() {
   useAsyncEffect(
     async signal => {
       if (diagramElement) {
-        await colorizeGraph(diagramElement, colorize, signal);
+        await colorizeGraph(diagramElement, colorize ?? '', signal);
       }
     },
     [colorize, diagramElement],
