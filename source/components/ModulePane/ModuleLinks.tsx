@@ -2,15 +2,14 @@ import useCollapse from '../../hooks/useCollapse.ts';
 import useCustomModuleLinks from '../../hooks/useCustomModuleLinks.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { toggleItem } from '../../lib/array-util.ts';
-import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { hasDependencies } from '../../lib/graph-util.ts';
 import type Module from '../../lib/Module.ts';
 import { getRepoUrlForModule } from '../../lib/repo-util.ts';
 import { Button, ButtonCheckbox, ButtonGroup } from '../Button.tsx';
 import { QueryLink } from '../ui/QueryLink.tsx';
+import { Toolbar, ToolbarSection } from '../ui/Toolbar.tsx';
 import { parseCustomModuleLinks } from './module-links.ts';
-import * as styles from './ModulePane.module.css';
 
 function useIsSingleEntryModule(module: Module) {
   const [graph] = useGlobalState('graph');
@@ -95,22 +94,17 @@ export function ModuleLinks({ module }: { module: Module }) {
   });
 
   return (
-    <div className={styles.moduleLinks}>
+    <Toolbar>
       {isSingleEntryModule ? null : (
-        <div className={cn(styles.linkGroup, styles.beforeSeparator)}>
+        <ToolbarSection>
           <ModuleCollapseToggle module={module} />
           {/* Opens in the current view, unlike the customizable links */}
           <QueryLink component={Button} query={module.key}>
             npmgraph
           </QueryLink>
-        </div>
+        </ToolbarSection>
       )}
-      <div
-        className={cn(
-          styles.linkGroup,
-          !isSingleEntryModule && styles.separated,
-        )}
-      >
+      <ToolbarSection>
         {links.map(({ label, href }) => (
           <ModuleLinkButton
             key={`${label}:${href}`}
@@ -118,7 +112,7 @@ export function ModuleLinks({ module }: { module: Module }) {
             href={href}
           />
         ))}
-      </div>
-    </div>
+      </ToolbarSection>
+    </Toolbar>
   );
 }

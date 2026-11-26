@@ -1,0 +1,27 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  /* Clips the separator when its section wraps to the start of a line */
+  overflow-x: clip;
+}
+
+.section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  &:not(:first-child) {
+    position: relative;
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      translate: 0 -50%;
+      inset-inline-start: -8.5px;
+      border-inline-start: solid 1px var(--bg1);
+      height: 10px;
+      content: '';
+    }
+  }
+}

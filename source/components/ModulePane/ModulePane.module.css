@@ -14,38 +14,6 @@
   gap: 0.25em 0.75em;
 }
 
-.moduleLinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  /* Clips the separator when its group wraps to the start of a line */
-  overflow-x: clip;
-}
-
-.linkGroup {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.beforeSeparator {
-  margin-inline-end: 8px;
-}
-
-.separated {
-  position: relative;
-
-  &::before {
-    position: absolute;
-    top: 50%;
-    translate: 0 -50%;
-    inset-inline-start: -8.5px;
-    border-inline-start: solid 1px var(--bg1);
-    height: 10px;
-    content: '';
-  }
-}
-
 .sizeGrid {
   display: grid;
   grid-template-columns: auto 1fr;
