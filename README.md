@@ -12,11 +12,15 @@ A tool for exploring npm modules and dependencies. Available online at https://n
 
 ### `q` (search parameter)
 
-Comma-separated list of npm module names, optionally with a version or version range, URLs to `package.json` files, or GitHub `user/repo` shorthand.
+Comma-separated list of npm module names, optionally with a version or version range, URLs to `package.json` files, GitHub repository URLs, or GitHub `user/repo` shorthand. Append `#ref` to the shorthand to select a branch or tag; otherwise, the default branch is used. Encode `#` as `%23` in the URL.
 
 **Example**: Graph the `send` module (official npm registry):
 
 https://npmgraph.js.org/?q=send
+
+**Example**: Graph a GitHub branch:
+
+https://npmgraph.js.org/?q=npmgraph%2Fnpmgraph%23drop-hooks
 
 ### `registry` (search parameter)
 

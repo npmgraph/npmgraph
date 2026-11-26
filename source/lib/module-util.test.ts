@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { describeUrlSource, resolveGitHubShorthand } from './module-util.ts';
+import {
+  describeUrlSource,
+  normalizeQueryKey,
+  resolveGitHubShorthand,
+} from './module-util.ts';
 
 describe('resolveGitHubShorthand', () => {
   it('converts user/repo to a package.json URL', () => {
@@ -11,6 +15,15 @@ describe('resolveGitHubShorthand', () => {
     );
   });
 
+  it('converts refs including slash-containing branch names', () => {
+    expect(resolveGitHubShorthand('npmgraph/npmgraph#drop-hooks')).toBe(
+      'https://github.com/npmgraph/npmgraph/blob/drop-hooks/package.json',
+    );
+    expect(resolveGitHubShorthand('user/repo#Feature/Branch')).toBe(
+      'https://github.com/user/repo/blob/Feature%2FBranch/package.json',
+    );
+  });
+
   it.each([
     'react',
     'react@18.2.0',
@@ -18,9 +31,23 @@ describe('resolveGitHubShorthand', () => {
     '@scope/name@1.0.0',
     'https://github.com/npmgraph/npmgraph/blob/main/package.json',
     'user/repo/extra',
+    'user/repo#',
+    'user/repo#invalid ref',
     './relative/path',
   ])('leaves %s alone', key => {
     expect(resolveGitHubShorthand(key)).toBe(key);
+  });
+});
+
+describe('normalizeQueryKey', () => {
+  it('preserves case-sensitive GitHub refs and URLs', () => {
+    expect(normalizeQueryKey('User/Repo#Feature/Branch')).toBe(
+      'user/repo#Feature/Branch',
+    );
+    expect(normalizeQueryKey('HTTPS://example.com/Package.json')).toBe(
+      'HTTPS://example.com/Package.json',
+    );
+    expect(normalizeQueryKey('React@Latest')).toBe('react@latest');
   });
 });
 
@@ -58,6 +85,30 @@ describe('describeUrlSource', () => {
         ),
       ),
     ).toBe('user/repo#v1.0.0');
+  });
+
+  it('describes refs/heads and encoded branch names', () => {
+    expect(
+      describeUrlSource(
+        new URL(
+          'https://raw.githubusercontent.com/user/repo/refs/heads/drop-hooks/package.json',
+        ),
+      ),
+    ).toBe('user/repo#drop-hooks');
+    expect(
+      describeUrlSource(
+        new URL(
+          'https://raw.githubusercontent.com/user/repo/Feature%2FBranch/package.json',
+        ),
+      ),
+    ).toBe('user/repo#Feature/Branch');
+    expect(
+      describeUrlSource(
+        new URL(
+          'https://raw.githubusercontent.com/user/repo/feature+one&two/package.json',
+        ),
+      ),
+    ).toBe('user/repo#feature+one&two');
   });
 
   it('prints other URLs without the protocol', () => {

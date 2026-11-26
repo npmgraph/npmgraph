@@ -7,8 +7,8 @@ export function InputDescription({ isDim }: { isDim?: boolean }) {
   return (
     <p className={isDim ? styles.dim : undefined}>
       npmgraph supports looking up npm module names (multiple and versioned),
-      GitHub repository shorthands, or package.json (drop or paste a file, or
-      enter a{' '}
+      GitHub repository URLs or shorthands (optionally with #branch), or
+      package.json (drop or paste a file, or enter a{' '}
       <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
         URL
       </QueryLink>
