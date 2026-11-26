@@ -160,6 +160,8 @@ export default function useDiagramElement(
         return;
       }
 
+      // Other effects start their activities in the same flush, and the last title wins
+      await Promise.resolve();
       const finish = activity.start('Rendering');
       try {
         await nextPaint();
