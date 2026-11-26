@@ -33,16 +33,6 @@
     color: var(--accent);
   }
 
-  .partnerButton {
-    border-radius: 2em;
-    color: var(--text);
-
-    svg {
-      width: auto;
-      fill: currentcolor;
-    }
-  }
-
   p {
     margin: 0;
     max-width: 26em;
