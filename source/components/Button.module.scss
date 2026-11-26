@@ -2,8 +2,10 @@
 
 .button {
   @extend .brightHover;
-  display: inline-block;
+  display: inline-flex;
   position: relative;
+  align-items: center;
+  gap: 0.4em;
   margin: 0;
   border: solid 1px var(--bg1);
   border-radius: var(--rad-sm);

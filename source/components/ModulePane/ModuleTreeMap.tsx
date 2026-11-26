@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useMemo, type CSSProperties } from 'react';
+import useMeasure from '../../hooks/useMeasure.ts';
 import { useSelect } from '../../hooks/useSelect.ts';
 import { cn, percent } from '../../lib/dom.ts';
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
 import { QueryType } from '../../lib/ModuleCache.ts';
-import { layoutTreemap, type TreemapLeaf } from '../../lib/treemap-util.js';
+import { layoutTreemap } from '../../lib/treemap-util.js';
 import * as utilities from '../ui/utilities.module.css';
 import * as styles from './ModuleTreeMap.module.css';
 
@@ -17,30 +18,19 @@ const isSizeVisible = (width: number, height: number, fontScale: number) =>
   width >= 56 && height >= fontScale * 21 + 19;
 
 export function ModuleTreeMap({ data }: { data: BundlePhobiaData }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [containerRef, { width: containerWidth, height: containerHeight }] =
+    useMeasure<HTMLDivElement>();
   const select = useSelect();
-  const [leaves, setLeaves] = useState<TreemapLeaf[]>([]);
   const m = 1;
 
-  // Lay out as an "effect" because d3 requires the pixel dimensions of the div
-  useEffect(() => {
-    let isCancelled = false;
-
-    const { clientWidth, clientHeight } = containerRef.current!;
-    const newLeaves = layoutTreemap(data, clientWidth, clientHeight);
-
-    queueMicrotask(() => {
-      if (isCancelled) {
-        return;
-      }
-
-      setLeaves(newLeaves);
-    });
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [data]);
+  // d3 requires the pixel dimensions of the div
+  const leaves = useMemo(
+    () =>
+      containerWidth > 0 && containerHeight > 0
+        ? layoutTreemap(data, containerWidth, containerHeight)
+        : [],
+    [data, containerWidth, containerHeight],
+  );
 
   return (
     <div ref={containerRef} className={styles.container}>

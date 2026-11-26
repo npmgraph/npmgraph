@@ -1,3 +1,10 @@
+import { $ } from 'select-dom';
+
+// The page scrolls on tight screens, the inspector otherwise
+export function getScroller(isTightScreen: boolean) {
+  return isTightScreen ? document.documentElement : $('#inspector');
+}
+
 export function cn(
   ...args: Array<string | Record<string, unknown> | undefined>
 ) {
@@ -24,3 +31,11 @@ export function cn(
 export function percent(n: number, precision = 3) {
   return `${(n * 100).toPrecision(precision)}%`;
 }
+
+// Wait until the browser has painted
+export const nextPaint = async () =>
+  new Promise<void>(resolve => {
+    requestAnimationFrame(() => {
+      setTimeout(resolve, 0);
+    });
+  });
