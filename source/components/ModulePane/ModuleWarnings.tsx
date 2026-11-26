@@ -56,9 +56,7 @@ function Warnings({
           <ModuleOutdated module={module} />
         </Warning>
       )}
-      {deprecated ? (
-        <Warning title="Deprecated">{deprecated}</Warning>
-      ) : null}
+      {deprecated ? <Warning title="Deprecated">{deprecated}</Warning> : null}
       {vulnerabilities > 0 && (
         <Warning title="Vulnerable">
           <ExternalLink

@@ -11,15 +11,6 @@
 }
 
 .chips .chip {
-  display: block;
-  border: 1px solid var(--border);
   border-radius: 2em;
-  background: var(--bg2);
   padding: 0.2em 0.8em;
-  color: var(--text);
-  text-decoration: none;
-
-  &:hover {
-    color: var(--accent);
-  }
 }
