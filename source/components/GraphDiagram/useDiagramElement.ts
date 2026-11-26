@@ -6,6 +6,7 @@ import { useActivity } from '../../hooks/useActivity.ts';
 import useAsyncEffect from '../../hooks/useAsyncEffect.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
+import { nextPaint } from '../../lib/dom.ts';
 import { flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
@@ -116,14 +117,6 @@ function createDiagram(
 
   return svgDom;
 }
-
-// Wait until the browser has painted
-const nextPaint = async () =>
-  new Promise<void>(resolve => {
-    requestAnimationFrame(() => {
-      setTimeout(resolve, 0);
-    });
-  });
 
 // Create the SVG element of the graph (it's up to the caller to put it in the DOM)
 export default function useDiagramElement(
