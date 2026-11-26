@@ -1,7 +1,10 @@
 import { lazy, Suspense, useDeferredValue, type HTMLProps } from 'react';
+import useGraphSelection from '../hooks/useGraphSelection.ts';
 import { useIsTightScreen } from '../hooks/useIsTightScreen.ts';
+import { useQuery } from '../hooks/useQuery.ts';
 import useReportOnly from '../hooks/useReportOnly.ts';
 import { useTab } from '../hooks/useTab.ts';
+import { useTabScroll } from '../hooks/useTabScroll.ts';
 import { PaneType } from '../lib/constants.ts';
 import { cn } from '../lib/dom.ts';
 import { useGlobalState } from '../lib/GlobalStore.ts';
@@ -17,6 +20,18 @@ const modulePanePromise = import('./ModulePane/ModulePane.tsx');
 const ReportPane = lazy(async () => reportPanePromise);
 const ModulePane = lazy(async () => modulePanePromise);
 
+// The scroll position only makes sense for the same content
+function getScrollKey(tab: string, content: string, selection: string) {
+  switch (tab) {
+    case PaneType.MODULE:
+      return `${content}|${selection}`;
+    case PaneType.REPORT:
+      return content;
+    default:
+      return '';
+  }
+}
+
 export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const { className, ...restProps } = props;
   const [tab] = useTab();
@@ -26,12 +41,27 @@ export default function Inspector(props: HTMLProps<HTMLDivElement>) {
   const deferredTab = useDeferredValue(tab);
 
   const [isReportOnly] = useReportOnly();
+  const [query] = useQuery();
+  const [selectionType, selectionValue] = useGraphSelection();
 
   // The graph is rendered by App, so it doesn't change when switching tabs
-  if (
+  const isHidden =
     !isReportOnly &&
-    (tab === PaneType.NONE || (isTightScreen && isGraphVisible))
-  ) {
+    (tab === PaneType.NONE || (isTightScreen && isGraphVisible));
+  const shownTab = isReportOnly ? PaneType.REPORT : deferredTab;
+
+  useTabScroll(
+    shownTab,
+    getScrollKey(
+      shownTab,
+      query.join(','),
+      `${selectionType}:${selectionValue}`,
+    ),
+    isTightScreen,
+    !isHidden,
+  );
+
+  if (isHidden) {
     return null;
   }
 
