@@ -1,21 +1,16 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz';
 import { select } from 'd3-selection';
-import { use, useEffect, useMemo } from 'react';
-import { $, $$optional, $optional } from 'select-dom';
+import { use, useMemo } from 'react';
+import { $$optional, $optional } from 'select-dom';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_SIZING } from '../../lib/constants.ts';
 import { flashError } from '../../lib/flash.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { composeDOT, type GraphState } from '../../lib/graph-util.ts';
-import type LoadActivity from '../../lib/LoadActivity.ts';
 import memoizeRecent from '../../lib/memoizeRecent.ts';
 import { getCachedModule } from '../../lib/ModuleCache.ts';
 import svgDefs from './GraphDiagram.defs.svg?raw';
 import * as styles from './GraphDiagram.module.scss';
-
-function getDiagramElement() {
-  return $optional<SVGSVGElement>(`.${styles.graphDiagram}`);
-}
 
 function decorateGraphNodes(
   element: Element,
@@ -124,17 +119,15 @@ function createDiagram(
   return svgDom;
 }
 
-// Render the graph as SVG in the DOM, and return the SVG element
-export default function useRenderDiagram(
-  activity: LoadActivity,
+// Create the SVG element of the graph (it's up to the caller to put it in the DOM)
+export default function useDiagramElement(
   isModuleVisible: ({ name }: { name: string }) => boolean,
 ) {
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
 
-  // The diagram is derived from the graph, it only needs to be put in the DOM
-  const diagramElement = useMemo(
+  return useMemo(
     () =>
       createDiagram(
         composeSvgMarkup(graph, sizing !== null, graphviz),
@@ -142,13 +135,4 @@ export default function useRenderDiagram(
       ),
     [graph, graphviz, isModuleVisible, sizing],
   );
-
-  useEffect(() => {
-    const finish = activity.start('Rendering');
-    getDiagramElement()?.remove();
-    $(`.${styles.graph}`).append(diagramElement);
-    finish();
-  }, [activity, diagramElement]);
-
-  return diagramElement;
 }

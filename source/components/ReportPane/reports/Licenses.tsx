@@ -1,6 +1,5 @@
 import AlertFillIcon from 'octicons-plain-react/AlertFill';
-import { useState } from 'react';
-import useAsyncEffect from '../../../hooks/useAsyncEffect.ts';
+import { Suspense, use } from 'react';
 import {
   getAllLicenses,
   getLicenseIssues,
@@ -65,16 +64,12 @@ function LicenseRow({
   );
 }
 
-export default function Licenses() {
+function LicensesReport({
+  spdxLicenses,
+}: {
+  spdxLicenses?: Map<string, SPDXLicense>;
+}) {
   const { modulesByLicense, unlicensedModules } = useLicenseAnalysis();
-  const [spdxLicenses, setSpdxLicenses] = useState<Map<string, SPDXLicense>>();
-
-  useAsyncEffect(async signal => {
-    const licenses = await getAllLicenses();
-    if (!signal.aborted) {
-      setSpdxLicenses(licenses);
-    }
-  }, []);
 
   const licenses = [...modulesByLicense].filter(
     ([license]) => license !== UNLICENSED,
@@ -140,5 +135,18 @@ export default function Licenses() {
         ))}
       </Rows>
     </ReportItem>
+  );
+}
+
+function LicensesWithSpdx() {
+  return <LicensesReport spdxLicenses={use(getAllLicenses())} />;
+}
+
+// The report is useful before the SPDX list (used for the warnings) has loaded
+export default function Licenses() {
+  return (
+    <Suspense fallback={<LicensesReport />}>
+      <LicensesWithSpdx />
+    </Suspense>
   );
 }

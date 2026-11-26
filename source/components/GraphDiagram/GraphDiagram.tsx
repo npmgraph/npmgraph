@@ -39,9 +39,9 @@ import type { SimpleColorizer } from '../colorizers/types.ts';
 import * as styles from './GraphDiagram.module.scss';
 import GraphDiagramExportButtons from './GraphDiagramExportButtons.tsx';
 import { GraphDiagramZoomButtons } from './GraphDiagramZoomButtons.tsx';
+import useDiagramElement from './useDiagramElement.ts';
 import useGraphClick from './useGraphClick.ts';
 import useLoadGraph from './useLoadGraph.ts';
-import useRenderDiagram from './useRenderDiagram.ts';
 import { clampPosition, getFitScale } from './viewport-util.ts';
 
 const isTouchscreen = globalThis.matchMedia('(pointer: coarse)').matches;
@@ -98,7 +98,21 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Effect: Fetch modules
   useLoadGraph(isModuleVisible);
 
-  const diagramElement = useRenderDiagram(activity, isModuleVisible);
+  const diagramElement = useDiagramElement(isModuleVisible);
+
+  // Put the diagram in the DOM
+  const graphRef = useCallback(
+    (container: HTMLDivElement | null) => {
+      if (!container) {
+        return;
+      }
+
+      const finish = activity.start('Rendering');
+      container.replaceChildren(diagramElement);
+      finish();
+    },
+    [activity, diagramElement],
+  );
 
   // Effect: Don't allow zooming out further than "fit to screen"
   useEffect(() => {
@@ -250,7 +264,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
           wrapperClass={styles.viewport}
           wrapperStyle={{ width: '100%', height: '100%' }}
         >
-          <div className={styles.graph} />
+          <div ref={graphRef} className={styles.graph} />
         </TransformComponent>
       </div>
     </TransformWrapper>
