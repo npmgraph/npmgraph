@@ -26,30 +26,6 @@ function celebrateZeroDependencies(
   }
 }
 
-// Fetch the modules of the query and put the resulting graph in the store.
-// The store keeps the previous graph until then, so nothing flashes meanwhile.
-async function loadGraph(
-  sortedQuery: string[],
-  dependencyTypes: ReturnType<typeof useDependencyTypes>,
-  isModuleVisible: ({ name }: { name: string }) => boolean,
-  signal: AbortSignal,
-) {
-  const graph = await getGraphForQuery(
-    sortedQuery,
-    dependencyTypes,
-    isModuleVisible,
-    signal,
-  );
-
-  // Check after async
-  if (signal.aborted) {
-    return;
-  }
-
-  celebrateZeroDependencies(graph, isModuleVisible);
-  setGlobalState('graph', graph);
-}
-
 // Keep the graph in the store in sync with the query
 export default function useLoadGraph(
   isModuleVisible: ({ name }: { name: string }) => boolean,
@@ -63,9 +39,24 @@ export default function useLoadGraph(
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
 
+  // Fetch the modules of the query and put the resulting graph in the store.
+  // The store keeps the previous graph until then, so nothing flashes meanwhile.
   useAsyncEffect(
     async signal => {
-      await loadGraph(sortedQuery, dependencyTypes, isModuleVisible, signal);
+      const graph = await getGraphForQuery(
+        sortedQuery,
+        dependencyTypes,
+        isModuleVisible,
+        signal,
+      );
+
+      // Check after async
+      if (signal.aborted) {
+        return;
+      }
+
+      celebrateZeroDependencies(graph, isModuleVisible);
+      setGlobalState('graph', graph);
     },
     [sortedQuery, dependencyTypes, collapse, isModuleVisible, packages],
   );

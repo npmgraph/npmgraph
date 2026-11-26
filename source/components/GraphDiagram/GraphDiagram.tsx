@@ -68,7 +68,8 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   const [graph] = useGlobalState('graph');
   const [query] = useQuery();
   const [collapse] = useCollapse();
-  const [colorize] = useHashParam(PARAM_COLORIZE);
+  const [colorizeParam] = useHashParam(PARAM_COLORIZE);
+  const colorize = colorizeParam ?? '';
 
   const handleGraphClick = useGraphClick();
 
@@ -167,7 +168,7 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   useAsyncEffect(
     async signal => {
       if (diagramElement) {
-        await colorizeGraph(diagramElement, colorize ?? '', signal);
+        await colorizeGraph(diagramElement, colorize, signal);
       }
     },
     [colorize, diagramElement],

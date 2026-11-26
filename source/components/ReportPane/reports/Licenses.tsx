@@ -33,19 +33,6 @@ function Badge({ children }: { children: string }) {
   );
 }
 
-function useSpdxLicenses() {
-  const [spdxLicenses, setSpdxLicenses] = useState<Map<string, SPDXLicense>>();
-
-  useAsyncEffect(async signal => {
-    const licenses = await getAllLicenses();
-    if (!signal.aborted) {
-      setSpdxLicenses(licenses);
-    }
-  }, []);
-
-  return spdxLicenses;
-}
-
 function LicenseRow({
   license,
   modules,
@@ -80,7 +67,14 @@ function LicenseRow({
 
 export default function Licenses() {
   const { modulesByLicense, unlicensedModules } = useLicenseAnalysis();
-  const spdxLicenses = useSpdxLicenses();
+  const [spdxLicenses, setSpdxLicenses] = useState<Map<string, SPDXLicense>>();
+
+  useAsyncEffect(async signal => {
+    const licenses = await getAllLicenses();
+    if (!signal.aborted) {
+      setSpdxLicenses(licenses);
+    }
+  }, []);
 
   const licenses = [...modulesByLicense].filter(
     ([license]) => license !== UNLICENSED,
