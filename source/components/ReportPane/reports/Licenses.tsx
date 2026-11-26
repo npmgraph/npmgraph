@@ -68,8 +68,10 @@ function LicenseRow({
 
 function LicensesReport({
   spdxLicenses,
+  spdxError,
 }: {
   spdxLicenses?: Map<string, SPDXLicense>;
+  spdxError?: unknown;
 }) {
   const { modulesByLicense, unlicensedModules } = useLicenseAnalysis();
 
@@ -94,6 +96,7 @@ function LicensesReport({
       a.localeCompare(b),
   );
 
+  const hasSpdxError = Boolean(spdxError);
   const count = licenses.length + (hasUnlicensed ? 1 : 0);
   if (count === 0) {
     return null;
@@ -103,13 +106,27 @@ function LicensesReport({
     <ReportItem
       title="Licenses"
       count={count}
-      warn={hasUnlicensed || issuesByLicense.size > 0}
+      warn={hasUnlicensed || hasSpdxError || issuesByLicense.size > 0}
       description={
-        hasUnlicensed && (
+        (hasUnlicensed || hasSpdxError) && (
           <>
-            Modules without a declared license, or that are explicitely
-            "UNLICENSED", are not opensource and may infringe on the owner's
-            copyright. Consider contacting the owner to clarify licensing terms.
+            {hasUnlicensed && (
+              <>
+                Modules without a declared license, or that are explicitely
+                "UNLICENSED", are not opensource and may infringe on the owner's
+                copyright. Consider contacting the owner to clarify licensing
+                terms.{' '}
+              </>
+            )}
+            {hasSpdxError && (
+              <>
+                Could not load the SPDX license list from {SPDX_URL}, so the
+                issues of each license are not shown:{' '}
+                {spdxError instanceof Error
+                  ? spdxError.message
+                  : String(spdxError)}
+              </>
+            )}
           </>
         )
       }
@@ -148,12 +165,7 @@ function LoadedLicenses() {
 export default function Licenses() {
   return (
     <ErrorBoundary
-      fallbackRender={({ error }) => (
-        <ReportItem warn title="Licenses">
-          Could not load the SPDX license list from {SPDX_URL}:{' '}
-          {error instanceof Error ? error.message : String(error)}
-        </ReportItem>
-      )}
+      fallbackRender={({ error }) => <LicensesReport spdxError={error} />}
     >
       <Suspense fallback={<LicensesReport />}>
         <LoadedLicenses />
