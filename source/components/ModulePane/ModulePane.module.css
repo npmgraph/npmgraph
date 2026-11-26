@@ -2,22 +2,16 @@
   color: var(--stroke-orange);
 }
 
+.header {
+  display: grid;
+  gap: 0.25em;
+}
+
 .title {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.25em 0.75em;
-}
-
-.moduleHeader {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.moduleLinks {
-  flex-wrap: wrap;
 }
 
 .sizeGrid {
