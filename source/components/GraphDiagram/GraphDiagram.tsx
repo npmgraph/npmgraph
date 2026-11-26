@@ -27,7 +27,6 @@ import { COLORS, PARAM_COLORIZE, type ColorName } from '../../lib/constants.ts';
 import { cn } from '../../lib/dom.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { gatherSelectionInfo, type GraphState } from '../../lib/graph-util.ts';
-import type LoadActivity from '../../lib/LoadActivity.ts';
 import type Module from '../../lib/Module.ts';
 import {
   getCachedModule,
@@ -47,7 +46,7 @@ import { clampPosition, getFitScale } from './viewport-util.ts';
 const isTouchscreen = globalThis.matchMedia('(pointer: coarse)').matches;
 const idSeen = new Set<unknown>();
 
-export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
+export default function GraphDiagram() {
   return (
     <ErrorBoundary
       fallback={
@@ -57,13 +56,13 @@ export default function GraphDiagram({ activity }: { activity: LoadActivity }) {
       }
     >
       <Suspense fallback={<div className={styles.status}>Loading…</div>}>
-        <GraphDiagramInner activity={activity} />
+        <GraphDiagramInner />
       </Suspense>
     </ErrorBoundary>
   );
 }
 
-function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
+function GraphDiagramInner() {
   const [selectType, selectValue, setGraphSelection] = useGraphSelection();
   const [graph] = useGlobalState('graph');
   const [query] = useQuery();
@@ -103,15 +102,9 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   // Put the diagram in the DOM
   const graphRef = useCallback(
     (container: HTMLDivElement | null) => {
-      if (!container) {
-        return;
-      }
-
-      const finish = activity.start('Rendering');
-      container.replaceChildren(diagramElement);
-      finish();
+      container?.replaceChildren(diagramElement);
     },
-    [activity, diagramElement],
+    [diagramElement],
   );
 
   // Effect: Don't allow zooming out further than "fit to screen"
