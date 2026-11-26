@@ -37,6 +37,9 @@ function Warnings({
 
   return (
     <dl className={cn(listStyles.list, styles.list)}>
+      {hasOutdated && (
+        <ModuleOutdated module={module} className={styles.inline} />
+      )}
       {deprecated ? (
         <div className={styles.inline}>
           <dt>
@@ -46,9 +49,6 @@ function Warnings({
           <dd className={listStyles.details}>{deprecated}</dd>
         </div>
       ) : null}
-      {hasOutdated && (
-        <ModuleOutdated module={module} className={styles.inline} />
-      )}
       {vulnerabilities > 0 && (
         <div className={styles.inline}>
           <dt>
