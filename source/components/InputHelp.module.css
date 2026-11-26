@@ -13,4 +13,5 @@
 .chips .chip {
   border-radius: 2em;
   padding: 0.2em 0.8em;
+  color: var(--text);
 }
