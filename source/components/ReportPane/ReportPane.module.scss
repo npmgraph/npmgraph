@@ -9,13 +9,24 @@
   }
 }
 
+.actions {
+  display: flex;
+  gap: 0.5em;
+  margin-left: auto;
+}
+
 .description {
   color: var(--text-dim);
   font-size: 90%;
 }
 
-// Centered column
+// Centered column; the toolbar stays full-width so its buttons keep their position
 .document {
   gap: 24px;
-  padding: 40px max(16px, calc((100% - 980px) / 2)) 32px;
+  padding-block-end: 32px;
+
+  > :not(.toolbar) {
+    justify-self: center;
+    width: min(100%, 980px);
+  }
 }
