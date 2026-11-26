@@ -1,8 +1,10 @@
 import AlertFillIcon from 'octicons-plain-react/AlertFill';
-import { useEffect, useState } from 'react';
+import { Suspense, use } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import {
   getAllLicenses,
   getLicenseIssues,
+  SPDX_URL,
   type LicenseIssue,
   type SPDXLicense,
 } from '../../../lib/licenses.ts';
@@ -30,20 +32,6 @@ function Badge({ children }: { children: string }) {
       {children}
     </span>
   );
-}
-
-function useSpdxLicenses() {
-  const [spdxLicenses, setSpdxLicenses] = useState<Map<string, SPDXLicense>>();
-
-  useEffect(() => {
-    async function load() {
-      setSpdxLicenses(await getAllLicenses());
-    }
-
-    void load();
-  }, []);
-
-  return spdxLicenses;
 }
 
 function LicenseRow({
@@ -78,9 +66,14 @@ function LicenseRow({
   );
 }
 
-export default function Licenses() {
+function LicensesReport({
+  spdxLicenses,
+  spdxError,
+}: {
+  spdxLicenses?: Map<string, SPDXLicense>;
+  spdxError?: unknown;
+}) {
   const { modulesByLicense, unlicensedModules } = useLicenseAnalysis();
-  const spdxLicenses = useSpdxLicenses();
 
   const licenses = [...modulesByLicense].filter(
     ([license]) => license !== UNLICENSED,
@@ -103,6 +96,7 @@ export default function Licenses() {
       a.localeCompare(b),
   );
 
+  const hasSpdxError = Boolean(spdxError);
   const count = licenses.length + (hasUnlicensed ? 1 : 0);
   if (count === 0) {
     return null;
@@ -112,13 +106,27 @@ export default function Licenses() {
     <ReportItem
       title="Licenses"
       count={count}
-      warn={hasUnlicensed || issuesByLicense.size > 0}
+      warn={hasUnlicensed || hasSpdxError || issuesByLicense.size > 0}
       description={
-        hasUnlicensed && (
+        (hasUnlicensed || hasSpdxError) && (
           <>
-            Modules without a declared license, or that are explicitely
-            "UNLICENSED", are not opensource and may infringe on the owner's
-            copyright. Consider contacting the owner to clarify licensing terms.
+            {hasUnlicensed && (
+              <>
+                Modules without a declared license, or that are explicitely
+                "UNLICENSED", are not opensource and may infringe on the owner's
+                copyright. Consider contacting the owner to clarify licensing
+                terms.{' '}
+              </>
+            )}
+            {hasSpdxError && (
+              <>
+                Could not load the SPDX license list from {SPDX_URL}, so the
+                issues of each license are not shown:{' '}
+                {spdxError instanceof Error
+                  ? spdxError.message
+                  : String(spdxError)}
+              </>
+            )}
           </>
         )
       }
@@ -146,5 +154,22 @@ export default function Licenses() {
         ))}
       </Rows>
     </ReportItem>
+  );
+}
+
+function LoadedLicenses() {
+  return <LicensesReport spdxLicenses={use(getAllLicenses())} />;
+}
+
+// The issues of each license show up once the SPDX list is loaded
+export default function Licenses() {
+  return (
+    <ErrorBoundary
+      fallbackRender={({ error }) => <LicensesReport spdxError={error} />}
+    >
+      <Suspense fallback={<LicensesReport />}>
+        <LoadedLicenses />
+      </Suspense>
+    </ErrorBoundary>
   );
 }
