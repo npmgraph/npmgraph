@@ -1,6 +1,8 @@
 import BugsnagLogo from '../images/partners/bugsnag.svg?react';
 import GitHubLogo from '../images/partners/github.svg?react';
 import NpmLogo from '../images/partners/npm.svg?react';
+import { Button } from './Button.tsx';
+import * as introStyles from './Intro.module.css';
 import * as styles from './StickerFarm.module.css';
 import { Group } from './ui/Group.tsx';
 
@@ -16,14 +18,14 @@ export default function StickerFarm() {
       <ul className={styles.list}>
         {PARTNERS.map(({ name, href, Logo }) => (
           <li key={name}>
-            <a
+            <Button
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className={styles.logo}
+              className={introStyles.partnerButton}
             >
-              <Logo width="100%" height="24" />
-            </a>
+              <Logo height="24" />
+            </Button>
           </li>
         ))}
       </ul>
