@@ -15,6 +15,7 @@ import {
   type ReactZoomPanPinchContentRef,
 } from 'react-zoom-pan-pinch';
 import { $, $$optional } from 'select-dom';
+import useAsyncEffect from '../../hooks/useAsyncEffect.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -162,19 +163,15 @@ function GraphDiagramInner({ activity }: { activity: LoadActivity }) {
   }, [diagramElement, graph, selectedModules, previousSelection, selectType]);
 
   // Effect: Colorize nodes
-  useEffect(() => {
-    if (!diagramElement) {
-      return;
-    }
-
-    // A newer run replaces this one, so its late results must not be applied
-    const controller = new AbortController();
-    void colorizeGraph(diagramElement, colorize ?? '', controller.signal);
-
-    return () => {
-      controller.abort();
-    };
-  }, [colorize, diagramElement]);
+  // A newer run replaces this one, so its late results must not be applied
+  useAsyncEffect(
+    async signal => {
+      if (diagramElement) {
+        await colorizeGraph(diagramElement, colorize ?? '', signal);
+      }
+    },
+    [colorize, diagramElement],
+  );
 
   // Effect: Reset graph selection on Esc key press
   useOnEsc(() => {

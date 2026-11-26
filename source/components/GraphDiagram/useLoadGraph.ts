@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
+import useAsyncEffect from '../../hooks/useAsyncEffect.ts';
 import useCollapse from '../../hooks/useCollapse.ts';
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
@@ -62,17 +63,10 @@ export default function useLoadGraph(
   // Stable query array for use in effects
   const sortedQuery = useMemo(() => [...query].toSorted(), [query]);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    void loadGraph(
-      sortedQuery,
-      dependencyTypes,
-      isModuleVisible,
-      controller.signal,
-    );
-
-    return () => {
-      controller.abort();
-    };
-  }, [sortedQuery, dependencyTypes, collapse, isModuleVisible, packages]);
+  useAsyncEffect(
+    async signal => {
+      await loadGraph(sortedQuery, dependencyTypes, isModuleVisible, signal);
+    },
+    [sortedQuery, dependencyTypes, collapse, isModuleVisible, packages],
+  );
 }

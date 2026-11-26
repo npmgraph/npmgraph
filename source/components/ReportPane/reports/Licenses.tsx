@@ -1,5 +1,6 @@
 import AlertFillIcon from 'octicons-plain-react/AlertFill';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useAsyncEffect from '../../../hooks/useAsyncEffect.ts';
 import {
   getAllLicenses,
   getLicenseIssues,
@@ -35,12 +36,11 @@ function Badge({ children }: { children: string }) {
 function useSpdxLicenses() {
   const [spdxLicenses, setSpdxLicenses] = useState<Map<string, SPDXLicense>>();
 
-  useEffect(() => {
-    async function load() {
-      setSpdxLicenses(await getAllLicenses());
+  useAsyncEffect(async signal => {
+    const licenses = await getAllLicenses();
+    if (!signal.aborted) {
+      setSpdxLicenses(licenses);
     }
-
-    void load();
   }, []);
 
   return spdxLicenses;
