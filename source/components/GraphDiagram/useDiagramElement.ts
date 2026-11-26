@@ -137,29 +137,40 @@ export default function useDiagramElement(
   const [graph] = useGlobalState('graph');
   const [sizing] = useHashParam(PARAM_SIZING);
   const graphviz = use(graphvizPromise);
-  // The previous element stays until the new one is ready, so nothing flashes meanwhile
+  // The previous element stays until the new one is ready
   const [diagramElement, setDiagramElement] = useState<SVGSVGElement>();
 
-  // The work is sync, but it's wrapped in an async effect to yield first so the
-  // Loader can paint before the thread is blocked, and to drop superseded runs
+  // The layout is sync and blocks the thread, so this effect is async only to
+  // let the Loader paint first. `isModuleVisible` isn't a dep because it changes
+  // before the graph that reflects it is loaded.
   useAsyncEffect(
     async signal => {
+      const render = () => {
+        setDiagramElement(
+          createDiagram(
+            composeSvgMarkup(graph, sizing !== null, graphviz),
+            isModuleVisible,
+          ),
+        );
+      };
+
+      // Nothing to lay out
+      if (graph.moduleInfos.size === 0) {
+        render();
+        return;
+      }
+
       const finish = activity.start('Rendering');
       try {
         await nextPaint();
         if (!signal.aborted) {
-          setDiagramElement(
-            createDiagram(
-              composeSvgMarkup(graph, sizing !== null, graphviz),
-              isModuleVisible,
-            ),
-          );
+          render();
         }
       } finally {
         finish();
       }
     },
-    [activity, graph, graphviz, isModuleVisible, sizing],
+    [graph, graphviz, sizing],
   );
 
   return diagramElement;
