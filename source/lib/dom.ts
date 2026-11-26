@@ -31,3 +31,11 @@ export function cn(
 export function percent(n: number, precision = 3) {
   return `${(n * 100).toPrecision(precision)}%`;
 }
+
+// Wait until the browser has painted
+export const nextPaint = async () =>
+  new Promise<void>(resolve => {
+    requestAnimationFrame(() => {
+      setTimeout(resolve, 0);
+    });
+  });
