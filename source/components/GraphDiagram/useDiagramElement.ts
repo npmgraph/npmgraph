@@ -73,10 +73,6 @@ function composeSvgMarkup(
   hasSizing: boolean,
   graphviz: Graphviz,
 ) {
-  if (graph.moduleInfos.size === 0) {
-    return '<svg />';
-  }
-
   const dotDoc = composeDOT({ graph, sizing: hasSizing });
 
   try {
@@ -140,33 +136,29 @@ export default function useDiagramElement(
   // The previous element stays until the new one is ready
   const [diagramElement, setDiagramElement] = useState<SVGSVGElement>();
 
-  // The layout is sync and blocks the thread, so this effect is async only to
-  // let the Loader paint first. `isModuleVisible` isn't a dep because it changes
-  // before the graph that reflects it is loaded.
+  // The layout is sync, so this effect is async only to yield (see below).
+  // `isModuleVisible` isn't a dep because it changes before the graph that reflects it is loaded.
   useAsyncEffect(
     async signal => {
-      const render = () => {
-        setDiagramElement(
-          createDiagram(
-            composeSvgMarkup(graph, sizing !== null, graphviz),
-            isModuleVisible,
-          ),
-        );
-      };
-
       // Nothing to lay out
       if (graph.moduleInfos.size === 0) {
-        render();
+        setDiagramElement(undefined);
         return;
       }
 
-      // Other effects start their activities in the same flush, and the last title wins
+      // Start after the other effects' activities, so this title wins
       await Promise.resolve();
       const finish = activity.start('Rendering');
       try {
+        // The layout blocks the thread, so let the Loader paint before it
         await nextPaint();
         if (!signal.aborted) {
-          render();
+          setDiagramElement(
+            createDiagram(
+              composeSvgMarkup(graph, sizing !== null, graphviz),
+              isModuleVisible,
+            ),
+          );
         }
       } finally {
         finish();
