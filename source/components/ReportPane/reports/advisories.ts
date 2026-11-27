@@ -73,6 +73,7 @@ export async function fetchAdvisories(
 }
 
 export const fetchModuleAdvisories = pMemoize(
-  async ({ name, version }: Module) => fetchAdvisories({ [name]: [version] }),
+  async ({ name, version, isFromRegistry }: Module) =>
+    isFromRegistry ? fetchAdvisories({ [name]: [version] }) : [],
   { cacheKey: ([{ key }]) => key },
 );
