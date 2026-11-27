@@ -39,10 +39,11 @@
     stroke-width: 2;
   }
 
+  /* One hue, fading out with significance (mixing with the root color works in light and dark) */
   .layerMajor {
     circle {
-      fill: var(--grey100);
-      stroke: var(--grey20);
+      fill: var(--bg-violet);
+      stroke: color-mix(in oklch, var(--bg-violet) 65%, var(--text));
       stroke-width: 0.1em;
     }
     text {
@@ -56,16 +57,14 @@
   }
 
   .layerMinor {
-    fill: var(--grey70);
-    stroke: var(--grey40);
-    stroke-width: 0.1em;
+    fill: color-mix(in oklch, var(--bg-violet) 65%, var(--root-color));
   }
   .layerPatch {
-    fill: var(--grey50);
+    fill: color-mix(in oklch, var(--bg-violet) 40%, var(--root-color));
   }
   .layerPrerelease {
     fill: none;
-    stroke: var(--grey50);
+    stroke: var(--bg-violet);
     stroke-width: 0.1em;
   }
   .legend text {
