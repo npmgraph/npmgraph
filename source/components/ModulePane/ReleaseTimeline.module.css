@@ -66,7 +66,7 @@
   .layerPrerelease {
     fill: none;
     stroke: oklch(0.68 0.2 10);
-    stroke-width: 0.15em;
+    stroke-width: 0.08em;
   }
   .legend text {
     fill: var(--text);
