@@ -35,11 +35,18 @@ function useSelectedModules() {
 }
 
 function StubModulePane({ module }: { module: Module }) {
+  const [graph] = useGlobalState('graph');
+
   return (
     <Pane>
-      <h2>{module.name}</h2>
-      <p>Sorry, but info for this module isn't available. 😢</p>
-      <p className={styles.stubError}>{module.stubError?.message}</p>
+      <div className={styles.header}>
+        <h2 className={styles.stubName}>{module.name}</h2>
+        <p>Sorry, but info for this module isn't available. 😢</p>
+        {/* Failed entry modules already show their error in the errors box */}
+        {!graph.failedEntryModules.has(module.key) && (
+          <p className={styles.stubError}>{module.stubError?.message}</p>
+        )}
+      </div>
     </Pane>
   );
 }
