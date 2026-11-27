@@ -17,6 +17,9 @@ export type LicenseIssue = 'no-osi' | 'no-fsf' | 'deprecated';
 
 let allLicensesPromise: Promise<Map<string, SPDXLicense>> | undefined;
 
+// React renders again right after a failure, so retrying at once would loop
+const RETRY_DELAY = 10_000;
+
 async function fetchSPDXLicenses(): Promise<Map<string, SPDXLicense>> {
   try {
     type SPDXLicenseList = {
@@ -35,8 +38,10 @@ async function fetchSPDXLicenses(): Promise<Map<string, SPDXLicense>> {
       data.licenses.map(license => [license.licenseId.toLowerCase(), license]),
     );
   } catch (error) {
-    // Let the next call try again
-    allLicensesPromise = undefined;
+    // Keep the failure for a while, then let the next call try again
+    setTimeout(() => {
+      allLicensesPromise = undefined;
+    }, RETRY_DELAY);
     throw error;
   }
 }

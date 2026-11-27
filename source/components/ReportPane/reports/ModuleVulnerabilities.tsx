@@ -14,6 +14,11 @@ function getVersionsByName({ moduleInfos }: ModuleAnalysisState) {
   const versionsByName: Record<string, string[]> = {};
 
   for (const { module } of moduleInfos.values()) {
+    // Local and stub modules aren't in the registry
+    if (module.isLocal || module.isStub) {
+      continue;
+    }
+
     versionsByName[module.name] ??= [];
     (versionsByName[module.name] ??= []).push(module.version);
   }
