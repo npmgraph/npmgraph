@@ -14,25 +14,25 @@ A tool for exploring npm modules and dependencies. Available online at https://n
 
 Comma-separated list of npm module names, optionally with a version or version range, URLs to `package.json` files, or GitHub `user/repo` shorthand.
 
-**Example**: Graph the `vite` module (official npm registry):
+**Example**: Graph the `axios` module (official npm registry):
 
-<a href="https://npmgraph.js.org/?q=vite">npmgraph.js.org<br>?`q=vite`</a>
+<a href="https://npmgraph.js.org/?q=axios">npmgraph.js.org<br>?`q=axios`</a>
 
 ### `registry` (search parameter)
 
 The npm-compatible registry URL to use when loading packages. Defaults to `https://registry.npmjs.org`; the default is omitted from the URL.
 
-**Example**: Graph `vite` using a custom registry:
+**Example**: Graph `axios` using a custom registry:
 
-<a href="https://npmgraph.js.org/?q=vite&amp;registry=https%3A%2F%2Fregistry.example.com">npmgraph.js.org<br>?`q=vite`<br>&amp;`registry=https%3A%2F%2Fregistry.example.com`</a>
+<a href="https://npmgraph.js.org/?q=axios&amp;registry=https%3A%2F%2Fregistry.example.com">npmgraph.js.org<br>?`q=axios`<br>&amp;`registry=https%3A%2F%2Fregistry.example.com`</a>
 
 ### `collapse` (hash param)
 
 Comma-separated list of module names whose subtrees should be collapsed. A name collapses every matching version in the graph.
 
-**Example**: Graph `vite`, collapsing the `postcss` and `tinyglobby` subtrees
+**Example**: Graph `axios`, collapsing the `form-data` and `https-proxy-agent` subtrees
 
-<a href="https://npmgraph.js.org/?q=vite#collapse=postcss%2Ctinyglobby">npmgraph.js.org<br>?`q=vite`<br>#`collapse=postcss%2Ctinyglobby`</a>
+<a href="https://npmgraph.js.org/?q=axios#collapse=form-data%2Chttps-proxy-agent">npmgraph.js.org<br>?`q=axios`<br>#`collapse=form-data%2Chttps-proxy-agent`</a>
 
 ### `color` (hash param)
 
@@ -44,9 +44,9 @@ Comma-separated list of module names whose subtrees should be collapsed. A name 
 | `bus`        | Number of maintainers ("bus" = [bus factor](https://en.wikipedia.org/wiki/Bus_factor))  |
 | `outdated`   | How far behind the latest version the module is (major, minor, or patch)                |
 
-**Example**: Graph `vite`, colorize by module type:
+**Example**: Graph `axios`, colorize by module type:
 
-<a href="https://npmgraph.js.org/?q=vite#color=moduleType">npmgraph.js.org<br>?`q=vite`<br>#`color=moduleType`</a>
+<a href="https://npmgraph.js.org/?q=axios#color=moduleType">npmgraph.js.org<br>?`q=axios`<br>#`color=moduleType`</a>
 
 ### `deps` (hash param)
 
@@ -59,21 +59,21 @@ Comma-separated list of additional dependency types to include in the graph.
 | `devDependencies`  | Dev dependencies of top-level modules                                       |
 | `peerDependencies` | Peer dependencies of all modules; optional peers only for top-level modules |
 
-**Example**: Graph `vite`, include `devDependencies`:
+**Example**: Graph `axios`, include `devDependencies`:
 
-<a href="https://npmgraph.js.org/?q=vite#deps=devDependencies">npmgraph.js.org<br>?`q=vite`<br>#`deps=devDependencies`</a>
+<a href="https://npmgraph.js.org/?q=axios#deps=devDependencies">npmgraph.js.org<br>?`q=axios`<br>#`deps=devDependencies`</a>
 
-**Example**: Graph `vite`, include `devDependencies` and `peerDependencies`:
+**Example**: Graph `axios`, include `devDependencies` and `peerDependencies`:
 
-<a href="https://npmgraph.js.org/?q=vite#deps=devDependencies%2CpeerDependencies">npmgraph.js.org<br>?`q=vite`<br>#`deps=devDependencies%2CpeerDependencies`</a>
+<a href="https://npmgraph.js.org/?q=axios#deps=devDependencies%2CpeerDependencies">npmgraph.js.org<br>?`q=axios`<br>#`deps=devDependencies%2CpeerDependencies`</a>
 
 ### `hide` (hash param)
 
 Set to `graph` to show only the report.
 
-**Example**: Show only the report for `vite`
+**Example**: Show only the report for `axios`
 
-<a href="https://npmgraph.js.org/?q=vite#hide=graph">npmgraph.js.org<br>?`q=vite`<br>#`hide=graph`</a>
+<a href="https://npmgraph.js.org/?q=axios#hide=graph">npmgraph.js.org<br>?`q=axios`<br>#`hide=graph`</a>
 
 ### `packages` (hash param, **JSON-encoded**)
 
@@ -83,7 +83,7 @@ The legacy `package_json` hash key is not read by the app; use `packages` to inc
 
 **Example**: Graph that includes custom "foo" and "bar" modules, with "foo" as the root module.
 
-<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22vite%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D">npmgraph.js.org<br>?`q=foo@1.2.3`<br>#`packages=&#91;{"name":"foo","version":"1.2.3","dependencies":{"vite":"0.18.0","bar":"3.2.1"}},{"name":"bar","version":"3.2.1","dependencies":{"debug":"2.6.9"}}&#93;`</a>
+<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22axios%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D">npmgraph.js.org<br>?`q=foo@1.2.3`<br>#`packages=&#91;{"name":"foo","version":"1.2.3","dependencies":{"axios":"0.18.0","bar":"3.2.1"}},{"name":"bar","version":"3.2.1","dependencies":{"debug":"2.6.9"}}&#93;`</a>
 
 Generated with:
 
@@ -92,7 +92,7 @@ const fooPackage = {
   // package.json for "foo"
   name: 'foo',
   version: '1.2.3',
-  dependencies: { vite: '0.18.0', bar: '3.2.1' },
+  dependencies: { axios: '0.18.0', bar: '3.2.1' },
 };
 const barPackage = {
   // package.json for "bar"
@@ -116,13 +116,13 @@ Name (lowercase title) of a section in the inspector. When opened, the matching 
 
 Also used by the report-only view (`hide=graph`), where sections are always open and headings have a `#` link.
 
-**Example**: Show the release timeline of `tinyglobby`
+**Example**: Show the release timeline of `follow-redirects`
 
-<a href="https://npmgraph.js.org/?q=vite#tab=module&amp;section=release+timeline&amp;select=tinyglobby">npmgraph.js.org<br>?`q=vite`<br>#`tab=module`<br>&amp;`section=release+timeline`<br>&amp;`select=tinyglobby`</a>
+<a href="https://npmgraph.js.org/?q=axios#tab=module&amp;section=release+timeline&amp;select=follow-redirects">npmgraph.js.org<br>?`q=axios`<br>#`tab=module`<br>&amp;`section=release+timeline`<br>&amp;`select=follow-redirects`</a>
 
-**Example**: Show only the report for `vite`, at its licenses section
+**Example**: Show only the report for `axios`, at its licenses section
 
-<a href="https://npmgraph.js.org/?q=vite#hide=graph&amp;section=licenses">npmgraph.js.org<br>?`q=vite`<br>#`hide=graph`<br>&amp;`section=licenses`</a>
+<a href="https://npmgraph.js.org/?q=axios#hide=graph&amp;section=licenses">npmgraph.js.org<br>?`q=axios`<br>#`hide=graph`<br>&amp;`section=licenses`</a>
 
 ### `select` (hash param)
 
@@ -137,29 +137,29 @@ Values should have one of the following forms:
 | `license:<license string>`     | Select modules by license            |
 | `maintainer:<maintainer name>` | Select modules by maintainer name    |
 
-**Example**: Graph `vite`, selecting `picomatch@4`
+**Example**: Graph `axios`, selecting `form-data@4`
 
-<a href="https://npmgraph.js.org/?q=vite#select=picomatch%404">npmgraph.js.org<br>?`q=vite`<br>#`select=picomatch%404`</a>
+<a href="https://npmgraph.js.org/?q=axios#select=form-data%404">npmgraph.js.org<br>?`q=axios`<br>#`select=form-data%404`</a>
 
 ### `sizing` (hash param)
 
 If present, modules will be scaled to reflect their unpacked size.
 
-**Example**: Graph `vite`, size modules by unpacked size
+**Example**: Graph `axios`, size modules by unpacked size
 
-<a href="https://npmgraph.js.org/?q=vite#sizing">npmgraph.js.org<br>?`q=vite`<br>#`sizing`</a>
+<a href="https://npmgraph.js.org/?q=axios#sizing">npmgraph.js.org<br>?`q=axios`<br>#`sizing`</a>
 
 ### `tab` (hash param)
 
 Inspector tab to open. One of `report`, `module`, or `view`; or `none` to close the inspector. The Info pane is not represented by a URL value.
 
-**Example**: Graph `vite`, showing the report tab
+**Example**: Graph `axios`, showing the report tab
 
-<a href="https://npmgraph.js.org/?q=vite#tab=report">npmgraph.js.org<br>?`q=vite`<br>#`tab=report`</a>
+<a href="https://npmgraph.js.org/?q=axios#tab=report">npmgraph.js.org<br>?`q=axios`<br>#`tab=report`</a>
 
-**Example**: Graph `vite`, close the inspector
+**Example**: Graph `axios`, close the inspector
 
-<a href="https://npmgraph.js.org/?q=vite#tab=none">npmgraph.js.org<br>?`q=vite`<br>#`tab=none`</a>
+<a href="https://npmgraph.js.org/?q=axios#tab=none">npmgraph.js.org<br>?`q=axios`<br>#`tab=none`</a>
 
 ## Running locally
 

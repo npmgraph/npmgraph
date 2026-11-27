@@ -165,9 +165,9 @@ describe('navigation', () => {
     await nodeAppears('debug@');
     expect(searchValue()).toBe('debug');
     await userEvent.click(tab('Info'));
-    await userEvent.click(app().getByRole('link', { name: 'vite' }));
+    await userEvent.click(app().getByRole('link', { name: 'axios' }));
     await vi.waitFor(() => {
-      expect(searchValue()).toBe('vite');
+      expect(searchValue()).toBe('axios');
     });
   });
 
@@ -374,7 +374,7 @@ describe('panes', () => {
   ])(
     'keeps the Report tab after a refresh on %s',
     async (_name, width) => {
-      await goto('?q=vite', width);
+      await goto('?q=axios', width);
       await nodeAppears();
       await userEvent.click(tab('Report'));
       await hashHas('tab=report');

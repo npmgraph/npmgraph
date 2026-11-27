@@ -5,7 +5,7 @@ import { patchLocation } from './useLocation.ts';
 
 // The location hook uses these globals as soon as it's imported
 vi.hoisted(() => {
-  vi.stubGlobal('location', new URL('https://example.test/?q=vite'));
+  vi.stubGlobal('location', new URL('https://example.test/?q=axios'));
   vi.stubGlobal('addEventListener', vi.fn());
   vi.stubGlobal('history', { pushState: vi.fn(), replaceState: vi.fn() });
 });
@@ -23,7 +23,7 @@ describe('patchLocation', () => {
     const activity = new LoadActivity();
     setActivityForApp(activity);
 
-    patchLocation({ search: '?q=vite' }, false, { isInput: true });
+    patchLocation({ search: '?q=axios' }, false, { isInput: true });
     expect(activity.active).toBe(1);
 
     vi.advanceTimersByTime(500);
@@ -34,7 +34,7 @@ describe('patchLocation', () => {
     const activity = new LoadActivity();
     setActivityForApp(activity);
 
-    patchLocation({ search: '?q=vite' }, false);
+    patchLocation({ search: '?q=axios' }, false);
     expect(activity.active).toBe(0);
   });
 
