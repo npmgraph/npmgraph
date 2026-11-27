@@ -83,7 +83,7 @@ The legacy `package_json` hash key is not read by the app; use `packages` to inc
 
 **Example**: Graph that includes custom "foo" and "bar" modules, with "foo" as the root module.
 
-<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22vite%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=foo%401.2.3</code><br>#<code>packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22vite%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D</code></a>
+<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22vite%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=foo@1.2.3</code><br>#<code>packages=[{"name":"foo","version":"1.2.3","dependencies":{"vite":"0.18.0","bar":"3.2.1"}},{"name":"bar","version":"3.2.1","dependencies":{"debug":"2.6.9"}}]</code></a>
 
 Generated with:
 
