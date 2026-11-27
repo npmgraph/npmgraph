@@ -1,7 +1,7 @@
 import type { PackumentVersion } from '@npm/types';
 
 export function isHttpModule(moduleKey: string) {
-  return /^https?:\/\//.test(moduleKey);
+  return /^https?:\/\//i.test(moduleKey);
 }
 
 /**
@@ -9,19 +9,53 @@ Like npm-cli, `user/repo` is a GitHub repo. Package names can't contain a slash
 unless they're scoped (`@scope/name`), so this isn't ambiguous.
 */
 export function resolveGitHubShorthand(moduleKey: string) {
-  return /^[\w-]+\/[\w\-.]+$/.test(moduleKey)
-    ? `https://github.com/${moduleKey}/blob/HEAD/package.json`
-    : moduleKey;
+  const match = /^(?<repo>[\w-]+\/[\w\-.]+)(?:#(?<ref>[^\s#]+))?$/.exec(
+    moduleKey,
+  );
+  if (!match) {
+    return moduleKey;
+  }
+
+  const { repo, ref = 'HEAD' } = match.groups!;
+  return `https://github.com/${repo}/blob/${encodeURIComponent(ref)}/package.json`;
 }
+
+export function normalizeQueryKey(key: string) {
+  if (isHttpModule(key)) {
+    return key;
+  }
+
+  const hashIndex = key.indexOf('#');
+  return hashIndex === -1
+    ? key.toLowerCase()
+    : key.slice(0, hashIndex).toLowerCase() + key.slice(hashIndex);
+}
+
+const decodeRef = (ref: string) =>
+  new URLSearchParams(
+    `ref=${ref.replaceAll('+', '%2B').replaceAll('&', '%26')}`,
+  ).get('ref')!;
 
 /** Short description of where a package.json URL points to: `user/repo` (plus `#ref`, unless it's the default branch) for GitHub repos, the URL without protocol otherwise */
 export function describeUrlSource(url: URL) {
   if (url.host === 'raw.githubusercontent.com') {
-    const [owner, repo, ref, ...path] = url.pathname.split('/').filter(Boolean);
+    const [owner, repo, ...segments] = url.pathname.split('/').filter(Boolean);
+    // Fully-qualified refs can contain slashes (`refs/heads/Feature/Branch`),
+    // so they're taken up to the file name; any directory is indistinguishable
+    // from the ref
+    const isFullRef =
+      segments[0] === 'refs' && ['heads', 'tags'].includes(segments[1]!);
+    const isTag = isFullRef && segments[1] === 'tags';
+    const [ref, ...path] = isFullRef
+      ? [segments.slice(2, -1).join('/'), segments.at(-1)]
+      : segments;
+
     if (owner && repo && ref && path.at(-1) === 'package.json') {
       // HEAD is what GitHub shorthands resolve to, i.e. the default branch
-      const isDefaultRef = ['HEAD', 'main', 'master'].includes(ref);
-      return isDefaultRef ? `${owner}/${repo}` : `${owner}/${repo}#${ref}`;
+      const isDefaultRef = !isTag && ['HEAD', 'main', 'master'].includes(ref);
+      return isDefaultRef
+        ? `${owner}/${repo}`
+        : `${owner}/${repo}#${decodeRef(ref)}`;
     }
   }
 
