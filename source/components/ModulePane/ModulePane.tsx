@@ -60,6 +60,12 @@ function ModuleDetailsPane({
           {isShowStatus && <ModuleDistTag module={module} />}
         </div>
         {pkg?.description && <p>{pkg.description}</p>}
+        {module.isLocal && (
+          <p>
+            This is a locally-defined module. Additional information is not
+            available.
+          </p>
+        )}
       </div>
 
       <ModuleLinks module={module} />
