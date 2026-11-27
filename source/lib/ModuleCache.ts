@@ -81,9 +81,16 @@ async function fetchModuleFromURL(urlString: string, signal?: AbortSignal) {
   // TODO: We should probably be fetching github content via their REST API, but
   // that makes this code much more github-specific.  So, for now, we just do
   // some URL-massaging to pull from the "raw" URL
-  if (/\.?github.com$/.test(url.host)) {
+  if (url.hostname === 'github.com' || url.hostname === 'www.github.com') {
     url.host = 'raw.githubusercontent.com';
-    url.pathname = url.pathname.replace('/blob', '');
+    if (/^\/[^/]+\/[^/]+\/?$/.test(url.pathname)) {
+      url.pathname = `${url.pathname.replace(/\/$/, '')}/HEAD/package.json`;
+    } else {
+      url.pathname = url.pathname.replace(
+        /^(?<repo>\/[^/]+\/[^/]+)\/(?:blob|raw)\//,
+        '$<repo>/',
+      );
+    }
   }
 
   const pkg: PackageJSON = await fetchJson<PackageJSON>(url, { signal });

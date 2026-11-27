@@ -59,6 +59,54 @@ describe('local packages', () => {
 });
 
 describe('GitHub repos', () => {
+  it.each([
+    [
+      'npmgraph/npmgraph#drop-hooks',
+      'https://raw.githubusercontent.com/npmgraph/npmgraph/drop-hooks/package.json',
+      'npmgraph/npmgraph#drop-hooks',
+    ],
+    [
+      'branch-user/branch-repo#Feature/Branch',
+      'https://raw.githubusercontent.com/branch-user/branch-repo/Feature%2FBranch/package.json',
+      'branch-user/branch-repo#Feature/Branch',
+    ],
+    [
+      'https://github.com/npmgraph/npmgraph/raw/refs/heads/drop-hooks/package.json',
+      'https://raw.githubusercontent.com/npmgraph/npmgraph/refs/heads/drop-hooks/package.json',
+      'npmgraph/npmgraph#drop-hooks',
+    ],
+    [
+      'https://github.com/root-user/root-repo',
+      'https://raw.githubusercontent.com/root-user/root-repo/HEAD/package.json',
+      'root-user/root-repo',
+    ],
+    [
+      'https://github.com/root-user/trailing-repo/',
+      'https://raw.githubusercontent.com/root-user/trailing-repo/HEAD/package.json',
+      'root-user/trailing-repo',
+    ],
+    [
+      'https://github.com/blob-user/blob-repo/blob/main/packages/blob/package.json',
+      'https://raw.githubusercontent.com/blob-user/blob-repo/main/packages/blob/package.json',
+      'blob-user/blob-repo',
+    ],
+    [
+      'https://example.com/blob/package.json',
+      'https://example.com/blob/package.json',
+      'example.com/blob/package.json',
+    ],
+  ])('fetches %s as a package manifest', async (input, expected, source) => {
+    vi.mocked(fetchJson).mockResolvedValueOnce({
+      name: `package-${input}`,
+      version: '1.0.0',
+    });
+
+    const module = await getModule(input);
+
+    expect(String(vi.mocked(fetchJson).mock.lastCall?.[0])).toBe(expected);
+    expect(module.source).toBe(source);
+  });
+
   it('are loaded from user/repo', async () => {
     const pkg = { name: 'shorthand-package', version: '1.0.0' };
     vi.mocked(fetchJson).mockResolvedValueOnce(pkg);
@@ -66,7 +114,7 @@ describe('GitHub repos', () => {
     const module = await getModule('some-user/some-repo');
 
     expect(module.key).toBe('shorthand-package@1.0.0');
-    expect(String(vi.mocked(fetchJson).mock.calls[0]?.[0])).toBe(
+    expect(String(vi.mocked(fetchJson).mock.lastCall?.[0])).toBe(
       'https://raw.githubusercontent.com/some-user/some-repo/HEAD/package.json',
     );
   });
