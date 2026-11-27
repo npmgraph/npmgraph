@@ -2,6 +2,8 @@ import type { GraphState } from '../../../lib/graph-util.ts';
 import type Module from '../../../lib/Module.ts';
 import type { Maintainer } from '../../../lib/Module.ts';
 
+export const UNNAMED_MAINTAINER = '(unnamed maintainer)';
+
 export type MaintainerAnalysisState = {
   modulesByMaintainer: Map<string, Iterable<Module>>;
   soloModulesByMaintainer: Map<string, Iterable<Module>>;
@@ -67,7 +69,7 @@ export function analyzeMaintainers({
             `Nameless maintainer ${JSON.stringify(m)} in ${module.key}`,
           ),
         );
-        maintainer.name = '\u{26A0}\u{FE0F} (unnamed maintainer)';
+        maintainer.name = UNNAMED_MAINTAINER;
       }
 
       let maintainerModules = modulesByMaintainer.get(maintainer.name);

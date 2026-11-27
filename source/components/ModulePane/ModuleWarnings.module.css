@@ -18,14 +18,13 @@
 
   dt {
     font-weight: bold;
-  }
-  dt::after {
-    content: ': ';
-  }
-
-  dt > svg {
-    position: absolute;
-    top: 0.15em;
-    left: 0;
+    &::after {
+      content: ': ';
+    }
+    > svg {
+      position: absolute;
+      top: 0.15em;
+      left: 0;
+    }
   }
 }

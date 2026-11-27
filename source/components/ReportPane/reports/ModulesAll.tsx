@@ -1,3 +1,4 @@
+import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import simplur from 'simplur';
 import { cn } from '../../../lib/dom.ts';
 import { ModuleRows } from '../../ui/Row.tsx';
@@ -53,7 +54,7 @@ export default function ModulesAll() {
               title={title}
             >
               <span aria-hidden className={styles.icon}>
-                {weight.heavy ? '\u{26A0}' : ''}
+                {weight.heavy ? <AlertFillIcon /> : null}
               </span>
               +{weight.pulls}
             </span>
