@@ -46,5 +46,5 @@
 .divider {
   margin: 0 -1em;
   border: 0;
-  border-top: 1px solid var(--text-on-accent);
+  border-top: 1px solid var(--bg0);
 }
