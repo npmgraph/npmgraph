@@ -14,25 +14,25 @@ A tool for exploring npm modules and dependencies. Available online at https://n
 
 Comma-separated list of npm module names, optionally with a version or version range, URLs to `package.json` files, or GitHub `user/repo` shorthand.
 
-**Example**: Graph the `send` module (official npm registry):
+**Example**: Graph the `axios` module (official npm registry):
 
-https://npmgraph.js.org/?q=send
+<a href="https://npmgraph.js.org/?q=axios">npmgraph.js.org<br>?`q=axios`</a>
 
 ### `registry` (search parameter)
 
 The npm-compatible registry URL to use when loading packages. Defaults to `https://registry.npmjs.org`; the default is omitted from the URL.
 
-**Example**: Graph `send` using a custom registry:
+**Example**: Graph `axios` using a custom registry:
 
-https://npmgraph.js.org/?q=send&registry=https%3A%2F%2Fregistry.example.com
+<a href="https://npmgraph.js.org/?q=axios&amp;registry=https%3A%2F%2Fregistry.example.com">npmgraph.js.org<br>?`q=axios`<br>&amp;`registry=https%3A%2F%2Fregistry.example.com`</a>
 
 ### `collapse` (hash param)
 
 Comma-separated list of module names whose subtrees should be collapsed. A name collapses every matching version in the graph.
 
-**Example**: Graph `send`, collapsing the `debug` and `http-errors` subtrees
+**Example**: Graph `axios`, collapsing the `form-data` and `https-proxy-agent` subtrees
 
-https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
+<a href="https://npmgraph.js.org/?q=axios#collapse=form-data%2Chttps-proxy-agent">npmgraph.js.org<br>?`q=axios`<br>#`collapse=form-data%2Chttps-proxy-agent`</a>
 
 ### `color` (hash param)
 
@@ -44,31 +44,36 @@ https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
 | `bus`        | Number of maintainers ("bus" = [bus factor](https://en.wikipedia.org/wiki/Bus_factor))  |
 | `outdated`   | How far behind the latest version the module is (major, minor, or patch)                |
 
-**Example**: Graph `send`, colorize by module type:
+**Example**: Graph `axios`, colorize by module type:
 
-https://npmgraph.js.org/?q=send#color=moduleType
+<a href="https://npmgraph.js.org/?q=axios#color=moduleType">npmgraph.js.org<br>?`q=axios`<br>#`color=moduleType`</a>
 
 ### `deps` (hash param)
 
 Comma-separated list of additional dependency types to include in the graph.
 
-`dependencies` and `optionalDependencies` are always included throughout the graph. `devDependencies` are included only for top-level modules. `peerDependencies` are included when enabled, for modules throughout the graph; optional peer dependencies are not included.
+`dependencies` and `optionalDependencies` are always included throughout the graph.
 
-**Example**: Graph `send`, include `devDependencies`:
+| `deps=...`         | Additionally included                                                       |
+| ------------------ | --------------------------------------------------------------------------- |
+| `devDependencies`  | Dev dependencies of top-level modules                                       |
+| `peerDependencies` | Peer dependencies of all modules; optional peers only for top-level modules |
 
-https://npmgraph.js.org/?q=send#deps=devDependencies
+**Example**: Graph `axios`, include `devDependencies`:
 
-**Example**: Graph `send`, include `peerDependencies`:
+<a href="https://npmgraph.js.org/?q=axios#deps=devDependencies">npmgraph.js.org<br>?`q=axios`<br>#`deps=devDependencies`</a>
 
-https://npmgraph.js.org/?q=send#deps=peerDependencies
+**Example**: Graph `axios`, include `devDependencies` and `peerDependencies`:
+
+<a href="https://npmgraph.js.org/?q=axios#deps=devDependencies%2CpeerDependencies">npmgraph.js.org<br>?`q=axios`<br>#`deps=devDependencies%2CpeerDependencies`</a>
 
 ### `hide` (hash param)
 
-If `graph` (`...#hide=graph`), hides the graph and shows only the Report pane, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
+Set to `graph` to show only the report.
 
-**Example**: Show only the report for `send`
+**Example**: Show only the report for `axios`
 
-https://npmgraph.js.org/?q=send#hide=graph
+<a href="https://npmgraph.js.org/?q=axios#hide=graph">npmgraph.js.org<br>?`q=axios`<br>#`hide=graph`</a>
 
 ### `packages` (hash param, **JSON-encoded**)
 
@@ -78,7 +83,7 @@ The legacy `package_json` hash key is not read by the app; use `packages` to inc
 
 **Example**: Graph that includes custom "foo" and "bar" modules, with "foo" as the root module.
 
-https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D
+<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22axios%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D">npmgraph.js.org<br>?`q=foo@1.2.3`<br>#`packages=&#91;{"name":"foo","version":"1.2.3","dependencies":{"axios":"0.18.0","bar":"3.2.1"}},{"name":"bar","version":"3.2.1","dependencies":{"debug":"2.6.9"}}&#93;`</a>
 
 Generated with:
 
@@ -87,7 +92,7 @@ const fooPackage = {
   // package.json for "foo"
   name: 'foo',
   version: '1.2.3',
-  dependencies: { send: '0.18.0', bar: '3.2.1' },
+  dependencies: { axios: '0.18.0', bar: '3.2.1' },
 };
 const barPackage = {
   // package.json for "bar"
@@ -111,13 +116,13 @@ Name (lowercase title) of a section in the inspector. When opened, the matching 
 
 Also used by the report-only view (`hide=graph`), where sections are always open and headings have a `#` link.
 
-**Example**: Show the release timeline of `formidable@1.0.17`
+**Example**: Show the release timeline of `follow-redirects`
 
-https://npmgraph.js.org/?q=express@2.4.6#tab=module&section=release+timeline&select=exact%3Aformidable%401.0.17
+<a href="https://npmgraph.js.org/?q=axios#tab=module&amp;section=release+timeline&amp;select=follow-redirects">npmgraph.js.org<br>?`q=axios`<br>#`tab=module`<br>&amp;`section=release+timeline`<br>&amp;`select=follow-redirects`</a>
 
-**Example**: Show only the report for `send`, at its licenses section
+**Example**: Show only the report for `axios`, at its licenses section
 
-https://npmgraph.js.org/?q=send#hide=graph&section=licenses
+<a href="https://npmgraph.js.org/?q=axios#hide=graph&amp;section=licenses">npmgraph.js.org<br>?`q=axios`<br>#`hide=graph`<br>&amp;`section=licenses`</a>
 
 ### `select` (hash param)
 
@@ -125,38 +130,36 @@ Highlight a module or category of modules in the graph. Selection is based on mo
 
 Values should have one of the following forms:
 
-|                                |                                      |
+| `select=...`                   | Description                          |
 | ------------------------------ | ------------------------------------ |
 | `exact:<module key>`           | Select a specific module             |
 | `name:<module name>`           | Select modules by name, all versions |
 | `license:<license string>`     | Select modules by license            |
 | `maintainer:<maintainer name>` | Select modules by maintainer name    |
 
-**Example**: Graph `send`, selecting `fresh@0.5.2`
+**Example**: Graph `axios`, selecting `form-data@4`
 
-https://npmgraph.js.org/?q=send@0.18.0#select=fresh%400.5.2
+<a href="https://npmgraph.js.org/?q=axios#select=form-data%404">npmgraph.js.org<br>?`q=axios`<br>#`select=form-data%404`</a>
 
 ### `sizing` (hash param)
 
-If present (e.g. `...#sizing`), modules will be scaled to reflect their unpacked size.
+If present, modules will be scaled to reflect their unpacked size.
 
-**Example**: Graph `send`, size modules by unpacked size
+**Example**: Graph `axios`, size modules by unpacked size
 
-https://npmgraph.js.org/?q=send#sizing
+<a href="https://npmgraph.js.org/?q=axios#sizing">npmgraph.js.org<br>?`q=axios`<br>#`sizing`</a>
 
 ### `tab` (hash param)
 
-Current inspector tab. One of `info`, `report`, `module`, or `view`; or `none` to close the inspector. Updated automatically as tabs change.
+Inspector tab to open. One of `report`, `module`, or `view`; or `none` to close the inspector. The Info pane is not represented by a URL value.
 
-Each graph state has a default tab, which is omitted from the URL: `info` for an empty graph, `module` when exactly one module is selected, and `report` otherwise. When `tab` is absent, the default tab is shown and follows the graph state (e.g. selecting a module switches to `module`). Changing tabs clears `section`.
+**Example**: Graph `axios`, showing the report tab
 
-**Example**: Graph `send`, showing the report tab
+<a href="https://npmgraph.js.org/?q=axios#tab=report">npmgraph.js.org<br>?`q=axios`<br>#`tab=report`</a>
 
-https://npmgraph.js.org/?q=send#tab=report
+**Example**: Graph `axios`, close the inspector
 
-**Example**: Graph `send`, close the inspector
-
-https://npmgraph.js.org/?q=send@0.18.0#tab=none
+<a href="https://npmgraph.js.org/?q=axios#tab=none">npmgraph.js.org<br>?`q=axios`<br>#`tab=none`</a>
 
 ## Running locally
 

@@ -30,10 +30,10 @@ describe('parseCustomModuleLinks', () => {
     expect(
       parseCustomModuleLinks(
         'npm,https://www.npmjs.com/package/{+name}/v/{version}',
-        { name: 'express', version: '5.0.0', fromRegistry: true },
+        { name: 'axios', version: '5.0.0', fromRegistry: true },
       ),
     ).toEqual([
-      { label: 'npm', href: 'https://www.npmjs.com/package/express/v/5.0.0' },
+      { label: 'npm', href: 'https://www.npmjs.com/package/axios/v/5.0.0' },
     ]);
   });
 

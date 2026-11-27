@@ -23,7 +23,7 @@ export function InputExamples() {
       <div className={styles.chips}>
         <QueryLink
           className={styles.chip}
-          query={['express']}
+          query={['axios']}
           title="A single module name"
         />
         <QueryLink
