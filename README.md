@@ -16,7 +16,7 @@ Comma-separated list of npm module names, optionally with a version or version r
 
 **Example**: Graph the `vite` module (official npm registry):
 
-<a href="https://npmgraph.js.org/?q=vite" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code></a>
+<a href="https://npmgraph.js.org/?q=vite" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code></a>
 
 ### `registry` (search parameter)
 
@@ -24,7 +24,7 @@ The npm-compatible registry URL to use when loading packages. Defaults to `https
 
 **Example**: Graph `vite` using a custom registry:
 
-<a href="https://npmgraph.js.org/?q=vite&amp;registry=https%3A%2F%2Fregistry.example.com" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>&amp;<code>registry=https%3A%2F%2Fregistry.example.com</code></a>
+<a href="https://npmgraph.js.org/?q=vite&amp;registry=https%3A%2F%2Fregistry.example.com" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>&amp;<code>registry=https%3A%2F%2Fregistry.example.com</code></a>
 
 ### `collapse` (hash param)
 
@@ -32,7 +32,7 @@ Comma-separated list of module names whose subtrees should be collapsed. A name 
 
 **Example**: Graph `vite`, collapsing the `debug` and `http-errors` subtrees
 
-<a href="https://npmgraph.js.org/?q=vite#collapse=debug%2Chttp-errors" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>collapse=debug%2Chttp-errors</code></a>
+<a href="https://npmgraph.js.org/?q=vite#collapse=debug%2Chttp-errors" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>collapse=debug%2Chttp-errors</code></a>
 
 ### `color` (hash param)
 
@@ -46,7 +46,7 @@ Comma-separated list of module names whose subtrees should be collapsed. A name 
 
 **Example**: Graph `vite`, colorize by module type:
 
-<a href="https://npmgraph.js.org/?q=vite#color=moduleType" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>color=moduleType</code></a>
+<a href="https://npmgraph.js.org/?q=vite#color=moduleType" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>color=moduleType</code></a>
 
 ### `deps` (hash param)
 
@@ -61,11 +61,11 @@ Comma-separated list of additional dependency types to include in the graph.
 
 **Example**: Graph `vite`, include `devDependencies`:
 
-<a href="https://npmgraph.js.org/?q=vite#deps=devDependencies" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>deps=devDependencies</code></a>
+<a href="https://npmgraph.js.org/?q=vite#deps=devDependencies" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>deps=devDependencies</code></a>
 
 **Example**: Graph `vite`, include `devDependencies` and `peerDependencies`:
 
-<a href="https://npmgraph.js.org/?q=vite#deps=devDependencies%2CpeerDependencies" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>deps=devDependencies%2CpeerDependencies</code></a>
+<a href="https://npmgraph.js.org/?q=vite#deps=devDependencies%2CpeerDependencies" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>deps=devDependencies%2CpeerDependencies</code></a>
 
 ### `hide` (hash param)
 
@@ -73,7 +73,7 @@ Set to `graph` to show only the report.
 
 **Example**: Show only the report for `vite`
 
-<a href="https://npmgraph.js.org/?q=vite#hide=graph" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>hide=graph</code></a>
+<a href="https://npmgraph.js.org/?q=vite#hide=graph" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>hide=graph</code></a>
 
 ### `packages` (hash param, **JSON-encoded**)
 
@@ -83,7 +83,7 @@ The legacy `package_json` hash key is not read by the app; use `packages` to inc
 
 **Example**: Graph that includes custom "foo" and "bar" modules, with "foo" as the root module.
 
-<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=foo%401.2.3</code><br>#<code>packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D</code></a>
+<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=foo%401.2.3</code><br>#<code>packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D</code></a>
 
 Generated with:
 
@@ -118,11 +118,11 @@ Also used by the report-only view (`hide=graph`), where sections are always open
 
 **Example**: Show the release timeline of `formidable@1.0.17`
 
-<a href="https://npmgraph.js.org/?q=vite@2.4.6#tab=module&amp;section=release+timeline&amp;select=exact%3Aformidable%401.0.17" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite@2.4.6</code><br>#<code>tab=module</code><br>&amp;<code>section=release+timeline</code><br>&amp;<code>select=exact%3Aformidable%401.0.17</code></a>
+<a href="https://npmgraph.js.org/?q=vite@2.4.6#tab=module&amp;section=release+timeline&amp;select=exact%3Aformidable%401.0.17" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite@2.4.6</code><br>#<code>tab=module</code><br>&amp;<code>section=release+timeline</code><br>&amp;<code>select=exact%3Aformidable%401.0.17</code></a>
 
 **Example**: Show only the report for `vite`, at its licenses section
 
-<a href="https://npmgraph.js.org/?q=vite#hide=graph&amp;section=licenses" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>hide=graph</code><br>&amp;<code>section=licenses</code></a>
+<a href="https://npmgraph.js.org/?q=vite#hide=graph&amp;section=licenses" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>hide=graph</code><br>&amp;<code>section=licenses</code></a>
 
 ### `select` (hash param)
 
@@ -139,7 +139,7 @@ Values should have one of the following forms:
 
 **Example**: Graph `vite`, selecting `fresh@0.5.2`
 
-<a href="https://npmgraph.js.org/?q=vite@0.18.0#select=fresh%400.5.2" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite@0.18.0</code><br>#<code>select=fresh%400.5.2</code></a>
+<a href="https://npmgraph.js.org/?q=vite@0.18.0#select=fresh%400.5.2" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite@0.18.0</code><br>#<code>select=fresh%400.5.2</code></a>
 
 ### `sizing` (hash param)
 
@@ -147,7 +147,7 @@ If present, modules will be scaled to reflect their unpacked size.
 
 **Example**: Graph `vite`, size modules by unpacked size
 
-<a href="https://npmgraph.js.org/?q=vite#sizing" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>sizing</code></a>
+<a href="https://npmgraph.js.org/?q=vite#sizing" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>sizing</code></a>
 
 ### `tab` (hash param)
 
@@ -155,11 +155,11 @@ Inspector tab to open. One of `report`, `module`, or `view`; or `none` to close 
 
 **Example**: Graph `vite`, showing the report tab
 
-<a href="https://npmgraph.js.org/?q=vite#tab=report" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>tab=report</code></a>
+<a href="https://npmgraph.js.org/?q=vite#tab=report" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>tab=report</code></a>
 
 **Example**: Graph `vite`, close the inspector
 
-<a href="https://npmgraph.js.org/?q=vite@0.18.0#tab=none" rel="nofollow">https://npmgraph.js.org/<br>?<code>q=vite@0.18.0</code><br>#<code>tab=none</code></a>
+<a href="https://npmgraph.js.org/?q=vite@0.18.0#tab=none" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite@0.18.0</code><br>#<code>tab=none</code></a>
 
 ## Running locally
 
