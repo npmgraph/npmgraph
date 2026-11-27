@@ -52,17 +52,17 @@
 
   /* 0.x.0 releases: minors, but big enough to fit a label */
   .preV1 text {
-    fill: var(--text);
+    fill: oklch(from var(--stroke-blue) 0.2 c h);
   }
 
   .layerMinor {
-    fill: var(--bg-violet);
+    fill: var(--stroke-blue);
   }
   .layerPatch {
-    fill: var(--bg-blue);
+    fill: var(--stroke-green);
   }
   .layerPrerelease {
-    fill: var(--bg-yellow);
+    fill: var(--stroke-orange);
   }
   .legend text {
     fill: var(--text);
