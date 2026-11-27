@@ -1,3 +1,5 @@
+import HttpError from './HttpError.ts';
+
 export const SPDX_URL =
   'https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json';
 
@@ -26,7 +28,7 @@ async function fetchSPDXLicenses(): Promise<Map<string, SPDXLicense>> {
 
   const response = await fetch(SPDX_URL);
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
+    throw new HttpError(response.status);
   }
 
   const data: SPDXLicenseList = await response.json();

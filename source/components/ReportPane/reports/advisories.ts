@@ -73,8 +73,7 @@ export async function fetchAdvisories(
 }
 
 export const fetchModuleAdvisories = pMemoize(
-  async ({ name, version, isLocal, isStub }: Module) =>
-    // Local and stub modules aren't in the registry
-    isLocal || isStub ? [] : fetchAdvisories({ [name]: [version] }),
+  async ({ name, version, isFromRegistry }: Module) =>
+    isFromRegistry ? fetchAdvisories({ [name]: [version] }) : [],
   { cacheKey: ([{ key }]) => key },
 );

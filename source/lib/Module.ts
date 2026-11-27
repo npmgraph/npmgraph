@@ -77,6 +77,11 @@ export default class Module {
     return Boolean(this.stubError);
   }
 
+  /** Whether the registry knows this module, as opposed to uploads, URLs and stubs */
+  get isFromRegistry() {
+    return !this.source && !this.isStub;
+  }
+
   get maintainers() {
     let maintainers =
       this.packument?.maintainers ??
