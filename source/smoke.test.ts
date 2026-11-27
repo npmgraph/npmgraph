@@ -143,7 +143,7 @@ describe('graph', () => {
   it(
     'shows the root module when loading a graph larger than the viewport',
     async () => {
-      await goto('?q=express');
+      await goto('?q=eslint');
       await nodeAppears();
       // The viewport can move the graph again right after it's rendered
       await new Promise(resolve => {
@@ -165,9 +165,9 @@ describe('navigation', () => {
     await nodeAppears('debug@');
     expect(searchValue()).toBe('debug');
     await userEvent.click(tab('Info'));
-    await userEvent.click(app().getByRole('link', { name: 'express' }));
+    await userEvent.click(app().getByRole('link', { name: 'eslint' }));
     await vi.waitFor(() => {
-      expect(searchValue()).toBe('express');
+      expect(searchValue()).toBe('eslint');
     });
   });
 
@@ -374,7 +374,7 @@ describe('panes', () => {
   ])(
     'keeps the Report tab after a refresh on %s',
     async (_name, width) => {
-      await goto('?q=express', width);
+      await goto('?q=eslint', width);
       await nodeAppears();
       await userEvent.click(tab('Report'));
       await hashHas('tab=report');

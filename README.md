@@ -14,25 +14,25 @@ A tool for exploring npm modules and dependencies. Available online at https://n
 
 Comma-separated list of npm module names, optionally with a version or version range, URLs to `package.json` files, or GitHub `user/repo` shorthand.
 
-**Example**: Graph the `send` module (official npm registry):
+**Example**: Graph the `eslint` module (official npm registry):
 
-https://npmgraph.js.org/?q=send
+https://npmgraph.js.org/?q=eslint
 
 ### `registry` (search parameter)
 
 The npm-compatible registry URL to use when loading packages. Defaults to `https://registry.npmjs.org`; the default is omitted from the URL.
 
-**Example**: Graph `send` using a custom registry:
+**Example**: Graph `eslint` using a custom registry:
 
-https://npmgraph.js.org/?q=send&registry=https%3A%2F%2Fregistry.example.com
+https://npmgraph.js.org/?q=eslint&registry=https%3A%2F%2Fregistry.example.com
 
 ### `collapse` (hash param)
 
 Comma-separated list of module names whose subtrees should be collapsed. A name collapses every matching version in the graph.
 
-**Example**: Graph `send`, collapsing the `debug` and `http-errors` subtrees
+**Example**: Graph `eslint`, collapsing the `debug` and `http-errors` subtrees
 
-https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
+https://npmgraph.js.org/?q=eslint#collapse=debug%2Chttp-errors
 
 ### `color` (hash param)
 
@@ -44,9 +44,9 @@ https://npmgraph.js.org/?q=send#collapse=debug%2Chttp-errors
 | `bus`        | Number of maintainers ("bus" = [bus factor](https://en.wikipedia.org/wiki/Bus_factor))  |
 | `outdated`   | How far behind the latest version the module is (major, minor, or patch)                |
 
-**Example**: Graph `send`, colorize by module type:
+**Example**: Graph `eslint`, colorize by module type:
 
-https://npmgraph.js.org/?q=send#color=moduleType
+https://npmgraph.js.org/?q=eslint#color=moduleType
 
 ### `deps` (hash param)
 
@@ -54,21 +54,21 @@ Comma-separated list of additional dependency types to include in the graph.
 
 `dependencies` and `optionalDependencies` are always included throughout the graph. `devDependencies` are included only for top-level modules. `peerDependencies` are included when enabled, for modules throughout the graph; optional peer dependencies are not included.
 
-**Example**: Graph `send`, include `devDependencies`:
+**Example**: Graph `eslint`, include `devDependencies`:
 
-https://npmgraph.js.org/?q=send#deps=devDependencies
+https://npmgraph.js.org/?q=eslint#deps=devDependencies
 
-**Example**: Graph `send`, include `peerDependencies`:
+**Example**: Graph `eslint`, include `peerDependencies`:
 
-https://npmgraph.js.org/?q=send#deps=peerDependencies
+https://npmgraph.js.org/?q=eslint#deps=peerDependencies
 
 ### `hide` (hash param)
 
 If `graph` (`...#hide=graph`), hides the graph and shows only the Report pane, styled like a GitHub readme with non-collapsible sections. A "Graph" tab is shown to return to the normal view. Reachable via the "Expand report" button in the Report pane.
 
-**Example**: Show only the report for `send`
+**Example**: Show only the report for `eslint`
 
-https://npmgraph.js.org/?q=send#hide=graph
+https://npmgraph.js.org/?q=eslint#hide=graph
 
 ### `packages` (hash param, **JSON-encoded**)
 
@@ -87,7 +87,7 @@ const fooPackage = {
   // package.json for "foo"
   name: 'foo',
   version: '1.2.3',
-  dependencies: { send: '0.18.0', bar: '3.2.1' },
+  dependencies: { eslint: '0.18.0', bar: '3.2.1' },
 };
 const barPackage = {
   // package.json for "bar"
@@ -113,11 +113,11 @@ Also used by the report-only view (`hide=graph`), where sections are always open
 
 **Example**: Show the release timeline of `formidable@1.0.17`
 
-https://npmgraph.js.org/?q=express@2.4.6#tab=module&section=release+timeline&select=exact%3Aformidable%401.0.17
+https://npmgraph.js.org/?q=eslint@2.4.6#tab=module&section=release+timeline&select=exact%3Aformidable%401.0.17
 
-**Example**: Show only the report for `send`, at its licenses section
+**Example**: Show only the report for `eslint`, at its licenses section
 
-https://npmgraph.js.org/?q=send#hide=graph&section=licenses
+https://npmgraph.js.org/?q=eslint#hide=graph&section=licenses
 
 ### `select` (hash param)
 
@@ -132,31 +132,29 @@ Values should have one of the following forms:
 | `license:<license string>`     | Select modules by license            |
 | `maintainer:<maintainer name>` | Select modules by maintainer name    |
 
-**Example**: Graph `send`, selecting `fresh@0.5.2`
+**Example**: Graph `eslint`, selecting `fresh@0.5.2`
 
-https://npmgraph.js.org/?q=send@0.18.0#select=fresh%400.5.2
+https://npmgraph.js.org/?q=eslint@0.18.0#select=fresh%400.5.2
 
 ### `sizing` (hash param)
 
 If present (e.g. `...#sizing`), modules will be scaled to reflect their unpacked size.
 
-**Example**: Graph `send`, size modules by unpacked size
+**Example**: Graph `eslint`, size modules by unpacked size
 
-https://npmgraph.js.org/?q=send#sizing
+https://npmgraph.js.org/?q=eslint#sizing
 
 ### `tab` (hash param)
 
-Current inspector tab. One of `info`, `report`, `module`, or `view`; or `none` to close the inspector. Updated automatically as tabs change.
+Inspector tab to open. One of `report`, `module`, or `view`; or `none` to close the inspector. The Info pane is not represented by a URL value.
 
-Each graph state has a default tab, which is omitted from the URL: `info` for an empty graph, `module` when exactly one module is selected, and `report` otherwise. When `tab` is absent, the default tab is shown and follows the graph state (e.g. selecting a module switches to `module`). Changing tabs clears `section`.
+**Example**: Graph `eslint`, showing the report tab
 
-**Example**: Graph `send`, showing the report tab
+https://npmgraph.js.org/?q=eslint#tab=report
 
-https://npmgraph.js.org/?q=send#tab=report
+**Example**: Graph `eslint`, close the inspector
 
-**Example**: Graph `send`, close the inspector
-
-https://npmgraph.js.org/?q=send@0.18.0#tab=none
+https://npmgraph.js.org/?q=eslint@0.18.0#tab=none
 
 ## Running locally
 
