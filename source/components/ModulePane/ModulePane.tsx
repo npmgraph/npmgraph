@@ -6,7 +6,6 @@ import type Module from '../../lib/Module.ts';
 import { queryModuleCache } from '../../lib/ModuleCache.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
-import { QueryLink } from '../ui/QueryLink.tsx';
 import { ModuleDependents } from './ModuleDependents.tsx';
 import { ModuleLinks } from './ModuleLinks.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
@@ -35,22 +34,6 @@ function useSelectedModules() {
   return selectedModules;
 }
 
-function LocalModulePane({ module }: { module: Module }) {
-  return (
-    <Pane>
-      <h2>
-        <QueryLink query={module.key} reset={false}>
-          {module.isUnnamed || module.source ? module.displayName : module.key}
-        </QueryLink>
-      </h2>
-      <p>
-        This is a locally-defined module. Additional information is not
-        available at this time.
-      </p>
-    </Pane>
-  );
-}
-
 function StubModulePane({ module }: { module: Module }) {
   return (
     <Pane>
@@ -77,11 +60,20 @@ function ModuleDetailsPane({
           {isShowStatus && <ModuleDistTag module={module} />}
         </div>
         {pkg?.description && <p>{pkg.description}</p>}
+        {module.isLocal && (
+          <p>
+            This is a locally-defined module. Additional information is not
+            available.
+          </p>
+        )}
       </div>
 
       <ModuleLinks module={module} />
 
-      <ModuleWarnings module={module} showOutdated={isShowStatus} />
+      {/* Advisories and replacements are looked up by name in the registry */}
+      {!module.isLocal && (
+        <ModuleWarnings module={module} showOutdated={isShowStatus} />
+      )}
 
       <ReleaseTimeline module={module} />
 
@@ -120,10 +112,6 @@ export default function ModulePane(
   const module = selectedModules.values().next().value;
   if (!module) {
     return null;
-  }
-
-  if (module.isLocal) {
-    return <LocalModulePane module={module} />;
   }
 
   if (module.isStub) {
