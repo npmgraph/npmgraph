@@ -30,9 +30,9 @@ The npm-compatible registry URL to use when loading packages. Defaults to `https
 
 Comma-separated list of module names whose subtrees should be collapsed. A name collapses every matching version in the graph.
 
-**Example**: Graph `vite`, collapsing the `debug` and `http-errors` subtrees
+**Example**: Graph `vite`, collapsing the `postcss` and `tinyglobby` subtrees
 
-<a href="https://npmgraph.js.org/?q=vite#collapse=debug%2Chttp-errors" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>collapse=debug%2Chttp-errors</code></a>
+<a href="https://npmgraph.js.org/?q=vite#collapse=postcss%2Ctinyglobby" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>collapse=postcss%2Ctinyglobby</code></a>
 
 ### `color` (hash param)
 
@@ -83,7 +83,7 @@ The legacy `package_json` hash key is not read by the app; use `packages` to inc
 
 **Example**: Graph that includes custom "foo" and "bar" modules, with "foo" as the root module.
 
-<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=foo%401.2.3</code><br>#<code>packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22send%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D</code></a>
+<a href="https://npmgraph.js.org/?q=foo%401.2.3#packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22vite%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=foo%401.2.3</code><br>#<code>packages=%5B%7B%22name%22%3A%22foo%22%2C%22version%22%3A%221.2.3%22%2C%22dependencies%22%3A%7B%22vite%22%3A%220.18.0%22%2C%22bar%22%3A%223.2.1%22%7D%7D%2C%7B%22name%22%3A%22bar%22%2C%22version%22%3A%223.2.1%22%2C%22dependencies%22%3A%7B%22debug%22%3A%222.6.9%22%7D%7D%5D</code></a>
 
 Generated with:
 
@@ -116,9 +116,9 @@ Name (lowercase title) of a section in the inspector. When opened, the matching 
 
 Also used by the report-only view (`hide=graph`), where sections are always open and headings have a `#` link.
 
-**Example**: Show the release timeline of `formidable@1.0.17`
+**Example**: Show the release timeline of `tinyglobby`
 
-<a href="https://npmgraph.js.org/?q=vite@2.4.6#tab=module&amp;section=release+timeline&amp;select=exact%3Aformidable%401.0.17" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite@2.4.6</code><br>#<code>tab=module</code><br>&amp;<code>section=release+timeline</code><br>&amp;<code>select=exact%3Aformidable%401.0.17</code></a>
+<a href="https://npmgraph.js.org/?q=vite#tab=module&amp;section=release+timeline&amp;select=tinyglobby" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>tab=module</code><br>&amp;<code>section=release+timeline</code><br>&amp;<code>select=tinyglobby</code></a>
 
 **Example**: Show only the report for `vite`, at its licenses section
 
@@ -137,9 +137,9 @@ Values should have one of the following forms:
 | `license:<license string>`     | Select modules by license            |
 | `maintainer:<maintainer name>` | Select modules by maintainer name    |
 
-**Example**: Graph `vite`, selecting `fresh@0.5.2`
+**Example**: Graph `vite`, selecting `picomatch@4`
 
-<a href="https://npmgraph.js.org/?q=vite@0.18.0#select=fresh%400.5.2" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite@0.18.0</code><br>#<code>select=fresh%400.5.2</code></a>
+<a href="https://npmgraph.js.org/?q=vite#select=picomatch%404" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>select=picomatch%404</code></a>
 
 ### `sizing` (hash param)
 
@@ -159,7 +159,7 @@ Inspector tab to open. One of `report`, `module`, or `view`; or `none` to close 
 
 **Example**: Graph `vite`, close the inspector
 
-<a href="https://npmgraph.js.org/?q=vite@0.18.0#tab=none" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite@0.18.0</code><br>#<code>tab=none</code></a>
+<a href="https://npmgraph.js.org/?q=vite#tab=none" rel="nofollow">https:&#47;&#47;npmgraph.js.org/<br>?<code>q=vite</code><br>#<code>tab=none</code></a>
 
 ## Running locally
 
