@@ -14,6 +14,10 @@ function getVersionsByName({ moduleInfos }: ModuleAnalysisState) {
   const versionsByName: Record<string, string[]> = {};
 
   for (const { module } of moduleInfos.values()) {
+    if (!module.isFromRegistry) {
+      continue;
+    }
+
     versionsByName[module.name] ??= [];
     (versionsByName[module.name] ??= []).push(module.version);
   }

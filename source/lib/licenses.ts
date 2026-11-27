@@ -1,3 +1,5 @@
+import HttpError from './HttpError.ts';
+
 export const SPDX_URL =
   'https://raw.githubusercontent.com/spdx/license-list-data/main/json/licenses.json';
 
@@ -18,27 +20,21 @@ export type LicenseIssue = 'no-osi' | 'no-fsf' | 'deprecated';
 let allLicensesPromise: Promise<Map<string, SPDXLicense>> | undefined;
 
 async function fetchSPDXLicenses(): Promise<Map<string, SPDXLicense>> {
-  try {
-    type SPDXLicenseList = {
-      licenseListVersion: string;
-      licenses: SPDXLicense[];
-      releaseDate: string;
-    };
+  type SPDXLicenseList = {
+    licenseListVersion: string;
+    licenses: SPDXLicense[];
+    releaseDate: string;
+  };
 
-    const response = await fetch(SPDX_URL);
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const data: SPDXLicenseList = await response.json();
-    return new Map(
-      data.licenses.map(license => [license.licenseId.toLowerCase(), license]),
-    );
-  } catch (error) {
-    // Let the next call try again
-    allLicensesPromise = undefined;
-    throw error;
+  const response = await fetch(SPDX_URL);
+  if (!response.ok) {
+    throw new HttpError(response.status);
   }
+
+  const data: SPDXLicenseList = await response.json();
+  return new Map(
+    data.licenses.map(license => [license.licenseId.toLowerCase(), license]),
+  );
 }
 
 // The same promise on every call, so `use()` doesn't suspend again
