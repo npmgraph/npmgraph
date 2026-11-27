@@ -2,11 +2,6 @@
   color: var(--stroke-orange);
 }
 
-/* Stub names can be long URLs */
-.stubName {
-  overflow-wrap: anywhere;
-}
-
 .header {
   display: grid;
   gap: 0.25em;

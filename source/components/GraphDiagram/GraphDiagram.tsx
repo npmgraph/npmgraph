@@ -152,7 +152,7 @@ function GraphDiagramInner() {
   const selectedModules = useMemo(
     () =>
       graph
-        ? queryModuleCache(selectType, selectValue)
+        ? queryModuleCache(selectType, selectValue, graph.moduleInfos)
         : new Map<string, Module>(),
     [graph, selectType, selectValue],
   );
