@@ -111,6 +111,24 @@ describe('describeUrlSource', () => {
     ).toBe('user/repo#feature+one&two');
   });
 
+  it('describes refs/tags and slash-containing refs/heads', () => {
+    const describeRefUrl = (path: string) =>
+      describeUrlSource(
+        new URL(`https://raw.githubusercontent.com/user/repo/${path}`),
+      );
+
+    expect(describeRefUrl('refs/tags/v1.0.0/package.json')).toBe(
+      'user/repo#v1.0.0',
+    );
+    expect(describeRefUrl('refs/tags/main/package.json')).toBe(
+      'user/repo#main',
+    );
+    expect(describeRefUrl('refs/heads/Feature/Branch/package.json')).toBe(
+      'user/repo#Feature/Branch',
+    );
+    expect(describeRefUrl('refs/heads/main/package.json')).toBe('user/repo');
+  });
+
   it('prints other URLs without the protocol', () => {
     expect(
       describeUrlSource(new URL('https://example.com/some/package.json')),

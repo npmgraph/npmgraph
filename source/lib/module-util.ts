@@ -31,21 +31,31 @@ export function normalizeQueryKey(key: string) {
     : key.slice(0, hashIndex).toLowerCase() + key.slice(hashIndex);
 }
 
+const decodeRef = (ref: string) =>
+  new URLSearchParams(
+    `ref=${ref.replaceAll('+', '%2B').replaceAll('&', '%26')}`,
+  ).get('ref')!;
+
 /** Short description of where a package.json URL points to: `user/repo` (plus `#ref`, unless it's the default branch) for GitHub repos, the URL without protocol otherwise */
 export function describeUrlSource(url: URL) {
   if (url.host === 'raw.githubusercontent.com') {
     const [owner, repo, ...segments] = url.pathname.split('/').filter(Boolean);
-    if (segments[0] === 'refs' && segments[1] === 'heads') {
-      segments.splice(0, 2);
-    }
+    // Fully-qualified refs can contain slashes (`refs/heads/Feature/Branch`),
+    // so they're taken up to the file name; any directory is indistinguishable
+    // from the ref
+    const isFullRef =
+      segments[0] === 'refs' && ['heads', 'tags'].includes(segments[1]!);
+    const isTag = isFullRef && segments[1] === 'tags';
+    const [ref, ...path] = isFullRef
+      ? [segments.slice(2, -1).join('/'), segments.at(-1)]
+      : segments;
 
-    const [ref, ...path] = segments;
     if (owner && repo && ref && path.at(-1) === 'package.json') {
       // HEAD is what GitHub shorthands resolve to, i.e. the default branch
-      const isDefaultRef = ['HEAD', 'main', 'master'].includes(ref);
+      const isDefaultRef = !isTag && ['HEAD', 'main', 'master'].includes(ref);
       return isDefaultRef
         ? `${owner}/${repo}`
-        : `${owner}/${repo}#${new URLSearchParams(`ref=${ref.replaceAll('+', '%2B').replaceAll('&', '%26')}`).get('ref')}`;
+        : `${owner}/${repo}#${decodeRef(ref)}`;
     }
   }
 
