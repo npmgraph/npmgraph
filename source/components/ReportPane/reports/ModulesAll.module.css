@@ -14,6 +14,13 @@
   }
 }
 
+/* Sized to the text, so it doesn't stretch the row */
 .icon {
   font-weight: normal;
+
+  svg {
+    display: block;
+    width: 1em;
+    height: 1em;
+  }
 }

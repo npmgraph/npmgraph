@@ -1,8 +1,7 @@
 import { resolveDocUrl } from 'module-replacements';
-import { Suspense, use } from 'react';
+import { Suspense, use, type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import simplur from 'simplur';
-import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
 import { fetchModuleAdvisories } from '../ReportPane/reports/advisories.ts';
@@ -16,6 +15,18 @@ import { ModuleOutdated } from './ModuleVersionInfo.tsx';
 import * as styles from './ModuleWarnings.module.css';
 
 type Props = { module: Module; showOutdated: boolean };
+
+function Warning({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div>
+      <dt>
+        <SectionSymbol warn />
+        {title}
+      </dt>
+      <dd className={listStyles.details}>{children}</dd>
+    </div>
+  );
+}
 
 function Warnings({
   module,
@@ -39,76 +50,44 @@ function Warnings({
   const mappingUrl = mapping && resolveDocUrl(mapping.url);
 
   return (
-    <dl className={cn(listStyles.list, styles.list)}>
+    <dl className={styles.list}>
       {hasOutdated && (
-        <ModuleOutdated module={module} className={styles.inline} />
+        <Warning title="Outdated">
+          <ModuleOutdated module={module} />
+        </Warning>
       )}
-      {deprecated ? (
-        <div className={styles.inline}>
-          <dt>
-            <SectionSymbol warn />
-            Deprecated
-          </dt>
-          <dd className={listStyles.details}>{deprecated}</dd>
-        </div>
-      ) : null}
+      {deprecated ? <Warning title="Deprecated">{deprecated}</Warning> : null}
       {vulnerabilities > 0 && (
-        <div className={styles.inline}>
-          <dt>
-            <SectionSymbol warn />
-            Vulnerable
-          </dt>
-          <dd className={listStyles.details}>
-            <ExternalLink
-              href={`https://github.com/advisories?query=ecosystem%3Anpm+affects%3A${encodeURIComponent(module.name)}`}
-            >
-              {simplur`${vulnerabilities} advisor[y|ies]`}
-            </ExternalLink>
-          </dd>
-        </div>
+        <Warning title="Vulnerable">
+          <ExternalLink
+            href={`https://github.com/advisories?query=ecosystem%3Anpm+affects%3A${encodeURIComponent(module.name)}`}
+          >
+            {simplur`${vulnerabilities} advisor[y|ies]`}
+          </ExternalLink>
+        </Warning>
       )}
       {Boolean(advisoriesError) && (
-        <div className={styles.inline}>
-          <dt>
-            <SectionSymbol warn />
-            Vulnerabilities
-          </dt>
-          <dd className={listStyles.details}>
-            Could not load the security advisories:{' '}
-            {advisoriesError instanceof Error
-              ? advisoriesError.message
-              : String(advisoriesError)}
-          </dd>
-        </div>
+        <Warning title="Vulnerabilities">
+          Could not load the security advisories:{' '}
+          {advisoriesError instanceof Error
+            ? advisoriesError.message
+            : String(advisoriesError)}
+        </Warning>
       )}
       {replacements ? (
-        mappingUrl ? (
-          <div className={styles.inline}>
-            <dt>
-              <SectionSymbol warn />
-              Replaceable
-            </dt>
-            <dd className={listStyles.details}>
-              <ExternalLink href={mappingUrl}>learn more</ExternalLink>
-            </dd>
-          </div>
-        ) : (
-          <div>
-            <dt>
-              <SectionSymbol warn />
-              Replaceable
-            </dt>
-            <dd className={listStyles.details}>
-              <ul>
-                {replacements.filter(isDefined).map(replacement => (
-                  <li key={replacement.id}>
-                    <Replacement replacement={replacement} />
-                  </li>
-                ))}
-              </ul>
-            </dd>
-          </div>
-        )
+        <Warning title="Replaceable">
+          {mappingUrl ? (
+            <ExternalLink href={mappingUrl}>learn more</ExternalLink>
+          ) : (
+            <ul>
+              {replacements.filter(isDefined).map(replacement => (
+                <li key={replacement.id}>
+                  <Replacement replacement={replacement} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </Warning>
       ) : null}
     </dl>
   );

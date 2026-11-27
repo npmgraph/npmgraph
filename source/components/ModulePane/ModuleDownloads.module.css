@@ -30,41 +30,35 @@
 
   &.filled {
     opacity: 1;
+    box-shadow: inset 0 0 0 1px
+      color-mix(in oklch, var(--text) 20%, transparent);
 
     &:nth-child(1) {
-      background-color: color-mix(
-        in oklch,
-        var(--stroke-red) 0%,
-        var(--stroke-blue)
-      );
+      background-color: var(--text-on-accent);
     }
     &:nth-child(2) {
       background-color: color-mix(
         in oklch,
-        var(--stroke-red) 25%,
-        var(--stroke-blue)
+        var(--accent) 25%,
+        var(--text-on-accent)
       );
     }
     &:nth-child(3) {
       background-color: color-mix(
         in oklch,
-        var(--stroke-red) 50%,
-        var(--stroke-blue)
+        var(--accent) 50%,
+        var(--text-on-accent)
       );
     }
     &:nth-child(4) {
       background-color: color-mix(
         in oklch,
-        var(--stroke-red) 75%,
-        var(--stroke-blue)
+        var(--accent) 75%,
+        var(--text-on-accent)
       );
     }
     &:nth-child(5) {
-      background-color: color-mix(
-        in oklch,
-        var(--stroke-red) 100%,
-        var(--stroke-blue)
-      );
+      background-color: var(--accent);
     }
   }
 }

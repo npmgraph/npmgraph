@@ -1,3 +1,4 @@
+/* eslint-disable local/no-magic-colors -- The release palette is defined here */
 .root {
   cursor: default;
   border: solid 1px var(--grey50);
@@ -50,19 +51,22 @@
     }
   }
 
-  /* 0.x.0 releases: orange minors, but big enough to fit a label */
+  /* 0.x.0 releases: minors, but big enough to fit a label */
   .preV1 text {
-    fill: var(--text);
+    fill: white;
   }
 
+  /* A purple → amber ramp, with prereleases outlined in pink */
   .layerMinor {
-    fill: var(--bg-orange);
+    fill: oklch(0.52 0.2 305);
   }
   .layerPatch {
-    fill: var(--bg-green);
+    fill: oklch(0.84 0.16 85);
   }
   .layerPrerelease {
-    fill: var(--bg-blue);
+    fill: none;
+    stroke: oklch(0.68 0.2 10);
+    stroke-width: 0.08em;
   }
   .legend text {
     fill: var(--text);
