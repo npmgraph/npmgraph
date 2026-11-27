@@ -25,7 +25,7 @@ export function InputExamples() {
         <QueryLink
           className={styles.chip}
           component={Button}
-          query={['express']}
+          query={['axios']}
           title="A single module name"
         />
         <QueryLink
