@@ -52,7 +52,12 @@ https://npmgraph.js.org/?q=vite#color=moduleType
 
 Comma-separated list of additional dependency types to include in the graph.
 
-`dependencies` and `optionalDependencies` are always included throughout the graph. `devDependencies` are included only for top-level modules. `peerDependencies` are included when enabled, for modules throughout the graph; optional peer dependencies are not included.
+`dependencies` and `optionalDependencies` are always included throughout the graph.
+
+| `deps=...`         | Additionally included                                                       |
+| ------------------ | --------------------------------------------------------------------------- |
+| `devDependencies`  | Dev dependencies of top-level modules                                       |
+| `peerDependencies` | Peer dependencies of all modules; optional peers only for top-level modules |
 
 **Example**: Graph `vite`, include `devDependencies`:
 
