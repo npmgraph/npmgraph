@@ -56,15 +56,17 @@
     fill: white;
   }
 
-  /* A purple → pink → amber ramp, so that each kind reads as a step up */
+  /* A purple → amber ramp, with prereleases outlined in pink */
   .layerMinor {
     fill: oklch(0.52 0.2 305);
   }
   .layerPatch {
-    fill: oklch(0.68 0.2 10);
+    fill: oklch(0.84 0.16 85);
   }
   .layerPrerelease {
-    fill: oklch(0.84 0.16 85);
+    fill: none;
+    stroke: oklch(0.68 0.2 10);
+    stroke-width: 0.15em;
   }
   .legend text {
     fill: var(--text);
