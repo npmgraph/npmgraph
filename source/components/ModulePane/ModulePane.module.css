@@ -13,9 +13,3 @@
   align-items: baseline;
   gap: 0.25em 0.75em;
 }
-
-.sizeGrid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0 1em;
-}
