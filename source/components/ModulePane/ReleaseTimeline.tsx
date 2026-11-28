@@ -8,7 +8,6 @@ import { cn } from '../../lib/dom.ts';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
 import { Section } from '../ui/Section.tsx';
-import { ModuleDownloads } from './ModuleDownloads.tsx';
 import * as styles from './ReleaseTimeline.module.css';
 
 function timestring(t: number) {
@@ -298,8 +297,6 @@ export function ReleaseTimeline({ module }: { module: Module }) {
           isPreV1={isPreV1}
         />
       </svg>
-
-      <ModuleDownloads module={module} />
     </Section>
   );
 }

@@ -1,5 +1,3 @@
-import human from './human.ts';
-
 export type PopularityTier = {
   tier: 0 | 1 | 2 | 3 | 4 | 5;
   bars: number;
@@ -28,7 +26,11 @@ export function getPopularityTier(downloads: number): PopularityTier {
     : { tier: 0, bars: 0, label: 'Niche (<10k/wk)' };
 }
 
+const compact = new Intl.NumberFormat('en', {
+  notation: 'compact',
+  compactDisplay: 'long',
+});
+
 export function formatWeeklyDownloads(downloads: number): string {
-  const h = human(downloads, '', 2).trim();
-  return h.replaceAll(/\s+/g, '');
+  return compact.format(downloads);
 }

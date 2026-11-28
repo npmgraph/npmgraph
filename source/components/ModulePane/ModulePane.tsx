@@ -8,8 +8,10 @@ import { queryModuleCache } from '../../lib/ModuleCache.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
 import { Pane } from '../ui/Pane.tsx';
 import { ModuleDependents } from './ModuleDependents.tsx';
+import { ModuleDownloads } from './ModuleDownloads.tsx';
 import { ModuleLinks } from './ModuleLinks.tsx';
 import { ModuleMaintainers } from './ModuleMaintainers.tsx';
+import { ModuleNotices } from './ModuleNotices.tsx';
 import * as styles from './ModulePane.module.css';
 import { ModuleSize } from './ModuleSize.tsx';
 import { ModuleDistTag } from './ModuleVersionInfo.tsx';
@@ -78,10 +80,13 @@ function ModuleDetailsPane({
 
       <ModuleLinks module={module} />
 
-      {/* Advisories and replacements are looked up by name in the registry */}
-      {module.isFromRegistry && (
-        <ModuleWarnings module={module} showOutdated={isShowStatus} />
-      )}
+      <ModuleNotices>
+        <ModuleDownloads module={module} />
+        {/* Advisories and replacements are looked up by name in the registry */}
+        {module.isFromRegistry && (
+          <ModuleWarnings module={module} showOutdated={isShowStatus} />
+        )}
+      </ModuleNotices>
 
       <ReleaseTimeline module={module} />
 

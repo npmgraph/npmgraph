@@ -1,3 +1,13 @@
+/* Its own section: a divider, then the notices. Hidden when there are none */
+.root {
+  display: grid;
+  gap: var(--pane-spacing-block);
+
+  &:has(> .list:empty) {
+    display: none;
+  }
+}
+
 .list {
   display: flex;
   flex-direction: column;
@@ -21,10 +31,12 @@
     &::after {
       content: ': ';
     }
-    > svg {
-      position: absolute;
-      top: 0.15em;
-      left: 0;
-    }
   }
+}
+
+.icon {
+  display: flex;
+  position: absolute;
+  top: 0.15em;
+  left: 0;
 }

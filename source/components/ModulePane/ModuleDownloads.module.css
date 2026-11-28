@@ -1,21 +1,10 @@
-.downloads {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  margin-top: 0.6rem;
-  color: var(--text);
-  line-height: normal;
-}
-
-.count {
-  font-weight: bold;
-}
-
 .meter {
   display: inline-flex;
   align-items: flex-end;
+  vertical-align: middle;
   gap: 2px;
   cursor: default;
+  margin-inline-start: 0.75em;
   height: 16px;
 }
 

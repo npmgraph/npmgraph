@@ -1,30 +1,43 @@
-import { resolveDocUrl } from 'module-replacements';
+import { resolveDocUrl, type ModuleReplacement } from 'module-replacements';
 import { Suspense, use, type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import simplur from 'simplur';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
 import { fetchModuleAdvisories } from '../ReportPane/reports/advisories.ts';
-import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
 import { Replacement } from '../ReportPane/reports/ModuleReplacementsNative.tsx';
 import { getReplacements } from '../ReportPane/reports/replacements.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { SectionSymbol } from '../ui/Section.tsx';
 import { isOutdated } from './module-status.ts';
+import { Notice } from './ModuleNotices.tsx';
 import { ModuleOutdated } from './ModuleVersionInfo.tsx';
-import * as styles from './ModuleWarnings.module.css';
 
 type Props = { module: Module; showOutdated: boolean };
 
 function Warning({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div>
-      <dt>
-        <SectionSymbol warn />
-        {title}
-      </dt>
-      <dd className={listStyles.details}>{children}</dd>
-    </div>
+    <Notice icon={<SectionSymbol warn />} heading={title}>
+      {children}
+    </Notice>
+  );
+}
+
+// A single replacement doesn't need a list
+function Replacements({ replacements }: { replacements: ModuleReplacement[] }) {
+  const [first] = replacements;
+  if (first && replacements.length === 1) {
+    return <Replacement replacement={first} />;
+  }
+
+  return (
+    <ul>
+      {replacements.map(replacement => (
+        <li key={replacement.id}>
+          <Replacement replacement={replacement} />
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -50,7 +63,7 @@ function Warnings({
   const mappingUrl = mapping && resolveDocUrl(mapping.url);
 
   return (
-    <dl className={styles.list}>
+    <>
       {hasOutdated && (
         <Warning title="Outdated">
           <ModuleOutdated module={module} />
@@ -79,17 +92,11 @@ function Warnings({
           {mappingUrl ? (
             <ExternalLink href={mappingUrl}>learn more</ExternalLink>
           ) : (
-            <ul>
-              {replacements.filter(isDefined).map(replacement => (
-                <li key={replacement.id}>
-                  <Replacement replacement={replacement} />
-                </li>
-              ))}
-            </ul>
+            <Replacements replacements={replacements.filter(isDefined)} />
           )}
         </Warning>
       ) : null}
-    </dl>
+    </>
   );
 }
 

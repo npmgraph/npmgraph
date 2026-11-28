@@ -1,3 +1,4 @@
+import DownloadIcon from 'octicons-plain-react/Download';
 import { Suspense, use } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
 import { cn } from '../../lib/dom.ts';
@@ -9,6 +10,7 @@ import type { NpmDownloadsPoint } from '../../lib/fetch-types.ts';
 import fetchJson from '../../lib/fetchJson.ts';
 import type Module from '../../lib/Module.ts';
 import * as styles from './ModuleDownloads.module.css';
+import { Notice } from './ModuleNotices.tsx';
 
 const METER_BAR_HEIGHTS = [4, 7, 10, 13, 16];
 
@@ -58,9 +60,8 @@ function Downloads({
   const title = `${downloads.toLocaleString()} weekly downloads (${tier.label})`;
 
   return (
-    <div className={styles.downloads} title={title}>
-      <span>Weekly downloads:</span>
-      <strong className={styles.count}>{formatted}</strong>
+    <Notice icon={<DownloadIcon />} heading="Weekly downloads" title={title}>
+      {formatted}
       <span className={styles.meter} aria-label={title} role="img">
         {METER_BAR_HEIGHTS.map((height, i) => (
           <span
@@ -73,6 +74,6 @@ function Downloads({
           />
         ))}
       </span>
-    </div>
+    </Notice>
   );
 }
