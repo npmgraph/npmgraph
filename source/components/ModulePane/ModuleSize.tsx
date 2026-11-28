@@ -5,7 +5,9 @@ import human from '../../lib/human.ts';
 import type Module from '../../lib/Module.ts';
 import { Section } from '../ui/Section.tsx';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
-import * as styles from './ModulePane.module.css';
+import { Stat, Stats } from './Stats.tsx';
+
+const formatSize = (bytes?: number) => (bytes ? human(bytes, 'B') : <i>n/a</i>);
 
 export function ModuleSize({ module }: { module: Module }) {
   const [graph] = useGlobalState('graph');
@@ -21,26 +23,14 @@ export function ModuleSize({ module }: { module: Module }) {
 
   return (
     <Section title="Module Size">
-      <div className={styles.sizeGrid}>
-        <span>Unpacked Size (module only):</span>
-        {unpackedSize ? (
-          <strong>{human(unpackedSize, 'B')}</strong>
-        ) : (
-          <i>not available</i>
-        )}
+      <Stats>
+        <Stat label="Unpacked">{formatSize(unpackedSize)}</Stat>
         {hasDependencies(module, dependencyTypes) && (
-          <>
-            <span>Unpacked Size (module + dependencies):</span>
-            {unpackedSize ? (
-              <strong>
-                {human(unpackedSize + downstreamUnpackedSize, 'B')}
-              </strong>
-            ) : (
-              <i>not available</i>
-            )}
-          </>
+          <Stat label="Unpacked + deps">
+            {formatSize(unpackedSize && unpackedSize + downstreamUnpackedSize)}
+          </Stat>
         )}
-      </div>
+      </Stats>
       <ModuleBundleSize module={module} />
     </Section>
   );

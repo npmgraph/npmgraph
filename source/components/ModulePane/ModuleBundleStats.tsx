@@ -1,6 +1,6 @@
 import type { BundlePhobiaData } from '../../lib/fetch-types.ts';
 import human from '../../lib/human.ts';
-import * as styles from './ModuleBundleStats.module.css';
+import { Stat, Stats } from './Stats.tsx';
 
 export function ModuleBundleStats({
   bundleInfo,
@@ -8,11 +8,9 @@ export function ModuleBundleStats({
   bundleInfo: BundlePhobiaData;
 }) {
   return (
-    <div className={styles.root}>
-      <span>Bundle size (minified):</span>
-      <strong>{human(bundleInfo.size, 'B')}</strong>
-      <span>Bundle size (compressed):</span>
-      <strong>{human(bundleInfo.gzip, 'B')}</strong>
-    </div>
+    <Stats>
+      <Stat label="Minified">{human(bundleInfo.size, 'B')}</Stat>
+      <Stat label="Gzipped">{human(bundleInfo.gzip, 'B')}</Stat>
+    </Stats>
   );
 }
