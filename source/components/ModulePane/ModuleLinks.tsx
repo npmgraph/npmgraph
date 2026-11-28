@@ -70,7 +70,7 @@ function ModuleLinkButton({
   ...props
 }: { label: string; href: string } & React.HTMLAttributes<HTMLAnchorElement>) {
   return (
-    <Button {...props} target="_blank" href={href} title={label}>
+    <Button {...props} target="_blank" href={href}>
       {getLinkContent(label, href)}
     </Button>
   );

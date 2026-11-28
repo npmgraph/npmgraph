@@ -1,0 +1,17 @@
+/* Same media object as the maintainers in the reports tab */
+.maintainer {
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.4em;
+
+  [data-gravatar] {
+    flex: none;
+    border-radius: 0.3rem;
+  }
+
+  > button {
+    overflow: visible;
+    text-wrap: wrap;
+    overflow-wrap: anywhere;
+  }
+}
