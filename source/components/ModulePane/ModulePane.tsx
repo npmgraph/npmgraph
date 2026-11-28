@@ -19,7 +19,12 @@ function useSelectedModules() {
   const [graph] = useGlobalState('graph');
   const [queryType, queryValue] = useGraphSelection();
 
-  const selectedModules = queryModuleCache(queryType, queryValue);
+  // Only modules in the graph can be selected (the cache also has stubs of failed queries)
+  const selectedModules = queryModuleCache(
+    queryType,
+    queryValue,
+    graph.moduleInfos,
+  );
 
   // Fall back to the top-level module if nothing is selected
   const [entryModule] = graph.entryModules;
@@ -32,16 +37,6 @@ function useSelectedModules() {
   }
 
   return selectedModules;
-}
-
-function StubModulePane({ module }: { module: Module }) {
-  return (
-    <Pane>
-      <h2>{module.name}</h2>
-      <p>Sorry, but info for this module isn't available. 😢</p>
-      <p className={styles.stubError}>{module.stubError?.message}</p>
-    </Pane>
-  );
 }
 
 function ModuleDetailsPane({
@@ -60,6 +55,12 @@ function ModuleDetailsPane({
           {isShowStatus && <ModuleDistTag module={module} />}
         </div>
         {pkg?.description && <p>{pkg.description}</p>}
+        {module.isStub && (
+          <>
+            <p>Sorry, but info for this module isn't available. 😢</p>
+            <p className={styles.stubError}>{module.stubError?.message}</p>
+          </>
+        )}
         {module.isLocal && (
           <p>
             This is a locally-defined module. Additional information is not
@@ -71,7 +72,7 @@ function ModuleDetailsPane({
       <ModuleLinks module={module} />
 
       {/* Advisories and replacements are looked up by name in the registry */}
-      {!module.isLocal && (
+      {module.isFromRegistry && (
         <ModuleWarnings module={module} showOutdated={isShowStatus} />
       )}
 
@@ -110,13 +111,5 @@ export default function ModulePane(
   }
 
   const module = selectedModules.values().next().value;
-  if (!module) {
-    return null;
-  }
-
-  if (module.isStub) {
-    return <StubModulePane module={module} />;
-  }
-
-  return <ModuleDetailsPane module={module} {...props} />;
+  return module ? <ModuleDetailsPane module={module} {...props} /> : null;
 }
