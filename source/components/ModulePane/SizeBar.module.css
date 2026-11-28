@@ -17,8 +17,8 @@
   background:
     linear-gradient(
       to right,
-      var(--accent) var(--gzip),
-      transparent var(--gzip)
+      var(--accent) var(--share),
+      transparent var(--share)
     ),
     color-mix(in srgb, var(--text) 12%, transparent);
   height: 0.5em;
