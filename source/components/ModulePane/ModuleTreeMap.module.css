@@ -1,5 +1,6 @@
 .container {
   position: relative;
+  margin-block: 1em;
   height: 150px;
 }
 

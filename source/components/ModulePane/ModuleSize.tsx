@@ -1,10 +1,11 @@
 import useDependencyTypes from '../../hooks/useDependencyTypes.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
 import { foreachDownstream, hasDependencies } from '../../lib/graph-util.ts';
+import human from '../../lib/human.ts';
 import type Module from '../../lib/Module.ts';
 import { Section } from '../ui/Section.tsx';
 import ModuleBundleSize from './ModuleBundleSize.tsx';
-import { SizeBar } from './SizeBar.tsx';
+import * as styles from './ModulePane.module.css';
 
 export function ModuleSize({ module }: { module: Module }) {
   const [graph] = useGlobalState('graph');
@@ -20,17 +21,26 @@ export function ModuleSize({ module }: { module: Module }) {
 
   return (
     <Section title="Module Size">
-      <SizeBar
-        title="Unpacked size"
-        size={unpackedSize}
-        sizeLabel="module"
-        total={
-          unpackedSize && hasDependencies(module, dependencyTypes)
-            ? unpackedSize + downstreamUnpackedSize
-            : undefined
-        }
-        totalLabel="with dependencies"
-      />
+      <div className={styles.sizeGrid}>
+        <span>Unpacked Size (module only):</span>
+        {unpackedSize ? (
+          <strong>{human(unpackedSize, 'B')}</strong>
+        ) : (
+          <i>not available</i>
+        )}
+        {hasDependencies(module, dependencyTypes) && (
+          <>
+            <span>Unpacked Size (module + dependencies):</span>
+            {unpackedSize ? (
+              <strong>
+                {human(unpackedSize + downstreamUnpackedSize, 'B')}
+              </strong>
+            ) : (
+              <i>not available</i>
+            )}
+          </>
+        )}
+      </div>
       <ModuleBundleSize module={module} />
     </Section>
   );
