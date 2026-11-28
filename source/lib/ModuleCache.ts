@@ -215,7 +215,12 @@ function isQueryMatch(
     case QueryType.Default: {
       const [name, version] = parseModuleKey(queryValue);
       return (
-        module.name === name && (!version || satisfies(module.version, version))
+        module.name === name &&
+        (!version ||
+          // A stub's version is the range that failed to resolve, not a version
+          (module.isStub
+            ? module.version === version
+            : satisfies(module.version, version)))
       );
     }
 
