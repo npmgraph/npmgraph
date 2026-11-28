@@ -3,25 +3,18 @@
   flex-direction: column;
   gap: 0.4em;
   border-radius: var(--rad-lg);
-  background-color: color-mix(in srgb, var(--text) 6%, transparent);
+  /* A tint, the plain accent wouldn't leave the text readable */
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--accent) 30%, transparent) var(--share, 0%),
+    color-mix(in srgb, var(--text) 6%, transparent) var(--share, 0%)
+  );
   padding: 0.5em 0.75em;
 }
 
 .label {
   color: var(--text-dim);
   font-size: 0.85em;
-}
-
-.bar {
-  border-radius: 0.25em;
-  background:
-    linear-gradient(
-      to right,
-      var(--accent) var(--share),
-      transparent var(--share)
-    ),
-    color-mix(in srgb, var(--text) 12%, transparent);
-  height: 0.5em;
 }
 
 .legend {

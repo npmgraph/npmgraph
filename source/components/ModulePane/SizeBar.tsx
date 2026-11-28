@@ -4,7 +4,7 @@ import * as styles from './SizeBar.module.css';
 
 const format = (bytes?: number) => (bytes ? human(bytes, 'B') : <i>n/a</i>);
 
-// The bar is the total, its filled part is the share of the first size
+// The background is the total, its tinted part is the share of the first size
 export function SizeBar({
   title,
   size,
@@ -19,14 +19,15 @@ export function SizeBar({
   totalLabel: string;
 }) {
   return (
-    <div className={styles.root}>
+    <div
+      className={styles.root}
+      style={
+        size && total
+          ? ({ '--share': `${(size / total) * 100}%` } as CSSProperties)
+          : undefined
+      }
+    >
       <span className={styles.label}>{title}</span>
-      {size && total ? (
-        <div
-          className={styles.bar}
-          style={{ '--share': `${(size / total) * 100}%` } as CSSProperties}
-        />
-      ) : null}
       <div className={styles.legend}>
         <span>
           <strong>{format(size)}</strong> {sizeLabel}
