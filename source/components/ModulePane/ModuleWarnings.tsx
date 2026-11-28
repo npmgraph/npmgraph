@@ -1,4 +1,4 @@
-import { resolveDocUrl } from 'module-replacements';
+import { resolveDocUrl, type ModuleReplacement } from 'module-replacements';
 import { Suspense, use, type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import simplur from 'simplur';
@@ -20,6 +20,24 @@ function Warning({ title, children }: { title: string; children: ReactNode }) {
     <Notice icon={<SectionSymbol warn />} heading={title}>
       {children}
     </Notice>
+  );
+}
+
+// A single replacement doesn't need a list
+function Replacements({ replacements }: { replacements: ModuleReplacement[] }) {
+  const [first] = replacements;
+  if (first && replacements.length === 1) {
+    return <Replacement replacement={first} />;
+  }
+
+  return (
+    <ul>
+      {replacements.map(replacement => (
+        <li key={replacement.id}>
+          <Replacement replacement={replacement} />
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -74,13 +92,7 @@ function Warnings({
           {mappingUrl ? (
             <ExternalLink href={mappingUrl}>learn more</ExternalLink>
           ) : (
-            <ul>
-              {replacements.filter(isDefined).map(replacement => (
-                <li key={replacement.id}>
-                  <Replacement replacement={replacement} />
-                </li>
-              ))}
-            </ul>
+            <Replacements replacements={replacements.filter(isDefined)} />
           )}
         </Warning>
       ) : null}
