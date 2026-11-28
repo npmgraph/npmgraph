@@ -247,7 +247,7 @@ export function ReleaseTimeline({ module }: { module: Module }) {
   }
 
   return (
-    <Section title="Release Timeline">
+    <Section title="Release timeline">
       <svg ref={ref} viewBox={`0 0 ${w} ${h}`} className={styles.root}>
         <GridColumns
           scale={xScale}

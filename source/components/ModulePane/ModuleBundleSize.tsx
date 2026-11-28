@@ -10,7 +10,7 @@ import { ModuleTreeMap } from './ModuleTreeMap.tsx';
 
 export default function ModuleBundleSize({ module }: { module: Module }) {
   if (module.isLocal) {
-    return 'Loading ...';
+    return 'Loading bundle size…';
   }
 
   const { name, version } = module.package;
@@ -46,7 +46,7 @@ function RemoteModuleBundleSize({
   );
 
   return (
-    <Suspense fallback="Loading ...">
+    <Suspense fallback="Loading bundle size…">
       <BundleInfo promise={bundleInfoPromise} bpUrl={bpUrl} />
     </Suspense>
   );

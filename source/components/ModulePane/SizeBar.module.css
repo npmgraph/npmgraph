@@ -1,0 +1,30 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  border-radius: var(--rad-lg);
+  /* A tint, the plain accent wouldn't leave the text readable */
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--accent) 30%, transparent) var(--share, 0%),
+    color-mix(in srgb, var(--text) 6%, transparent) var(--share, 0%)
+  );
+  padding: 0.5em 0.75em;
+}
+
+.label {
+  color: var(--text-dim);
+  font-size: 0.85em;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1em;
+  font-size: 0.85em;
+
+  strong {
+    font-size: 1.15em;
+  }
+}
