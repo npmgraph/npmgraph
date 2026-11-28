@@ -2,6 +2,7 @@ import useGraphSelection from '../../hooks/useGraphSelection.ts';
 import useHashParam from '../../hooks/useHashParam.ts';
 import { PARAM_COLORIZE } from '../../lib/constants.ts';
 import { useGlobalState } from '../../lib/GlobalStore.ts';
+import { isRepositorySpec } from '../../lib/module-util.ts';
 import type Module from '../../lib/Module.ts';
 import { queryModuleCache } from '../../lib/ModuleCache.ts';
 import OutdatedColorizer from '../colorizers/OutdatedColorizer.tsx';
@@ -57,8 +58,14 @@ function ModuleDetailsPane({
         {pkg?.description && <p>{pkg.description}</p>}
         {module.isStub && (
           <>
-            <p>Sorry, but info for this module isn't available. 😢</p>
             <p className={styles.stubError}>{module.stubError?.message}</p>
+            {isRepositorySpec(module.version) && (
+              <p>
+                This dependency points to a repository (
+                <code>{module.version}</code>), which npmgraph doesn't load. It
+                looked for <code>{module.name}</code> on the registry instead.
+              </p>
+            )}
           </>
         )}
         {module.isLocal && (
