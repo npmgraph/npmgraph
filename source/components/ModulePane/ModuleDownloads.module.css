@@ -1,8 +1,10 @@
 .meter {
   display: inline-flex;
   align-items: flex-end;
+  vertical-align: middle;
   gap: 2px;
   cursor: default;
+  margin-inline-start: 0.75em;
   height: 16px;
 }
 

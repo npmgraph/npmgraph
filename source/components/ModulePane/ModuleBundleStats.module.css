@@ -1,0 +1,37 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  border-radius: var(--rad-lg);
+  background-color: color-mix(in srgb, var(--text) 6%, transparent);
+  padding: 0.5em 0.75em;
+}
+
+.label {
+  color: var(--text-dim);
+  font-size: 0.85em;
+}
+
+.bar {
+  border-radius: 0.25em;
+  background:
+    linear-gradient(
+      to right,
+      var(--accent) var(--gzip),
+      transparent var(--gzip)
+    ),
+    color-mix(in srgb, var(--text) 12%, transparent);
+  height: 0.5em;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0 1em;
+  font-size: 0.85em;
+
+  strong {
+    font-size: 1.15em;
+  }
+}

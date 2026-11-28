@@ -1,3 +1,4 @@
+import DownloadIcon from 'octicons-plain-react/Download';
 import { Suspense, use } from 'react';
 import usePromise from '../../hooks/usePromise.ts';
 import { cn } from '../../lib/dom.ts';
@@ -59,25 +60,20 @@ function Downloads({
   const title = `${downloads.toLocaleString()} weekly downloads (${tier.label})`;
 
   return (
-    <Notice
-      icon={
-        <span className={styles.meter} aria-label={title} role="img">
-          {METER_BAR_HEIGHTS.map((height, i) => (
-            <span
-              key={height}
-              className={cn(
-                styles.meterBar,
-                i < tier.bars ? styles.filled : undefined,
-              )}
-              style={{ height }}
-            />
-          ))}
-        </span>
-      }
-      heading="Weekly downloads"
-      title={title}
-    >
+    <Notice icon={<DownloadIcon />} heading="Weekly downloads" title={title}>
       {formatted}
+      <span className={styles.meter} aria-label={title} role="img">
+        {METER_BAR_HEIGHTS.map((height, i) => (
+          <span
+            key={height}
+            className={cn(
+              styles.meterBar,
+              i < tier.bars ? styles.filled : undefined,
+            )}
+            style={{ height }}
+          />
+        ))}
+      </span>
     </Notice>
   );
 }

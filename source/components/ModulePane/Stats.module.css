@@ -9,7 +9,7 @@
   flex-direction: column;
   gap: 0.15em;
   border-radius: var(--rad-lg);
-  background-color: var(--bg1);
+  background-color: color-mix(in srgb, var(--text) 6%, transparent);
   padding: 0.5em 0.75em;
 
   strong {
