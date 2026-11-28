@@ -237,6 +237,8 @@ function isQueryMatch(
 export function queryModuleCache(
   queryType: QueryTypeValue,
   queryValue: string,
+  // Only match modules with a key in here, e.g. the ones in the graph
+  scope?: ReadonlyMap<string, unknown>,
 ) {
   const results = new Map<string, Module>();
 
@@ -250,7 +252,7 @@ export function queryModuleCache(
   }
 
   for (const { module } of moduleCache.values()) {
-    if (!module) {
+    if (!module || (scope && !scope.has(module.key))) {
       continue;
     }
 
