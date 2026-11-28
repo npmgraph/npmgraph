@@ -5,26 +5,21 @@ import simplur from 'simplur';
 import { isDefined } from '../../lib/guards.ts';
 import type Module from '../../lib/Module.ts';
 import { fetchModuleAdvisories } from '../ReportPane/reports/advisories.ts';
-import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
 import { Replacement } from '../ReportPane/reports/ModuleReplacementsNative.tsx';
 import { getReplacements } from '../ReportPane/reports/replacements.ts';
 import { ExternalLink } from '../ui/ExternalLink.tsx';
 import { SectionSymbol } from '../ui/Section.tsx';
 import { isOutdated } from './module-status.ts';
+import { Notice } from './ModuleNotices.tsx';
 import { ModuleOutdated } from './ModuleVersionInfo.tsx';
-import * as styles from './ModuleWarnings.module.css';
 
 type Props = { module: Module; showOutdated: boolean };
 
 function Warning({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div>
-      <dt>
-        <SectionSymbol warn />
-        {title}
-      </dt>
-      <dd className={listStyles.details}>{children}</dd>
-    </div>
+    <Notice icon={<SectionSymbol warn />} heading={title}>
+      {children}
+    </Notice>
   );
 }
 
@@ -50,7 +45,7 @@ function Warnings({
   const mappingUrl = mapping && resolveDocUrl(mapping.url);
 
   return (
-    <dl className={styles.list}>
+    <>
       {hasOutdated && (
         <Warning title="Outdated">
           <ModuleOutdated module={module} />
@@ -89,7 +84,7 @@ function Warnings({
           )}
         </Warning>
       ) : null}
-    </dl>
+    </>
   );
 }
 

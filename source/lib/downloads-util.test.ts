@@ -3,16 +3,16 @@ import { formatWeeklyDownloads, getPopularityTier } from './downloads-util.ts';
 
 describe('formatWeeklyDownloads', () => {
   it('formats large numbers cleanly with compact units', () => {
-    expect(formatWeeklyDownloads(157_124_978)).toBe('157M');
-    expect(formatWeeklyDownloads(25_000_000)).toBe('25M');
-    expect(formatWeeklyDownloads(6_871_891)).toBe('6.9M');
-    expect(formatWeeklyDownloads(1_500_000)).toBe('1.5M');
+    expect(formatWeeklyDownloads(157_124_978)).toBe('157 million');
+    expect(formatWeeklyDownloads(25_000_000)).toBe('25 million');
+    expect(formatWeeklyDownloads(6_871_891)).toBe('6.9 million');
+    expect(formatWeeklyDownloads(1_500_000)).toBe('1.5 million');
   });
 
   it('formats thousands cleanly', () => {
-    expect(formatWeeklyDownloads(450_000)).toBe('450k');
-    expect(formatWeeklyDownloads(25_000)).toBe('25k');
-    expect(formatWeeklyDownloads(11_040)).toBe('11k');
+    expect(formatWeeklyDownloads(450_000)).toBe('450 thousand');
+    expect(formatWeeklyDownloads(25_000)).toBe('25 thousand');
+    expect(formatWeeklyDownloads(11_040)).toBe('11 thousand');
   });
 
   it('formats small download counts', () => {
