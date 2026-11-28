@@ -1,9 +1,14 @@
+import AlertFillIcon from 'octicons-plain-react/AlertFill';
 import { QueryType } from '../../../lib/ModuleCache.ts';
 import { Gravatar } from '../../ui/Gravatar.tsx';
 import { Rows } from '../../ui/Row.tsx';
 import { Selectable } from '../../ui/Selectable.tsx';
-import type { MaintainerAnalysisState } from '../analyzers/analyzeMaintainers.ts';
+import {
+  UNNAMED_MAINTAINER,
+  type MaintainerAnalysisState,
+} from '../analyzers/analyzeMaintainers.ts';
 import { GroupRow } from '../GroupRow.tsx';
+import * as styles from './MaintainerRows.module.css';
 
 export function MaintainerRows({
   modulesByMaintainer,
@@ -23,6 +28,9 @@ export function MaintainerRows({
               heading={
                 <>
                   {email && <Gravatar email={email} />}
+                  {name === UNNAMED_MAINTAINER && (
+                    <AlertFillIcon className={styles.warnIcon} />
+                  )}
                   <Selectable type={QueryType.Maintainer} value={name} />
                 </>
               }

@@ -1,25 +1,30 @@
 .list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
   margin: 0;
-  dt {
-    font-weight: bold;
 
-    svg {
-      margin-inline-end: 0.5ch;
-    }
+  > div {
+    position: relative;
+    padding-inline-start: 1.5em;
   }
-}
 
-.inline {
   dt,
   dd {
     display: inline;
-  }
-
-  dt::after {
-    content: ': ';
-  }
-
-  dd {
+    margin: 0;
     padding: 0;
+  }
+
+  dt {
+    font-weight: bold;
+    &::after {
+      content: ': ';
+    }
+    > svg {
+      position: absolute;
+      top: 0.15em;
+      left: 0;
+    }
   }
 }

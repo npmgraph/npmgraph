@@ -1,3 +1,4 @@
+import { Button } from './Button.tsx';
 import FilePicker from './InfoPane/FilePicker.tsx';
 import * as styles from './InputHelp.module.css';
 import { Group } from './ui/Group.tsx';
@@ -7,8 +8,8 @@ export function InputDescription({ isDim }: { isDim?: boolean }) {
   return (
     <p className={isDim ? styles.dim : undefined}>
       npmgraph supports looking up npm module names (multiple and versioned),
-      GitHub repository shorthands, or package.json (drop or paste a file, or
-      enter a{' '}
+      GitHub repository URLs or shorthands (optionally with #branch), or
+      package.json (drop or paste a file, or enter a{' '}
       <QueryLink query="https://github.com/npmgraph/npmgraph/blob/main/package.json">
         URL
       </QueryLink>
@@ -23,16 +24,19 @@ export function InputExamples() {
       <div className={styles.chips}>
         <QueryLink
           className={styles.chip}
+          component={Button}
           query={['axios']}
           title="A single module name"
         />
         <QueryLink
           className={styles.chip}
+          component={Button}
           query={['cross-env@6', 'rimraf']}
           title="Multiple module names, with optional versions"
         />
         <QueryLink
           className={styles.chip}
+          component={Button}
           query={['sindresorhus/ora']}
           title="A GitHub repository reference"
         />

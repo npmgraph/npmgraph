@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { parseCommaList } from '../lib/array-util.ts';
 import { PARAM_QUERY, UNNAMED_PACKAGE } from '../lib/constants.ts';
+import { normalizeQueryKey } from '../lib/module-util.ts';
 import useSearchParameter from './useSearchParameter.ts';
 
 export function useQuery() {
@@ -13,8 +14,7 @@ export function useQuery() {
       moduleKeys = moduleKeys.filter(Boolean).map(key => {
         key = key.trim();
 
-        // Don't lowercase URLs
-        return /https?:\/\//i.test(key) ? key : key.toLowerCase();
+        return normalizeQueryKey(key);
       });
       moduleKeys = [...new Set(moduleKeys)];
       setQueryString(moduleKeys.join(','), shouldReplace);

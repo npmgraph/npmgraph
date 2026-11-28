@@ -2,9 +2,7 @@ import simplur from 'simplur';
 import { cn } from '../../lib/dom.ts';
 import type Module from '../../lib/Module.ts';
 import type { VersionStatus } from '../../lib/version-status.ts';
-import * as listStyles from '../ReportPane/reports/ModuleList.module.css';
 import { QueryLink } from '../ui/QueryLink.tsx';
-import { SectionSymbol } from '../ui/Section.tsx';
 import { getStatus } from './module-status.ts';
 import * as styles from './ModuleVersionInfo.module.css';
 
@@ -40,25 +38,16 @@ export function ModuleDistTag({
   ) : null;
 }
 
-export function ModuleOutdated({
-  module,
-  ...props
-}: { module: Module } & React.HTMLAttributes<HTMLDivElement>) {
+export function ModuleOutdated({ module }: { module: Module }) {
   const status = getStatus(module);
   if (status?.type !== 'outdated' || !module.packument) {
     return null;
   }
 
   return (
-    <div {...props}>
-      <dt>
-        <SectionSymbol warn />
-        Outdated
-      </dt>
-      <dd className={listStyles.details}>
-        {getOutdatedMessage(status)} <code>latest</code> (
-        <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
-      </dd>
-    </div>
+    <>
+      {getOutdatedMessage(status)} <code>latest</code> (
+      <QueryLink query={module.packument.name}>{status.latest}</QueryLink>)
+    </>
   );
 }

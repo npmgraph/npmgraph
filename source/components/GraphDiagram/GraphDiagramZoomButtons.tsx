@@ -8,14 +8,17 @@ export function GraphDiagramZoomButtons({ fitScale }: { fitScale: number }) {
   const controls = useControls();
   const scale = useTransformComponent(({ state }) => state.scale);
 
+  const isScale = (target: number) => Math.abs(scale - target) < 0.001;
+
   // Nothing to do if the graph is already at 1:1 and fits entirely
-  if (fitScale === 1 && Math.abs(scale - 1) < 0.001) {
+  if (fitScale === 1 && isScale(1)) {
     return null;
   }
 
   return (
     <ButtonGroup square>
       <Button
+        selected={isScale(1)}
         title="Zoom to actual size"
         onClick={() => {
           zoomAroundCenter(controls, 1);
@@ -24,6 +27,7 @@ export function GraphDiagramZoomButtons({ fitScale }: { fitScale: number }) {
         1:1
       </Button>
       <Button
+        selected={isScale(fitScale)}
         title="Zoom to fit"
         onClick={() => {
           void controls.fitToView({ maxScale: 1 });
