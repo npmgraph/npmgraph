@@ -53,10 +53,7 @@ export default function ModulesAll() {
               className={cn(styles.weight, { [styles.heavy]: weight.heavy })}
               title={title}
             >
-              <span aria-hidden className={styles.icon}>
-                {weight.heavy ? <AlertFillIcon /> : null}
-              </span>
-              +{weight.pulls}
+              {weight.heavy && <AlertFillIcon aria-hidden />}+{weight.pulls}
             </span>
           );
         }}

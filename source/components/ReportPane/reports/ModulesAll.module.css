@@ -2,6 +2,7 @@
 .weight {
   display: inline-flex;
   justify-content: flex-end;
+  align-items: center; /* The row aligns on baselines, which misplaces the icon */
   gap: 0.25em;
   margin-inline-start: auto;
   color: var(--text-dim);
@@ -12,15 +13,9 @@
     color: var(--accent);
     font-weight: bold;
   }
-}
-
-/* Sized to the text, so it doesn't stretch the row */
-.icon {
-  font-weight: normal;
 
   svg {
-    display: block;
-    width: 1em;
+    width: auto;
     height: 1em;
   }
 }
