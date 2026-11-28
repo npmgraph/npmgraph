@@ -79,6 +79,13 @@ export function resolveModule(name: string, version?: string) {
   return [name, version] as const;
 }
 
+/** Whether a dependency spec points to a repository or tarball, not a registry version */
+export function isRepositorySpec(version: string) {
+  return /^(?:git[+:@]|(?:github|gitlab|bitbucket|gist):|https?:|[\w-]+\/[\w\-.]+(?:#.*)?$)/i.test(
+    version,
+  );
+}
+
 export function getModuleKey(name: string, version: string) {
   return version ? `${name}@${version}` : name;
 }

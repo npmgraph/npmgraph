@@ -8,12 +8,19 @@ const selectableQueryTypes = new Set<QueryTypeValue>([
   QueryType.Exact,
 ]);
 
+const queryTypes = new Set<string>(Object.values(QueryType));
+
+/** Split `type:value`. Values can have colons too, e.g. `pkg@github:user/repo` */
+export function parseSelection(selection = '') {
+  const [prefix = '', ...rest] = selection.split(':');
+  return queryTypes.has(prefix) && rest.length > 0
+    ? ([prefix as QueryTypeValue, rest.join(':')] as const)
+    : ([QueryType.Default, selection] as const);
+}
+
 export default function useGraphSelection() {
   const [sel, setSel] = useHashParam(PARAM_SELECTION);
-  const parts = sel ? sel.split(':') : [];
-  const selectType =
-    parts.length > 1 ? (parts[0] as QueryTypeValue) : QueryType.Default;
-  const selectValue = (parts.length > 1 ? parts[1] : parts[0]) ?? '';
+  const [selectType, selectValue] = parseSelection(sel);
 
   return [
     selectType,

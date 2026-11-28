@@ -5,6 +5,8 @@ import {
   cacheLocalPackage,
   getCachedModule,
   getModule,
+  queryModuleCache,
+  QueryType,
 } from './ModuleCache.ts';
 
 vi.mock('./fetchJson.ts', () => ({ default: vi.fn() }));
@@ -128,5 +130,23 @@ describe('GitHub repos', () => {
     const module = await getModule('labeled-user/labeled-repo');
 
     expect(module.source).toBe('labeled-user/labeled-repo');
+  });
+});
+
+describe('stub modules', () => {
+  it('can be selected by their key', async () => {
+    vi.mocked(fetchJson).mockRejectedValue(new Error('404'));
+    const stub = await getModule('missing-module@^1.2.3');
+
+    expect(stub.isStub).toBe(true);
+    for (const query of ['missing-module@^1.2.3', 'missing-module']) {
+      expect([...queryModuleCache(QueryType.Default, query).values()]).toEqual([
+        stub,
+      ]);
+    }
+
+    expect(queryModuleCache(QueryType.Default, 'missing-module@^2').size).toBe(
+      0,
+    );
   });
 });

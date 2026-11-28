@@ -53,12 +53,12 @@ async function fetchModuleFromNPM(
   const packument = await getNPMPackument(moduleName, signal);
 
   if (!packument) {
-    throw new Error(`Could not find ${moduleName} module`);
+    throw new Error(`The registry has no package named ${moduleName}.`);
   }
 
   // Handle unpublished packages
   if (packument.time && 'unpublished' in packument.time) {
-    throw new Error(`${moduleName} has been unpublished`);
+    throw new Error(`${moduleName} was unpublished from the registry.`);
   }
 
   // Match best version from manifest
@@ -67,8 +67,8 @@ async function fetchModuleFromNPM(
   if (!packumentVersion) {
     throw new Error(
       version
-        ? `${moduleName} does not have a version ${version}`
-        : `${moduleName} has no published versions`,
+        ? `${moduleName} exists, but has no version matching ${version}.`
+        : `${moduleName} has no published versions.`,
     );
   }
 
@@ -215,7 +215,12 @@ function isQueryMatch(
     case QueryType.Default: {
       const [name, version] = parseModuleKey(queryValue);
       return (
-        module.name === name && (!version || satisfies(module.version, version))
+        module.name === name &&
+        (!version ||
+          // A stub's version is the range that failed to resolve, not a version
+          (module.isStub
+            ? module.version === version
+            : satisfies(module.version, version)))
       );
     }
 
