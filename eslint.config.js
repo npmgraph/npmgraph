@@ -3,6 +3,7 @@ import xo, { jsFilesGlob, tsFilesGlob } from 'eslint-config-xo';
 import xoReact from 'eslint-config-xo-react';
 import byo from 'eslint-plugin-byo';
 import reactDoctor from 'eslint-plugin-react-doctor';
+import reactHooks from 'eslint-plugin-react-hooks';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 import { defineConfig } from 'eslint/config';
 import selectDom from 'select-dom/eslint-plugin';
@@ -63,8 +64,12 @@ export default defineConfig([
   }),
   {
     files: [tsFilesGlob, jsFilesGlob],
-    plugins: { byo },
+    plugins: { byo, 'react-hooks': reactHooks },
     rules: {
+      'react-hooks/exhaustive-deps': [
+        'error',
+        { additionalHooks: 'useAsyncEffect' },
+      ],
       'unicorn/no-manually-wrapped-comments': 'error',
       'unicorn/switch-case-braces': ['error', 'avoid'],
       'unicorn/prefer-query-selector': ['error', { allowWithVariables: true }],

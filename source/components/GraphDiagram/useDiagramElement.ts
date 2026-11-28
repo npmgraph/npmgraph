@@ -111,6 +111,7 @@ export default function useDiagramElement(
 
   // `isModuleVisible` isn't a dep because it changes before the graph that reflects it is loaded.
   useAsyncEffect(
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `useAsyncEffect` accepts async callbacks
     async signal => {
       // Nothing to lay out
       if (graph.moduleInfos.size === 0) {
@@ -128,7 +129,8 @@ export default function useDiagramElement(
         finish();
       }
     },
-    [graph, sizing],
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `isModuleVisible` is deliberately left out, see above
+    [activity, graph, sizing],
   );
 
   return diagramElement;
