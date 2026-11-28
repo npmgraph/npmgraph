@@ -175,6 +175,7 @@ function GraphDiagramInner() {
   // Effect: Colorize nodes
   // A newer run replaces this one, so its late results must not be applied
   useAsyncEffect(
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `useAsyncEffect` accepts async callbacks
     async signal => {
       if (diagramElement) {
         await colorizeGraph(diagramElement, colorize, signal);

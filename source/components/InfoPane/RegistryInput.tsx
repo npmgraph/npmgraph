@@ -30,6 +30,7 @@ function RegistryStatus({
   const isOnline = use(check);
 
   useEffect(() => {
+    // eslint-disable-next-line react-you-might-not-need-an-effect/no-event-handler -- Reacts to the async result of the check, not to a user event
     if (isOnline) {
       setRegistry(registry);
     }

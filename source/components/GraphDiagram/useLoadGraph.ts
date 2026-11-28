@@ -42,6 +42,7 @@ export default function useLoadGraph(
   // Fetch the modules of the query and put the resulting graph in the store.
   // The store keeps the previous graph until then, so nothing flashes meanwhile.
   useAsyncEffect(
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- `useAsyncEffect` accepts async callbacks
     async signal => {
       const graph = await getGraphForQuery(
         sortedQuery,
